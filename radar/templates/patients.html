@@ -1,0 +1,17 @@
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+        </tr>
+    </thead>
+
+    {% for patient in patients %}
+        <tr>
+            <td><a href="{{ url_for('patient', patient_id=patient.id) }}">{{ patient.id }}</a></td>
+            <td>{{ patient.first_name }}</td>
+            <td>{{ patient.last_name }}</td>
+        </tr>
+    {% endfor %}
+</table>

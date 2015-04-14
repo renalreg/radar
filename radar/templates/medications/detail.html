@@ -1,0 +1,56 @@
+{% extends 'patient.html' %}
+
+{% block patient_content %}
+    <h2>Medication</h2>
+
+    <form method="POST">
+        <table>
+            <tr>
+                <td>From Date</td>
+                <td>
+                    {{ form_builder.date_field('from_date') }}
+
+                    {% if form_builder.errors('from_date') %}
+                        <ul>
+                            {% for error in form_builder.errors('from_date') %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>To Date</td>
+                <td>
+                    {{ form_builder.date_field('to_date') }}
+
+                    {% if form_builder.errors('to_date') %}
+                        <ul>
+                            {% for error in form_builder.errors('to_date') %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Name</td>
+                <td>
+                    {{ form_builder.text_field('name') }}
+
+                    {% if form_builder.errors('name') %}
+                        <ul>
+                            {% for error in form_builder.errors('name') %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit">Save</button>
+    </form>
+{% endblock %}
