@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+node_modules/
+bower_components/
+radar/static
