@@ -4,53 +4,36 @@
     <h2>Medication</h2>
 
     <form method="POST">
-        <table>
-            <tr>
-                <td>From Date</td>
-                <td>
-                    {{ form_builder.date_field('from_date') }}
+        <div class="form-group{% if form_builder.errors('from_date') %} has-error{% endif %}">
+            <label for="from_date" class="control-label">From Date</label>
 
-                    {% if form_builder.errors('from_date') %}
-                        <ul>
-                            {% for error in form_builder.errors('from_date') %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </td>
-            </tr>
+            {{ form_builder.date_field('from_date', extra_attributes={'class': 'form-control'}) }}
 
-            <tr>
-                <td>To Date</td>
-                <td>
-                    {{ form_builder.date_field('to_date') }}
+            {% for error in form_builder.errors('from_date') %}
+                <span class="help-block">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-                    {% if form_builder.errors('to_date') %}
-                        <ul>
-                            {% for error in form_builder.errors('to_date') %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </td>
-            </tr>
+        <div class="form-group{% if form_builder.errors('to_date') %} has-error{% endif %}">
+            <label for="to_date" class="control-label">To Date</label>
 
-            <tr>
-                <td>Name</td>
-                <td>
-                    {{ form_builder.text_field('name') }}
+            {{ form_builder.date_field('to_date', extra_attributes={'class': 'form-control'}) }}
 
-                    {% if form_builder.errors('name') %}
-                        <ul>
-                            {% for error in form_builder.errors('name') %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
+            {% for error in form_builder.errors('to_date') %}
+                <span class="help-block">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-        <button type="submit">Save</button>
+        <div class="form-group{% if form_builder.errors('name') %} has-error{% endif %}">
+            <label for="name" class="control-label">Name</label>
+
+            {{ form_builder.text_field('name', extra_attributes={'class': 'form-control'}) }}
+
+            {% for error in form_builder.errors('name') %}
+                <span class="help-block">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
 {% endblock %}

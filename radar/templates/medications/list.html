@@ -3,9 +3,9 @@
 {% block patient_content %}
     <h2>Medications</h2>
 
-    <p><a href="{{ url_for('.create', patient_id=patient.id) }}">New</a></p>
+    <p><a href="{{ url_for('.create', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -24,8 +24,10 @@
                     <td>{{ form.to_date | date_format('%d/%m/%Y') }}</td>
                     <td>{{ form.name }}</td>
                     <td>
-                        <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_id=form.id) }}" class="inline">
-                            <button type="submit">Delete</button>
+                        <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_id=form.id) }}" class="form-inline">
+                            <button type="submit" class="btn btn-link btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                            </button>
                         </form>
                     </td>
                 </tr>

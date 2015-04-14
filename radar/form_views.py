@@ -77,6 +77,8 @@ class FormDetailView(View):
                 db_session.add(form)
                 db_session.commit()
 
+                return redirect(url_for('.list', patient_id=patient.id))
+
         form_builder = FormBuilder(form_handler)
 
         return render_template(self.template_name, patient=patient, form=form, form_builder=form_builder)
