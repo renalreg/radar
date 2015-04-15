@@ -20,8 +20,8 @@
             {% for form in forms %}
                 <tr>
                     <td><a href="{{ url_for('.detail', patient_id=patient.id, form_id=form.id) }}">{{ form.id }}</a></td>
-                    <td>{{ form.from_date | date_format('%d/%m/%Y') }}</td>
-                    <td>{{ form.to_date | date_format('%d/%m/%Y') }}</td>
+                    <td>{{ form.from_date | datetime_format('%d/%m/%Y') }}</td>
+                    <td>{{ form.to_date | datetime_format('%d/%m/%Y') }}</td>
                     <td>{{ form.name }}</td>
                     <td>
                         <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_id=form.id) }}" class="form-inline">

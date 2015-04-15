@@ -2,12 +2,21 @@ DROP TABLE IF EXISTS medications;
 DROP TABLE IF EXISTS sda_medications;
 DROP TABLE IF EXISTS sda_containers;
 DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE patients (
     id serial NOT NULL,
     first_name character varying,
     last_name character varying,
     CONSTRAINT patients_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE users (
+    id serial NOT NULL,
+    username character varying,
+    password_hash character varying,
+    email character varying,
+    CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE sda_containers (
@@ -48,6 +57,11 @@ CREATE TABLE medications (
 INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
 INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');
 INSERT INTO patients VALUES (DEFAULT, 'Bart', 'Simpson');
+
+-- Note: username: username, password: password
+-- Note: plaintext password used here but application will hash passwords
+-- Note: generated with werkzeug.security.generate_password_hash('password', method='plain')
+INSERT INTO users VALUES (DEFAULT, 'username', 'plain$$password', 'username@example.org');
 
 -- Homer's medications
 INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-01', '2015-02-01', 'Paracetamol');
