@@ -1,7 +1,9 @@
-{% extends 'patient.html' %}
+{% extends 'patient-base.html' %}
 
-{% block patient_content %}
-    <h2>Medications</h2>
+{% set patient_page = 'medications' %}
+
+{% block content %}
+    <h1>Medications</h1>
 
     <p><a href="{{ url_for('.create', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 
@@ -23,7 +25,7 @@
                     <td>{{ form.from_date | datetime_format('%d/%m/%Y') }}</td>
                     <td>{{ form.to_date | datetime_format('%d/%m/%Y') }}</td>
                     <td>{{ form.name }}</td>
-                    <td>
+                    <td align="right">
                         <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_id=form.id) }}" class="form-inline">
                             <button type="submit" class="btn btn-link btn-xs">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete

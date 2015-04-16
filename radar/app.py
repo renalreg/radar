@@ -4,7 +4,7 @@ from flask_login import LoginManager
 from radar.database import db_session, configure_engine
 from radar.medications.views import app as medications_app
 from radar.models import User
-from radar.views import PatientsView, PatientView, LoginView, IndexView, LogoutView
+from radar.views import PatientsView, DemographicsView, LoginView, IndexView, LogoutView
 
 
 app = Flask(__name__)
@@ -39,7 +39,7 @@ app.add_url_rule('/', view_func=IndexView.as_view('index'))
 app.add_url_rule('/login/', view_func=LoginView.as_view('login'))
 app.add_url_rule('/logout/', view_func=LogoutView.as_view('logout'))
 app.add_url_rule('/patients/', view_func=PatientsView.as_view('patients'))
-app.add_url_rule('/patients/<int:patient_id>/', view_func=PatientView.as_view('patient'))
+app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_view('demographics'))
 
 app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
 

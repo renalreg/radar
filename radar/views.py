@@ -10,14 +10,14 @@ class PatientsView(View):
         patients = Patient.query.all()
         return render_template('patients.html', patients=patients)
 
-class PatientView(View):
+class DemographicsView(View):
     def dispatch_request(self, patient_id):
         patient = Patient.query.filter(Patient.id == patient_id).first()
 
         if patient is None:
             abort(404)
 
-        return render_template('patient.html', patient=patient)
+        return render_template('demographics.html', patient=patient)
 
 class IndexView(View):
     def dispatch_request(self):
@@ -38,7 +38,7 @@ class LoginView(View):
 
             if user is not None and user.check_password(password):
                 login_user(user)
-                flash('Logged in successfully.')
+                flash('Logged in successfully.', 'success')
                 return redirect(request.args.get('next') or url_for('index'))
             else:
                 login_failed = True

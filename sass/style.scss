@@ -1,8 +1,200 @@
+/* Palette */
+
+$radar-primary: #0fb153; // column 4
+$radar-primary-text: #07672a; // column 1
+$radar-primary-selected: #3abe68; // column 5
+
+$radar-success: #75cf34; // column 4
+$radar-success-text: #07672a; // column 1
+$radar-success-bg: #ade2b2; // column 7
+
+$radar-info: #4c90d6; // column 4
+$radar-info-text: #2a5366; // column 1
+$radar-info-bg: #c0d7ee; // column 7
+
+$radar-warning: #fac533; // column 4
+$radar-warning-text: #99741a; // column 1
+$radar-warning-bg: #fce8a3; // column 7
+
+$radar-danger: #ff0006; // column 4
+$radar-danger-text: #9d0002; // column 1
+$radar-danger-bg: #ffab89; // column 7
+
+$radar-secondary: $radar-info;
+$radar-secondary-text: $radar-info-text;
+$radar-secondary-bg: $radar-info-bg;
+
+/* Bootstrap */
+
 $font-size-base: 13px;
+$body-bg: #f1f5f9;
+$link-color: $radar-primary-text;
+$headings-color: #033a16;
+
+$brand-primary: $radar-primary;
+$brand-success: $radar-success;
+$brand-info: $radar-info;
+$brand-warning: $radar-warning;
+$brand-danger: $radar-danger;
+
+$state-success-text: $radar-success-text;
+$state-success-bg: $radar-success-bg;
+$state-info-text: $radar-info-text;
+$state-info-bg: $radar-info-bg;
+$state-warning-text: $radar-warning-text;
+$state-warning-bg: $radar-warning-bg;
+$state-danger-text: $radar-danger-text;
+$state-danger-bg: $radar-danger-bg;
+
+/* RaDaR */
+
+$radar-navbar-color: #FFF;
+$radar-navbar-link-color: #FFF;
+$radar-navbar-bg-color: $radar-primary;
+$radar-navbar-hover-bg-color: $radar-primary-selected;
+
+$patient-nav-text: $radar-secondary-text;
+$patient-nav-hover-bg: #d9e6f3; // column 9
+$patient-nav-active-text: #FFF;
+$patient-nav-active-bg: $radar-secondary;
 
 @import "bootstrap";
 
+$footer-height: 45px;
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    margin-bottom: $footer-height;
+}
+
+a {
+    text-decoration: underline;
+}
+
+a.btn, .nav a {
+    text-decoration: none;
+}
+
+input {
+    max-width: 400px;
+}
+
+.radar-navbar {
+    background-color: $radar-navbar-bg-color;
+    border: none;
+    color: $radar-navbar-color;
+    margin-bottom: 0;
+
+    a {
+        color: $radar-navbar-link-color;
+        text-decoration: none;
+    }
+
+    ul.navbar-nav {
+        > li > a:hover, > li.active > a, > li > a:active, > li > a:focus {
+            background-color: $radar-navbar-hover-bg-color;
+        }
+
+        @media (min-width: 768px) {
+            > li > a {
+                border-width: 0 0 2px 0;
+                border-style: solid;
+                border-color: transparent;
+            }
+
+            > li > a:hover, > li.active > a, > li > a:active, > li > a:focus {
+                border-color: #fff;
+            }
+        }
+    }
+
+    .icon-bar {
+        background-color: $radar-navbar-link-color;
+    }
+}
+
+.content {
+    padding: 0 $grid-gutter-width / 2 $grid-gutter-width / 2 $grid-gutter-width / 2;
+}
+
+$block-padding: $grid-gutter-width / 2;
+
+.block {
+    background-color: #FFF;
+    border-radius: $border-radius-base;
+    margin-top: $grid-gutter-width / 2;
+    padding: $block-padding;
+
+    > *:first-child {
+        margin-top: 0;
+    }
+
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+h1.patient-name {
+    font-size: $font-size-h2;
+
+    a {
+        text-decoration: none;
+        color: $headings-color;
+    }
+}
+
+ul.patient-info {
+    list-style-type: none;
+    padding: 0;
+
+    a {
+        color: $text-color;
+    }
+}
+
+ul.patient-nav {
+    margin-left: -1 * $block-padding;
+    margin-right: -1 * $block-padding;
+    margin-bottom: 18px;
+
+    > li > a {
+        padding: 5px 20px;
+        color: $patient-nav-text;
+    }
+
+    > li.active {
+        > a, > a:hover, > a:active, > a:focus {
+            background-color: $patient-nav-active-bg;
+            color: $patient-nav-active-text;
+        }
+    }
+
+    > li {
+        > a:hover, > a:active, > a:focus {
+            background-color: $patient-nav-hover-bg;
+        }
+    }
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: $footer-height;
+    padding: $grid-gutter-width / 2;
+    text-align: center;
+    font-size: 11px;
+    background-color: #FFF;
+
+    p {
+        margin-bottom: 0;
+    }
+
+    a {
+        color: $text-color;
+    }
 }

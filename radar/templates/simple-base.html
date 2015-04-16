@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="content">
+        <div class="block">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <div class="alert alert-danger"><strong>Error:</strong> {{ message }}</div>
+                    {% elif category == 'success' %}
+                        <div class="alert alert-success"><strong>Success:</strong> {{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-info"><strong>Info:</strong> {{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
