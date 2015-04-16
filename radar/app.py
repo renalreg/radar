@@ -2,9 +2,11 @@ from flask import Flask
 from flask_login import LoginManager
 
 from radar.database import db_session, configure_engine
+from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.models import User
-from radar.views import PatientsView, DemographicsView, LoginView, IndexView, LogoutView
+from radar.views import DemographicsView, LoginView, IndexView, LogoutView
+from radar.patients.views import PatientListView
 
 
 app = Flask(__name__)
@@ -35,10 +37,14 @@ def datetime_format(dt, datetime_format):
     else:
         return dt.strftime(datetime_format)
 
+@app.context_processor
+def inject_form_builder():
+    return dict(form_builder=RadarFormBuilder)
+
 app.add_url_rule('/', view_func=IndexView.as_view('index'))
 app.add_url_rule('/login/', view_func=LoginView.as_view('login'))
 app.add_url_rule('/logout/', view_func=LogoutView.as_view('logout'))
-app.add_url_rule('/patients/', view_func=PatientsView.as_view('patients'))
+app.add_url_rule('/patients/', view_func=PatientListView.as_view('patients'))
 app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_view('demographics'))
 
 app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')

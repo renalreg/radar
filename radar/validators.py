@@ -17,14 +17,14 @@ class Validator(object):
     def _validate(self):
         self._reset()
 
-        for model_attr, validators in self.validators.items():
-            model_value = getattr(self.obj, model_attr)
+        for model_key, validators in self.validators.items():
+            model_value = getattr(self.obj, model_key)
 
             for validator in validators:
                 try:
                     validator(model_value)
                 except ValidationError as e:
-                    self.errors[model_attr].append(e)
+                    self.errors[model_key].append(e)
                     break
                 except StopValidation:
                     break

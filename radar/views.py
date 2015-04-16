@@ -1,14 +1,12 @@
 from flask import render_template, abort, request, redirect, url_for, flash
 from flask.views import View
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
+from sqlalchemy import or_
+from sqlalchemy.orm import aliased
+from radar.database import db_session
 
-from radar.models import Patient, User
+from radar.models import Patient, User, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser
 
-
-class PatientsView(View):
-    def dispatch_request(self):
-        patients = Patient.query.all()
-        return render_template('patients.html', patients=patients)
 
 class DemographicsView(View):
     def dispatch_request(self, patient_id):

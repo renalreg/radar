@@ -1,57 +1,55 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <div class="content">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="block">
-                    <h1 class="patient-name"><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.first_name }} {{ patient.last_name }}</a></h1>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="block">
+                <h1 class="patient-name"><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.first_name }} {{ patient.last_name }}</a></h1>
 
-                    <ul class="patient-info">
-                        <li><strong>ID:</strong> {{ patient.id }}</li>
-                        <li><strong>DOB:</strong> 01/01/2000</li>
-                        <li><a href="#"><strong>Disease Groups:</strong></a> <a href="#">SRNS</a></li>
-                        <li><strong>Units:</strong> <a href="#">Southmead</a></li>
-                    </ul>
+                <ul class="patient-info">
+                    <li><strong>ID:</strong> {{ patient.id }}</li>
+                    <li><strong>DOB:</strong> 01/01/2000</li>
+                    <li><a href="#"><strong>Disease Groups:</strong></a> <a href="#">SRNS</a></li>
+                    <li><strong>Units:</strong> <a href="#">Southmead</a></li>
+                </ul>
 
-                    <ul class="nav patient-nav">
-                        <li{% if patient_page == 'demographics' %} class="active"{% endif %}>
-                            <a href="{{ url_for('demographics', patient_id=patient.id) }}">Demographics</a>
-                        </li>
-                    </ul>
+                <ul class="nav patient-nav">
+                    <li{% if patient_page == 'demographics' %} class="active"{% endif %}>
+                        <a href="{{ url_for('demographics', patient_id=patient.id) }}">Demographics</a>
+                    </li>
+                </ul>
 
-                    <ul class="nav patient-nav">
-                        <li{% if patient_page == 'form_1' %} class="active"{% endif %}>
-                            <a href="#">Diagnosis</a>
-                        </li>
+                <ul class="nav patient-nav">
+                    <li{% if patient_page == 'form_1' %} class="active"{% endif %}>
+                        <a href="#">Diagnosis</a>
+                    </li>
 
-                        <li{% if patient_page == 'form_2' %} class="active"{% endif %}>
-                            <a href="#">Renal Imaging</a>
-                        </li>
-                    </ul>
+                    <li{% if patient_page == 'form_2' %} class="active"{% endif %}>
+                        <a href="#">Renal Imaging</a>
+                    </li>
+                </ul>
 
-                    <ul class="nav patient-nav">
-                        <li{% if patient_page == 'lab_results' %} class="active"{% endif %}>
-                            <a href="#">Lab Results</a>
-                        </li>
+                <ul class="nav patient-nav">
+                    <li{% if patient_page == 'lab_results' %} class="active"{% endif %}>
+                        <a href="#">Lab Results</a>
+                    </li>
 
-                        <li{% if patient_page == 'medications' %} class="active"{% endif %}>
-                            <a href="{{ url_for('medications.list', patient_id=patient.id) }}">Medications</a>
-                        </li>
-                    </ul>
+                    <li{% if patient_page == 'medications' %} class="active"{% endif %}>
+                        <a href="{{ url_for('medications.list', patient_id=patient.id) }}">Medications</a>
+                    </li>
+                </ul>
 
-                    <ul class="nav patient-nav">
-                        <li{% if patient_page == 'disease_groups' %} class="active"{% endif %}>
-                            <a href="#">Disease Groups</a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="nav patient-nav">
+                    <li{% if patient_page == 'disease_groups' %} class="active"{% endif %}>
+                        <a href="#">Disease Groups</a>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <div class="col-md-9">
-                <div class="block block-fluid">
-                    {% block content %}{% endblock %}
-                </div>
+        <div class="col-md-9">
+            <div class="block">
+                {% block content %}{% endblock %}
             </div>
         </div>
     </div>

@@ -1,27 +1,91 @@
-{% extends 'simple-base.html' %}
+{% extends 'base.html' %}
 
 {% set page = 'patients' %}
 
-{% block content %}
-    <h1>Patients</h1>
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="block">
+                <h1>Search</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-        </thead>
+                {% with f = form_builder(form) %}
+                    <form method="GET">
+                        <div class="form-group">
+                            <label for="first_name" class="control-label">First Name</label>
+                            {{ f.text_field('first_name', {'placeholder': 'First Name'}) }}
+                        </div>
 
-        <tbody>
-            {% for patient in patients %}
-                <tr>
-                    <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
-                    <td>{{ patient.first_name }}</td>
-                    <td>{{ patient.last_name }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        <div class="form-group">
+                            <label for="last_name" class="control-label">Last Name</label>
+                            {{ f.text_field('last_name', {'placeholder': 'Last Name'}) }}
+                        </div>
+
+                        {% if disease_group_choices %}
+                            <div class="form-group">
+                                <label for="disease_group_id" class="control-label">Disease Group</label>
+                                {{ f.select('disease_group_id', disease_group_choices) }}
+                            </div>
+                        {% endif %}
+
+                        {% if unit_choices %}
+                            <div class="form-group">
+                                <label for="unit_id" class="control-label">Unit</label>
+                                {{ f.select('unit_id', unit_choices) }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="block">
+                <h1>Patients</h1>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Disease Groups</th>
+                            <th>Units</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for patient in patients %}
+                            <tr>
+                                <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
+                                <td>{{ patient.first_name }}</td>
+                                <td>{{ patient.last_name }}</td>
+
+                                <td>
+                                    {% for disease_group in patient.filter_disease_groups_for_user(current_user) %}
+                                        {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                <td>
+                                    {% for unit in patient.filter_units_for_user(current_user) %}
+                                        {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <ul class="pagination">
+                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -19,14 +19,14 @@ class Concept(object):
     def _validate(self):
         self._reset()
 
-        for model_attr, validators in self.validators.items():
-            model_value = getattr(self, model_attr)
+        for model_key, validators in self.validators.items():
+            model_value = getattr(self, model_key)
 
             for validator in validators:
                 try:
                     validator(model_value)
                 except ValidationError as e:
-                    self.errors[model_attr].append(e.message)
+                    self.errors[model_key].append(e.message)
                     break
                 except StopValidation:
                     break
