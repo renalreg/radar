@@ -64,6 +64,14 @@ class User(Base):
     def get_id(self):
         return self.id
 
+    def disease_groups_for_user(self, user):
+        # TODO
+        return self.disease_groups
+
+    def units_for_user(self, user):
+        # TODO
+        return self.units
+
 class Unit(Base):
     __tablename__ = 'units'
 

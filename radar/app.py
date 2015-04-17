@@ -5,6 +5,7 @@ from radar.database import db_session, configure_engine
 from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.models import User
+from radar.users.views import UserListView
 from radar.views import DemographicsView, LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView
 from radar.patients.views import PatientListView
 from radar.views import DiseaseGroupsView, UnitsView
@@ -51,6 +52,7 @@ app.add_url_rule('/units/', view_func=UnitsView.as_view('units'))
 app.add_url_rule('/units/<int:unit_id>/', view_func=UnitView.as_view('unit'))
 app.add_url_rule('/patients/', view_func=PatientListView.as_view('patients'))
 app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_view('demographics'))
+app.add_url_rule('/users/', view_func=UserListView.as_view('users'))
 
 app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
 

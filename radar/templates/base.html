@@ -36,16 +36,20 @@
                         </li>
 
                         {% if current_user.is_authenticated() %}
-                            <li{% if page == 'patients' %} class="active"{% endif %}>
-                                <a href="{{ url_for('patients') }}">Patients</a>
-                            </li>
-
                             <li{% if page == 'disease_groups' %} class="active"{% endif %}>
                                 <a href="{{ url_for('disease_groups') }}">Disease Groups</a>
                             </li>
 
                             <li{% if page == 'units' %} class="active"{% endif %}>
                                 <a href="{{ url_for('units') }}">Units</a>
+                            </li>
+
+                            <li{% if page == 'patients' %} class="active"{% endif %}>
+                                <a href="{{ url_for('patients') }}">Patients</a>
+                            </li>
+
+                            <li{% if page == 'users' %} class="active"{% endif %}>
+                                <a href="{{ url_for('users') }}">Users</a>
                             </li>
 
                             <li{% if page == 'admin' %} class="active"{% endif %}>

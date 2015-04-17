@@ -2,7 +2,8 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db_session
-from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser
+from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, User
+
 
 def get_patients_for_user(user, search=None):
     # True if this query requires unit permissions (i.e. querying for demographics)
@@ -138,3 +139,7 @@ def get_disease_group_for_user(user, disease_group_id):
             DiseaseGroupUser.user == user
         )\
         .first()
+
+def get_users_for_user(user, search):
+    # TODO
+    return User.query.all()

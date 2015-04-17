@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% set page = 'patients' %}
+{% set page = 'users' %}
 
 {% block body %}
     <div class="row">
@@ -11,18 +11,13 @@
                 {% with f = form_builder(form) %}
                     <form method="GET">
                         <div class="form-group">
-                            <label for="first_name" class="control-label">First Name</label>
-                            {{ f.text_field('first_name', attributes={'placeholder': 'First Name'}) }}
+                            <label for="username" class="control-label">Username</label>
+                            {{ f.text_field('username', attributes={'placeholder': 'Username'}) }}
                         </div>
 
                         <div class="form-group">
-                            <label for="last_name" class="control-label">Last Name</label>
-                            {{ f.text_field('last_name', attributes={'placeholder': 'Last Name'}) }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="dob" class="control-label">Date of Birth</label>
-                            {{ f.date_field('dob') }}
+                            <label for="email" class="control-label">Email</label>
+                            {{ f.text_field('email', attributes={'placeholder': 'Email'}) }}
                         </div>
 
                         {% if disease_group_choices %}
@@ -47,34 +42,34 @@
 
         <div class="col-md-9">
             <div class="block">
-                <h1>Patients</h1>
+                <h1>Users</h1>
 
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
                             <th>Disease Groups</th>
                             <th>Units</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for patient in patients %}
+                        {% for user in users %}
                             <tr>
-                                <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
-                                <td>{{ patient.first_name }}</td>
-                                <td>{{ patient.last_name }}</td>
+                                <td><a href="#">{{ user.id }}</a></td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
 
                                 <td>
-                                    {% for disease_group in patient.filter_disease_groups_for_user(current_user) %}
+                                    {% for disease_group in user.disease_groups_for_user(current_user) %}
                                         {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>
 
                                 <td>
-                                    {% for unit in patient.filter_units_for_user(current_user) %}
+                                    {% for unit in user.units_for_user(current_user) %}
                                         {{ unit.unit.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>
@@ -82,14 +77,6 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
-                <ul class="pagination">
-                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                </ul>
             </div>
         </div>
     </div>
