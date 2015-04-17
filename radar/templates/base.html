@@ -53,7 +53,7 @@
                             </li>
 
                             <li{% if page == 'admin' %} class="active"{% endif %}>
-                                <a href="#">Admin</a>
+                                <a href="{{ url_for('admin') }}">Admin</a>
                             </li>
                         {% endif %}
                     </ul>

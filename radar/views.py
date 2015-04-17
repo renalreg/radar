@@ -90,3 +90,8 @@ class UnitView(BaseView):
         context['unit'] = unit
 
         return render_template('unit.html', **context)
+
+class AdminView(BaseView):
+    def dispatch_request(self):
+        context = self.get_context()
+        return render_template('admin.html', **context)

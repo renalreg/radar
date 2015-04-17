@@ -6,7 +6,7 @@ from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
-from radar.views import DemographicsView, LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView
+from radar.views import DemographicsView, LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
 from radar.patients.views import PatientListView
 from radar.views import DiseaseGroupsView, UnitsView
 
@@ -59,8 +59,10 @@ app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_vi
 
 app.add_url_rule('/users/', view_func=UserListView.as_view('users'))
 app.add_url_rule('/users/<int:user_id>/', view_func=UserDetailView.as_view('user'))
-app.add_url_rule('/users/<int:user_id>/disease-groups', view_func=UserUnitsView.as_view('user_disease_groups'))
-app.add_url_rule('/users/<int:user_id>/units', view_func=UserDiseaseGroupsView.as_view('user_units'))
+app.add_url_rule('/users/<int:user_id>/disease-groups/', view_func=UserUnitsView.as_view('user_disease_groups'))
+app.add_url_rule('/users/<int:user_id>/units/', view_func=UserDiseaseGroupsView.as_view('user_units'))
+
+app.add_url_rule('/admin/', view_func=AdminView.as_view('admin'))
 
 app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
 
