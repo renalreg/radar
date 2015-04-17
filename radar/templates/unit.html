@@ -4,4 +4,8 @@
 
 {% block content %}
     <h1>{{ unit.name }}</h1>
+
+    <ul>
+        <li><a href="{{ url_for('patients', unit_id=unit.id) }}">Patients</a></li>
+    </ul>
 {% endblock %}

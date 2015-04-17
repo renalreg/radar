@@ -4,4 +4,8 @@
 
 {% block content %}
     <h1>{{ disease_group.name }}</h1>
+
+    <ul>
+        <li><a href="{{ url_for('patients', disease_group_id=disease_group.id) }}">Patients</a></li>
+    </ul>
 {% endblock %}
