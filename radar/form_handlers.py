@@ -6,7 +6,7 @@ from radar.utils import humanize_datetime_format
 class FormHandler(object):
     parsers = {}
 
-    def __init__(self, obj):
+    def __init__(self, obj=None):
         self.obj = obj
         self.form_data = {}
         self._reset()
@@ -26,12 +26,18 @@ class FormHandler(object):
         self.stash = {}
 
     def set_model_value(self, model_key, model_value):
+        if self.obj is None:
+            return
+
         if isinstance(self.obj, dict):
             self.obj[model_key] = model_value
         else:
             setattr(self.obj, model_key, model_value)
 
     def get_model_value(self, model_key):
+        if self.obj is None:
+            return None
+
         if isinstance(self.obj, dict):
             return self.obj.get(model_key)
         else:

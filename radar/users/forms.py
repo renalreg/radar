@@ -8,3 +8,13 @@ class UserSearchFormHandler(FormHandler):
         'unit_id': int_parser,
         'disease_group_id': int_parser,
     }
+
+class UserDiseaseGroupFormHandler(FormHandler):
+    parsers = {
+        'disease_group_id': int_parser,
+    }
+
+class UserUnitFormHandler(FormHandler):
+    parsers = {
+        'unit_id': int_parser,
+    }

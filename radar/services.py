@@ -143,3 +143,7 @@ def get_disease_group_for_user(user, disease_group_id):
 def get_users_for_user(user, search):
     # TODO
     return User.query.all()
+
+def get_user_for_user(user, user_id):
+    # TODO
+    return User.query.get(user_id)
