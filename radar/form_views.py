@@ -1,8 +1,9 @@
 from flask.views import View
 from flask import redirect, url_for, render_template, request
+
 from radar.database import db_session
-from radar.form_builders import FormBuilder
 from radar.models import Patient, SDAContainer
+from radar.views import get_base_context
 
 
 class FormListView(View):
@@ -23,7 +24,11 @@ class FormListView(View):
         patient = Patient.query.filter(Patient.id == patient_id).first()
         form_entries = model_klass.query.filter(Patient.id == patient.id).all()
 
-        return render_template(self.template_name, patient=patient, form_entries=form_entries)
+        context = get_base_context()
+        context['patient'] = patient
+        context['form_entries'] = form_entries
+
+        return render_template(self.template_name, **context)
 
 class FormDetailView(View):
     methods = ['GET', 'POST']
@@ -80,7 +85,12 @@ class FormDetailView(View):
 
                 return redirect(url_for('.list', patient_id=patient.id))
 
-        return render_template(self.template_name, patient=patient, form_entry=form_entry, form=form)
+        context = get_base_context()
+        context['patient'] = patient
+        context['form_entry'] = form_entry
+        context['form'] = form
+
+        return render_template(self.template_name, **context)
 
 class FormDeleteView(View):
     methods = ['POST']

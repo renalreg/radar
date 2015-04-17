@@ -4,10 +4,10 @@ from flask_login import current_user
 from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user, \
     get_user_for_user
 from radar.users.forms import UserSearchFormHandler, UserDiseaseGroupFormHandler, UserUnitFormHandler
-from radar.views import BaseView
+from radar.views import View, get_base_context
 
 
-class UserListView(BaseView):
+class UserListView(View):
     def dispatch_request(self):
         search = {}
         form = UserSearchFormHandler(search)
@@ -18,7 +18,7 @@ class UserListView(BaseView):
         unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
         disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
 
-        context = self.get_context()
+        context = get_base_context()
         context['users'] = users
         context['form'] = form
         context['disease_group_choices'] = disease_group_choices
@@ -26,15 +26,14 @@ class UserListView(BaseView):
 
         return render_template('users.html', **context)
 
-class UserDetailView(BaseView):
+class UserDetailView(View):
     def dispatch_request(self, user_id):
         user = get_user_for_user(current_user, user_id)
 
         if user is None:
             abort(404)
 
-        context = self.get_context()
-
+        context = get_base_context()
         context['user'] = user
 
         # TODO
