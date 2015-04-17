@@ -1,0 +1,13 @@
+{% extends 'simple-base.html' %}
+
+{% set page = 'units' %}
+
+{% block content %}
+    <h1>Units</h1>
+
+    <ul>
+        {% for unit in units %}
+            <li><a href="{{ url_for('unit', unit_id=unit.id) }}">{{ unit.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'simple-base.html' %}
+
+{% set page = 'disease_groups' %}
+
+{% block content %}
+    <h1>Disease Groups</h1>
+
+    <ul>
+        {% for disease_group in disease_groups %}
+            <li><a href="{{ url_for('disease_group', disease_group_id=disease_group.id) }}">{{ disease_group.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

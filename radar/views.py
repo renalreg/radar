@@ -6,7 +6,16 @@ from sqlalchemy.orm import aliased
 from radar.database import db_session
 
 from radar.models import Patient, User, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser
+from radar.services import get_disease_groups_for_user, get_units_for_user, get_unit_for_user, \
+    get_disease_group_for_user
 
+
+class BaseView(View):
+    def get_context(self):
+        context = dict()
+        context['units'] = get_units_for_user(current_user)
+        context['disease_groups'] = get_disease_groups_for_user(current_user)
+        return context
 
 class DemographicsView(View):
     def dispatch_request(self, patient_id):
@@ -47,3 +56,37 @@ class LogoutView(View):
     def dispatch_request(self):
         logout_user()
         return redirect(url_for('index'))
+
+class DiseaseGroupsView(BaseView):
+    def dispatch_request(self):
+        context = self.get_context()
+        return render_template('disease_groups.html', **context)
+
+class DiseaseGroupView(BaseView):
+    def dispatch_request(self, disease_group_id):
+        disease_group = get_disease_group_for_user(current_user, disease_group_id)
+
+        if disease_group is None:
+            abort(404)
+
+        context = self.get_context()
+        context['disease_group'] = disease_group
+
+        return render_template('disease_group.html', **context)
+
+class UnitsView(BaseView):
+    def dispatch_request(self):
+        context = self.get_context()
+        return render_template('units.html', **context)
+
+class UnitView(BaseView):
+    def dispatch_request(self, unit_id):
+        unit = get_unit_for_user(current_user, unit_id)
+
+        if unit is None:
+            abort(404)
+
+        context = self.get_context()
+        context['unit'] = unit
+
+        return render_template('unit.html', **context)

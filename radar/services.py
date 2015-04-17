@@ -106,3 +106,35 @@ def get_disease_group_filters_for_user(user):
             .filter(DiseaseGroupUser.user == user)\
             .order_by(DiseaseGroup.name)\
             .all()
+
+def get_units_for_user(user):
+    return db_session.query(Unit)\
+        .join(Unit.users)\
+        .filter(UnitUser.user == user)\
+        .order_by(Unit.name)\
+        .all()
+
+def get_disease_groups_for_user(user):
+    return db_session.query(DiseaseGroup)\
+        .join(DiseaseGroup.users)\
+        .filter(DiseaseGroupUser.user == user)\
+        .order_by(DiseaseGroup.name)\
+        .all()
+
+def get_unit_for_user(user, unit_id):
+    return db_session.query(Unit)\
+        .join(Unit.users)\
+        .filter(
+            Unit.id == unit_id,
+            UnitUser.user == user
+        )\
+        .first()
+
+def get_disease_group_for_user(user, disease_group_id):
+    return db_session.query(DiseaseGroup)\
+        .join(DiseaseGroup.users)\
+        .filter(
+            DiseaseGroup.id == disease_group_id,
+            DiseaseGroupUser.user == user
+        )\
+        .first()
