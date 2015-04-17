@@ -147,3 +147,12 @@ def get_users_for_user(user, search):
 def get_user_for_user(user, user_id):
     # TODO
     return User.query.get(user_id)
+
+def get_patient_for_user(user, patient_id):
+    return Patient.query.get(patient_id)
+
+def check_login(username, password):
+    user = User.query.filter(User.username == username).first()
+
+    if user is not None and user.check_password(password):
+        return user

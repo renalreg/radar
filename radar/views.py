@@ -1,13 +1,9 @@
 from flask import render_template, abort, request, redirect, url_for, flash
 from flask.views import View
 from flask_login import login_user, logout_user, current_user
-from sqlalchemy import or_
-from sqlalchemy.orm import aliased
-from radar.database import db_session
 
-from radar.models import Patient, User, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser
 from radar.services import get_disease_groups_for_user, get_units_for_user, get_unit_for_user, \
-    get_disease_group_for_user
+    get_disease_group_for_user, get_patient_for_user, check_login
 
 
 def get_base_context():
@@ -19,16 +15,22 @@ def get_base_context():
 
     return context
 
+
+def get_patient_context(patient_id):
+    context = get_base_context()
+
+    patient = get_patient_for_user(current_user, patient_id)
+
+    if patient is None:
+        abort(404)
+
+    context['patient'] = patient
+
+    return context
+
 class DemographicsView(View):
     def dispatch_request(self, patient_id):
-        patient = Patient.query.filter(Patient.id == patient_id).first()
-
-        if patient is None:
-            abort(404)
-
-        context = get_base_context()
-        context['patient'] = patient
-
+        context = get_patient_context(patient_id)
         return render_template('demographics.html', **context)
 
 class IndexView(View):
@@ -47,9 +49,9 @@ class LoginView(View):
             username = request.form.get('username', '')
             password = request.form.get('password', '')
 
-            user = User.query.filter(User.username == username).first()
+            user = check_login(username, password)
 
-            if user is not None and user.check_password(password):
+            if user is not None:
                 login_user(user)
                 flash('Logged in successfully.', 'success')
                 return redirect(request.args.get('next') or url_for('index'))

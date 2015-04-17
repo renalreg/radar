@@ -3,7 +3,7 @@ from flask import redirect, url_for, render_template, request
 
 from radar.database import db_session
 from radar.models import Patient, SDAContainer
-from radar.views import get_base_context
+from radar.views import get_base_context, get_patient_context
 
 
 class FormListView(View):
@@ -19,13 +19,10 @@ class FormListView(View):
         return self.model
 
     def dispatch_request(self, patient_id):
+        context = get_patient_context(patient_id)
+
         model_klass = self.get_model_klass()
-
-        patient = Patient.query.filter(Patient.id == patient_id).first()
-        form_entries = model_klass.query.filter(Patient.id == patient.id).all()
-
-        context = get_base_context()
-        context['patient'] = patient
+        form_entries = model_klass.query.filter(Patient.id == context['patient'].id).all()
         context['form_entries'] = form_entries
 
         return render_template(self.template_name, **context)
@@ -51,10 +48,12 @@ class FormDetailView(View):
         return self.form_handler
 
     def dispatch_request(self, patient_id, form_entry_id=None):
+        context = get_patient_context(patient_id)
+
+        patient = context['patient']
+
         model_klass = self.get_model_klass()
         form_handler_klass = self.get_form_handler_klass()
-
-        patient = Patient.query.filter(Patient.id == patient_id).first()
 
         if form_entry_id is not None:
             form_entry = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_entry_id).first()
@@ -85,8 +84,6 @@ class FormDetailView(View):
 
                 return redirect(url_for('.list', patient_id=patient.id))
 
-        context = get_base_context()
-        context['patient'] = patient
         context['form_entry'] = form_entry
         context['form'] = form
 
