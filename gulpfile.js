@@ -22,7 +22,9 @@ gulp.task('libs', function() { 
     var cssDest = config.static + '/css';
     var fontDest = config.static + '/fonts';
 
-    return gulp.src(mainBowerFiles())
+    return gulp.src(mainBowerFiles().concat([
+        config.bower + '/jquery-ui/themes/smoothness/jquery-ui.css'
+    ]))
 
     // JavaScript
     .pipe(jsFilter)

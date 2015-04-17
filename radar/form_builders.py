@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from flask import Markup, escape
-from radar.utils import humanize_datetime_format
+from radar.utils import humanize_datetime_format, date_format_to_javascript
 
 
 class FormBuilder(object):
@@ -34,7 +34,7 @@ class FormBuilder(object):
 
         return self._input_tag(attributes)
 
-    def date_field(self, model_key, datetime_format='%d/%m/%Y', attributes=None):
+    def date_field(self, model_key, date_format='%d/%m/%Y', attributes=None):
         if attributes is None:
             attributes = {}
 
@@ -43,13 +43,13 @@ class FormBuilder(object):
         if model_value is None:
             value = self.form.stash.get(model_key, '')
         else:
-            value = model_value.strftime(datetime_format)
+            value = model_value.strftime(date_format)
 
         attributes.setdefault('id', model_key)
         attributes.setdefault('name', model_key)
         attributes.setdefault('value', value)
         attributes.setdefault('type', 'text')
-        attributes.setdefault('placeholder', humanize_datetime_format(datetime_format))
+        attributes.setdefault('placeholder', humanize_datetime_format(date_format))
 
         return self._input_tag(attributes)
 
@@ -94,13 +94,14 @@ class RadarFormBuilder(FormBuilder):
 
         return super(RadarFormBuilder, self).text_field(model_key, attributes)
 
-    def date_field(self, model_key, datetime_format='%d/%m/%Y', attributes=None):
+    def date_field(self, model_key, date_format='%d/%m/%Y', attributes=None):
         if attributes is None:
             attributes = {}
 
-        attributes.setdefault('class', 'form-control')
+        attributes.setdefault('class', 'form-control datepicker')
+        attributes.setdefault('data-date-format', date_format_to_javascript(date_format))
 
-        return super(RadarFormBuilder, self).date_field(model_key, datetime_format, attributes)
+        return super(RadarFormBuilder, self).date_field(model_key, date_format, attributes)
 
     def select(self, model_key, choices, include_blank=False, attributes=None):
         if attributes is None:
