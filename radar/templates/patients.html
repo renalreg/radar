@@ -23,14 +23,14 @@
                         {% if disease_group_choices %}
                             <div class="form-group">
                                 <label for="disease_group_id" class="control-label">Disease Group</label>
-                                {{ f.select('disease_group_id', disease_group_choices) }}
+                                {{ f.select('disease_group_id', disease_group_choices, include_blank=True) }}
                             </div>
                         {% endif %}
 
                         {% if unit_choices %}
                             <div class="form-group">
                                 <label for="unit_id" class="control-label">Unit</label>
-                                {{ f.select('unit_id', unit_choices) }}
+                                {{ f.select('unit_id', unit_choices, include_blank=True) }}
                             </div>
                         {% endif %}
 

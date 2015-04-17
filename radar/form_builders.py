@@ -44,8 +44,11 @@ class FormBuilder(object):
 
         return self._input_tag(attributes)
 
-    def select(self, model_key, choices, extra_attributes=None):
+    def select(self, model_key, choices, include_blank=False, extra_attributes=None):
         model_value = self.form.get_model_value(model_key)
+
+        if include_blank:
+            choices.insert(0, ('', ''))
 
         options = []
 
@@ -89,10 +92,10 @@ class RadarFormBuilder(FormBuilder):
 
         return super(RadarFormBuilder, self).date_field(model_key, datetime_format, extra_attributes)
 
-    def select(self, model_key, choices, extra_attributes=None):
+    def select(self, model_key, choices, include_blank=False, extra_attributes=None):
         if extra_attributes is None:
             extra_attributes = {}
 
         extra_attributes.setdefault('class', 'form-control')
 
-        return super(RadarFormBuilder, self).select(model_key, choices, extra_attributes)
+        return super(RadarFormBuilder, self).select(model_key, choices, include_blank, extra_attributes)
