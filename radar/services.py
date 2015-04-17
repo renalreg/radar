@@ -86,10 +86,13 @@ def get_disease_group_filters_for_user(user):
     # User belongs to a unit
     if len(user.units) > 0:
         # Unit user can filter patients in their unit by any disease group
-        return db_session.query(DiseaseGroup)
+        return db_session.query(DiseaseGroup)\
+            .order_by(DiseaseGroup.name)\
+            .all()
     else:
         # Disease group users can only filter by disease groups they belong to
         return db_session.query(DiseaseGroup)\
             .join(DiseaseGroup.users)\
             .filter(DiseaseGroupUser.user == user)\
+            .order_by(DiseaseGroup.name)\
             .all()
