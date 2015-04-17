@@ -21,8 +21,9 @@ class FormListView(View):
         model_klass = self.get_model_klass()
 
         patient = Patient.query.filter(Patient.id == patient_id).first()
-        forms = model_klass.query.filter(Patient.id == patient.id).all()
-        return render_template(self.template_name, patient=patient, forms=forms)
+        form_entries = model_klass.query.filter(Patient.id == patient.id).all()
+
+        return render_template(self.template_name, patient=patient, form_entries=form_entries)
 
 class FormDetailView(View):
     methods = ['GET', 'POST']
@@ -44,44 +45,42 @@ class FormDetailView(View):
 
         return self.form_handler
 
-    def dispatch_request(self, patient_id, form_id=None):
+    def dispatch_request(self, patient_id, form_entry_id=None):
         model_klass = self.get_model_klass()
         form_handler_klass = self.get_form_handler_klass()
 
         patient = Patient.query.filter(Patient.id == patient_id).first()
 
-        if form_id is not None:
-            form = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_id).first()
+        if form_entry_id is not None:
+            form_entry = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_entry_id).first()
         else:
-            form = model_klass()
-            form.patient = patient
+            form_entry = model_klass()
+            form_entry.patient = patient
 
-        form_handler = form_handler_klass(form)
+        form = form_handler_klass(form_entry)
 
         if request.method == 'POST':
-            form_handler.submit(request.form)
+            form.submit(request.form)
 
-            if form_handler.valid():
-                if form.sda_container is None:
-                    form.sda_container = SDAContainer()
+            if form.valid():
+                if form_entry.sda_container is None:
+                    form_entry.sda_container = SDAContainer()
 
-                sda_container = form.sda_container
+                sda_container = form_entry.sda_container
                 sda_container.sda_medications = []
 
-                for concept, _ in form.to_concepts():
+                for concept, _ in form_entry.to_concepts():
                     concept_sda = concept.to_sda()
 
                     if 'medications' in concept_sda:
                         sda_container.sda_medications.extend(concept_sda['medications'])
 
-                db_session.add(form)
+                db_session.add(form_entry)
                 db_session.commit()
 
                 return redirect(url_for('.list', patient_id=patient.id))
 
-        form_builder = FormBuilder(form_handler)
-
-        return render_template(self.template_name, patient=patient, form=form, form_builder=form_builder)
+        return render_template(self.template_name, patient=patient, form_entry=form_entry, form=form)
 
 class FormDeleteView(View):
     methods = ['POST']
@@ -93,13 +92,13 @@ class FormDeleteView(View):
 
         return self.model
 
-    def dispatch_request(self, patient_id, form_id):
+    def dispatch_request(self, patient_id, form_entry_id):
         model_klass = self.get_model_klass()
 
         patient = Patient.query.filter(Patient.id == patient_id).first()
-        form = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_id).first()
+        form_entry = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_entry_id).first()
 
-        db_session.delete(form)
+        db_session.delete(form_entry)
         db_session.commit()
 
         return redirect(url_for('.list', patient_id=patient.id))

@@ -5,37 +5,39 @@
 {% block content %}
     <h1>Medication</h1>
 
-    <form method="POST">
-        <div class="form-group{% if form_builder.errors('from_date') %} has-error{% endif %}">
-            <label for="from_date" class="control-label">From Date</label>
+    {% with f = form_builder(form) %}
+        <form method="POST">
+            <div class="form-group{% if f.errors('from_date') %} has-error{% endif %}">
+                <label for="from_date" class="control-label">From Date</label>
 
-            {{ form_builder.date_field('from_date', attributes={'class': 'form-control'}) }}
+                {{ f.date_field('from_date') }}
 
-            {% for error in form_builder.errors('from_date') %}
-                <span class="help-block">{{ error }}</span>
-            {% endfor %}
-        </div>
+                {% for error in f.errors('from_date') %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
 
-        <div class="form-group{% if form_builder.errors('to_date') %} has-error{% endif %}">
-            <label for="to_date" class="control-label">To Date</label>
+            <div class="form-group{% if f.errors('to_date') %} has-error{% endif %}">
+                <label for="to_date" class="control-label">To Date</label>
 
-            {{ form_builder.date_field('to_date', attributes={'class': 'form-control'}) }}
+                {{ f.date_field('to_date') }}
 
-            {% for error in form_builder.errors('to_date') %}
-                <span class="help-block">{{ error }}</span>
-            {% endfor %}
-        </div>
+                {% for error in f.errors('to_date') %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
 
-        <div class="form-group{% if form_builder.errors('name') %} has-error{% endif %}">
-            <label for="name" class="control-label">Name</label>
+            <div class="form-group{% if f.errors('name') %} has-error{% endif %}">
+                <label for="name" class="control-label">Name</label>
 
-            {{ form_builder.text_field('name', attributes={'class': 'form-control'}) }}
+                {{ f.text_field('name') }}
 
-            {% for error in form_builder.errors('name') %}
-                <span class="help-block">{{ error }}</span>
-            {% endfor %}
-        </div>
+                {% for error in f.errors('name') %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
 
-        <button type="submit" class="btn btn-success">Save</button>
-    </form>
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    {% endwith %}
 {% endblock %}

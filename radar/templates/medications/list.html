@@ -19,14 +19,14 @@
         </thead>
 
         <tbody>
-            {% for form in forms %}
+            {% for form_entry in form_entries %}
                 <tr>
-                    <td><a href="{{ url_for('.detail', patient_id=patient.id, form_id=form.id) }}">{{ form.id }}</a></td>
-                    <td>{{ form.from_date | datetime_format('%d/%m/%Y') }}</td>
-                    <td>{{ form.to_date | datetime_format('%d/%m/%Y') }}</td>
-                    <td>{{ form.name }}</td>
+                    <td><a href="{{ url_for('.detail', patient_id=patient.id, form_entry_id=form_entry.id) }}">{{ form_entry.id }}</a></td>
+                    <td>{{ form_entry.from_date | datetime_format('%d/%m/%Y') }}</td>
+                    <td>{{ form_entry.to_date | datetime_format('%d/%m/%Y') }}</td>
+                    <td>{{ form_entry.name }}</td>
                     <td align="right">
-                        <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_id=form.id) }}" class="form-inline">
+                        <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_entry_id=form_entry.id) }}" class="form-inline">
                             <button type="submit" class="btn btn-link btn-xs">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
                             </button>
