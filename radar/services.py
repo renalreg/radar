@@ -19,6 +19,7 @@ def get_patients_for_user(user, search=None):
             requires_unit_permissions = True
             query = query.filter(Patient.last_name.like('%' + search.get('last_name') + '%'))
 
+        # Filter by unit
         if search.get('unit_id'):
             unit_user = UnitUser.query.filter(UnitUser.unit_id == search.get('unit_id'), UnitUser.user == user)
 
@@ -27,17 +28,19 @@ def get_patients_for_user(user, search=None):
                 # TODO
                 pass
 
+        # Filter by disease group
         if search.get('disease_group_id'):
-            # TODO more complicated than this
-            dg_user = DiseaseGroupUser.query.filter(
-                DiseaseGroupUser.disease_group_id == search.get('disease_group_id'),
-                DiseaseGroupUser.user == user
-            )
+            # Get the disease group with this id
+            disease_group = DiseaseGroup.query.get(search.get('disease_group_id'))
 
-            # User has permission to filter by this disease group
-            if dg_user is not None:
-                # TODO
-                pass
+            # Disease group found
+            if disease_group is not None:
+                # If the user doesn't belong to the disease group they need unit permissions
+                if not is_user_in_disease_group(user, disease_group):
+                    requires_unit_permissions = True
+
+                # Filter by disease group
+                query = query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
 
     patient_unit_alias = aliased(Patient)
     permission_through_unit = db_session.query(patient_unit_alias)\
@@ -63,6 +66,14 @@ def get_patients_for_user(user, search=None):
     patients = query.filter(permission_filter).all()
 
     return patients
+
+def is_user_in_disease_group(user, disease_group):
+    dg_user = DiseaseGroupUser.query.filter(
+        DiseaseGroupUser.user_id == user.id,
+        DiseaseGroupUser.disease_group_id == disease_group.id
+    ).first()
+
+    return dg_user is not None
 
 def get_units_for_user(user):
     return db_session.query(Unit)\
