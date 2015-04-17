@@ -1,7 +1,11 @@
-var gulp = require('gulp'),
-    sass = require('gulp-sass'),
-    bower = require('gulp-bower'),
-    uglify = require('gulp-uglify');
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var uglify = require('gulp-uglify');
+var gulpFilter = require('gulp-filter');
+var mainBowerFiles = require('main-bower-files');
+var rename = require('gulp-rename');
+var flatten = require('gulp-flatten');
+var minifycss = require('gulp-minify-css');
 
 var config = {
     bower: 'bower_components',
@@ -9,38 +13,53 @@ var config = {
     static: 'radar/static'
 };
 
-gulp.task('bower', function() { 
-    return bower().pipe(gulp.dest(config.bower)) 
+gulp.task('libs', function() { 
+    var jsFilter = gulpFilter('*.js');
+    var cssFilter = gulpFilter('*.css');
+    var fontFilter = gulpFilter(['*.eot', '*.woff', '*.svg', '*.ttf']);
+
+    var jsDest = config.static + '/js/libs';
+    var cssDest = config.static + '/css';
+    var fontDest = config.static + '/fonts';
+
+    return gulp.src(mainBowerFiles())
+
+    // JavaScript
+    .pipe(jsFilter)
+    .pipe(gulp.dest(jsDest))
+    .pipe(uglify())
+    .pipe(rename({
+        suffix: '.min'
+    }))
+    .pipe(gulp.dest(jsDest))
+    .pipe(jsFilter.restore())
+
+    // CSS
+    .pipe(cssFilter)
+    .pipe(gulp.dest(cssDest))
+    .pipe(minifycss())
+    .pipe(rename({
+        suffix: '.min'
+    }))
+    .pipe(gulp.dest(cssDest))
+    .pipe(cssFilter.restore())
+
+    // Fonts
+    .pipe(fontFilter)
+    .pipe(flatten())
+    .pipe(gulp.dest(fontDest));
 });
 
-gulp.task('css', function() {
-    return gulp.src(
-        'sass/style.scss'
-    )
+gulp.task('sass', function() {
+    return gulp.src('radar/sass/**/*.scss')
     .pipe(sass({
         includePaths: [config.bootstrap + '/assets/stylesheets']
     }))
     .pipe(gulp.dest(config.static + '/css'));
 });
 
-gulp.task('js', function() {
-    return gulp.src([
-        config.bower + '/jquery/dist/jquery.js',
-        config.bower + '/bootstrap-sass/assets/javascripts/bootstrap.js'
-    ])
-    .pipe(uglify())
-    .pipe(gulp.dest(config.static + '/js'));
-});
-
-gulp.task('fonts', function() {
-    return gulp.src(
-        config.bootstrap + '/assets/fonts/**/*'
-    )
-    .pipe(gulp.dest(config.static + '/fonts'));
-});
-
 gulp.task('watch', function() {
-    gulp.watch('sass/**/*.scss', ['css']);
+    gulp.watch('radar/sass/**/*.scss', ['sass']);
 });
 
-gulp.task('default', ['bower', 'css', 'js', 'fonts']);
+gulp.task('default', ['libs', 'sass']);
