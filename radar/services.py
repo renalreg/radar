@@ -21,19 +21,21 @@ def get_patients_for_user(user, search=None):
 
         # Filter by unit
         if search.get('unit_id'):
-            unit_user = UnitUser.query.filter(UnitUser.unit_id == search.get('unit_id'), UnitUser.user == user)
+            unit = Unit.query.get(search.get('unit_id'))
 
-            # User has permission to filter by this unit
-            if unit_user is not None:
-                # TODO
-                pass
+            # Unit exists
+            if unit is not None:
+                # User belongs to unit
+                if is_user_in_unit(user, unit):
+                    requires_unit_permissions = True
+                    query = query.join(UnitPatient).filter(UnitPatient.unit == unit)
 
         # Filter by disease group
         if search.get('disease_group_id'):
             # Get the disease group with this id
             disease_group = DiseaseGroup.query.get(search.get('disease_group_id'))
 
-            # Disease group found
+            # Disease group exists
             if disease_group is not None:
                 # If the user doesn't belong to the disease group they need unit permissions
                 if not is_user_in_disease_group(user, disease_group):
@@ -74,6 +76,14 @@ def is_user_in_disease_group(user, disease_group):
     ).first()
 
     return dg_user is not None
+
+def is_user_in_unit(user, unit):
+    unit_user = UnitUser.query.filter(
+        UnitUser.user_id == user.id,
+        UnitUser.unit_id == unit.id
+    ).first()
+
+    return unit_user is not None
 
 def get_unit_filters_for_user(user):
     # Users can filter by the units they belong to
