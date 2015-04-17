@@ -1,11 +1,11 @@
-from radar.form_handlers import FormHandler, str_parser, datetime_parser, int_parser
+from radar.form_handlers import FormHandler, str_parser, datetime_parser, int_parser, date_parser
 from radar.medications.validators import MedicationValidator
 
 
 class MedicationFormHandler(FormHandler):
     parsers = {
-        'from_date': datetime_parser('%d/%m/%Y'),
-        'to_date': datetime_parser('%d/%m/%Y'),
+        'from_date': date_parser(),
+        'to_date': date_parser(),
         'name': str_parser,
         'dosage': int_parser,
     }

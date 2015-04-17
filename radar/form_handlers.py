@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
+from radar.utils import humanize_datetime_format
 
 
 class FormHandler(object):
@@ -67,7 +68,10 @@ def str_parser(form_data, stash, model_key):
 
     return model_value
 
-def datetime_parser(datetime_format):
+def date_parser(date_format='%d/%m/%Y'):
+    return datetime_parser(date_format)
+
+def datetime_parser(datetime_format='%d/%m/%Y %H:%M:%S'):
     def f(form_data, stash, model_key):
         model_value = str_parser(form_data, stash, model_key)
 
@@ -94,10 +98,3 @@ def int_parser(form_data, stash, model_key):
             raise ParseError('Not an integer.')
     else:
         return None
-
-# TODO complete
-def humanize_datetime_format(datetime_format):
-    output = datetime_format.replace('%d', 'DD')
-    output = output.replace('%m', 'MM')
-    output = output.replace('%Y', 'YYYY')
-    return output

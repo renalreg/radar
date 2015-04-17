@@ -9,7 +9,7 @@
         <div class="form-group{% if form_builder.errors('from_date') %} has-error{% endif %}">
             <label for="from_date" class="control-label">From Date</label>
 
-            {{ form_builder.date_field('from_date', extra_attributes={'class': 'form-control'}) }}
+            {{ form_builder.date_field('from_date', attributes={'class': 'form-control'}) }}
 
             {% for error in form_builder.errors('from_date') %}
                 <span class="help-block">{{ error }}</span>
@@ -19,7 +19,7 @@
         <div class="form-group{% if form_builder.errors('to_date') %} has-error{% endif %}">
             <label for="to_date" class="control-label">To Date</label>
 
-            {{ form_builder.date_field('to_date', extra_attributes={'class': 'form-control'}) }}
+            {{ form_builder.date_field('to_date', attributes={'class': 'form-control'}) }}
 
             {% for error in form_builder.errors('to_date') %}
                 <span class="help-block">{{ error }}</span>
@@ -29,7 +29,7 @@
         <div class="form-group{% if form_builder.errors('name') %} has-error{% endif %}">
             <label for="name" class="control-label">Name</label>
 
-            {{ form_builder.text_field('name', extra_attributes={'class': 'form-control'}) }}
+            {{ form_builder.text_field('name', attributes={'class': 'form-control'}) }}
 
             {% for error in form_builder.errors('name') %}
                 <span class="help-block">{{ error }}</span>

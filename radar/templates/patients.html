@@ -12,12 +12,17 @@
                     <form method="GET">
                         <div class="form-group">
                             <label for="first_name" class="control-label">First Name</label>
-                            {{ f.text_field('first_name', {'placeholder': 'First Name'}) }}
+                            {{ f.text_field('first_name', attributes={'placeholder': 'First Name'}) }}
                         </div>
 
                         <div class="form-group">
                             <label for="last_name" class="control-label">Last Name</label>
-                            {{ f.text_field('last_name', {'placeholder': 'Last Name'}) }}
+                            {{ f.text_field('last_name', attributes={'placeholder': 'Last Name'}) }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dob" class="control-label">Date of Birth</label>
+                            {{ f.date_field('dob') }}
                         </div>
 
                         {% if disease_group_choices %}
