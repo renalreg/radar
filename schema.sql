@@ -95,6 +95,7 @@ INSERT INTO units VALUES (DEFAULT, 'East Hampton Hospital');
 
 INSERT INTO disease_groups VALUES (DEFAULT, 'SRNS');
 INSERT INTO disease_groups VALUES (DEFAULT, 'MPGN');
+INSERT INTO disease_groups VALUES (DEFAULT, 'Salt Wasting');
 
 INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
 INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');

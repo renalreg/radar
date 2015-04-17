@@ -75,14 +75,21 @@ def is_user_in_disease_group(user, disease_group):
 
     return dg_user is not None
 
-def get_units_for_user(user):
+def get_unit_filters_for_user(user):
+    # Users can filter by the units they belong to
     return db_session.query(Unit)\
         .join(Unit.users)\
         .filter(UnitUser.user == user)\
         .all()
 
-def get_disease_groups_for_user(user):
-    return db_session.query(DiseaseGroup)\
-        .join(DiseaseGroup.users)\
-        .filter(DiseaseGroupUser.user == user)\
-        .all()
+def get_disease_group_filters_for_user(user):
+    # User belongs to a unit
+    if len(user.units) > 0:
+        # Unit user can filter patients in their unit by any disease group
+        return db_session.query(DiseaseGroup)
+    else:
+        # Disease group users can only filter by disease groups they belong to
+        return db_session.query(DiseaseGroup)\
+            .join(DiseaseGroup.users)\
+            .filter(DiseaseGroupUser.user == user)\
+            .all()

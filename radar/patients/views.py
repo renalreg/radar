@@ -4,7 +4,7 @@ from flask.views import View
 from flask_login import current_user
 
 from radar.patients.forms import PatientSearchFormHandler
-from radar.services import get_patients_for_user, get_units_for_user, get_disease_groups_for_user
+from radar.services import get_patients_for_user, get_unit_filters_for_user, get_disease_group_filters_for_user
 
 
 class PatientListView(View):
@@ -15,8 +15,8 @@ class PatientListView(View):
 
         patients = get_patients_for_user(current_user, search)
 
-        unit_choices = [(x.name, x.id) for x in get_units_for_user(current_user)]
-        disease_group_choices = [(x.name, x.id) for x in get_disease_groups_for_user(current_user)]
+        unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
+        disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
 
         return render_template(
             'patients.html',
