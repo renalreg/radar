@@ -149,10 +149,44 @@ def get_user_for_user(user, user_id):
     return User.query.get(user_id)
 
 def get_patient_for_user(user, patient_id):
+    # TODO
     return Patient.query.get(patient_id)
 
 def check_login(username, password):
     user = User.query.filter(User.username == username).first()
 
+    # User exists and the password is correct
     if user is not None and user.check_password(password):
         return user
+
+def can_user_view_demographics(user, patient):
+    # TODO
+    return True
+
+def filter_patient_units_for_user(patient, user):
+    user_units = set([unit_user.unit_id for unit_user in user.units])
+
+    # If the patient belongs to one of the user's units, the user can view all of the patient's units
+    if any(unit_patient.unit_id in user_units for unit_patient in patient.units):
+        return list(patient.units)
+    else:
+        return list()
+
+def filter_patient_disease_groups_for_user(patient, user):
+    user_units = set([unit_user.unit_id for unit_user in user.units])
+
+    # If the patient belongs to one of the user's units, the user can view all of the patient's disease groups
+    if any(unit_patient.unit_id in user_units for unit_patient in patient.units):
+        return list(patient.disease_groups)
+    else:
+        # Otherwise intersect the disease groups of the patient and the user
+        user_disease_groups = set([dg_user.disease_group_id for dg_user in user.disease_groups])
+        return [x for x in patient.disease_groups if x.disease_group_id in user_disease_groups]
+
+def filter_user_disease_groups_for_user(user, current_user):
+    # TODO
+    return user.disease_groups
+
+def filter_user_units_for_user(user, current_user):
+    # TODO
+    return user.units

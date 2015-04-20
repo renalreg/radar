@@ -3,7 +3,7 @@ from flask import redirect, url_for, render_template, request
 
 from radar.database import db_session
 from radar.models import Patient, SDAContainer
-from radar.views import get_base_context, get_patient_context
+from radar.patients.views import get_patient_detail_context
 
 
 class FormListView(View):
@@ -19,7 +19,7 @@ class FormListView(View):
         return self.model
 
     def dispatch_request(self, patient_id):
-        context = get_patient_context(patient_id)
+        context = get_patient_detail_context(patient_id)
 
         model_klass = self.get_model_klass()
         form_entries = model_klass.query.filter(Patient.id == context['patient'].id).all()
@@ -48,7 +48,7 @@ class FormDetailView(View):
         return self.form_handler
 
     def dispatch_request(self, patient_id, form_entry_id=None):
-        context = get_patient_context(patient_id)
+        context = get_patient_detail_context(patient_id)
 
         patient = context['patient']
 

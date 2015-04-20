@@ -63,13 +63,13 @@
                                 <td>{{ user.email }}</td>
 
                                 <td>
-                                    {% for disease_group in user.disease_groups_for_user(current_user) %}
+                                    {% for disease_group in filter_user_disease_groups_for_user(user, current_user) %}
                                         {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>
 
                                 <td>
-                                    {% for unit in user.units_for_user(current_user) %}
+                                    {% for unit in filter_user_units_for_user(user, current_user) %}
                                         {{ unit.unit.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>

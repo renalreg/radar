@@ -3,7 +3,7 @@ from flask.views import View
 from flask_login import login_user, logout_user, current_user
 
 from radar.services import get_disease_groups_for_user, get_units_for_user, get_unit_for_user, \
-    get_disease_group_for_user, get_patient_for_user, check_login
+    get_disease_group_for_user, check_login
 
 
 def get_base_context():
@@ -14,24 +14,6 @@ def get_base_context():
         context['user_disease_groups'] = get_disease_groups_for_user(current_user)
 
     return context
-
-
-def get_patient_context(patient_id):
-    context = get_base_context()
-
-    patient = get_patient_for_user(current_user, patient_id)
-
-    if patient is None:
-        abort(404)
-
-    context['patient'] = patient
-
-    return context
-
-class DemographicsView(View):
-    def dispatch_request(self, patient_id):
-        context = get_patient_context(patient_id)
-        return render_template('demographics.html', **context)
 
 class IndexView(View):
     def dispatch_request(self):

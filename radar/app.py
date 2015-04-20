@@ -6,8 +6,8 @@ from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
-from radar.views import DemographicsView, LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
-from radar.patients.views import PatientListView
+from radar.views import LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
+from radar.patients.views import PatientListView, DemographicsView, PatientUnitsView, PatientDiseaseGroupsView
 from radar.views import DiseaseGroupsView, UnitsView
 
 
@@ -40,8 +40,10 @@ def datetime_format(dt, datetime_format):
         return dt.strftime(datetime_format)
 
 @app.context_processor
-def inject_form_builder():
-    return dict(form_builder=RadarFormBuilder)
+def inject_helpers():
+    return {
+        'form_builder': RadarFormBuilder,
+    }
 
 app.add_url_rule('/', view_func=IndexView.as_view('index'))
 
@@ -56,6 +58,8 @@ app.add_url_rule('/units/<int:unit_id>/', view_func=UnitView.as_view('unit'))
 
 app.add_url_rule('/patients/', view_func=PatientListView.as_view('patients'))
 app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_view('demographics'))
+app.add_url_rule('/patients/<int:patient_id>/disease-groups/', view_func=PatientDiseaseGroupsView.as_view('patient_disease_groups'))
+app.add_url_rule('/patients/<int:patient_id>/units/', view_func=PatientUnitsView.as_view('patient_units'))
 
 app.add_url_rule('/users/', view_func=UserListView.as_view('users'))
 app.add_url_rule('/users/<int:user_id>/', view_func=UserDetailView.as_view('user'))

@@ -17,7 +17,7 @@
             </thead>
 
             <tbody>
-                {% for disease_group in user.disease_groups %}
+                {% for disease_group in filter_user_disease_groups_for_user(user, current_user) %}
                     <tr>
                         <td>{{ disease_group.disease_group.name }}</td>
                         <td align="right">
@@ -61,7 +61,7 @@
             </thead>
 
             <tbody>
-                {% for unit in user.units %}
+                {% for unit in filter_user_units_for_user(user, current_user) %}
                     <tr>
                         <td>{{ unit.unit.name }}</td>
                         <td align="right">

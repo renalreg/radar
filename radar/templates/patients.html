@@ -68,13 +68,13 @@
                                 <td>{{ patient.last_name }}</td>
 
                                 <td>
-                                    {% for disease_group in patient.filter_disease_groups_for_user(current_user) %}
+                                    {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
                                         {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>
 
                                 <td>
-                                    {% for unit in patient.filter_units_for_user(current_user) %}
+                                    {% for unit in filter_patient_units_for_user(patient, current_user) %}
                                         {{ unit.unit.name }}{% if not loop.last %},{% endif %}
                                     {% endfor %}
                                 </td>
