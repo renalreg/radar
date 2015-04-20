@@ -172,8 +172,10 @@ def filter_patient_units_for_user(patient, user):
     else:
         units = list()
 
+    print units
+
     # Sort by unit name
-    return sorted(units, lambda x: x.unit.name)
+    return sorted(units, key=lambda x: x.unit.name)
 
 def filter_patient_disease_groups_for_user(patient, user):
     user_units = set([unit_user.unit_id for unit_user in user.units])

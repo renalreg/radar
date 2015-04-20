@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS medications;
 DROP TABLE IF EXISTS sda_medications;
+DROP TABLE IF EXISTS sda_patients;
 DROP TABLE IF EXISTS sda_containers;
 DROP TABLE IF EXISTS unit_patients;
 DROP TABLE IF EXISTS unit_users;
@@ -13,9 +14,7 @@ DROP TABLE IF EXISTS facilities;
 DROP TABLE IF EXISTS disease_groups;
 
 CREATE TABLE patients (
-    id serial PRIMARY KEY,
-    first_name character varying,
-    last_name character varying
+    id serial PRIMARY KEY
 );
 
 CREATE TABLE users (
@@ -78,12 +77,20 @@ CREATE TABLE disease_group_features (
 
 CREATE TABLE sda_containers (
     id serial PRIMARY KEY,
+    patient_id integer not null REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE sda_patients (
+    id serial PRIMARY KEY,
+    sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    first_name character varying,
+    last_name character varying
 );
 
 CREATE TABLE sda_medications (
     id serial PRIMARY KEY,
-    sda_container_id integer NOT NULL REFERENCES sda_containers (id),
+    sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     from_time timestamp,
     to_time timestamp
 );
@@ -109,11 +116,17 @@ INSERT INTO disease_group_features VALUES (DEFAULT, 2, 'DIAGNOSIS');
 INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'DIAGNOSIS');
 INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'RENAL_IMAGING');
 
-INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
-INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');
-INSERT INTO patients VALUES (DEFAULT, 'Bart', 'Simpson');
-INSERT INTO patients VALUES (DEFAULT, 'Caroline', 'Todd');
-INSERT INTO patients VALUES (DEFAULT, 'John', 'Smith');
+-- INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
+-- INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');
+-- INSERT INTO patients VALUES (DEFAULT, 'Bart', 'Simpson');
+-- INSERT INTO patients VALUES (DEFAULT, 'Caroline', 'Todd');
+-- INSERT INTO patients VALUES (DEFAULT, 'John', 'Smith');
+
+INSERT INTO patients VALUES (DEFAULT);
+INSERT INTO patients VALUES (DEFAULT);
+INSERT INTO patients VALUES (DEFAULT);
+INSERT INTO patients VALUES (DEFAULT);
+INSERT INTO patients VALUES (DEFAULT);
 
 INSERT INTO unit_patients VALUES (DEFAULT, 1, 1);
 INSERT INTO unit_patients VALUES (DEFAULT, 1, 2);
@@ -145,3 +158,8 @@ INSERT INTO disease_group_users VALUES (DEFAULT, 1, 2);
 INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-01', '2015-02-01', 'Paracetamol');
 INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-02', '2015-02-02', 'Ibuprofen');
 INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-03', '2015-02-03', 'Aspirin');
+
+INSERT INTO facilities VALUES (DEFAULT, 'TEST', 'Test Facility');
+
+INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
+INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Homer', 'Simpson');

@@ -1,5 +1,6 @@
-from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, Table, Date, select, join
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship, aliased
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.database import Base
@@ -9,11 +10,63 @@ class Patient(Base):
     __tablename__ = 'patients'
 
     id = Column(Integer, primary_key=True)
-    first_name = Column(String)
-    last_name = Column(String)
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
+    sda_containers = relationship('SDAContainer', backref='patient')
+
+    @hybrid_property
+    def first_name(self):
+        latest_sda_patient = self.latest_sda_patient()
+
+        if latest_sda_patient is not None:
+            return latest_sda_patient.first_name
+        else:
+            return None
+
+    @hybrid_property
+    def last_name(self):
+        latest_sda_patient = self.latest_sda_patient()
+
+        if latest_sda_patient is not None:
+            return latest_sda_patient.last_name
+        else:
+            return None
+
+    def latest_sda_patient(self):
+        latest_sda_patient = None
+
+        for sda_container in self.sda_containers:
+            sda_patient = sda_container.sda_patient
+
+            if sda_patient is None:
+                continue
+
+            # TODO choose last updated
+            latest_sda_patient = sda_patient
+            break
+
+        return latest_sda_patient
+
+    @first_name.expression
+    def first_name(cls):
+        patient_alias = aliased(Patient)
+
+        # TODO choose last updated
+        return select([SDAPatient.first_name])\
+            .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
+            .where(patient_alias.id == cls.id)\
+            .as_scalar()
+
+    @last_name.expression
+    def last_name(cls):
+        patient_alias = aliased(Patient)
+
+        # TODO choose last updated
+        return select([SDAPatient.last_name])\
+            .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
+            .where(patient_alias.id == cls.id)\
+            .as_scalar()
 
 class User(Base):
     __tablename__ = 'users'
@@ -142,12 +195,24 @@ class SDAContainer(Base):
     __tablename__ = 'sda_containers'
 
     id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     sda_medications = relationship('SDAMedication', backref='sda_container', cascade='all, delete-orphan')
+    sda_patient = relationship('SDAPatient', backref='sda_container', uselist=False, cascade='all, delete-orphan')
 
 class SDAMedication(Base):
     __tablename__ = 'sda_medications'
 
     id = Column(Integer, primary_key=True)
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
+
     from_time = Column(DateTime)
     to_time = Column(DateTime)
+
+class SDAPatient(Base):
+    __tablename__ = 'sda_patients'
+
+    id = Column(Integer, primary_key=True)
+    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
+
+    first_name = Column(String)
+    last_name = Column(String)
