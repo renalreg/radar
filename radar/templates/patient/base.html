@@ -47,6 +47,22 @@
                     <li{% if patient_page == 'medications' %} class="active"{% endif %}>
                         <a href="{{ url_for('medications.list', patient_id=patient.id) }}">Medications</a>
                     </li>
+
+                    <li>
+                        <a href="#">Hospitalisation</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Pathology</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Transplants</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Genetics</a>
+                    </li>
                 </ul>
 
                 {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
