@@ -85,8 +85,16 @@ CREATE TABLE sda_containers (
 CREATE TABLE sda_patients (
     id serial PRIMARY KEY,
     sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    first_name character varying,
-    last_name character varying
+    name_name_prefix character varying,
+    name_given_name character varying,
+    name_middle_name character varying,
+    name_family_name character varying,
+    name_preferred_name character varying,
+    gender_coding_standard character varying,
+    gender_code character varying,
+    gender_description character varying,
+    birth_time timestamp,
+    death_time timestamp
 );
 
 CREATE TABLE sda_medications (
@@ -171,4 +179,4 @@ INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-03', '2015-02-03', 'Aspirin
 INSERT INTO facilities VALUES (DEFAULT, 'TEST', 'Test Facility');
 
 INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Homer', 'Simpson');
+INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Mr', 'Homer', 'Jay', 'Simpson', 'Homer', 'RENAL', '1', 'Male', '1955-05-12');

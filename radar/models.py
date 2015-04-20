@@ -20,7 +20,7 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.first_name
+            return latest_sda_patient.name_given_name
         else:
             return None
 
@@ -29,7 +29,16 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.last_name
+            return latest_sda_patient.name_family_name
+        else:
+            return None
+
+    @hybrid_property
+    def date_of_birth(self):
+        latest_sda_patient = self.latest_sda_patient()
+
+        if latest_sda_patient is not None:
+            return latest_sda_patient.birth_time
         else:
             return None
 
@@ -53,7 +62,7 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.first_name])\
+        return select([SDAPatient.name_given_name])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -63,7 +72,17 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.last_name])\
+        return select([SDAPatient.name_family_name])\
+            .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
+            .where(patient_alias.id == cls.id)\
+            .as_scalar()
+
+    @date_of_birth.expression
+    def date_of_birth(cls):
+        patient_alias = aliased(Patient)
+
+        # TODO choose last updated
+        return select([SDAPatient.birth_time])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -217,5 +236,15 @@ class SDAPatient(Base):
     id = Column(Integer, primary_key=True)
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
 
-    first_name = Column(String)
-    last_name = Column(String)
+    name_name_prefix = Column(String)
+    name_given_name = Column(String)
+    name_middle_name = Column(String)
+    name_family_name = Column(String)
+    name_preferred_name = Column(String)
+
+    gender_coding_standard = Column(String)
+    gender_code = Column(String)
+    gender_description = Column(String)
+
+    birth_time = Column(DateTime)
+    death_time = Column(DateTime)

@@ -23,8 +23,8 @@ class DemographicsView(View):
             demographics = dict()
 
             demographics['facility'] = sda_patient.sda_container.facility
-            demographics['first_name'] = sda_patient.first_name
-            demographics['last_name'] = sda_patient.last_name
+            demographics['first_name'] = sda_patient.name_given_name
+            demographics['last_name'] = sda_patient.name_family_name
 
             demographics_list.append(demographics)
 
@@ -60,8 +60,8 @@ class DemographicsEditView(View):
 
                 sda_patient = SDAPatient()
                 sda_patient.sda_container = sda_container
-                sda_patient.first_name = demographics.first_name
-                sda_patient.last_name = demographics.last_name
+                sda_patient.name_given_name = demographics.first_name
+                sda_patient.name_family_name = demographics.last_name
 
                 demographics.sda_container = sda_container
 

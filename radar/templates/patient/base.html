@@ -16,7 +16,7 @@
 
                 <ul class="patient-info">
                     <li><strong>ID:</strong> {{ patient.id }}</li>
-                    <li><strong>DOB:</strong> 01/01/2000</li>
+                    <li><strong>DOB:</strong> {{ patient.date_of_birth | datetime_format('%d/%m/%Y') }}</li>
 
                     <li>
                         <a href="{{ url_for('patient_disease_groups', patient_id=patient.id) }}"><strong>Disease Groups:</strong></a>
