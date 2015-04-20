@@ -168,20 +168,26 @@ def filter_patient_units_for_user(patient, user):
 
     # If the patient belongs to one of the user's units, the user can view all of the patient's units
     if any(unit_patient.unit_id in user_units for unit_patient in patient.units):
-        return list(patient.units)
+        units = list(patient.units)
     else:
-        return list()
+        units = list()
+
+    # Sort by unit name
+    return sorted(units, lambda x: x.unit.name)
 
 def filter_patient_disease_groups_for_user(patient, user):
     user_units = set([unit_user.unit_id for unit_user in user.units])
 
     # If the patient belongs to one of the user's units, the user can view all of the patient's disease groups
     if any(unit_patient.unit_id in user_units for unit_patient in patient.units):
-        return list(patient.disease_groups)
+        disease_groups = list(patient.disease_groups)
     else:
         # Otherwise intersect the disease groups of the patient and the user
         user_disease_groups = set([dg_user.disease_group_id for dg_user in user.disease_groups])
-        return [x for x in patient.disease_groups if x.disease_group_id in user_disease_groups]
+        disease_groups = [x for x in patient.disease_groups if x.disease_group_id in user_disease_groups]
+
+    # Sort by disease group name
+    return sorted(disease_groups, key=lambda x: x.disease_group.name)
 
 def filter_user_disease_groups_for_user(user, current_user):
     # TODO

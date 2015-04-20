@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, Table
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -63,6 +63,17 @@ class DiseaseGroup(Base):
 
     patients = relationship('DiseaseGroupPatient')
     users = relationship('DiseaseGroupUser')
+    features = relationship('DiseaseGroupFeatures', backref='disease_group')
+
+    def has_feature(self, feature_name):
+        return any(x.feature_name == feature_name for x in self.features)
+
+class DiseaseGroupFeatures(Base):
+    __tablename__ = 'disease_group_features'
+
+    id = Column(Integer, primary_key=True)
+    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'))
+    feature_name = Column(String, nullable=False)
 
 class UnitPatient(Base):
     __tablename__ = 'unit_patients'

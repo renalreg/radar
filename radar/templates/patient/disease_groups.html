@@ -4,4 +4,20 @@
 
 {% block content %}
     <h1>Disease Groups</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Disease Group</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
+                <tr>
+                    <td>{{ disease_group.disease_group.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

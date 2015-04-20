@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from radar.database import db_session, configure_engine
 from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
+from radar.diagnoses.views import app as diagnoses_app
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
 from radar.views import LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
@@ -69,6 +70,7 @@ app.add_url_rule('/users/<int:user_id>/units/', view_func=UserDiseaseGroupsView.
 app.add_url_rule('/admin/', view_func=AdminView.as_view('admin'))
 
 app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
+app.register_blueprint(diagnoses_app, url_prefix='/patients/<int:patient_id>/diagnoses')
 
 if __name__ == '__main__':
     app.run(debug=True)

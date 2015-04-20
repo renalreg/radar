@@ -4,4 +4,20 @@
 
 {% block content %}
     <h1>Units</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Unit</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for unit in filter_patient_units_for_user(patient, current_user) %}
+                <tr>
+                    <td>{{ unit.unit.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS unit_patients;
 DROP TABLE IF EXISTS unit_users;
 DROP TABLE IF EXISTS disease_group_patients;
 DROP TABLE IF EXISTS disease_group_users;
+DROP TABLE IF EXISTS disease_group_features;
 DROP TABLE IF EXISTS patients;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS units;
@@ -69,6 +70,12 @@ CREATE TABLE disease_group_users (
     UNIQUE (disease_group_id, user_id)
 );
 
+CREATE TABLE disease_group_features (
+    id serial PRIMARY KEY,
+    disease_group_id integer not null references disease_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    feature_name character varying
+);
+
 CREATE TABLE sda_containers (
     id serial PRIMARY KEY,
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -97,6 +104,11 @@ INSERT INTO disease_groups VALUES (DEFAULT, 'SRNS');
 INSERT INTO disease_groups VALUES (DEFAULT, 'MPGN');
 INSERT INTO disease_groups VALUES (DEFAULT, 'Salt Wasting');
 
+INSERT INTO disease_group_features VALUES (DEFAULT, 1, 'DIAGNOSIS');
+INSERT INTO disease_group_features VALUES (DEFAULT, 2, 'DIAGNOSIS');
+INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'DIAGNOSIS');
+INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'RENAL_IMAGING');
+
 INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
 INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');
 INSERT INTO patients VALUES (DEFAULT, 'Bart', 'Simpson');
@@ -111,6 +123,9 @@ INSERT INTO unit_patients VALUES (DEFAULT, 1, 5);
 INSERT INTO unit_patients VALUES (DEFAULT, 2, 5);
 
 INSERT INTO disease_group_patients VALUES (DEFAULT, 1, 1);
+INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 1);
+INSERT INTO disease_group_patients VALUES (DEFAULT, 3, 1);
+
 INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 2);
 INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 3);
 
