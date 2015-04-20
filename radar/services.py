@@ -2,8 +2,29 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db_session
-from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, User
+from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, User, \
+    SDAPatient, SDAContainer
 
+def sda_patient_sub_query(query, *args):
+    patient_alias = aliased(Patient)
+    sub_query = db_session.query(SDAPatient)\
+        .join(SDAContainer)\
+        .join(patient_alias)\
+        .filter(Patient.id == patient_alias.id)\
+        .filter(*args)\
+        .exists()
+
+    return query.filter(sub_query)
+
+def add_first_name_filter(query, first_name):
+    return sda_patient_sub_query(query, SDAPatient.name_given_name.like('%' + first_name + '%'))
+
+def add_last_name_filter(query, last_name):
+    return sda_patient_sub_query(query, SDAPatient.name_family_name.like('%' + last_name + '%'))
+
+def add_date_of_birth_filter(query, date_of_birth):
+    # TODO might need to check range (date vs time)
+    return sda_patient_sub_query(query, SDAPatient.birth_time == date_of_birth)
 
 def get_patients_for_user(user, search=None):
     # True if this query requires unit permissions (i.e. querying for demographics)
@@ -14,15 +35,15 @@ def get_patients_for_user(user, search=None):
     if search is not None:
         if search.get('first_name'):
             requires_unit_permissions = True
-            query = query.filter(Patient.first_name.like('%' + search.get('first_name') + '%'))
+            query = add_first_name_filter(query, search.get('first_name'))
 
         if search.get('last_name'):
             requires_unit_permissions = True
-            query = query.filter(Patient.last_name.like('%' + search.get('last_name') + '%'))
+            query = add_last_name_filter(query, search.get('last_name'))
 
         if search.get('date_of_birth'):
             requires_unit_permissions = True
-            query = query.filter(Patient.date_of_birth == search.get('date_of_birth'))
+            query = add_date_of_birth_filter(query, search.get('date_of_birth'))
 
         # Filter by unit
         if search.get('unit_id'):
@@ -50,7 +71,7 @@ def get_patients_for_user(user, search=None):
                 query = query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
 
     patient_unit_alias = aliased(Patient)
-    permission_through_unit = db_session.query(patient_unit_alias)\
+    permission_through_unit_subq = db_session.query(patient_unit_alias)\
         .join(patient_unit_alias.units)\
         .join(UnitPatient.unit)\
         .join(Unit.users)\
@@ -58,17 +79,21 @@ def get_patients_for_user(user, search=None):
         .exists()
 
     if requires_unit_permissions:
-        permission_filter = permission_through_unit
+        permission_filter = permission_through_unit_subq
     else:
         patient_disease_group_alias = aliased(Patient)
-        permission_through_disease_group = db_session.query(patient_disease_group_alias)\
+        permission_through_disease_group_subq = db_session.query(patient_disease_group_alias)\
             .join(patient_disease_group_alias.disease_groups)\
             .join(DiseaseGroupPatient.disease_group)\
             .join(DiseaseGroup.users)\
             .filter(DiseaseGroupUser.user_id == user.id, patient_disease_group_alias.id == Patient.id)\
             .exists()
 
-        permission_filter = or_(permission_through_unit, permission_through_disease_group)
+        permission_filter = or_(permission_through_unit_subq, permission_through_disease_group_subq)
+
+    query = query.filter(permission_filter)
+
+    print query
 
     patients = query.filter(permission_filter).all()
 

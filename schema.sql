@@ -180,3 +180,6 @@ INSERT INTO facilities VALUES (DEFAULT, 'TEST', 'Test Facility');
 
 INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
 INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Mr', 'Homer', 'Jay', 'Simpson', 'Homer', 'RENAL', '1', 'Male', '1955-05-12');
+
+INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
+INSERT INTO sda_patients VALUES (DEFAULT, 1, NULL, 'Foo', NULL, 'Bar', NULL, NULL, NULL, NULL, NULL);
