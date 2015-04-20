@@ -25,6 +25,16 @@
                             {{ f.date_field('date_of_birth') }}
                         </div>
 
+                        <div class="form-group">
+                            <label for="gender" class="control-label">Gender</label>
+                            {{ f.text_field('gender') }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="identifier" class="control-label">Identifier</label>
+                            {{ f.text_field('identifier') }}
+                        </div>
+
                         {% if disease_group_choices %}
                             <div class="form-group">
                                 <label for="disease_group_id" class="control-label">Disease Group</label>
@@ -57,6 +67,7 @@
                             <th>ID</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th>Date of Birth</th>
                             <th>Disease Groups</th>
                             <th>Units</th>
                         </tr>
@@ -68,6 +79,7 @@
                                 <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
                                 <td>{{ patient.first_name }}</td>
                                 <td>{{ patient.last_name }}</td>
+                                <td>{{ patient.date_of_birth | datetime_format('%d/%m/%Y') }}</td>
 
                                 <td>
                                     {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}

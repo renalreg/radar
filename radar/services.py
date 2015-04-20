@@ -17,9 +17,11 @@ def sda_patient_sub_query(query, *args):
     return query.filter(sub_query)
 
 def add_first_name_filter(query, first_name):
+    # TODO search aliases too
     return sda_patient_sub_query(query, SDAPatient.name_given_name.like('%' + first_name + '%'))
 
 def add_last_name_filter(query, last_name):
+    # TODO search aliases too
     return sda_patient_sub_query(query, SDAPatient.name_family_name.like('%' + last_name + '%'))
 
 def add_date_of_birth_filter(query, date_of_birth):
@@ -92,8 +94,6 @@ def get_patients_for_user(user, search=None):
         permission_filter = or_(permission_through_unit_subq, permission_through_disease_group_subq)
 
     query = query.filter(permission_filter)
-
-    print query
 
     patients = query.filter(permission_filter).all()
 
