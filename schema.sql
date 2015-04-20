@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS medications;
+DROP TABLE IF EXISTS demographics;
 DROP TABLE IF EXISTS sda_medications;
 DROP TABLE IF EXISTS sda_patients;
 DROP TABLE IF EXISTS sda_containers;
@@ -102,6 +103,14 @@ CREATE TABLE medications (
     to_date date,
     name character varying NOT NULL,
     sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE demographics (
+    id serial PRIMARY KEY,
+    patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    first_name character varying,
+    last_name character varying
 );
 
 INSERT INTO units VALUES (DEFAULT, 'Springfield General Hospital');

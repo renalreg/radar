@@ -151,6 +151,7 @@ h1.patient-name {
 ul.patient-info {
     list-style-type: none;
     padding: 0;
+    margin-bottom: 18px;
 
     a {
         color: $text-color;
@@ -178,6 +179,12 @@ ul.patient-nav {
         > a:hover, > a:active, > a:focus {
             background-color: $patient-nav-hover-bg;
         }
+    }
+}
+
+table.demographics {
+    th {
+        white-space: nowrap;
     }
 }
 

@@ -1,5 +1,4 @@
 from flask import render_template, request, abort
-
 from flask.views import View
 from flask_login import current_user
 
@@ -52,11 +51,6 @@ class PatientListView(View):
         })
 
         return render_template('patients.html', **context)
-
-class DemographicsView(View):
-    def dispatch_request(self, patient_id):
-        context = get_patient_detail_context(patient_id)
-        return render_template('patient/demographics.html', **context)
 
 class PatientDiseaseGroupsView(View):
     def dispatch_request(self, patient_id):

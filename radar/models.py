@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, Table, Date, select, join
+from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, select, join
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -196,6 +196,9 @@ class SDAContainer(Base):
 
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+
+    facility = relationship('Facility')
     sda_medications = relationship('SDAMedication', backref='sda_container', cascade='all, delete-orphan')
     sda_patient = relationship('SDAPatient', backref='sda_container', uselist=False, cascade='all, delete-orphan')
 

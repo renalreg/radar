@@ -2,13 +2,14 @@ from flask import Flask
 from flask_login import LoginManager
 
 from radar.database import db_session, configure_engine
+from radar.demographics.views import DemographicsEditView, DemographicsView
 from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.diagnoses.views import app as diagnoses_app
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
 from radar.views import LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
-from radar.patients.views import PatientListView, DemographicsView, PatientUnitsView, PatientDiseaseGroupsView
+from radar.patients.views import PatientListView, PatientUnitsView, PatientDiseaseGroupsView
 from radar.views import DiseaseGroupsView, UnitsView
 
 
@@ -59,8 +60,11 @@ app.add_url_rule('/units/<int:unit_id>/', view_func=UnitView.as_view('unit'))
 
 app.add_url_rule('/patients/', view_func=PatientListView.as_view('patients'))
 app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsView.as_view('demographics'))
+app.add_url_rule('/patients/<int:patient_id>/edit/', view_func=DemographicsEditView.as_view('edit_demographics'))
 app.add_url_rule('/patients/<int:patient_id>/disease-groups/', view_func=PatientDiseaseGroupsView.as_view('patient_disease_groups'))
 app.add_url_rule('/patients/<int:patient_id>/units/', view_func=PatientUnitsView.as_view('patient_units'))
+app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
+app.register_blueprint(diagnoses_app, url_prefix='/patients/<int:patient_id>/diagnoses')
 
 app.add_url_rule('/users/', view_func=UserListView.as_view('users'))
 app.add_url_rule('/users/<int:user_id>/', view_func=UserDetailView.as_view('user'))
@@ -68,9 +72,6 @@ app.add_url_rule('/users/<int:user_id>/disease-groups/', view_func=UserUnitsView
 app.add_url_rule('/users/<int:user_id>/units/', view_func=UserDiseaseGroupsView.as_view('user_units'))
 
 app.add_url_rule('/admin/', view_func=AdminView.as_view('admin'))
-
-app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
-app.register_blueprint(diagnoses_app, url_prefix='/patients/<int:patient_id>/diagnoses')
 
 if __name__ == '__main__':
     app.run(debug=True)
