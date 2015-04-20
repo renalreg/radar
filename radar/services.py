@@ -20,6 +20,10 @@ def get_patients_for_user(user, search=None):
             requires_unit_permissions = True
             query = query.filter(Patient.last_name.like('%' + search.get('last_name') + '%'))
 
+        if search.get('date_of_birth'):
+            requires_unit_permissions = True
+            query = query.filter(Patient.date_of_birth == search.get('date_of_birth'))
+
         # Filter by unit
         if search.get('unit_id'):
             unit = Unit.query.get(search.get('unit_id'))
