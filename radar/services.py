@@ -172,8 +172,6 @@ def filter_patient_units_for_user(patient, user):
     else:
         units = list()
 
-    print units
-
     # Sort by unit name
     return sorted(units, key=lambda x: x.unit.name)
 
