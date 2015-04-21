@@ -104,9 +104,9 @@ def filter_by_disease_group_permissions(user):
 def filter_by_demographics_permissions(user):
     return filter_by_unit_permissions(user)
 
-def order_by_demographics_field(user, field, ascending):
+def order_by_demographics_field(user, field, ascending, else_=None):
     demographics_permission_sub_query = filter_by_demographics_permissions(user)
-    expression = case([(demographics_permission_sub_query, field)], else_=None)
+    expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
     if not ascending:
         expression = desc(expression)
@@ -132,9 +132,15 @@ def order_by_gender(ascending):
     return order_by_field(Patient.gender, ascending)
 
 def order_by_date_of_birth(user, ascending):
-    year_order_by = order_by_field(extract('year', Patient.date_of_birth), ascending)
-    date_of_birth_order_by = order_by_demographics_field(user, Patient.date_of_birth, ascending)
-    return [year_order_by, date_of_birth_order_by]
+    # Users without demographics permissions can only see the year
+    year_order = order_by_field(extract('year', Patient.date_of_birth), ascending)
+
+    # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
+    anonymised_order = order_by_demographics_field(user, 1, ascending, else_=0)
+
+    date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, ascending)
+
+    return [year_order, anonymised_order, date_of_birth_order]
 
 def filter_patients(user, query, params):
     filter_by_demographics = False
@@ -214,7 +220,7 @@ def order_patients(user, order_by, ascending):
         return [order_by_radar_id(ascending)]
 
 def get_patients_for_user_query(user, params=None):
-    # True if this query is filtering on demographics
+    # True if the query is filtering on demographics
     filter_by_demographics = False
 
     query = db_session.query(Patient)
@@ -234,6 +240,8 @@ def get_patients_for_user_query(user, params=None):
 
     order_by = params.get('order_by')
     ascending = params.get('order_direction', 'asc') == 'asc'
+
+    order_by = 'date_of_birth'
 
     query = query.order_by(*order_patients(user, order_by, ascending))
 
