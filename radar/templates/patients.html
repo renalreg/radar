@@ -77,20 +77,32 @@
                         {% for patient in patients %}
                             <tr>
                                 <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
-                                <td>{{ patient.first_name }}</td>
-                                <td>{{ patient.last_name }}</td>
-                                <td>{{ patient.date_of_birth | datetime_format('%d/%m/%Y') }}</td>
+                                <td>{{ patient.first_name | default('-', true) }}</td>
+                                <td>{{ patient.last_name | default('-', true) }}</td>
+                                <td>{{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
 
                                 <td>
-                                    {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
-                                        {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
-                                    {% endfor %}
+                                    {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
+                                        {% if disease_groups %}
+                                            {% for disease_group in disease_groups %}
+                                                {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
                                 </td>
 
                                 <td>
-                                    {% for unit in filter_patient_units_for_user(patient, current_user) %}
-                                        {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                                    {% endfor %}
+                                    {% with units = filter_patient_units_for_user(patient, current_user) %}
+                                        {% if units %}
+                                            {% for unit in filter_patient_units_for_user(patient, current_user) %}
+                                                {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
                                 </td>
                             </tr>
                         {% endfor %}

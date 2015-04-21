@@ -218,8 +218,8 @@ class SDAContainer(Base):
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
 
     facility = relationship('Facility')
-    sda_medications = relationship('SDAMedication', backref='sda_container', cascade='all, delete-orphan')
-    sda_patient = relationship('SDAPatient', backref='sda_container', uselist=False, cascade='all, delete-orphan')
+    sda_medications = relationship('SDAMedication', cascade='all, delete-orphan')
+    sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan')
 
 class SDAMedication(Base):
     __tablename__ = 'sda_medications'
@@ -234,7 +234,9 @@ class SDAPatient(Base):
     __tablename__ = 'sda_patients'
 
     id = Column(Integer, primary_key=True)
+
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
+    sda_container = relationship('SDAContainer')
 
     name_name_prefix = Column(String)
     name_given_name = Column(String)
@@ -248,3 +250,31 @@ class SDAPatient(Base):
 
     birth_time = Column(DateTime)
     death_time = Column(DateTime)
+
+    aliases = relationship('SDAPatientName')
+    patient_numbers = relationship('SDAPatientNumber')
+
+class SDAPatientName(Base):
+    __tablename__ = 'sda_patient_names'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient = relationship('SDAPatient')
+
+    name_prefix = Column(String)
+    given_name = Column(String)
+    middle_name = Column(String)
+    family_name = Column(String)
+    preferred_name = Column(String)
+
+class SDAPatientNumber(Base):
+    __tablename__ = 'sda_patient_numbers'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient = relationship('SDAPatient')
+
+    number = Column(String)
+    numberType = Column(String)
