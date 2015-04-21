@@ -3,7 +3,8 @@ from flask.views import View
 from flask_login import current_user
 
 from radar.patients.forms import PatientSearchFormHandler
-from radar.services import get_patients_for_user, get_unit_filters_for_user, get_disease_group_filters_for_user, \
+from radar.patients.search import get_patients_for_user_query
+from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, \
     filter_patient_disease_groups_for_user, filter_patient_units_for_user, get_patient_for_user, \
     can_user_view_demographics, can_user_view_patient_demographics
 from radar.views import get_base_context
@@ -37,7 +38,7 @@ class PatientListView(View):
         form = PatientSearchFormHandler(search)
         form.submit(request.args)
 
-        patients = get_patients_for_user(current_user, search)
+        patients = get_patients_for_user_query(current_user, search).all()
 
         # Get demographics permissions for each patient
         patients = [(p, can_user_view_patient_demographics(p, current_user)) for p in patients]
