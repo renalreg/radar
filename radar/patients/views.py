@@ -12,6 +12,13 @@ from radar.views import get_base_context
 
 PER_PAGE_CHOICES = [('10', 10), ('25', 25), ('50', 50), ('100', 100), ('All', -1)]
 PER_PAGE_DEFAULT = 50
+ORDER_BY_CHOICES = [
+    ('RaDaR ID', 'radar_id'),
+    ('First Name', 'first_name'),
+    ('Last Name', 'last_name'),
+    ('Date of Birth', 'date_of_birth'),
+    ('Gender', 'gender'),
+]
 
 def get_patient_base_context():
     context = get_base_context()
@@ -74,6 +81,7 @@ class PatientListView(View):
             'demographics': can_user_view_demographics(current_user),
             'per_page_choices': PER_PAGE_CHOICES,
             'pagination': pagination,
+            'order_by_choices': ORDER_BY_CHOICES,
         })
 
         return render_template('patients.html', **context)

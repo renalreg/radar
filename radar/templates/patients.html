@@ -82,7 +82,7 @@
                                 <div id="meta" class="panel-body panel-collapse collapse">
                                     <div class="form-group">
                                         <label for="order_by" class="control-label">Order By</label>
-                                        {{ f.select('order_by', [('RaDaR ID', 'radar_id'), ('First Name', 'first_name')]) }}
+                                        {{ f.select('order_by', order_by_choices) }}
                                     </div>
 
                                     <div class="form-group">
