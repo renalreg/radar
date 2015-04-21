@@ -241,8 +241,6 @@ def get_patients_for_user_query(user, params=None):
     order_by = params.get('order_by')
     ascending = params.get('order_direction', 'asc') == 'asc'
 
-    order_by = 'date_of_birth'
-
     query = query.order_by(*order_patients(user, order_by, ascending))
 
     return query
