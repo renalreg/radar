@@ -150,6 +150,8 @@
                                     </td>
 
                                     <td>
+                                        <!-- TODO add links -->
+
                                         {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
                                             {% if disease_groups %}
                                                 {% for disease_group in disease_groups %}
@@ -163,6 +165,8 @@
 
                                     {% if demographics %}
                                         <td>
+                                            <!-- TODO add links -->
+
                                             {% with units = filter_patient_units_for_user(patient, current_user) %}
                                                 {% if units %}
                                                     {% for unit in filter_patient_units_for_user(patient, current_user) %}

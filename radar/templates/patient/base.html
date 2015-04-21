@@ -41,6 +41,7 @@
                         {% endwith %}
                     </li>
 
+                    <!-- TODO add links -->
                     {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
                         {% if disease_groups %}
                             <li>
@@ -54,6 +55,7 @@
                     {% endwith %}
 
                     {% if patient_demographics %}
+                        <!-- TODO add links -->
                         {% with units = filter_patient_units_for_user(patient, current_user) %}
                             {% if units %}
                                 <li>
