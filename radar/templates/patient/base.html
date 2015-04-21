@@ -6,7 +6,7 @@
             <div class="block">
                 <h1 class="patient-name">
                     <a href="{{ url_for('demographics', patient_id=patient.id) }}">
-                        {% if patient_demographics %}
+                        {% if patient_demographics and (patient.first_name or patient.last_name) %}
                             {{ patient.first_name }} {{ patient.last_name }}
                         {% else %}
                             Patient {{ patient.id }}
@@ -21,9 +21,9 @@
                         <strong>DOB:</strong>
 
                         {% if patient_demographics %}
-                            {{ patient.date_of_birth | datetime_format('%d/%m/%Y') }}
+                            {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                         {% else %}
-                            {{ patient.date_of_birth | datetime_format('%Y') }}
+                            {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
                         {% endif %}
                     </li>
 
