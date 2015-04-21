@@ -111,8 +111,8 @@
 
                                     {% if demographics %}
                                         <td>
-                                            {% if patient_demographics %}
-                                                {{ patient.first_name | default('-', true) }}
+                                            {% if patient_demographics and patient.first_name %}
+                                                <a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.first_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}
@@ -121,8 +121,8 @@
 
                                     {% if demographics %}
                                         <td>
-                                            {% if patient_demographics %}
-                                                {{ patient.last_name | default('-', true) }}
+                                            {% if patient_demographics and patient.last_name %}
+                                                <a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.last_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}
