@@ -34,12 +34,12 @@
                                 <label for="date_of_birth" class="control-label">Date of Birth</label>
                                 {{ f.date_field('date_of_birth') }}
                             </div>
-                        {% else %}
-                            <div class="form-group">
-                                <label for="year_of_birth" class="control-label">Year of Birth</label>
-                                {{ f.text_field('year_of_birth', attributes={'placeholder': 'YYYY'}) }}
-                            </div>
                         {% endif %}
+
+                        <div class="form-group">
+                            <label for="year_of_birth" class="control-label">Year of Birth</label>
+                            {{ f.text_field('year_of_birth', attributes={'placeholder': 'YYYY'}) }}
+                        </div>
 
                         <div class="form-group">
                             <label for="gender" class="control-label">Gender</label>
