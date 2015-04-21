@@ -1,4 +1,4 @@
-from sqlalchemy import or_
+from sqlalchemy import or_, extract
 from sqlalchemy.orm import aliased
 
 from radar.database import db_session
@@ -70,6 +70,9 @@ def patient_number_filter(number):
 def gender_filter(gender_code):
     return sda_patient_sub_query(SDAPatient.gender_code == gender_code)
 
+def year_of_birth_filter(year):
+    return sda_patient_sub_query(extract('year', SDAPatient.birth_time) == year)
+
 def get_patients_for_user(user, search=None):
     # True if this query is filtering on demographics
     querying_demographics = False
@@ -81,7 +84,9 @@ def get_patients_for_user(user, search=None):
         last_name = search.get('last_name')
         date_of_birth = search.get('date_of_birth')
         gender = search.get('gender')
-        identifier = search.get('identifier')
+        patient_number = search.get('patient_number')
+        radar_id = search.get('radar_id')
+        year_of_birth = search.get('year_of_birth')
 
         if first_name:
             querying_demographics = True
@@ -98,9 +103,15 @@ def get_patients_for_user(user, search=None):
         if gender:
             query = query.filter(gender_filter(gender))
 
-        if identifier:
+        if patient_number:
             querying_demographics = True
-            query = query.filter(patient_number_filter(identifier))
+            query = query.filter(patient_number_filter(patient_number))
+
+        if radar_id is not None:
+            query = query.filter(Patient.id == radar_id)
+
+        if year_of_birth is not None:
+            query = query.filter(year_of_birth_filter(year_of_birth))
 
         # Filter by unit
         if search.get('unit_id'):
@@ -243,10 +254,6 @@ def check_login(username, password):
     if user is not None and user.check_password(password):
         return user
 
-def can_user_view_demographics(user, patient):
-    # TODO
-    return True
-
 def filter_patient_units_for_user(patient, user):
     user_units = set([unit_user.unit_id for unit_user in user.units])
 
@@ -280,3 +287,11 @@ def filter_user_disease_groups_for_user(user, current_user):
 def filter_user_units_for_user(user, current_user):
     # TODO
     return user.units
+
+def can_user_view_demographics(user):
+    # Unit users can view demographics
+    return len(user.units) > 0
+
+def can_user_view_patient_demographics(patient, user):
+    # User and patient are in same unit
+    return len(filter_patient_units_for_user(patient, user)) > 0

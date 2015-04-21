@@ -8,6 +8,8 @@ class PatientSearchFormHandler(FormHandler):
         'unit_id': int_parser,
         'disease_group_id': int_parser,
         'date_of_birth': date_parser(),
-        'identifier': str_parser,
+        'patient_number': str_parser,
         'gender': str_parser,
+        'radar_id': int_parser,
+        'year_of_birth': int_parser
     }

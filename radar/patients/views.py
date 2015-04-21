@@ -5,7 +5,7 @@ from flask_login import current_user
 from radar.patients.forms import PatientSearchFormHandler
 from radar.services import get_patients_for_user, get_unit_filters_for_user, get_disease_group_filters_for_user, \
     filter_patient_disease_groups_for_user, filter_patient_units_for_user, get_patient_for_user, \
-    can_user_view_demographics
+    can_user_view_demographics, can_user_view_patient_demographics
 from radar.views import get_base_context
 
 def get_patient_base_context():
@@ -27,7 +27,7 @@ def get_patient_detail_context(patient_id):
         abort(404)
 
     context['patient'] = patient
-    context['demographics'] = can_user_view_demographics(current_user, patient)
+    context['patient_demographics'] = can_user_view_patient_demographics(current_user, patient)
 
     return context
 
@@ -48,6 +48,7 @@ class PatientListView(View):
             'form': form,
             'unit_choices': unit_choices,
             'disease_group_choices': disease_group_choices,
+            'demographics': can_user_view_demographics(current_user),
         })
 
         return render_template('patients.html', **context)
