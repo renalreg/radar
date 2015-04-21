@@ -42,6 +42,15 @@ class Patient(Base):
         else:
             return None
 
+    @hybrid_property
+    def gender(self):
+        latest_sda_patient = self.latest_sda_patient()
+
+        if latest_sda_patient is not None:
+            return latest_sda_patient.gender_code
+        else:
+            return None
+
     def latest_sda_patient(self):
         latest_sda_patient = None
 
@@ -83,6 +92,16 @@ class Patient(Base):
 
         # TODO choose last updated
         return select([SDAPatient.birth_time])\
+            .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
+            .where(patient_alias.id == cls.id)\
+            .as_scalar()
+
+    @gender.expression
+    def gender(cls):
+        patient_alias = aliased(Patient)
+
+        # TODO choose last updated
+        return select([SDAPatient.gender_code])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()

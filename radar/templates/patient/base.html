@@ -19,6 +19,20 @@
                     <li><strong>DOB:</strong> {{ patient.date_of_birth | datetime_format('%d/%m/%Y') }}</li>
 
                     <li>
+                        <strong>Gender:</strong>
+
+                        {% with gender = patient.gender %}
+                            {% if gender == '1' %}
+                                Male
+                            {% elif gender == '2' %}
+                                Female
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endwith %}
+                    </li>
+
+                    <li>
                         <a href="{{ url_for('patient_disease_groups', patient_id=patient.id) }}"><strong>Disease Groups:</strong></a>
 
                         {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}

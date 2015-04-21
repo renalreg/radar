@@ -27,6 +27,17 @@ def sda_patient_name_sub_query(*args):
         .exists()
     return sub_query
 
+def sda_patient_number_sub_query(*args):
+    patient_alias = aliased(Patient)
+    sub_query = db_session.query(SDAPatientNumber)\
+        .join(SDAPatient)\
+        .join(SDAContainer)\
+        .join(patient_alias)\
+        .filter(Patient.id == patient_alias.id)\
+        .filter(*args)\
+        .exists()
+    return sub_query
+
 def first_name_filter(first_name):
     first_name_like = first_name + '%'
 
@@ -47,21 +58,17 @@ def date_of_birth_filter(date_of_birth):
     return sda_patient_sub_query(SDAPatient.birth_time == date_of_birth)
 
 def patient_number_filter(number):
-    number_like = number + '%'
-
     # One of the patient's identifiers matches
-    patient_alias = aliased(Patient)
-    sub_query = db_session.query(SDAPatientNumber)\
-        .join(SDAPatient)\
-        .join(SDAContainer)\
-        .join(patient_alias)\
-        .filter(Patient.id == patient_alias.id, SDAPatientNumber.number.like(number_like))\
-        .exists()
+    number_like = number + '%'
+    number_filter = sda_patient_number_sub_query(SDAPatientNumber.number.like(number_like))
 
     # RaDaR ID matches
-    radar_id_filter = Patient.id == number
+    radar_filter = Patient.id == number
 
-    return or_(sub_query, radar_id_filter)
+    return or_(number_filter, radar_filter)
+
+def gender_filter(gender_code):
+    return sda_patient_sub_query(SDAPatient.gender_code == gender_code)
 
 def get_patients_for_user(user, search=None):
     # True if this query is filtering on demographics
@@ -73,6 +80,7 @@ def get_patients_for_user(user, search=None):
         first_name = search.get('first_name')
         last_name = search.get('last_name')
         date_of_birth = search.get('date_of_birth')
+        gender = search.get('gender')
         identifier = search.get('identifier')
 
         if first_name:
@@ -87,10 +95,12 @@ def get_patients_for_user(user, search=None):
             querying_demographics = True
             query = query.filter(date_of_birth_filter(date_of_birth))
 
+        if gender:
+            query = query.filter(gender_filter(gender))
+
         if identifier:
             querying_demographics = True
             query = query.filter(patient_number_filter(identifier))
-            print identifier
 
         # Filter by unit
         if search.get('unit_id'):
@@ -139,8 +149,6 @@ def get_patients_for_user(user, search=None):
         permission_filter = or_(permission_through_unit_subq, permission_through_disease_group_subq)
 
     query = query.filter(permission_filter)
-
-    print query
 
     patients = query.filter(permission_filter).all()
 

@@ -27,7 +27,7 @@
 
                         <div class="form-group">
                             <label for="gender" class="control-label">Gender</label>
-                            {{ f.text_field('gender') }}
+                            {{ f.select('gender', [('Male', '1'), ('Female', '2')], include_blank=True) }}
                         </div>
 
                         <div class="form-group">
@@ -50,6 +50,7 @@
                         {% endif %}
 
                         <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="{{ url_for('patients') }}" class="btn btn-link">Reset</a>
                     </form>
                 {% endwith %}
             </div>
@@ -68,6 +69,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>DOB</th>
+                            <th>Gender</th>
                             <th>Disease Groups</th>
                             <th>Units</th>
                         </tr>
@@ -80,6 +82,18 @@
                                 <td>{{ patient.first_name | default('-', true) }}</td>
                                 <td>{{ patient.last_name | default('-', true) }}</td>
                                 <td>{{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+
+                                <td>
+                                    {% with gender = patient.gender %}
+                                        {% if gender == '1' %}
+                                            M
+                                        {% elif gender == '2' %}
+                                            F
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
 
                                 <td>
                                     {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
