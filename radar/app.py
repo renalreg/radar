@@ -8,6 +8,7 @@ from radar.medications.views import app as medications_app
 from radar.diagnoses.views import app as diagnoses_app
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
+from radar.utils import url_for_page, url_for_per_page, current_order_by, url_for_order_by, current_order_direction
 from radar.views import LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
 from radar.patients.views import PatientListView, PatientUnitsView, PatientDiseaseGroupsView
 from radar.views import DiseaseGroupsView, UnitsView
@@ -41,11 +42,14 @@ def datetime_format(dt, datetime_format):
     else:
         return dt.strftime(datetime_format)
 
-@app.context_processor
-def inject_helpers():
-    return {
-        'form_builder': RadarFormBuilder,
-    }
+app.jinja_env.globals.update({
+    'form_builder': RadarFormBuilder,
+    'url_for_page': url_for_page,
+    'url_for_per_page': url_for_per_page,
+    'url_for_order_by': url_for_order_by,
+    'current_order_by': current_order_by,
+    'current_order_direction': current_order_direction,
+})
 
 app.add_url_rule('/', view_func=IndexView.as_view('index'))
 

@@ -104,41 +104,41 @@ def filter_by_disease_group_permissions(user):
 def filter_by_demographics_permissions(user):
     return filter_by_unit_permissions(user)
 
-def order_by_demographics_field(user, field, ascending, else_=None):
+def order_by_demographics_field(user, field, direction, else_=None):
     demographics_permission_sub_query = filter_by_demographics_permissions(user)
     expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
-    if not ascending:
+    if not direction:
         expression = desc(expression)
 
     return expression
 
-def order_by_field(field, ascending):
-    if not ascending:
+def order_by_field(field, direction):
+    if not direction:
         field = desc(field)
 
     return field
 
-def order_by_radar_id(ascending):
-    return order_by_field(Patient.id, ascending)
+def order_by_radar_id(direction):
+    return order_by_field(Patient.id, direction)
 
-def order_by_first_name(user, ascending):
-    return order_by_demographics_field(user, Patient.first_name, ascending)
+def order_by_first_name(user, direction):
+    return order_by_demographics_field(user, Patient.first_name, direction)
 
-def order_by_last_name(user, ascending):
-    return order_by_demographics_field(user, Patient.last_name, ascending)
+def order_by_last_name(user, direction):
+    return order_by_demographics_field(user, Patient.last_name, direction)
 
-def order_by_gender(ascending):
-    return order_by_field(Patient.gender, ascending)
+def order_by_gender(direction):
+    return order_by_field(Patient.gender, direction)
 
-def order_by_date_of_birth(user, ascending):
+def order_by_date_of_birth(user, direction):
     # Users without demographics permissions can only see the year
-    year_order = order_by_field(extract('year', Patient.date_of_birth), ascending)
+    year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
 
     # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
-    anonymised_order = order_by_demographics_field(user, 1, ascending, else_=0)
+    anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
 
-    date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, ascending)
+    date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, direction)
 
     return [year_order, anonymised_order, date_of_birth_order]
 
@@ -207,17 +207,22 @@ def filter_patients(user, query, params):
 
     return query, filter_by_demographics
 
-def order_patients(user, order_by, ascending):
+def order_patients(user, order_by, direction):
     if order_by == 'first_name':
-        return [order_by_first_name(user, ascending)]
+        clauses = [order_by_first_name(user, direction)]
     elif order_by == 'last_name':
-        return [order_by_last_name(user, ascending)]
+        clauses = [order_by_last_name(user, direction)]
     elif order_by == 'gender':
-        return [order_by_gender(ascending)]
+        clauses = [order_by_gender(direction)]
     elif order_by == 'date_of_birth':
-        return order_by_date_of_birth(user, ascending)
+        clauses = order_by_date_of_birth(user, direction)
     else:
-        return [order_by_radar_id(ascending)]
+        return [order_by_radar_id(direction)]
+
+    # Decide ties using RaDaR ID
+    clauses.append(order_by_radar_id(True))
+
+    return clauses
 
 def get_patients_for_user_query(user, params=None):
     # True if the query is filtering on demographics
@@ -225,22 +230,26 @@ def get_patients_for_user_query(user, params=None):
 
     query = db_session.query(Patient)
 
+    # Filter the list of patients based on the search terms
     if params is not None:
         query, filter_by_demographics = filter_patients(user, query, params)
 
     unit_permission_filter = filter_by_unit_permissions(user)
 
+    # If the user is filtering using demographics they need unit permissions
     if filter_by_demographics:
         permission_filter = unit_permission_filter
     else:
         disease_group_filter = filter_by_disease_group_permissions(user)
         permission_filter = or_(unit_permission_filter, disease_group_filter)
 
+    # Filter the patients based on the user's permissions and the type of query
     query = query.filter(permission_filter)
 
     order_by = params.get('order_by')
-    ascending = params.get('order_direction', 'asc') == 'asc'
+    direction = (params.get('order_direction') or 'asc') == 'asc'
 
-    query = query.order_by(*order_patients(user, order_by, ascending))
+    # Order the list of patients
+    query = query.order_by(*order_patients(user, order_by, direction))
 
     return query

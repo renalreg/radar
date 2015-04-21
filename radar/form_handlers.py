@@ -104,3 +104,11 @@ def int_parser(form_data, stash, model_key):
             raise ParseError('Not an integer.')
     else:
         return None
+
+def positive_int_parser(form_data, stash, model_key):
+    model_value = int_parser(form_data, stash, model_key)
+
+    if model_value is not None and model_value < 0:
+        raise ParseError('Not a positive integer.')
+
+    return model_value

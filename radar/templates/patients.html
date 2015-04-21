@@ -2,6 +2,8 @@
 
 {% set page = 'patients' %}
 
+{% from 'utils.html' import render_pagination, render_order_by_link %}
+
 {% block body %}
     <div class="row">
         <div class="col-md-3">
@@ -67,6 +69,35 @@
                             </div>
                         {% endif %}
 
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#meta">
+                                            Meta
+                                        </a>
+                                    </h4>
+                                </div>
+
+                                <div id="meta" class="panel-body panel-collapse collapse">
+                                    <div class="form-group">
+                                        <label for="order_by" class="control-label">Order By</label>
+                                        {{ f.select('order_by', [('RaDaR ID', 'radar_id'), ('First Name', 'first_name')]) }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="order_direction" class="control-label">Order Direction</label>
+                                        {{ f.select('order_direction', [('Ascending', 'asc'), ('Descending', 'desc')]) }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="per_page" class="control-label">Patients Per Page</label>
+                                        {{ f.select('per_page', per_page_choices) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Search</button>
                         <a href="{{ url_for('patients') }}" class="btn btn-link">Reset</a>
                     </form>
@@ -76,25 +107,25 @@
 
         <div class="col-md-9">
             <div class="block">
-                <h1>Patients</h1>
+                <h1>Patients <small>{{ pagination.total_count }} {% if pagination.total_count == 1 %}patient{% else %}patients{% endif %}</small></h1>
 
                 <p><a href="#" class="btn btn-primary">Recruit Patient</a></p>
 
                 <table class="table table-condensed table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>{{ render_order_by_link('radar_id', 'ID', default=True) }}</th>
 
                             {% if demographics %}
-                                <th>First Name</th>
+                                <th>{{ render_order_by_link('first_name', 'First Name') }}</th>
                             {% endif %}
 
                             {% if demographics %}
-                                <th>Last Name</th>
+                                <th>{{ render_order_by_link('last_name', 'Last Name') }}</th>
                             {% endif %}
 
-                            <th>DOB</th>
-                            <th>Gender</th>
+                            <th>{{ render_order_by_link('date_of_birth', 'DOB') }}</th>
+                            <th>{{ render_order_by_link('gender', 'Gender') }}</th>
                             <th>Disease Groups</th>
 
                             {% if demographics %}
@@ -188,13 +219,19 @@
                     </tbody>
                 </table>
 
-                <ul class="pagination">
-                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                </ul>
+                {{ render_pagination(pagination) }}
+
+                <p>
+                    <strong>Per Page:</strong>
+
+                    {% for label, value in per_page_choices %}
+                        {% if pagination.per_page == value %}
+                            <a href="{{ url_for_per_page(value) }}"><strong>{{ label }}</strong></a>{% if not loop.last %},{% endif %}
+                        {% else %}
+                            <a href="{{ url_for_per_page(value) }}">{{ label }}</a>{% if not loop.last %},{% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </p>
             </div>
         </div>
     </div>
