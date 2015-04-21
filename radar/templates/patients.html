@@ -105,20 +105,32 @@
 
                     <tbody>
                         {% if patients %}
-                            {% for patient in patients %}
+                            {% for patient, patient_demographics in patients %}
                                 <tr>
                                     <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
 
                                     {% if demographics %}
-                                        <td>{{ patient.first_name | default('-', true) }}</td>
+                                        <td>
+                                            {% if patient_demographics %}
+                                                {{ patient.first_name | default('-', true) }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
 
                                     {% if demographics %}
-                                        <td>{{ patient.last_name | default('-', true) }}</td>
+                                        <td>
+                                            {% if patient_demographics %}
+                                                {{ patient.last_name | default('-', true) }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
 
                                     <td>
-                                        {% if demographics %}
+                                        {% if patient_demographics %}
                                             {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                                         {% else %}
                                             {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}

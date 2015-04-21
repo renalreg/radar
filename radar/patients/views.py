@@ -39,6 +39,9 @@ class PatientListView(View):
 
         patients = get_patients_for_user(current_user, search)
 
+        # Get demographics permissions for each patient
+        patients = [(p, can_user_view_patient_demographics(p, current_user)) for p in patients]
+
         unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
         disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
 
