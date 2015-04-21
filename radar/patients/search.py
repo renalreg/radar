@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from sqlalchemy import or_, extract, case, desc
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql.expression import nullsfirst
 
 from radar.database import db_session
 from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, \
@@ -105,8 +106,11 @@ def filter_by_demographics_permissions(user):
     return filter_by_unit_permissions(user)
 
 def order_by_demographics_field(user, field, direction, else_=None):
-    demographics_permission_sub_query = filter_by_demographics_permissions(user)
-    expression = case([(demographics_permission_sub_query, field)], else_=else_)
+    if user.is_admin:
+        expression = field
+    else:
+        demographics_permission_sub_query = filter_by_demographics_permissions(user)
+        expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
     if not direction:
         expression = desc(expression)
@@ -132,15 +136,18 @@ def order_by_gender(direction):
     return order_by_field(Patient.gender, direction)
 
 def order_by_date_of_birth(user, direction):
-    # Users without demographics permissions can only see the year
-    year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
-
-    # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
-    anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
-
     date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, direction)
 
-    return [year_order, anonymised_order, date_of_birth_order]
+    if user.is_admin:
+        return [date_of_birth_order]
+    else:
+        # Users without demographics permissions can only see the year
+        year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
+
+        # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
+        anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
+
+        return [year_order, anonymised_order, date_of_birth_order]
 
 def filter_patients(user, query, params):
     filter_by_demographics = False
@@ -234,17 +241,18 @@ def get_patients_for_user_query(user, params=None):
     if params is not None:
         query, filter_by_demographics = filter_patients(user, query, params)
 
-    unit_permission_filter = filter_by_unit_permissions(user)
+    if not user.is_admin:
+        unit_permission_filter = filter_by_unit_permissions(user)
 
-    # If the user is filtering using demographics they need unit permissions
-    if filter_by_demographics:
-        permission_filter = unit_permission_filter
-    else:
-        disease_group_filter = filter_by_disease_group_permissions(user)
-        permission_filter = or_(unit_permission_filter, disease_group_filter)
+        # If the user is filtering using demographics they need unit permissions
+        if filter_by_demographics:
+            permission_filter = unit_permission_filter
+        else:
+            disease_group_filter = filter_by_disease_group_permissions(user)
+            permission_filter = or_(unit_permission_filter, disease_group_filter)
 
-    # Filter the patients based on the user's permissions and the type of query
-    query = query.filter(permission_filter)
+        # Filter the patients based on the user's permissions and the type of query
+        query = query.filter(permission_filter)
 
     order_by = params.get('order_by')
     direction = (params.get('order_direction') or 'asc') == 'asc'

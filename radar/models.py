@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, select, join
+from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, select, join, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -110,9 +110,10 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
-    password_hash = Column(String)
-    email = Column(String)
+    username = Column(String, nullable=False, unique=True)
+    password_hash = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    is_admin = Column(Boolean, default=False, nullable=False)
 
     units = relationship('UnitUser')
     disease_groups = relationship('DiseaseGroupUser')

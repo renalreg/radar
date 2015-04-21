@@ -92,9 +92,11 @@
                                 <a href="{{ url_for('users') }}">Users</a>
                             </li>
 
-                            <li{% if page == 'admin' %} class="active"{% endif %}>
-                                <a href="{{ url_for('admin') }}">Admin</a>
-                            </li>
+                            {% if current_user.is_admin %}
+                                <li{% if page == 'admin' %} class="active"{% endif %}>
+                                    <a href="{{ url_for('admin') }}">Admin</a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                     </ul>
 

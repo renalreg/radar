@@ -30,7 +30,8 @@ CREATE TABLE users (
     id serial PRIMARY KEY,
     username character varying NOT NULL,
     password_hash character varying NOT NULL,
-    email character varying NOT NULL
+    email character varying NOT NULL,
+    is_admin boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE facilities (
@@ -158,12 +159,6 @@ INSERT INTO disease_group_features VALUES (DEFAULT, 2, 'DIAGNOSIS');
 INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'DIAGNOSIS');
 INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'RENAL_IMAGING');
 
--- INSERT INTO patients VALUES (DEFAULT, 'Homer', 'Simpson');
--- INSERT INTO patients VALUES (DEFAULT, 'Marge', 'Simpson');
--- INSERT INTO patients VALUES (DEFAULT, 'Bart', 'Simpson');
--- INSERT INTO patients VALUES (DEFAULT, 'Caroline', 'Todd');
--- INSERT INTO patients VALUES (DEFAULT, 'John', 'Smith');
-
 INSERT INTO patients VALUES (DEFAULT);
 INSERT INTO patients VALUES (DEFAULT);
 INSERT INTO patients VALUES (DEFAULT);
@@ -191,6 +186,7 @@ INSERT INTO users VALUES (DEFAULT, 'username', 'plain$$password', 'username@exam
 INSERT INTO users VALUES (DEFAULT, 'srns', 'plain$$password', 'srns@example.org');
 
 INSERT INTO unit_users VALUES (DEFAULT, 1, 1);
+INSERT INTO unit_users VALUES (DEFAULT, 2, 2);
 
 INSERT INTO disease_group_users VALUES (DEFAULT, 1, 1);
 INSERT INTO disease_group_users VALUES (DEFAULT, 2, 1);
@@ -204,6 +200,13 @@ INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-03', '2015-02-03', 'Aspirin
 INSERT INTO facilities VALUES (DEFAULT, 'TEST', 'Test Facility');
 
 INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Mr', 'Homer', 'Jay', 'Simpson', 'Homer', 'RENAL', '1', 'Male', '1955-05-12');
-INSERT INTO sda_patient_names VALUES (DEFAULT, 1, NULL, 'Foo', NULL, 'Bar', NULL);
-INSERT INTO sda_patient_numbers VALUES (DEFAULT, 1, '999', 'TEST');
+INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Mr', 'Homer', 'Jay', 'Simpson', 'Homer', 'RENAL', '1', 'Male', '1989-12-17');
+
+INSERT INTO sda_containers VALUES (DEFAULT, 2, 1);
+INSERT INTO sda_patients VALUES (DEFAULT, 2, 'Mrs', 'Marjorie', 'Jacqueline', 'Simpson', 'Marge', 'RENAL', '2', 'Female', '1989-12-17');
+
+INSERT INTO sda_containers VALUES (DEFAULT, 3, 1);
+INSERT INTO sda_patients VALUES (DEFAULT, 3, 'Mr', 'Bartholomew', 'JoJo', 'Simpson', 'Bart', 'RENAL', '1', 'Male', '1989-12-17');
+
+INSERT INTO sda_containers VALUES (DEFAULT, 4, 1);
+INSERT INTO sda_patients VALUES (DEFAULT, 4, 'Dr', 'Caroline', NULL, 'Todd', NULL, 'RENAL', '2', 'Female', '1966-07-12');
