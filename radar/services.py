@@ -1,3 +1,4 @@
+from datetime import timedelta
 from sqlalchemy import or_, extract
 from sqlalchemy.orm import aliased
 
@@ -55,7 +56,9 @@ def last_name_filter(last_name):
     return or_(patient_filter, alias_filter)
 
 def date_of_birth_filter(date_of_birth):
-    return sda_patient_sub_query(SDAPatient.birth_time == date_of_birth)
+    day = date_of_birth.date()
+    next_day = day + timedelta(days=1)
+    return sda_patient_sub_query(SDAPatient.birth_time >= day, SDAPatient.birth_time < next_day)
 
 def patient_number_filter(number):
     # One of the patient's identifiers matches
