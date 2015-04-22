@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS unit_patients;
 DROP TABLE IF EXISTS unit_users;
 DROP TABLE IF EXISTS units;
 
+DROP TABLE IF EXISTS facility_data;
 DROP TABLE IF EXISTS facilities;
 
 DROP TABLE IF EXISTS disease_group_patients;
@@ -147,66 +148,9 @@ CREATE TABLE medications (
     sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-INSERT INTO units VALUES (DEFAULT, 'Springfield General Hospital');
-INSERT INTO units VALUES (DEFAULT, 'East Hampton Hospital');
-
-INSERT INTO disease_groups VALUES (DEFAULT, 'SRNS');
-INSERT INTO disease_groups VALUES (DEFAULT, 'MPGN');
-INSERT INTO disease_groups VALUES (DEFAULT, 'Salt Wasting');
-
-INSERT INTO disease_group_features VALUES (DEFAULT, 1, 'DIAGNOSIS');
-INSERT INTO disease_group_features VALUES (DEFAULT, 2, 'DIAGNOSIS');
-INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'DIAGNOSIS');
-INSERT INTO disease_group_features VALUES (DEFAULT, 3, 'RENAL_IMAGING');
-
-INSERT INTO patients VALUES (DEFAULT);
-INSERT INTO patients VALUES (DEFAULT);
-INSERT INTO patients VALUES (DEFAULT);
-INSERT INTO patients VALUES (DEFAULT);
-INSERT INTO patients VALUES (DEFAULT);
-
-INSERT INTO unit_patients VALUES (DEFAULT, 1, 1);
-INSERT INTO unit_patients VALUES (DEFAULT, 1, 2);
-INSERT INTO unit_patients VALUES (DEFAULT, 1, 3);
-INSERT INTO unit_patients VALUES (DEFAULT, 2, 4);
-INSERT INTO unit_patients VALUES (DEFAULT, 1, 5);
-INSERT INTO unit_patients VALUES (DEFAULT, 2, 5);
-
-INSERT INTO disease_group_patients VALUES (DEFAULT, 1, 1);
-INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 1);
-INSERT INTO disease_group_patients VALUES (DEFAULT, 3, 1);
-
-INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 2);
-INSERT INTO disease_group_patients VALUES (DEFAULT, 2, 3);
-
--- Note: username: username, password: password
--- Note: plaintext password used here but application will hash passwords
--- Note: generated with werkzeug.security.generate_password_hash('password', method='plain')
-INSERT INTO users VALUES (DEFAULT, 'username', 'plain$$password', 'username@example.org');
-INSERT INTO users VALUES (DEFAULT, 'srns', 'plain$$password', 'srns@example.org');
-
-INSERT INTO unit_users VALUES (DEFAULT, 1, 1);
-INSERT INTO unit_users VALUES (DEFAULT, 2, 2);
-
-INSERT INTO disease_group_users VALUES (DEFAULT, 1, 1);
-INSERT INTO disease_group_users VALUES (DEFAULT, 2, 1);
-INSERT INTO disease_group_users VALUES (DEFAULT, 1, 2);
-
--- Homer's medications
-INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-01', '2015-02-01', 'Paracetamol');
-INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-02', '2015-02-02', 'Ibuprofen');
-INSERT INTO medications VALUES (DEFAULT, 1, '2015-01-03', '2015-02-03', 'Aspirin');
-
-INSERT INTO facilities VALUES (DEFAULT, 'TEST', 'Test Facility');
-
-INSERT INTO sda_containers VALUES (DEFAULT, 1, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 1, 'Mr', 'Homer', 'Jay', 'Simpson', 'Homer', 'RENAL', '1', 'Male', '1989-12-17');
-
-INSERT INTO sda_containers VALUES (DEFAULT, 2, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 2, 'Mrs', 'Marjorie', 'Jacqueline', 'Simpson', 'Marge', 'RENAL', '2', 'Female', '1989-12-17');
-
-INSERT INTO sda_containers VALUES (DEFAULT, 3, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 3, 'Mr', 'Bartholomew', 'JoJo', 'Simpson', 'Bart', 'RENAL', '1', 'Male', '1989-12-17');
-
-INSERT INTO sda_containers VALUES (DEFAULT, 4, 1);
-INSERT INTO sda_patients VALUES (DEFAULT, 4, 'Dr', 'Caroline', NULL, 'Todd', NULL, 'RENAL', '2', 'Female', '1966-07-12');
+CREATE TABLE facility_data (
+    id serial PRIMARY KEY,
+    facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    patient_id  integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
+);

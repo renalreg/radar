@@ -230,6 +230,18 @@ class Facility(Base):
     code = Column(Integer, unique=True)
     name = Column(String)
 
+class FacilityData(Base):
+    __tablename__ = 'facility_data'
+
+    id = Column(Integer, primary_key=True)
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
+
+    facility = relationship('Facility')
+    patient = relationship('Patient')
+    sda_container = relationship('SDAContainer', cascade='all, delete-orphan', single_parent=True)
+
 class SDAContainer(Base):
     __tablename__ = 'sda_containers'
 
