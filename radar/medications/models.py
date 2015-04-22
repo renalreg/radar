@@ -20,7 +20,7 @@ class Medication(Base):
     name = Column(String)
 
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
-    sda_container = relationship('SDAContainer')
+    sda_container = relationship('SDAContainer', cascade='all, delete-orphan', single_parent=True)
 
     def to_concepts(self):
         return [

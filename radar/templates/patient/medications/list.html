@@ -19,18 +19,28 @@
         </thead>
 
         <tbody>
-            {% for form_entry in form_entries %}
+            {% for medication in medications %}
                 <tr>
-                    <td><a href="{{ url_for('.detail', patient_id=patient.id, form_entry_id=form_entry.id) }}">{{ form_entry.id }}</a></td>
-                    <td>{{ form_entry.from_date | datetime_format('%d/%m/%Y') }}</td>
-                    <td>{{ form_entry.to_date | datetime_format('%d/%m/%Y') }}</td>
-                    <td>{{ form_entry.name }}</td>
+                    <td>
+                        {% if medication.edit_url %}
+                            <a href="{{ medication.edit_url }}">{{ medication.id }}</a>
+                        {% else %}
+                            {{ medication.id }}
+                        {% endif %}
+                    </td>
+
+                    <td>{{ medication.from_date | datetime_format('%d/%m/%Y') | default('-', True) }}</td>
+                    <td>{{ medication.to_date | datetime_format('%d/%m/%Y') | default('-', True) }}</td>
+                    <td>{{ medication.name | default('-', True) }}</td>
+
                     <td align="right">
-                        <form method="POST" action="{{ url_for('.delete', patient_id=patient.id, form_entry_id=form_entry.id) }}" class="form-inline">
-                            <button type="submit" class="btn btn-link btn-xs">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                            </button>
-                        </form>
+                        {% if medication.delete_url %}
+                            <form method="POST" action="{{ medication.delete_url }}" class="form-inline">
+                                <button type="submit" class="btn btn-link btn-xs">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

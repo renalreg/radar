@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS demographics;
 DROP TABLE IF EXISTS medications;
 
+DROP TABLE IF EXISTS sda_forms;
 DROP TABLE IF EXISTS sda_imports;
 DROP TABLE IF EXISTS sda_medications;
 DROP TABLE IF EXISTS sda_patient_aliases;
@@ -146,4 +147,10 @@ CREATE TABLE sda_imports (
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
     patient_id  integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE sda_forms (
+    sda_container_id integer PRIMARY KEY REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    form_type character varying NOT NULL,
+    form_id integer NOT NULL
 );

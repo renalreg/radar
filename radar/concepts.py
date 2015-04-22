@@ -66,11 +66,15 @@ class MedicationConcept(Concept):
             if self.to_date < self.from_date:
                 self.errors['to_date'].append('Must be on or after from date.')
 
-    def to_sda(self):
-        medication = SDAMedication()
-        medication.from_time = self.from_date
-        medication.to_time = self.to_date
+    def to_sda(self, sda_container):
+        sda_medication = SDAMedication()
 
-        return {
-            'medications': [medication]
+        sda_medication.data = {
+            'from_time': self.from_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'to_time': self.from_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'order_item': {
+                'description': self.name
+            }
         }
+
+        sda_container.sda_medications.append(sda_medication)

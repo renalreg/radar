@@ -5,6 +5,7 @@ from radar.demographics.forms import DemographicsFormHandler
 from radar.demographics.models import Demographics
 from radar.models import SDAPatient, SDAContainer, Patient, Facility
 from radar.patients.views import get_patient_detail_context
+from radar.utils import get_path
 
 
 class DemographicsView(View):
@@ -23,8 +24,8 @@ class DemographicsView(View):
             demographics = dict()
 
             demographics['facility'] = sda_patient.sda_container.facility
-            demographics['first_name'] = sda_patient.name_given_name
-            demographics['last_name'] = sda_patient.name_family_name
+            demographics['first_name'] = get_path(sda_patient.data, 'name', 'given_name')
+            demographics['last_name'] = get_path(sda_patient.data, 'name', 'family_name')
 
             demographics_list.append(demographics)
 

@@ -2,7 +2,7 @@ from flask.views import View
 from flask import redirect, url_for, render_template, request
 
 from radar.database import db_session
-from radar.models import Patient, SDAContainer
+from radar.models import Patient, SDAContainer, Facility, SDAForm
 from radar.patients.views import get_patient_detail_context
 
 
@@ -67,19 +67,26 @@ class FormDetailView(View):
             form.submit(request.form)
 
             if form.valid():
-                if form_entry.sda_container is None:
-                    form_entry.sda_container = SDAContainer()
-
-                sda_container = form_entry.sda_container
-                sda_container.sda_medications = []
+                sda_container = SDAContainer()
+                sda_container.patient = patient
+                sda_container.facility = Facility.query.first() # TODO
 
                 for concept, _ in form_entry.to_concepts():
-                    concept_sda = concept.to_sda()
+                    concept.to_sda(sda_container)
 
-                    if 'medications' in concept_sda:
-                        sda_container.sda_medications.extend(concept_sda['medications'])
+                form_entry.sda_container = sda_container
 
                 db_session.add(form_entry)
+                db_session.flush()
+
+                print sda_container.id
+
+                sda_form = SDAForm()
+                sda_form.sda_container = sda_container
+                sda_form.form_type = 'medications' # TODO
+                sda_form.form_id = form_entry.id
+                db_session.add(sda_form)
+
                 db_session.commit()
 
                 return redirect(url_for('.list', patient_id=patient.id))

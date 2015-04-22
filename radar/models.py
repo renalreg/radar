@@ -1,10 +1,13 @@
-from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, select, join, Boolean
+from datetime import datetime
+
+from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, select, join, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.database import Base
+from radar.utils import get_path
 
 
 class Patient(Base):
@@ -21,7 +24,7 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.name_given_name
+            return get_path(latest_sda_patient.data, 'name', 'given_name')
         else:
             return None
 
@@ -30,7 +33,7 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.name_family_name
+            return get_path(latest_sda_patient.data, 'name', 'family_name')
         else:
             return None
 
@@ -39,7 +42,15 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.birth_time
+            date_of_birth_str = get_path(latest_sda_patient.data, 'birth_time')
+
+            if date_of_birth_str is None:
+                return None
+            else:
+                try:
+                    return datetime.strptime(date_of_birth_str, '%Y-%m-%dT%H:%M:%SZ')
+                except ValueError:
+                    return None
         else:
             return None
 
@@ -48,7 +59,7 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return latest_sda_patient.gender_code
+            return get_path(latest_sda_patient, 'gender', 'code')
         else:
             return None
 
@@ -255,11 +266,14 @@ class SDAContainer(Base):
     sda_medications = relationship('SDAMedication', cascade='all, delete-orphan')
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan')
 
+    sda_form = relationship('SDAForm', uselist=False, cascade='all, delete-orphan')
+
 class SDAMedication(Base):
     __tablename__ = 'sda_medications'
 
     id = Column(Integer, primary_key=True)
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
+    sda_container = relationship('SDAContainer')
 
     data = Column(JSONB)
 
@@ -306,3 +320,12 @@ class SDAPatientAddress(Base):
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB)
+
+class SDAForm(Base):
+    __tablename__ = 'sda_forms'
+
+    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'), primary_key=True)
+    form_type = Column(String)
+    form_id = Column(Integer)
+
+    sda_container = relationship('SDAContainer', cascade='all')
