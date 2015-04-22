@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS demographics;
 DROP TABLE IF EXISTS medications;
 
+DROP TABLE IF EXISTS sda_imports;
 DROP TABLE IF EXISTS sda_medications;
 DROP TABLE IF EXISTS sda_patient_names;
 DROP TABLE IF EXISTS sda_patient_numbers;
@@ -11,7 +12,6 @@ DROP TABLE IF EXISTS unit_patients;
 DROP TABLE IF EXISTS unit_users;
 DROP TABLE IF EXISTS units;
 
-DROP TABLE IF EXISTS facility_data;
 DROP TABLE IF EXISTS facilities;
 
 DROP TABLE IF EXISTS disease_group_patients;
@@ -89,7 +89,8 @@ CREATE TABLE disease_group_features (
 CREATE TABLE sda_containers (
     id serial PRIMARY KEY,
     patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE
+    facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    mpiid integer
 );
 
 CREATE TABLE sda_patients (
@@ -148,9 +149,9 @@ CREATE TABLE medications (
     sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE facility_data (
+CREATE TABLE sda_imports (
     id serial PRIMARY KEY,
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
     patient_id  integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
+    sda_container_id integer REFERENCES sda_containers (id) ON DELETE SET NULL ON UPDATE CASCADE
 );

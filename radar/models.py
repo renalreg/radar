@@ -230,8 +230,8 @@ class Facility(Base):
     code = Column(Integer, unique=True)
     name = Column(String)
 
-class FacilityData(Base):
-    __tablename__ = 'facility_data'
+class SDAImport(Base):
+    __tablename__ = 'sda_imports'
 
     id = Column(Integer, primary_key=True)
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
@@ -248,6 +248,7 @@ class SDAContainer(Base):
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    mpiid = Column(Integer)
 
     facility = relationship('Facility')
     sda_medications = relationship('SDAMedication', cascade='all, delete-orphan')
@@ -309,4 +310,4 @@ class SDAPatientNumber(Base):
     sda_patient = relationship('SDAPatient')
 
     number = Column(String)
-    numberType = Column(String)
+    number_type = Column(String)
