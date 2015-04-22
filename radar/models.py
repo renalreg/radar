@@ -1,4 +1,5 @@
 from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, UniqueConstraint, select, join, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -260,8 +261,7 @@ class SDAMedication(Base):
     id = Column(Integer, primary_key=True)
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
 
-    from_time = Column(DateTime)
-    to_time = Column(DateTime)
+    data = Column(JSONB)
 
 class SDAPatient(Base):
     __tablename__ = 'sda_patients'
@@ -271,35 +271,21 @@ class SDAPatient(Base):
     sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
     sda_container = relationship('SDAContainer')
 
-    name_name_prefix = Column(String)
-    name_given_name = Column(String)
-    name_middle_name = Column(String)
-    name_family_name = Column(String)
-    name_preferred_name = Column(String)
+    data = Column(JSONB)
 
-    gender_coding_standard = Column(String)
-    gender_code = Column(String)
-    gender_description = Column(String)
+    aliases = relationship('SDAPatientAlias', cascade='all')
+    numbers = relationship('SDAPatientNumber', cascade='all')
+    addresses = relationship('SDAPatientAddress', cascade='all')
 
-    birth_time = Column(DateTime)
-    death_time = Column(DateTime)
-
-    aliases = relationship('SDAPatientName')
-    patient_numbers = relationship('SDAPatientNumber')
-
-class SDAPatientName(Base):
-    __tablename__ = 'sda_patient_names'
+class SDAPatientAlias(Base):
+    __tablename__ = 'sda_patient_aliases'
 
     id = Column(Integer, primary_key=True)
 
     sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
     sda_patient = relationship('SDAPatient')
 
-    name_prefix = Column(String)
-    given_name = Column(String)
-    middle_name = Column(String)
-    family_name = Column(String)
-    preferred_name = Column(String)
+    data = Column(JSONB)
 
 class SDAPatientNumber(Base):
     __tablename__ = 'sda_patient_numbers'
@@ -309,5 +295,14 @@ class SDAPatientNumber(Base):
     sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
     sda_patient = relationship('SDAPatient')
 
-    number = Column(String)
-    number_type = Column(String)
+    data = Column(JSONB)
+
+class SDAPatientAddress(Base):
+    __tablename__ = 'sda_patient_addresses'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient = relationship('SDAPatient')
+
+    data = Column(JSONB)

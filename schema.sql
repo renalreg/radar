@@ -3,8 +3,9 @@ DROP TABLE IF EXISTS medications;
 
 DROP TABLE IF EXISTS sda_imports;
 DROP TABLE IF EXISTS sda_medications;
-DROP TABLE IF EXISTS sda_patient_names;
+DROP TABLE IF EXISTS sda_patient_aliases;
 DROP TABLE IF EXISTS sda_patient_numbers;
+DROP TABLE IF EXISTS sda_patient_addresses;
 DROP TABLE IF EXISTS sda_patients;
 DROP TABLE IF EXISTS sda_containers;
 
@@ -96,40 +97,31 @@ CREATE TABLE sda_containers (
 CREATE TABLE sda_patients (
     id serial PRIMARY KEY,
     sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name_name_prefix character varying,
-    name_given_name character varying,
-    name_middle_name character varying,
-    name_family_name character varying,
-    name_preferred_name character varying,
-    gender_coding_standard character varying,
-    gender_code character varying,
-    gender_description character varying,
-    birth_time timestamp,
-    death_time timestamp
+    data jsonb
 );
 
-CREATE TABLE sda_patient_names (
+CREATE TABLE sda_patient_aliases (
     id serial PRIMARY KEY,
     sda_patient_id integer NOT NULL references sda_patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    name_prefix character varying,
-    given_name character varying,
-    middle_name character varying,
-    family_name character varying,
-    preferred_name character varying
+    data jsonb
 );
 
 CREATE TABLE sda_patient_numbers (
     id serial PRIMARY KEY,
     sda_patient_id integer NOT NULL references sda_patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    number character varying,
-    number_type character varying
+    data jsonb
+);
+
+CREATE TABLE sda_patient_addresses (
+    id serial PRIMARY KEY,
+    sda_patient_id integer NOT NULL references sda_patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    data jsonb
 );
 
 CREATE TABLE sda_medications (
     id serial PRIMARY KEY,
     sda_container_id integer NOT NULL REFERENCES sda_containers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    from_time timestamp,
-    to_time timestamp
+    data jsonb
 );
 
 CREATE TABLE demographics (
