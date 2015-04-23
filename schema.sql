@@ -75,6 +75,7 @@ CREATE TABLE unit_users (
     id serial PRIMARY KEY,
     unit_id integer NOT NULL REFERENCES units (id) ON DELETE CASCADE ON UPDATE CASCADE,
     user_id integer NOT NULL REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    role character varying NOT NULL,
     UNIQUE (unit_id, user_id)
 );
 
@@ -94,6 +95,7 @@ CREATE TABLE disease_group_users (
     id serial PRIMARY KEY,
     disease_group_id integer REFERENCES disease_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
     user_id integer REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    role character varying NOT NULL,
     UNIQUE (disease_group_id, user_id)
 );
 

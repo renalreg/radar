@@ -1,9 +1,10 @@
 from datetime import timedelta
 
-from sqlalchemy import or_, extract, case, desc
+from sqlalchemy import or_, case, desc, func
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql.expression import nullsfirst
 
+from radar.constants import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_DEMOGRAPHICS_ROLES, \
+    DISEASE_GROUP_DEMOGRAPHICS_ROLES
 from radar.database import db_session
 from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, \
     SDAPatient, SDAContainer, SDAPatientNumber, SDAPatientAlias
@@ -85,28 +86,45 @@ def filter_by_gender(gender_code):
 def filter_by_year_of_birth(year):
     return sda_patient_sub_query(SDAPatient.data['birth_time'].astext.like("%d%%" % year))
 
-def filter_by_unit_permissions(user):
+def filter_by_unit_roles(user, roles):
     patient_alias = aliased(Patient)
     sub_query = db_session.query(patient_alias)\
         .join(patient_alias.units)\
         .join(UnitPatient.unit)\
         .join(Unit.users)\
-        .filter(UnitUser.user_id == user.id, patient_alias.id == Patient.id)\
+        .filter(
+            UnitUser.user_id == user.id,
+            patient_alias.id == Patient.id,
+            UnitUser.role.in_(roles)
+        )\
         .exists()
     return sub_query
 
-def filter_by_disease_group_permissions(user):
+def filter_by_disease_group_roles(user, roles):
     patient_alias = aliased(Patient)
     sub_query = db_session.query(patient_alias)\
         .join(patient_alias.disease_groups)\
         .join(DiseaseGroupPatient.disease_group)\
         .join(DiseaseGroup.users)\
-        .filter(DiseaseGroupUser.user_id == user.id, patient_alias.id == Patient.id)\
+        .filter(
+            DiseaseGroupUser.user_id == user.id,
+            patient_alias.id == Patient.id,
+            DiseaseGroupUser.role.in_(roles)
+        )\
         .exists()
     return sub_query
 
+def filter_by_view_patient_permissions(user):
+    return or_(
+        filter_by_unit_roles(user, UNIT_VIEW_PATIENT_ROLES),
+        filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_PATIENT_ROLES),
+    )
+
 def filter_by_demographics_permissions(user):
-    return filter_by_unit_permissions(user)
+    return or_(
+        filter_by_unit_roles(user, UNIT_DEMOGRAPHICS_ROLES),
+        filter_by_disease_group_roles(user, DISEASE_GROUP_DEMOGRAPHICS_ROLES),
+    )
 
 def order_by_demographics_field(user, field, direction, else_=None):
     if user.is_admin:
@@ -145,7 +163,7 @@ def order_by_date_of_birth(user, direction):
         return [date_of_birth_order]
     else:
         # Users without demographics permissions can only see the year
-        year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
+        year_order = order_by_field(func.substr(Patient.date_of_birth, 1, 4), direction)
 
         # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
         anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
@@ -153,7 +171,7 @@ def order_by_date_of_birth(user, direction):
         return [year_order, anonymised_order, date_of_birth_order]
 
 def filter_patients(user, query, params):
-    filter_by_demographics = False
+    filtering_by_demographics = False
 
     first_name = params.get('first_name')
     last_name = params.get('last_name')
@@ -166,22 +184,22 @@ def filter_patients(user, query, params):
     disease_group_id = params.get('disease_group_id')
 
     if first_name:
-        filter_by_demographics = True
+        filtering_by_demographics = True
         query = query.filter(filter_by_first_name(first_name))
 
     if last_name:
-        filter_by_demographics = True
+        filtering_by_demographics = True
         query = query.filter(filter_by_last_name(last_name))
 
     if date_of_birth:
-        filter_by_demographics = True
+        filtering_by_demographics = True
         query = query.filter(filter_by_date_of_birth(date_of_birth))
 
     if gender:
         query = query.filter(filter_by_gender(gender))
 
     if patient_number:
-        filter_by_demographics = True
+        filtering_by_demographics = True
         query = query.filter(filter_by_patient_number(patient_number))
 
     if radar_id is not None:
@@ -190,6 +208,8 @@ def filter_patients(user, query, params):
     if year_of_birth is not None:
         query = query.filter(filter_by_year_of_birth(year_of_birth))
 
+
+    # TODO pass in unit instead and do auth outside
     # Filter by unit
     if unit_id is not None:
         unit = Unit.query.get(unit_id)
@@ -198,9 +218,10 @@ def filter_patients(user, query, params):
         if unit is not None:
             # User belongs to unit
             if is_user_in_unit(user, unit):
-                filter_by_demographics = True
+                filtering_by_demographics = True
                 query = query.join(UnitPatient).filter(UnitPatient.unit == unit)
 
+    # TODO pass in disease group instead and do auth outside
     # Filter by disease group
     if disease_group_id:
         # Get the disease group with this id
@@ -210,12 +231,12 @@ def filter_patients(user, query, params):
         if disease_group is not None:
             # If the user doesn't belong to the disease group they need unit permissions
             if not is_user_in_disease_group(user, disease_group):
-                filter_by_demographics = True
+                filtering_by_demographics = True
 
             # Filter by disease group
             query = query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
 
-    return query, filter_by_demographics
+    return query, filtering_by_demographics
 
 def order_patients(user, order_by, direction):
     if order_by == 'first_name':
@@ -236,23 +257,19 @@ def order_patients(user, order_by, direction):
 
 def get_patients_for_user_query(user, params=None):
     # True if the query is filtering on demographics
-    filter_by_demographics = False
+    filtering_by_demographics = False
 
     query = db_session.query(Patient)
 
     # Filter the list of patients based on the search terms
     if params is not None:
-        query, filter_by_demographics = filter_patients(user, query, params)
+        query, filtering_by_demographics = filter_patients(user, query, params)
 
     if not user.is_admin:
-        unit_permission_filter = filter_by_unit_permissions(user)
-
-        # If the user is filtering using demographics they need unit permissions
-        if filter_by_demographics:
-            permission_filter = unit_permission_filter
+        if filtering_by_demographics:
+            permission_filter = filter_by_demographics_permissions(user)
         else:
-            disease_group_filter = filter_by_disease_group_permissions(user)
-            permission_filter = or_(unit_permission_filter, disease_group_filter)
+            permission_filter = filter_by_view_patient_permissions(user)
 
         # Filter the patients based on the user's permissions and the type of query
         query = query.filter(permission_filter)

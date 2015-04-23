@@ -3,7 +3,7 @@ from flask.views import View
 from flask_login import login_user, logout_user, current_user
 
 from radar.services import get_disease_groups_for_user, get_units_for_user, get_unit_for_user, \
-    get_disease_group_for_user, check_login
+    get_disease_group_for_user, check_login, can_user_list_patients
 
 
 def get_base_context():
@@ -12,6 +12,7 @@ def get_base_context():
     if current_user.is_authenticated():
         context['user_units'] = get_units_for_user(current_user)
         context['user_disease_groups'] = get_disease_groups_for_user(current_user)
+        context['can_view_patients'] = can_user_list_patients(current_user)
 
     return context
 

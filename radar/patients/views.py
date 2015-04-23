@@ -7,7 +7,7 @@ from radar.patients.forms import PatientSearchFormHandler
 from radar.patients.search import get_patients_for_user_query
 from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, \
     filter_patient_disease_groups_for_user, filter_patient_units_for_user, get_patient_for_user, \
-    can_user_view_demographics, can_user_view_patient_demographics
+    can_user_view_demographics, can_user_view_patient_demographics, can_user_list_patients
 from radar.views import get_base_context
 
 PER_PAGE_CHOICES = [('10', 10), ('25', 25), ('50', 50), ('100', 100), ('All', -1)]
@@ -20,6 +20,7 @@ ORDER_BY_CHOICES = [
     ('Gender', 'gender'),
 ]
 
+
 def get_patient_base_context():
     context = get_base_context()
 
@@ -29,6 +30,7 @@ def get_patient_base_context():
     })
 
     return context
+
 
 def get_patient_detail_context(patient_id):
     context = get_patient_base_context()
@@ -43,8 +45,12 @@ def get_patient_detail_context(patient_id):
 
     return context
 
+
 class PatientListView(View):
     def dispatch_request(self):
+        if not can_user_list_patients(current_user):
+            abort(403)
+
         context = get_patient_base_context()
 
         params = {}
@@ -86,10 +92,12 @@ class PatientListView(View):
 
         return render_template('patients.html', **context)
 
+
 class PatientDiseaseGroupsView(View):
     def dispatch_request(self, patient_id):
         context = get_patient_detail_context(patient_id)
         return render_template('patient/disease_groups.html', **context)
+
 
 class PatientUnitsView(View):
     def dispatch_request(self, patient_id):

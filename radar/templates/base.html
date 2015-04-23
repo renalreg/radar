@@ -84,9 +84,11 @@
                                 {% endif %}
                             {% endif %}
 
-                            <li{% if page == 'patients' %} class="active"{% endif %}>
-                                <a href="{{ url_for('patients') }}">Patients</a>
-                            </li>
+                            {% if can_view_patients %}
+                                <li{% if page == 'patients' %} class="active"{% endif %}>
+                                    <a href="{{ url_for('patients') }}">Patients</a>
+                                </li>
+                            {% endif %}
 
                             <li{% if page == 'users' %} class="active"{% endif %}>
                                 <a href="{{ url_for('users') }}">Users</a>

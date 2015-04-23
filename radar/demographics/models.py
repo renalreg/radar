@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
-from radar.database import Base
+
 from radar.models import Resource
 
 
