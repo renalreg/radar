@@ -71,10 +71,12 @@ class MedicationConcept(Concept):
 
         sda_medication.data = {
             'from_time': self.from_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'to_time': self.from_date.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'order_item': {
                 'description': self.name
             }
         }
+
+        if self.to_date is not None:
+            sda_medication.data['to_time'] = self.to_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         sda_container.sda_medications.append(sda_medication)

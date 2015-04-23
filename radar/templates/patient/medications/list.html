@@ -10,7 +10,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th></th>
                 <th>From Date</th>
                 <th>To Date</th>
                 <th>Name</th>
@@ -23,9 +23,7 @@
                 <tr>
                     <td>
                         {% if medication.edit_url %}
-                            <a href="{{ medication.edit_url }}">{{ medication.id }}</a>
-                        {% else %}
-                            {{ medication.id }}
+                            <a href="{{ medication.edit_url }}" class="btn btn-primary btn-xs">Edit</a>
                         {% endif %}
                     </td>
 
