@@ -56,13 +56,17 @@ class DemographicsEditView(View):
                 # TODO
 
                 sda_container = SDAContainer()
-                sda_container.facility = Facility.query.get(1)
+                sda_container.facility = Facility.query.get(1) # TODO
                 sda_container.patient = patient
 
                 sda_patient = SDAPatient()
-                sda_patient.sda_container = sda_container
-                sda_patient.name_given_name = demographics.first_name
-                sda_patient.name_family_name = demographics.last_name
+                sda_patient.data = {
+                    'name': {
+                        'given_name': demographics.first_name,
+                        'family_name': demographics.last_name
+                    }
+                }
+                sda_container.sda_patient = sda_patient
 
                 demographics.sda_container = sda_container
 

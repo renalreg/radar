@@ -17,7 +17,7 @@ class Patient(Base):
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
-    sda_containers = relationship('SDAContainer', backref='patient')
+    sda_containers = relationship('SDAContainer')
 
     @hybrid_property
     def first_name(self):
@@ -59,7 +59,7 @@ class Patient(Base):
         latest_sda_patient = self.latest_sda_patient()
 
         if latest_sda_patient is not None:
-            return get_path(latest_sda_patient, 'gender', 'code')
+            return get_path(latest_sda_patient.data, 'gender', 'code')
         else:
             return None
 
@@ -83,7 +83,7 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.name_given_name])\
+        return select([SDAPatient.data[('name', 'given_name')].astext])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -93,7 +93,7 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.name_family_name])\
+        return select([SDAPatient.data[('name', 'family_name')].astext])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -103,7 +103,7 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.birth_time])\
+        return select([SDAPatient.data['birth_time'].astext])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -113,7 +113,7 @@ class Patient(Base):
         patient_alias = aliased(Patient)
 
         # TODO choose last updated
-        return select([SDAPatient.gender_code])\
+        return select([SDAPatient.data[('gender', 'code')].astext])\
             .select_from(join(SDAPatient, SDAContainer).join(patient_alias))\
             .where(patient_alias.id == cls.id)\
             .as_scalar()
@@ -242,31 +242,22 @@ class Facility(Base):
     code = Column(Integer, unique=True)
     name = Column(String)
 
-class SDAImport(Base):
-    __tablename__ = 'sda_imports'
-
-    id = Column(Integer, primary_key=True)
-    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
-
-    facility = relationship('Facility')
-    patient = relationship('Patient')
-    sda_container = relationship('SDAContainer', cascade='all, delete-orphan', single_parent=True)
-
 class SDAContainer(Base):
     __tablename__ = 'sda_containers'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
+    resource = relationship('Resource')
+
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
+
     mpiid = Column(Integer)
 
-    facility = relationship('Facility')
-    sda_medications = relationship('SDAMedication', cascade='all, delete-orphan')
-    sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan')
-
-    sda_form = relationship('SDAForm', uselist=False, cascade='all, delete-orphan')
+    sda_medications = relationship('SDAMedication', cascade='all')
+    sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
 
 class SDAMedication(Base):
     __tablename__ = 'sda_medications'
@@ -321,11 +312,27 @@ class SDAPatientAddress(Base):
 
     data = Column(JSONB)
 
-class SDAForm(Base):
-    __tablename__ = 'sda_forms'
+class Resource(Base):
+    __tablename__ = 'resources'
 
-    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'), primary_key=True)
-    form_type = Column(String)
-    form_id = Column(Integer)
+    id = Column(Integer, primary_key=True)
+    type = Column(String)
 
-    sda_container = relationship('SDAContainer', cascade='all')
+    sda_container = relationship('SDAContainer', uselist=False, cascade='all, delete-orphan')
+    facility_patient = relationship('FacilityPatient', uselist=False)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'resource',
+        'polymorphic_on': type,
+    }
+
+class FacilityPatient(Base):
+    __tablename__ = 'facility_patients'
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), primary_key=True)
+    facility_id = Column(Integer, ForeignKey('facilities.id'), primary_key=True)
+    resource_id = Column(Integer, ForeignKey('resources.id'), unique=True)
+
+    patient = relationship('Patient')
+    facility = relationship('Facility')
+    resource = relationship('Resource')

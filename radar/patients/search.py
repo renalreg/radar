@@ -45,28 +45,31 @@ def sda_patient_number_sub_query(*args):
 def filter_by_first_name(first_name):
     first_name_like = first_name + '%'
 
-    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'given_name')].like(first_name_like))
-    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['given_name'].like(first_name_like))
+    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'given_name')].astext.ilike(first_name_like))
+    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['given_name'].astext.ilike(first_name_like))
 
     return or_(patient_filter, alias_filter)
 
 def filter_by_last_name(last_name):
     last_name_like = last_name + '%'
 
-    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'family_name')].like(last_name_like))
-    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['family_name'].like(last_name_like))
+    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'family_name')].astext.ilike(last_name_like))
+    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['family_name'].astext.ilike(last_name_like))
 
     return or_(patient_filter, alias_filter)
 
 def filter_by_date_of_birth(date_of_birth):
-    day = date_of_birth.date().strftime('%Y-%m-%d')
-    next_day = day + timedelta(days=1).strftime('%Y-%m-%d')
-    return sda_patient_sub_query(SDAPatient.data['birth_time'] >= day, SDAPatient.data['birth_time'] <= next_day)
+    day = date_of_birth.date()
+    next_day = day + timedelta(days=1)
+    return sda_patient_sub_query(
+        SDAPatient.data['birth_time'].astext >= day.strftime('%Y-%m-%d'),
+        SDAPatient.data['birth_time'].astext <= next_day.strftime('%Y-%m-%d')
+    )
 
 def filter_by_patient_number(number):
     # One of the patient's identifiers matches
     number_like = number + '%'
-    number_filter = sda_patient_number_sub_query(SDAPatientNumber.data['number'].like(number_like))
+    number_filter = sda_patient_number_sub_query(SDAPatientNumber.data['number'].astext.like(number_like))
 
     # RaDaR ID matches
     radar_id_filter = filter_by_radar_id(number)
@@ -77,10 +80,10 @@ def filter_by_radar_id(radar_id):
     return Patient.id == radar_id
 
 def filter_by_gender(gender_code):
-    return sda_patient_sub_query(SDAPatient.data[('gender', 'code')] == gender_code)
+    return sda_patient_sub_query(SDAPatient.data[('gender', 'code')].astext == gender_code)
 
 def filter_by_year_of_birth(year):
-    return sda_patient_sub_query(SDAPatient.data['birth_time'].like("%d%%" % year))
+    return sda_patient_sub_query(SDAPatient.data['birth_time'].astext.like("%d%%" % year))
 
 def filter_by_unit_permissions(user):
     patient_alias = aliased(Patient)

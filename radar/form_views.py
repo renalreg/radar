@@ -2,7 +2,7 @@ from flask.views import View
 from flask import redirect, url_for, render_template, request
 
 from radar.database import db_session
-from radar.models import Patient, SDAContainer, Facility, SDAForm
+from radar.models import Patient, SDAContainer, Facility
 from radar.patients.views import get_patient_detail_context
 
 
@@ -47,7 +47,7 @@ class FormDetailView(View):
 
         return self.form_handler
 
-    def dispatch_request(self, patient_id, form_entry_id=None):
+    def dispatch_request(self, patient_id, resource_id=None):
         context = get_patient_detail_context(patient_id)
 
         patient = context['patient']
@@ -55,13 +55,13 @@ class FormDetailView(View):
         model_klass = self.get_model_klass()
         form_handler_klass = self.get_form_handler_klass()
 
-        if form_entry_id is not None:
-            form_entry = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_entry_id).first()
+        if resource_id is not None:
+            resource = model_klass.query.filter(Patient.id == patient.id, model_klass.id == resource_id).first()
         else:
-            form_entry = model_klass()
-            form_entry.patient = patient
+            resource = model_klass()
+            resource.patient = patient
 
-        form = form_handler_klass(form_entry)
+        form = form_handler_klass(resource)
 
         if request.method == 'POST':
             form.submit(request.form)
@@ -71,27 +71,17 @@ class FormDetailView(View):
                 sda_container.patient = patient
                 sda_container.facility = Facility.query.first() # TODO
 
-                for concept, _ in form_entry.to_concepts():
+                for concept, _ in resource.to_concepts():
                     concept.to_sda(sda_container)
 
-                form_entry.sda_container = sda_container
+                resource.sda_container = sda_container
 
-                db_session.add(form_entry)
-                db_session.flush()
-
-                print sda_container.id
-
-                sda_form = SDAForm()
-                sda_form.sda_container = sda_container
-                sda_form.form_type = 'medications' # TODO
-                sda_form.form_id = form_entry.id
-                db_session.add(sda_form)
-
+                db_session.add(resource)
                 db_session.commit()
 
                 return redirect(url_for('.list', patient_id=patient.id))
 
-        context['form_entry'] = form_entry
+        context['resource'] = resource
         context['form'] = form
 
         return render_template(self.template_name, **context)
@@ -106,13 +96,13 @@ class FormDeleteView(View):
 
         return self.model
 
-    def dispatch_request(self, patient_id, form_entry_id):
+    def dispatch_request(self, patient_id, resource_id):
         model_klass = self.get_model_klass()
 
         patient = Patient.query.filter(Patient.id == patient_id).first()
-        form_entry = model_klass.query.filter(Patient.id == patient.id, model_klass.id == form_entry_id).first()
+        resource = model_klass.query.filter(Patient.id == patient.id, model_klass.id == resource_id).first()
 
-        db_session.delete(form_entry)
+        db_session.delete(resource)
         db_session.commit()
 
         return redirect(url_for('.list', patient_id=patient.id))

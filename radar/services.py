@@ -139,4 +139,4 @@ def can_user_view_demographics(user):
 
 def can_user_view_patient_demographics(user, patient):
     # User and patient are in same unit
-    return len(filter_patient_units_for_user(patient, user)) > 0
+    return user.is_admin or len(filter_patient_units_for_user(patient, user)) > 0

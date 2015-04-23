@@ -4,13 +4,13 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.concepts import MedicationConcept
 
-from radar.models import Base
+from radar.models import Base, Resource
 
 
-class Medication(Base):
+class Medication(Resource):
     __tablename__ = 'medications'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'))
     patient = relationship('Patient')
@@ -19,8 +19,9 @@ class Medication(Base):
     to_date = Column(Date)
     name = Column(String)
 
-    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
-    sda_container = relationship('SDAContainer', cascade='all, delete-orphan', single_parent=True)
+    __mapper_args__ = {
+        'polymorphic_identity': 'medications',
+    }
 
     def to_concepts(self):
         return [

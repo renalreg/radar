@@ -45,7 +45,7 @@
 
                         <div class="form-group">
                             <label for="gender" class="control-label">Gender</label>
-                            {{ f.select('gender', [('Male', '1'), ('Female', '2')], include_blank=True) }}
+                            {{ f.select('gender', [('Male', 'M'), ('Female', 'F')], include_blank=True) }}
                         </div>
 
                         {% if demographics %}
@@ -170,9 +170,9 @@
 
                                     <td>
                                         {% with gender = patient.gender %}
-                                            {% if gender == '1' %}
+                                            {% if gender == 'M' %}
                                                 M
-                                            {% elif gender == '2' %}
+                                            {% elif gender == 'F' %}
                                                 F
                                             {% else %}
                                                 -

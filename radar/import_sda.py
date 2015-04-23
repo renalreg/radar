@@ -2,8 +2,9 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 
 from radar.database import configure_engine, db_session
-from radar.models import Facility, SDAContainer, Patient, SDAPatient, SDAImport, SDAPatientNumber, SDAMedication, \
-    SDAPatientAddress, SDAPatientAlias
+from radar.models import Facility, SDAContainer, Patient, SDAPatient, SDAPatientNumber, SDAMedication, \
+    SDAPatientAddress, SDAPatientAlias, FacilityPatient, Resource
+
 
 def set_float(data, key, node):
     if node is not None:
@@ -223,16 +224,19 @@ def import_sda(facility_code, xml_data):
     sda_container.facility = facility
     sda_container.mpiid = mpiid
 
-    sda_import = SDAImport.query.filter(SDAImport.facility == facility, SDAImport.patient == patient).first()
+    resource = Resource.query.join(Resource.facility_patient).filter(FacilityPatient.facility == facility, FacilityPatient.patient == patient).first()
 
-    if sda_import is None:
-        sda_import = SDAImport()
-        sda_import.facility = facility
-        sda_import.patient = patient
+    if resource is None:
+        resource = Resource()
 
-    sda_import.sda_container = sda_container
+        facility_patient = FacilityPatient()
+        facility_patient.facility = facility
+        facility_patient.patient = patient
+        resource.facility_patient = facility_patient
 
-    db_session.add(sda_import)
+    resource.sda_container = sda_container
+
+    db_session.add(resource)
     db_session.commit()
 
 if __name__ == '__main__':
