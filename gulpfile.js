@@ -29,21 +29,21 @@ gulp.task('libs', function() { 
     // JavaScript
     .pipe(jsFilter)
     .pipe(gulp.dest(jsDest))
-    .pipe(uglify())
-    .pipe(rename({
-        suffix: '.min'
-    }))
-    .pipe(gulp.dest(jsDest))
+    //.pipe(uglify())
+    //.pipe(rename({
+    //    suffix: '.min'
+    //}))
+    //.pipe(gulp.dest(jsDest))
     .pipe(jsFilter.restore())
 
     // CSS
     .pipe(cssFilter)
     .pipe(gulp.dest(cssDest))
-    .pipe(minifycss())
-    .pipe(rename({
-        suffix: '.min'
-    }))
-    .pipe(gulp.dest(cssDest))
+    //.pipe(minifycss())
+    //.pipe(rename({
+    //    suffix: '.min'
+    //}))
+    //.pipe(gulp.dest(cssDest))
     .pipe(cssFilter.restore())
 
     // Fonts
