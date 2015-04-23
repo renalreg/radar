@@ -41,11 +41,10 @@
                         {% endwith %}
                     </li>
 
-                    <!-- TODO add links -->
                     {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
                         {% if disease_groups %}
                             <li>
-                                <a href="{{ url_for('patient_disease_groups', patient_id=patient.id) }}"><strong>Disease Groups:</strong></a>
+                                <strong>Disease Groups:</strong>
 
                                 {% for disease_group in disease_groups %}
                                     {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
@@ -54,20 +53,17 @@
                         {% endif %}
                     {% endwith %}
 
-                    {% if patient_demographics %}
-                        <!-- TODO add links -->
-                        {% with units = filter_patient_units_for_user(patient, current_user) %}
-                            {% if units %}
-                                <li>
-                                    <a href="{{ url_for('patient_units', patient_id=patient.id) }}"><strong>Units:</strong></a>
+                    {% with units = filter_patient_units_for_user(patient, current_user) %}
+                        {% if units %}
+                            <li>
+                                <strong>Units:</strong>
 
-                                    {% for unit in units %}
-                                        {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                                    {% endfor %}
-                                </li>
-                            {% endif %}
-                        {% endwith %}
-                    {% endif %}
+                                {% for unit in units %}
+                                    {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+                    {% endwith %}
                 </ul>
 
                 <ul class="nav patient-nav">
