@@ -3,14 +3,13 @@ from sqlalchemy import Column, Date, String, ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.concepts import MedicationConcept
+from radar.database import Base
 
-from radar.models import Base, Resource
 
-
-class Medication(Resource):
+class Medication(Base):
     __tablename__ = 'medications'
 
-    id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'))
     patient = relationship('Patient')
@@ -18,10 +17,6 @@ class Medication(Resource):
     from_date = Column(Date)
     to_date = Column(Date)
     name = Column(String)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'medications',
-    }
 
     def to_concepts(self):
         return [

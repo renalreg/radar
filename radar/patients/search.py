@@ -7,14 +7,14 @@ from radar.constants import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_
     DISEASE_GROUP_DEMOGRAPHICS_ROLES
 from radar.database import db_session
 from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, \
-    SDAPatient, SDAContainer, SDAPatientNumber, SDAPatientAlias
+    SDAPatient, SDAResource, SDAPatientNumber, SDAPatientAlias
 from radar.services import is_user_in_unit, is_user_in_disease_group
 
 
 def sda_patient_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db_session.query(SDAPatient)\
-        .join(SDAContainer)\
+        .join(SDAResource)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\
@@ -25,7 +25,7 @@ def sda_patient_name_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db_session.query(SDAPatientAlias)\
         .join(SDAPatient)\
-        .join(SDAContainer)\
+        .join(SDAResource)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\
@@ -36,7 +36,7 @@ def sda_patient_number_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db_session.query(SDAPatientNumber)\
         .join(SDAPatient)\
-        .join(SDAContainer)\
+        .join(SDAResource)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\

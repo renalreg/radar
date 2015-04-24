@@ -1,8 +1,9 @@
 from collections import defaultdict
 
-from radar.models import SDAMedication
+from radar.models import SDAMedication, SDAPatient
 from radar.validators import ValidationError, StopValidation, required, not_empty
 
+# TODO refactor
 
 class Concept(object):
     validators = {}
@@ -66,7 +67,7 @@ class MedicationConcept(Concept):
             if self.to_date < self.from_date:
                 self.errors['to_date'].append('Must be on or after from date.')
 
-    def to_sda(self, sda_container):
+    def to_sda(self, sda_resource):
         sda_medication = SDAMedication()
 
         sda_medication.data = {
@@ -79,4 +80,28 @@ class MedicationConcept(Concept):
         if self.to_date is not None:
             sda_medication.data['to_time'] = self.to_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        sda_container.sda_medications.append(sda_medication)
+        sda_resource.sda_medications.append(sda_medication)
+
+class PatientConcept(Concept):
+    validators = {
+        'first_name': [not_empty],
+        'last_name': [not_empty],
+    }
+
+    def __init__(self, first_name, last_name):
+        super(PatientConcept, self).__init__()
+
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def to_sda(self, sda_resource):
+        sda_patient = SDAPatient()
+
+        sda_patient.data = {
+            'name': {
+                'given_name': self.first_name,
+                'family_name': self.last_name
+            }
+        }
+
+        sda_resource.sda_patient = sda_patient

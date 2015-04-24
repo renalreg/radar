@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Medication</h1>
 
-    {% with f = form_builder(form) %}
+    {% with f = form_builder(form_handler) %}
         <form method="POST">
             <div class="form-group{% if f.errors('from_date') %} has-error{% endif %}">
                 <label for="from_date" class="control-label">From Date</label>

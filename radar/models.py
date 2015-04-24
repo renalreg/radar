@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, select, join, Boolean
+from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, select, join, Boolean, \
+    PrimaryKeyConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
@@ -17,7 +18,8 @@ class Patient(Base):
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
-    sda_containers = relationship('SDAContainer')
+
+    sda_resources = relationship('SDAResource')
 
     @hybrid_property
     def first_name(self):
@@ -66,8 +68,8 @@ class Patient(Base):
     def latest_sda_patient(self):
         latest_sda_patient = None
 
-        for sda_container in self.sda_containers:
-            sda_patient = sda_container.sda_patient
+        for sda_resource in self.sda_resources:
+            sda_patient = sda_resource.sda_patient
 
             if sda_patient is None:
                 continue
@@ -84,7 +86,7 @@ class Patient(Base):
 
         # TODO choose last updated
         return select([SDAPatient.data[('name', 'given_name')].astext]) \
-            .select_from(join(SDAPatient, SDAContainer).join(patient_alias)) \
+            .select_from(join(SDAPatient, SDAResource).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
             .as_scalar()
 
@@ -94,7 +96,7 @@ class Patient(Base):
 
         # TODO choose last updated
         return select([SDAPatient.data[('name', 'family_name')].astext]) \
-            .select_from(join(SDAPatient, SDAContainer).join(patient_alias)) \
+            .select_from(join(SDAPatient, SDAResource).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
             .as_scalar()
 
@@ -104,7 +106,7 @@ class Patient(Base):
 
         # TODO choose last updated
         return select([SDAPatient.data['birth_time'].astext]) \
-            .select_from(join(SDAPatient, SDAContainer).join(patient_alias)) \
+            .select_from(join(SDAPatient, SDAResource).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
             .as_scalar()
 
@@ -114,7 +116,7 @@ class Patient(Base):
 
         # TODO choose last updated
         return select([SDAPatient.data[('gender', 'code')].astext]) \
-            .select_from(join(SDAPatient, SDAContainer).join(patient_alias)) \
+            .select_from(join(SDAPatient, SDAResource).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
             .as_scalar()
 
@@ -254,11 +256,10 @@ class Facility(Base):
     name = Column(String)
 
 
-class SDAContainer(Base):
-    __tablename__ = 'sda_containers'
+class SDAResource(Base):
+    __tablename__ = 'sda_resources'
 
-    id = Column(Integer, ForeignKey('resources.id'), primary_key=True)
-    resource = relationship('Resource')
+    id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
@@ -268,6 +269,9 @@ class SDAContainer(Base):
 
     mpiid = Column(Integer)
 
+    form = relationship('FormSDAResource', uselist=False)
+    remote = relationship('RemoteSDAResource', uselist=False)
+
     sda_medications = relationship('SDAMedication', cascade='all')
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
 
@@ -276,8 +280,8 @@ class SDAMedication(Base):
     __tablename__ = 'sda_medications'
 
     id = Column(Integer, primary_key=True)
-    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
-    sda_container = relationship('SDAContainer')
+    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
+    sda_resource = relationship('SDAResource')
 
     data = Column(JSONB)
 
@@ -287,8 +291,8 @@ class SDAPatient(Base):
 
     id = Column(Integer, primary_key=True)
 
-    sda_container_id = Column(Integer, ForeignKey('sda_containers.id'))
-    sda_container = relationship('SDAContainer')
+    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
+    sda_resource = relationship('SDAResource')
 
     data = Column(JSONB)
 
@@ -329,29 +333,26 @@ class SDAPatientAddress(Base):
 
     data = Column(JSONB)
 
+class FormSDAResource(Base):
+    __tablename__ = 'form_sda_resources'
 
-class Resource(Base):
-    __tablename__ = 'resources'
+    form_id = Column(Integer, autoincrement=False)
+    form_type = Column(String)
+    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
 
-    id = Column(Integer, primary_key=True)
-    type = Column(String)
+    sda_resource = relationship('SDAResource')
 
-    sda_container = relationship('SDAContainer', uselist=False, cascade='all, delete-orphan')
-    facility_patient = relationship('FacilityPatient', uselist=False)
+    __table_args__ = (
+        PrimaryKeyConstraint('form_id', 'form_type'),
+    )
 
-    __mapper_args__ = {
-        'polymorphic_identity': 'resource',
-        'polymorphic_on': type,
-    }
-
-
-class FacilityPatient(Base):
-    __tablename__ = 'facility_patients'
+class RemoteSDAResource(Base):
+    __tablename__ = 'remote_sda_resources'
 
     patient_id = Column(Integer, ForeignKey('patients.id'), primary_key=True)
     facility_id = Column(Integer, ForeignKey('facilities.id'), primary_key=True)
-    resource_id = Column(Integer, ForeignKey('resources.id'), unique=True)
+    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'), nullable=False)
 
     patient = relationship('Patient')
     facility = relationship('Facility')
-    resource = relationship('Resource')
+    sda_resource = relationship('SDAResource')

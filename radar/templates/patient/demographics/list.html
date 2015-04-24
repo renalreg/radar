@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Demographics</h1>
 
-    <p><a href="{{ url_for('edit_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
+    <p><a href="{{ url_for('.update', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
 
     {% for demographics in demographics_list %}
         <h2>{{ demographics.facility.name }}</h2>

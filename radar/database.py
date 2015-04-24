@@ -10,5 +10,5 @@ Base.query = db_session.query_property()
 
 def configure_engine(url):
     global engine
-    engine = create_engine(url)
+    engine = create_engine(url, echo=True)
     return engine

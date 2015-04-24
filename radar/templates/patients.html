@@ -138,12 +138,12 @@
                         {% if patients %}
                             {% for patient, patient_demographics in patients %}
                                 <tr>
-                                    <td><a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.id }}</a></td>
+                                    <td><a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.id }}</a></td>
 
                                     {% if demographics %}
                                         <td>
                                             {% if patient_demographics and patient.first_name %}
-                                                <a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.first_name }}</a>
+                                                <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.first_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}
@@ -153,7 +153,7 @@
                                     {% if demographics %}
                                         <td>
                                             {% if patient_demographics and patient.last_name %}
-                                                <a href="{{ url_for('demographics', patient_id=patient.id) }}">{{ patient.last_name }}</a>
+                                                <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.last_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}

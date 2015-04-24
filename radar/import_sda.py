@@ -2,8 +2,8 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 
 from radar.database import configure_engine, db_session
-from radar.models import Facility, SDAContainer, Patient, SDAPatient, SDAPatientNumber, SDAMedication, \
-    SDAPatientAddress, SDAPatientAlias, FacilityPatient, Resource
+from radar.models import Facility, SDAResource, Patient, SDAPatient, SDAPatientNumber, SDAMedication, \
+    SDAPatientAddress, SDAPatientAlias, RemoteSDAResource
 
 
 def set_float(data, key, node):
@@ -39,18 +39,18 @@ def parse_code_description(node):
     return data
 
 def parse_container(node):
-    sda_container = SDAContainer()
+    sda_resource = SDAResource()
 
     patient_node = node.find('./Patient')
 
     sda_patient = parse_patient(patient_node)
-    sda_container.sda_patient = sda_patient
+    sda_resource.sda_patient = sda_patient
 
     for medication_node in node.findall('./Medications/Medication'):
         sda_medication = parse_medication(medication_node)
-        sda_container.sda_medications.append(sda_medication)
+        sda_resource.sda_medications.append(sda_medication)
 
-    return sda_container
+    return sda_resource
 
 def parse_base(node):
     data = dict()
@@ -219,24 +219,32 @@ def import_sda(facility_code, xml_data):
 
     patient = Patient.query.get(radar_id)
 
-    sda_container = parse_container(root)
-    sda_container.patient = patient
-    sda_container.facility = facility
-    sda_container.mpiid = mpiid
+    sda_resource = parse_container(root)
+    sda_resource.patient = patient
+    sda_resource.facility = facility
+    sda_resource.mpiid = mpiid
 
-    resource = Resource.query.join(Resource.facility_patient).filter(FacilityPatient.facility == facility, FacilityPatient.patient == patient).first()
+    remote_sda_resource = db_session.query(RemoteSDAResource)\
+        .with_for_update(read=True)\
+        .filter(
+            RemoteSDAResource.patient == patient,
+            RemoteSDAResource.facility == facility,
+        )\
+        .first()
 
-    if resource is None:
-        resource = Resource()
+    if remote_sda_resource is None:
+        remote_sda_resource = RemoteSDAResource()
+        remote_sda_resource.patient = patient
+        remote_sda_resource.facility = facility
+    else:
+        old_sda_resource = remote_sda_resource.sda_resource
 
-        facility_patient = FacilityPatient()
-        facility_patient.facility = facility
-        facility_patient.patient = patient
-        resource.facility_patient = facility_patient
+        if old_sda_resource:
+            db_session.delete(remote_sda_resource.sda_resource)
 
-    resource.sda_container = sda_container
+    remote_sda_resource.sda_resource = sda_resource
 
-    db_session.add(resource)
+    db_session.add(remote_sda_resource)
     db_session.commit()
 
 if __name__ == '__main__':

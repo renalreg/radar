@@ -2,7 +2,7 @@ from radar.constants import UNIT_DEMOGRAPHICS_ROLES, DISEASE_GROUP_DEMOGRAPHICS_
     UNIT_MODIFY_PATIENT_ROLES, \
     UNIT_VIEW_PATIENT_ROLES
 from radar.database import db_session
-from radar.models import Patient, Unit, UnitUser, DiseaseGroup, DiseaseGroupUser, User
+from radar.models import Patient, Unit, UnitUser, DiseaseGroup, DiseaseGroupUser, User, FormSDAResource, SDAResource
 
 
 def is_user_in_disease_group(user, disease_group):
@@ -222,3 +222,4 @@ def can_user_view_patient_demographics(user, patient):
     # * has a demographics role at a unit shared with a patient
     return has_disease_group_role_for_patient(user, patient, DISEASE_GROUP_DEMOGRAPHICS_ROLES) or \
            has_unit_role_for_patient(user, patient, UNIT_DEMOGRAPHICS_ROLES)
+
