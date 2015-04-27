@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, select, join, Boolean, \
-    PrimaryKeyConstraint
+    PrimaryKeyConstraint, ForeignKeyConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
@@ -259,7 +259,8 @@ class Facility(Base):
 class SDAResource(Base):
     __tablename__ = 'sda_resources'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    data_source = relationship('DataSource')
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
@@ -268,9 +269,6 @@ class SDAResource(Base):
     facility = relationship('Facility')
 
     mpiid = Column(Integer)
-
-    form = relationship('FormSDAResource', uselist=False)
-    remote = relationship('RemoteSDAResource', uselist=False)
 
     sda_medications = relationship('SDAMedication', cascade='all')
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
@@ -333,26 +331,30 @@ class SDAPatientAddress(Base):
 
     data = Column(JSONB)
 
-class FormSDAResource(Base):
-    __tablename__ = 'form_sda_resources'
+class DataSource(Base):
+    __tablename__ = 'data_sources'
 
-    form_id = Column(Integer, autoincrement=False)
-    form_type = Column(String)
-    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
+    id = Column(Integer, primary_key=True)
+    type = Column(String)
 
-    sda_resource = relationship('SDAResource')
+    sda_resource = relationship('SDAResource', uselist=False, cascade='all, delete-orphan')
 
-    __table_args__ = (
-        PrimaryKeyConstraint('form_id', 'form_type'),
-    )
+    __mapper_args__ = {
+        'polymorphic_identity': 'data_sources',
+        'polymorphic_on': type
+    }
 
-class RemoteSDAResource(Base):
-    __tablename__ = 'remote_sda_resources'
+class DataImport(DataSource):
+    __tablename__ = 'data_imports'
+
+    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), primary_key=True)
     facility_id = Column(Integer, ForeignKey('facilities.id'), primary_key=True)
-    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'), nullable=False)
 
     patient = relationship('Patient')
     facility = relationship('Facility')
-    sda_resource = relationship('SDAResource')
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'data_imports',
+    }

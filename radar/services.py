@@ -2,7 +2,7 @@ from radar.constants import UNIT_DEMOGRAPHICS_ROLES, DISEASE_GROUP_DEMOGRAPHICS_
     UNIT_MODIFY_PATIENT_ROLES, \
     UNIT_VIEW_PATIENT_ROLES
 from radar.database import db_session
-from radar.models import Patient, Unit, UnitUser, DiseaseGroup, DiseaseGroupUser, User, FormSDAResource, SDAResource
+from radar.models import Patient, Unit, UnitUser, DiseaseGroup, DiseaseGroupUser, User
 
 
 def is_user_in_disease_group(user, disease_group):

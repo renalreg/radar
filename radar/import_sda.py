@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 from radar.database import configure_engine, db_session
 from radar.models import Facility, SDAResource, Patient, SDAPatient, SDAPatientNumber, SDAMedication, \
-    SDAPatientAddress, SDAPatientAlias, RemoteSDAResource
+    SDAPatientAddress, SDAPatientAlias, DataImport
 
 
 def set_float(data, key, node):
@@ -224,27 +224,22 @@ def import_sda(facility_code, xml_data):
     sda_resource.facility = facility
     sda_resource.mpiid = mpiid
 
-    remote_sda_resource = db_session.query(RemoteSDAResource)\
+    data_import = db_session.query(DataImport)\
         .with_for_update(read=True)\
         .filter(
-            RemoteSDAResource.patient == patient,
-            RemoteSDAResource.facility == facility,
+            DataImport.patient == patient,
+            DataImport.facility == facility,
         )\
         .first()
 
-    if remote_sda_resource is None:
-        remote_sda_resource = RemoteSDAResource()
-        remote_sda_resource.patient = patient
-        remote_sda_resource.facility = facility
-    else:
-        old_sda_resource = remote_sda_resource.sda_resource
+    if data_import is None:
+        data_import = DataImport()
+        data_import.patient = patient
+        data_import.facility = facility
 
-        if old_sda_resource:
-            db_session.delete(remote_sda_resource.sda_resource)
+    data_import.sda_resource = sda_resource
 
-    remote_sda_resource.sda_resource = sda_resource
-
-    db_session.add(remote_sda_resource)
+    db_session.add(data_import)
     db_session.commit()
 
 if __name__ == '__main__':

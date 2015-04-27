@@ -4,12 +4,13 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.concepts import MedicationConcept
 from radar.database import Base
+from radar.models import DataSource
 
 
-class Medication(Base):
+class Medication(DataSource):
     __tablename__ = 'medications'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'))
     patient = relationship('Patient')
@@ -17,6 +18,10 @@ class Medication(Base):
     from_date = Column(Date)
     to_date = Column(Date)
     name = Column(String)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'medications',
+    }
 
     def to_concepts(self):
         return [

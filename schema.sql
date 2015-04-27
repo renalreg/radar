@@ -1,8 +1,6 @@
 DROP TABLE IF EXISTS demographics;
 DROP TABLE IF EXISTS medications;
-
-DROP TABLE IF EXISTS remote_sda_resources;
-DROP TABLE IF EXISTS form_sda_resources;
+DROP TABLE IF EXISTS data_imports;
 
 DROP TABLE IF EXISTS sda_medications;
 DROP TABLE IF EXISTS sda_patient_aliases;
@@ -10,6 +8,8 @@ DROP TABLE IF EXISTS sda_patient_numbers;
 DROP TABLE IF EXISTS sda_patient_addresses;
 DROP TABLE IF EXISTS sda_patients;
 DROP TABLE IF EXISTS sda_resources;
+
+DROP TABLE IF EXISTS data_sources;
 
 DROP TABLE IF EXISTS unit_patients;
 DROP TABLE IF EXISTS unit_users;
@@ -91,8 +91,14 @@ CREATE TABLE disease_group_features (
     feature_name character varying
 );
 
+CREATE TABLE data_sources (
+    id serial PRIMARY KEY,
+    type character varying NOT NULL,
+    UNIQUE (id, type)
+);
+
 CREATE TABLE sda_resources (
-    id serial primary key,
+    id integer primary key references data_sources (id) on delete cascade on update cascade,
     patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
     mpiid integer
@@ -128,30 +134,31 @@ CREATE TABLE sda_medications (
     data jsonb
 );
 
-CREATE TABLE form_sda_resources (
-    form_id integer,
-    form_type character varying,
-    sda_resource_id integer REFERENCES sda_resources (id),
-    PRIMARY KEY (form_id, form_type)
-);
-
-CREATE TABLE remote_sda_resources (
-	patient_id integer REFERENCES patients (id),
-	facility_id integer REFERENCES facilities (id),
-	sda_resource_id integer REFERENCES sda_resources (id),
-	PRIMARY KEY (patient_id, facility_id)
+CREATE TABLE data_imports (
+    id integer PRIMARY KEY,
+    type character varying NOT NULL DEFAULT 'data_imports' CHECK (type = 'data_imports'),
+    patient_id integer REFERENCES patients (id),
+    facility_id integer REFERENCES facilities (id),
+    UNIQUE (patient_id, facility_id),
+    FOREIGN KEY (id, type) REFERENCES data_sources (id, type)
 );
 
 CREATE TABLE demographics (
-    id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    id integer PRIMARY KEY,
+    type character varying NOT NULL DEFAULT 'demographics' CHECK (type = 'demographics'),
+    patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     first_name character varying,
-    last_name character varying
+    last_name character varying,
+    FOREIGN KEY (id, type) REFERENCES data_sources (id, type)
 );
 
 CREATE TABLE medications (
-    id serial PRIMARY KEY,
+    id integer PRIMARY KEY,
+    type character varying NOT NULL DEFAULT 'medications' CHECK (type = 'medications'),
     patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     from_date date NOT NULL,
     to_date date,
-    name character varying NOT NULL
+    name character varying NOT NULL,
+
+    FOREIGN KEY (id, type) REFERENCES data_sources (id, type)
 );

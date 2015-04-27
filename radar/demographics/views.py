@@ -3,7 +3,7 @@ from flask.views import View
 
 from radar.demographics.forms import DemographicsFormHandler
 from radar.demographics.models import Demographics
-from radar.form_views import PatientRepeatingFormDetail
+from radar.form_views import PatientFormDetail
 from radar.models import SDAPatient, Patient
 from radar.patients.views import get_patient_detail_context
 from radar.utils import get_path
@@ -34,7 +34,7 @@ class DemographicsList(View):
 
         return render_template('patient/demographics/list.html', **context)
 
-class DemographicsDetail(PatientRepeatingFormDetail):
+class DemographicsDetail(PatientFormDetail):
     model = Demographics
     form_handler = DemographicsFormHandler
 

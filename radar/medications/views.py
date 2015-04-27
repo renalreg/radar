@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for
 from flask.views import View
 from radar.database import db_session
+from radar.form_services import sda_resource_to_edit_url, sda_resource_to_delete_url
 
 from radar.form_views import PatientRepeatingFormDelete, PatientRepeatingFormDetail
 from radar.medications.models import Medication
@@ -28,13 +29,8 @@ class MedicationListView(View):
             medication['name'] = get_path(sda_medication.data, 'order_item', 'description')
             medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
             medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
-
-            form_sda_resource = sda_medication.sda_resource.form
-
-            if form_sda_resource is not None and form_sda_resource.form_type == 'medications':
-                medication['edit_url'] = url_for('medications.update', patient_id=patient_id, form_id=form_sda_resource.form_id)
-                medication['delete_url'] = url_for('medications.delete', patient_id=patient_id, form_id=form_sda_resource.form_id)
-
+            medication['edit_url'] = sda_resource_to_edit_url(sda_medication.sda_resource)
+            medication['delete_url'] = sda_resource_to_delete_url(sda_medication.sda_resource)
             medications.append(medication)
 
         context['medications'] = medications

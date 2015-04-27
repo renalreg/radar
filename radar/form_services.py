@@ -1,11 +1,9 @@
+from flask import url_for
 from radar.database import db_session
-from radar.models import FormSDAResource, Facility, SDAResource
+from radar.models import Facility, SDAResource
 
 
 def save_form(form):
-    db_session.add(form)
-    db_session.flush()
-
     sda_resource = SDAResource()
     sda_resource.patient = form.patient
     sda_resource.facility = Facility.query.filter(Facility.code == 'RADAR').one()
@@ -13,39 +11,29 @@ def save_form(form):
     for concept, _ in form.to_concepts():
         concept.to_sda(sda_resource)
 
-    save_form_sda_resource(form, sda_resource)
+    form.sda_resource = sda_resource
 
-def save_form_sda_resource(form, sda_resource):
-    form_sda_resource = db_session.query(FormSDAResource)\
-        .filter(
-            FormSDAResource.form_id == form.id,
-            FormSDAResource.form_type == form.__tablename__
-        )\
-        .first()
-
-    if form_sda_resource is None:
-        form_sda_resource = FormSDAResource()
-        form_sda_resource.form_id = form.id
-        form_sda_resource.form_type = form.__tablename__
-    else:
-        if form_sda_resource.sda_resource is not None:
-            db_session.delete(form_sda_resource.sda_resource)
-
-    form_sda_resource.sda_resource = sda_resource
-    db_session.add(form_sda_resource)
+    db_session.add(form)
 
 def delete_form(form):
     db_session.delete(form)
 
-    form_sda_resource = db_session.query(FormSDAResource)\
-        .filter(
-            FormSDAResource.form_id == form.id,
-            FormSDAResource.form_type == form.__tablename__,
-        )\
-        .first()
+def sda_resource_to_edit_url(sda_resource):
+    patient_id = sda_resource.patient_id
+    data_source = sda_resource.data_source
 
-    if form_sda_resource is not None:
-        db_session.delete(form_sda_resource)
+    if data_source is not None:
+        if data_source.type == 'medications':
+            return url_for('medications.update', patient_id=patient_id, form_id=data_source.id)
 
-        if form_sda_resource.sda_resource is not None:
-            db_session.delete(form_sda_resource.sda_resource)
+    return None
+
+def sda_resource_to_delete_url(sda_resource):
+    patient_id = sda_resource.patient_id
+    data_source = sda_resource.data_source
+
+    if data_source is not None:
+        if data_source.type == 'medications':
+            return url_for('medications.delete', patient_id=patient_id, form_id=data_source.id)
+
+    return None
