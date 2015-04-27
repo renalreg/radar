@@ -5,39 +5,11 @@
 {% block content %}
     <h1>Medication</h1>
 
-    {% with f = form_builder(form_handler) %}
-        <form method="POST">
-            <div class="form-group{% if f.errors('from_date') %} has-error{% endif %}">
-                <label for="from_date" class="control-label">From Date</label>
-
-                {{ f.date_field('from_date') }}
-
-                {% for error in f.errors('from_date') %}
-                    <span class="help-block">{{ error }}</span>
-                {% endfor %}
-            </div>
-
-            <div class="form-group{% if f.errors('to_date') %} has-error{% endif %}">
-                <label for="to_date" class="control-label">To Date</label>
-
-                {{ f.date_field('to_date') }}
-
-                {% for error in f.errors('to_date') %}
-                    <span class="help-block">{{ error }}</span>
-                {% endfor %}
-            </div>
-
-            <div class="form-group{% if f.errors('name') %} has-error{% endif %}">
-                <label for="name" class="control-label">Name</label>
-
-                {{ f.text_field('name') }}
-
-                {% for error in f.errors('name') %}
-                    <span class="help-block">{{ error }}</span>
-                {% endfor %}
-            </div>
-
-            <button type="submit" class="btn btn-success">Save</button>
-        </form>
-    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.from_date }}
+        {{ form.to_date }}
+        {{ form.name }}
+        <input type="submit" />
+    </form>
 {% endblock %}

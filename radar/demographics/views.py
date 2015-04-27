@@ -1,9 +1,9 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, redirect, url_for
 from flask.views import View
+from radar.demographics.forms import DemographicsForm
 
-from radar.demographics.forms import DemographicsFormHandler
 from radar.demographics.models import Demographics
-from radar.form_views import PatientFormDetail
+from radar.form_views.detail import SingleFormDetail
 from radar.models import SDAPatient, Patient
 from radar.patients.views import get_patient_detail_context
 from radar.utils import get_path
@@ -34,12 +34,21 @@ class DemographicsList(View):
 
         return render_template('patient/demographics/list.html', **context)
 
-class DemographicsDetail(PatientFormDetail):
-    model = Demographics
-    form_handler = DemographicsFormHandler
+class DemographicsDetail(SingleFormDetail):
+    def get_entry_class(self):
+        return Demographics
+
+    def get_form(self, entry):
+        return DemographicsForm(obj=entry)
+
+    def get_template_name(self):
+        return 'patient/demographics/detail.html'
+
+    def get_success(self, entry):
+        return redirect(url_for('demographics.list', patient_id=entry.patient_id))
 
 app = Blueprint('demographics', __name__)
 
 app.add_url_rule('/', view_func=DemographicsList.as_view('list'))
-app.add_url_rule('/demographics/', view_func=DemographicsDetail.as_view('detail', 'patient/demographics/detail.html'))
-app.add_url_rule('/demographics/', view_func=DemographicsDetail.as_view('update', 'patient/demographics/detail.html'))
+app.add_url_rule('/demographics/', view_func=DemographicsDetail.as_view('detail'))
+app.add_url_rule('/demographics/', view_func=DemographicsDetail.as_view('update'))

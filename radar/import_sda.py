@@ -1,7 +1,7 @@
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
-from radar.database import configure_engine, db_session
+from radar.database import init_engine, db_session
 from radar.models import Facility, SDAResource, Patient, SDAPatient, SDAPatientNumber, SDAMedication, \
     SDAPatientAddress, SDAPatientAlias, DataImport
 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
     parser.add_argument('xml_filename')
     args = parser.parse_args()
 
-    configure_engine('postgresql://postgres:password@localhost:5432/radar')
+    init_engine('postgresql://postgres:password@localhost:5432/radar')
 
     facility_code = args.facility_code
     xml_data = open(args.xml_filename, 'rb').read()

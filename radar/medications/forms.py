@@ -1,17 +1,13 @@
-from radar.form_handlers import FormHandler, str_parser, int_parser, date_parser
-from radar.medications.validators import MedicationValidator
+from flask_wtf import Form
+from wtforms import DateField, StringField
 
 
-class MedicationFormHandler(FormHandler):
-    parsers = {
-        'from_date': date_parser(),
-        'to_date': date_parser(),
-        'name': str_parser,
-        'dosage': int_parser,
-    }
+class MedicationForm(Form):
+    from_date = DateField(format='%d/%m/%Y')
+    to_date = DateField(format='%d/%m/%Y')
+    name = StringField()
 
-    def validate(self):
-        validator = MedicationValidator(self.obj)
-
-        if not validator.valid():
-            self.add_errors(validator.errors)
+    def populate_obj(self, obj):
+        obj.from_date = self.from_date.data
+        obj.to_date = self.to_date.data
+        obj.name = self.name.data

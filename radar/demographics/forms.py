@@ -1,8 +1,11 @@
-from radar.form_handlers import FormHandler, str_parser
+from flask_wtf import Form
+from wtforms import StringField
 
 
-class DemographicsFormHandler(FormHandler):
-    parsers = {
-        'first_name': str_parser,
-        'last_name': str_parser
-    }
+class DemographicsForm(Form):
+    first_name = StringField()
+    last_name = StringField()
+
+    def populate_obj(self, obj):
+        obj.first_name = self.first_name.data
+        obj.last_name = self.last_name.data

@@ -8,7 +8,7 @@ db_session = scoped_session(lambda: create_session(autocommit=False, autoflush=F
 Base = declarative_base()
 Base.query = db_session.query_property()
 
-def configure_engine(url):
+def init_engine(url, **kwargs):
     global engine
-    engine = create_engine(url, echo=True)
+    engine = create_engine(url, **kwargs)
     return engine

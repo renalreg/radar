@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 
-from radar.database import db_session, configure_engine
+from radar.database import db_session, init_engine
 from radar.form_builders import RadarFormBuilder
 from radar.medications.views import app as medications_app
 from radar.diagnoses.views import app as diagnoses_app
@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.secret_key = 't\xd1\x91\xe5}\xe6\x02\xea\x8c\xecG\xdb}\x0e\xd3Sb$\x9a\xdeW\x15\x01\xc3'
 
 # Configure the database engine
-configure_engine('postgresql://postgres:password@localhost:5432/radar')
+init_engine('postgresql://postgres:password@localhost:5432/radar')
 
 login_manager = LoginManager()
 login_manager.init_app(app)

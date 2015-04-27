@@ -1,16 +1,18 @@
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, url_for, redirect
 from flask.views import View
+
 from radar.database import db_session
 from radar.form_services import sda_resource_to_edit_url, sda_resource_to_delete_url
-
-from radar.form_views import PatientRepeatingFormDelete, PatientRepeatingFormDetail
+from radar.medications.forms import MedicationForm
 from radar.medications.models import Medication
-from radar.medications.forms import MedicationFormHandler
 from radar.models import SDAMedication, SDAResource, Patient
 from radar.patients.views import get_patient_detail_context
 from radar.utils import get_path_as_datetime, get_path
+from radar.form_views.detail import RepeatingFormDetail
+from radar.form_views.delete import RepeatingFormDelete
 
-class MedicationListView(View):
+
+class MedicationList(View):
     def dispatch_request(self, patient_id):
         context = get_patient_detail_context(patient_id)
 
@@ -37,16 +39,38 @@ class MedicationListView(View):
 
         return render_template('patient/medications/list.html', **context)
 
-class MedicationDetailView(PatientRepeatingFormDetail):
-    model = Medication
-    form_handler = MedicationFormHandler
 
-class MedicationDeleteView(PatientRepeatingFormDelete):
-    model = Medication
+class MedicationDetail(RepeatingFormDetail):
+    def get_entry_class(self):
+        return Medication
+
+    def get_form(self, entry):
+        return MedicationForm(obj=entry)
+
+    def validate(self, form, entry):
+        if entry.to_date is not None and entry.from_date > entry.to_date:
+            form.to_date.errors.append('To date must be on or after from date.')
+
+        return not form.errors
+
+    def get_template_name(self):
+        return 'patient/medications/detail.html'
+
+    def get_success(self, entry):
+        return redirect(url_for('medications.list', patient_id=entry.patient_id))
+
+
+class MedicationDelete(RepeatingFormDelete):
+    def get_entry_class(self):
+        return Medication
+
+    def success(self, patient):
+        return redirect(url_for('medications.list', patient_id=patient.id))
+
 
 app = Blueprint('medications', __name__)
-app.add_url_rule('/', view_func=MedicationListView.as_view('list'))
-app.add_url_rule('/new', 'create', view_func=MedicationDetailView.as_view('create', 'patient/medications/detail.html'))
-app.add_url_rule('/<int:form_id>/', view_func=MedicationDetailView.as_view('detail', 'patient/medications/detail.html'))
-app.add_url_rule('/<int:form_id>/', view_func=MedicationDetailView.as_view('update', 'patient/medications/detail.html'))
-app.add_url_rule('/<int:form_id>/delete', view_func=MedicationDeleteView.as_view('delete'))
+app.add_url_rule('/', view_func=MedicationList.as_view('list'))
+app.add_url_rule('/new', 'create', view_func=MedicationDetail.as_view('create'))
+app.add_url_rule('/<int:entry_id>/', view_func=MedicationDetail.as_view('detail'))
+app.add_url_rule('/<int:entry_id>/', view_func=MedicationDetail.as_view('update'))
+app.add_url_rule('/<int:entry_id>/delete', view_func=MedicationDelete.as_view('delete'))
