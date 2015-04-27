@@ -18,13 +18,13 @@ def save_form_entry(entry):
 def delete_form_entry(entry):
     db_session.delete(entry)
 
-def sda_resource_to_edit_url(sda_resource):
+def sda_resource_to_update_url(sda_resource):
     patient_id = sda_resource.patient_id
     data_source = sda_resource.data_source
 
     if data_source is not None:
         if data_source.type == 'medications':
-            return url_for('medications.update', patient_id=patient_id, entry_id=data_source.id)
+            return url_for('medication_update', patient_id=patient_id, entry_id=data_source.id)
 
     return None
 
@@ -34,6 +34,6 @@ def sda_resource_to_delete_url(sda_resource):
 
     if data_source is not None:
         if data_source.type == 'medications':
-            return url_for('medications.delete', patient_id=patient_id, entry_id=data_source.id)
+            return url_for('medication_delete', patient_id=patient_id, entry_id=data_source.id)
 
     return None

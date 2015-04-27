@@ -1,20 +1,14 @@
-from radar.form_handlers import FormHandler, str_parser, int_parser
+from wtforms import SelectField, Form, StringField
 
 
-class UserSearchFormHandler(FormHandler):
-    parsers = {
-        'username': str_parser,
-        'email': str_parser,
-        'unit_id': int_parser,
-        'disease_group_id': int_parser,
-    }
+class UserSearchForm(Form):
+    username = StringField()
+    email = StringField()
+    unit_id = SelectField()
+    disease_group_id = SelectField()
 
-class UserDiseaseGroupFormHandler(FormHandler):
-    parsers = {
-        'disease_group_id': int_parser,
-    }
+class UserDiseaseGroupForm(Form):
+    disease_group_id = SelectField()
 
-class UserUnitFormHandler(FormHandler):
-    parsers = {
-        'unit_id': int_parser,
-    }
+class UserUnitForm(Form):
+    unit_id = SelectField()

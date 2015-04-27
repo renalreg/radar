@@ -7,7 +7,7 @@ from radar.form_services import delete_form_entry
 from radar.services import get_patient_for_user
 
 
-class RepeatingFormDelete(View):
+class RepeatingFormDeleteView(View):
     methods = ['POST']
 
     def get_entry_class(self):

@@ -10,6 +10,87 @@ from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatie
     SDAPatient, SDAResource, SDAPatientNumber, SDAPatientAlias
 from radar.services import is_user_in_unit, is_user_in_disease_group
 
+class PatientQueryBuilder():
+    def __init__(self, user):
+        self.query = db_session.query(Patient)
+        self.user = user
+
+        # True if the query is filtering on demographics
+        self.filtering_by_demographics = False
+
+    def first_name(self, first_name):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_first_name(first_name))
+        return self
+
+    def last_name(self, last_name):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_last_name(last_name))
+        return self
+
+    def date_of_birth(self, date_of_birth):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_date_of_birth(date_of_birth))
+        return self
+
+    def gender(self, gender):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_gender(gender))
+        return self
+
+    def patient_number(self, patient_number):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_patient_number(patient_number))
+        return self
+
+    def radar_id(self, radar_id):
+        self.query = self.query.filter(filter_by_radar_id(radar_id))
+        return self
+
+    def year_of_birth(self, value):
+        self.query = self.query.filter(filter_by_year_of_birth(value))
+        return self
+
+    def unit(self, unit_id):
+        unit = Unit.query.get(unit_id)
+
+        # Unit exists
+        if unit is not None:
+            self.query = self.query.join(UnitPatient).filter(UnitPatient.unit == unit)
+
+        return self
+
+    def disease_group(self, disease_group_id):
+        # Get the disease group with this id
+        disease_group = DiseaseGroup.query.get(disease_group_id)
+
+        # Disease group exists
+        if disease_group is not None:
+            # If the user doesn't belong to the disease group they need unit permissions
+            if not is_user_in_disease_group(self.user, disease_group):
+                self.filtering_by_demographics = True
+
+            # Filter by disease group
+            self.query = self.query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
+
+        return self
+
+    def order_by(self, column, direction):
+        self.query = self.query.order_by(*order_patients(self.user, column, direction))
+
+    def build(self):
+        query = self.query
+
+        if not self.user.is_admin:
+            if self.filtering_by_demographics:
+                permission_filter = filter_by_demographics_permissions(self.user)
+            else:
+                permission_filter = filter_by_view_patient_permissions(self.user)
+
+            # Filter the patients based on the user's permissions and the type of query
+            query = query.filter(permission_filter)
+
+        return query
 
 def sda_patient_sub_query(*args):
     patient_alias = aliased(Patient)
@@ -170,74 +251,6 @@ def order_by_date_of_birth(user, direction):
 
         return [year_order, anonymised_order, date_of_birth_order]
 
-def filter_patients(user, query, params):
-    filtering_by_demographics = False
-
-    first_name = params.get('first_name')
-    last_name = params.get('last_name')
-    date_of_birth = params.get('date_of_birth')
-    gender = params.get('gender')
-    patient_number = params.get('patient_number')
-    radar_id = params.get('radar_id')
-    year_of_birth = params.get('year_of_birth')
-    unit_id = params.get('unit_id')
-    disease_group_id = params.get('disease_group_id')
-
-    if first_name:
-        filtering_by_demographics = True
-        query = query.filter(filter_by_first_name(first_name))
-
-    if last_name:
-        filtering_by_demographics = True
-        query = query.filter(filter_by_last_name(last_name))
-
-    if date_of_birth:
-        filtering_by_demographics = True
-        query = query.filter(filter_by_date_of_birth(date_of_birth))
-
-    if gender:
-        query = query.filter(filter_by_gender(gender))
-
-    if patient_number:
-        filtering_by_demographics = True
-        query = query.filter(filter_by_patient_number(patient_number))
-
-    if radar_id is not None:
-        query = query.filter(filter_by_radar_id(radar_id))
-
-    if year_of_birth is not None:
-        query = query.filter(filter_by_year_of_birth(year_of_birth))
-
-
-    # TODO pass in unit instead and do auth outside
-    # Filter by unit
-    if unit_id is not None:
-        unit = Unit.query.get(unit_id)
-
-        # Unit exists
-        if unit is not None:
-            # User belongs to unit
-            if is_user_in_unit(user, unit):
-                filtering_by_demographics = True
-                query = query.join(UnitPatient).filter(UnitPatient.unit == unit)
-
-    # TODO pass in disease group instead and do auth outside
-    # Filter by disease group
-    if disease_group_id:
-        # Get the disease group with this id
-        disease_group = DiseaseGroup.query.get(disease_group_id)
-
-        # Disease group exists
-        if disease_group is not None:
-            # If the user doesn't belong to the disease group they need unit permissions
-            if not is_user_in_disease_group(user, disease_group):
-                filtering_by_demographics = True
-
-            # Filter by disease group
-            query = query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
-
-    return query, filtering_by_demographics
-
 def order_patients(user, order_by, direction):
     if order_by == 'first_name':
         clauses = [order_by_first_name(user, direction)]
@@ -254,30 +267,3 @@ def order_patients(user, order_by, direction):
     clauses.append(order_by_radar_id(True))
 
     return clauses
-
-def get_patients_for_user_query(user, params=None):
-    # True if the query is filtering on demographics
-    filtering_by_demographics = False
-
-    query = db_session.query(Patient)
-
-    # Filter the list of patients based on the search terms
-    if params is not None:
-        query, filtering_by_demographics = filter_patients(user, query, params)
-
-    if not user.is_admin:
-        if filtering_by_demographics:
-            permission_filter = filter_by_demographics_permissions(user)
-        else:
-            permission_filter = filter_by_view_patient_permissions(user)
-
-        # Filter the patients based on the user's permissions and the type of query
-        query = query.filter(permission_filter)
-
-    order_by = params.get('order_by')
-    direction = (params.get('order_direction') or 'asc') == 'asc'
-
-    # Order the list of patients
-    query = query.order_by(*order_patients(user, order_by, direction))
-
-    return query

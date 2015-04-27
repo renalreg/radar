@@ -5,12 +5,12 @@
 {% block content %}
     <h1>Demographics</h1>
 
-    <p><a href="{{ url_for('.update', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
+    <p><a href="{{ url_for('demographics_update', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
 
     {% for demographics in demographics_list %}
-        <h2>{{ demographics.facility.name }}</h2>
+        <h3>{{ demographics.facility.name }}</h3>
 
-        <table class="table demographics">
+        <table class="table table-striped table-condensed demographics">
             <tr>
                 <th>First Name</th>
                 <td width="100%">{{ demographics.first_name }}</td>

@@ -2,7 +2,9 @@
 
 {% set page = 'patients' %}
 
-{% from 'utils.html' import render_pagination, render_order_by_link %}
+{% from 'macros/pagination.html' import render_pagination %}
+{% from 'macros/ordering.html' import render_order_by_link %}
+{% from 'macros/forms.html' import render_field %}
 
 {% block body %}
     <div class="row">
@@ -10,98 +12,58 @@
             <div class="block">
                 <h2>Search</h2>
 
-                {% with f = form_builder(form) %}
-                    <form method="GET">
-                        <div class="form-group">
-                            <label for="radar_id" class="control-label">RaDaR ID</label>
-                            {{ f.text_field('radar_id', attributes={'placeholder': 'RaDaR ID'}) }}
-                        </div>
+                <form method="GET">
+                    {{ render_field(form.radar_id) }}
 
-                        {% if demographics %}
-                            <div class="form-group">
-                                <label for="first_name" class="control-label">First Name</label>
-                                {{ f.text_field('first_name', attributes={'placeholder': 'First Name'}) }}
+                    {% if demographics %}
+                        {{ render_field(form.first_name) }}
+                    {% endif %}
+
+                    {% if demographics %}
+                        {{ render_field(form.last_name) }}
+                    {% endif %}
+
+                    {% if demographics %}
+                        {{ render_field(form.date_of_birth) }}
+                    {% endif %}
+
+                    {{ render_field(form.year_of_birth) }}
+
+                    {{ render_field(form.gender) }}
+
+                    {% if demographics %}
+                        {{ render_field(form.patient_number) }}
+                    {% endif %}
+
+                    {% if disease_group_choices | length > 1 %}
+                        {{ render_field(form.disease_group_id) }}
+                    {% endif %}
+
+                    {% if unit_choices | length > 1 %}
+                        {{ render_field(form.unit_id) }}
+                    {% endif %}
+
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#meta">
+                                        Meta
+                                    </a>
+                                </h4>
                             </div>
-                        {% endif %}
 
-                        {% if demographics %}
-                            <div class="form-group">
-                                <label for="last_name" class="control-label">Last Name</label>
-                                {{ f.text_field('last_name', attributes={'placeholder': 'Last Name'}) }}
-                            </div>
-                        {% endif %}
-
-                        {% if demographics %}
-                            <div class="form-group">
-                                <label for="date_of_birth" class="control-label">Date of Birth</label>
-                                {{ f.date_field('date_of_birth') }}
-                            </div>
-                        {% endif %}
-
-                        <div class="form-group">
-                            <label for="year_of_birth" class="control-label">Year of Birth</label>
-                            {{ f.text_field('year_of_birth', attributes={'placeholder': 'YYYY'}) }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gender" class="control-label">Gender</label>
-                            {{ f.select('gender', [('Male', 'M'), ('Female', 'F')], include_blank=True) }}
-                        </div>
-
-                        {% if demographics %}
-                            <div class="form-group">
-                                <label for="patient_number" class="control-label">Patient Number</label>
-                                {{ f.text_field('patient_number', attributes={'placeholder': 'Patient Number'}) }}
-                            </div>
-                        {% endif %}
-
-                        {% if disease_group_choices | length > 1 %}
-                            <div class="form-group">
-                                <label for="disease_group_id" class="control-label">Disease Group</label>
-                                {{ f.select('disease_group_id', disease_group_choices, include_blank=True) }}
-                            </div>
-                        {% endif %}
-
-                        {% if unit_choices | length > 1 %}
-                            <div class="form-group">
-                                <label for="unit_id" class="control-label">Unit</label>
-                                {{ f.select('unit_id', unit_choices, include_blank=True) }}
-                            </div>
-                        {% endif %}
-
-                        <div class="panel-group">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" href="#meta">
-                                            Meta
-                                        </a>
-                                    </h4>
-                                </div>
-
-                                <div id="meta" class="panel-body panel-collapse collapse">
-                                    <div class="form-group">
-                                        <label for="order_by" class="control-label">Order By</label>
-                                        {{ f.select('order_by', order_by_choices) }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="order_direction" class="control-label">Order Direction</label>
-                                        {{ f.select('order_direction', [('Ascending', 'asc'), ('Descending', 'desc')]) }}
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="per_page" class="control-label">Patients Per Page</label>
-                                        {{ f.select('per_page', per_page_choices) }}
-                                    </div>
-                                </div>
+                            <div id="meta" class="panel-body panel-collapse collapse">
+                                {{ render_field(form.order_by) }}
+                                {{ render_field(form.order_direction) }}
+                                {{ render_field(form.per_page) }}
                             </div>
                         </div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary">Search</button>
-                        <a href="{{ url_for('patients') }}" class="btn btn-link">Reset</a>
-                    </form>
-                {% endwith %}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{{ url_for('patients') }}" class="btn btn-link">Reset</a>
+                </form>
             </div>
         </div>
 
@@ -138,12 +100,12 @@
                         {% if patients %}
                             {% for patient, patient_demographics in patients %}
                                 <tr>
-                                    <td><a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.id }}</a></td>
+                                    <td><a href="{{ url_for('patient', patient_id=patient.id) }}">{{ patient.id }}</a></td>
 
                                     {% if demographics %}
                                         <td>
                                             {% if patient_demographics and patient.first_name %}
-                                                <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.first_name }}</a>
+                                                <a href="{{ url_for('patient', patient_id=patient.id) }}">{{ patient.first_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}
@@ -153,7 +115,7 @@
                                     {% if demographics %}
                                         <td>
                                             {% if patient_demographics and patient.last_name %}
-                                                <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">{{ patient.last_name }}</a>
+                                                <a href="{{ url_for('patient', patient_id=patient.id) }}">{{ patient.last_name }}</a>
                                             {% else %}
                                                 -
                                             {% endif %}
@@ -181,8 +143,6 @@
                                     </td>
 
                                     <td>
-                                        <!-- TODO add links -->
-
                                         {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
                                             {% if disease_groups %}
                                                 {% for disease_group in disease_groups %}
@@ -196,8 +156,6 @@
 
                                     {% if demographics %}
                                         <td>
-                                            <!-- TODO add links -->
-
                                             {% with units = filter_patient_units_for_user(patient, current_user) %}
                                                 {% if units %}
                                                     {% for unit in filter_patient_units_for_user(patient, current_user) %}
@@ -224,7 +182,7 @@
                 <p>
                     <strong>Per Page:</strong>
 
-                    {% for label, value in per_page_choices %}
+                    {% for value, label in per_page_choices %}
                         {% if pagination.per_page == value %}
                             <a href="{{ url_for_per_page(value) }}"><strong>{{ label }}</strong></a>{% if not loop.last %},{% endif %}
                         {% else %}

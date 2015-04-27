@@ -331,6 +331,7 @@ class SDAPatientAddress(Base):
 
     data = Column(JSONB)
 
+
 class DataSource(Base):
     __tablename__ = 'data_sources'
 
@@ -343,6 +344,7 @@ class DataSource(Base):
         'polymorphic_identity': 'data_sources',
         'polymorphic_on': type
     }
+
 
 class DataImport(DataSource):
     __tablename__ = 'data_imports'

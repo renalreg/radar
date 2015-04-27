@@ -3,7 +3,6 @@ from flask.views import View
 from flask_login import current_user
 from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user, \
     get_user_for_user, filter_user_disease_groups_for_user, filter_user_units_for_user
-from radar.users.forms import UserSearchFormHandler, UserDiseaseGroupFormHandler, UserUnitFormHandler
 from radar.views import get_base_context
 
 

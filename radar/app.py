@@ -2,16 +2,16 @@ from flask import Flask
 from flask_login import LoginManager
 
 from radar.database import db_session, init_engine
-from radar.form_builders import RadarFormBuilder
-from radar.medications.views import app as medications_app
-from radar.diagnoses.views import app as diagnoses_app
-from radar.demographics.views import app as demographics_app
+from radar.diagnoses.views import DiagnosisDetailView
+from radar.demographics.views import DemographicsListView, DemographicsDetailViewView
+from radar.medications.views import MedicationDetailView, MedicationDeleteView, MedicationListView
 from radar.models import User
 from radar.users.views import UserListView, UserDetailView, UserUnitsView, UserDiseaseGroupsView
 from radar.utils import url_for_page, url_for_per_page, current_order_by, url_for_order_by, current_order_direction
-from radar.views import LoginView, IndexView, LogoutView, DiseaseGroupView, UnitView, AdminView
-from radar.patients.views import PatientListView, PatientUnitsView, PatientDiseaseGroupsView
+from radar.views import IndexView, DiseaseGroupView, UnitView, AdminView
+from radar.patient_list.views import PatientListView, PatientUnitsView, PatientDiseaseGroupsView
 from radar.views import DiseaseGroupsView, UnitsView
+from radar.authentication.views import LoginView, LogoutView
 
 
 app = Flask(__name__)
@@ -43,7 +43,6 @@ def datetime_format(dt, datetime_format):
         return dt.strftime(datetime_format)
 
 app.jinja_env.globals.update({
-    'form_builder': RadarFormBuilder,
     'url_for_page': url_for_page,
     'url_for_per_page': url_for_per_page,
     'url_for_order_by': url_for_order_by,
@@ -63,12 +62,17 @@ app.add_url_rule('/units/', view_func=UnitsView.as_view('units'))
 app.add_url_rule('/units/<int:unit_id>/', view_func=UnitView.as_view('unit'))
 
 app.add_url_rule('/patients/', view_func=PatientListView.as_view('patients'))
+app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsListView.as_view('patient'))
+app.add_url_rule('/patients/<int:patient_id>/', view_func=DemographicsListView.as_view('demographics'))
+app.add_url_rule('/patients/<int:patient_id>/edit', view_func=DemographicsDetailViewView.as_view('demographics_update'))
 app.add_url_rule('/patients/<int:patient_id>/disease-groups/', view_func=PatientDiseaseGroupsView.as_view('patient_disease_groups'))
 app.add_url_rule('/patients/<int:patient_id>/units/', view_func=PatientUnitsView.as_view('patient_units'))
-
-app.register_blueprint(medications_app, url_prefix='/patients/<int:patient_id>/medications')
-app.register_blueprint(diagnoses_app, url_prefix='/patients/<int:patient_id>/diagnoses')
-app.register_blueprint(demographics_app, url_prefix='/patients/<int:patient_id>')
+app.add_url_rule('/patients/<int:patient_id>/diagnosis/<int:disease_group_id>/', view_func=DiagnosisDetailView.as_view('diagnosis'))
+app.add_url_rule('/patients/<int:patient_id>/medications/', view_func=MedicationListView.as_view('medications'))
+app.add_url_rule('/patients/<int:patient_id>/medications/new', view_func=MedicationDetailView.as_view('medication_create'))
+app.add_url_rule('/patients/<int:patient_id>/medications/<int:entry_id>/', view_func=MedicationDetailView.as_view('medication_update'))
+app.add_url_rule('/patients/<int:patient_id>/medications/<int:entry_id>/', view_func=MedicationDetailView.as_view('medication_detail'))
+app.add_url_rule('/patients/<int:patient_id>/medications/<int:entry_id>/', view_func=MedicationDeleteView.as_view('medication_delete'))
 
 app.add_url_rule('/users/', view_func=UserListView.as_view('users'))
 app.add_url_rule('/users/<int:user_id>/', view_func=UserDetailView.as_view('user'))

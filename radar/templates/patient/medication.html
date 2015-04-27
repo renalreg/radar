@@ -1,16 +1,17 @@
 {% extends 'patient/base.html' %}
 
-{% set patient_page = 'diagnosis' %}
-{% set disease_group_id = disease_group.id %}
+{% set patient_page = 'medications' %}
 
 {% from 'macros/forms.html' import render_field %}
 
 {% block content %}
-    <h1>Diagnosis</h1>
+    <h1>Medication</h1>
 
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{ render_field(form.diagnosis) }}
+        {{ render_field(form.from_date) }}
+        {{ render_field(form.to_date) }}
+        {{ render_field(form.name) }}
         <button type="submit" class="btn btn-success">Save</button>
     </form>
 {% endblock %}

@@ -1,4 +1,6 @@
-{% extends 'simple-base.html' %}
+{% extends 'simple.html' %}
+
+{% from 'macros/forms.html' import render_field, render_field_group, render_field_errors %}
 
 {% set page = 'login' %}
 
@@ -12,16 +14,16 @@
     {% endif %}
 
     <form method="POST">
-        <div class="form-group">
-            <label for="username" class="control-label">Username</label>
-            <input id="username" name="username" type="text" class="form-control" value="{{ username }}" placeholder="Username" />
-        </div>
+        {{ form.hidden_tag() }}
 
-        <div class="form-group">
-            <label for="password" class="control-label">Password</label>
-            <input id="password" name="password" type="password" class="form-control" placeholder="Password" />
-            <span class="help-block"><a href="#" tabindex="-1">Forgotten your password?</a></span>
-        </div>
+        {{ render_field(form.username) }}
+
+        {% call render_field_group(form.password) %}
+            {{ form.password.label }}
+            {{ form.password(class='form-control') }}
+            {{ render_field_errors(form.password) }}
+            <span class="help-block"><a href="#">Forgotten your password?</a></span>
+        {% endcall %}
 
         <button type="submit" class="btn btn-primary">Login</button>
     </form>

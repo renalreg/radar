@@ -5,7 +5,7 @@
         <div class="col-md-3">
             <div class="block">
                 <h1 class="patient-name">
-                    <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">
+                    <a href="{{ url_for('patient', patient_id=patient.id) }}">
                         {% if patient_demographics and (patient.first_name or patient.last_name) %}
                             {{ patient.first_name }} {{ patient.last_name }}
                         {% else %}
@@ -68,7 +68,7 @@
 
                 <ul class="nav patient-nav">
                     <li{% if patient_page == 'demographics' %} class="active"{% endif %}>
-                        <a href="{{ url_for('demographics.list', patient_id=patient.id) }}">Demographics</a>
+                        <a href="{{ url_for('patient', patient_id=patient.id) }}">Demographics</a>
                     </li>
 
                     <li{% if patient_page == 'lab_results' %} class="active"{% endif %}>
@@ -76,7 +76,7 @@
                     </li>
 
                     <li{% if patient_page == 'medications' %} class="active"{% endif %}>
-                        <a href="{{ url_for('medications.list', patient_id=patient.id) }}">Medications</a>
+                        <a href="{{ url_for('medications', patient_id=patient.id) }}">Medications</a>
                     </li>
 
                     <li>
@@ -102,7 +102,7 @@
                     <ul class="nav patient-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
                             <li{% if patient_page == 'diagnosis' and disease_group.disease_group.id == disease_group_id %} class="active"{% endif %}>
-                                <a href="{{ url_for('diagnoses.detail', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
+                                <a href="{{ url_for('diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
                             </li>
                         {% endif %}
 

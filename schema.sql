@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS demographics;
 DROP TABLE IF EXISTS medications;
+DROP TABLE IF EXISTS diagnoses;
 DROP TABLE IF EXISTS data_imports;
 
 DROP TABLE IF EXISTS sda_medications;
@@ -159,6 +160,14 @@ CREATE TABLE medications (
     from_date date NOT NULL,
     to_date date,
     name character varying NOT NULL,
+    FOREIGN KEY (id, type) REFERENCES data_sources (id, type)
+);
 
+CREATE TABLE diagnoses (
+    id integer PRIMARY KEY,
+    type character varying NOT NULL DEFAULT 'diagnoses' CHECK (type = 'diagnoses'),
+    patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    disease_group_id integer NOT NULL REFERENCES disease_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    diagnosis character varying NOT NULL,
     FOREIGN KEY (id, type) REFERENCES data_sources (id, type)
 );

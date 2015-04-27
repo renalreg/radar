@@ -1,17 +1,23 @@
-from flask import render_template, Blueprint
-from flask.views import View
-from radar.models import DiseaseGroup
-from radar.patients.views import get_patient_detail_context
+from flask import redirect, url_for
+
+from radar.diagnoses.forms import DiagnosisForm
+from radar.diagnoses.models import Diagnosis
+
+from radar.form_views.detail import SingleFormDetailView
 
 
-class DiagnosisDetailView(View):
-    def dispatch_request(self, patient_id, disease_group_id):
-        context = get_patient_detail_context(patient_id)
+class DiagnosisDetailView(SingleFormDetailView):
+    def __init__(self):
+        super(SingleFormDetailView, self).__init__(per_disease_group=True)
 
-        # TODO
-        context['disease_group'] = DiseaseGroup.query.get(disease_group_id)
+    def get_entry_class(self):
+        return Diagnosis
 
-        return render_template('patient/diagnosis.html', **context)
+    def get_form(self, entry):
+        return DiagnosisForm(obj=entry)
 
-app = Blueprint('diagnoses', __name__)
-app.add_url_rule('/<int:disease_group_id>/', view_func=DiagnosisDetailView.as_view('detail'))
+    def get_template_name(self):
+        return 'patient/diagnosis.html'
+
+    def get_success(self, entry):
+        return redirect(url_for('patient', patient_id=entry.patient_id))

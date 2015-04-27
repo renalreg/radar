@@ -2,13 +2,15 @@
 
 {% set patient_page = 'demographics' %}
 
+{% from 'macros/forms.html' import render_field %}
+
 {% block content %}
     <h1>RaDaR Demographics</h1>
 
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{ form.first_name }}
-        {{ form.last_name }}
-        <input type="submit" />
+        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name) }}
+        <button class="btn btn-success">Save</button>
     </form>
 {% endblock %}

@@ -1,0 +1,19 @@
+{% macro render_field_group(field) %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+        {{ caller() }}
+    </div>
+{% endmacro %}
+
+{% macro render_field_errors(field) %}
+    {% for error in field.errors %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+{% endmacro %}
+
+{% macro render_field(field) %}
+    {% call render_field_group(field) %}
+        {{ field.label }}
+        {{ field(class='form-control') }}
+        {{ render_field_errors(field) }}
+    {% endcall %}
+{% endmacro %}

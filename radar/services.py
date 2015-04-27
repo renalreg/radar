@@ -102,14 +102,6 @@ def get_patient_for_user(user, patient_id):
     return Patient.query.get(patient_id)
 
 
-def check_login(username, password):
-    user = User.query.filter(User.username == username).first()
-
-    # User exists and the password is correct
-    if user is not None and user.check_password(password):
-        return user
-
-
 def filter_patient_units_for_user(patient, user):
     # Sort by unit name
     return sorted(patient.units, key=lambda x: x.unit.name)

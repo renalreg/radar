@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Medications</h1>
 
-    <p><a href="{{ url_for('.create', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
+    <p><a href="{{ url_for('medication_create', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 
     <table class="table">
         <thead>
@@ -22,8 +22,8 @@
             {% for medication in medications %}
                 <tr>
                     <td>
-                        {% if medication.edit_url %}
-                            <a href="{{ medication.edit_url }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% if medication.update_url %}
+                            <a href="{{ medication.update_url }}" class="btn btn-primary btn-xs">Edit</a>
                         {% endif %}
                     </td>
 
