@@ -5,8 +5,8 @@
         <div class="col-md-3">
             <div class="block">
                 <h1 class="patient-name">
-                    <a href="{{ url_for('patient', patient_id=patient.id) }}">
-                        {% if patient_demographics and (patient.first_name or patient.last_name) %}
+                    <a href="{{ url_for('patients.view_demographics_list', patient_id=patient.id) }}">
+                        {% if patient.can_view_demographics(current_user) and (patient.first_name or patient.last_name) %}
                             {{ patient.first_name }} {{ patient.last_name }}
                         {% else %}
                             Patient {{ patient.id }}
@@ -20,7 +20,8 @@
                     <li>
                         <strong>DOB:</strong>
 
-                        {% if patient_demographics %}
+                        {% if patient.can_view_demographics(current_user) %}
+                            {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                             {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                         {% else %}
                             {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
@@ -41,42 +42,38 @@
                         {% endwith %}
                     </li>
 
-                    {% with disease_groups = filter_patient_disease_groups_for_user(patient, current_user) %}
-                        {% if disease_groups %}
-                            <li>
-                                <strong>Disease Groups:</strong>
+                    {% if patient_data.disease_groups %}
+                        <li>
+                            <strong>Disease Groups:</strong>
 
-                                {% for disease_group in disease_groups %}
-                                    {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endif %}
-                    {% endwith %}
+                            {% for disease_group in patient_data.disease_groups %}
+                                {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
 
-                    {% with units = filter_patient_units_for_user(patient, current_user) %}
-                        {% if units %}
-                            <li>
-                                <strong>Units:</strong>
+                    {% if patient_data.units %}
+                        <li>
+                            <strong>Units:</strong>
 
-                                {% for unit in units %}
-                                    {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                                {% endfor %}
-                            </li>
-                        {% endif %}
-                    {% endwith %}
+                            {% for unit in units %}
+                                {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
                 </ul>
 
                 <ul class="nav patient-nav">
-                    <li{% if patient_page == 'demographics' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patient', patient_id=patient.id) }}">Demographics</a>
+                    <li{% if current_patient_page == 'demographics' %} class="active"{% endif %}>
+                        <a href="{{ url_for('patients.view_demographics_list', patient_id=patient.id) }}">Demographics</a>
                     </li>
 
-                    <li{% if patient_page == 'lab_results' %} class="active"{% endif %}>
+                    <li{% if current_patient_page == 'lab_results' %} class="active"{% endif %}>
                         <a href="#">Lab Results</a>
                     </li>
 
-                    <li{% if patient_page == 'medications' %} class="active"{% endif %}>
-                        <a href="{{ url_for('medications', patient_id=patient.id) }}">Medications</a>
+                    <li{% if current_patient_page == 'medications' %} class="active"{% endif %}>
+                        <a href="{{ url_for('medications.view_medication_list', patient_id=patient.id) }}">Medications</a>
                     </li>
 
                     <li>
@@ -96,18 +93,18 @@
                     </li>
                 </ul>
 
-                {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
+                {% for disease_group in patient_data.disease_groups %}
                     <h4>{{ disease_group.disease_group.name }}</h4>
 
                     <ul class="nav patient-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
-                            <li{% if patient_page == 'diagnosis' and disease_group.disease_group.id == disease_group_id %} class="active"{% endif %}>
-                                <a href="{{ url_for('diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
+                            <li{% if current_patient_page == 'diagnosis' and disease_group.disease_group.id == disease_group_id %} class="active"{% endif %}>
+                                <a href="{{ url_for('diagnoses.show_diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
                             </li>
                         {% endif %}
 
                         {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
-                            <li{% if patient_page == 'renal_imaging' %} class="active"{% endif %}>
+                            <li{% if current_patient_page == 'renal_imaging' %} class="active"{% endif %}>
                                 <a href="#">Renal Imaging</a>
                             </li>
                         {% endif %}
@@ -117,12 +114,12 @@
                 <h4>Admin</h4>
 
                 <ul class="nav patient-nav">
-                    <li{% if patient_page == 'disease_groups' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patient_disease_groups', patient_id=patient.id) }}">Disease Groups</a>
+                    <li{% if current_patient_page == 'disease_groups' %} class="active"{% endif %}>
+                        <a href="{{ url_for('patients.view_patient_disease_groups', patient_id=patient.id) }}">Disease Groups</a>
                     </li>
 
-                    <li{% if patient_page == 'units' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patient_units', patient_id=patient.id) }}">Units</a>
+                    <li{% if current_patient_page == 'units' %} class="active"{% endif %}>
+                        <a href="{{ url_for('patients.view_patient_units', patient_id=patient.id) }}">Units</a>
                     </li>
                 </ul>
             </div>

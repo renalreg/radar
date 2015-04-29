@@ -1,9 +1,11 @@
-from flask_wtf import Form
-from wtforms import StringField, SelectField, DateField, IntegerField
+from wtforms import StringField, Form, SelectField, DateField, IntegerField
 from wtforms.validators import Optional
+from radar.ordering import ASCENDING, DESCENDING
+
 
 PER_PAGE_CHOICES = [(10, '10'), (25, '25'), (50, '50'), (100, '100'), (-1, 'All')]
 PER_PAGE_DEFAULT = 50
+
 ORDER_BY_CHOICES = [
     ('radar_id', 'RaDaR ID'),
     ('first_name', 'First Name'),
@@ -12,11 +14,22 @@ ORDER_BY_CHOICES = [
     ('gender', 'Gender'),
 ]
 
+
 def optional_int(value):
     if not value:
         return None
 
     return int(value)
+
+
+class DemographicsForm(Form):
+    first_name = StringField()
+    last_name = StringField()
+
+    def populate_obj(self, obj):
+        obj.first_name = self.first_name.data
+        obj.last_name = self.last_name
+
 
 class PatientSearchForm(Form):
     first_name = StringField()
@@ -29,6 +42,6 @@ class PatientSearchForm(Form):
     radar_id = IntegerField('RaDaR ID', validators=[Optional()])
     year_of_birth = IntegerField('Year of Birth', validators=[Optional()])
     order_by = SelectField(choices=ORDER_BY_CHOICES)
-    order_direction = SelectField(choices=[('asc', 'Ascending'), ('desc', 'Descending')])
+    order_direction = SelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')])
     per_page = SelectField(coerce=int, default=50, choices=PER_PAGE_CHOICES)
     page = IntegerField()

@@ -1,12 +1,17 @@
 {% extends 'simple.html' %}
 
-{% set disease_group_id = disease_group.id %}
+{% set current_disease_group = disease_group %}
 
 {% block content %}
     <h1>{{ disease_group.name }}</h1>
 
     <ul>
-        <li><a href="{{ url_for('patients', disease_group_id=disease_group.id) }}">Patients</a></li>
-        <li><a href="{{ url_for('users', disease_group_id=disease_group.id) }}">Users</a></li>
+        {% if disease_group_user.has_view_patient_permission %}
+            <li><a href="{{ url_for('patients.view_patient_list', disease_group_id=disease_group.id) }}">Patients</a></li>
+        {% endif %}
+
+        {% if disease_group_user.has_view_user_permission %}
+            <li><a href="{{ url_for('users.view_user_list', disease_group_id=disease_group.id) }}">Users</a></li>
+        {% endif %}
     </ul>
 {% endblock %}

@@ -1,74 +1,113 @@
-from flask import render_template, request, abort, url_for, redirect
-from flask.views import View
-from flask_login import current_user
-from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user, \
-    get_user_for_user, filter_user_disease_groups_for_user, filter_user_units_for_user
-from radar.views import get_base_context
+from flask import render_template, request, abort, Blueprint, flash, url_for, redirect, current_app
+from flask_login import current_user, login_user, logout_user
+
+from radar.database import db
+from radar.models import DiseaseGroup
+from radar.users.models import DiseaseGroupUser
+from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user
+from radar.users.services import check_login
+from radar.users.forms import UserDiseaseGroupForm, LoginForm
+from radar.users.models import User
 
 
-def get_user_base_context():
-    context = get_base_context()
+bp = Blueprint('users', __name__)
 
-    context.update({
-        'filter_user_units_for_user': filter_user_units_for_user,
-        'filter_user_disease_groups_for_user': filter_user_disease_groups_for_user,
-    })
 
-    return context
+@bp.route('/users/')
+def view_user_list():
+    if not view_user_list_permission():
+        abort(403)
 
-def get_user_detail_context(user_id):
+    search = {}
+    form = UserSearchFormHandler(search)
+    form.submit(request.args)
+
+    users = get_users_for_user(current_user, search)
+
+    unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
+    disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
+
     context = get_user_base_context()
+    context['users'] = users
+    context['form'] = form
+    context['disease_group_choices'] = disease_group_choices
+    context['unit_choices'] = unit_choices
 
-    user = get_user_for_user(current_user, user_id)
+    return render_template('users.html', **context)
 
-    if user is None:
-        abort(404)
 
-    context['user'] = user
+@bp.route('/users/<int:user_id>/', methods=['GET'], endpoint='view_user')
+@bp.route('/users/<int:user_id>/', methods=['GET'], endpoint='edit_user')
+def view_user(user_id):
+    user = User.query.get_or_404(user_id)
 
-    return context
+    if not view_user_permission(user):
+        abort(403)
 
-class UserListView(View):
-    def dispatch_request(self):
-        search = {}
-        form = UserSearchFormHandler(search)
-        form.submit(request.args)
+    disease_group_form = UserDiseaseGroupForm()
+    disease_group_form.disease_group_id.choices = DiseaseGroup.query.all()
+    disease_group_form.role.choices = [('', '')]
 
-        users = get_users_for_user(current_user, search)
+    if request.form.get('disease_group_submit'):
+        if disease_group_form.validate():
+            disease_group_id = disease_group_form.disease_group_id.data
+            role = disease_group_form.role.data
 
-        unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
-        disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
+            disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
 
-        context = get_user_base_context()
-        context['users'] = users
-        context['form'] = form
-        context['disease_group_choices'] = disease_group_choices
-        context['unit_choices'] = unit_choices
+            if update_user_disease_groups_permission(user, disease_group, role):
+                abort(403)
 
-        return render_template('users.html', **context)
+            # Get the users' disease group membership
+            disease_group_user = DiseaseGroupUser.query.filter(
+                DiseaseGroupUser.user == user,
+                DiseaseGroupUser.disease_group == disease_group
+            ).first()
 
-class UserDetailView(View):
-    def dispatch_request(self, user_id):
-        context = get_user_detail_context(user_id)
+            # Update the user's disease group role
+            if role:
+                if disease_group_user is None:
+                    disease_group_user = DiseaseGroupUser(user=user, disease_group=disease_group)
+                    db.session.add(disease_group_user)
 
-        # TODO
-        context['disease_group_form'] = UserDiseaseGroupFormHandler()
-        context['unit_form'] = UserUnitFormHandler()
-        context['disease_group_choices'] = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
-        context['unit_choices'] = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
+                # Set the user's role at the disease group
+                disease_group_user.role = role
+            else:
+                # Remove the user from the disease group
+                if disease_group_user is not None:
+                    db.session.delete(disease_group_user)
 
-        return render_template('user.html', **context)
+            db.session.commit()
 
-class UserDiseaseGroupsView(View):
-    methods = ['POST']
+    return render_template('user.html', user=user, disease_group_form=disease_group_form)
 
-    # TODO
-    def dispatch_request(self, user_id):
-        return redirect(url_for('user', user_id=user_id))
 
-class UserUnitsView(View):
-    methods = ['POST']
+@bp.route('/login/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
 
-    # TODO
-    def dispatch_request(self, user_id):
-        return redirect(url_for('user', user_id=user_id))
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = check_login(username, password)
+
+        if user is not None:
+            login_user(user)
+            flash('Logged in successfully.', 'success')
+            return redirect(request.args.get('next') or url_for('radar.index'))
+        else:
+            form.username.errors.append('Incorrect username or password.')
+
+    return render_template('login.html', form=form)
+
+
+@bp.route('/logout/', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    return redirect(url_for('radar.index'))
+
+
+def require_login():
+    if request.endpoint not in ['radar.index', 'users.login', 'static'] and not current_user.is_authenticated():
+        return current_app.login_manager.unauthorized()

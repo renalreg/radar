@@ -1,68 +1,96 @@
-from flask import Blueprint, render_template, url_for, redirect
-from flask.views import View
-
-from radar.database import db_session
-from radar.form_services import sda_resource_to_update_url, sda_resource_to_delete_url
+from flask import Blueprint, render_template, abort, request, url_for, redirect
+from flask_login import current_user
+from radar.database import db
 from radar.medications.forms import MedicationForm
 from radar.medications.models import Medication
-from radar.models import SDAMedication, SDAResource, Patient
-from radar.patient_list.views import get_patient_detail_context
-from radar.utils import get_path_as_datetime, get_path
-from radar.form_views.detail import RepeatingFormDetailView
-from radar.form_views.delete import RepeatingFormDeleteView
+from radar.patients.models import Patient
+from radar.patients.views import get_patient_data
+from radar.sda.models import SDAMedication, SDAResource
+from radar.utils import get_path, get_path_as_datetime
 
+bp = Blueprint('medications', __name__)
 
-class MedicationListView(View):
-    def dispatch_request(self, patient_id):
-        context = get_patient_detail_context(patient_id)
+@bp.route('/')
+def view_medication_list(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
 
-        medications = list()
+    if not patient.can_view(current_user):
+        abort(403)
 
-        sda_medications = db_session.query(SDAMedication)\
-            .join(SDAMedication.sda_resource)\
-            .join(SDAResource.patient)\
-            .filter(Patient.id == patient_id)\
-            .order_by(SDAMedication.data['from_time'].desc())\
-            .all()
+    sda_medications = SDAMedication.query\
+        .join(SDAMedication.sda_resource)\
+        .join(SDAResource.patient)\
+        .filter(Patient.id == patient_id)\
+        .order_by(SDAMedication.data['from_time'].desc())\
+        .all()
 
-        for sda_medication in sda_medications:
-            medication = dict()
-            medication['id'] = sda_medication.id
-            medication['name'] = get_path(sda_medication.data, 'order_item', 'description')
-            medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
-            medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
-            medication['update_url'] = sda_resource_to_update_url(sda_medication.sda_resource)
-            medication['delete_url'] = sda_resource_to_delete_url(sda_medication.sda_resource)
-            medications.append(medication)
+    medications = []
 
-        context['medications'] = medications
+    for sda_medication in sda_medications:
+        medication = dict()
+        medication['id'] = sda_medication.id
+        medication['name'] = get_path(sda_medication.data, 'order_item', 'description')
+        medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
+        medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
 
-        return render_template('patient/medications.html', **context)
+        data_source = sda_medication.sda_resource.data_source
 
+        if data_source.can_view(current_user):
+            medication['view_url'] = data_source.view_url()
 
-class MedicationDetailView(RepeatingFormDetailView):
-    def get_entry_class(self):
-        return Medication
+        if data_source.can_edit(current_user):
+            medication['edit_url'] = data_source.edit_url()
 
-    def get_form(self, entry):
-        return MedicationForm(obj=entry)
+        if data_source.can_edit(current_user):
+            medication['delete_url'] = data_source.delete_url()
 
-    def validate(self, form, entry):
-        if entry.to_date is not None and entry.from_date > entry.to_date:
-            form.to_date.errors.append('To date must be on or after from date.')
+        medications.append(medication)
 
-        return not form.errors
+    context = dict(
+        medications=medications,
+        patient=patient,
+        patient_data=get_patient_data(patient)
+    )
 
-    def get_template_name(self):
-        return 'patient/medication.html'
+    return render_template('patient/medications.html', **context)
 
-    def get_success(self, entry):
-        return redirect(url_for('medications', patient_id=entry.patient_id))
+@bp.route('/new/', endpoint='add_medication', methods=['GET', 'POST'])
+@bp.route('/<int:medication_id>/', endpoint='view_medication')
+@bp.route('/<int:medication_id>/', endpoint='edit_medication', methods=['GET', 'POST'])
+def view_medication(patient_id, medication_id=None):
+    if medication_id is None:
+        patient = Patient.query.get_or_404(patient_id)
+        medication = Medication()
+        medication.patient = patient
 
+        if not medication.can_edit(current_user):
+            abort(403)
+    else:
+        medication = Medication.query\
+            .filter(Medication.patient_id == patient_id)\
+            .filter(Medication.id == medication_id)\
+            .first_or_404()
 
-class MedicationDeleteView(RepeatingFormDeleteView):
-    def get_entry_class(self):
-        return Medication
+    form = MedicationForm(obj=medication)
 
-    def success(self, patient):
-        return redirect(url_for('medications', patient_id=patient.id))
+    if request.method == 'POST':
+        if not medication.can_edit(current_user):
+            abort(403)
+
+        if form.validate():
+            form.populate_obj(medication)
+            db.session.add(medication)
+            db.session.commit()
+            return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
+    else:
+        if not medication.can_view(current_user):
+            abort(403)
+
+    context = dict(
+        patient=medication.patient,
+        patient_data=get_patient_data(medication.patient),
+        medication=medication,
+        form=form
+    )
+
+    return render_template('patient/medication.html', **context)

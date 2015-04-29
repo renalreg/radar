@@ -3,16 +3,19 @@ from datetime import timedelta
 from sqlalchemy import or_, case, desc, func
 from sqlalchemy.orm import aliased
 
-from radar.constants import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_DEMOGRAPHICS_ROLES, \
-    DISEASE_GROUP_DEMOGRAPHICS_ROLES
-from radar.database import db_session
-from radar.models import Patient, UnitPatient, Unit, UnitUser, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, \
-    SDAPatient, SDAResource, SDAPatientNumber, SDAPatientAlias
-from radar.services import is_user_in_unit, is_user_in_disease_group
+from radar.users.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
+    DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
+from radar.database import db
+from radar.models import UnitPatient, Unit, DiseaseGroupPatient, DiseaseGroup
+from radar.patients.models import Patient
+from radar.users.models import UnitUser, DiseaseGroupUser
+from radar.ordering import DESCENDING
+from radar.sda.models import SDAPatient, SDAResource, SDAPatientNumber, SDAPatientAlias
+from radar.services import is_user_in_disease_group
 
 class PatientQueryBuilder():
     def __init__(self, user):
-        self.query = db_session.query(Patient)
+        self.query = Patient.query
         self.user = user
 
         # True if the query is filtering on demographics
@@ -94,7 +97,7 @@ class PatientQueryBuilder():
 
 def sda_patient_sub_query(*args):
     patient_alias = aliased(Patient)
-    sub_query = db_session.query(SDAPatient)\
+    sub_query = db.session.query(SDAPatient)\
         .join(SDAResource)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
@@ -104,7 +107,7 @@ def sda_patient_sub_query(*args):
 
 def sda_patient_name_sub_query(*args):
     patient_alias = aliased(Patient)
-    sub_query = db_session.query(SDAPatientAlias)\
+    sub_query = db.session.query(SDAPatientAlias)\
         .join(SDAPatient)\
         .join(SDAResource)\
         .join(patient_alias)\
@@ -115,7 +118,7 @@ def sda_patient_name_sub_query(*args):
 
 def sda_patient_number_sub_query(*args):
     patient_alias = aliased(Patient)
-    sub_query = db_session.query(SDAPatientNumber)\
+    sub_query = db.session.query(SDAPatientNumber)\
         .join(SDAPatient)\
         .join(SDAResource)\
         .join(patient_alias)\
@@ -169,7 +172,7 @@ def filter_by_year_of_birth(year):
 
 def filter_by_unit_roles(user, roles):
     patient_alias = aliased(Patient)
-    sub_query = db_session.query(patient_alias)\
+    sub_query = db.session.query(patient_alias)\
         .join(patient_alias.units)\
         .join(UnitPatient.unit)\
         .join(Unit.users)\
@@ -183,7 +186,7 @@ def filter_by_unit_roles(user, roles):
 
 def filter_by_disease_group_roles(user, roles):
     patient_alias = aliased(Patient)
-    sub_query = db_session.query(patient_alias)\
+    sub_query = db.session.query(patient_alias)\
         .join(patient_alias.disease_groups)\
         .join(DiseaseGroupPatient.disease_group)\
         .join(DiseaseGroup.users)\
@@ -214,13 +217,13 @@ def order_by_demographics_field(user, field, direction, else_=None):
         demographics_permission_sub_query = filter_by_demographics_permissions(user)
         expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
-    if not direction:
+    if direction == DESCENDING:
         expression = desc(expression)
 
     return expression
 
 def order_by_field(field, direction):
-    if not direction:
+    if direction == DESCENDING:
         field = desc(field)
 
     return field

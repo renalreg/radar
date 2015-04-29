@@ -1,11 +1,11 @@
-{% macro render_order_by_link(order_by, header, default=False) %}
-    {% if current_order_by() == order_by or (default and not current_order_by()) %}
-        {% if current_order_direction() == 'asc' %}
-            <a href="{{ url_for_order_by(order_by, 'desc') }}">{{ header }}</a> <span class="glyphicon glyphicon-sort-by-alphabet"></span>
+{% macro render_sortable_column(ordering, column, text) %}
+    <a href="{{ url_for_order_by(column, ordering.reverse(column)) }}">{{ text }}</a>
+
+    {% if ordering.is_ordered_by(column) %}
+        {% if ordering.is_ascending %}
+            <span class="glyphicon glyphicon-sort-by-alphabet"></span>
         {% else %}
-            <a href="{{ url_for_order_by(order_by, 'asc') }}">{{ header }}</a> <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+            <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
         {% endif %}
-    {% else %}
-        <a href="{{ url_for_order_by(order_by, 'asc') }}">{{ header }}</a>
     {% endif %}
 {% endmacro %}

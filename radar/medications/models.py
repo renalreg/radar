@@ -3,7 +3,6 @@ from sqlalchemy import Column, Date, String, ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.concepts import MedicationConcept
-from radar.database import Base
 from radar.models import DataSource
 
 

@@ -1,6 +1,7 @@
 from flask import url_for
-from radar.database import db_session
-from radar.models import Facility, SDAResource
+from radar.database import db
+from radar.models import Facility
+from radar.sda.models import SDAResource
 
 
 def save_form_entry(entry):
@@ -13,10 +14,10 @@ def save_form_entry(entry):
 
     entry.sda_resource = sda_resource
 
-    db_session.add(entry)
+    db.session.add(entry)
 
 def delete_form_entry(entry):
-    db_session.delete(entry)
+    db.session.delete(entry)
 
 def sda_resource_to_update_url(sda_resource):
     patient_id = sda_resource.patient_id

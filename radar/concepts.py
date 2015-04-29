@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from radar.models import SDAMedication, SDAPatient
+from radar.sda.models import SDAMedication, SDAPatient
 from radar.validators import ValidationError, StopValidation, required, not_empty
 
 # TODO refactor

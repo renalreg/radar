@@ -1,13 +1,13 @@
 {% extends 'simple.html' %}
 
-{% set unit_id = unit.id %}
+{% set current_unit = unit %}
 
 {% block content %}
     <h1>{{ unit.name }}</h1>
 
     <ul>
-        <li><a href="{{ url_for('patients', unit_id=unit.id) }}">Patients</a></li>
-        <li><a href="{{ url_for('users', unit_id=unit.id) }}">Users</a></li>
+        <li><a href="{{ url_for('patients.view_patient_list', unit_id=unit.id) }}">Patients</a></li>
+        <li><a href="{{ url_for('users.view_user_list', unit_id=unit.id) }}">Users</a></li>
         <li><a href="#">Recruit a Patient</a></li>
     </ul>
 {% endblock %}

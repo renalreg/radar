@@ -1,13 +1,13 @@
 {% extends 'simple.html' %}
 
-{% set page = 'units' %}
+{% set current_page = 'units' %}
 
 {% block content %}
     <h1>Units</h1>
 
     <ul>
-        {% for unit in units %}
-            <li><a href="{{ url_for('unit', unit_id=unit.id) }}">{{ unit.name }}</a></li>
+        {% for unit, membership in units %}
+            <li><a href="{{ url_for('units.view_unit', unit_id=unit.id) }}">{{ unit.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

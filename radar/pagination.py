@@ -1,33 +1,65 @@
 from math import ceil
+from flask import request, abort, url_for
 
-class Pagination(object):
-    def __init__(self, page, per_page, total_count):
-        self.page = page
-        self.per_page = per_page
-        self.total_count = total_count
 
-    @property
-    def pages(self):
-        return int(ceil(self.total_count / float(self.per_page)))
+def page_from_request():
+    page = request.args.get('page')
 
-    @property
-    def has_prev(self):
-        return self.page > 1
+    if page is None:
+        return 1
 
-    @property
-    def has_next(self):
-        return self.page < self.pages
+    try:
+        page = int(page)
+    except ValueError:
+        abort(404)
 
-    def iter_pages(self, left_edge=2, left_current=2, right_current=5, right_edge=2):
-        last = 0
+    if page < 1:
+        abort(404)
 
-        for num in xrange(1, self.pages + 1):
-            if num <= left_edge or \
-               (self.page - left_current - 1 < num < self.page + right_current) or \
-               num > self.pages - right_edge:
-                if last + 1 != num:
-                    yield None
+    return page
 
-                yield num
 
-                last = num
+def per_page_from_request(default):
+    page = request.args.get('per_page')
+
+    if page is None:
+        return default
+
+    try:
+        page = int(page)
+    except ValueError:
+        abort(404)
+
+    if page == -1:
+        return None
+
+    if page < 1:
+        abort(404)
+
+    return page
+
+
+def paginate_query(query, default_per_page=20):
+    page = page_from_request()
+    per_page = per_page_from_request(default=default_per_page)
+    pagination = query.paginate(page, per_page)
+    return pagination
+
+
+def url_for_page(page):
+    args = request.args.copy()
+    args.update(request.view_args)
+
+    args['page'] = page
+
+    return url_for(request.endpoint, **args)
+
+
+def url_for_per_page(per_page):
+    args = request.args.copy()
+    args.update(request.view_args)
+
+    args['page'] = 1
+    args['per_page'] = per_page
+
+    return url_for(request.endpoint, **args)
