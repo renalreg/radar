@@ -1,5 +1,5 @@
 from radar.models import Facility
-from radar.sda.models import SDABundle, SDAPatient, SDAPatientAddress
+from radar.sda.models import SDABundle, SDAPatient, SDAPatientAddress, SDAPatientAlias
 from radar.utils import set_path
 
 
@@ -58,5 +58,17 @@ def demographics_to_sda_bundle(demographics):
 
     if demographics.email_address:
         set_path(sda_patient.data, ['contact_info', 'email_address'], demographics.email_address)
+
+    if demographics.alias_first_name or demographics.alias_last_name:
+        sda_patient_alias = SDAPatientAlias()
+        sda_patient_alias.data = {}
+
+        if demographics.alias_first_name:
+            sda_patient_alias.data['given_name'] = demographics.first_name
+
+        if demographics.alias_last_name:
+            sda_patient_alias.data['family_name'] = demographics.last_name
+
+        sda_patient.aliases.append(sda_patient_alias)
 
     return sda_bundle

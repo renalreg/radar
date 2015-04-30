@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import render_template, Blueprint, abort, request, url_for, redirect
 from flask_login import current_user, login_required
 from radar.database import db
@@ -122,13 +123,23 @@ def view_demographics_list(patient_id):
             demographics['gender'] = 'Female'
 
         demographics['addresses'] = []
-        addresses = sorted(sda_patient.addresses, key=lambda x: x.to_time)
+
+        # Sort by to time
+        addresses = sorted(sda_patient.addresses, key=lambda x: (x.to_time or datetime.max), reverse=True)
 
         for address in addresses:
             demographics['addresses'].append({
                 'from_time': address.from_time,
                 'to_time': address.to_time,
                 'address': address.full_address
+            })
+
+        demographics['aliases'] = []
+
+        for alias in sda_patient.aliases:
+            demographics['aliases'].append({
+                'first_name': alias.first_name,
+                'last_name': alias.last_name,
             })
 
         demographics_list.append(demographics)

@@ -2,80 +2,82 @@
 
 {% set current_patient_page = 'demographics' %}
 
+{% from 'macros/panels.html' import render_panel %}
+
 {% block content %}
     <h1>Demographics</h1>
 
     <p><a href="{{ url_for('patients.edit_radar_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
 
     {% for demographics in demographics_list %}
-        <h3>{{ demographics.facility.name }}</h3>
-
-        <table class="table table-striped table-condensed demographics">
-            <tr>
-                <th>First Name</th>
-                <td width="100%">{{ demographics.first_name }}</td>
-            </tr>
-
-            <tr>
-                <th>Last Name</th>
-                <td>{{ demographics.last_name }}</td>
-            </tr>
-
-            <tr>
-                <th>Date of Birth</th>
-                <td>
-                    {% if patient.can_view_demographics(current_user) %}
-                        {{ demographics.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
-                    {% else %}
-                        {{ demographics.date_of_birth | datetime_format('%Y') | default('-', true) }}
-                    {% endif %}
-                </td>
-            </tr>
-
-            <tr>
-                <th>Gender</th>
-                <td>{{ demographics.gender | default('-', true) }}</td>
-            </tr>
-        </table>
-
-        {% if demographics.aliases %}
-            <h4>Aliases</h4>
-
-            <table class="table">
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                </tr>
-
-                <tr>
-                    <td>Foo</td>
-                    <td>Bar</td>
-                </tr>
-            </table>
-        {% endif %}
-
-        {% if demographics.addresses %}
-            <h4>Addresses</h4>
-
-            <table class="table">
-                <tr>
-                    <th width="20%">From Date</th>
-                    <th width="20%">To Date</th>
-                    <th>Address</th>
-                </tr>
-
-                {% for address in demographics.addresses %}
+        {% call render_panel(demographics.facility.name, 'panel-default') %}
+            <table class="table demographics">
+                {% if patient.can_view_demographics(current_user) %}
                     <tr>
-                        <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
-                        <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
-                        <td>{{ address.address | nl2br }}</td>
+                        <th width="20%">First Name</th>
+                        <td>{{ demographics.first_name }}</td>
                     </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
 
-        {% if not loop.last %}
-            <hr />
-        {% endif %}
+                    <tr>
+                        <th>Last Name</th>
+                        <td>{{ demographics.last_name }}</td>
+                    </tr>
+                {% endif %}
+
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>
+                        {% if patient.can_view_demographics(current_user) %}
+                            {{ demographics.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
+                        {% else %}
+                            {{ demographics.date_of_birth | datetime_format('%Y') | default('-', true) }}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Gender</th>
+                    <td>{{ demographics.gender | default('-', true) }}</td>
+                </tr>
+            </table>
+
+            {% if demographics.aliases and patient.can_view_demographics(current_user) %}
+                <h4>Aliases</h4>
+
+                <table class="table">
+                    <tr>
+                        <th width="20%">First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+
+                    {% for alias in demographics.aliases %}
+                        <tr>
+                            <td>{{ alias.first_name | default('-', true) }}</td>
+                            <td>{{ alias.last_name | default('-', true) }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+
+            {% if demographics.addresses and patient.can_view_demographics(current_user) %}
+                <h4>Addresses</h4>
+
+                <table class="table">
+                    <tr>
+                        <th width="20%">From Date</th>
+                        <th width="20%">To Date</th>
+                        <th>Address</th>
+                    </tr>
+
+                    {% for address in demographics.addresses %}
+                        <tr>
+                            <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                            <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                            <td>{{ address.address | nl2br }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        {% endcall %}
     {% endfor %}
 {% endblock %}
