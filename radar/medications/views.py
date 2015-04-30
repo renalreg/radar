@@ -98,10 +98,10 @@ def view_medication(patient_id, medication_id=None):
                 medication.sda_bundle = sda_bundle
                 db.session.add(medication)
                 db.session.commit()
+                return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
             else:
                 add_errors_to_form(form, errors)
-
-            return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
+                print form.errors
 
     context = dict(
         patient=medication.patient,

@@ -1,7 +1,8 @@
 from collections import defaultdict
+
 from radar.models import Facility
-from radar.sda.models import SDAMedication, SDABundle
-from radar.validators import ValidationError, StopValidation, required, not_empty
+from radar.sda.models import SDABundle
+from radar.validators import ValidationError, StopValidation
 
 
 class Concept(object):
@@ -31,16 +32,16 @@ class Concept(object):
         pass
 
 def validate_concepts(concepts):
-    valid = False
+    valid = True
     errors = defaultdict(list)
 
     for concept in concepts:
-        valid, errors = concept.validate()
+        valid, concept_errors = concept.validate()
 
         if not valid:
             valid = False
 
-            for field, field_errors in errors:
+            for field, field_errors in concept_errors.items():
                 errors[field].extend(field_errors)
 
     return valid, errors

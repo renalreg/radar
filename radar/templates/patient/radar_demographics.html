@@ -13,10 +13,10 @@
 {% block content %}
     <h1>RaDaR Demographics</h1>
 
+    {{ render_form_errors(form) }}
+
     <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
-
-        {{ render_form_errors(form) }}
 
         <div class="row">
             <div class="col-sm-6">

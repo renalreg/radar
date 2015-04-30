@@ -20,11 +20,10 @@ class MedicationConcept(Concept):
         if not super(MedicationConcept, self).validate():
             return False
 
-        if self.to_date is not None:
-            if self.to_date < self.from_date:
-                self.errors['to_date'].append('Must be on or after from date.')
+        if self.to_date is not None and self.to_date < self.from_date:
+            self.errors['to_date'].append('Must be on or after from date.')
 
-        return not self.errors
+        print not self.errors
 
     def to_sda(self, sda_bundle):
         sda_medication = SDAMedication()
@@ -34,7 +33,7 @@ class MedicationConcept(Concept):
         data['from_time'] = self.from_date
 
         if self.to_date is not None:
-            data['to_time'] = self.from_date
+            data['to_time'] = self.to_date
 
         data['order_item'] = {
             'description': self.name
