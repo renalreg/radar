@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from 'macros/flash.html' import render_flashed_messages %}
+
 {% block body %}
     <div class="row">
         <div class="col-md-3">
@@ -21,7 +23,6 @@
                         <strong>DOB:</strong>
 
                         {% if patient.can_view_demographics(current_user) %}
-                            {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                             {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                         {% else %}
                             {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
@@ -99,7 +100,7 @@
                     <ul class="nav patient-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
                             <li{% if current_patient_page == 'diagnosis' and disease_group.disease_group.id == disease_group_id %} class="active"{% endif %}>
-                                <a href="{{ url_for('diagnoses.show_diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
+                                <a href="{{ url_for('diagnosis.view_diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
                             </li>
                         {% endif %}
 
@@ -127,17 +128,7 @@
 
         <div class="col-md-9">
             <div class="block">
-                {% with messages = get_flashed_messages(with_categories=True) %}
-                    {% for category, message in messages %}
-                        {% if category == 'error' %}
-                            <div class="alert alert-danger"><strong>Error:</strong> {{ message }}</div>
-                        {% elif category == 'success' %}
-                            <div class="alert alert-success"><strong>Success:</strong> {{ message }}</div>
-                        {% else %}
-                            <div class="alert alert-info"><strong>Info:</strong> {{ message }}</div>
-                        {% endif %}
-                    {% endfor %}
-                {% endwith %}
+                {{ render_flashed_messages() }}
 
                 {% block content %}{% endblock %}
             </div>

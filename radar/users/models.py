@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
-    DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES
+    DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES
 from radar.database import db
 
 
@@ -111,6 +111,10 @@ class UnitUser(db.Model):
     @property
     def has_view_patient_permission(self):
         return self.role in UNIT_VIEW_PATIENT_ROLES
+
+    @property
+    def has_view_patient_permission(self):
+        return self.role in UNIT_EDIT_PATIENT_ROLES
 
     @property
     def has_view_user_permission(self):

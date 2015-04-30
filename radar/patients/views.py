@@ -1,11 +1,12 @@
-from flask import render_template, Blueprint, abort, request
+from flask import render_template, Blueprint, abort, request, url_for, redirect
 from flask_login import current_user, login_required
+from radar.database import db
 
-from radar.patients.models import Patient
+from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
 from radar.patients.core import view_patient_list_permission
-from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES
+from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.services import get_disease_group_filters_for_user, get_unit_filters_for_user
@@ -117,7 +118,7 @@ def view_demographics_list(patient_id):
 
     context = dict(
         patient=patient,
-        patient_data=get_patient_data,
+        patient_data=get_patient_data(patient),
         demographics_list=demographics_list
     )
 
@@ -127,7 +128,39 @@ def view_demographics_list(patient_id):
 @bp.route('/<int:patient_id>/radar/', endpoint='view_radar_demographics')
 @bp.route('/<int:patient_id>/radar/', endpoint='edit_radar_demographics', methods=['POST'])
 def view_radar_demographics(patient_id):
-    pass
+    patient = Patient.query.get_or_404(patient_id)
+    demographics = Demographics.query.filter(Demographics.patient == patient).first()
+
+    if demographics is None:
+        demographics = Demographics(patient=patient)
+
+    if not demographics.can_view(current_user):
+        abort(403)
+
+    read_only = not demographics.can_edit(current_user)
+
+    form = DemographicsForm(obj=demographics)
+
+    if request.method == 'POST':
+        if read_only:
+            abort(403)
+
+        if form.validate():
+            form.populate_obj(demographics)
+            db.session.add(demographics)
+            db.session.commit()
+            return redirect(url_for('patients.view_demographics_list', patient_id=demographics.patient.id))
+
+    context = dict(
+        patient=demographics.patient,
+        patient_data=get_patient_data(demographics.patient),
+        demographics=demographics,
+        form=form,
+        read_only=read_only
+    )
+
+    return render_template('patient/radar_demographics.html', **context)
+
 
 
 @bp.route('/<int:patient_id>/disease-groups/')

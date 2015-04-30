@@ -20,3 +20,10 @@ def get_path_as_datetime(data, *keys):
         value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
 
     return value
+
+
+def optional_int(value):
+    if not value:
+        return None
+
+    return int(value)

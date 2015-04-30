@@ -1,6 +1,8 @@
-from wtforms import StringField, Form, SelectField, DateField, IntegerField
-from wtforms.validators import Optional
+from wtforms import StringField, SelectField, DateField, IntegerField
+from wtforms.validators import Optional, InputRequired, DataRequired
 from radar.ordering import ASCENDING, DESCENDING
+from flask_wtf import Form
+from radar.utils import optional_int
 
 
 PER_PAGE_CHOICES = [(10, '10'), (25, '25'), (50, '50'), (100, '100'), (-1, 'All')]
@@ -15,20 +17,40 @@ ORDER_BY_CHOICES = [
 ]
 
 
-def optional_int(value):
-    if not value:
-        return None
-
-    return int(value)
-
-
 class DemographicsForm(Form):
-    first_name = StringField()
-    last_name = StringField()
+    first_name = StringField(validators=[InputRequired()])
+    last_name = StringField(validators=[InputRequired()])
 
-    def populate_obj(self, obj):
-        obj.first_name = self.first_name.data
-        obj.last_name = self.last_name
+    # TODO validation
+    date_of_birth = DateField('Date of Birth', format="%d/%m/%Y")
+
+    gender = SelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
+
+    # TODO
+    ethnicity = StringField(validators=[InputRequired()])
+
+    alias_first_name = StringField(validators=[Optional()])
+    alias_last_name = StringField(validators=[Optional()])
+
+    address_line_1 = StringField(validators=[Optional()])
+    address_line_2 = StringField(validators=[Optional()])
+    address_line_3 = StringField(validators=[Optional()])
+
+    # TODO validation
+    postcode = StringField(validators=[InputRequired()])
+
+    home_number = StringField(validators=[Optional()])
+    work_number = StringField(validators=[Optional()])
+    mobile_number = StringField(validators=[Optional()])
+
+    # TODO validation
+    email_address = StringField(validators=[Optional()])
+
+    # TODO validation
+    nhs_no = IntegerField('NHS No.', validators=[Optional()])
+
+    # TODO validation
+    chi_no = IntegerField('CHI No.', validators=[Optional()])
 
 
 class PatientSearchForm(Form):

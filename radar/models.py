@@ -95,11 +95,11 @@ class DataSource(db.Model):
 
     def can_view(self, user):
         _ = user
-        return True
+        return False
 
     def can_edit(self, user):
         _ = user
-        return True
+        return False
 
     __mapper_args__ = {
         'polymorphic_identity': 'data_sources',

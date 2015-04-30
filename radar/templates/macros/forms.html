@@ -1,3 +1,5 @@
+{% from 'macros/panels.html' import render_panel %}
+
 {% macro render_field_group(field) %}
     <div class="form-group{% if field.errors %} has-error{% endif %}">
         {{ caller() }}
@@ -10,10 +12,37 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro render_field(field) %}
+{% macro render_field(field, read_only=False) %}
     {% call render_field_group(field) %}
         {{ field.label }}
-        {{ field(class='form-control') }}
+        {{ field(class='form-control', disabled=read_only) }}
         {{ render_field_errors(field) }}
     {% endcall %}
+{% endmacro %}
+
+{% macro render_horizontal_field(field, read_only=False) %}
+    {% call render_field_group(field) %}
+        {{ field.label(class='col-sm-4 control-label') }}
+
+        <div class="col-sm-8">
+            {{ field(class='form-control', disabled=read_only) }}
+            {{ render_field_errors(field) }}
+        </div>
+    {% endcall %}
+{% endmacro %}
+
+{% macro render_horizontal_field_read_only(field) %}
+    {{ render_horizontal_field(field, read_only=True) }}
+{% endmacro %}
+
+{% macro render_field_read_only(field) %}
+    {{ render_field(field, read_only=True) }}
+{% endmacro %}
+
+{% macro render_form_errors(form) %}
+    {% if form.errors %}
+        {% call render_panel('Error', 'panel-danger') %}
+            Please correct the errors below and try again.
+        {% endcall %}
+    {% endif %}
 {% endmacro %}

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join
+from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
@@ -102,16 +102,17 @@ class Patient(db.Model):
         return False
 
     def can_view(self, user):
-        if user.is_admin:
-            return True
+        return (
+            user.is_admin or
+            self._has_unit_permission(user, 'view_patient') or
+            self._has_disease_group_permission(user, 'view_patient')
+        )
 
-        if self._has_unit_permission(user, 'view_patient'):
-            return True
-
-        if self._has_disease_group_permission(user, 'view_patient'):
-            return True
-
-        return False
+    def can_edit(self, user):
+        return (
+           user.is_admin or
+           self._has_unit_permission(user, 'edit_patient')
+        )
 
     def can_view_demographics(self, user):
         if user.is_admin:
@@ -141,6 +142,7 @@ class Patient(db.Model):
             common_disease_groups = [x for x in self.disease_groups if x.disease_group in user_disease_groups]
             return common_disease_groups
 
+
 class Demographics(DataSource):
     __tablename__ = 'demographics'
 
@@ -151,7 +153,34 @@ class Demographics(DataSource):
 
     first_name = Column(String)
     last_name = Column(String)
+    date_of_birth = Column(Date)
+    gender = Column(Integer)
+
+    # TODO
+    ethnicity = Column(String)
+
+    alias_first_name = Column(String)
+    alias_last_name = Column(String)
+
+    address_line_1 = Column(String)
+    address_line_2 = Column(String)
+    address_line_3 = Column(String)
+    postcode = Column(String)
+
+    home_number = Column(String)
+    work_number = Column(String)
+    mobile_number = Column(String)
+    email_address = Column(String)
+
+    nhs_no = Column(Integer)
+    chi_no = Column(Integer)
 
     __mapper_args__ = {
         'polymorphic_identity': 'demographics',
     }
+
+    def can_view(self, user):
+        return self.patient.can_view_demographics(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)

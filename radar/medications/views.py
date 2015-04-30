@@ -71,10 +71,15 @@ def view_medication(patient_id, medication_id=None):
             .filter(Medication.id == medication_id)\
             .first_or_404()
 
+    if not medication.can_view(current_user):
+        abort(403)
+
+    read_only = not medication.can_edit(current_user)
+
     form = MedicationForm(obj=medication)
 
     if request.method == 'POST':
-        if not medication.can_edit(current_user):
+        if read_only:
             abort(403)
 
         if form.validate():
@@ -82,9 +87,6 @@ def view_medication(patient_id, medication_id=None):
             db.session.add(medication)
             db.session.commit()
             return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
-    else:
-        if not medication.can_view(current_user):
-            abort(403)
 
     context = dict(
         patient=medication.patient,
