@@ -24,7 +24,7 @@ class DemographicsForm(Form):
     # TODO validation
     date_of_birth = DateField('Date of Birth', format="%d/%m/%Y")
 
-    gender = SelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
+    gender = SelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], coerce=optional_int, validators=[InputRequired()])
 
     # TODO
     ethnicity = StringField(validators=[InputRequired()])
