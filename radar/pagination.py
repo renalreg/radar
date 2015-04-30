@@ -1,4 +1,3 @@
-from math import ceil
 from flask import request, abort, url_for
 from flask_sqlalchemy import Pagination
 
@@ -44,9 +43,14 @@ def paginate_query(query, default_per_page=20):
     page = page_from_request()
     per_page = per_page_from_request(default=default_per_page)
 
+    # Show all
     if per_page is None:
-        total_count = query.count()
-        pagination = Pagination(query, 1, total_count, total_count, query.all())
+        # Only one page if we're showing everything
+        if page != 1:
+            abort(404)
+
+        total = query.count()
+        pagination = Pagination(query, 1, total, total, query.all())
     else:
         pagination = query.paginate(page, per_page)
 
