@@ -1,5 +1,8 @@
+from collections import defaultdict
 from flask import Blueprint, render_template, abort, request, url_for, redirect
 from flask_login import current_user
+from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
+from radar.concepts.utils import add_errors_to_form
 from radar.database import db
 from radar.medications.forms import MedicationForm
 from radar.medications.models import Medication
@@ -54,6 +57,7 @@ def view_medication_list(patient_id):
 
     return render_template('patient/medications.html', **context)
 
+
 @bp.route('/new/', endpoint='add_medication', methods=['GET', 'POST'])
 @bp.route('/<int:medication_id>/', endpoint='view_medication')
 @bp.route('/<int:medication_id>/', endpoint='edit_medication', methods=['GET', 'POST'])
@@ -68,6 +72,7 @@ def view_medication(patient_id, medication_id=None):
         medication = Medication.query\
             .filter(Medication.patient_id == patient_id)\
             .filter(Medication.id == medication_id)\
+            .with_for_update(read=True)\
             .first_or_404()
 
     if not medication.can_view(current_user):
@@ -83,8 +88,19 @@ def view_medication(patient_id, medication_id=None):
 
         if form.validate():
             form.populate_obj(medication)
-            db.session.add(medication)
-            db.session.commit()
+
+            concepts = medication.to_concepts()
+            valid, errors = validate_concepts(concepts)
+
+            if valid:
+                sda_bundle = concepts_to_sda_bundle(medication.patient, concepts)
+                sda_bundle.serialize()
+                medication.sda_bundle = sda_bundle
+                db.session.add(medication)
+                db.session.commit()
+            else:
+                add_errors_to_form(form, errors)
+
             return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
 
     context = dict(
@@ -95,3 +111,8 @@ def view_medication(patient_id, medication_id=None):
     )
 
     return render_template('patient/medication.html', **context)
+
+
+@bp.route('/<int:medication_id>/', endpoint='delete_medication', methods=['POST'])
+def delete_medication(medication_id):
+    pass

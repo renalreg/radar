@@ -1,8 +1,9 @@
+from flask import url_for
 from sqlalchemy import Column, Date, String, ForeignKey
 
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
-from radar.concepts import MedicationConcept
+from radar.medications.concepts import MedicationToMedicationConcept
 from radar.models import DataSource
 
 
@@ -30,20 +31,14 @@ class Medication(DataSource):
 
     def to_concepts(self):
         return [
-            (
-                MedicationConcept(self.from_date, self.to_date, self.name),
-                [
-                    ('from_date', 'from_date'),
-                    ('to_date', 'to_date'),
-                    ('name', 'name'),
-                ]
-            ),
-            (
-                MedicationConcept(self.from_date, self.to_date, self.name),
-                [
-                    ('from_date', 'from_date'),
-                    ('to_date', 'to_date'),
-                    ('name', 'name'),
-                ]
-            )
+            MedicationToMedicationConcept(self)
         ]
+
+    def view_url(self):
+        return url_for('medications.view_medication', patient_id=self.patient.id, medication_id=self.id)
+
+    def edit_url(self):
+        return url_for('medications.edit_medication', patient_id=self.patient.id, medication_id=self.id)
+
+    def delete_url(self):
+        return url_for('medications.delete_medication', patient_id=self.patient.id, medication_id=self.id)

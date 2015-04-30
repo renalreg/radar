@@ -129,7 +129,7 @@ def view_demographics_list(patient_id):
 @bp.route('/<int:patient_id>/radar/', endpoint='edit_radar_demographics', methods=['POST'])
 def view_radar_demographics(patient_id):
     patient = Patient.query.get_or_404(patient_id)
-    demographics = Demographics.query.filter(Demographics.patient == patient).first()
+    demographics = Demographics.query.filter(Demographics.patient == patient).with_for_update(read=True).first()
 
     if demographics is None:
         demographics = Demographics(patient=patient)
@@ -160,7 +160,6 @@ def view_radar_demographics(patient_id):
     )
 
     return render_template('patient/radar_demographics.html', **context)
-
 
 
 @bp.route('/<int:patient_id>/disease-groups/')

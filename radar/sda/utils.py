@@ -1,5 +1,5 @@
 import collections
-from datetime import datetime
+from datetime import datetime, date
 import pytz
 import dateutil.parser
 
@@ -16,6 +16,9 @@ def datetime_to_jsonb(dt):
 def jsonb_to_datetime(dt_str):
     dt = dateutil.parser.parse(dt_str)
     return dt
+
+def date_to_jsonb(d):
+    return datetime_to_jsonb(datetime.combine(d, datetime.min.time()))
 
 def serialize_jsonb(data):
     if isinstance(data, dict):
@@ -34,5 +37,7 @@ def serialize_jsonb(data):
         return new_data
     elif isinstance(data, datetime):
         return datetime_to_jsonb(data)
+    elif isinstance(data, date):
+        return date_to_jsonb(data)
     else:
         return data
