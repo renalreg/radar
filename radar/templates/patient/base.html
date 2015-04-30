@@ -33,9 +33,9 @@
                         <strong>Gender:</strong>
 
                         {% with gender = patient.gender %}
-                            {% if gender == '1' %}
+                            {% if gender == 'M' %}
                                 Male
-                            {% elif gender == '2' %}
+                            {% elif gender == 'F' %}
                                 Female
                             {% else %}
                                 -
