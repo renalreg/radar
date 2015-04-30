@@ -60,8 +60,7 @@ def view_medication_list(patient_id):
 def view_medication(patient_id, medication_id=None):
     if medication_id is None:
         patient = Patient.query.get_or_404(patient_id)
-        medication = Medication()
-        medication.patient = patient
+        medication = Medication(patient=patient)
 
         if not medication.can_edit(current_user):
             abort(403)

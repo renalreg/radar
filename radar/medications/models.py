@@ -22,6 +22,12 @@ class Medication(DataSource):
         'polymorphic_identity': 'medications',
     }
 
+    def can_view(self, user):
+        return self.patient.can_view(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user)
+
     def to_concepts(self):
         return [
             (
