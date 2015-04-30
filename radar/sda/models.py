@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.sda.utils import serialize_jsonb
-from radar.utils import get_path, get_path_as_datetime
+from radar.utils import get_path_as_text, get_path_as_datetime
 
 
 class SDABundle(db.Model):
@@ -60,19 +60,19 @@ class SDAPatient(db.Model):
 
     @hybrid_property
     def first_name(self):
-        return get_path(self.data, ['name', 'given_name'])
+        return get_path_as_text(self.data, ['name', 'given_name'])
 
     @hybrid_property
     def last_name(self):
-        return get_path(self.data, ['name', 'family_name'])
+        return get_path_as_text(self.data, ['name', 'family_name'])
 
     @hybrid_property
     def date_of_birth(self):
-        return get_path_as_datetime(self.data, 'birth_time')
+        return get_path_as_datetime(self.data, ['birth_time'])
 
     @hybrid_property
     def gender(self):
-        return get_path(self.data, ['gender', 'code'])
+        return get_path_as_text(self.data, ['gender', 'code'])
 
     @first_name.expression
     def first_name(cls):
@@ -155,6 +155,32 @@ class SDAPatientAddress(db.Model):
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB, nullable=False)
+
+    @property
+    def from_time(self):
+        return get_path_as_datetime(self.data, ['from_time'])
+
+    @property
+    def to_time(self):
+        return get_path_as_datetime(self.data, ['to_time'])
+
+    @property
+    def full_address(self):
+        parts = []
+
+        street = get_path_as_text(self.data, ['street'])
+
+        if street:
+            parts.extend(street.split(";"))
+
+        parts.extend([
+            get_path_as_text(self.data, ['city', 'description']),
+            get_path_as_text(self.data, ['state', 'description']),
+            get_path_as_text(self.data, ['zip', 'description']),
+            get_path_as_text(self.data, ['country', 'description']),
+        ])
+
+        return "\n".join(x for x in parts if x)
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)

@@ -114,11 +114,22 @@ def view_demographics_list(patient_id):
         demographics['facility'] = sda_patient.sda_bundle.facility
         demographics['first_name'] = sda_patient.first_name
         demographics['last_name'] = sda_patient.last_name
+        demographics['date_of_birth'] = sda_patient.date_of_birth
 
         if sda_patient.gender == 'M':
             demographics['gender'] = 'Male'
         else:
             demographics['gender'] = 'Female'
+
+        demographics['addresses'] = []
+        addresses = sorted(sda_patient.addresses, key=lambda x: x.to_time)
+
+        for address in addresses:
+            demographics['addresses'].append({
+                'from_time': address.from_time,
+                'to_time': address.to_time,
+                'address': address.full_address
+            })
 
         demographics_list.append(demographics)
 

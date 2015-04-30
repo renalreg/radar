@@ -20,6 +20,62 @@
                 <th>Last Name</th>
                 <td>{{ demographics.last_name }}</td>
             </tr>
+
+            <tr>
+                <th>Date of Birth</th>
+                <td>
+                    {% if patient.can_view_demographics(current_user) %}
+                        {{ demographics.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
+                    {% else %}
+                        {{ demographics.date_of_birth | datetime_format('%Y') | default('-', true) }}
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Gender</th>
+                <td>{{ demographics.gender | default('-', true) }}</td>
+            </tr>
         </table>
+
+        {% if demographics.aliases %}
+            <h4>Aliases</h4>
+
+            <table class="table">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </tr>
+
+                <tr>
+                    <td>Foo</td>
+                    <td>Bar</td>
+                </tr>
+            </table>
+        {% endif %}
+
+        {% if demographics.addresses %}
+            <h4>Addresses</h4>
+
+            <table class="table">
+                <tr>
+                    <th width="20%">From Date</th>
+                    <th width="20%">To Date</th>
+                    <th>Address</th>
+                </tr>
+
+                {% for address in demographics.addresses %}
+                    <tr>
+                        <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                        <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                        <td>{{ address.address | nl2br }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% if not loop.last %}
+            <hr />
+        {% endif %}
     {% endfor %}
 {% endblock %}

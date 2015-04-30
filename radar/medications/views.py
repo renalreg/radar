@@ -9,7 +9,7 @@ from radar.medications.models import Medication
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle
-from radar.utils import get_path, get_path_as_datetime
+from radar.utils import get_path_as_text, get_path_as_datetime
 
 bp = Blueprint('medications', __name__)
 
@@ -32,9 +32,9 @@ def view_medication_list(patient_id):
     for sda_medication in sda_medications:
         medication = dict()
         medication['id'] = sda_medication.id
-        medication['name'] = get_path(sda_medication.data, ['order_item', 'description'])
-        medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
-        medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
+        medication['name'] = get_path_as_text(sda_medication.data, ['order_item', 'description'])
+        medication['from_date'] = get_path_as_datetime(sda_medication.data, ['from_time'])
+        medication['to_date'] = get_path_as_datetime(sda_medication.data, ['to_time'])
 
         data_source = sda_medication.sda_bundle.data_source
 

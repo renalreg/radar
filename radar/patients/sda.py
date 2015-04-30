@@ -40,7 +40,7 @@ def demographics_to_sda_bundle(demographics):
         }
     }
 
-    street = ';'.join(x for x in [demographics.address_line_1, demographics.address_line_2, demographics.address_line_3] if x)
+    street = '; '.join(x for x in [demographics.address_line_1, demographics.address_line_2, demographics.address_line_3] if x)
 
     if street:
         sda_patient_address.data['street'] = street
