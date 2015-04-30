@@ -1,6 +1,7 @@
-from datetime import datetime
 from radar.sda.models import SDAMedication, SDABundle, SDAPatientAddress, SDAPatientAlias, SDAPatient, \
     SDAPatientNumber
+
+import dateutil.parser
 
 
 def set_float(data, key, node):
@@ -22,7 +23,7 @@ def set_datetime(data, key, node):
         data[key] = parse_datetime(node)
 
 def parse_datetime(node):
-    return datetime.strptime(node.text, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M:%SZ")
+    return dateutil.parser.parse(node.text)
 
 def set_code_description(data, key, node):
     if node is not None:
@@ -52,7 +53,7 @@ def parse_container(node):
 def parse_base(node):
     data = dict()
     set_datetime(data, 'entered_on', node.find('./EnteredOn'))
-    set_datetime(data, 'updated_on', node.find('./EnteredOn'))
+    set_datetime(data, 'updated_on', node.find('./UpdatedOn'))
     set_text(data, 'encounter_number', node.find('./EncounterNumber'))
     set_text(data, 'external_id', node.find('./ExternalId'))
     set_datetime(data, 'from_time', node.find('./FromTime'))
@@ -132,7 +133,6 @@ def parse_patient_address(node):
     set_code_description(data, 'state', node.find('./State'))
     set_code_description(data, 'zip', node.find('./Zip'))
     set_code_description(data, 'country', node.find('./Country'))
-
     sda_patient_address.data = data
 
     return sda_patient_address
@@ -170,8 +170,8 @@ def parse_patient_number(node):
     sda_patient_number = SDAPatientNumber()
 
     sda_patient_number.data = dict()
-    set_text(sda_patient_number.data, 'number', node.find('Number'))
-    set_text(sda_patient_number.data, 'number_type', node.find('NumberType'))
+    set_text(sda_patient_number.data, 'number', node.find('./Number'))
+    set_text(sda_patient_number.data, 'number_type', node.find('./NumberType'))
 
     organization_node = node.find('Organization')
 

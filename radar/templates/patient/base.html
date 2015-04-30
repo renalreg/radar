@@ -57,7 +57,7 @@
                         <li>
                             <strong>Units:</strong>
 
-                            {% for unit in units %}
+                            {% for unit in patient_data.units %}
                                 {{ unit.unit.name }}{% if not loop.last %},{% endif %}
                             {% endfor %}
                         </li>

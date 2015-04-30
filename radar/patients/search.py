@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from sqlalchemy import or_, case, desc, func
 from sqlalchemy.orm import aliased
@@ -130,25 +130,23 @@ def sda_patient_number_sub_query(*args):
 def filter_by_first_name(first_name):
     first_name_like = first_name + '%'
 
-    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'given_name')].astext.ilike(first_name_like))
-    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['given_name'].astext.ilike(first_name_like))
+    patient_filter = sda_patient_sub_query(SDAPatient.first_name.ilike(first_name_like))
+    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.first_name.ilike(first_name_like))
 
     return or_(patient_filter, alias_filter)
 
 def filter_by_last_name(last_name):
     last_name_like = last_name + '%'
 
-    patient_filter = sda_patient_sub_query(SDAPatient.data[('name', 'family_name')].astext.ilike(last_name_like))
-    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.data['family_name'].astext.ilike(last_name_like))
+    patient_filter = sda_patient_sub_query(SDAPatient.last_name.ilike(last_name_like))
+    alias_filter = sda_patient_name_sub_query(SDAPatientAlias.last_name.ilike(last_name_like))
 
     return or_(patient_filter, alias_filter)
 
 def filter_by_date_of_birth(date_of_birth):
-    day = date_of_birth.date()
-    next_day = day + timedelta(days=1)
     return sda_patient_sub_query(
-        SDAPatient.data['birth_time'].astext >= day.strftime('%Y-%m-%d'),
-        SDAPatient.data['birth_time'].astext <= next_day.strftime('%Y-%m-%d')
+        SDAPatient.date_of_birth >= date_of_birth,
+        SDAPatient.date_of_birth < date_of_birth + timedelta(days=1)
     )
 
 def filter_by_patient_number(number):
@@ -168,7 +166,10 @@ def filter_by_gender(gender_code):
     return sda_patient_sub_query(SDAPatient.data[('gender', 'code')].astext == gender_code)
 
 def filter_by_year_of_birth(year):
-    return sda_patient_sub_query(SDAPatient.data['birth_time'].astext.like("%d%%" % year))
+    return sda_patient_sub_query(
+        SDAPatient.date_of_birth >= datetime(year, 1, 1),
+        SDAPatient.date_of_birth < datetime(year + 1, 1, 1)
+    )
 
 def filter_by_unit_roles(user, roles):
     patient_alias = aliased(Patient)
@@ -206,8 +207,8 @@ def filter_by_view_patient_permissions(user):
 
 def filter_by_demographics_permissions(user):
     return or_(
-        filter_by_unit_roles(user, UNIT_DEMOGRAPHICS_ROLES),
-        filter_by_disease_group_roles(user, DISEASE_GROUP_DEMOGRAPHICS_ROLES),
+        filter_by_unit_roles(user, UNIT_VIEW_DEMOGRAPHICS_ROLES),
+        filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES),
     )
 
 def order_by_demographics_field(user, field, direction, else_=None):

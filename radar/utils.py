@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from flask import request, url_for
+import dateutil.parser
 
 
 def get_path(data, *keys):
@@ -17,7 +15,7 @@ def get_path_as_datetime(data, *keys):
     value = get_path(data, *keys)
 
     if value is not None:
-        value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
+        value = dateutil.parser.parse(value)
 
     return value
 

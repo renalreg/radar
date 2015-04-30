@@ -1,9 +1,10 @@
-from sqlalchemy import Integer, Column, ForeignKey
+from sqlalchemy import Integer, Column, ForeignKey, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 from radar.database import db
+from radar.sda.utils import serialize_jsonb
 from radar.utils import get_path, get_path_as_datetime
 
 
@@ -24,6 +25,12 @@ class SDABundle(db.Model):
     sda_medications = relationship('SDAMedication', cascade='all')
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
 
+    def serialize(self):
+        if self.sda_patient is not None:
+            self.sda_patient.serialize()
+
+        for x in self.sda_medications:
+            x.serialize()
 
 class SDAMedication(db.Model):
     __tablename__ = 'sda_medications'
@@ -34,6 +41,8 @@ class SDAMedication(db.Model):
 
     data = Column(JSONB)
 
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
 
 class SDAPatient(db.Model):
     __tablename__ = 'sda_patients'
@@ -75,11 +84,23 @@ class SDAPatient(db.Model):
 
     @date_of_birth.expression
     def date_of_birth(cls):
-        return SDAPatient.data[('name', 'date_of_birth')].astext
+        return func.parse_date_to_lower(SDAPatient.data['birth_time'].astext)
 
     @gender.expression
     def gender(cls):
         return SDAPatient.data[('name', 'gender')].astext
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
+
+        for x in self.aliases:
+            x.serialize()
+
+        for x in self.numbers:
+            x.serialize()
+
+        for x in self.addresses:
+            x.serialize()
 
 class SDAPatientAlias(db.Model):
     __tablename__ = 'sda_patient_aliases'
@@ -90,6 +111,25 @@ class SDAPatientAlias(db.Model):
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB)
+
+    @hybrid_property
+    def first_name(self):
+        return get_path(self.data, 'given_name')
+
+    @hybrid_property
+    def last_name(self):
+        return get_path(self.data, 'family_name')
+
+    @first_name.expression
+    def first_name(cls):
+        return SDAPatient.data['given_name'].astext
+
+    @last_name.expression
+    def last_name(cls):
+        return SDAPatient.data['family_name'].astext
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
 
 
 class SDAPatientNumber(db.Model):
@@ -102,6 +142,9 @@ class SDAPatientNumber(db.Model):
 
     data = Column(JSONB)
 
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
+
 
 class SDAPatientAddress(db.Model):
     __tablename__ = 'sda_patient_addresses'
@@ -112,3 +155,6 @@ class SDAPatientAddress(db.Model):
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB)
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)

@@ -74,6 +74,8 @@ def import_sda(facility_code, xml_data):
 
     data_import.sda_bundle = sda_bundle
 
+    sda_bundle.serialize()
+
     db.session.add(data_import)
     db.session.commit()
 
