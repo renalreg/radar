@@ -82,7 +82,7 @@ class DataSource(db.Model):
     id = Column(Integer, primary_key=True)
     type = Column(String)
 
-    sda_resource = relationship('SDAResource', uselist=False, cascade='all, delete-orphan')
+    sda_bundle = relationship('SDABundle', uselist=False, cascade='all, delete-orphan')
 
     def view_url(self):
         return None

@@ -15,15 +15,15 @@
                 <form method="GET">
                     {{ render_field(form.radar_id) }}
 
-                    {% if demographics %}
+                    {% if current_user.has_view_demographics_permission %}
                         {{ render_field(form.first_name) }}
                     {% endif %}
 
-                    {% if demographics %}
+                    {% if current_user.has_view_demographics_permission %}
                         {{ render_field(form.last_name) }}
                     {% endif %}
 
-                    {% if demographics %}
+                    {% if current_user.has_view_demographics_permission %}
                         {{ render_field(form.date_of_birth) }}
                     {% endif %}
 
@@ -31,7 +31,7 @@
 
                     {{ render_field(form.gender) }}
 
-                    {% if demographics %}
+                    {% if current_user.has_view_demographics_permission %}
                         {{ render_field(form.patient_number) }}
                     {% endif %}
 
@@ -78,11 +78,11 @@
                         <tr>
                             <th>{{ render_sortable_column(ordering, 'radar_id', 'ID') }}</th>
 
-                            {% if demographics %}
+                            {% if current_user.has_view_demographics_permission %}
                                 <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
                             {% endif %}
 
-                            {% if demographics %}
+                            {% if current_user.has_view_demographics_permission %}
                                 <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
                             {% endif %}
 
@@ -91,7 +91,7 @@
 
                             <th>Disease Groups</th>
 
-                            {% if demographics %}
+                            {% if current_user.has_view_demographics_permission %}
                                 <th>Units</th>
                             {% endif %}
                         </tr>
@@ -103,9 +103,9 @@
                                 <tr>
                                     <td><a href="{{ url_for('patients.view_patient', patient_id=patient.id) }}">{{ patient.id }}</a></td>
 
-                                    {% if demographics %}
+                                    {% if current_user.has_view_demographics_permission %}
                                         <td>
-                                            {% if patient_demographics and patient.first_name %}
+                                            {% if patient.can_view_demographics(current_user) and patient.first_name %}
                                                 <a href="{{ url_for('patients.view_patient', patient_id=patient.id) }}">{{ patient.first_name }}</a>
                                             {% else %}
                                                 -
@@ -113,9 +113,9 @@
                                         </td>
                                     {% endif %}
 
-                                    {% if demographics %}
+                                    {% if current_user.has_view_demographics_permission %}
                                         <td>
-                                            {% if patient_demographics and patient.last_name %}
+                                            {% if patient.can_view_demographics(current_user) and patient.last_name %}
                                                 <a href="{{ url_for('patients.view_patient', patient_id=patient.id) }}">{{ patient.last_name }}</a>
                                             {% else %}
                                                 -
@@ -124,7 +124,7 @@
                                     {% endif %}
 
                                     <td>
-                                        {% if patient_demographics %}
+                                        {% if patient.can_view_demographics(current_user) %}
                                             {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
                                         {% else %}
                                             {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
@@ -153,7 +153,7 @@
                                         {% endif %}
                                     </td>
 
-                                    {% if demographics %}
+                                    {% if current_user.has_view_demographics_permission %}
                                         <td>
                                             {% if patient_data.units %}
                                                 {% for unit in patient_data.units %}
@@ -168,7 +168,7 @@
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="{% if demographics %}7{% else %}4{% endif %}">No patients found.</td>
+                                <td colspan="{% if current_user.has_view_demographics_permission %}7{% else %}4{% endif %}">No patients found.</td>
                             </tr>
                         {% endif %}
                     </tbody>

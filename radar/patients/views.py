@@ -82,7 +82,6 @@ def view_patient_list():
     context = dict(
         patients=patients,
         form=form,
-        demographics=can_user_view_demographics(current_user),
         pagination=pagination,
         ordering=ordering,
         per_page_choices=PER_PAGE_CHOICES,
@@ -100,7 +99,7 @@ def view_demographics_list(patient_id):
         abort(403)
 
     sda_patients = SDAPatient.query\
-        .join(SDAPatient.sda_resource)\
+        .join(SDAPatient.sda_bundle)\
         .join(Patient)\
         .filter(Patient.id == patient_id)\
         .all()
@@ -110,7 +109,7 @@ def view_demographics_list(patient_id):
     for sda_patient in sda_patients:
         demographics = dict()
 
-        demographics['facility'] = sda_patient.sda_resource.facility
+        demographics['facility'] = sda_patient.sda_bundle.facility
         demographics['first_name'] = sda_patient.first_name
         demographics['last_name'] = sda_patient.last_name
 

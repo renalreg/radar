@@ -5,7 +5,7 @@ from radar.medications.forms import MedicationForm
 from radar.medications.models import Medication
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
-from radar.sda.models import SDAMedication, SDAResource
+from radar.sda.models import SDAMedication, SDABundle
 from radar.utils import get_path, get_path_as_datetime
 
 bp = Blueprint('medications', __name__)
@@ -18,8 +18,8 @@ def view_medication_list(patient_id):
         abort(403)
 
     sda_medications = SDAMedication.query\
-        .join(SDAMedication.sda_resource)\
-        .join(SDAResource.patient)\
+        .join(SDAMedication.sda_bundle)\
+        .join(SDABundle.patient)\
         .filter(Patient.id == patient_id)\
         .order_by(SDAMedication.data['from_time'].desc())\
         .all()
@@ -33,7 +33,7 @@ def view_medication_list(patient_id):
         medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
         medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
 
-        data_source = sda_medication.sda_resource.data_source
+        data_source = sda_medication.sda_bundle.data_source
 
         if data_source.can_view(current_user):
             medication['view_url'] = data_source.view_url()

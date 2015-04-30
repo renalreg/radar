@@ -1,27 +1,27 @@
 from flask import url_for
 from radar.database import db
 from radar.models import Facility
-from radar.sda.models import SDAResource
+from radar.sda.models import SDABundle
 
 
 def save_form_entry(entry):
-    sda_resource = SDAResource()
-    sda_resource.patient = entry.patient
-    sda_resource.facility = Facility.query.filter(Facility.code == 'RADAR').one()
+    sda_bundle = SDABundle()
+    sda_bundle.patient = entry.patient
+    sda_bundle.facility = Facility.query.filter(Facility.code == 'RADAR').one()
 
     for concept, _ in entry.to_concepts():
-        concept.to_sda(sda_resource)
+        concept.to_sda(sda_bundle)
 
-    entry.sda_resource = sda_resource
+    entry.sda_bundle = sda_bundle
 
     db.session.add(entry)
 
 def delete_form_entry(entry):
     db.session.delete(entry)
 
-def sda_resource_to_update_url(sda_resource):
-    patient_id = sda_resource.patient_id
-    data_source = sda_resource.data_source
+def sda_bundle_to_update_url(sda_bundle):
+    patient_id = sda_bundle.patient_id
+    data_source = sda_bundle.data_source
 
     if data_source is not None:
         if data_source.type == 'medications':
@@ -29,9 +29,9 @@ def sda_resource_to_update_url(sda_resource):
 
     return None
 
-def sda_resource_to_delete_url(sda_resource):
-    patient_id = sda_resource.patient_id
-    data_source = sda_resource.data_source
+def sda_bundle_to_delete_url(sda_bundle):
+    patient_id = sda_bundle.patient_id
+    data_source = sda_bundle.data_source
 
     if data_source is not None:
         if data_source.type == 'medications':

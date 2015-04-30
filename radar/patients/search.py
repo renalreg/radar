@@ -10,7 +10,7 @@ from radar.models import UnitPatient, Unit, DiseaseGroupPatient, DiseaseGroup
 from radar.patients.models import Patient
 from radar.users.models import UnitUser, DiseaseGroupUser
 from radar.ordering import DESCENDING
-from radar.sda.models import SDAPatient, SDAResource, SDAPatientNumber, SDAPatientAlias
+from radar.sda.models import SDAPatient, SDABundle, SDAPatientNumber, SDAPatientAlias
 from radar.services import is_user_in_disease_group
 
 class PatientQueryBuilder():
@@ -98,7 +98,7 @@ class PatientQueryBuilder():
 def sda_patient_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(SDAPatient)\
-        .join(SDAResource)\
+        .join(SDABundle)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\
@@ -109,7 +109,7 @@ def sda_patient_name_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(SDAPatientAlias)\
         .join(SDAPatient)\
-        .join(SDAResource)\
+        .join(SDABundle)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\
@@ -120,7 +120,7 @@ def sda_patient_number_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(SDAPatientNumber)\
         .join(SDAPatient)\
-        .join(SDAResource)\
+        .join(SDABundle)\
         .join(patient_alias)\
         .filter(Patient.id == patient_alias.id)\
         .filter(*args)\

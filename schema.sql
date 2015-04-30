@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS sda_patient_aliases;
 DROP TABLE IF EXISTS sda_patient_numbers;
 DROP TABLE IF EXISTS sda_patient_addresses;
 DROP TABLE IF EXISTS sda_patients;
-DROP TABLE IF EXISTS sda_resources;
+DROP TABLE IF EXISTS sda_bundles;
 
 DROP TABLE IF EXISTS data_sources;
 
@@ -98,7 +98,7 @@ CREATE TABLE data_sources (
     UNIQUE (id, type)
 );
 
-CREATE TABLE sda_resources (
+CREATE TABLE sda_bundles (
     id integer primary key references data_sources (id) on delete cascade on update cascade,
     patient_id integer NOT NULL REFERENCES patients (id) ON DELETE CASCADE ON UPDATE CASCADE,
     facility_id integer NOT NULL REFERENCES facilities (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -107,7 +107,7 @@ CREATE TABLE sda_resources (
 
 CREATE TABLE sda_patients (
     id serial PRIMARY KEY,
-    sda_resource_id integer NOT NULL REFERENCES sda_resources (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    sda_bundle_id integer NOT NULL REFERENCES sda_bundles (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data jsonb
 );
 
@@ -131,7 +131,7 @@ CREATE TABLE sda_patient_addresses (
 
 CREATE TABLE sda_medications (
     id serial PRIMARY KEY,
-    sda_resource_id integer NOT NULL REFERENCES sda_resources (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    sda_bundle_id integer NOT NULL REFERENCES sda_bundles (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data jsonb
 );
 

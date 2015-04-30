@@ -44,7 +44,7 @@ def import_sda(facility_code, xml_data):
         organization_code = organization_code_node.text
 
         if organization_code == 'RADAR':
-            radar_id = int(patient_number_node.find('Number').text)
+            patient_id = int(patient_number_node.find('Number').text)
             break
 
     print "patient_id =", patient_id
@@ -54,10 +54,10 @@ def import_sda(facility_code, xml_data):
     if patient is None:
         raise ImportError('Patient not found (id="%s")' % patient_id)
 
-    sda_resource = parse_container(root)
-    sda_resource.patient = patient
-    sda_resource.facility = facility
-    sda_resource.mpiid = mpiid
+    sda_bundle = parse_container(root)
+    sda_bundle.patient = patient
+    sda_bundle.facility = facility
+    sda_bundle.mpiid = mpiid
 
     data_import = db.session.query(DataImport)\
         .with_for_update(read=True)\
@@ -72,7 +72,7 @@ def import_sda(facility_code, xml_data):
         data_import.patient = patient
         data_import.facility = facility
 
-    data_import.sda_resource = sda_resource
+    data_import.sda_bundle = sda_bundle
 
     db.session.add(data_import)
     db.session.commit()

@@ -1,5 +1,5 @@
 from datetime import datetime
-from radar.sda.models import SDAMedication, SDAResource, SDAPatientAddress, SDAPatientAlias, SDAPatient, \
+from radar.sda.models import SDAMedication, SDABundle, SDAPatientAddress, SDAPatientAlias, SDAPatient, \
     SDAPatientNumber
 
 
@@ -36,18 +36,18 @@ def parse_code_description(node):
     return data
 
 def parse_container(node):
-    sda_resource = SDAResource()
+    sda_bundle = SDABundle()
 
     patient_node = node.find('./Patient')
 
     sda_patient = parse_patient(patient_node)
-    sda_resource.sda_patient = sda_patient
+    sda_bundle.sda_patient = sda_patient
 
     for medication_node in node.findall('./Medications/Medication'):
         sda_medication = parse_medication(medication_node)
-        sda_resource.sda_medications.append(sda_medication)
+        sda_bundle.sda_medications.append(sda_medication)
 
-    return sda_resource
+    return sda_bundle
 
 def parse_base(node):
     data = dict()

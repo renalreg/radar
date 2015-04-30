@@ -67,7 +67,7 @@ class MedicationConcept(Concept):
             if self.to_date < self.from_date:
                 self.errors['to_date'].append('Must be on or after from date.')
 
-    def to_sda(self, sda_resource):
+    def to_sda(self, sda_bundle):
         sda_medication = SDAMedication()
 
         sda_medication.data = {
@@ -80,7 +80,7 @@ class MedicationConcept(Concept):
         if self.to_date is not None:
             sda_medication.data['to_time'] = self.to_date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        sda_resource.sda_medications.append(sda_medication)
+        sda_bundle.sda_medications.append(sda_medication)
 
 class PatientConcept(Concept):
     validators = {
@@ -94,7 +94,7 @@ class PatientConcept(Concept):
         self.first_name = first_name
         self.last_name = last_name
 
-    def to_sda(self, sda_resource):
+    def to_sda(self, sda_bundle):
         sda_patient = SDAPatient()
 
         sda_patient.data = {
@@ -104,4 +104,4 @@ class PatientConcept(Concept):
             }
         }
 
-        sda_resource.sda_patient = sda_patient
+        sda_bundle.sda_patient = sda_patient

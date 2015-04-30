@@ -6,8 +6,9 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.utils import get_path, get_path_as_datetime
 
-class SDAResource(db.Model):
-    __tablename__ = 'sda_resources'
+
+class SDABundle(db.Model):
+    __tablename__ = 'sda_bundles'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
     data_source = relationship('DataSource')
@@ -28,8 +29,8 @@ class SDAMedication(db.Model):
     __tablename__ = 'sda_medications'
 
     id = Column(Integer, primary_key=True)
-    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
-    sda_resource = relationship('SDAResource')
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB)
 
@@ -39,8 +40,8 @@ class SDAPatient(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_resource_id = Column(Integer, ForeignKey('sda_resources.id'))
-    sda_resource = relationship('SDAResource')
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB)
 

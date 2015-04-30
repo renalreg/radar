@@ -3,7 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
 from radar.models import DataSource
-from radar.sda.models import SDAPatient, SDAResource
+from radar.sda.models import SDAPatient, SDABundle
 
 
 class Patient(db.Model):
@@ -14,7 +14,7 @@ class Patient(db.Model):
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
 
-    sda_resources = relationship('SDAResource')
+    sda_bundles = relationship('SDABundle')
 
     def _latest_sda_patient_attr(self, attr):
         sda_patient = self.latest_sda_patient
@@ -30,7 +30,7 @@ class Patient(db.Model):
 
         # TODO last updated
         return select([column]) \
-            .select_from(join(SDAPatient, SDAResource).join(patient_alias)) \
+            .select_from(join(SDAPatient, SDABundle).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
             .as_scalar()
 
@@ -38,8 +38,8 @@ class Patient(db.Model):
     def latest_sda_patient(self):
         latest_sda_patient = None
 
-        for sda_resource in self.sda_resources:
-            sda_patient = sda_resource.sda_patient
+        for sda_bundle in self.sda_bundles:
+            sda_patient = sda_bundle.sda_patient
 
             if sda_patient is None:
                 continue
