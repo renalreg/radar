@@ -52,7 +52,7 @@ class SDAPatient(db.Model):
     sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
     sda_bundle = relationship('SDABundle')
 
-    data = Column(JSONB)
+    data = Column(JSONB, nullable=False)
 
     aliases = relationship('SDAPatientAlias', cascade='all')
     numbers = relationship('SDAPatientNumber', cascade='all')
@@ -60,11 +60,11 @@ class SDAPatient(db.Model):
 
     @hybrid_property
     def first_name(self):
-        return get_path(self.data, 'name', 'given_name')
+        return get_path(self.data, ['name', 'given_name'])
 
     @hybrid_property
     def last_name(self):
-        return get_path(self.data, 'name', 'family_name')
+        return get_path(self.data, ['name', 'family_name'])
 
     @hybrid_property
     def date_of_birth(self):
@@ -72,7 +72,7 @@ class SDAPatient(db.Model):
 
     @hybrid_property
     def gender(self):
-        return get_path(self.data, 'gender', 'code')
+        return get_path(self.data, ['gender', 'code'])
 
     @first_name.expression
     def first_name(cls):
@@ -110,15 +110,15 @@ class SDAPatientAlias(db.Model):
     sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
     sda_patient = relationship('SDAPatient')
 
-    data = Column(JSONB)
+    data = Column(JSONB, nullable=False)
 
     @hybrid_property
     def first_name(self):
-        return get_path(self.data, 'given_name')
+        return self.data.get('given_name')
 
     @hybrid_property
     def last_name(self):
-        return get_path(self.data, 'family_name')
+        return self.data.get('family_name')
 
     @first_name.expression
     def first_name(cls):
@@ -140,7 +140,7 @@ class SDAPatientNumber(db.Model):
     sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
     sda_patient = relationship('SDAPatient')
 
-    data = Column(JSONB)
+    data = Column(JSONB, nullable=False)
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)
@@ -154,7 +154,7 @@ class SDAPatientAddress(db.Model):
     sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
     sda_patient = relationship('SDAPatient')
 
-    data = Column(JSONB)
+    data = Column(JSONB, nullable=False)
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)

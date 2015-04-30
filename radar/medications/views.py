@@ -32,7 +32,7 @@ def view_medication_list(patient_id):
     for sda_medication in sda_medications:
         medication = dict()
         medication['id'] = sda_medication.id
-        medication['name'] = get_path(sda_medication.data, 'order_item', 'description')
+        medication['name'] = get_path(sda_medication.data, ['order_item', 'description'])
         medication['from_date'] = get_path_as_datetime(sda_medication.data, 'from_time')
         medication['to_date'] = get_path_as_datetime(sda_medication.data, 'to_time')
 

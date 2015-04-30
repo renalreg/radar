@@ -7,6 +7,7 @@ from radar.ordering import Ordering
 from radar.pagination import paginate_query
 from radar.patients.core import view_patient_list_permission
 from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm
+from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.services import get_disease_group_filters_for_user, get_unit_filters_for_user
@@ -114,6 +115,11 @@ def view_demographics_list(patient_id):
         demographics['first_name'] = sda_patient.first_name
         demographics['last_name'] = sda_patient.last_name
 
+        if sda_patient.gender == 'M':
+            demographics['gender'] = 'Male'
+        else:
+            demographics['gender'] = 'Female'
+
         demographics_list.append(demographics)
 
     context = dict(
@@ -147,6 +153,11 @@ def view_radar_demographics(patient_id):
 
         if form.validate():
             form.populate_obj(demographics)
+
+            sda_bundle = demographics_to_sda_bundle(demographics)
+            sda_bundle.serialize()
+            demographics.sda_bundle = sda_bundle
+
             db.session.add(demographics)
             db.session.commit()
             return redirect(url_for('patients.view_demographics_list', patient_id=demographics.patient.id))
