@@ -88,6 +88,8 @@ def view_patient_list():
         pagination=pagination,
         ordering=ordering,
         per_page_choices=PER_PAGE_CHOICES,
+        disease_group_choices=disease_group_choices,
+        unit_choices=unit_choices,
     )
 
     return render_template('patients.html', **context)

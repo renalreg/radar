@@ -23,7 +23,7 @@ class MedicationConcept(Concept):
         if self.to_date is not None and self.to_date < self.from_date:
             self.errors['to_date'].append('Must be on or after from date.')
 
-        print not self.errors
+        return not self.errors
 
     def to_sda(self, sda_bundle):
         sda_medication = SDAMedication()

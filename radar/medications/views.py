@@ -101,7 +101,6 @@ def view_medication(patient_id, medication_id=None):
                 return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
             else:
                 add_errors_to_form(form, errors)
-                print form.errors
 
     context = dict(
         patient=medication.patient,
