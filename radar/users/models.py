@@ -76,6 +76,10 @@ class User(db.Model):
         # TODO
         return self.disease_group_users
 
+    def can_view(self, user):
+        # TODO
+        return True
+
 
 class DiseaseGroupUser(db.Model):
     __tablename__ = 'disease_group_users'

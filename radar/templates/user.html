@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+
 {% block body %}
     <div class="block">
         <h1>{{ user.username }}</h1>
@@ -8,88 +11,82 @@
     <div class="block">
         <h2>Disease Groups</h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Disease Group</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for disease_group in filter_user_disease_groups_for_user(user, current_user) %}
+        {% if user_data.disease_groups %}
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ disease_group.disease_group.name }}</td>
-                        <td align="right">
-                            <form method="POST" action="{{ url_for('user_disease_groups', user_id=user.id) }}" class="form-inline">
-                                <input type="hidden" name="delete" />
-                                <input type="hidden" name="disease_group_id" value="{{ disease_group.disease_group.id }}" />
-
-                                <button type="submit" class="btn btn-link btn-xs">
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
-                                </button>
-                            </form>
-                        </td>
+                        <th>Disease Group</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for disease_group in user_data.disease_groups %}
+                        <tr>
+                            <td>{{ disease_group.disease_group.name }}</td>
+                            <td align="right">
+                                <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
+                                    {{ disease_group_form.hidden_tag() }}
+
+                                    <input type="hidden" name="disease_group_id" value="{{ disease_group.disease_group.id }}" />
+                                    <input type="hidden" name="role" value="" />
+
+                                    <button type="submit" class="btn btn-link btn-xs">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
 
         <h3>Manage Disease Groups</h3>
 
-        {% with f = form_builder(disease_group_form) %}
-            <form method="POST" action="{{ url_for('user_disease_groups', user_id=user.id) }}">
-                <div class="form-group">
-                    <label for="disease_group_id" class="control-label">Disease Group</label>
-                    {{ f.select('disease_group_id', disease_group_choices, include_blank=True) }}
-                </div>
+        <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-horizontal">
+            {{ disease_group_form.hidden_tag() }}
 
-                <button type="submit" class="btn btn-success">Save</button>
-            </form>
-        {% endwith %}
+            {{ render_field(disease_group_form.disease_group_id) }}
+            {{ render_field(disease_group_form.role) }}
+
+            {% call render_button() %}Save{% endcall %}
+        </form>
     </div>
 
     <div class="block">
         <h2>Units</h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Unit</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for unit in filter_user_units_for_user(user, current_user) %}
+        {% if user_data.units %}
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ unit.unit.name }}</td>
-                        <td align="right">
-                            <form method="POST" action="{{ url_for('user_units', user_id=user.id) }}" class="form-inline">
-                                <input type="hidden" name="delete" />
-                                <input type="hidden" name="unit_id" value="{{ unit.unit.id }}" />
-
-                                <button type="submit" class="btn btn-link btn-xs">
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
-                                </button>
-                            </form>
-                        </td>
+                        <th>Unit</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for unit in user_data.units %}
+                        <tr>
+                            <td>{{ unit.unit.name }}</td>
+                            <td align="right">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
 
         <h3>Manage Units</h3>
 
-        {% with f = form_builder(unit_form) %}
-            <form method="POST" action="{{ url_for('user_units', user_id=user.id) }}">
-                <div class="form-group">
-                    <label for="unit_id" class="control-label">Disease Group</label>
-                    {{ f.select('unit_id', unit_choices, include_blank=True) }}
-                </div>
+        <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-horizontal">
+            {{ unit_form.hidden_tag() }}
 
-                <button type="submit" class="btn btn-success">Save</button>
-            </form>
-        {% endwith %}
+            {{ render_field(unit_form.unit_id) }}
+            {{ render_field(unit_form.role) }}
+
+            {% call render_button() %}Save{% endcall %}
+        </form>
     </div>
 {% endblock %}

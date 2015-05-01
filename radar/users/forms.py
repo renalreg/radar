@@ -9,11 +9,15 @@ class LoginForm(Form):
     password = PasswordField(validators=[InputRequired()])
 
 class UserDiseaseGroupForm(Form):
-    disease_group_id = SelectField(coere=int)
-    role = SelectField()
+    disease_group_id = SelectField('Disease Group', coerce=int, validators=[InputRequired()])
+    role = SelectField(validators=[InputRequired()])
+
+class UserUnitForm(Form):
+    unit_id = SelectField('Unit', coerce=int, validators=[InputRequired()])
+    role = SelectField(validators=[InputRequired()])
 
 class UserSearchForm(Form):
     username = StringField(validators=[Optional()])
     email = StringField(validators=[Optional()])
-    unit_id = SelectField("Unit", coerce=optional_int, validators=[Optional()])
-    disease_group_id = SelectField("Disease Group", coerce=optional_int, validators=[Optional()])
+    unit_id = SelectField('Unit', coerce=optional_int, validators=[Optional()])
+    disease_group_id = SelectField('Disease Group', coerce=optional_int, validators=[Optional()])

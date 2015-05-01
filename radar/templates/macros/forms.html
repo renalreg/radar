@@ -46,3 +46,21 @@
         {% endcall %}
     {% endif %}
 {% endmacro %}
+
+{% macro render_horizontal_button(class='btn-success', type='submit') %}
+    {% set inner = caller() %}
+
+    <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8">
+            {% call render_button(class, type) %}
+                {{ inner }}
+            {% endcall %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_button(class='btn-success', type='submit') %}
+    <button type="{{ type }}" class="btn {{ class }}">
+        {{ caller() }}
+    </button>
+{% endmacro %}

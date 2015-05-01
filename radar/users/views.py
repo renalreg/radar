@@ -5,11 +5,12 @@ from sqlalchemy import or_
 from radar.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
 from radar.disease_groups.models import DiseaseGroup
+from radar.units.models import Unit
 from radar.units.services import get_units_for_user_with_permissions
 from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.search import UserQueryBuilder
 from radar.users.services import check_login
-from radar.users.forms import UserDiseaseGroupForm, LoginForm, UserSearchForm
+from radar.users.forms import UserDiseaseGroupForm, LoginForm, UserSearchForm, UserUnitForm
 from radar.users.models import User
 
 
@@ -26,18 +27,25 @@ def get_user_data(user):
     )
 
 
+def group_list_to_choices(groups, include_blank=False):
+    choices = [(x.id, x.name) for x in groups]
+
+    if include_blank:
+        choices.insert(0, ('', ''))
+
+    return choices
+
+
 @bp.route('/users/')
 def view_user_list():
     if not current_user.has_view_user_permission:
         abort(403)
 
     units = get_units_for_user_with_permissions(current_user, [UnitUser.has_view_user_permission])
-    unit_choices = [(x.id, x.name) for x in units]
-    unit_choices.insert(0, ('', ''))
+    unit_choices = group_list_to_choices(units, include_blank=True)
 
     disease_groups = get_disease_groups_for_user_with_permissions(current_user, [DiseaseGroupUser.has_view_user_permission])
-    disease_group_choices = [(x.id, x.name) for x in disease_groups]
-    disease_group_choices.insert(0, ('', ''))
+    disease_group_choices = group_list_to_choices(disease_groups, include_blank=True)
 
     form = UserSearchForm(formdata=request.args, csrf_enabled=False)
     form.unit_id.choices = unit_choices
@@ -80,12 +88,20 @@ def view_user_list():
 def view_user(user_id):
     user = User.query.get_or_404(user_id)
 
-    if not view_user_permission(user):
+    if not user.can_view(current_user):
         abort(403)
 
     disease_group_form = UserDiseaseGroupForm()
-    disease_group_form.disease_group_id.choices = DiseaseGroup.query.all()
+
+    # TODO
+    disease_group_form.disease_group_id.choices = group_list_to_choices(DiseaseGroup.query.all())
     disease_group_form.role.choices = [('', '')]
+
+    unit_form = UserUnitForm()
+
+    # TODO
+    unit_form.unit_id.choices = group_list_to_choices(Unit.query.all())
+    unit_form.role.choices = [('', '')]
 
     if request.form.get('disease_group_submit'):
         if disease_group_form.validate():
@@ -118,7 +134,14 @@ def view_user(user_id):
 
             db.session.commit()
 
-    return render_template('user.html', user=user, disease_group_form=disease_group_form)
+    context = dict(
+        user=user,
+        user_data=get_user_data(user),
+        disease_group_form=disease_group_form,
+        unit_form=unit_form
+    )
+
+    return render_template('user.html', **context)
 
 
 @bp.route('/login/', methods=['GET', 'POST'])
