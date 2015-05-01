@@ -1,8 +1,8 @@
-from wtforms import StringField, SelectField, IntegerField
+from wtforms import StringField, IntegerField
 from wtforms.validators import Optional, InputRequired
 from flask_wtf import Form
 
-from radar.forms import RadarDateField
+from radar.forms import RadarDateField, RadarSelectField
 
 from radar.ordering import ASCENDING, DESCENDING
 from radar.utils import optional_int
@@ -27,7 +27,7 @@ class DemographicsForm(Form):
     # TODO validation
     date_of_birth = RadarDateField('Date of Birth')
 
-    gender = SelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
+    gender = RadarSelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
 
     # TODO
     ethnicity = StringField(validators=[InputRequired()])
@@ -59,14 +59,14 @@ class DemographicsForm(Form):
 class PatientSearchForm(Form):
     first_name = StringField()
     last_name = StringField()
-    unit_id = SelectField('Unit', coerce=optional_int, validators=[Optional()])
-    disease_group_id = SelectField('Disease Group', coerce=optional_int, validators=[Optional()])
+    unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[Optional()])
+    disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[Optional()])
     date_of_birth = RadarDateField('Date of Birth', validators=[Optional()])
     patient_number = StringField()
-    gender = SelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
+    gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
     radar_id = IntegerField('RaDaR ID', validators=[Optional()])
     year_of_birth = IntegerField('Year of Birth', validators=[Optional()])
-    order_by = SelectField(choices=ORDER_BY_CHOICES)
-    order_direction = SelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')])
-    per_page = SelectField(coerce=int, default=50, choices=PER_PAGE_CHOICES)
+    order_by = RadarSelectField(choices=ORDER_BY_CHOICES)
+    order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING)
+    per_page = RadarSelectField(coerce=int, default=50, choices=PER_PAGE_CHOICES)
     page = IntegerField()

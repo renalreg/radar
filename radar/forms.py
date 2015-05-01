@@ -1,3 +1,4 @@
+from wtforms import SelectField
 from wtforms.widgets import TextInput
 from wtforms.ext.dateutil.fields import DateField
 
@@ -15,3 +16,14 @@ class RadarDateInput(TextInput):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')
         kwargs['class'] = u'%s %s' % (c, 'datepicker')
         return super(RadarDateInput, self).__call__(field, **kwargs)
+
+
+class RadarSelectField(SelectField):
+    def process_data(self, value):
+        print "called!"
+
+        # Fix for SelectField converting None to "None"
+        if value is None:
+            value = ''
+
+        super(SelectField, self).process_data(value)
