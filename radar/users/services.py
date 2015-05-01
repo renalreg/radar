@@ -1,5 +1,4 @@
-from radar.models import Unit
-from radar.users.models import User, UnitUser
+from radar.users.models import User
 
 
 def check_login(username, password):

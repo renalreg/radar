@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask import render_template, Blueprint
 
-from radar.models import Unit
+from radar.units.models import Unit
 from radar.users.models import UnitUser
 from radar.users.roles import UNIT_GOD
 

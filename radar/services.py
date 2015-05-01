@@ -1,5 +1,6 @@
 from radar.database import db
-from radar.models import Unit, DiseaseGroup
+from radar.units.models import Unit
+from radar.disease_groups.models import DiseaseGroup
 from radar.users.models import UnitUser, DiseaseGroupUser
 
 

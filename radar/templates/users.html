@@ -14,11 +14,11 @@
                     {{ render_field(form.username) }}
                     {{ render_field(form.email) }}
 
-                    {% if disease_group_choices %}
+                    {% if disease_groups %}
                         {{ render_field(form.disease_group_id) }}
                     {% endif %}
 
-                    {% if unit_choices %}
+                    {% if units %}
                         {{ render_field(form.unit_id) }}
                     {% endif %}
 

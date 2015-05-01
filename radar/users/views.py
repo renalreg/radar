@@ -2,9 +2,10 @@ from flask import render_template, request, abort, Blueprint, flash, url_for, re
 from flask_login import current_user, login_user, logout_user
 
 from radar.database import db
-from radar.models import DiseaseGroup
-from radar.users.models import DiseaseGroupUser
-from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user
+from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
+from radar.disease_groups.models import DiseaseGroup
+from radar.units.services import get_units_for_user_with_permissions
+from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.services import check_login
 from radar.users.forms import UserDiseaseGroupForm, LoginForm, UserSearchForm
 from radar.users.models import User
@@ -27,10 +28,13 @@ def get_user_data(user):
 def view_user_list():
     users = User.query.all()
 
-    unit_choices = [(x.id, x.name) for x in get_unit_filters_for_user(current_user)]
-    disease_group_choices = [(x.id, x.name) for x in get_disease_group_filters_for_user(current_user)]
+    units = get_units_for_user_with_permissions(current_user, UnitUser.has_view_user_permission)
+    unit_choices = [(x.id, x.name) for x in units]
 
-    form = UserSearchForm()
+    disease_groups = get_disease_groups_for_user_with_permissions(current_user, DiseaseGroupUser.has_view_user_permission)
+    disease_group_choices = [(x.id, x.name) for x in disease_groups]
+
+    form = UserSearchForm(formdata=request.args)
     form.unit_id.choices = unit_choices
     form.disease_group_id.choices = disease_group_choices
 
@@ -39,8 +43,8 @@ def view_user_list():
     context = dict(
         users=users,
         form=form,
-        disease_group_choices=disease_group_choices,
-        unit_choices=unit_choices
+        disease_groups=disease_groups,
+        units=units,
     )
 
     return render_template('users.html', **context)

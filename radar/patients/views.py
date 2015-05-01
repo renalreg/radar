@@ -6,7 +6,6 @@ from radar.database import db
 from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
-from radar.patients.core import view_patient_list_permission
 from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm
 from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder

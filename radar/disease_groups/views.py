@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask import render_template, Blueprint
 
-from radar.models import DiseaseGroup
+from radar.disease_groups.models import DiseaseGroup
 from radar.users.models import DiseaseGroupUser
 from radar.users.roles import DISEASE_GROUP_GOD
 
