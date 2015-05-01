@@ -67,6 +67,14 @@ class Patient(db.Model):
     def gender(self):
         return self._latest_sda_patient_attr('gender')
 
+    @hybrid_property
+    def is_male(self):
+        return self.gender == 'M'
+
+    @hybrid_property
+    def is_female(self):
+        return self.gender == 'F'
+
     @first_name.expression
     def first_name(cls):
         return cls._latest_sda_patient_query(SDAPatient.first_name)

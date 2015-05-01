@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, ForeignKey, func
+from sqlalchemy import Integer, Column, ForeignKey, func, case
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -74,7 +74,22 @@ class SDAPatient(db.Model):
 
     @hybrid_property
     def gender(self):
-        return get_path_as_text(self.data, ['gender', 'code'])
+        gender = get_path_as_text(self.data, ['gender', 'code']).upper()
+
+        if gender == '1' or gender == 'M':
+            return 'M'
+        elif gender == '2' or gender == 'F':
+            return 'F'
+        else:
+            return None
+
+    @hybrid_property
+    def is_male(self):
+        return self.gender == 'M'
+
+    @hybrid_property
+    def is_female(self):
+        return self.gender == 'F'
 
     @first_name.expression
     def first_name(cls):
@@ -90,7 +105,16 @@ class SDAPatient(db.Model):
 
     @gender.expression
     def gender(cls):
-        return SDAPatient.data[('gender', 'code')].astext
+        gender_code = SDAPatient.data[('gender', 'code')].astext
+
+        return case([
+            (gender_code == 'M', 'M'),
+            (gender_code == 'F', 'F'),
+            (gender_code == 'm', 'M'),
+            (gender_code == 'f', 'F'),
+            (gender_code == '1', '1'),
+            (gender_code == '2', '2'),
+        ], else_=None)
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)

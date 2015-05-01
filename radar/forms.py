@@ -20,8 +20,6 @@ class RadarDateInput(TextInput):
 
 class RadarSelectField(SelectField):
     def process_data(self, value):
-        print "called!"
-
         # Fix for SelectField converting None to "None"
         if value is None:
             value = ''

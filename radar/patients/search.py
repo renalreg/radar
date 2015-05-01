@@ -164,7 +164,7 @@ def filter_by_radar_id(radar_id):
 
 
 def filter_by_gender(gender_code):
-    return sda_patient_sub_query(SDAPatient.data[('gender', 'code')].astext == gender_code)
+    return sda_patient_sub_query(SDAPatient.gender == gender_code)
 
 
 def filter_by_year_of_birth(year):
