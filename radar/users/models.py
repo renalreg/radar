@@ -60,6 +60,14 @@ class User(db.Model):
     def disease_groups(self):
         return [x.disease_group for x in self.disease_group_users]
 
+    def filter_units_for_user(self, user):
+        # TODO
+        return self.unit_users
+
+    def filter_disease_groups_for_user(self, user):
+        # TODO
+        return self.disease_group_users
+
 
 class DiseaseGroupUser(db.Model):
     __tablename__ = 'disease_group_users'

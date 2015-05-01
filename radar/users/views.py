@@ -6,32 +6,42 @@ from radar.models import DiseaseGroup
 from radar.users.models import DiseaseGroupUser
 from radar.services import get_unit_filters_for_user, get_disease_group_filters_for_user, get_users_for_user
 from radar.users.services import check_login
-from radar.users.forms import UserDiseaseGroupForm, LoginForm
+from radar.users.forms import UserDiseaseGroupForm, LoginForm, UserSearchForm
 from radar.users.models import User
 
 
 bp = Blueprint('users', __name__)
 
 
+def get_user_data(user):
+    units = sorted(user.filter_units_for_user(current_user), key=lambda x: x.unit.name)
+    disease_groups = sorted(user.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name)
+
+    return dict(
+        units=units,
+        disease_groups=disease_groups,
+    )
+
+
 @bp.route('/users/')
 def view_user_list():
-    if not view_user_list_permission():
-        abort(403)
+    users = User.query.all()
 
-    search = {}
-    form = UserSearchFormHandler(search)
-    form.submit(request.args)
+    unit_choices = [(x.id, x.name) for x in get_unit_filters_for_user(current_user)]
+    disease_group_choices = [(x.id, x.name) for x in get_disease_group_filters_for_user(current_user)]
 
-    users = get_users_for_user(current_user, search)
+    form = UserSearchForm()
+    form.unit_id.choices = unit_choices
+    form.disease_group_id.choices = disease_group_choices
 
-    unit_choices = [(x.name, x.id) for x in get_unit_filters_for_user(current_user)]
-    disease_group_choices = [(x.name, x.id) for x in get_disease_group_filters_for_user(current_user)]
+    users = [(x, get_user_data(x)) for x in users]
 
-    context = get_user_base_context()
-    context['users'] = users
-    context['form'] = form
-    context['disease_group_choices'] = disease_group_choices
-    context['unit_choices'] = unit_choices
+    context = dict(
+        users=users,
+        form=form,
+        disease_group_choices=disease_group_choices,
+        unit_choices=unit_choices
+    )
 
     return render_template('users.html', **context)
 
