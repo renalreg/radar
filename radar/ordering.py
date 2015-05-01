@@ -56,8 +56,14 @@ class Ordering(object):
             else:
                 return ASCENDING
 
+        return ASCENDING
+
     def is_ordered_by(self, column):
         return self.column == column
+
+    @property
+    def is_ascending(self):
+        return self.direction == ASCENDING
 
 
 def url_for_order_by(order_by, order_direction):

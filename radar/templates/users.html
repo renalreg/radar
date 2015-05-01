@@ -3,6 +3,8 @@
 {% set current_page = 'users' %}
 
 {% from 'macros/forms.html' import render_field %}
+{% from 'macros/pagination.html' import render_pagination %}
+{% from 'macros/ordering.html' import render_sortable_column %}
 
 {% block body %}
     <div class="row">
@@ -34,9 +36,9 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
+                            <th>{{ render_sortable_column(ordering, 'id', 'ID') }}</th>
+                            <th>{{ render_sortable_column(ordering, 'username', 'Username') }}</th>
+                            <th>{{ render_sortable_column(ordering, 'email', 'Email') }}</th>
                             <th>Disease Groups</th>
                             <th>Units</th>
                         </tr>
@@ -72,6 +74,8 @@
                         {% endfor %}
                     </tbody>
                 </table>
+
+                {{ render_pagination(pagination) }}
             </div>
         </div>
     </div>

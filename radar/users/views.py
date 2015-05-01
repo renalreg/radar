@@ -4,6 +4,8 @@ from flask_login import current_user, login_user, logout_user
 from radar.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
 from radar.disease_groups.models import DiseaseGroup
+from radar.ordering import order_query
+from radar.pagination import paginate_query
 from radar.units.services import get_units_for_user_with_permissions
 from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
@@ -11,6 +13,13 @@ from radar.users.search import UserQueryBuilder
 from radar.users.services import check_login, get_managed_units, get_managed_disease_groups
 from radar.users.forms import DiseaseGroupRoleForm, LoginForm, UserSearchForm, UnitRoleForm
 from radar.users.models import User
+
+
+ORDER_BY = {
+    'id': User.id,
+    'username': User.username,
+    'email': User.email,
+}
 
 
 bp = Blueprint('users', __name__)
@@ -49,7 +58,10 @@ def view_user_list():
             builder.unit(form.unit_id.data)
 
     query = builder.build()
-    users = query.order_by(User.username).all()
+
+    query, ordering = order_query(query, ORDER_BY, 'username')
+    pagination = paginate_query(query)
+    users = pagination.items
 
     users = [(x, get_user_data(x)) for x in users]
 
@@ -58,6 +70,8 @@ def view_user_list():
         form=form,
         disease_groups=disease_groups,
         units=units,
+        pagination=pagination,
+        ordering=ordering,
     )
 
     return render_template('users.html', **context)
