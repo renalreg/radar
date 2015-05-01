@@ -43,7 +43,7 @@
 
                                         <ul class="dropdown-menu" role="menu">
                                             {% for disease_group in navigation.disease_groups %}
-                                                <li{% if disease_group_id == disease_group.id %} class="active"{% endif %}>
+                                                <li{% if current_disease_group == disease_group %} class="active"{% endif %}>
                                                     <a href="{{ url_for('disease_groups.view_disease_group', disease_group_id=disease_group.id) }}">{{ disease_group.name }}</a>
                                                 </li>
                                             {% endfor %}
