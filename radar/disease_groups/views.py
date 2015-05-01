@@ -1,10 +1,10 @@
 from flask_login import current_user
-from flask import abort, render_template, Blueprint
-from radar.models import DiseaseGroup
+from flask import render_template, Blueprint
 
-from radar.services import get_disease_group_for_user
+from radar.models import DiseaseGroup
 from radar.users.models import DiseaseGroupUser
 from radar.users.roles import DISEASE_GROUP_GOD
+
 
 bp = Blueprint('disease_groups', __name__)
 
