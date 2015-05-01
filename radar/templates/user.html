@@ -72,46 +72,44 @@
     <div class="block">
         <h2>Units</h2>
 
-        {% if user_data.units %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th width="40%">Unit</th>
-                        <th width="40%">Role</th>
-                        <th></th>
-                    </tr>
-                </thead>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="40%">Unit</th>
+                    <th width="40%">Role</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% if user_data.units %}
-                        {% for unit in user_data.units %}
-                            <tr>
-                                <td>{{ unit.unit.name }}</td>
-                                <td>{{ unit.role_name }}</td>
-                                <td align="right">
-                                    {% if unit.can_edit(current_user) %}
-                                        <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
-                                            {{ unit_form.hidden_tag() }}
-
-                                            <input type="hidden" name="unit_id" value="{{ unit.unit.id }}" />
-                                            <input type="hidden" name="role" value="" />
-
-                                            <button type="submit" class="btn btn-link btn-xs" name="unit_submit">
-                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
-                                            </button>
-                                        </form>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
+            <tbody>
+                {% if user_data.units %}
+                    {% for unit in user_data.units %}
                         <tr>
-                            <td colspan="3">No unit roles.</td>
+                            <td>{{ unit.unit.name }}</td>
+                            <td>{{ unit.role_name }}</td>
+                            <td align="right">
+                                {% if unit.can_edit(current_user) %}
+                                    <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
+                                        {{ unit_form.hidden_tag() }}
+
+                                        <input type="hidden" name="unit_id" value="{{ unit.unit.id }}" />
+                                        <input type="hidden" name="role" value="" />
+
+                                        <button type="submit" class="btn btn-link btn-xs" name="unit_submit">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
                         </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">No unit roles.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
 
         <h3>Manage Units</h3>
 
