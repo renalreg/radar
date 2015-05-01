@@ -263,3 +263,20 @@ def order_patients(user, order_by, direction):
     clauses.append(order_by_radar_id(True))
 
     return clauses
+
+
+def get_unit_filters_for_user(user):
+    # All users can filter by all units
+    return db.session.query(Unit).order_by(Unit.name).all()
+
+
+def get_disease_group_filters_for_user(user):
+    query = db.session.query(DiseaseGroup)
+
+    # Admin users can filter by any disease group
+    # Unit users can filter patients in their unit by any disease group
+    if len(user.units) == 0 and not user.is_admin:
+        # Disease group users can only filter by disease groups they belong to with view patient permissions
+        query = query.join(DiseaseGroup.users).filter(DiseaseGroupUser.user == user, DiseaseGroupUser.has_view_patient_permission)
+
+    return query.order_by(DiseaseGroup.name).all()

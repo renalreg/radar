@@ -12,7 +12,7 @@ from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_C
 from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
-from radar.services import get_disease_group_filters_for_user, get_unit_filters_for_user
+from radar.patients.search import get_disease_group_filters_for_user, get_unit_filters_for_user
 from radar.units.models import Unit
 from radar.utils import get_path_as_text
 
