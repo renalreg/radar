@@ -17,8 +17,8 @@ bp = Blueprint('patients', __name__)
 
 
 def get_patient_data(patient):
-    units = sorted(patient.filter_units_for_user(current_user), key=lambda x: x.unit.name)
-    disease_groups = sorted(patient.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name)
+    units = sorted(patient.filter_units_for_user(current_user), key=lambda x: x.unit.name.lower())
+    disease_groups = sorted(patient.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name.lower())
 
     return dict(
         units=units,

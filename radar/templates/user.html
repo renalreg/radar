@@ -2,56 +2,71 @@
 
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% from 'macros/flash.html' import render_flashed_messages %}
 
 {% block body %}
     <div class="block">
         <h1>{{ user.username }}</h1>
+
+        {{ render_flashed_messages() }}
     </div>
 
     <div class="block">
         <h2>Disease Groups</h2>
 
-        {% if user_data.disease_groups %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Disease Group</th>
-                        <th></th>
-                    </tr>
-                </thead>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="40%">Disease Group</th>
+                    <th width="40%">Role</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-                <tbody>
+            <tbody>
+                {% if user_data.disease_groups %}
                     {% for disease_group in user_data.disease_groups %}
                         <tr>
                             <td>{{ disease_group.disease_group.name }}</td>
+                            <td>{{ disease_group.role_name }}</td>
                             <td align="right">
-                                <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
-                                    {{ disease_group_form.hidden_tag() }}
+                                {% if disease_group.can_edit(current_user) %}
+                                    <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
+                                        {{ disease_group_form.hidden_tag() }}
 
-                                    <input type="hidden" name="disease_group_id" value="{{ disease_group.disease_group.id }}" />
-                                    <input type="hidden" name="role" value="" />
+                                        <input type="hidden" name="disease_group_id" value="{{ disease_group.disease_group.id }}" />
+                                        <input type="hidden" name="role" value="" />
 
-                                    <button type="submit" class="btn btn-link btn-xs">
-                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
-                                    </button>
-                                </form>
+                                        <button type="submit" class="btn btn-link btn-xs" name="disease_group_submit">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No disease group roles.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        {% if user.can_edit_disease_group_roles(current_user) %}
+            <h3>Manage Disease Groups</h3>
+
+            <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-horizontal">
+                {{ disease_group_form.hidden_tag() }}
+
+                {{ render_field(disease_group_form.disease_group_id) }}
+                {{ render_field(disease_group_form.role) }}
+
+                {% call render_button() %}
+                    <button class="btn btn-success" type="submit" name="disease_group_submit">Save</button>
+                {% endcall %}
+            </form>
         {% endif %}
-
-        <h3>Manage Disease Groups</h3>
-
-        <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-horizontal">
-            {{ disease_group_form.hidden_tag() }}
-
-            {{ render_field(disease_group_form.disease_group_id) }}
-            {{ render_field(disease_group_form.role) }}
-
-            {% call render_button() %}Save{% endcall %}
-        </form>
     </div>
 
     <div class="block">
@@ -61,19 +76,39 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Unit</th>
+                        <th width="40%">Unit</th>
+                        <th width="40%">Role</th>
                         <th></th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for unit in user_data.units %}
+                    {% if user_data.units %}
+                        {% for unit in user_data.units %}
+                            <tr>
+                                <td>{{ unit.unit.name }}</td>
+                                <td>{{ unit.role_name }}</td>
+                                <td align="right">
+                                    {% if unit.can_edit(current_user) %}
+                                        <form method="POST" action="{{ url_for('users.edit_user', user_id=user.id) }}" class="form-inline">
+                                            {{ unit_form.hidden_tag() }}
+
+                                            <input type="hidden" name="unit_id" value="{{ unit.unit.id }}" />
+                                            <input type="hidden" name="role" value="" />
+
+                                            <button type="submit" class="btn btn-link btn-xs" name="unit_submit">
+                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
                         <tr>
-                            <td>{{ unit.unit.name }}</td>
-                            <td align="right">
-                            </td>
+                            <td colspan="3">No unit roles.</td>
                         </tr>
-                    {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         {% endif %}
@@ -86,7 +121,9 @@
             {{ render_field(unit_form.unit_id) }}
             {{ render_field(unit_form.role) }}
 
-            {% call render_button() %}Save{% endcall %}
+            {% call render_button() %}
+                <button class="btn btn-success" type="submit" name="unit_submit">Save</button>
+            {% endcall %}
         </form>
     </div>
 {% endblock %}

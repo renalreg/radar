@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
-    DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES
+    DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
+    UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES
 from radar.database import db
 
 
@@ -68,16 +69,68 @@ class User(db.Model):
     def disease_groups(self):
         return [x.disease_group for x in self.disease_group_users]
 
-    def filter_units_for_user(self, user):
+    def filter_units_for_user(self, current_user):
         # TODO
         return self.unit_users
 
-    def filter_disease_groups_for_user(self, user):
+    def filter_disease_groups_for_user(self, current_user):
         # TODO
         return self.disease_group_users
 
     def can_view(self, user):
         # TODO
+        return True
+
+    def _get_managed_roles(self, all_roles, managed_role_map, group_users):
+        if self.is_admin:
+            return all_roles
+
+        # Disease group roles user can manage
+        managed_roles = set()
+
+        # Build list of roles
+        for group_user in group_users:
+            managed_roles |= managed_role_map.get(group_user.role, list)
+
+        # Return roles ordered by access level
+        return [x for x in all_roles if x in managed_roles]
+
+    @property
+    def managed_unit_roles(self):
+        return self._get_managed_roles(UNIT_ROLES, UNIT_MANAGED_ROLES, self.unit_users)
+
+    @property
+    def managed_disease_group_roles(self):
+        return self._get_managed_roles(DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, self.disease_group_users)
+
+    def _can_edit_roles(self, current_user):
+        # User's can't edit their own roles (unless they are an admin)
+        # This is to stop user's locking themselves out
+        if self == current_user and not current_user.is_admin:
+            return False
+
+        # Can't edit an admin's roles (unless it is you)
+        if self.is_admin and self != current_user:
+            return False
+
+        return True
+
+    def can_edit_disease_group_roles(self, current_user):
+        if not self._can_edit_roles(current_user):
+            return False
+
+        if len(current_user.managed_disease_group_roles) == 0:
+            return False
+
+        return True
+
+    def can_edit_unit_roles(self, current_user):
+        if not self._can_edit_roles(current_user):
+            return False
+
+        if len(current_user.managed_unit_roles) == 0:
+            return False
+
         return True
 
 
@@ -107,6 +160,14 @@ class DiseaseGroupUser(db.Model):
     @hybrid_property
     def has_view_user_permission(self):
         return self.role in DISEASE_GROUP_VIEW_USER_ROLES
+
+    def can_edit(self, user):
+        # TODO
+        return True
+
+    @property
+    def role_name(self):
+        return DISEASE_GROUP_ROLE_NAMES.get(self.role)
 
 
 class UnitUser(db.Model):
@@ -139,3 +200,11 @@ class UnitUser(db.Model):
     @hybrid_property
     def has_view_user_permission(self):
         return self.role in UNIT_VIEW_USER_ROLES
+
+    @property
+    def role_name(self):
+        return UNIT_ROLE_NAMES.get(self.role)
+
+    def can_edit(self, user):
+        # TODO
+        return True
