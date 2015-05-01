@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -52,6 +53,13 @@ class User(db.Model):
             any(x.has_demographics_permission() for x in self.units)
         )
 
+    def has_view_user_permission(self):
+        return (
+            self.is_admin or
+            any(x.has_view_user_permission() for x in self.disease_groups) or
+            any(x.has_view_user_permission() for x in self.units)
+        )
+
     @property
     def units(self):
         return [x.unit for x in self.unit_users]
@@ -84,15 +92,15 @@ class DiseaseGroupUser(db.Model):
         UniqueConstraint('disease_group_id', 'user_id'),
     )
 
-    @property
+    @hybrid_property
     def has_view_demographics_permission(self):
         return self.role in DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
 
-    @property
+    @hybrid_property
     def has_view_patient_permission(self):
         return self.role in DISEASE_GROUP_VIEW_PATIENT_ROLES
 
-    @property
+    @hybrid_property
     def has_view_user_permission(self):
         return self.role in DISEASE_GROUP_VIEW_USER_ROLES
 
@@ -112,18 +120,18 @@ class UnitUser(db.Model):
         UniqueConstraint('unit_id', 'user_id'),
     )
 
-    @property
+    @hybrid_property
     def has_view_demographics_permission(self):
         return self.role in UNIT_VIEW_DEMOGRAPHICS_ROLES
 
-    @property
+    @hybrid_property
     def has_view_patient_permission(self):
         return self.role in UNIT_VIEW_PATIENT_ROLES
 
-    @property
-    def has_view_patient_permission(self):
+    @hybrid_property
+    def has_edit_patient_permission(self):
         return self.role in UNIT_EDIT_PATIENT_ROLES
 
-    @property
+    @hybrid_property
     def has_view_user_permission(self):
         return self.role in UNIT_VIEW_USER_ROLES

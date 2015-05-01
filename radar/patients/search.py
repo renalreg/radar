@@ -180,8 +180,8 @@ def filter_by_unit_roles(user, roles):
         .join(UnitPatient.unit)\
         .join(Unit.users)\
         .filter(
-            UnitUser.user_id == user.id,
             patient_alias.id == Patient.id,
+            UnitUser.user_id == user.id,
             UnitUser.role.in_(roles)
         )\
         .exists()
@@ -194,8 +194,8 @@ def filter_by_disease_group_roles(user, roles):
         .join(DiseaseGroupPatient.disease_group)\
         .join(DiseaseGroup.users)\
         .filter(
-            DiseaseGroupUser.user_id == user.id,
             patient_alias.id == Patient.id,
+            DiseaseGroupUser.user_id == user.id,
             DiseaseGroupUser.role.in_(roles)
         )\
         .exists()

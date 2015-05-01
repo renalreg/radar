@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import SelectField, StringField, PasswordField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, Optional
 from radar.utils import optional_int
 
 
@@ -13,7 +13,7 @@ class UserDiseaseGroupForm(Form):
     role = SelectField()
 
 class UserSearchForm(Form):
-    username = StringField()
-    email = StringField()
-    unit_id = SelectField("Disease Group", coerce=optional_int)
-    disease_group_id = SelectField("Unit", coerce=optional_int)
+    username = StringField(validators=[Optional()])
+    email = StringField(validators=[Optional()])
+    unit_id = SelectField("Unit", coerce=optional_int, validators=[Optional()])
+    disease_group_id = SelectField("Disease Group", coerce=optional_int, validators=[Optional()])

@@ -12,7 +12,7 @@ def get_disease_groups_for_user_with_permissions(user, permissions=None):
     query = DiseaseGroup.query
 
     if not user.is_admin:
-        query = query.join(DiseaseGroup.users).filter(DiseaseGroupUser.user == user).all()
+        query = query.join(DiseaseGroup.users).filter(DiseaseGroupUser.user == user)
 
         for permission in permissions:
             query = query.filter(permission)

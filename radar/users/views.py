@@ -1,11 +1,13 @@
 from flask import render_template, request, abort, Blueprint, flash, url_for, redirect, current_app
 from flask_login import current_user, login_user, logout_user
+from sqlalchemy import or_
 
 from radar.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
 from radar.disease_groups.models import DiseaseGroup
 from radar.units.services import get_units_for_user_with_permissions
 from radar.users.models import DiseaseGroupUser, UnitUser
+from radar.users.search import UserQueryBuilder
 from radar.users.services import check_login
 from radar.users.forms import UserDiseaseGroupForm, LoginForm, UserSearchForm
 from radar.users.models import User
@@ -26,17 +28,40 @@ def get_user_data(user):
 
 @bp.route('/users/')
 def view_user_list():
-    users = User.query.all()
+    if not current_user.has_view_user_permission:
+        abort(403)
 
-    units = get_units_for_user_with_permissions(current_user, UnitUser.has_view_user_permission)
+    units = get_units_for_user_with_permissions(current_user, [UnitUser.has_view_user_permission])
     unit_choices = [(x.id, x.name) for x in units]
+    unit_choices.insert(0, ('', ''))
 
-    disease_groups = get_disease_groups_for_user_with_permissions(current_user, DiseaseGroupUser.has_view_user_permission)
+    disease_groups = get_disease_groups_for_user_with_permissions(current_user, [DiseaseGroupUser.has_view_user_permission])
     disease_group_choices = [(x.id, x.name) for x in disease_groups]
+    disease_group_choices.insert(0, ('', ''))
 
-    form = UserSearchForm(formdata=request.args)
+    form = UserSearchForm(formdata=request.args, csrf_enabled=False)
     form.unit_id.choices = unit_choices
     form.disease_group_id.choices = disease_group_choices
+
+    builder = UserQueryBuilder(current_user)
+
+    if form.validate():
+        if form.username.data:
+            builder.username(form.username.data)
+
+        if form.email.data:
+            builder.email(form.email.data)
+
+        # Filter by disease group access
+        if form.disease_group_id.data:
+            builder.disease_group(form.disease_group_id.data)
+
+        # Filter by unit access
+        if form.unit_id.data:
+            builder.unit(form.unit_id.data)
+
+    query = builder.build()
+    users = query.order_by(User.username).all()
 
     users = [(x, get_user_data(x)) for x in users]
 
