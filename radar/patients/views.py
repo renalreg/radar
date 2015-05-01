@@ -12,6 +12,7 @@ from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.services import get_disease_group_filters_for_user, get_unit_filters_for_user
+from radar.utils import get_path_as_text
 
 
 bp = Blueprint('patients', __name__)
@@ -143,6 +144,17 @@ def view_demographics_list(patient_id):
                 'first_name': alias.first_name,
                 'last_name': alias.last_name,
             })
+
+        demographics['numbers'] = []
+
+        numbers = sorted(sda_patient.numbers, key=lambda x: get_path_as_text(x.data, ['organization', 'description']))
+
+        for number in numbers:
+            demographics['numbers'] = [{
+                'organization': get_path_as_text(number.data, ['organization', 'description']),
+                'number': get_path_as_text(number.data, ['number']),
+                'number_type': get_path_as_text(number.data, ['number_type'])
+            }]
 
         demographics_list.append(demographics)
 

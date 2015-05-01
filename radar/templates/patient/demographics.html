@@ -41,6 +41,26 @@
                 </tr>
             </table>
 
+            {% if demographics.numbers and patient.can_view_demographics(current_user) %}
+                <h4>Identifiers</h4>
+
+                <table class="table">
+                    <tr>
+                        <th width="20%">Organisation</th>
+                        <th width="20%">Number</th>
+                        <th>Type</th>
+                    </tr>
+
+                    {% for number in demographics.numbers %}
+                        <tr>
+                            <td>{{ number.organization | default('-', true) }}</td>
+                            <td>{{ number.number | default('-', true) }}</td>
+                            <td>{{ number.number_type | default('-', true) }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+
             {% if demographics.aliases and patient.can_view_demographics(current_user) %}
                 <h4>Aliases</h4>
 
