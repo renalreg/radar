@@ -211,9 +211,29 @@ def view_radar_demographics(patient_id):
 
 @bp.route('/<int:patient_id>/disease-groups/')
 def view_patient_disease_groups(patient_id):
-    return render_template('patient/disease_groups.html')
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient)
+    )
+
+    return render_template('patient/disease_groups.html', **context)
 
 
 @bp.route('/<int:patient_id>/units/')
 def view_patient_units(patient_id):
-    return render_template('patient/units.html')
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient)
+    )
+
+    return render_template('patient/units.html', **context)

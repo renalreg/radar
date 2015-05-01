@@ -13,7 +13,7 @@
         </thead>
 
         <tbody>
-            {% for unit in filter_patient_units_for_user(patient, current_user) %}
+            {% for unit in patient_data.units %}
                 <tr>
                     <td>{{ unit.unit.name }}</td>
                 </tr>

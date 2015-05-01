@@ -13,7 +13,7 @@
         </thead>
 
         <tbody>
-            {% for disease_group in filter_patient_disease_groups_for_user(patient, current_user) %}
+            {% for disease_group in patient_data.disease_groups %}
                 <tr>
                     <td>{{ disease_group.disease_group.name }}</td>
                 </tr>
