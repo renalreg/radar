@@ -32,6 +32,7 @@ class Patient(db.Model):
         return select([column]) \
             .select_from(join(SDAPatient, SDABundle).join(patient_alias)) \
             .where(patient_alias.id == cls.id) \
+            .limit(1)\
             .as_scalar()
 
     @property
