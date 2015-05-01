@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, DateTime
+from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -41,6 +41,7 @@ class Facility(db.Model):
     code = Column(String, unique=True)
     name = Column(String)
 
+
 class DataSource(db.Model):
     __tablename__ = 'data_sources'
 
@@ -70,6 +71,7 @@ class DataSource(db.Model):
         'polymorphic_identity': 'data_sources',
         'polymorphic_on': type
     }
+
 
 class DataImport(DataSource):
     __tablename__ = 'data_imports'

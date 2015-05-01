@@ -8,26 +8,33 @@ def set_float(data, key, node):
     if node is not None:
         data[key] = parse_float(node)
 
+
 def parse_float(node):
     return float(node.text)
+
 
 def set_text(data, key, node):
     if node is not None:
         data[key] = parse_text(node)
 
+
 def parse_text(node):
     return node.text
+
 
 def set_datetime(data, key, node):
     if node is not None:
         data[key] = parse_datetime(node)
 
+
 def parse_datetime(node):
     return dateutil.parser.parse(node.text)
+
 
 def set_code_description(data, key, node):
     if node is not None:
         data[key] = parse_code_description(node)
+
 
 def parse_code_description(node):
     data = dict()
@@ -35,6 +42,7 @@ def parse_code_description(node):
     set_text(data, 'code', node.find('./Code'))
     set_text(data, 'description', node.find('./Description'))
     return data
+
 
 def parse_container(node):
     sda_bundle = SDABundle()
@@ -50,6 +58,7 @@ def parse_container(node):
 
     return sda_bundle
 
+
 def parse_base(node):
     data = dict()
     set_datetime(data, 'entered_on', node.find('./EnteredOn'))
@@ -59,6 +68,7 @@ def parse_base(node):
     set_datetime(data, 'from_time', node.find('./FromTime'))
     set_datetime(data, 'to_time', node.find('./ToTime'))
     return data
+
 
 def parse_order(node):
     data = parse_base(node)
@@ -85,6 +95,7 @@ def parse_order(node):
     set_text(data, 'group_id', node.find('./GroupId'))
     return data
 
+
 def parse_medication(node):
     sda_medication = SDAMedication()
 
@@ -108,6 +119,7 @@ def parse_medication(node):
 
     return sda_medication
 
+
 def parse_name(node):
     data = dict()
     set_text(data, 'name_prefix', node.find('./NamePrefix'))
@@ -117,10 +129,12 @@ def parse_name(node):
     set_text(data, 'preferred_name', node.find('./PreferredName'))
     return data
 
+
 def parse_patient_alias(node):
     sda_patient_alias = SDAPatientAlias()
     sda_patient_alias.data = parse_name(node)
     return sda_patient_alias
+
 
 def parse_patient_address(node):
     sda_patient_address = SDAPatientAddress()
@@ -136,6 +150,7 @@ def parse_patient_address(node):
     sda_patient_address.data = data
 
     return sda_patient_address
+
 
 def parse_patient(node):
     sda_patient = SDAPatient()
@@ -166,6 +181,7 @@ def parse_patient(node):
 
     return sda_patient
 
+
 def parse_patient_number(node):
     sda_patient_number = SDAPatientNumber()
 
@@ -179,6 +195,7 @@ def parse_patient_number(node):
         sda_patient_number.data['organization'] = parse_organization(organization_node)
 
     return sda_patient_number
+
 
 def parse_organization(node):
     data = dict()

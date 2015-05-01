@@ -11,7 +11,7 @@ from radar.sda.parser import parse_container
 class Error(Exception):
     pass
 
-class ImportError(Error):
+class SDAImportError(Error):
     def __init__(self, message):
         self.message = message
 
@@ -24,7 +24,7 @@ def import_sda(facility_code, xml_data):
     facility = Facility.query.filter(Facility.code == facility_code).first()
 
     if facility is None:
-        raise ImportError('Facility not found (code="%s")' % facility_code)
+        raise SDAImportError('Facility not found (code="%s")' % facility_code)
 
     patient_node = root.find('./Patient')
 
@@ -52,7 +52,7 @@ def import_sda(facility_code, xml_data):
     patient = Patient.query.get(patient_id)
 
     if patient is None:
-        raise ImportError('Patient not found (id="%s")' % patient_id)
+        raise SDAImportError('Patient not found (id="%s")' % patient_id)
 
     sda_bundle = parse_container(root)
     sda_bundle.patient = patient

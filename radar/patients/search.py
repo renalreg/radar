@@ -87,6 +87,7 @@ class PatientQueryBuilder():
 
         return query
 
+
 def sda_patient_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(SDAPatient)\
@@ -96,6 +97,7 @@ def sda_patient_sub_query(*args):
         .filter(*args)\
         .exists()
     return sub_query
+
 
 def sda_patient_name_sub_query(*args):
     patient_alias = aliased(Patient)
@@ -108,6 +110,7 @@ def sda_patient_name_sub_query(*args):
         .exists()
     return sub_query
 
+
 def sda_patient_number_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(SDAPatientNumber)\
@@ -119,6 +122,7 @@ def sda_patient_number_sub_query(*args):
         .exists()
     return sub_query
 
+
 def filter_by_first_name(first_name):
     first_name_like = first_name + '%'
 
@@ -126,6 +130,7 @@ def filter_by_first_name(first_name):
     alias_filter = sda_patient_name_sub_query(SDAPatientAlias.first_name.ilike(first_name_like))
 
     return or_(patient_filter, alias_filter)
+
 
 def filter_by_last_name(last_name):
     last_name_like = last_name + '%'
@@ -135,11 +140,13 @@ def filter_by_last_name(last_name):
 
     return or_(patient_filter, alias_filter)
 
+
 def filter_by_date_of_birth(date_of_birth):
     return sda_patient_sub_query(
         SDAPatient.date_of_birth >= date_of_birth,
         SDAPatient.date_of_birth < date_of_birth + timedelta(days=1)
     )
+
 
 def filter_by_patient_number(number):
     # One of the patient's identifiers matches
@@ -151,17 +158,21 @@ def filter_by_patient_number(number):
 
     return or_(number_filter, radar_id_filter)
 
+
 def filter_by_radar_id(radar_id):
     return Patient.id == radar_id
 
+
 def filter_by_gender(gender_code):
     return sda_patient_sub_query(SDAPatient.data[('gender', 'code')].astext == gender_code)
+
 
 def filter_by_year_of_birth(year):
     return sda_patient_sub_query(
         SDAPatient.date_of_birth >= datetime(year, 1, 1),
         SDAPatient.date_of_birth < datetime(year + 1, 1, 1)
     )
+
 
 def filter_by_unit_roles(user, roles):
     patient_alias = aliased(Patient)
@@ -177,6 +188,7 @@ def filter_by_unit_roles(user, roles):
         .exists()
     return sub_query
 
+
 def filter_by_disease_group_roles(user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
@@ -191,17 +203,20 @@ def filter_by_disease_group_roles(user, roles):
         .exists()
     return sub_query
 
+
 def filter_by_view_patient_permissions(user):
     return or_(
         filter_by_unit_roles(user, UNIT_VIEW_PATIENT_ROLES),
         filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_PATIENT_ROLES),
     )
 
+
 def filter_by_demographics_permissions(user):
     return or_(
         filter_by_unit_roles(user, UNIT_VIEW_DEMOGRAPHICS_ROLES),
         filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES),
     )
+
 
 def order_by_demographics_field(user, field, direction, else_=None):
     if user.is_admin:
@@ -215,23 +230,29 @@ def order_by_demographics_field(user, field, direction, else_=None):
 
     return expression
 
+
 def order_by_field(field, direction):
     if direction == DESCENDING:
         field = desc(field)
 
     return field
 
+
 def order_by_radar_id(direction):
     return order_by_field(Patient.id, direction)
+
 
 def order_by_first_name(user, direction):
     return order_by_demographics_field(user, Patient.first_name, direction)
 
+
 def order_by_last_name(user, direction):
     return order_by_demographics_field(user, Patient.last_name, direction)
 
+
 def order_by_gender(direction):
     return order_by_field(Patient.gender, direction)
+
 
 def order_by_date_of_birth(user, direction):
     date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, direction)
@@ -246,6 +267,7 @@ def order_by_date_of_birth(user, direction):
         anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
 
         return [year_order, anonymised_order, date_of_birth_order]
+
 
 def order_patients(user, order_by, direction):
     if order_by == 'first_name':

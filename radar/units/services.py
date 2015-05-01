@@ -5,6 +5,7 @@ from radar.users.models import UnitUser
 def get_units_for_user(user):
     return get_units_for_user_with_permissions(user)
 
+
 def get_units_for_user_with_permissions(user, permissions=None):
     if permissions is None:
         permissions = []

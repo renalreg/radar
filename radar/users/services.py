@@ -1,7 +1,6 @@
 from radar.disease_groups.models import DiseaseGroup
 from radar.units.models import Unit
 from radar.users.models import User
-from radar.users.roles import UNIT_ROLES, DISEASE_GROUP_ROLES, UNIT_MANAGED_ROLES, DISEASE_GROUP_MANAGED_ROLES
 
 
 def check_login(username, password):

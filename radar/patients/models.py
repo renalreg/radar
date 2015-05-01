@@ -72,7 +72,7 @@ class Patient(db.Model):
 
     @last_name.expression
     def last_name(cls):
-       return cls._latest_sda_patient_query(SDAPatient.last_name)
+        return cls._latest_sda_patient_query(SDAPatient.last_name)
 
     @date_of_birth.expression
     def date_of_birth(cls):

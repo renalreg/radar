@@ -8,13 +8,16 @@ class LoginForm(Form):
     username = StringField(validators=[InputRequired()])
     password = PasswordField(validators=[InputRequired()])
 
+
 class DiseaseGroupRoleForm(Form):
     disease_group_id = SelectField('Disease Group', coerce=int, validators=[InputRequired()])
     role = SelectField(validators=[Optional()])
 
+
 class UnitRoleForm(Form):
     unit_id = SelectField('Unit', coerce=int, validators=[InputRequired()])
     role = SelectField(validators=[Optional()])
+
 
 class UserSearchForm(Form):
     username = StringField(validators=[Optional()])

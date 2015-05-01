@@ -16,8 +16,10 @@ def save_form_entry(entry):
 
     db.session.add(entry)
 
+
 def delete_form_entry(entry):
     db.session.delete(entry)
+
 
 def sda_bundle_to_update_url(sda_bundle):
     patient_id = sda_bundle.patient_id
@@ -28,6 +30,7 @@ def sda_bundle_to_update_url(sda_bundle):
             return url_for('medication_update', patient_id=patient_id, entry_id=data_source.id)
 
     return None
+
 
 def sda_bundle_to_delete_url(sda_bundle):
     patient_id = sda_bundle.patient_id

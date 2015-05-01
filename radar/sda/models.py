@@ -32,6 +32,7 @@ class SDABundle(db.Model):
         for x in self.sda_medications:
             x.serialize()
 
+
 class SDAMedication(db.Model):
     __tablename__ = 'sda_medications'
 
@@ -43,6 +44,7 @@ class SDAMedication(db.Model):
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)
+
 
 class SDAPatient(db.Model):
     __tablename__ = 'sda_patients'
@@ -101,6 +103,7 @@ class SDAPatient(db.Model):
 
         for x in self.addresses:
             x.serialize()
+
 
 class SDAPatientAlias(db.Model):
     __tablename__ = 'sda_patient_aliases'

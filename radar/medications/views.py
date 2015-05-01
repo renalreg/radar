@@ -1,6 +1,6 @@
-from collections import defaultdict
 from flask import Blueprint, render_template, abort, request, url_for, redirect
 from flask_login import current_user
+
 from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.concepts.utils import add_errors_to_form
 from radar.database import db
@@ -10,6 +10,7 @@ from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle
 from radar.utils import get_path_as_text, get_path_as_datetime
+
 
 bp = Blueprint('medications', __name__)
 

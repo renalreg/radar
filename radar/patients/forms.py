@@ -1,7 +1,8 @@
 from wtforms import StringField, SelectField, DateField, IntegerField
-from wtforms.validators import Optional, InputRequired, DataRequired
-from radar.ordering import ASCENDING, DESCENDING
+from wtforms.validators import Optional, InputRequired
 from flask_wtf import Form
+
+from radar.ordering import ASCENDING, DESCENDING
 from radar.utils import optional_int
 
 
