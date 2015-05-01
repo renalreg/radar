@@ -16,7 +16,7 @@ var config = {
 gulp.task('libs', function() { 
     var jsFilter = gulpFilter('*.js');
     var cssFilter = gulpFilter('*.css');
-    var fontFilter = gulpFilter(['*.eot', '*.woff', '*.svg', '*.ttf']);
+    var fontFilter = gulpFilter(['*.eot', '*.woff', '*.woff2', '*.svg', '*.ttf']);
 
     var jsDest = config.static + '/js/libs';
     var cssDest = config.static + '/css';
