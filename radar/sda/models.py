@@ -90,7 +90,7 @@ class SDAPatient(db.Model):
 
     @gender.expression
     def gender(cls):
-        return SDAPatient.data[('name', 'gender')].astext
+        return SDAPatient.data[('gender', 'code')].astext
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)
