@@ -16,6 +16,16 @@ class DiseaseGroup(db.Model):
     def has_feature(self, feature_name):
         return any(x.feature_name == feature_name for x in self.features)
 
+    def can_view_patient(self, user):
+        if user.is_admin:
+            return True
+
+        for disease_group_user in user.disease_groups:
+            if disease_group_user.disease_group == self and disease_group_user.has_view_patient_permission:
+                return True
+
+        return False
+
 
 class DiseaseGroupFeatures(db.Model):
     __tablename__ = 'disease_group_features'

@@ -19,8 +19,8 @@ class User(db.Model):
     email = Column(String, nullable=False, unique=True)
     is_admin = Column(Boolean, default=False, nullable=False)
 
-    unit_users = relationship('UnitUser', back_populates='user')
-    disease_group_users = relationship('DiseaseGroupUser', back_populates='user')
+    units = relationship('UnitUser', back_populates='user')
+    disease_groups = relationship('DiseaseGroupUser', back_populates='user')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -61,21 +61,13 @@ class User(db.Model):
             any(x.has_view_user_permission() for x in self.units)
         )
 
-    @property
-    def units(self):
-        return [x.unit for x in self.unit_users]
-
-    @property
-    def disease_groups(self):
-        return [x.disease_group for x in self.disease_group_users]
-
     def filter_units_for_user(self, current_user):
         # TODO
-        return self.unit_users
+        return self.units
 
     def filter_disease_groups_for_user(self, current_user):
         # TODO
-        return self.disease_group_users
+        return self.disease_groups
 
     def can_view(self, user):
         # TODO
@@ -97,11 +89,11 @@ class User(db.Model):
 
     @property
     def managed_unit_roles(self):
-        return self._get_managed_roles(UNIT_ROLES, UNIT_MANAGED_ROLES, self.unit_users)
+        return self._get_managed_roles(UNIT_ROLES, UNIT_MANAGED_ROLES, self.units)
 
     @property
     def managed_disease_group_roles(self):
-        return self._get_managed_roles(DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, self.disease_group_users)
+        return self._get_managed_roles(DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, self.disease_groups)
 
     def _can_edit_roles(self, current_user):
         # User's can't edit their own roles (unless they are an admin)
@@ -138,8 +130,8 @@ class DiseaseGroupUser(db.Model):
     __tablename__ = 'disease_group_users'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     role = Column(String, nullable=False)
 
     user = relationship('User')
@@ -174,8 +166,8 @@ class UnitUser(db.Model):
     __tablename__ = 'unit_users'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     role = Column(String, nullable=False)
 
     unit = relationship('Unit')

@@ -4,6 +4,7 @@ from flask import render_template, Blueprint, abort, request, url_for, redirect
 from flask_login import current_user, login_required
 
 from radar.database import db
+from radar.disease_groups.models import DiseaseGroup
 from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
@@ -12,6 +13,7 @@ from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.services import get_disease_group_filters_for_user, get_unit_filters_for_user
+from radar.units.models import Unit
 from radar.utils import get_path_as_text
 
 
@@ -53,10 +55,12 @@ def view_patient_list():
             builder.last_name(form.last_name.data)
 
         if form.unit_id.data:
-            builder.unit(form.unit_id.data)
+            unit = Unit.query.get_or_404(form.unit_id.data)
+            builder.unit(unit)
 
         if form.disease_group_id.data:
-            builder.disease_group(form.disease_group_id.data)
+            disease_group = DiseaseGroup.query.get_or_404(form.disease_group_id.data)
+            builder.disease_group(disease_group)
 
         if form.date_of_birth.data:
             builder.date_of_birth(form.date_of_birth.data)

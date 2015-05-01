@@ -21,12 +21,12 @@ class UserQueryBuilder(object):
 
     def unit(self, unit_id):
         self.query = self.query\
-            .outerjoin(User.unit_users)\
+            .outerjoin(User.units)\
             .filter(or_(User.is_admin, UnitUser.unit_id == unit_id))
 
     def disease_group(self, disease_group_id):
         self.query = self.query\
-            .outerjoin(User.disease_group_users)\
+            .outerjoin(User.disease_groups)\
             .filter(or_(User.is_admin, DiseaseGroupUser.disease_group_id == disease_group_id))
 
     def build(self):
@@ -48,7 +48,7 @@ def filter_by_unit_roles(user, roles):
     unit_user_alias = aliased(UnitUser)
 
     sub_query = db.session.query(user_alias)\
-        .join(unit_user_alias, user_alias.unit_users)\
+        .join(unit_user_alias, user_alias.units)\
         .join(unit_user_alias.unit)\
         .join(Unit.users)\
         .filter(
@@ -65,7 +65,7 @@ def filter_by_disease_group_roles(user, roles):
     disease_group_user_alias = aliased(DiseaseGroupUser)
 
     sub_query = db.session.query(user_alias)\
-        .join(disease_group_user_alias, user_alias.disease_group_users)\
+        .join(disease_group_user_alias, user_alias.disease_groups)\
         .join(disease_group_user_alias.disease_group)\
         .join(DiseaseGroup.users)\
         .filter(

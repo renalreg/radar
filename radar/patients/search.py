@@ -13,7 +13,7 @@ from radar.patients.models import Patient
 from radar.users.models import UnitUser, DiseaseGroupUser
 from radar.ordering import DESCENDING
 from radar.sda.models import SDAPatient, SDABundle, SDAPatientNumber, SDAPatientAlias
-from radar.services import is_user_in_disease_group
+
 
 class PatientQueryBuilder():
     def __init__(self, user):
@@ -56,27 +56,17 @@ class PatientQueryBuilder():
         self.query = self.query.filter(filter_by_year_of_birth(value))
         return self
 
-    def unit(self, unit_id):
-        unit = Unit.query.get(unit_id)
-
-        # Unit exists
-        if unit is not None:
-            self.query = self.query.join(UnitPatient).filter(UnitPatient.unit == unit)
-
+    def unit(self, unit):
+        self.query = self.query.join(UnitPatient).filter(UnitPatient.unit == unit)
         return self
 
-    def disease_group(self, disease_group_id):
-        # Get the disease group with this id
-        disease_group = DiseaseGroup.query.get(disease_group_id)
+    def disease_group(self, disease_group):
+        # The disease group counts as demographics if the user can't view patients in the disease group
+        if not disease_group.can_view_patient(self.user):
+            self.filtering_by_demographics = True
 
-        # Disease group exists
-        if disease_group is not None:
-            # If the user doesn't belong to the disease group they need unit permissions
-            if not is_user_in_disease_group(self.user, disease_group):
-                self.filtering_by_demographics = True
-
-            # Filter by disease group
-            self.query = self.query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
+        # Filter by disease group
+        self.query = self.query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
 
         return self
 

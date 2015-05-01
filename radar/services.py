@@ -4,30 +4,6 @@ from radar.disease_groups.models import DiseaseGroup
 from radar.users.models import UnitUser, DiseaseGroupUser
 
 
-def is_user_in_disease_group(user, disease_group):
-    if user.is_admin:
-        return True
-
-    dg_user = DiseaseGroupUser.query.filter(
-        DiseaseGroupUser.user_id == user.id,
-        DiseaseGroupUser.disease_group_id == disease_group.id
-    ).first()
-
-    return dg_user is not None
-
-
-def is_user_in_unit(user, unit):
-    if user.is_admin:
-        return True
-
-    unit_user = UnitUser.query.filter(
-        UnitUser.user_id == user.id,
-        UnitUser.unit_id == unit.id
-    ).first()
-
-    return unit_user is not None
-
-
 def get_unit_filters_for_user(user):
     query = db.session.query(Unit)
 

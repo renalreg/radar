@@ -96,7 +96,7 @@ class Patient(db.Model):
 
         for disease_group_user in user.disease_groups:
             if getattr(disease_group_user, 'has_' + permission + '_permission') and\
-                            disease_group_user.unit in patient_disease_groups:
+                            disease_group_user.disease_group in patient_disease_groups:
                 return True
 
         return False
