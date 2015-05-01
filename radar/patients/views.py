@@ -1,8 +1,9 @@
 from datetime import datetime
+
 from flask import render_template, Blueprint, abort, request, url_for, redirect
 from flask_login import current_user, login_required
-from radar.database import db
 
+from radar.database import db
 from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
@@ -28,7 +29,7 @@ def get_patient_data(patient):
 
 @bp.route('/')
 def view_patient_list():
-    if not view_patient_list_permission(current_user):
+    if not current_user.has_view_patient_permission:
         abort(403)
 
     form = PatientSearchForm(formdata=request.args, csrf_enabled=False)
