@@ -44,58 +44,70 @@
             {% if demographics.numbers and patient.can_view_demographics(current_user) %}
                 <h4>Identifiers</h4>
 
-                <table class="table">
-                    <tr>
-                        <th width="20%">Organisation</th>
-                        <th width="20%">Number</th>
-                        <th>Type</th>
-                    </tr>
-
-                    {% for number in demographics.numbers %}
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ number.organization | default('-', true) }}</td>
-                            <td>{{ number.number | default('-', true) }}</td>
-                            <td>{{ number.number_type | default('-', true) }}</td>
+                            <th width="20%">Organisation</th>
+                            <th width="20%">Number</th>
+                            <th>Type</th>
                         </tr>
-                    {% endfor %}
+                    </thead>
+
+                    <tbody>
+                        {% for number in demographics.numbers %}
+                            <tr>
+                                <td>{{ number.organization | default('-', true) }}</td>
+                                <td>{{ number.number | default('-', true) }}</td>
+                                <td>{{ number.number_type | default('-', true) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             {% endif %}
 
             {% if demographics.aliases and patient.can_view_demographics(current_user) %}
                 <h4>Aliases</h4>
 
-                <table class="table">
-                    <tr>
-                        <th width="20%">First Name</th>
-                        <th>Last Name</th>
-                    </tr>
-
-                    {% for alias in demographics.aliases %}
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ alias.first_name | default('-', true) }}</td>
-                            <td>{{ alias.last_name | default('-', true) }}</td>
+                            <th width="20%">First Name</th>
+                            <th>Last Name</th>
                         </tr>
-                    {% endfor %}
+                    </thead>
+
+                    <tbody>
+                        {% for alias in demographics.aliases %}
+                            <tr>
+                                <td>{{ alias.first_name | default('-', true) }}</td>
+                                <td>{{ alias.last_name | default('-', true) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             {% endif %}
 
             {% if demographics.addresses and patient.can_view_demographics(current_user) %}
                 <h4>Addresses</h4>
 
-                <table class="table">
-                    <tr>
-                        <th width="20%">From Date</th>
-                        <th width="20%">To Date</th>
-                        <th>Address</th>
-                    </tr>
-
-                    {% for address in demographics.addresses %}
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
-                            <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
-                            <td>{{ address.address | nl2br }}</td>
+                            <th width="20%">From Date</th>
+                            <th width="20%">To Date</th>
+                            <th>Address</th>
                         </tr>
-                    {% endfor %}
+                    </thead>
+
+                    <tbody>
+                        {% for address in demographics.addresses %}
+                            <tr>
+                                <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                                <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                                <td>{{ address.address | nl2br }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             {% endif %}
         {% endcall %}
