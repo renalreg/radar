@@ -1,11 +1,13 @@
 from flask_wtf import Form
-from wtforms import DateField, StringField
+from wtforms import StringField
 from wtforms.validators import InputRequired
+
+from radar.forms import RadarDateField
 
 
 class MedicationForm(Form):
-    from_date = DateField(format='%d/%m/%Y', validators=[InputRequired()])
-    to_date = DateField(format='%d/%m/%Y', validators=[InputRequired()])
+    from_date = RadarDateField(validators=[InputRequired()])
+    to_date = RadarDateField(validators=[InputRequired()])
     name = StringField(validators=[InputRequired()])
 
     def populate_obj(self, obj):

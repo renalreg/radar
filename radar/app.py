@@ -5,7 +5,7 @@ from radar.users.services import load_user
 from radar.disease_groups.services import get_disease_groups_for_user
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
-from radar.template_filters import datetime_format, nl2br
+from radar.template_filters import datetime_format, nl2br, date_format
 from radar.units.services import get_units_for_user
 from radar.views import bp as radar_bp
 from radar.diagnosis.views import bp as diagnosis_bp
@@ -47,6 +47,7 @@ def create_app(config_filename):
 
     app.before_request(require_login)
 
+    app.add_template_filter(date_format)
     app.add_template_filter(datetime_format)
     app.add_template_filter(nl2br)
 

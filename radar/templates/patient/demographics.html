@@ -28,7 +28,7 @@
                     <th>Date of Birth</th>
                     <td>
                         {% if patient.can_view_demographics(current_user) %}
-                            {{ demographics.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
+                            {{ demographics.date_of_birth | date_format | default('-', true) }}
                         {% else %}
                             {{ demographics.date_of_birth | datetime_format('%Y') | default('-', true) }}
                         {% endif %}
@@ -102,8 +102,8 @@
                     <tbody>
                         {% for address in demographics.addresses %}
                             <tr>
-                                <td>{{ address.from_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
-                                <td>{{ address.to_time | datetime_format('%d/%m/%Y') | default('-', true) }}</td>
+                                <td>{{ address.from_time | date_format | default('-', true) }}</td>
+                                <td>{{ address.to_time | date_format | default('-', true) }}</td>
                                 <td>{{ address.address | nl2br }}</td>
                             </tr>
                         {% endfor %}

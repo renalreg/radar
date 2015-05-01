@@ -29,8 +29,8 @@
                         {% endif %}
                     </td>
 
-                    <td>{{ medication.from_date | datetime_format('%d/%m/%Y') | default('-', True) }}</td>
-                    <td>{{ medication.to_date | datetime_format('%d/%m/%Y') | default('-', True) }}</td>
+                    <td>{{ medication.from_date | date_format | default('-', True) }}</td>
+                    <td>{{ medication.to_date | date_format | default('-', True) }}</td>
                     <td>{{ medication.name | default('-', True) }}</td>
 
                     <td align="right">

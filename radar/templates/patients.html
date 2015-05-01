@@ -125,7 +125,7 @@
 
                                     <td>
                                         {% if patient.can_view_demographics(current_user) %}
-                                            {{ patient.date_of_birth | datetime_format('%d/%m/%Y') | default('-', true) }}
+                                            {{ patient.date_of_birth | date_format | default('-', true) }}
                                         {% else %}
                                             {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
                                         {% endif %}
