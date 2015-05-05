@@ -1,13 +1,11 @@
-{% extends 'patient/base.html' %}
+{% extends 'patient/lab_results_base.html' %}
 
-{% set current_patient_page = 'lab_results' %}
+{% set current_lab_results_page = 'list' %}
 
 {% from 'macros/pagination.html' import render_pagination %}
 
 {% block content %}
-    <h1>Lab Results List</h1>
-
-    <p><a href="#" class="btn btn-primary">New</a></p>
+    {{ super() }}
 
     <table class="table table-striped table-condensed">
         <thead>

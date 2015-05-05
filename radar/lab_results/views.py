@@ -50,7 +50,7 @@ def view_lab_result_list(patient_id):
 
 
 @bp.route('/table/')
-def view_lab_results_table(patient_id):
+def view_lab_result_table(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
@@ -65,7 +65,7 @@ def view_lab_results_table(patient_id):
 
 
 @bp.route('/graph/')
-def view_lab_results_graph(patient_id):
+def view_lab_result_graph(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
