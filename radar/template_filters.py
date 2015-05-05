@@ -21,3 +21,10 @@ def nl2br(eval_ctx, value):
         value = Markup(value)
 
     return value
+
+
+def missing(value):
+    if value is None or value == '':
+        return '-'
+    else:
+        return value

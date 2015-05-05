@@ -29,9 +29,9 @@
                         {% endif %}
                     </td>
 
-                    <td>{{ medication.from_date | date_format | default('-', True) }}</td>
-                    <td>{{ medication.to_date | date_format | default('-', True) }}</td>
-                    <td>{{ medication.name | default('-', True) }}</td>
+                    <td>{{ medication.from_date | date_format | missing }}</td>
+                    <td>{{ medication.to_date | date_format | missing }}</td>
+                    <td>{{ medication.name | missing }}</td>
 
                     <td align="right">
                         {% if medication.delete_url %}

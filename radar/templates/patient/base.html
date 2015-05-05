@@ -23,9 +23,9 @@
                         <strong>DOB:</strong>
 
                         {% if patient.can_view_demographics(current_user) %}
-                            {{ patient.date_of_birth | date_format | default('-', true) }}
+                            {{ patient.date_of_birth | date_format | missing }}
                         {% else %}
-                            {{ patient.date_of_birth | datetime_format('%Y') | default('-', true) }}
+                            {{ patient.date_of_birth | datetime_format('%Y') | missing }}
                         {% endif %}
                     </li>
 
