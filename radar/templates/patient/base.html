@@ -88,10 +88,6 @@
                     <li>
                         <a href="#">Transplants</a>
                     </li>
-
-                    <li>
-                        <a href="#">Genetics</a>
-                    </li>
                 </ul>
 
                 {% for disease_group in patient_data.disease_groups %}
@@ -107,6 +103,12 @@
                         {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
                             <li{% if current_patient_page == 'renal_imaging' %} class="active"{% endif %}>
                                 <a href="#">Renal Imaging</a>
+                            </li>
+                        {% endif %}
+
+                        {% if disease_group.disease_group.has_feature('GENETICS') %}
+                            <li{% if current_patient_page == 'genetics' %} class="active"{% endif %}>
+                                <a href="#">Genetics</a>
                             </li>
                         {% endif %}
                     </ul>
