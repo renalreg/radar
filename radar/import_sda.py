@@ -84,6 +84,8 @@ def create_app(config_filename):
     app.config.from_pyfile(config_filename)
 
     import radar.users.models
+    import radar.disease_groups.models
+    import radar.units.models
 
     db.init_app(app)
 

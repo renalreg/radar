@@ -22,14 +22,18 @@ class SDABundle(db.Model):
 
     mpiid = Column(Integer)
 
-    sda_medications = relationship('SDAMedication', cascade='all')
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
+    sda_medications = relationship('SDAMedication', cascade='all')
+    sda_lab_orders = relationship('SDALabOrder', cascade='all')
 
     def serialize(self):
         if self.sda_patient is not None:
             self.sda_patient.serialize()
 
         for x in self.sda_medications:
+            x.serialize()
+
+        for x in self.sda_lab_orders:
             x.serialize()
 
 
@@ -233,6 +237,8 @@ class SDALabOrder(db.Model):
 
 
 class SDALabResult(db.Model):
+    __tablename__ = 'sda_lab_results'
+
     id = Column(Integer, primary_key=True)
 
     sda_lab_order_id = Column(Integer, ForeignKey('sda_lab_orders.id'))

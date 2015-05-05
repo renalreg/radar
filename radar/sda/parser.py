@@ -1,5 +1,5 @@
 from radar.sda.models import SDAMedication, SDABundle, SDAPatientAddress, SDAPatientAlias, SDAPatient, \
-    SDAPatientNumber
+    SDAPatientNumber, SDALabOrder, SDALabResult
 
 import dateutil.parser
 
@@ -31,6 +31,16 @@ def parse_datetime(node):
     return dateutil.parser.parse(node.text)
 
 
+def set_boolean(data, key, node):
+    if node is not None:
+        data[key] = parse_boolean(node)
+
+
+def parse_boolean(node):
+    text = node.text
+    return text.lower() == 'true' or text == '1'
+
+
 def set_code_description(data, key, node):
     if node is not None:
         data[key] = parse_code_description(node)
@@ -44,6 +54,11 @@ def parse_code_description(node):
     return data
 
 
+def set_organization(data, key, node):
+    if node is not None:
+        data[key] = parse_organization(node)
+
+
 def parse_container(node):
     sda_bundle = SDABundle()
 
@@ -55,6 +70,10 @@ def parse_container(node):
     for medication_node in node.findall('./Medications/Medication'):
         sda_medication = parse_medication(medication_node)
         sda_bundle.sda_medications.append(sda_medication)
+
+    for lab_order_node in node.findall('./LabOrders/LabOrder'):
+        sda_lab_order = parse_lab_order(lab_order_node)
+        sda_bundle.sda_lab_orders.append(sda_lab_order)
 
     return sda_bundle
 
@@ -188,11 +207,7 @@ def parse_patient_number(node):
     sda_patient_number.data = dict()
     set_text(sda_patient_number.data, 'number', node.find('./Number'))
     set_text(sda_patient_number.data, 'number_type', node.find('./NumberType'))
-
-    organization_node = node.find('Organization')
-
-    if organization_node is not None:
-        sda_patient_number.data['organization'] = parse_organization(organization_node)
+    set_organization(sda_patient_number.data, 'organization', node.find('./Organization'))
 
     return sda_patient_number
 
@@ -202,3 +217,60 @@ def parse_organization(node):
     set_text(data, 'code', node.find('./Code'))
     set_text(data, 'description', node.find('./Description'))
     return data
+
+
+def parse_result(node):
+    data = dict()
+    set_datetime(data, 'from_time', node.find('./FromTime'))
+    set_datetime(data, 'to_time', node.find('./ToTime'))
+    set_text(data, 'result_type', node.find('./ResultType'))
+    set_datetime(data, 'result_time', node.find('./ResultTime'))
+    set_text(data, 'result_text', node.find('./ResultText'))
+    set_text(data, 'comments', node.find('./Comments'))
+    set_datetime(data, 'authorization_time', node.find('./AuthorizationTime'))
+    set_organization(data, 'performed_at', node.find('./PerformedAt'))
+    set_text(data, 'result_interpretation', node.find('./ResultInterpretation'))
+    set_text(data, 'external_id', node.find('./ExternalId'))
+    return data
+
+
+def parse_lab_result(node):
+    sda_lab_result = SDALabResult()
+
+    data = dict()
+
+    set_code_description(data, 'test_item_code', node.find('./TestItemCode'))
+
+    if 'test_item_code' in data:
+        set_boolean(data['test_item_code'], 'is_numeric', node.find('./TestItemCode/IsNumeric'))
+
+    set_text(data, 'result_value', node.find('./ResultValue'))
+    set_text(data, 'result_value_units', node.find('./ResultValueUnits'))
+    set_text(data, 'result_normal_range', node.find('./ResultNormalRange'))
+    set_text(data, 'result_interpretation', node.find('./ResultInterpretation'))
+    set_text(data, 'comments', node.find('./Comments'))
+    set_organization(data, 'performed_at', node.find('./PerformedAt'))
+    set_text(data, 'external_id', node.find('./ExternalId'))
+
+    sda_lab_result.data = data
+
+    return sda_lab_result
+
+
+def parse_lab_order(node):
+    sda_lab_order = SDALabOrder()
+
+    data = parse_order(node)
+
+    result_node = node.find('./Result')
+
+    if result_node is not None:
+        data['result'] = parse_result(result_node)
+
+    sda_lab_order.data = data
+
+    for lab_result_node in node.findall('./Result/ResultItems/LabResultItem'):
+        sda_lab_result = parse_lab_result(lab_result_node)
+        sda_lab_order.results.append(sda_lab_result)
+
+    return sda_lab_order
