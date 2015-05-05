@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
-from sqlalchemy import desc
+from sqlalchemy import desc, case, func
 from radar.ordering import order_query, DESCENDING
 
 from radar.pagination import paginate_query
@@ -14,7 +14,7 @@ ORDER_BY = {
     'date': SDALabOrder.data['from_time'],
     'test': SDALabOrder.data[('order_item', 'description')],
     'item': SDALabResult.data[('test_item_code', 'description')],
-    'value': SDALabResult.data['result_value'],
+    'value': [func.parse_numeric(SDALabResult.data['result_value'].astext), SDALabResult.data['result_value']],
     'units': SDALabResult.data['result_value_units'],
     'source': SDALabOrder.data[('entering_organization', 'description')],
 }

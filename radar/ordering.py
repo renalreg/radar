@@ -1,5 +1,5 @@
 from flask import request, abort, url_for
-from sqlalchemy import desc
+from sqlalchemy import desc, Sequence
 
 
 ASCENDING = 'asc'
@@ -34,14 +34,17 @@ def order_query(query, order_by_map, default_order_by=None, default_order_direct
     order_by = order_by_from_request(default_order_by, order_by_map.keys())
     order_direction = order_direction_from_request(default=default_order_direction)
 
-    clause = order_by_map[order_by]
+    clauses = order_by_map[order_by]
+
+    if not isinstance(clauses, list):
+        clauses = [clauses]
 
     if order_direction == DESCENDING:
-        clause = desc(clause)
+        clauses = [desc(x) for x in clauses]
 
     ordering = Ordering(order_by, order_direction)
 
-    return query.order_by(clause), ordering
+    return query.order_by(*clauses), ordering
 
 
 class Ordering(object):
