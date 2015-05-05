@@ -59,6 +59,11 @@ $patient-nav-hover-bg: #d9e6f3; // column 9
 $patient-nav-active-text: #FFF;
 $patient-nav-active-bg: $radar-secondary;
 
+$patient-tabs-text: $radar-secondary-text;
+$patient-tabs-hover-bg: #d9e6f3; // column 9
+$patient-tabs-active-text: #FFF;
+$patient-tabs-active-bg: $radar-secondary;
+
 @import "bootstrap";
 
 $footer-height: 45px;
@@ -168,16 +173,48 @@ ul.patient-nav {
         color: $patient-nav-text;
     }
 
-    > li.active {
-        > a, > a:hover, > a:active, > a:focus {
+    > li.active > a {
+        &,
+        :hover,
+        :focus {
             background-color: $patient-nav-active-bg;
             color: $patient-nav-active-text;
         }
     }
 
-    > li {
-        > a:hover, > a:active, > a:focus {
+    > li > a {
+        :hover,
+        :focus {
             background-color: $patient-nav-hover-bg;
+        }
+    }
+}
+
+ul.patient-tabs {
+    border-bottom: 1px solid $patient-tabs-active-bg;
+
+    > li {
+        float: left;
+
+        > a {
+            color: $patient-tabs-text;
+            margin-right: 2px;
+            border-top-left-radius: $border-radius-base;
+            border-top-right-radius: $border-radius-base;
+
+            &:hover,
+            &:focus {
+                background-color: $patient-tabs-hover-bg;
+            }
+        }
+
+        &.active > a {
+            &,
+            &:hover,
+            &:focus {
+                background-color: $patient-tabs-active-bg;
+                color: $patient-tabs-active-text;
+            }
         }
     }
 }
