@@ -6,12 +6,12 @@ ASCENDING = 'asc'
 DESCENDING = 'desc'
 
 
-def order_by_from_request(default, options):
+def order_by_from_request(default, columns):
     order_by = request.args.get('order_by')
 
     if order_by is None:
         return default
-    elif order_by in options:
+    elif order_by in columns:
         return order_by
     else:
         abort(404)
@@ -30,19 +30,23 @@ def order_direction_from_request(default):
         abort(404)
 
 
-def order_query(query, order_by_map, default_order_by=None, default_order_direction=ASCENDING):
-    order_by = order_by_from_request(default_order_by, order_by_map.keys())
+def ordering_from_request(columns, default_order_by=None, default_order_direction=ASCENDING):
+    order_by = order_by_from_request(default_order_by, columns)
     order_direction = order_direction_from_request(default=default_order_direction)
+    ordering = Ordering(order_by, order_direction)
+    return ordering
 
-    clauses = order_by_map[order_by]
+
+def order_query(query, order_by_map, default_order_by=None, default_order_direction=ASCENDING):
+    ordering = order_by_from_request(order_by_map.keys(), default_order_by, default_order_direction)
+
+    clauses = order_by_map[ordering.column]
 
     if not isinstance(clauses, list):
         clauses = [clauses]
 
-    if order_direction == DESCENDING:
+    if ordering.direction == DESCENDING:
         clauses = [desc(x) for x in clauses]
-
-    ordering = Ordering(order_by, order_direction)
 
     return query.order_by(*clauses), ordering
 

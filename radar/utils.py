@@ -1,14 +1,22 @@
 import dateutil.parser
 
-
-def get_path_as_text(data, keys):
+def get_path(data, keys):
     for key in keys:
         data = data.get(key)
 
         if data is None:
             return None
 
-    return str(data)
+    return data
+
+
+def get_path_as_text(data, keys):
+    value = get_path(data, keys)
+
+    if value is not None:
+        value = str(value)
+
+    return value
 
 
 def get_path_as_datetime(data, keys):

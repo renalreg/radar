@@ -2,6 +2,36 @@
 
 {% set current_lab_results_page = 'table' %}
 
+{% from 'macros/ordering.html' import render_sortable_column %}
+
 {% block content %}
     {{ super() }}
+
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+
+                {% for column in columns %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+
+                <th>Source</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
+
+                    {% for column in result.columns %}
+                        <td>{{ column | missing }}</td>
+                    {% endfor %}
+
+                    <td>{{ result.source | missing }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

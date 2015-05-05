@@ -26,7 +26,7 @@
             {% for result in results %}
                 <tr>
                     <td></td>
-                    <td>{{ result.date | date_format | missing }}</td>
+                    <td>{{ result.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
                     <td>{{ result.test | missing }}</td>
                     <td>{{ result.item | missing }}</td>
                     <td>{{ result.value | missing }}</td>
