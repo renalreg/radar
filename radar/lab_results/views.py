@@ -1,16 +1,11 @@
-from flask import Blueprint, render_template, abort, request, url_for, redirect
+from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
-from radar.concepts.utils import add_errors_to_form
-from radar.database import db
-from radar.medications.forms import MedicationForm
-from radar.medications.models import Medication
 from radar.pagination import paginate_query
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
-from radar.sda.models import SDAMedication, SDABundle, SDALabOrder, SDALabResult
-from radar.utils import get_path_as_text, get_path_as_datetime
+from radar.sda.models import SDABundle, SDALabOrder, SDALabResult
+from radar.utils import get_path_as_text
 
 
 bp = Blueprint('lab_results', __name__)
@@ -46,4 +41,34 @@ def view_lab_result_list(patient_id):
         pagination=pagination,
     )
 
-    return render_template('patient/lab_results.html', **context)
+    return render_template('patient/lab_results_list.html', **context)
+
+
+@bp.route('/table/')
+def view_lab_results_table(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient),
+    )
+
+    return render_template('patient/lab_results_table.html', **context)
+
+
+@bp.route('/graph/')
+def view_lab_results_graph(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient),
+    )
+
+    return render_template('patient/lab_results_graph.html', **context)
