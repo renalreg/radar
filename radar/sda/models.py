@@ -211,3 +211,17 @@ class SDAPatientAddress(db.Model):
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)
+
+
+class SDALabOrder(db.Model):
+    __tablename__ = 'sda_lab_orders'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient = relationship('SDAPatient')
+
+    data = Column(JSONB, nullable=False)
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
