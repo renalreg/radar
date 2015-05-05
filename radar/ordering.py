@@ -67,7 +67,7 @@ class Ordering(object):
 
 
 def url_for_order_by(order_by, order_direction):
-    args = request.args.copy()
+    args = request.args.to_dict()
     args.update(request.view_args)
 
     # Back to the first page

@@ -58,7 +58,7 @@ def paginate_query(query, default_per_page=20):
 
 
 def url_for_page(page):
-    args = request.args.copy()
+    args = request.args.to_dict()
     args.update(request.view_args)
 
     args['page'] = page
@@ -67,7 +67,7 @@ def url_for_page(page):
 
 
 def url_for_per_page(per_page):
-    args = request.args.copy()
+    args = request.args.to_dict()
     args.update(request.view_args)
 
     args['page'] = 1

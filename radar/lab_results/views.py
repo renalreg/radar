@@ -6,6 +6,7 @@ from radar.concepts.utils import add_errors_to_form
 from radar.database import db
 from radar.medications.forms import MedicationForm
 from radar.medications.models import Medication
+from radar.pagination import paginate_query
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle, SDALabOrder, SDALabResult
@@ -21,12 +22,14 @@ def view_lab_result_list(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    sda_lab_results = SDALabResult.query\
+    query = SDALabResult.query\
         .join(SDALabResult.sda_lab_order)\
         .join(SDALabOrder.sda_bundle)\
         .join(SDABundle.patient)\
-        .filter(Patient.id == patient_id)\
-        .all()
+        .filter(Patient.id == patient_id)
+
+    pagination = paginate_query(query, default_per_page=50)
+    sda_lab_results = pagination.items
 
     results = []
 
@@ -39,7 +42,8 @@ def view_lab_result_list(patient_id):
     context = dict(
         results=results,
         patient=patient,
-        patient_data=get_patient_data(patient)
+        patient_data=get_patient_data(patient),
+        pagination=pagination,
     )
 
     return render_template('patient/lab_results.html', **context)
