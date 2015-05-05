@@ -59,6 +59,20 @@ def set_organization(data, key, node):
         data[key] = parse_organization(node)
 
 
+def parse_health_care_facility(node):
+    data = dict()
+    set_text(data, 'coding_standard', node.find('./CodingStandard'))
+    set_text(data, 'code', node.find('./Code'))
+    set_text(data, 'description', node.find('./Description'))
+    set_text(data, 'location_type', node.find('./LocationType'))
+    return data
+
+
+def set_health_care_facility(data, key, node):
+    if node is not None:
+        data[key] = parse_health_care_facility(node)
+
+
 def parse_container(node):
     sda_bundle = SDABundle()
 
@@ -96,6 +110,7 @@ def parse_order(node):
     set_code_description(data, 'order_item', node.find('./OrderItem'))
     set_code_description(data, 'order_category', node.find('./OrderCategory'))
     set_text(data, 'order_quantity', node.find('./OrderQuantity'))
+    set_health_care_facility(data, 'entering_organization', node.find('./EnteringOrganization'))
     set_text(data, 'specimen', node.find('./Specimen'))
     set_datetime(data, 'specimen_collection_time', node.find('./Specimen'))
     set_datetime(data, 'specimen_received_time', node.find('./SpecimenReceivedTime'))

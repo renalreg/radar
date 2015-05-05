@@ -29,11 +29,14 @@ def view_lab_result_list(patient_id):
     results = []
 
     for sda_lab_result in sda_lab_results:
+        sda_lab_order = sda_lab_result.sda_lab_order
+
         result = dict()
-        result['date'] = get_path_as_datetime(sda_lab_result.sda_lab_order.data, ['from_time'])
+        result['date'] = get_path_as_datetime(sda_lab_order.data, ['from_time'])
         result['test'] = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description'])
         result['value'] = get_path_as_text(sda_lab_result.data, ['result_value'])
         result['units'] = get_path_as_text(sda_lab_result.data, ['result_value_units'])
+        result['source'] = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
         results.append(result)
 
     context = dict(
