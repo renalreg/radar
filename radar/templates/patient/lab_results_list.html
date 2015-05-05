@@ -3,6 +3,7 @@
 {% set current_lab_results_page = 'list' %}
 
 {% from 'macros/pagination.html' import render_pagination %}
+{% from 'macros/ordering.html' import render_sortable_column %}
 
 {% block content %}
     {{ super() }}
@@ -11,11 +12,12 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Date</th>
-                <th>Test</th>
-                <th>Value</th>
-                <th>Units</th>
-                <th>Source</th>
+                <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
+                <th>{{ render_sortable_column(ordering, 'test', 'Test') }}</th>
+                <th>{{ render_sortable_column(ordering, 'item', 'Item') }}</th>
+                <th>{{ render_sortable_column(ordering, 'value', 'Value') }}</th>
+                <th>{{ render_sortable_column(ordering, 'units', 'Units') }}</th>
+                <th>{{ render_sortable_column(ordering, 'source', 'Source') }}</th>
                 <th></th>
             </tr>
         </thead>
@@ -26,6 +28,7 @@
                     <td></td>
                     <td>{{ result.date | date_format | missing }}</td>
                     <td>{{ result.test | missing }}</td>
+                    <td>{{ result.item | missing }}</td>
                     <td>{{ result.value | missing }}</td>
                     <td>{{ result.units | missing }}</td>
                     <td>{{ result.source | missing }}</td>
