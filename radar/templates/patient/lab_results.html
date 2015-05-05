@@ -1,0 +1,27 @@
+{% extends 'patient/base.html' %}
+
+{% set current_patient_page = 'lab_results' %}
+
+{% block content %}
+    <h1>Lab Results</h1>
+
+    <p><a href="#" class="btn btn-primary">New</a></p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.code | default('-', True) }}</td>
+                    <td>{{ result.value | default('-', True) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

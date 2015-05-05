@@ -70,7 +70,7 @@
                     </li>
 
                     <li{% if current_patient_page == 'lab_results' %} class="active"{% endif %}>
-                        <a href="#">Lab Results</a>
+                        <a href="{{ url_for('lab_results.view_lab_result_list', patient_id=patient.id) }}">Lab Results</a>
                     </li>
 
                     <li{% if current_patient_page == 'medications' %} class="active"{% endif %}>
