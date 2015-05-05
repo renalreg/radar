@@ -218,8 +218,25 @@ class SDALabOrder(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
-    sda_patient = relationship('SDAPatient')
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle = relationship('SDABundle')
+
+    data = Column(JSONB, nullable=False)
+
+    results = relationship('SDALabResult')
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
+
+        for result in self.results:
+            result.serialize()
+
+
+class SDALabResult(db.Model):
+    id = Column(Integer, primary_key=True)
+
+    sda_lab_order_id = Column(Integer, ForeignKey('sda_lab_orders.id'))
+    sda_lab_order = relationship('SDALabOrder')
 
     data = Column(JSONB, nullable=False)
 
