@@ -87,7 +87,7 @@ def view_lab_result_table(patient_id):
 
     item_columns = form.item.data
 
-    if item_columns is None:
+    if not item_columns:
         item_columns = ['creatinine']
         form.item.data = item_columns
 
