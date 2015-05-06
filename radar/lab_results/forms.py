@@ -1,8 +1,11 @@
 from wtforms import Form
 from wtforms.validators import Optional
 
-from radar.forms import RadarSelectMultipleField
+from radar.forms import RadarSelectMultipleField, RadarSelectField
 
 
 class LabResultTableForm(Form):
-    item = RadarSelectMultipleField('Columns', validators=[Optional()])
+    test_item = RadarSelectMultipleField('Columns', validators=[Optional()])
+
+class LabResultGraphForm(Form):
+    test_item = RadarSelectField()

@@ -124,6 +124,7 @@
         <script src="/static/js/libs/bootstrap.js"></script>
         <script src="/static/js/libs/jquery-ui.js"></script>
         <script src="/static/js/libs/chosen.jquery.min.js"></script>
+        <script src="/static/js/libs/highcharts.js"></script>
         <script src="/static/js/app.js"></script>
 
         <script>
@@ -131,5 +132,7 @@
                 $(".chosen-select").chosen();
             });
         </script>
+
+        {% block body_js %}{% endblock %}
     </body>
 </html>

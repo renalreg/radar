@@ -1,11 +1,11 @@
 from collections import defaultdict
 from datetime import datetime
 
-from flask import Blueprint, render_template, abort, request
+from flask import Blueprint, render_template, abort, request, Response, jsonify
 from flask_login import current_user
 from sqlalchemy import desc, func
 from radar.database import db
-from radar.lab_results.forms import LabResultTableForm
+from radar.lab_results.forms import LabResultTableForm, LabResultGraphForm
 
 from radar.ordering import order_query, DESCENDING, ordering_from_request
 from radar.pagination import paginate_query
@@ -36,8 +36,7 @@ def view_lab_result_list(patient_id):
     query = SDALabResult.query\
         .join(SDALabResult.sda_lab_order)\
         .join(SDALabOrder.sda_bundle)\
-        .join(SDABundle.patient)\
-        .filter(Patient.id == patient_id)
+        .filter(SDABundle.patient == patient)
 
     query, ordering = order_query(query, LIST_ORDER_BY, 'date', DESCENDING)
 
@@ -84,21 +83,20 @@ def view_lab_result_table(patient_id):
         abort(403)
 
     form = LabResultTableForm(formdata=request.args, csrf_enabled=False)
-    form.item.choices = get_item_choices()
+    form.test_item.choices = get_test_item_choices()
 
-    item_columns = form.item.data
+    test_items = form.test_item.data
 
-    if not item_columns:
-        item_columns = ['creatinine']
-        form.item.data = item_columns
+    if not test_items:
+        test_items = ['creatinine']
+        form.test_item.data = test_items
 
     # Sorting is done later to keep item grouping consistent
     sda_lab_results = SDALabResult.query\
         .join(SDALabResult.sda_lab_order)\
         .join(SDALabOrder.sda_bundle)\
-        .join(SDABundle.patient)\
-        .filter(Patient.id == patient_id)\
-        .filter(func.lower(SDALabResult.data[('test_item_code', 'code')].astext).in_(item_columns))\
+        .filter(SDABundle.patient == patient)\
+        .filter(func.lower(SDALabResult.data[('test_item_code', 'code')].astext).in_(test_items))\
         .order_by(SDALabOrder.id)\
         .order_by(SDALabResult.id)\
         .all()
@@ -146,7 +144,7 @@ def view_lab_result_table(patient_id):
     SORT_ITEM_PREFIX = 'item_'
 
     sort_columns = ['date', 'source']
-    sort_item_columns = [SORT_ITEM_PREFIX + x for x in item_columns]
+    sort_item_columns = [SORT_ITEM_PREFIX + x for x in test_items]
     sort_columns.extend(sort_item_columns)
 
     ordering = ordering_from_request(sort_columns, 'date', DESCENDING)
@@ -185,9 +183,9 @@ def view_lab_result_table(patient_id):
 
     # Convert columns from dict to list for display
     for result in results:
-        result['columns'] = [result['columns'].get(x) for x in item_columns]
+        result['columns'] = [result['columns'].get(x) for x in test_items]
 
-    item_columns = zip([x.upper() for x in item_columns], sort_item_columns)
+    item_columns = zip([x.upper() for x in test_items], sort_item_columns)
 
     context = dict(
         patient=patient,
@@ -208,15 +206,58 @@ def view_lab_result_graph(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
+    form = LabResultGraphForm()
+    form.test_item.choices = get_test_item_choices()
+
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
+        form=form,
     )
 
     return render_template('patient/lab_results_graph.html', **context)
 
 
-def get_item_choices():
+@bp.route('/graph/data.json')
+def view_lab_result_graph_json(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    test_item = request.args.get('test_item')
+
+    if test_item is None:
+        abort(404)
+
+    dt_column = func.parse_date_to_lower(SDALabOrder.data['from_time'].astext)
+    value_column = func.parse_numeric(SDALabResult.data['result_value'].astext)
+
+    query = db.session\
+        .query(dt_column, value_column)\
+        .join(SDALabResult.sda_lab_order)\
+        .join(SDALabOrder.sda_bundle)\
+        .filter(
+            SDABundle.patient == patient,
+            func.lower(SDALabResult.data[('test_item_code', 'code')].astext) == test_item.lower(),
+            dt_column is not None,
+            value_column is not None
+        )\
+        .order_by(dt_column)
+
+    data = []
+
+    for dt, value in query.all():
+        data.append((dt.isoformat(), float(value)))
+
+    return jsonify({
+        'name': test_item.upper(), # TODO
+        'units': 'TODO',
+        'data': data,
+    })
+
+
+def get_test_item_choices():
     # TODO will get slow
     # TODO multiple labels for same code
     # TODO coding standards
