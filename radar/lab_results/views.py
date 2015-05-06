@@ -258,6 +258,23 @@ def view_lab_result_graph_json(patient_id):
     })
 
 
+@bp.route('/new/', endpoint='add_lab_result', methods=['GET', 'POST'])
+@bp.route('/<int:lab_result_id>/', endpoint='view_lab_result')
+@bp.route('/<int:lab_result_id>/', endpoint='edit_lab_result', methods=['GET', 'POST'])
+def view_lab_result(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient),
+    )
+
+    return render_template('patient/lab_result.html', **context)
+
+
 def get_test_item_choices():
     # TODO will get slow
     # TODO multiple labels for same code
