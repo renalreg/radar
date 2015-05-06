@@ -115,7 +115,7 @@ def view_lab_result_table(patient_id):
 
         date = get_path_as_datetime(sda_lab_order.data, ['from_time'])
         source = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-        item = SDALabResult.test_item_code
+        item = sda_lab_result.test_item_code
         value = get_path_as_text(sda_lab_result.data, ['result_value'])
 
         # Fields to group by
