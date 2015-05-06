@@ -82,16 +82,21 @@ def view_lab_result_table(patient_id):
 
     columns = ['INR', 'HB', 'WBC']
 
+    # Sorting is done later to keep item grouping consistent
     sda_lab_results = SDALabResult.query\
         .join(SDALabResult.sda_lab_order)\
         .join(SDALabOrder.sda_bundle)\
         .join(SDABundle.patient)\
         .filter(Patient.id == patient_id)\
         .filter(func.upper(SDALabResult.data[('test_item_code', 'code')].astext).in_(columns))\
+        .order_by(SDALabOrder.id)\
         .order_by(SDALabResult.id)\
         .all()
 
+    # Results list for display
     results = list()
+
+    # Results for each group of fields
     result_dict = defaultdict(list)
 
     for sda_lab_result in sda_lab_results:
@@ -102,18 +107,22 @@ def view_lab_result_table(patient_id):
         item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description']).upper()
         value = get_path_as_text(sda_lab_result.data, ['result_value'])
 
+        # Fields to group by
         group = (date, source)
+
+        # Existing results in this group (i.e. result rows from a site at a particular time)
         group_results = result_dict[group]
 
+        # The existing result to use
         result = None
 
+        # Find an existing result to fill in before creating a new one
         for group_result in group_results:
-            print group_result
-
             if item not in group_result['columns']:
                 result = group_result
                 break
 
+        # First result for this group or all existing results have this item filled
         if result is None:
             result = dict()
             result['source'] = source
@@ -121,11 +130,10 @@ def view_lab_result_table(patient_id):
             result['columns'] = dict()
             results.append(result)
             result_dict[group].append(result)
-        else:
-            result = results[-1]
 
         result['columns'][item] = value
 
+    # Convert columns from dict to list for display
     for result in results:
         result['columns'] = [result['columns'].get(x) for x in columns]
 
