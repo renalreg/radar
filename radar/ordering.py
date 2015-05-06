@@ -38,7 +38,7 @@ def ordering_from_request(columns, default_order_by=None, default_order_directio
 
 
 def order_query(query, order_by_map, default_order_by=None, default_order_direction=ASCENDING):
-    ordering = order_by_from_request(order_by_map.keys(), default_order_by, default_order_direction)
+    ordering = ordering_from_request(order_by_map.keys(), default_order_by, default_order_direction)
 
     clauses = order_by_map[ordering.column]
 

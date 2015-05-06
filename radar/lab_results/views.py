@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 from sqlalchemy import desc, func
+from radar.database import db
 from radar.lab_results.forms import LabResultTableForm
 
 from radar.ordering import order_query, DESCENDING, ordering_from_request
@@ -82,9 +83,13 @@ def view_lab_result_table(patient_id):
         abort(403)
 
     form = LabResultTableForm(formdata=request.args, csrf_enabled=False)
-    form.item.choices = [('inr', 'INR'), ('hb', 'HB'), ('wbc', 'WBC')]
+    form.item.choices = get_item_choices()
 
     item_columns = form.item.data
+
+    if item_columns is None:
+        item_columns = ['creatinine']
+        form.item.data = item_columns
 
     # Sorting is done later to keep item grouping consistent
     sda_lab_results = SDALabResult.query\
@@ -108,7 +113,7 @@ def view_lab_result_table(patient_id):
 
         date = get_path_as_datetime(sda_lab_order.data, ['from_time'])
         source = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-        item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description']).lower()
+        item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'code']).lower()
         value = get_path_as_text(sda_lab_result.data, ['result_value'])
 
         # Fields to group by
@@ -208,3 +213,17 @@ def view_lab_result_graph(patient_id):
     )
 
     return render_template('patient/lab_results_graph.html', **context)
+
+
+def get_item_choices():
+    # TODO will get slow
+    # TODO multiple labels for same code
+    # TODO coding standards
+    return db.session\
+        .query(
+            SDALabResult.data[('test_item_code', 'code')],
+            SDALabResult.data[('test_item_code', 'description')]
+        )\
+        .order_by(SDALabResult.data[('test_item_code', 'description')])\
+        .distinct()\
+        .all()
