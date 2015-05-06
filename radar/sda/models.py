@@ -229,6 +229,14 @@ class SDALabOrder(db.Model):
 
     results = relationship('SDALabResult')
 
+    @hybrid_property
+    def from_time(self):
+        return get_path_as_datetime(self.data, ['from_time'])
+
+    @from_time.expression
+    def from_time(self):
+        return func.parse_date_to_lower(self.data['from_time'].astext)
+
     def serialize(self):
         self.data = serialize_jsonb(self.data)
 
@@ -245,6 +253,19 @@ class SDALabResult(db.Model):
     sda_lab_order = relationship('SDALabOrder')
 
     data = Column(JSONB, nullable=False)
+
+    @hybrid_property
+    def test_item_code(self):
+        value = get_path_as_text(self.data, ['test_item_code', 'code'])
+
+        if value is not None:
+            value = value.lower()
+
+        return value
+
+    @test_item_code.expression
+    def test_item_code(self):
+        return func.lower(SDALabResult.data[('test_item_code', 'code')].astext)
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)

@@ -15,8 +15,10 @@ from radar.sda.models import SDABundle, SDALabOrder, SDALabResult
 from radar.utils import get_path_as_text, get_path_as_datetime
 
 
+SORT_ITEM_PREFIX = 'item_'
+
 LIST_ORDER_BY = {
-    'date': SDALabOrder.data['from_time'],
+    'date': SDALabOrder.from_time,
     'test': SDALabOrder.data[('order_item', 'description')],
     'item': SDALabResult.data[('test_item_code', 'description')],
     'value': [func.parse_numeric(SDALabResult.data['result_value'].astext), SDALabResult.data['result_value']],
@@ -25,6 +27,7 @@ LIST_ORDER_BY = {
 }
 
 bp = Blueprint('lab_results', __name__)
+
 
 @bp.route('/')
 def view_lab_result_list(patient_id):
@@ -41,7 +44,7 @@ def view_lab_result_list(patient_id):
     query, ordering = order_query(query, LIST_ORDER_BY, 'date', DESCENDING)
 
     query = query.order_by(
-        desc(SDALabOrder.data['from_time']),
+        desc(SDALabOrder.from_time),
         SDALabOrder.data[('order_item', 'description')],
         SDALabResult.data[('test_item_code', 'description')],
     )
@@ -55,7 +58,7 @@ def view_lab_result_list(patient_id):
         sda_lab_order = sda_lab_result.sda_lab_order
 
         result = dict()
-        result['date'] = get_path_as_datetime(sda_lab_order.data, ['from_time'])
+        result['date'] = sda_lab_order.from_time
         result['test'] = get_path_as_text(sda_lab_order.data, ['order_item', 'description'])
         result['item'] = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description'])
         result['value'] = get_path_as_text(sda_lab_result.data, ['result_value'])
@@ -96,7 +99,7 @@ def view_lab_result_table(patient_id):
         .join(SDALabResult.sda_lab_order)\
         .join(SDALabOrder.sda_bundle)\
         .filter(SDABundle.patient == patient)\
-        .filter(func.lower(SDALabResult.data[('test_item_code', 'code')].astext).in_(test_items))\
+        .filter(SDALabResult.test_item_code.in_(test_items))\
         .order_by(SDALabOrder.id)\
         .order_by(SDALabResult.id)\
         .all()
@@ -112,7 +115,7 @@ def view_lab_result_table(patient_id):
 
         date = get_path_as_datetime(sda_lab_order.data, ['from_time'])
         source = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-        item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'code']).lower()
+        item = SDALabResult.test_item_code
         value = get_path_as_text(sda_lab_result.data, ['result_value'])
 
         # Fields to group by
@@ -140,8 +143,6 @@ def view_lab_result_table(patient_id):
             result_dict[group].append(result)
 
         result['columns'][item] = value
-
-    SORT_ITEM_PREFIX = 'item_'
 
     sort_columns = ['date', 'source']
     sort_item_columns = [SORT_ITEM_PREFIX + x for x in test_items]
@@ -230,7 +231,7 @@ def view_lab_result_graph_json(patient_id):
     if test_item is None:
         abort(404)
 
-    dt_column = func.parse_date_to_lower(SDALabOrder.data['from_time'].astext)
+    dt_column = SDALabOrder.from_time
     value_column = func.parse_numeric(SDALabResult.data['result_value'].astext)
 
     query = db.session\
@@ -239,7 +240,7 @@ def view_lab_result_graph_json(patient_id):
         .join(SDALabOrder.sda_bundle)\
         .filter(
             SDABundle.patient == patient,
-            func.lower(SDALabResult.data[('test_item_code', 'code')].astext) == test_item.lower(),
+            SDALabResult.test_item_code == test_item.lower(),
             dt_column is not None,
             value_column is not None
         )\
@@ -263,7 +264,7 @@ def get_test_item_choices():
     # TODO coding standards
     return db.session\
         .query(
-            SDALabResult.data[('test_item_code', 'code')],
+            SDALabResult.test_item_code,
             SDALabResult.data[('test_item_code', 'description')]
         )\
         .order_by(SDALabResult.data[('test_item_code', 'description')])\
