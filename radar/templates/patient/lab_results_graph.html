@@ -14,8 +14,6 @@
     <script>
         function load_test_item(test_item) {
             $.get('data.json', {'test_item': test_item}, function(data) {
-                console.log(data);
-
                 var graphData = [];
 
                 for (var i = 0; i < data.data.length; i++) {
