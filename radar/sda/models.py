@@ -269,3 +269,17 @@ class SDALabResult(db.Model):
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)
+
+
+class SDAProcedure(db.Model):
+    __tablename__ = 'sda_procedures'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle = relationship('SDABundle')
+
+    data = Column(JSONB, nullable=False)
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
