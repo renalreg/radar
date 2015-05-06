@@ -1,5 +1,6 @@
 from flask import request, abort, url_for
 from flask_sqlalchemy import Pagination
+from radar.utils import get_request_args
 
 
 def page_from_request():
@@ -58,19 +59,13 @@ def paginate_query(query, default_per_page=20):
 
 
 def url_for_page(page):
-    args = request.args.to_dict()
-    args.update(request.view_args)
-
+    args = get_request_args()
     args['page'] = page
-
     return url_for(request.endpoint, **args)
 
 
 def url_for_per_page(per_page):
-    args = request.args.to_dict()
-    args.update(request.view_args)
-
+    args = get_request_args()
     args['page'] = 1
     args['per_page'] = per_page
-
     return url_for(request.endpoint, **args)

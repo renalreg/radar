@@ -1,4 +1,6 @@
 import dateutil.parser
+from flask import request
+
 
 def get_path(data, keys):
     for key in keys:
@@ -43,3 +45,9 @@ def set_path(data, keys, value):
         data = data[key]
 
     data[keys[-1]] = value
+
+
+def get_request_args():
+    args = request.args.to_dict(flat=False)
+    args.update(request.view_args)
+    return args

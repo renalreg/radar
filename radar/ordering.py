@@ -1,5 +1,6 @@
 from flask import request, abort, url_for
 from sqlalchemy import desc, Sequence
+from radar.utils import get_request_args
 
 
 ASCENDING = 'asc'
@@ -74,8 +75,7 @@ class Ordering(object):
 
 
 def url_for_order_by(order_by, order_direction):
-    args = request.args.to_dict()
-    args.update(request.view_args)
+    args = get_request_args()
 
     # Back to the first page
     args.pop('page', None)
