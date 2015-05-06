@@ -15,6 +15,8 @@ from radar.patients.views import bp as patients_bp
 from radar.units.views import bp as units_bp
 from radar.users.views import bp as users_bp, require_login
 from radar.lab_results.views import bp as lab_results_bp
+from radar.renal_imaging.views import bp as renal_imaging_bp
+
 from radar.database import db
 
 
@@ -37,6 +39,7 @@ def create_app(config_filename):
         (medications_bp, '/medications'),
         (diagnosis_bp, '/diagnoses'),
         (lab_results_bp, '/lab-results'),
+        (renal_imaging_bp, '/renal-imaging'),
     ]
 
     patient_base = '/patients/<int:patient_id>'

@@ -95,14 +95,14 @@
 
                     <ul class="nav patient-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
-                            <li{% if current_patient_page == 'diagnosis' and disease_group.disease_group.id == disease_group_id %} class="active"{% endif %}>
+                            <li{% if current_patient_page == 'diagnosis' and current_patient_disease_group == disease_group.disease_group %} class="active"{% endif %}>
                                 <a href="{{ url_for('diagnosis.view_diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
                             </li>
                         {% endif %}
 
                         {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
                             <li{% if current_patient_page == 'renal_imaging' %} class="active"{% endif %}>
-                                <a href="#">Renal Imaging</a>
+                                <a href="{{ url_for('renal_imaging.view_renal_imaging_list', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Renal Imaging</a>
                             </li>
                         {% endif %}
 
