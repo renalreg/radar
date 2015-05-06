@@ -1,6 +1,7 @@
 from datetime import datetime
+import xml.etree.ElementTree
 
-from flask import render_template, Blueprint, abort, request, url_for, redirect
+from flask import render_template, Blueprint, abort, request, url_for, redirect, Response
 from flask_login import current_user, login_required
 
 from radar.database import db
@@ -13,6 +14,7 @@ from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.patients.search import get_disease_group_filters_for_user, get_unit_filters_for_user
+from radar.sda.export import patient_to_xml
 from radar.units.models import Unit
 from radar.utils import get_path_as_text
 
@@ -241,3 +243,13 @@ def view_patient_units(patient_id):
     )
 
     return render_template('patient/units.html', **context)
+
+
+@bp.route('/<int:patient_id>/export/')
+def export_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    return Response(xml.etree.ElementTree.tostring(patient_to_xml(patient)), mimetype='text/xml')
