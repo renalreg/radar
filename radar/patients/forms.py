@@ -1,8 +1,8 @@
-from wtforms import StringField, IntegerField
-from wtforms.validators import Optional, InputRequired
+from wtforms import StringField, IntegerField, ValidationError
+from wtforms.validators import Optional, InputRequired, Email
 from flask_wtf import Form
 
-from radar.forms import RadarDateField, RadarSelectField
+from radar.forms import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarPostcodeField
 
 from radar.ordering import ASCENDING, DESCENDING
 from radar.utils import optional_int
@@ -39,21 +39,15 @@ class DemographicsForm(Form):
     address_line_2 = StringField(validators=[Optional()])
     address_line_3 = StringField(validators=[Optional()])
 
-    # TODO validation
-    postcode = StringField(validators=[InputRequired()])
+    postcode = RadarPostcodeField(validators=[InputRequired()])
 
     home_number = StringField(validators=[Optional()])
     work_number = StringField(validators=[Optional()])
     mobile_number = StringField(validators=[Optional()])
+    email_address = StringField(validators=[Optional(), Email()])
 
-    # TODO validation
-    email_address = StringField(validators=[Optional()])
-
-    # TODO validation
-    nhs_no = IntegerField('NHS No.', validators=[Optional()])
-
-    # TODO validation
-    chi_no = IntegerField('CHI No.', validators=[Optional()])
+    nhs_no = RadarNHSNoField(validators=[Optional()])
+    chi_no = RadarCHINoField(validators=[Optional()])
 
 
 class PatientSearchForm(Form):
