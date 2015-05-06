@@ -7,6 +7,16 @@
 {% block content %}
     {{ super() }}
 
+    <form class="form lab-result-table" method="GET">
+        <p>
+            {{ form.item(class='form-control') }}
+        </p>
+
+        <p>
+            <button type="submit" class="btn btn-primary btn-xs">Update Columns</button>
+        </p>
+    </form>
+
     <table class="table table-condensed table-striped">
         <thead>
             <tr>

@@ -1,9 +1,10 @@
 from collections import defaultdict
 from datetime import datetime
 
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 from sqlalchemy import desc, func
+from radar.lab_results.forms import LabResultTableForm
 
 from radar.ordering import order_query, DESCENDING, ordering_from_request
 from radar.pagination import paginate_query
@@ -80,7 +81,10 @@ def view_lab_result_table(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    item_columns = ['inr', 'hb', 'wbc']
+    form = LabResultTableForm(formdata=request.args, csrf_enabled=False)
+    form.item.choices = [('inr', 'INR'), ('hb', 'HB'), ('wbc', 'WBC')]
+
+    item_columns = form.item.data
 
     # Sorting is done later to keep item grouping consistent
     sda_lab_results = SDALabResult.query\
@@ -185,6 +189,7 @@ def view_lab_result_table(patient_id):
         results=results,
         item_columns=item_columns,
         ordering=ordering,
+        form=form,
     )
 
     return render_template('patient/lab_results_table.html', **context)

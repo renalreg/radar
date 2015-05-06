@@ -8,6 +8,8 @@
     "jquery": "1",
     "jquery-ui": "~1.11.4",
     "html5shiv": "~3.7.2",
-    "respond": "~1.4.2"
+    "respond": "~1.4.2",
+    "select2": "~4.0.0",
+    "chosen": "~1.4.2"
   }
 }

@@ -8,6 +8,7 @@
         <title>RaDaR</title>
         <link rel="stylesheet" href="/static/css/style.css">
         <link rel="stylesheet" href="/static/css/jquery-ui.css">
+        <link rel="stylesheet" href="/static/css/chosen.min.css">
 
         <!--[if lt IE 9]>
             <script src="/static/js/libs/html5shiv.js"></script>
@@ -122,6 +123,13 @@
         <script src="/static/js/libs/jquery.js"></script>
         <script src="/static/js/libs/bootstrap.js"></script>
         <script src="/static/js/libs/jquery-ui.js"></script>
+        <script src="/static/js/libs/chosen.jquery.min.js"></script>
         <script src="/static/js/app.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $(".chosen-select").chosen();
+            });
+        </script>
     </body>
 </html>

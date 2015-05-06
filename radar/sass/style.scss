@@ -192,6 +192,7 @@ ul.patient-nav {
 
 ul.patient-tabs {
     border-bottom: 1px solid $patient-tabs-active-bg;
+    margin-bottom: $line-height-computed / 2;
 
     > li {
         float: left;
@@ -243,4 +244,8 @@ table.demographics {
     a {
         color: $text-color;
     }
+}
+
+form.lab-result-table select {
+    max-width: 100%;
 }
