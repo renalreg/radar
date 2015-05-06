@@ -175,16 +175,16 @@ ul.patient-nav {
 
     > li.active > a {
         &,
-        :hover,
-        :focus {
+        &:hover,
+        &:focus {
             background-color: $patient-nav-active-bg;
             color: $patient-nav-active-text;
         }
     }
 
     > li > a {
-        :hover,
-        :focus {
+        &:hover,
+        &:focus {
             background-color: $patient-nav-hover-bg;
         }
     }

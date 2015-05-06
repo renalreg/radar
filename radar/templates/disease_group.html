@@ -5,7 +5,9 @@
 {% block content %}
     <h1>{{ disease_group.name }}</h1>
 
-    <ul>
+    <ul class="nav patient-tabs">
+        <li class="active"><a href="{{ url_for('patients.view_patient_list', disease_group_id=disease_group.id) }}">{{ disease_group.name }}</a></li>
+
         {% if disease_group_user.has_view_patient_permission %}
             <li><a href="{{ url_for('patients.view_patient_list', disease_group_id=disease_group.id) }}">Patients</a></li>
         {% endif %}
