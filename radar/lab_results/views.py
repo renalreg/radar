@@ -75,6 +75,7 @@ def view_lab_result_list(patient_id):
     return render_template('patient/lab_results_list.html', **context)
 
 
+# TODO pagination
 @bp.route('/table/')
 def view_lab_result_table(patient_id):
     patient = Patient.query.get_or_404(patient_id)
