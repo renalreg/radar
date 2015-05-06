@@ -25,6 +25,7 @@ class SDABundle(db.Model):
     sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
     sda_medications = relationship('SDAMedication', cascade='all')
     sda_lab_orders = relationship('SDALabOrder', cascade='all')
+    sda_procedures = relationship('SDAProcedure', cascade='all')
 
     def serialize(self):
         if self.sda_patient is not None:
@@ -34,6 +35,9 @@ class SDABundle(db.Model):
             x.serialize()
 
         for x in self.sda_lab_orders:
+            x.serialize()
+
+        for x in self.sda_procedures:
             x.serialize()
 
 

@@ -1,5 +1,5 @@
 from radar.sda.models import SDAMedication, SDABundle, SDAPatientAddress, SDAPatientAlias, SDAPatient, \
-    SDAPatientNumber, SDALabOrder, SDALabResult
+    SDAPatientNumber, SDALabOrder, SDALabResult, SDAProcedure
 
 import dateutil.parser
 
@@ -88,6 +88,10 @@ def parse_container(node):
     for lab_order_node in node.findall('./LabOrders/LabOrder'):
         sda_lab_order = parse_lab_order(lab_order_node)
         sda_bundle.sda_lab_orders.append(sda_lab_order)
+
+    for procedure_node in node.findall('./Procedures/Procedure'):
+        sda_procedure = parse_lab_order(procedure_node)
+        sda_bundle.sda_procedures.append(sda_procedure)
 
     return sda_bundle
 
@@ -289,3 +293,14 @@ def parse_lab_order(node):
         sda_lab_order.results.append(sda_lab_result)
 
     return sda_lab_order
+
+
+def parse_procedure(node):
+    sda_procedure = SDAProcedure()
+
+    data = parse_base(node)
+    set_code_description(data, 'procedure', node.find('./Procedure'))
+    set_datetime(data, 'procedure_time', node.find('./ProcedureTime'))
+    sda_procedure.data = data
+
+    return sda_procedure
