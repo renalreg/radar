@@ -1,9 +1,9 @@
 from collections import defaultdict
+from datetime import datetime
 
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 from sqlalchemy import desc, func
-from radar.database import db
 
 from radar.ordering import order_query, DESCENDING, ordering_from_request
 from radar.pagination import paginate_query
@@ -80,7 +80,7 @@ def view_lab_result_table(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    columns = ['INR', 'HB', 'WBC']
+    item_columns = ['inr', 'hb', 'wbc']
 
     # Sorting is done later to keep item grouping consistent
     sda_lab_results = SDALabResult.query\
@@ -88,7 +88,7 @@ def view_lab_result_table(patient_id):
         .join(SDALabOrder.sda_bundle)\
         .join(SDABundle.patient)\
         .filter(Patient.id == patient_id)\
-        .filter(func.upper(SDALabResult.data[('test_item_code', 'code')].astext).in_(columns))\
+        .filter(func.lower(SDALabResult.data[('test_item_code', 'code')].astext).in_(item_columns))\
         .order_by(SDALabOrder.id)\
         .order_by(SDALabResult.id)\
         .all()
@@ -104,7 +104,7 @@ def view_lab_result_table(patient_id):
 
         date = get_path_as_datetime(sda_lab_order.data, ['from_time'])
         source = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-        item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description']).upper()
+        item = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description']).lower()
         value = get_path_as_text(sda_lab_result.data, ['result_value'])
 
         # Fields to group by
@@ -133,15 +133,58 @@ def view_lab_result_table(patient_id):
 
         result['columns'][item] = value
 
+    SORT_ITEM_PREFIX = 'item_'
+
+    sort_columns = ['date', 'source']
+    sort_item_columns = [SORT_ITEM_PREFIX + x for x in item_columns]
+    sort_columns.extend(sort_item_columns)
+
+    ordering = ordering_from_request(sort_columns, 'date', DESCENDING)
+
+    sort_column = ordering.column
+    sort_direction = ordering.direction
+
+    def get_date(x):
+        return x['date'] or datetime.min
+
+    def get_source(x):
+        return x['source']
+
+    def get_item_value(x, item_column):
+        value = x['columns'].get(item_column)
+
+        if value is None:
+            return None
+
+        try:
+            value = float(value)
+        except ValueError:
+            pass
+
+        return value
+
+    if sort_column.startswith(SORT_ITEM_PREFIX):
+        sort_item_column = sort_column.split(SORT_ITEM_PREFIX)[1]
+        sort_f = lambda x: (get_item_value(x, sort_item_column), get_date(x), get_source(x))
+    elif sort_column == 'source':
+        sort_f = lambda x: (get_source(x), get_date(x))
+    else:
+        sort_f = lambda x: (get_date(x), get_source(x))
+
+    results = sorted(results, key=sort_f, reverse=(sort_direction == DESCENDING))
+
     # Convert columns from dict to list for display
     for result in results:
-        result['columns'] = [result['columns'].get(x) for x in columns]
+        result['columns'] = [result['columns'].get(x) for x in item_columns]
+
+    item_columns = zip([x.upper() for x in item_columns], sort_item_columns)
 
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
         results=results,
-        columns=columns
+        item_columns=item_columns,
+        ordering=ordering,
     )
 
     return render_template('patient/lab_results_table.html', **context)

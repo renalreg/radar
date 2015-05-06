@@ -10,13 +10,13 @@
     <table class="table table-condensed table-striped">
         <thead>
             <tr>
-                <th>Date</th>
+                <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
 
-                {% for column in columns %}
-                    <th>{{ column }}</th>
+                {% for name, key in item_columns %}
+                    <th>{{ render_sortable_column(ordering, key, name) }}</th>
                 {% endfor %}
 
-                <th>Source</th>
+                <th>{{ render_sortable_column(ordering, 'source', 'Source') }}</th>
             </tr>
         </thead>
 
