@@ -143,8 +143,12 @@ def view_user(user_id):
 
     return render_template('user.html', **context)
 
+
 @bp.route('/users/add/', endpoint='add_user', methods=['GET', 'POST'])
 def add_user():
+    if not current_user.has_add_user_permission:
+        abort(403)
+
     form = AddUserForm()
 
     if form.validate_on_submit():
@@ -173,6 +177,7 @@ def add_user():
     )
 
     return render_template('add_user.html', **context)
+
 
 @bp.route('/login/', methods=['GET', 'POST'])
 def login():

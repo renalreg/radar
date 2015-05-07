@@ -73,6 +73,13 @@ class User(db.Model):
         )
 
     @property
+    def has_add_user_permission(self):
+        return (
+            self.is_admin or
+            self.has_edit_group_membership_permission
+        )
+
+    @property
     def has_edit_group_membership_permission(self):
         return (
             self.is_admin or

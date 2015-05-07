@@ -33,7 +33,9 @@
             <div class="block">
                 <h1>Users</h1>
 
-                <p><a href="{{ url_for('users.add_user') }}" class="btn btn-primary">Add User</a></p>
+                {% if current_user.has_add_user_permission %}
+                    <p><a href="{{ url_for('users.add_user') }}" class="btn btn-primary">Add User</a></p>
+                {% endif %}
 
                 <table class="table table-condensed table-striped">
                     <thead>
