@@ -1,9 +1,45 @@
-{% extends 'simple.html' %}
+{% extends 'base.html' %}
 
 {% set current_page = 'index' %}
 
-{% block content %}
-    <!-- TODO add login sidebar -->
+{% from 'macros/forms.html' import render_field, render_field_group %}
+{% from 'macros/flash.html' import render_flashed_messages %}
 
-    <h1>Hello!</h1>
+{% block body %}
+    <div class="row">
+        {% if current_user.is_authenticated() %}
+            <div class="col-md-12">
+        {% else %}
+            <div class="col-md-9">
+        {% endif %}
+
+            <div class="block">
+                <h1>Hello!</h1>
+
+                {{ render_flashed_messages() }}
+            </div>
+        </div>
+
+        {% if not current_user.is_authenticated() %}
+            <div class="col-md-3">
+                <div class="block">
+                    <h3>Login</h3>
+
+                    <form method="POST" action="{{ url_for('users.login') }}">
+                        {{ login_form.hidden_tag() }}
+
+                        {{ render_field(login_form.username) }}
+
+                        {% call render_field_group(login_form.password) %}
+                            {{ login_form.password.label }}
+                            {{ login_form.password(class='form-control') }}
+                            <span class="help-block"><a href="#">Forgotten your password?</a></span>
+                        {% endcall %}
+
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
