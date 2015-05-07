@@ -39,11 +39,13 @@ class UserQueryBuilder(object):
 
         return query
 
+
 def filter_by_view_user_permissions(user):
     return or_(
         filter_by_unit_roles(user, UNIT_VIEW_USER_ROLES),
         filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_USER_ROLES),
     )
+
 
 def filter_by_unit_roles(user, roles):
     user_alias = aliased(User)
@@ -61,6 +63,7 @@ def filter_by_unit_roles(user, roles):
         .exists()
 
     return sub_query
+
 
 def filter_by_disease_group_roles(user, roles):
     user_alias = aliased(User)
