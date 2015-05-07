@@ -6,7 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
-    UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES
+    UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES, \
+    UNIT_ADD_PATIENT_ROLES
 from radar.database import db
 
 
@@ -40,25 +41,35 @@ class User(db.Model):
     def get_id(self):
         return self.id
 
+    @property
     def has_view_patient_permission(self):
         return (
             self.is_admin or
-            any(x.has_view_patient_permission() for x in self.disease_groups) or
-            any(x.has_view_patient_permission() for x in self.units)
+            any(x.has_view_patient_permission for x in self.disease_groups) or
+            any(x.has_view_patient_permission for x in self.units)
         )
 
+    @property
+    def has_add_patient_permission(self):
+        return (
+            self.is_admin or
+            any(x.has_add_patient_permission for x in self.units)
+        )
+
+    @property
     def has_view_demographics_permission(self):
         return (
             self.is_admin or
-            any(x.has_demographics_permission() for x in self.disease_groups) or
-            any(x.has_demographics_permission() for x in self.units)
+            any(x.has_demographics_permission for x in self.disease_groups) or
+            any(x.has_demographics_permission for x in self.units)
         )
 
+    @property
     def has_view_user_permission(self):
         return (
             self.is_admin or
-            any(x.has_view_user_permission() for x in self.disease_groups) or
-            any(x.has_view_user_permission() for x in self.units)
+            any(x.has_view_user_permission for x in self.disease_groups) or
+            any(x.has_view_user_permission for x in self.units)
         )
 
     def filter_units_for_user(self, current_user):
@@ -192,6 +203,10 @@ class UnitUser(db.Model):
     @hybrid_property
     def has_view_user_permission(self):
         return self.role in UNIT_VIEW_USER_ROLES
+
+    @hybrid_property
+    def has_add_patient_permission(self):
+        return self.role in UNIT_ADD_PATIENT_ROLES
 
     @property
     def role_name(self):

@@ -245,6 +245,14 @@ def view_patient_units(patient_id):
     return render_template('patient/units.html', **context)
 
 
+@bp.route('/add/')
+def add_patient():
+    if not current_user.has_add_patient_permission:
+        abort(403)
+
+    return render_template('recruit.html')
+
+
 @bp.route('/<int:patient_id>/export/')
 def export_patient(patient_id):
     patient = Patient.query.get_or_404(patient_id)
