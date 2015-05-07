@@ -72,6 +72,14 @@ class User(db.Model):
             any(x.has_view_user_permission for x in self.units)
         )
 
+    @property
+    def has_edit_group_membership_permission(self):
+        return (
+            self.is_admin or
+            any(x.has_edit_group_membership_permission for x in self.disease_groups) or
+            any(x.has_edit_group_membership_permission for x in self.units)
+        )
+
     def filter_units_for_user(self, current_user):
         # TODO
         return self.units
@@ -164,6 +172,11 @@ class DiseaseGroupUser(db.Model):
     def has_view_user_permission(self):
         return self.role in DISEASE_GROUP_VIEW_USER_ROLES
 
+    @property
+    def has_edit_group_membership_permission(self):
+        managed_roles = DISEASE_GROUP_MANAGED_ROLES.get(self.role)
+        return managed_roles is not None and len(managed_roles) > 0
+
     def can_edit(self, user):
         # TODO
         return True
@@ -203,6 +216,11 @@ class UnitUser(db.Model):
     @hybrid_property
     def has_view_user_permission(self):
         return self.role in UNIT_VIEW_USER_ROLES
+
+    @property
+    def has_edit_group_membership_permission(self):
+        managed_roles = UNIT_MANAGED_ROLES.get(self.role)
+        return managed_roles is not None and len(managed_roles) > 0
 
     @hybrid_property
     def has_add_patient_permission(self):

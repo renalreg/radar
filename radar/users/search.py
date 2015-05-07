@@ -1,5 +1,6 @@
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
+
 from radar.database import db
 from radar.disease_groups.models import DiseaseGroup
 from radar.units.models import Unit
@@ -32,7 +33,8 @@ class UserQueryBuilder(object):
     def build(self):
         query = self.query
 
-        if not self.user.is_admin:
+        # Show all users if the user is an admin or if the user can manage group membership
+        if not self.user.is_admin and not self.user.has_edit_group_membership_permission:
             query = query.filter(filter_by_view_user_permissions(self.user))
 
         return query
