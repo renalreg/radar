@@ -1,0 +1,15 @@
+{% extends 'simple.html' %}
+
+{% from 'macros/forms.html' import render_field %}
+
+{% block content %}
+    <h1>Add User</h1>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.username) }}
+        {{ render_field(form.email) }}
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+{% endblock %}

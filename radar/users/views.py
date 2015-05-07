@@ -11,7 +11,7 @@ from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
 from radar.users.search import UserQueryBuilder
 from radar.users.services import check_login, get_managed_units, get_managed_disease_groups
-from radar.users.forms import DiseaseGroupRoleForm, LoginForm, UserSearchForm, UnitRoleForm
+from radar.users.forms import DiseaseGroupRoleForm, LoginForm, UserSearchForm, UnitRoleForm, AddUserForm
 from radar.users.models import User
 
 
@@ -143,6 +143,36 @@ def view_user(user_id):
 
     return render_template('user.html', **context)
 
+@bp.route('/users/add/', endpoint='add_user', methods=['GET', 'POST'])
+def add_user():
+    form = AddUserForm()
+
+    if form.validate_on_submit():
+        user = User()
+
+        user.username = form.username.data
+        user.email = form.email.data
+
+        # TODO email users a link to login
+        user.set_password('password')
+
+        db.session.add(user)
+        db.session.commit()
+
+        message = (
+            "User added successfully. "
+            "An email has been sent to %s with instructions on how to set a password and login. "
+            "Don't forget to add the user to groups."
+        ) % user.email
+
+        flash(message, 'success')
+        return redirect(url_for('users.edit_user', user_id=user.id))
+
+    context = dict(
+        form=form
+    )
+
+    return render_template('add_user.html', **context)
 
 @bp.route('/login/', methods=['GET', 'POST'])
 def login():
