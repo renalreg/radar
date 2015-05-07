@@ -1,19 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'simple.html' %}
 
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
-{% from 'macros/flash.html' import render_flashed_messages %}
+{% from 'macros/panels.html' import render_panel %}
 
-{% block body %}
-    <div class="block">
-        <h1>{{ user.username }}</h1>
+{% block content %}
+    <h1>{{ user.username }}</h1>
 
-        {{ render_flashed_messages() }}
-    </div>
-
-    <div class="block">
-        <h2>Disease Groups</h2>
-
+    {% call render_panel('Disease Groups', 'panel-default') %}
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -67,11 +61,9 @@
                 {% endcall %}
             </form>
         {% endif %}
-    </div>
+    {% endcall %}
 
-    <div class="block">
-        <h2>Units</h2>
-
+    {% call render_panel('Units', 'panel-default') %}
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -123,5 +115,5 @@
                 <button class="btn btn-success" type="submit" name="unit_submit">Save</button>
             {% endcall %}
         </form>
-    </div>
+    {% endcall %}
 {% endblock %}

@@ -76,15 +76,15 @@ class User(db.Model):
     def has_add_user_permission(self):
         return (
             self.is_admin or
-            self.has_edit_group_membership_permission
+            self.has_edit_user_membership_permission
         )
 
     @property
-    def has_edit_group_membership_permission(self):
+    def has_edit_user_membership_permission(self):
         return (
             self.is_admin or
-            any(x.has_edit_group_membership_permission for x in self.disease_groups) or
-            any(x.has_edit_group_membership_permission for x in self.units)
+            any(x.has_edit_user_membership_permission for x in self.disease_groups) or
+            any(x.has_edit_user_membership_permission for x in self.units)
         )
 
     def filter_units_for_user(self, current_user):
@@ -180,7 +180,7 @@ class DiseaseGroupUser(db.Model):
         return self.role in DISEASE_GROUP_VIEW_USER_ROLES
 
     @property
-    def has_edit_group_membership_permission(self):
+    def has_edit_user_membership_permission(self):
         managed_roles = DISEASE_GROUP_MANAGED_ROLES.get(self.role)
         return managed_roles is not None and len(managed_roles) > 0
 
@@ -225,7 +225,7 @@ class UnitUser(db.Model):
         return self.role in UNIT_VIEW_USER_ROLES
 
     @property
-    def has_edit_group_membership_permission(self):
+    def has_edit_user_membership_permission(self):
         managed_roles = UNIT_MANAGED_ROLES.get(self.role)
         return managed_roles is not None and len(managed_roles) > 0
 

@@ -87,9 +87,11 @@
                                 </li>
                             {% endif %}
 
-                            <li{% if current_page == 'users' %} class="active"{% endif %}>
-                                <a href="{{ url_for('users.view_user_list') }}">Users</a>
-                            </li>
+                            {% if current_user.has_view_user_permission %}
+                                <li{% if current_page == 'users' %} class="active"{% endif %}>
+                                    <a href="{{ url_for('users.view_user_list') }}">Users</a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                     </ul>
 
