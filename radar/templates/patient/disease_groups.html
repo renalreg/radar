@@ -2,13 +2,17 @@
 
 {% set current_patient_page = 'disease_groups' %}
 
+{% from 'macros/forms.html' import render_field, render_form_errors %}
+
 {% block content %}
     <h1 class="page-header">Disease Groups</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Disease Group</th>
+                <th>Added On</th>
+                <th>Added By</th>
             </tr>
         </thead>
 
@@ -16,8 +20,27 @@
             {% for disease_group in patient_data.disease_groups %}
                 <tr>
                     <td>{{ disease_group.disease_group.name }}</td>
+                    <td>{{ disease_group.created_date | date_format | missing }}</td>
+
+                    <td>
+                        {% if disease_group.created_user %}
+                            {{ disease_group.created_user.username }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Add to Disease Group</h2>
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.disease_group_id) }}
+        <button type="submit" class="btn btn-success">Add to Disease Group</button>
+    </form>
 {% endblock %}

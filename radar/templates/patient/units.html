@@ -2,13 +2,17 @@
 
 {% set current_patient_page = 'units' %}
 
+{% from 'macros/forms.html' import render_field, render_form_errors %}
+
 {% block content %}
     <h1 class="page-header">Units</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Unit</th>
+                <th>Added On</th>
+                <th>Added By</th>
             </tr>
         </thead>
 
@@ -16,8 +20,27 @@
             {% for unit in patient_data.units %}
                 <tr>
                     <td>{{ unit.unit.name }}</td>
+                    <td>{{ unit.created_date | date_format | missing }}</td>
+
+                    <td>
+                        {% if unit.created_user %}
+                            {{ unit.created_user.username }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>Add to Unit</h2>
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.unit_id) }}
+        <button type="submit" class="btn btn-success">Add to Unit</button>
+    </form>
 {% endblock %}

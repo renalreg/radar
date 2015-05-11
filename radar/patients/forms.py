@@ -95,3 +95,11 @@ class RecruitPatientRadarForm(Form):
 
 class RecruitPatientRdcForm(Form):
     mpiid = IntegerField(validators=[Optional()])
+
+
+class PatientUnitForm(Form):
+    unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=int)
+
+
+class PatientDiseaseGroupForm(Form):
+    disease_group_id = RadarSelectField('Disease Group', validators=[InputRequired()], coerce=int)

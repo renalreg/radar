@@ -5,11 +5,12 @@ from flask_login import current_user, login_required
 
 from radar.database import db
 from radar.disease_groups.models import DiseaseGroup
+from radar.models import UnitPatient, DiseaseGroupPatient
 from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
 from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
-    RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRdcForm
+    RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRdcForm, PatientDiseaseGroupForm, PatientUnitForm
 from radar.patients.recruit import find_existing_radar_patients, find_existing_rdc_patients
 from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
@@ -215,31 +216,87 @@ def view_radar_demographics(patient_id):
     return render_template('patient/radar_demographics.html', **context)
 
 
-@bp.route('/<int:patient_id>/disease-groups/')
+@bp.route('/<int:patient_id>/disease-groups/', endpoint='view_patient_disease_groups')
+@bp.route('/<int:patient_id>/disease-groups/', endpoint='edit_patient_disease_groups', methods=['GET', 'POST'])
 def view_patient_disease_groups(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
         abort(403)
 
+    form = PatientDiseaseGroupForm()
+
+    # TODO permissions
+    # TODO sort order
+    form.disease_group_id.choices = [(x.id, x.name) for x in DiseaseGroup.query.all() if not patient.in_disease_group(x)]
+
+    if request.method == 'POST':
+        if not patient.can_edit(current_user):
+            abort(403)
+
+        if form.validate():
+            disease_group_id = form.disease_group_id.data
+            disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
+
+            disease_group_patient = DiseaseGroupPatient()
+            disease_group_patient.created_user = current_user
+            disease_group_patient.patient = patient
+            disease_group_patient.disease_group = disease_group
+
+            # TODO permissions
+
+            db.session.add(disease_group_patient)
+            db.session.commit()
+
+            return redirect(url_for('patients.view_patient_disease_groups', patient_id=patient.id))
+
     context = dict(
         patient=patient,
-        patient_data=get_patient_data(patient)
+        patient_data=get_patient_data(patient),
+        form=form,
     )
 
     return render_template('patient/disease_groups.html', **context)
 
 
-@bp.route('/<int:patient_id>/units/')
+@bp.route('/<int:patient_id>/units/', endpoint='view_patient_units')
+@bp.route('/<int:patient_id>/units/', endpoint='edit_patient_units', methods=['GET', 'POST'])
 def view_patient_units(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
         abort(403)
 
+    form = PatientUnitForm()
+
+    # TODO permissions
+    # TODO sort order
+    form.unit_id.choices = [(x.id, x.name) for x in Unit.query.all() if not patient.in_unit(x)]
+
+    if request.method == 'POST':
+        if not patient.can_edit(current_user):
+            abort(403)
+
+        if form.validate():
+            unit_id = form.unit_id.datas
+            unit = Unit.query.get_or_404(unit_id)
+
+            unit_patient = UnitPatient()
+            unit_patient.created_user = current_user
+            unit_patient.patient = patient
+            unit_patient.unit = unit
+
+            # TODO permissions
+
+            db.session.add(unit_patient)
+            db.session.commit()
+
+            return redirect(url_for('patients.view_patient_units', patient_id=patient.id))
+
     context = dict(
         patient=patient,
-        patient_data=get_patient_data(patient)
+        patient_data=get_patient_data(patient),
+        form=form,
     )
 
     return render_template('patient/units.html', **context)

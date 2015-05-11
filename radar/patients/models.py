@@ -151,6 +151,14 @@ class Patient(db.Model):
             common_disease_groups = [x for x in self.disease_groups if x.disease_group in user_disease_groups]
             return common_disease_groups
 
+    def in_disease_group(self, disease_group):
+        # TODO
+        return False
+
+    def in_unit(self, unit):
+        # TODO
+        return False
+
 
 class Demographics(DataSource):
     __tablename__ = 'demographics'
