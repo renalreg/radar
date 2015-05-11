@@ -18,7 +18,7 @@ gulp.task('libs', function() { 
     var jsFilter = gulpFilter('*.js');
     var cssFilter = gulpFilter('*.css');
     var fontFilter = gulpFilter(['*.eot', '*.woff', '*.woff2', '*.svg', '*.ttf']);
-    var imgFilter = gulpFilter(['*.png']);
+    var imgFilter = gulpFilter(['*.png', '*.gif']);
 
     var jsDest = config.static + '/js/libs';
     var cssDest = config.static + '/css';
@@ -27,6 +27,8 @@ gulp.task('libs', function() { 
 
     return gulp.src(mainBowerFiles().concat([
         config.bower + '/jquery-ui/themes/smoothness/jquery-ui.css',
+        config.bower + '/jquery-ui/themes/smoothness/images/*.png',
+        config.bower + '/jquery-ui/themes/smoothness/images/*.gif',
         config.bower + '/chosen/chosen.min.css',
         config.bower + '/chosen/chosen-sprite.png',
         config.bower + '/chosen/chosen-sprite@2x.png'
@@ -55,6 +57,9 @@ gulp.task('libs', function() { 
     // Rewrite Chosen image paths
     .pipe(replace('url(chosen-sprite.png)', 'url(../img/chosen-sprite.png)'))
     .pipe(replace('url(chosen-sprite@2x.png)', 'url(../img/chosen-sprite@2x.png)'))
+
+    // Rewrite smoothness image paths
+    .pipe(replace('url("images/', 'url("../img/'))
 
     .pipe(gulp.dest(cssDest))
 
