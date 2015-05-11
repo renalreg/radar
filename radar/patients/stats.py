@@ -1,6 +1,8 @@
 from datetime import datetime
+
 import pandas
 from sqlalchemy import cast, extract, Integer, func
+
 from radar.database import db
 
 

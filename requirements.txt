@@ -1,0 +1,11 @@
+Flask
+Flask-Login
+SQLAlchemy
+Flask-Script
+Flask-Markdown
+Flask-SQLAlchemy
+Flask-WTF
+python-dateutil
+pytz
+pandas
+psycopg2

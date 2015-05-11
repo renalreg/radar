@@ -62,3 +62,5 @@ radar/static
 .idea/workspace.xml
 .idea/dictionaries/nbj2301.xml
 fixtures.sql
+
+venv
