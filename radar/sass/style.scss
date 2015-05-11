@@ -77,6 +77,12 @@ body {
     margin-bottom: $footer-height;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    a {
+        text-decoration: none;
+    }
+}
+
 a {
     text-decoration: underline;
 }
@@ -258,8 +264,10 @@ form.lab-result-table select {
     }
 }
 
-h1, h2, h3, h4, h5, h6 {
-    a {
-        text-decoration: none;
+.logos {
+    text-align: center;
+
+    img {
+        max-height: 100px;
     }
 }

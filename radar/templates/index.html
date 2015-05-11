@@ -16,6 +16,43 @@
             <div class="block">
                 {{ render_flashed_messages() }}
 
+                <h1 class="page-header">Welcome to RaDaR!</h1>
+
+                <p>Welcome to the homepage of the UK Registry for Rare Kidney Diseases (RaDaR).</p>
+
+                <p>RaDaR is where healthcare professionals register patients and enter data.</p>
+
+                <p>Go to <a href="http://www.rarerenal.org/radar-registry" target="_blank">RareRenal.org</a> for a list of diagnoses and check that your patient is eligible for the registry.</p>
+
+                <p>If you need patient information sheets and consent forms you can find them <a href="http://rarerenal.org/radar-registry/criteria-and-consent/" target="_blank">here</a>.</p>
+
+                <hr />
+
+                <h2><a href="{{ url_for('news.view_story_list') }}">Latest News</a></h2>
+
+                {% for story in stories %}
+                    <h3><a href="{{ url_for('news.view_story', story_id=story.id) }}">{{ story.title }}</a> <small>{{ story.published | datetime_format('%d %b %Y') }}</small></h3>
+
+                    <div class="latest-news-body">
+                        {{ story.body | markdown }}
+                    </div>
+                {% endfor %}
+
+                <p><a href="{{ url_for('news.view_story_list') }}">More News</a></p>
+
+                <hr />
+
+                <p class="logos">
+                    <a href="http://www.renal.org/"><img src="/static/img/ra.gif" alt="The Renal Organisation" title="The Renal Organisation" /></a>
+
+                    <a href="http://www.renal.org/bapn/bapn-introduction"><img src="/static/img/bapn.jpg" alt="British Association of Paediatric Nephrology" title="British Association of Paediatric Nephrology" /></a>
+
+                    <a href="https://www.renalreg.org/"><img src="/static/img/ukrr.gif" alt="UK Renal Registry" title="UK Renal Registry" /></a>
+
+                    <a href="http://www.britishkidney-pa.co.uk/"><img src="/static/img/bkpa.jpg" alt="British Kidney Patient Association" title="British Kidney Patient Association" /></a>
+
+                    <a href="http://www.kidneyresearchuk.org/"><img src="/static/img/kruk.jpg" alt="Kidney Research UK" title="Kidney Research UK" /></a>
+                </p>
             </div>
         </div>
 
