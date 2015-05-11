@@ -1,14 +1,10 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField
+from wtforms import StringField
 from wtforms.validators import InputRequired, Optional, Email
+
 from radar.forms import RadarSelectField
 from radar.users.models import User
 from radar.utils import optional_int
-
-
-class LoginForm(Form):
-    username = StringField(validators=[InputRequired()])
-    password = PasswordField(validators=[InputRequired()])
 
 
 class DiseaseGroupRoleForm(Form):

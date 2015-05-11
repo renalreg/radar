@@ -61,7 +61,7 @@
                 <div class="block">
                     <h3>Login</h3>
 
-                    <form method="POST" action="{{ url_for('users.login') }}">
+                    <form method="POST" action="{{ url_for('auth.login') }}">
                         {{ login_form.hidden_tag() }}
 
                         {{ render_field(login_form.username) }}

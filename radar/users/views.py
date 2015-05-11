@@ -1,5 +1,5 @@
-from flask import render_template, request, abort, Blueprint, flash, url_for, redirect, current_app
-from flask_login import current_user, login_user, logout_user
+from flask import render_template, request, abort, Blueprint, flash, url_for, redirect
+from flask_login import current_user
 
 from radar.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
@@ -10,8 +10,8 @@ from radar.units.services import get_units_for_user_with_permissions
 from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
 from radar.users.search import UserQueryBuilder
-from radar.users.services import check_login, get_managed_units, get_managed_disease_groups
-from radar.users.forms import DiseaseGroupRoleForm, LoginForm, UserSearchForm, UnitRoleForm, AddUserForm
+from radar.users.services import get_managed_units, get_managed_disease_groups
+from radar.users.forms import DiseaseGroupRoleForm, UserSearchForm, UnitRoleForm, AddUserForm
 from radar.users.models import User
 
 
@@ -25,7 +25,7 @@ ORDER_BY = {
 bp = Blueprint('users', __name__)
 
 
-@bp.route('/users/')
+@bp.route('/')
 def view_user_list():
     if not current_user.has_view_user_permission:
         abort(403)
@@ -77,8 +77,8 @@ def view_user_list():
     return render_template('users.html', **context)
 
 
-@bp.route('/users/<int:user_id>/', endpoint='view_user')
-@bp.route('/users/<int:user_id>/', methods=['GET', 'POST'], endpoint='edit_user')
+@bp.route('/<int:user_id>/', endpoint='view_user')
+@bp.route('/<int:user_id>/', methods=['GET', 'POST'], endpoint='edit_user')
 def view_user(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -144,7 +144,7 @@ def view_user(user_id):
     return render_template('user.html', **context)
 
 
-@bp.route('/users/add/', endpoint='add_user', methods=['GET', 'POST'])
+@bp.route('/add/', endpoint='add_user', methods=['GET', 'POST'])
 def add_user():
     if not current_user.has_add_user_permission:
         abort(403)
@@ -177,37 +177,6 @@ def add_user():
     )
 
     return render_template('add_user.html', **context)
-
-
-@bp.route('/login/', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-
-        user = check_login(username, password)
-
-        if user is not None:
-            login_user(user)
-            flash('Logged in successfully.', 'success')
-            return redirect(request.args.get('next') or url_for('radar.index'))
-        else:
-            form.username.errors.append('Incorrect username or password.')
-
-    return render_template('login.html', form=form)
-
-
-@bp.route('/logout/', methods=['GET', 'POST'])
-def logout():
-    logout_user()
-    return redirect(url_for('radar.index'))
-
-
-def require_login():
-    if request.endpoint not in ['radar.index', 'users.login', 'static'] and not current_user.is_authenticated():
-        return current_app.login_manager.unauthorized()
 
 
 def get_user_data(user):
