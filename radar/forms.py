@@ -12,6 +12,11 @@ class RadarDateField(DateField):
         super(RadarDateField, self).__init__(label, widget=widget, display_format=display_format, **kwargs)
 
 
+class RadarDOBField(RadarDateField):
+    def __init__(self, label="Date of Birth", **kwargs):
+        super(RadarDOBField, self).__init__(label, **kwargs)
+
+
 class RadarDateInput(TextInput):
     def __call__(self, field, **kwargs):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')

@@ -16,8 +16,8 @@
             <li><a href="{{ url_for('users.view_user_list', unit_id=unit.id) }}">Users</a></li>
         {% endif %}
 
-        {% if unit_user.has_add_patient_permission %}
-            <li><a href="{{ url_for('patients.add_patient') }}">Recruit a Patient</a></li>
+        {% if unit_user.has_recruit_patient_permission %}
+            <li><a href="{{ url_for('patients.recruit_patient') }}">Recruit a Patient</a></li>
         {% endif %}
     </ul>
 

@@ -1,8 +1,9 @@
 from wtforms import StringField, IntegerField, ValidationError
-from wtforms.validators import Optional, InputRequired, Email
+from wtforms.validators import Optional, InputRequired, Email, DataRequired
 from flask_wtf import Form
 
-from radar.forms import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarPostcodeField
+from radar.forms import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarPostcodeField, \
+    RadarDOBField
 
 from radar.ordering import ASCENDING, DESCENDING
 from radar.utils import optional_int
@@ -25,7 +26,7 @@ class DemographicsForm(Form):
     last_name = StringField(validators=[InputRequired()])
 
     # TODO validation
-    date_of_birth = RadarDateField('Date of Birth')
+    date_of_birth = RadarDOBField()
 
     gender = RadarSelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
 
@@ -64,3 +65,33 @@ class PatientSearchForm(Form):
     order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING)
     per_page = RadarSelectField(coerce=int, default=50, choices=PER_PAGE_CHOICES)
     page = IntegerField()
+
+
+class RecruitPatientSearchForm(Form):
+    date_of_birth = RadarDOBField(validators=[DataRequired()])
+    unit_id = RadarSelectField('Unit', coerce=optional_int)
+    disease_group_id = RadarSelectField('Disease Group', coerce=optional_int)
+    first_name = StringField(validators=[Optional()])
+    last_name = StringField(validators=[Optional()])
+    nhs_no = RadarNHSNoField(validators=[Optional()])
+    chi_no = RadarCHINoField(validators=[Optional()])
+
+    def validate(self):
+        if not super(RecruitPatientSearchForm, self).validate():
+            return False
+
+        valid = True
+
+        if not ((self.first_name.data and self.last_name.data) or self.nhs_no.data or self.chi_no.data):
+            self.first_name.errors.append('Please supply a first name and last name, NHS number or CHI number.')
+            valid = False
+
+        return valid
+
+
+class RecruitPatientRadarForm(Form):
+    patient_id = IntegerField(validators=[Optional()])
+
+
+class RecruitPatientRdcForm(Form):
+    mpiid = IntegerField(validators=[Optional()])

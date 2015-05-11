@@ -101,11 +101,11 @@ class SDAPatient(db.Model):
 
     @first_name.expression
     def first_name(cls):
-        return SDAPatient.data[('name', 'given_name')].astext
+        return cls.data[('name', 'given_name')].astext
 
     @last_name.expression
     def last_name(cls):
-        return SDAPatient.data[('name', 'family_name')].astext
+        return cls.data[('name', 'family_name')].astext
 
     @date_of_birth.expression
     def date_of_birth(cls):
@@ -176,6 +176,38 @@ class SDAPatientNumber(db.Model):
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB, nullable=False)
+
+    @hybrid_property
+    def number(self):
+        return get_path_as_text(self.data, ['number'])
+
+    @number.expression
+    def number(self):
+        return self.data['number'].astext
+
+    @hybrid_property
+    def number_type(self):
+        return get_path_as_text(self.data, ['number_type'])
+
+    @number_type.expression
+    def number_type(self):
+        return self.data['number_type'].astext
+
+    @hybrid_property
+    def organization(self):
+        return get_path_as_text(self.data, ['organization', 'code'])
+
+    @organization.expression
+    def organization(self):
+        return self.data[('organization', 'code')].astext
+
+    @hybrid_property
+    def is_nhs_no(self):
+        return self.organization == 'NHS'
+
+    @hybrid_property
+    def is_chi_no(self):
+        return self.organization == 'CHI'
 
     def serialize(self):
         self.data = serialize_jsonb(self.data)

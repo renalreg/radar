@@ -1,0 +1,12 @@
+{% extends 'simple.html' %}
+
+{% from 'macros/forms.html' import render_field %}
+{% from 'macros/panels.html' import render_panel %}
+
+{% block content %}
+    <h1>New Patient</h1>
+
+    <form method="POST">
+        <p><button name="restart" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"></span> Restart</button></p>
+    </form>
+{% endblock %}

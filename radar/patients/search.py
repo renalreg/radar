@@ -70,13 +70,21 @@ class PatientQueryBuilder():
 
         return self
 
+    def nhs_no(self, nhs_no):
+        # TODO
+        return self.query
+
+    def chi_no(self, chi_no):
+        # TODO
+        return self.query
+
     def order_by(self, column, direction):
         self.query = self.query.order_by(*order_patients(self.user, column, direction))
 
-    def build(self):
+    def build(self, permissions=True):
         query = self.query
 
-        if not self.user.is_admin:
+        if permissions and not self.user.is_admin:
             if self.filtering_by_demographics:
                 permission_filter = filter_by_demographics_permissions(self.user)
             else:
@@ -172,6 +180,14 @@ def filter_by_year_of_birth(year):
         SDAPatient.date_of_birth >= datetime(year, 1, 1),
         SDAPatient.date_of_birth < datetime(year + 1, 1, 1)
     )
+
+
+def filter_by_nhs_no(nhs_no):
+    return sda_patient_number_sub_query(SDAPatientNumber.is_nhs_no, SDAPatientNumber.number == nhs_no)
+
+
+def filter_by_chi_no(chi_no):
+    return sda_patient_number_sub_query(SDAPatientNumber.is_chi_no, SDAPatientNumber.number == chi_no)
 
 
 def filter_by_unit_roles(user, roles):

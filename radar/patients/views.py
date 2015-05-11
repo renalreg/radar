@@ -1,7 +1,6 @@
 from datetime import datetime
-import xml.etree.ElementTree
 
-from flask import render_template, Blueprint, abort, request, url_for, redirect, Response
+from flask import render_template, Blueprint, abort, request, url_for, redirect, session, flash
 from flask_login import current_user, login_required
 
 from radar.database import db
@@ -9,12 +8,13 @@ from radar.disease_groups.models import DiseaseGroup
 from radar.patients.models import Patient, Demographics
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
-from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm
+from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
+    RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRdcForm
+from radar.patients.recruit import find_existing_radar_patients, find_existing_rdc_patients
 from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.patients.search import get_disease_group_filters_for_user, get_unit_filters_for_user
-from radar.sda.export import patient_to_xml
 from radar.units.models import Unit
 from radar.utils import get_path_as_text
 
@@ -245,19 +245,253 @@ def view_patient_units(patient_id):
     return render_template('patient/units.html', **context)
 
 
-@bp.route('/add/')
-def add_patient():
-    if not current_user.has_add_patient_permission:
+RECRUIT_PATIENT_SEARCH = 1
+RECRUIT_PATIENT_RADAR = 2
+RECRUIT_PATIENT_RDC = 3
+RECRUIT_PATIENT_NEW = 4
+RECRUIT_PATIENT_ADDED = 5
+RECRUIT_PATIENT_FIRST_STEP = RECRUIT_PATIENT_SEARCH
+RECRUIT_PATIENT_STEPS = [
+    RECRUIT_PATIENT_SEARCH,
+    RECRUIT_PATIENT_RADAR,
+    RECRUIT_PATIENT_RDC,
+    RECRUIT_PATIENT_NEW,
+    RECRUIT_PATIENT_ADDED,
+]
+
+def set_recruit_patient_step(step):
+    session['recruit_patient_step'] = step
+
+
+def redirect_to_recruit_patient_step(step):
+    set_recruit_patient_step(step)
+    return redirect(url_for('patients.recruit_patient'))
+
+
+@bp.route('/recruit/', methods=['GET', 'POST'])
+def recruit_patient():
+    if not current_user.has_recruit_patient_permission:
         abort(403)
 
-    return render_template('recruit.html')
+    # Go back to the first step
+    if 'restart' in request.form:
+        return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
 
+    step = session.get('recruit_patient_step')
 
-@bp.route('/<int:patient_id>/export/')
-def export_patient(patient_id):
-    patient = Patient.query.get_or_404(patient_id)
+    # First load
+    if step not in RECRUIT_PATIENT_STEPS:
+        step = RECRUIT_PATIENT_FIRST_STEP
 
-    if not patient.can_view(current_user):
-        abort(403)
+    # Handle user going back to patient search
+    if 'recruit_patient_search' in request.form:
+        step = RECRUIT_PATIENT_SEARCH
 
-    return Response(xml.etree.ElementTree.tostring(patient_to_xml(patient)), mimetype='text/xml')
+    # Handle user going back to list of RaDaR patients
+    if 'recruit_patient_radar' in request.form:
+        if step in [RECRUIT_PATIENT_RADAR, RECRUIT_PATIENT_RDC, RECRUIT_PATIENT_NEW]:
+            step = RECRUIT_PATIENT_RADAR
+        else:
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+    # Handle user going back to list of RDC patients
+    if 'recruit_patient_rdc' in request.form:
+        if step in [RECRUIT_PATIENT_RDC, RECRUIT_PATIENT_NEW]:
+            step = RECRUIT_PATIENT_RDC
+        else:
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+    if step == RECRUIT_PATIENT_SEARCH:
+        form = RecruitPatientSearchForm()
+
+        # TODO
+        form.unit_id.choices = [(1, 'Foo'), (2, 'Bar')]
+        form.disease_group_id.choices = [(1, 'SRNS'), (2, 'MPGN')]
+
+        if form.validate_on_submit():
+            unit_id = form.unit_id.data
+            disease_group_id = form.disease_group_id.data
+            date_of_birth = form.date_of_birth.data
+            first_name = form.first_name.data
+            last_name = form.last_name.data
+            nhs_no = form.nhs_no.data
+            chi_no = form.chi_no.data
+
+            session['recruit_patient_unit_id'] = unit_id
+            session['recruit_patient_disease_group_id'] = disease_group_id
+            session['recruit_patient_date_of_birth'] = date_of_birth.strftime('%Y-%m-%d')
+            session['recruit_patient_first_name'] = first_name
+            session['recruit_patient_last_name'] = last_name
+            session['recruit_patient_nhs_no'] = nhs_no
+            session['recruit_patient_chi_no'] = chi_no
+
+            radar_patients = find_existing_radar_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+            # Found potential RaDaR matched
+            if radar_patients:
+                return redirect_to_recruit_patient_step(RECRUIT_PATIENT_RADAR)
+
+            rdc_patients = find_existing_rdc_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+            # Found potential RDC matches
+            if rdc_patients:
+                return redirect_to_recruit_patient_step(RECRUIT_PATIENT_RDC)
+
+            # No matches found, make a new patient
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_NEW)
+
+        context = dict(
+            form=form
+        )
+
+        return render_template('recruit_patient/search.html', **context)
+    elif step == RECRUIT_PATIENT_RADAR:
+        try:
+            date_of_birth = datetime.strptime(session['recruit_patient_date_of_birth'], '%Y-%m-%d')
+            first_name = session['recruit_patient_first_name']
+            last_name = session['recruit_patient_last_name']
+            nhs_no = session['recruit_patient_nhs_no']
+            chi_no = session['recruit_patient_chi_no']
+        except (ValueError, KeyError):
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        patients = find_existing_radar_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+        # No matching RaDaR patients found
+        if not patients:
+            rdc_patients = find_existing_rdc_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+            # Potential match found in RDC
+            if rdc_patients:
+                step = RECRUIT_PATIENT_RDC
+            else:
+                step = RECRUIT_PATIENT_NEW
+
+            return redirect_to_recruit_patient_step(step)
+
+        form = RecruitPatientRadarForm()
+        form.patient_id.choices = [(x.id, x.id) for x in patients]
+
+        if form.validate_on_submit():
+            patient_id = form.patient_id.data
+
+            # User chose one of the existing RaDaR patients
+            if patient_id is not None:
+                patient = None
+
+                # Get the patient with this id
+                for x in patients:
+                    if x.id == patient_id:
+                        patient = x
+
+                if patient is not None:
+                    try:
+                        unit_id = session['recruit_patient_unit_id']
+                        disease_group_id = session['recruit_patient_disease_group_id']
+                    except KeyError:
+                        return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+                    unit = Unit.query.get(unit_id)
+                    disease_group = DiseaseGroup.query.get(disease_group_id)
+
+                    if unit is None or disease_group is None:
+                        return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+                    session['recruit_patient_patient_id'] = patient_id
+                    return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
+            else:
+                rdc_patients = find_existing_rdc_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+                if rdc_patients:
+                    step = RECRUIT_PATIENT_RDC
+                else:
+                    step = RECRUIT_PATIENT_NEW
+
+                return redirect_to_recruit_patient_step(step)
+
+        context = dict(
+            patients=patients,
+            form=form
+        )
+
+        return render_template('recruit_patient/radar.html', **context)
+    elif step == RECRUIT_PATIENT_RDC:
+        try:
+            date_of_birth = datetime.strptime(session['recruit_patient_date_of_birth'], '%Y-%m-%d')
+            first_name = session['recruit_patient_first_name']
+            last_name = session['recruit_patient_last_name']
+            nhs_no = session['recruit_patient_nhs_no']
+            chi_no = session['recruit_patient_chi_no']
+        except (ValueError, KeyError):
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        patients = find_existing_rdc_patients(date_of_birth, first_name, last_name, nhs_no, chi_no)
+
+        if patients:
+            form = RecruitPatientRdcForm()
+
+            if form.validate_on_submit():
+                mpiid = form.mpiid.data
+
+                # User chose one of the matches
+                if mpiid is not None:
+                    # Check MPIID is still valid
+                    if mpiid in [x['mpiid'] for x in patients]:
+                        # TODO
+                        patient = Patient()
+                        db.session.add(patient)
+                        db.session.commit()
+
+                        session['recruit_patient_patient_id'] = patient.id
+                        return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
+                else:
+                    # User rejected all of the candidates, make a new patient
+                    return redirect_to_recruit_patient_step(RECRUIT_PATIENT_NEW)
+        else:
+            # No matches found in the RDC
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_NEW)
+
+        context = dict(
+            patients=patients,
+            form=form,
+        )
+
+        return render_template('recruit_patient/rdc.html', **context)
+    elif step == RECRUIT_PATIENT_NEW:
+        form = DemographicsForm()
+
+        if form.validate_on_submit():
+            # TODO
+            patient = Patient()
+            db.session.add(patient)
+            db.session.commit()
+
+        context = dict(
+            form=form
+        )
+
+        return render_template('recruit_patient/new.html', **context)
+    elif step == RECRUIT_PATIENT_ADDED:
+        try:
+            patient_id = session['recruit_patient_patient_id']
+        except KeyError:
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        patient = Patient.query.get(patient_id)
+
+        # Check patient still exists
+        if patient is None:
+            flash('Patient has been deleted.', 'error')
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        # User might not be able to view this patient (anymore)
+        if not patient.can_view(current_user):
+            flash('Patient added successfully.', 'success')
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        context = dict(
+            patient=patient
+        )
+
+        set_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+        return render_template('recruit_patient/added.html', **context)

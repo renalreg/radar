@@ -7,7 +7,7 @@ from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
     UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES, \
-    UNIT_ADD_PATIENT_ROLES
+    UNIT_RECRUIT_PATIENT_ROLES
 from radar.database import db
 
 
@@ -50,10 +50,10 @@ class User(db.Model):
         )
 
     @property
-    def has_add_patient_permission(self):
+    def has_recruit_patient_permission(self):
         return (
             self.is_admin or
-            any(x.has_add_patient_permission for x in self.units)
+            any(x.has_recruit_patient_permission for x in self.units)
         )
 
     @property
@@ -230,8 +230,8 @@ class UnitUser(db.Model):
         return managed_roles is not None and len(managed_roles) > 0
 
     @hybrid_property
-    def has_add_patient_permission(self):
-        return self.role in UNIT_ADD_PATIENT_ROLES
+    def has_recruit_patient_permission(self):
+        return self.role in UNIT_RECRUIT_PATIENT_ROLES
 
     @property
     def role_name(self):
