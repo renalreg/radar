@@ -15,7 +15,7 @@ bp = Blueprint('news', __name__)
 
 @bp.route('/')
 def view_story_list():
-    query = Story.query
+    query = Story.query.order_by(Story.published.desc())
 
     pagination = paginate_query(query, default_per_page=5)
     stories = pagination.items
