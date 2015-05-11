@@ -9,4 +9,42 @@
     <form method="POST">
         <p><button name="restart" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"></span> Restart</button></p>
     </form>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name) }}
+        {{ render_field(form.date_of_birth) }}
+        {{ render_field(form.gender) }}
+        {{ render_field(form.ethnicity) }}
+
+        <hr />
+
+        {{ render_field(form.alias_first_name) }}
+        {{ render_field(form.alias_last_name) }}
+
+        <hr />
+
+        {{ render_field(form.nhs_no) }}
+        {{ render_field(form.chi_no) }}
+
+        <hr />
+
+        {{ render_field(form.address_line_1) }}
+        {{ render_field(form.address_line_2) }}
+        {{ render_field(form.address_line_3) }}
+        {{ render_field(form.postcode) }}
+
+        <hr />
+
+        {{ render_field(form.home_number) }}
+        {{ render_field(form.work_number) }}
+        {{ render_field(form.mobile_number) }}
+        {{ render_field(form.email_address) }}
+
+        <hr />
+
+        <button type="submit" class="btn btn-success">New Patient</button>
+    </form>
 {% endblock %}

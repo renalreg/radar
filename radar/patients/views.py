@@ -196,11 +196,7 @@ def view_radar_demographics(patient_id):
 
         if form.validate():
             form.populate_obj(demographics)
-
-            sda_bundle = demographics_to_sda_bundle(demographics)
-            sda_bundle.serialize()
-            demographics.sda_bundle = sda_bundle
-
+            save_radar_demographics(demographics)
             db.session.add(demographics)
             db.session.commit()
             return redirect(url_for('patients.view_demographics_list', patient_id=demographics.patient.id))
@@ -237,15 +233,7 @@ def view_patient_disease_groups(patient_id):
         if form.validate():
             disease_group_id = form.disease_group_id.data
             disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
-
-            disease_group_patient = DiseaseGroupPatient()
-            disease_group_patient.created_user = current_user
-            disease_group_patient.patient = patient
-            disease_group_patient.disease_group = disease_group
-
-            # TODO permissions
-
-            db.session.add(disease_group_patient)
+            add_patient_to_disease_group(patient, disease_group)
             db.session.commit()
 
             return redirect(url_for('patients.view_patient_disease_groups', patient_id=patient.id))
@@ -278,17 +266,9 @@ def view_patient_units(patient_id):
             abort(403)
 
         if form.validate():
-            unit_id = form.unit_id.datas
+            unit_id = form.unit_id.data
             unit = Unit.query.get_or_404(unit_id)
-
-            unit_patient = UnitPatient()
-            unit_patient.created_user = current_user
-            unit_patient.patient = patient
-            unit_patient.unit = unit
-
-            # TODO permissions
-
-            db.session.add(unit_patient)
+            add_patient_to_unit(patient, unit)
             db.session.commit()
 
             return redirect(url_for('patients.view_patient_units', patient_id=patient.id))
@@ -361,9 +341,10 @@ def recruit_patient():
     if step == RECRUIT_PATIENT_SEARCH:
         form = RecruitPatientSearchForm()
 
-        # TODO
-        form.unit_id.choices = [(1, 'Foo'), (2, 'Bar')]
-        form.disease_group_id.choices = [(1, 'SRNS'), (2, 'MPGN')]
+        # TODO permissions
+        # TODO order
+        form.unit_id.choices = [(x.id, x.name) for x in Unit.query.all()]
+        form.disease_group_id.choices = [(x.id, x.name) for x in DiseaseGroup.query.all()]
 
         if form.validate_on_submit():
             unit_id = form.unit_id.data
@@ -515,13 +496,65 @@ def recruit_patient():
 
         return render_template('recruit_patient/rdc.html', **context)
     elif step == RECRUIT_PATIENT_NEW:
-        form = DemographicsForm()
+        try:
+            unit_id = session['recruit_patient_unit_id']
+            disease_group_id = session['recruit_patient_disease_group_id']
+            date_of_birth = datetime.strptime(session['recruit_patient_date_of_birth'], '%Y-%m-%d')
+            first_name = session['recruit_patient_first_name']
+            last_name = session['recruit_patient_last_name']
+            nhs_no = session['recruit_patient_nhs_no']
+            chi_no = session['recruit_patient_chi_no']
+        except (ValueError, KeyError):
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        unit = Unit.query.get(unit_id)
+        disease_group = DiseaseGroup.query.get(disease_group_id)
+
+        if unit is None or disease_group is None:
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+        form = DemographicsForm(
+            date_of_birth=date_of_birth,
+            first_name=first_name,
+            last_name=last_name,
+            nhs_no=nhs_no,
+            chi_no=chi_no
+        )
 
         if form.validate_on_submit():
-            # TODO
+            date_of_birth = form.date_of_birth.data
+            first_name = form.first_name.data
+            last_name = form.last_name.data
+            nhs_no = form.nhs_no.data
+            chi_no = form.chi_no.data
+
+            session['recruit_patient_date_of_birth'] = date_of_birth.strftime('%Y-%m-%d')
+            session['recruit_patient_first_name'] = first_name
+            session['recruit_patient_first_name'] = last_name
+            session['recruit_patient_nhs_no'] = nhs_no
+            session['recruit_patient_chi_no'] = chi_no
+
+            # TODO fresh check against RaDaR and RDC
+
+            # Create new patient
             patient = Patient()
+            patient.registered_user = current_user
             db.session.add(patient)
+
+            # Save demographics
+            demographics = Demographics(patient=patient)
+            form.populate_obj(demographics)
+            save_radar_demographics(demographics)
+            db.session.add(demographics)
+
+            # Add to groups
+            add_patient_to_unit(patient, unit)
+            add_patient_to_disease_group(patient, disease_group)
+
             db.session.commit()
+
+            session['recruit_patient_patient_id'] = patient.id
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
 
         context = dict(
             form=form
@@ -552,3 +585,31 @@ def recruit_patient():
 
         set_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
         return render_template('recruit_patient/added.html', **context)
+
+
+def save_radar_demographics(demographics):
+    sda_bundle = demographics_to_sda_bundle(demographics)
+    sda_bundle.serialize()
+    demographics.sda_bundle = sda_bundle
+
+
+def add_patient_to_unit(patient, unit):
+    unit_patient = UnitPatient()
+    unit_patient.created_user = current_user
+    unit_patient.patient = patient
+    unit_patient.unit = unit
+
+    # TODO permissions
+
+    db.session.add(unit_patient)
+
+
+def add_patient_to_disease_group(patient, disease_group):
+    disease_group_patient = DiseaseGroupPatient()
+    disease_group_patient.created_user = current_user
+    disease_group_patient.patient = patient
+    disease_group_patient.disease_group = disease_group
+
+    # TODO permissions
+
+    db.session.add(disease_group_patient)

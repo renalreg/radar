@@ -1,5 +1,5 @@
 import re
-from wtforms import SelectField, SelectMultipleField, ValidationError, StringField
+from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField
 from wtforms.widgets import TextInput, Select
 from wtforms.ext.dateutil.fields import DateField
 from flask_wtf import Form
@@ -52,7 +52,7 @@ class RadarSelectMultipleField(SelectMultipleField):
         super(RadarSelectMultipleField, self).__init__(label, widget=widget, **kwargs)
 
 
-class RadarNHSNoField(StringField):
+class RadarNHSNoField(IntegerField):
     def __init__(self, label='NHS No.', **kwargs):
         super(RadarNHSNoField, self).__init__(label=label, **kwargs)
 
@@ -63,7 +63,7 @@ class RadarNHSNoField(StringField):
             raise ValidationError('Not a valid NHS number.')
 
 
-class RadarCHINoField(StringField):
+class RadarCHINoField(IntegerField):
     def __init__(self, label='CHI No.', **kwargs):
         super(RadarCHINoField, self).__init__(label=label, **kwargs)
 
@@ -92,6 +92,9 @@ def validate_postcode(value):
 
 
 def validate_nhs_no(value):
+    if not isinstance(value, basestring):
+        value = str(value)
+
     if len(value) != 10:
         return False
 

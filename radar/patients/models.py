@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date
+from datetime import datetime
+from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
@@ -10,6 +11,9 @@ class Patient(db.Model):
     __tablename__ = 'patients'
 
     id = Column(Integer, primary_key=True)
+
+    registered_user_id = Column(Integer, ForeignKey('users.id'))
+    registered_date = Column(DateTime(timezone=False), default=datetime.now)
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
