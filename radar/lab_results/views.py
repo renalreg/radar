@@ -241,8 +241,8 @@ def view_lab_result_graph_json(patient_id):
         .filter(
             SDABundle.patient == patient,
             SDALabResult.test_item_code == test_item.lower(),
-            dt_column is not None,
-            value_column is not None
+            dt_column != None,
+            value_column != None
         )\
         .order_by(dt_column)
 

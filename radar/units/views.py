@@ -1,6 +1,8 @@
 from flask_login import current_user
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, jsonify, abort, request
+from radar.models import UnitPatient
 from radar.news.models import Story
+from radar.patients.stats import recruitment_by_month
 
 from radar.units.models import Unit
 from radar.users.models import UnitUser
@@ -33,14 +35,7 @@ def list_units():
 
 @bp.route('/<int:unit_id>/')
 def view_unit(unit_id):
-    if current_user.is_admin:
-        unit = Unit.query.get_or_404(unit_id)
-        unit_user = UnitUser(unit=unit, user=current_user, role=UNIT_GOD)
-    else:
-        unit_user = UnitUser.query\
-            .filter(UnitUser.user == current_user)\
-            .filter(UnitUser.unit_id == unit_id)\
-            .first_or_404()
+    unit_user = get_unit_user(unit_id)
 
     stories = Story.query.order_by(Story.published.desc()).limit(1).all()
 
@@ -51,3 +46,27 @@ def view_unit(unit_id):
     )
 
     return render_template('unit.html', **context)
+
+
+@bp.route('/<int:unit_id>/recruitment.json')
+def recruitment_json(unit_id):
+    cumulative = request.args.get('cumulative') == '1'
+
+    unit_user = get_unit_user(unit_id)
+
+    data = recruitment_by_month(UnitPatient.created_date, [UnitPatient.unit == unit_user.unit], cumulative=cumulative)
+
+    return jsonify(data=[{'date': x[0].isoformat(), 'count': x[1]} for x in data])
+
+
+def get_unit_user(unit_id):
+    if current_user.is_admin:
+        unit = Unit.query.get_or_404(unit_id)
+        unit_user = UnitUser(unit=unit, user=current_user, role=UNIT_GOD)
+    else:
+        unit_user = UnitUser.query\
+            .filter(UnitUser.user == current_user)\
+            .filter(UnitUser.unit_id == unit_id)\
+            .first_or_404()
+
+    return unit_user

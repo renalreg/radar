@@ -1,8 +1,10 @@
 from flask_login import current_user
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request, jsonify
 
 from radar.disease_groups.models import DiseaseGroup
+from radar.models import DiseaseGroupPatient
 from radar.news.models import Story
+from radar.patients.stats import recruitment_by_month
 from radar.users.models import DiseaseGroupUser
 from radar.users.roles import DISEASE_GROUP_GOD
 
@@ -33,14 +35,7 @@ def list_disease_groups():
 
 @bp.route('/<int:disease_group_id>/')
 def view_disease_group(disease_group_id):
-    if current_user.is_admin:
-        disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
-        disease_group_user = DiseaseGroupUser(disease_group=disease_group, user=current_user, role=DISEASE_GROUP_GOD)
-    else:
-        disease_group_user = DiseaseGroupUser.query\
-            .filter(DiseaseGroupUser.user == current_user)\
-            .filter(DiseaseGroupUser.disease_group_id == disease_group_id)\
-            .first_or_404()
+    disease_group_user = get_disease_group_user(disease_group_id)
 
     stories = Story.query.order_by(Story.published.desc()).limit(1).all()
 
@@ -51,3 +46,31 @@ def view_disease_group(disease_group_id):
     )
 
     return render_template('disease_group.html', **context)
+
+
+@bp.route('/<int:disease_group_id>/recruitment.json')
+def recruitment_json(disease_group_id):
+    cumulative = request.args.get('cumulative') == '1'
+
+    disease_group_user = get_disease_group_user(disease_group_id)
+
+    data = recruitment_by_month(
+        DiseaseGroupPatient.created_date,
+        [DiseaseGroupPatient.disease_group == disease_group_user.disease_group],
+        cumulative=cumulative
+    )
+
+    return jsonify(data=[{'date': x[0].isoformat(), 'count': x[1]} for x in data])
+
+
+def get_disease_group_user(disease_group_id):
+    if current_user.is_admin:
+        disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
+        disease_group_user = DiseaseGroupUser(disease_group=disease_group, user=current_user, role=DISEASE_GROUP_GOD)
+    else:
+        disease_group_user = DiseaseGroupUser.query\
+            .filter(DiseaseGroupUser.user == current_user)\
+            .filter(DiseaseGroupUser.disease_group_id == disease_group_id)\
+            .first_or_404()
+
+    return disease_group_user
