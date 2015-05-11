@@ -2,6 +2,7 @@ from flask_login import current_user
 from flask import render_template, Blueprint
 
 from radar.disease_groups.models import DiseaseGroup
+from radar.news.models import Story
 from radar.users.models import DiseaseGroupUser
 from radar.users.roles import DISEASE_GROUP_GOD
 
@@ -39,9 +40,12 @@ def view_disease_group(disease_group_id):
             .filter(DiseaseGroupUser.disease_group_id == disease_group_id)\
             .first_or_404()
 
+    stories = Story.query.order_by(Story.published.desc()).limit(1).all()
+
     context = dict(
         disease_group=disease_group_user.disease_group,
-        disease_group_user=disease_group_user
+        disease_group_user=disease_group_user,
+        stories=stories,
     )
 
     return render_template('disease_group.html', **context)

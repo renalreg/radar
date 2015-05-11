@@ -249,3 +249,17 @@ table.demographics {
 form.lab-result-table select {
     max-width: 100%;
 }
+
+.latest-news-body {
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: bold;
+        font-size: $font-size-base;
+        margin: 0 0 9px 0;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    a {
+        text-decoration: none;
+    }
+}

@@ -1,5 +1,6 @@
 from flask_login import current_user
 from flask import render_template, Blueprint
+from radar.news.models import Story
 
 from radar.units.models import Unit
 from radar.users.models import UnitUser
@@ -41,9 +42,12 @@ def view_unit(unit_id):
             .filter(UnitUser.unit_id == unit_id)\
             .first_or_404()
 
+    stories = Story.query.order_by(Story.published.desc()).limit(1).all()
+
     context = dict(
         unit=unit_user.unit,
-        unit_user=unit_user
+        unit_user=unit_user,
+        stories=stories,
     )
 
     return render_template('unit.html', **context)
