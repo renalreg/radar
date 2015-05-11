@@ -1,0 +1,38 @@
+{% extends 'simple.html' %}
+
+{% from 'macros/forms.html' import render_field, render_form_errors, render_field_errors, render_field_group %}
+
+{% block content %}
+    {% if story %}
+        <h1>Edit Story</h1>
+    {% else %}
+        <h1>New Story</h1>
+    {% endif %}
+
+    {% if story %}
+        <form method="POST" action="{{ url_for('news.delete_story', story_id=story.id) }}">
+            {{ delete_form.hidden_tag() }}
+
+            <p>
+                <button type="submit" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
+            </p>
+        </form>
+    {% endif %}
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.title) }}
+
+        {% call render_field_group(form.body) %}
+            {{ form.body.label }}
+            {{ form.body(class='form-control', rows=25) }}
+            {{ render_field_errors(form.body) }}
+            <span class="help-block">Supports <a href="http://daringfireball.net/projects/markdown/basics">Markdown</a>.</span>
+        {% endcall %}
+
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
+{% endblock %}

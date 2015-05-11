@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager, current_user
+from flaskext.markdown import Markdown
 
 from radar.users.services import load_user
 from radar.disease_groups.services import get_disease_groups_for_user
@@ -16,6 +17,7 @@ from radar.units.views import bp as units_bp
 from radar.users.views import bp as users_bp, require_login
 from radar.lab_results.views import bp as lab_results_bp
 from radar.renal_imaging.views import bp as renal_imaging_bp
+from radar.news.views import bp as news_bp
 
 from radar.database import db
 
@@ -29,11 +31,14 @@ def create_app(config_filename):
     login_manager = LoginManager()
     login_manager.init_app(app)
 
+    Markdown(app)
+
     app.register_blueprint(radar_bp)
     app.register_blueprint(disease_groups_bp, url_prefix='/disease-groups')
     app.register_blueprint(units_bp, url_prefix='/units')
     app.register_blueprint(users_bp)
     app.register_blueprint(patients_bp, url_prefix='/patients')
+    app.register_blueprint(news_bp, url_prefix='/news')
 
     patient_blueprints = [
         (medications_bp, '/medications'),

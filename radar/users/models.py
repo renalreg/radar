@@ -87,6 +87,10 @@ class User(db.Model):
             any(x.has_edit_user_membership_permission for x in self.units)
         )
 
+    @property
+    def has_edit_news_permission(self):
+        return self.is_admin
+
     def filter_units_for_user(self, current_user):
         # TODO
         return self.units

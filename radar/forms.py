@@ -2,6 +2,7 @@ import re
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField
 from wtforms.widgets import TextInput, Select
 from wtforms.ext.dateutil.fields import DateField
+from flask_wtf import Form
 
 
 class RadarDateField(DateField):
@@ -79,6 +80,10 @@ class RadarPostcodeField(StringField):
 
         if self.data and not validate_postcode(self.data):
             raise ValueError('Not a valid postcode.')
+
+
+class DeleteForm(Form):
+    pass
 
 
 def validate_postcode(value):

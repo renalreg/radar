@@ -1,0 +1,25 @@
+{% extends 'simple.html' %}
+
+{% set current_page = 'news' %}
+
+{% from 'macros/pagination.html' import render_pagination %}
+
+{% block content %}
+    <h1>News</h1>
+
+    {% if current_user.has_edit_news_permission %}
+        <p><a href="{{ url_for('news.add_story') }}" class="btn btn-primary">New</a></p>
+    {% endif %}
+
+    {% for story in stories %}
+        <h2><a href="{{ url_for('news.view_story', story_id=story.id) }}">{{ story.title }}</a> <small>{{ story.published | datetime_format('%d %b %Y') }}</small></h2>
+
+        {% if story.can_edit(current_user) %}
+            <p><a href="{{ url_for('news.edit_story', story_id=story.id) }}" class="btn btn-xs btn-primary">Edit</a></p>
+        {% endif %}
+
+        {{ story.body | markdown }}
+    {% endfor %}
+
+    {{ render_pagination(pagination) }}
+{% endblock %}

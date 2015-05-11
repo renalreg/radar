@@ -92,6 +92,14 @@
                                     <a href="{{ url_for('users.view_user_list') }}">Users</a>
                                 </li>
                             {% endif %}
+
+                            <li{% if current_page == 'news' %} class="active"{% endif %}>
+                                <a href="{{ url_for('news.view_story_list') }}">News</a>
+                            </li>
+                        {% else %}
+                            <li{% if current_page == 'news' %} class="active"{% endif %}>
+                                <a href="{{ url_for('news.view_story_list') }}">News</a>
+                            </li>
                         {% endif %}
                     </ul>
 
