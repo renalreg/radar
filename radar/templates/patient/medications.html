@@ -3,7 +3,7 @@
 {% set current_patient_page = 'medications' %}
 
 {% block content %}
-    <h1>Medications</h1>
+    <h1 class="page-header">Medications</h1>
 
     <p><a href="{{ url_for('medications.add_medication', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 

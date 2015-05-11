@@ -1,7 +1,7 @@
 {% extends 'simple.html' %}
 
 {% block content %}
-    <h1>{{ story.title }} <small>{{ story.published | date_format('%d %b %Y') }}</small></h1>
+    <h1 class="page-header">{{ story.title }} <small>{{ story.published | date_format('%d %b %Y') }}</small></h1>
 
     {% if story.can_edit(current_user) %}
         <p><a href="{{ url_for('news.edit_story', story_id=story.id) }}" class="btn btn-xs btn-primary">Edit</a></p>

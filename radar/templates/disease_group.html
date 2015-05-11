@@ -3,7 +3,7 @@
 {% set current_disease_group = disease_group %}
 
 {% block content %}
-    <h1>{{ disease_group.name }}</h1>
+    <h1 class="page-header">{{ disease_group.name }}</h1>
 
     <ul class="nav patient-tabs">
         <li class="active"><a href="{{ url_for('patients.view_patient_list', disease_group_id=disease_group.id) }}">{{ disease_group.name }}</a></li>

@@ -5,7 +5,7 @@
 {% from 'macros/pagination.html' import render_pagination %}
 
 {% block content %}
-    <h1>News</h1>
+    <h1 class="page-header">News</h1>
 
     {% if current_user.has_edit_news_permission %}
         <p><a href="{{ url_for('news.add_story') }}" class="btn btn-primary">New</a></p>
