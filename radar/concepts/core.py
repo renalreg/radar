@@ -31,6 +31,7 @@ class Concept(object):
     def to_sda(self):
         pass
 
+
 def validate_concepts(concepts):
     valid = True
     errors = defaultdict(list)
@@ -45,6 +46,7 @@ def validate_concepts(concepts):
                 errors[field].extend(field_errors)
 
     return valid, errors
+
 
 def concepts_to_sda_bundle(patient, concepts):
     facility = Facility.query.get(1)

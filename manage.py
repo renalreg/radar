@@ -8,14 +8,17 @@ app = create_app('settings.py')
 
 manager = Manager(app)
 
+
 @manager.command
 def create_tables():
     db.drop_all()
     db.create_all()
 
+
 @manager.command
 def drop_tables():
     db.drop_all()
+
 
 @manager.command
 def create_admin():
@@ -26,6 +29,7 @@ def create_admin():
     user.is_admin = True
     db.session.add(user)
     db.session.commit()
+
 
 if __name__ == '__main__':
     manager.run()

@@ -5,6 +5,7 @@ from radar.auth.forms import LoginForm
 
 bp = Blueprint('radar', __name__)
 
+
 @bp.route('/')
 def index():
     login_form = LoginForm()

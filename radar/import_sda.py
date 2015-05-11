@@ -8,8 +8,10 @@ from radar.patients.models import Patient
 from radar.models import DataImport
 from radar.sda.parser import parse_container
 
+
 class Error(Exception):
     pass
+
 
 class SDAImportError(Error):
     def __init__(self, message):
@@ -17,6 +19,7 @@ class SDAImportError(Error):
 
     def __str__(self):
         return self.message
+
 
 def import_sda(facility_code, xml_data):
     root = ET.fromstring(xml_data)
@@ -79,6 +82,7 @@ def import_sda(facility_code, xml_data):
     db.session.add(data_import)
     db.session.commit()
 
+
 def create_app(config_filename):
     app = Flask(__name__)
     app.config.from_pyfile(config_filename)
@@ -90,6 +94,7 @@ def create_app(config_filename):
     db.init_app(app)
 
     return app
+
 
 if __name__ == '__main__':
     import argparse

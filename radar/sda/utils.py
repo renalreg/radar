@@ -6,6 +6,7 @@ import dateutil.parser
 
 ZONE = 'Europe/London'
 
+
 def datetime_to_jsonb(dt):
     if dt.tzinfo is None:
         # Convert naive datetime to local timezone
@@ -14,12 +15,15 @@ def datetime_to_jsonb(dt):
 
     return dt.isoformat()
 
+
 def jsonb_to_datetime(dt_str):
     dt = dateutil.parser.parse(dt_str)
     return dt
 
+
 def date_to_jsonb(d):
     return datetime_to_jsonb(datetime.combine(d, datetime.min.time()))
+
 
 def serialize_jsonb(data):
     if isinstance(data, dict):

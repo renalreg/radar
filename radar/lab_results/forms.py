@@ -7,5 +7,6 @@ from radar.forms import RadarSelectMultipleField, RadarSelectField
 class LabResultTableForm(Form):
     test_item = RadarSelectMultipleField('Columns', validators=[Optional()])
 
+
 class LabResultGraphForm(Form):
     test_item = RadarSelectField()

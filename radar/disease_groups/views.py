@@ -9,6 +9,7 @@ from radar.users.roles import DISEASE_GROUP_GOD
 
 bp = Blueprint('disease_groups', __name__)
 
+
 @bp.route('/')
 def list_disease_groups():
     if current_user.is_admin:
@@ -28,6 +29,7 @@ def list_disease_groups():
     )
 
     return render_template('disease_groups.html', **context)
+
 
 @bp.route('/<int:disease_group_id>/')
 def view_disease_group(disease_group_id):

@@ -153,7 +153,7 @@ class SDAPatientAlias(db.Model):
 
     @hybrid_property
     def last_name(self):
-       return get_path_as_text(self.data, ['family_name'])
+        return get_path_as_text(self.data, ['family_name'])
 
     @first_name.expression
     def first_name(cls):

@@ -18,6 +18,7 @@ def patient_to_xml(patient):
 
     return container_node
 
+
 def lab_order_to_xml(lab_order):
     node = Element('LabOrder')
 

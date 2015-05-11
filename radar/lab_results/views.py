@@ -1,12 +1,12 @@
 from collections import defaultdict
 from datetime import datetime
 
-from flask import Blueprint, render_template, abort, request, Response, jsonify
+from flask import Blueprint, render_template, abort, request, jsonify
 from flask_login import current_user
 from sqlalchemy import desc, func
+
 from radar.database import db
 from radar.lab_results.forms import LabResultTableForm, LabResultGraphForm
-
 from radar.ordering import order_query, DESCENDING, ordering_from_request
 from radar.pagination import paginate_query
 from radar.patients.models import Patient
@@ -252,7 +252,7 @@ def view_lab_result_graph_json(patient_id):
         data.append((dt.isoformat(), float(value)))
 
     return jsonify({
-        'name': test_item.upper(), # TODO
+        'name': test_item.upper(),  # TODO
         'units': 'TODO',
         'data': data,
     })

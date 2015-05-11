@@ -1,5 +1,6 @@
 from flask import request, abort, url_for
-from sqlalchemy import desc, Sequence
+from sqlalchemy import desc
+
 from radar.utils import get_request_args
 
 

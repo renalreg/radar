@@ -14,6 +14,7 @@ from radar.utils import get_path_as_text, get_path_as_datetime
 
 bp = Blueprint('medications', __name__)
 
+
 @bp.route('/')
 def view_medication_list(patient_id):
     patient = Patient.query.get_or_404(patient_id)
