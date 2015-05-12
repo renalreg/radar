@@ -102,7 +102,7 @@ def create_app(config_filename):
                 obj.modified_user = current_user
 
         for obj in session.dirty:
-            if isinstance(obj, BaseForm):
+            if isinstance(obj, CreatedModifiedMixin):
                 obj.modified_user = current_user
 
     return app

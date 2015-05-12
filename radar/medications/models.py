@@ -4,16 +4,13 @@ from sqlalchemy import Column, Date, String, ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.medications.concepts import MedicationToMedicationConcept
-from radar.models import DataSource
+from radar.models import DataSource, PatientMixin, CreatedModifiedMixin
 
 
-class Medication(DataSource):
+class Medication(DataSource, PatientMixin, CreatedModifiedMixin):
     __tablename__ = 'medications'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'))
-    patient = relationship('Patient')
 
     from_date = Column(Date)
     to_date = Column(Date)

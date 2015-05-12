@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
-from radar.models import DataSource
+from radar.models import DataSource, CreatedModifiedMixin, PatientMixin
 from radar.sda.models import SDAPatient, SDABundle
 
 
@@ -164,13 +164,10 @@ class Patient(db.Model):
         return False
 
 
-class Demographics(DataSource):
+class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):
     __tablename__ = 'demographics'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'))
-    patient = relationship('Patient')
 
     first_name = Column(String)
     last_name = Column(String)
