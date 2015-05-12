@@ -1,7 +1,7 @@
 {% from 'macros/panels.html' import render_panel %}
 
 {% macro render_field_group(field) %}
-    <div class="form-group{% if field.errors %} has-error{% endif %}">
+    <div class="form-group{% if field.errors %} has-error{% endif %}{% if field.flags.required %} required{% endif %}">
         {{ caller() }}
     </div>
 {% endmacro %}
