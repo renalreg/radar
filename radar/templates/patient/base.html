@@ -100,6 +100,10 @@
                         {% if disease_group.disease_group.has_feature('GENETICS') %}
                             {{ render_disease_group_li(disease_group.disease_group, 'genetics', 'genetics.view_genetics', 'Genetics') }}
                         {% endif %}
+
+                        {% if disease_group.disease_group.has_feature('SALT_WASTING_CLINICAL_FEATURES') %}
+                            {{ render_patient_li('salt_wasting_clinical_features', 'salt_wasting.view_clinical_features', 'Clinical Features') }}
+                        {% endif %}
                     </ul>
                 {% endfor %}
 

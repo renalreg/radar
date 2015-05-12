@@ -15,7 +15,10 @@ bp = Blueprint('genetics', __name__)
 @bp.route('/<int:disease_group_id>', endpoint='view_genetics')
 @bp.route('/<int:disease_group_id>', endpoint='edit_genetics', methods=['GET', 'POST'])
 def view_genetics(patient_id, disease_group_id):
-    genetics = Genetics.query.filter(Genetics.patient_id == patient_id, Genetics.disease_group_id == disease_group_id).first()
+    genetics = Genetics.query\
+        .filter(Genetics.patient_id == patient_id)\
+        .filter(Genetics.disease_group_id == disease_group_id)\
+        .first()
 
     if genetics is None:
         patient = Patient.query.get_or_404(patient_id)

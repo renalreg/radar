@@ -18,6 +18,10 @@
 
         {% if field.type == 'RadarYesNoField' %}
             {{ field(disabled=read_only) }}
+        {% elif field.type == 'BooleanField' %}
+            <div class="checkbox">
+                <label>{{ field(disabled=read_only) }}</label>
+            </div>
         {% else %}
             {{ field(class='form-control', disabled=read_only) }}
         {% endif %}
@@ -33,6 +37,10 @@
         <div class="col-sm-8">
             {% if field.type == 'RadarYesNoField' %}
                 {{ field(disabled=read_only) }}
+            {% elif field.type == 'BooleanField' %}
+                <div class="checkbox">
+                    <label>{{ field(disabled=read_only) }}</label>
+                </div>
             {% else %}
                 {{ field(class='form-control', disabled=read_only) }}
             {% endif %}

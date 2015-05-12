@@ -27,6 +27,7 @@ from radar.patients.dialysis.views import bp as dialysis_bp
 from radar.patients.hospitalisation.views import bp as hospitalisation_bp
 from radar.patients.pathology.views import bp as pathology_bp
 from radar.patients.transplants.views import bp as transplants_bp
+from radar.patients.salt_wasting.views import bp as salt_wasting_bp
 from radar.database import db
 from sqlalchemy import event
 
@@ -59,6 +60,7 @@ def create_app(config_filename):
         (medications_bp, '/medications'),
         (pathology_bp, '/pathology'),
         (renal_imaging_bp, '/renal-imaging'),
+        (salt_wasting_bp, '/salt-wasting'),
         (transplants_bp, '/transplants'),
     ]
 
