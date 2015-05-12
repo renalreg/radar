@@ -16,7 +16,7 @@
     {% call render_field_group(field) %}
         {{ field.label }}
 
-        {% if f.type == 'RadarYesNoField' %}
+        {% if field.type == 'RadarYesNoField' %}
             {{ field(disabled=read_only) }}
         {% else %}
             {{ field(class='form-control', disabled=read_only) }}
