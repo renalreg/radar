@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, abort, url_for
 from flask_login import current_user
 from radar.database import db
 from radar.disease_groups.models import DiseaseGroup
-from radar.genetics.forms import GeneticsForm
-from radar.genetics.models import Genetics
+from radar.patients.genetics.forms import GeneticsForm
+from radar.patients.genetics.models import Genetics
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from werkzeug.utils import redirect

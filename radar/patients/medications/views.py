@@ -4,8 +4,8 @@ from flask_login import current_user
 from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.concepts.utils import add_errors_to_form
 from radar.database import db
-from radar.medications.forms import MedicationForm
-from radar.medications.models import Medication
+from radar.patients.medications.forms import MedicationForm
+from radar.patients.medications.models import Medication
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle

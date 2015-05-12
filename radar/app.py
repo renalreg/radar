@@ -12,21 +12,21 @@ from radar.pagination import url_for_per_page, url_for_page
 from radar.template_filters import datetime_format, nl2br, date_format, missing
 from radar.units.services import get_units_for_user
 from radar.views import bp as radar_bp
-from radar.diagnosis.views import bp as diagnosis_bp
+from radar.patients.diagnosis.views import bp as diagnosis_bp
 from radar.disease_groups.views import bp as disease_groups_bp
-from radar.medications.views import bp as medications_bp
+from radar.patients.medications.views import bp as medications_bp
 from radar.patients.views import bp as patients_bp
 from radar.units.views import bp as units_bp
 from radar.users.views import bp as users_bp
-from radar.lab_results.views import bp as lab_results_bp
-from radar.renal_imaging.views import bp as renal_imaging_bp
+from radar.patients.lab_results.views import bp as lab_results_bp
+from radar.patients.renal_imaging.views import bp as renal_imaging_bp
 from radar.news.views import bp as news_bp
 from radar.auth.views import bp as auth_bp
-from radar.genetics.views import bp as genetics_bp
-from radar.dialysis.views import bp as dialysis_bp
-from radar.hospitalisation.views import bp as hospitalisation_bp
-from radar.pathology.views import bp as pathology_bp
-from radar.transplants.views import bp as transplants_bp
+from radar.patients.genetics.views import bp as genetics_bp
+from radar.patients.dialysis.views import bp as dialysis_bp
+from radar.patients.hospitalisation.views import bp as hospitalisation_bp
+from radar.patients.pathology.views import bp as pathology_bp
+from radar.patients.transplants.views import bp as transplants_bp
 from radar.database import db
 from sqlalchemy import event
 

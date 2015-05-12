@@ -2,8 +2,7 @@ from flask import url_for
 from sqlalchemy import Column, Date, String, ForeignKey
 
 from sqlalchemy import Integer
-from sqlalchemy.orm import relationship
-from radar.medications.concepts import MedicationToMedicationConcept
+from radar.patients.medications.concepts import MedicationToMedicationConcept
 from radar.models import DataSource, PatientMixin, CreatedModifiedMixin
 
 
