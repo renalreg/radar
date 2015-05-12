@@ -20,10 +20,10 @@ gulp.task('libs', function() { 
     var fontFilter = gulpFilter(['*.eot', '*.woff', '*.woff2', '*.svg', '*.ttf']);
     var imgFilter = gulpFilter(['*.png', '*.gif']);
 
-    var jsDest = config.static + '/js/libs';
-    var cssDest = config.static + '/css';
-    var fontDest = config.static + '/fonts';
-    var imgDest = config.static + '/img';
+    var jsDest = config.static + '/libs/js';
+    var cssDest = config.static + '/libs/css';
+    var fontDest = config.static + '/libs/fonts';
+    var imgDest = config.static + '/libs/img';
 
     return gulp.src(mainBowerFiles().concat([
         config.bower + '/jquery-ui/themes/smoothness/jquery-ui.css',
