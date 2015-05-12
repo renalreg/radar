@@ -6,6 +6,7 @@ from flaskext.markdown import Markdown
 from radar.auth.services import load_user
 from radar.auth.views import require_login
 from radar.disease_groups.services import get_disease_groups_for_user
+from radar.models import BaseForm, CreatedModifiedMixin
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.template_filters import datetime_format, nl2br, date_format, missing
@@ -22,6 +23,10 @@ from radar.renal_imaging.views import bp as renal_imaging_bp
 from radar.news.views import bp as news_bp
 from radar.auth.views import bp as auth_bp
 from radar.genetics.views import bp as genetics_bp
+from radar.dialysis.views import bp as dialysis_bp
+from radar.hospitalisation.views import bp as hospitalisation_bp
+from radar.pathology.views import bp as pathology_bp
+from radar.transplants.views import bp as transplants_bp
 from radar.database import db
 from sqlalchemy import event
 
@@ -47,10 +52,14 @@ def create_app(config_filename):
 
     patient_blueprints = [
         (diagnosis_bp, '/diagnoses'),
+        (dialysis_bp, '/dialysis'),
         (genetics_bp, '/genetics'),
+        (hospitalisation_bp, '/hospitalisation'),
         (lab_results_bp, '/lab-results'),
         (medications_bp, '/medications'),
+        (pathology_bp, '/pathology'),
         (renal_imaging_bp, '/renal-imaging'),
+        (transplants_bp, '/transplants'),
     ]
 
     patient_base = '/patients/<int:patient_id>'
@@ -86,15 +95,14 @@ def create_app(config_filename):
     @event.listens_for(SignallingSession, 'before_flush')
     def receive_before_flush(session, flush_context, instances):
         for obj in session.new:
-            if hasattr(obj, 'created_user'):
+            if isinstance(obj, CreatedModifiedMixin):
                 if obj.created_user is None:
                     obj.created_user = current_user
 
-            if hasattr(obj, 'modified_user'):
                 obj.modified_user = current_user
 
         for obj in session.dirty:
-            if hasattr(obj, 'modified_user'):
+            if isinstance(obj, BaseForm):
                 obj.modified_user = current_user
 
     return app

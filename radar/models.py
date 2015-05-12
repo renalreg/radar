@@ -108,7 +108,7 @@ class DataImport(DataSource):
     )
 
 
-class BaseForm(object):
+class CreatedModifiedMixin(object):
     @declared_attr
     def created_user_id(cls):
         return Column(Integer, ForeignKey('users.id'))
@@ -134,7 +134,7 @@ class BaseForm(object):
         return Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.current_timestamp())
 
 
-class PatientForm(object):
+class PatientMixin(object):
     @declared_attr
     def patient_id(cls):
         return Column(Integer, ForeignKey('patients.id'))
@@ -143,7 +143,8 @@ class PatientForm(object):
     def patient(cls):
         return relationship('Patient')
 
-class DiseaseGroupForm(object):
+
+class DiseaseGroupMixin(object):
     @declared_attr
     def disease_group_id(cls):
         return Column(Integer, ForeignKey('disease_groups.id'))

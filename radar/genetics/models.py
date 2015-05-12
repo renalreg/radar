@@ -1,8 +1,8 @@
-from radar.models import DataSource, BaseForm, PatientForm, DiseaseGroupForm
+from radar.models import DataSource, CreatedModifiedMixin, PatientMixin, DiseaseGroupMixin
 from sqlalchemy import Column, Integer, ForeignKey, String, Text, DateTime
 
 
-class Genetics(DataSource, BaseForm, PatientForm, DiseaseGroupForm):
+class Genetics(DataSource, CreatedModifiedMixin, PatientMixin, DiseaseGroupMixin):
     __tablename__ = 'genetics'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
