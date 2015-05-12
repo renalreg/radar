@@ -1,5 +1,7 @@
+from markupsafe import Markup
 import re
-from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField
+from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
+    RadioField
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
 
@@ -135,6 +137,36 @@ class RadarYesNoWidget(object):
             html.append('<label class="radio-inline">%s %s</label>' % (input_tag, label))
 
         return HTMLString("\n".join(html))
+
+
+class RadarInlineRadioField(RadioField):
+    def __init__(self, label=None, widget=None, **kwargs):
+        if widget is None:
+            widget = RadarInlineRadioWidget()
+
+        super(RadarInlineRadioField, self).__init__(label=label, widget=widget, **kwargs)
+
+
+class RadarInlineRadioWidget(object):
+    def __call__(self, field, **kwargs):
+        html = []
+
+        for subfield in field:
+            html.append('<label class="radio-inline">%s %s</label>' % (subfield(), subfield.label.text))
+
+        return HTMLString("\n".join(html))
+
+
+class RadarMeasurementInput(TextInput):
+    def __init__(self, unit):
+        super(RadarMeasurementInput, self).__init__()
+        self.unit = unit
+
+    def __call__(self, field, **kwargs):
+        return Markup('<div class="input-group">\n%s\n<span class="input-group-addon">%s</span></div>\n' % (
+            super(RadarMeasurementInput, self).__call__(field, **kwargs),
+            self.unit
+        ))
 
 
 class DeleteForm(Form):

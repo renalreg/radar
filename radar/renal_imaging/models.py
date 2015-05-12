@@ -29,6 +29,12 @@ class RenalImaging(DataSource, PatientMixin, CreatedModifiedMixin):
     left_nephrolithiasis = Column(Boolean)
     left_other_malformation = Column(String)
 
+    def can_view(self, user):
+        return self.patient.can_view(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user)
+
     __mapper_args__ = {
         'polymorphic_identity': 'renal_imaging',
     }

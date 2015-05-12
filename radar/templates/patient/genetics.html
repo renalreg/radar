@@ -34,7 +34,7 @@
                 {{ form.results.label(class='col-sm-4 control-label') }}
 
                 <div class="col-sm-8">
-                    {{ form.results(class='form-control', rows=10) }}
+                    {{ form.results(class='form-control', rows=10, disabled=read_only) }}
                     {{ render_field_errors(form.results) }}
                 </div>
             {% endcall %}

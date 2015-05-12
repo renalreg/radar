@@ -4,4 +4,33 @@
 
 {% block content %}
     <h1 class="page-header">Renal Imaging</h1>
+
+    <p>
+        <a href="{{ url_for('renal_imaging.add_result', patient_id=patient.id) }}" class="btn btn-primary">Add Result</a>
+    </p>
+
+    <table class="table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Imaging Type</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            {% if results %}
+                {% for result in results %}
+                    <tr>
+                        <td><a href="{{ url_for('renal_imaging.view_result', patient_id=patient.id, result_id=result.id) }}">{{ result.date | date_format }}</a></td>
+                        <td>{{ result.imaging_type }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2">No results.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

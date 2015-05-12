@@ -1,38 +1,69 @@
-from flask import Blueprint, abort, render_template
+from flask import Blueprint, abort, render_template, request, url_for
 from flask_login import current_user
+from radar.database import db
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
+from radar.renal_imaging.forms import RenalImagingForm
+from radar.renal_imaging.models import RenalImaging
+from werkzeug.utils import redirect
 
 bp = Blueprint('renal_imaging', __name__)
 
 
 @bp.route('/')
-def view_renal_imaging_list(patient_id):
+def view_result_list(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
         abort(403)
 
+    results = RenalImaging.query.order_by(RenalImaging.date.desc(), RenalImaging.imaging_type).all()
+
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
+        results=results,
     )
 
     return render_template('patient/renal_imaging_list.html', **context)
 
 
-@bp.route('/new/', endpoint='add_renal_imaging', methods=['GET', 'POST'])
-@bp.route('/<int:renal_imaging_id>/', endpoint='view_renal_imaging')
-@bp.route('/<int:renal_imaging_id>/', endpoint='edit_renal_imaging', methods=['GET', 'POST'])
-def view_renal_imaging(patient_id, renal_imaging_id):
-    patient = Patient.query.get_or_404(patient_id)
+@bp.route('/new/', endpoint='add_result', methods=['GET', 'POST'])
+@bp.route('/<int:result_id>/', endpoint='view_result')
+@bp.route('/<int:result_id>/', endpoint='edit_result', methods=['GET', 'POST'])
+def view_result(patient_id, result_id=None):
+    if result_id is None:
+        patient = Patient.query.get_or_404(patient_id)
+        result = RenalImaging(patient=patient)
+    else:
+        result = RenalImaging.query\
+            .filter(RenalImaging.patient_id == patient_id)\
+            .filter(RenalImaging.id == result_id)\
+            .first_or_404()
 
-    if not patient.can_view(current_user):
+    if not result.can_view(current_user):
         abort(403)
 
+    read_only = not result.can_edit(current_user)
+
+    form = RenalImagingForm(obj=result)
+
+    if request.method == 'POST':
+        if read_only:
+            abort(403)
+
+        if form.validate():
+            form.populate_obj(result)
+            db.session.add(result)
+            db.session.commit()
+            return redirect(url_for('renal_imaging.view_result_list', patient_id=patient_id))
+
     context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
+        patient=result.patient,
+        patient_data=get_patient_data(result.patient),
+        form=form,
+        result=result,
+        read_only=read_only
     )
 
     return render_template('patient/renal_imaging.html', **context)

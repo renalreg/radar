@@ -2,6 +2,96 @@
 
 {% set current_patient_page = 'renal_imaging' %}
 
+{% if read_only %}
+    {% from 'macros/forms.html' import render_horizontal_field_read_only as render_field %}
+{% else %}
+    {% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% endif %}
+
+{% from 'macros/forms.html' import render_form_errors %}
+
 {% block content %}
-    <h1 class="page-header">Renal Imaging</h1>
+    {% if result %}
+        <h1 class="page-header">Edit Renal Imaging Result</h1>
+    {% else %}
+        <h1 class="page-header">New Renal Imaging Result</h1>
+    {% endif %}
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST" class="form-horizontal">
+        {{ form.hidden_tag() }}
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ render_field(form.date) }}
+                {{ render_field(form.imaging_type) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Right Kidney</h3>
+                    </div>
+
+                    <div class="panel-body">
+                        {{ render_field(form.right_present) }}
+
+                        <div id="right_present_extra">
+                            {{ render_field(form.right_type) }}
+                            {{ render_field(form.right_length) }}
+                            {{ render_field(form.right_cysts) }}
+                            {{ render_field(form.right_calcification) }}
+
+                            <div id="right_calcification_extra">
+                                {{ render_field(form.right_nephrocalcinosis) }}
+                                {{ render_field(form.right_nephrolithiasis) }}
+                            </div>
+
+                            {{ render_field(form.right_other_malformation) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Left Kidney</h3>
+                    </div>
+
+                    <div class="panel-body">
+                        {{ render_field(form.left_present) }}
+
+                        <div id="left_present_extra">
+                            {{ render_field(form.left_type) }}
+                            {{ render_field(form.left_length) }}
+                            {{ render_field(form.left_cysts) }}
+                            {{ render_field(form.left_calcification) }}
+
+                            <div id="left_calcification_extra">
+                                {{ render_field(form.left_nephrocalcinosis) }}
+                                {{ render_field(form.left_nephrolithiasis) }}
+                            </div>
+
+                            {{ render_field(form.left_other_malformation) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
+{% endblock %}
+
+{% block body_js %}
+    <script>
+        toggle_extra_fields('left_present', '#left_present_extra', 'y');
+        toggle_extra_fields('left_calcification', '#left_calcification_extra', 'y');
+        toggle_extra_fields('right_present', '#right_present_extra', 'y');
+        toggle_extra_fields('right_calcification', '#right_calcification_extra', 'y');
+    </script>
 {% endblock %}

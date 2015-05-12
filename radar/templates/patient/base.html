@@ -102,7 +102,7 @@
 
                         {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
                             <li{% if current_patient_page == 'renal_imaging' %} class="active"{% endif %}>
-                                <a href="{{ url_for('renal_imaging.view_renal_imaging_list', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Renal Imaging</a>
+                                <a href="{{ url_for('renal_imaging.view_result_list', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Renal Imaging</a>
                             </li>
                         {% endif %}
 
