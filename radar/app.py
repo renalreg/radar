@@ -51,7 +51,7 @@ def create_app(config_filename):
     app.register_blueprint(news_bp, url_prefix='/news')
 
     patient_blueprints = [
-        (diagnosis_bp, '/diagnoses'),
+        (diagnosis_bp, '/diagnosis'),
         (dialysis_bp, '/dialysis'),
         (genetics_bp, '/genetics'),
         (hospitalisation_bp, '/hospitalisation'),
