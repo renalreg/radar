@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager, current_user
+from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
 
 from radar.auth.services import load_user
@@ -20,7 +21,9 @@ from radar.lab_results.views import bp as lab_results_bp
 from radar.renal_imaging.views import bp as renal_imaging_bp
 from radar.news.views import bp as news_bp
 from radar.auth.views import bp as auth_bp
+from radar.genetics.views import bp as genetics_bp
 from radar.database import db
+from sqlalchemy import event
 
 
 def create_app(config_filename):
@@ -43,9 +46,10 @@ def create_app(config_filename):
     app.register_blueprint(news_bp, url_prefix='/news')
 
     patient_blueprints = [
-        (medications_bp, '/medications'),
         (diagnosis_bp, '/diagnoses'),
+        (genetics_bp, '/genetics'),
         (lab_results_bp, '/lab-results'),
+        (medications_bp, '/medications'),
         (renal_imaging_bp, '/renal-imaging'),
     ]
 
@@ -77,5 +81,20 @@ def create_app(config_filename):
     app.add_template_global(url_for_order_by)
     app.add_template_global(url_for_page)
     app.add_template_global(url_for_per_page)
+
+    # Automatically set the created_user and modified_user
+    @event.listens_for(SignallingSession, 'before_flush')
+    def receive_before_flush(session, flush_context, instances):
+        for obj in session.new:
+            if hasattr(obj, 'created_user'):
+                if obj.created_user is None:
+                    obj.created_user = current_user
+
+            if hasattr(obj, 'modified_user'):
+                obj.modified_user = current_user
+
+        for obj in session.dirty:
+            if hasattr(obj, 'modified_user'):
+                obj.modified_user = current_user
 
     return app

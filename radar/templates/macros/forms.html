@@ -15,7 +15,13 @@
 {% macro render_field(field, read_only=False) %}
     {% call render_field_group(field) %}
         {{ field.label }}
-        {{ field(class='form-control', disabled=read_only) }}
+
+        {% if f.type == 'RadarYesNoField' %}
+            {{ field(disabled=read_only) }}
+        {% else %}
+            {{ field(class='form-control', disabled=read_only) }}
+        {% endif %}
+
         {{ render_field_errors(field) }}
     {% endcall %}
 {% endmacro %}
@@ -25,7 +31,12 @@
         {{ field.label(class='col-sm-4 control-label') }}
 
         <div class="col-sm-8">
-            {{ field(class='form-control', disabled=read_only) }}
+            {% if field.type == 'RadarYesNoField' %}
+                {{ field(disabled=read_only) }}
+            {% else %}
+                {{ field(class='form-control', disabled=read_only) }}
+            {% endif %}
+
             {{ render_field_errors(field) }}
         </div>
     {% endcall %}

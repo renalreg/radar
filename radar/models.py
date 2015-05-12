@@ -1,7 +1,10 @@
 from datetime import datetime
+from flask_login import current_user
 
-from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, DateTime
+from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, DateTime, func
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
+from sqlalchemy import event
 
 from radar.database import db
 
@@ -103,3 +106,48 @@ class DataImport(DataSource):
     __table_args__ = (
         UniqueConstraint('patient_id', 'facility_id'),
     )
+
+
+class BaseForm(object):
+    @declared_attr
+    def created_user_id(cls):
+        return Column(Integer, ForeignKey('users.id'))
+
+    @declared_attr
+    def created_user(cls):
+        return relationship('User', foreign_keys=[cls.created_user_id])
+
+    @declared_attr
+    def created_at(cls):
+        return Column(DateTime(timezone=True), server_default=func.now())
+
+    @declared_attr
+    def modified_user_id(cls):
+        return Column(Integer, ForeignKey('users.id'))
+
+    @declared_attr
+    def modified_user(cls):
+        return relationship('User', foreign_keys=[cls.modified_user_id])
+
+    @declared_attr
+    def modified_at(cls):
+        return Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.current_timestamp())
+
+
+class PatientForm(object):
+    @declared_attr
+    def patient_id(cls):
+        return Column(Integer, ForeignKey('patients.id'))
+
+    @declared_attr
+    def patient(cls):
+        return relationship('Patient')
+
+class DiseaseGroupForm(object):
+    @declared_attr
+    def disease_group_id(cls):
+        return Column(Integer, ForeignKey('disease_groups.id'))
+
+    @declared_attr
+    def disease_group(cls):
+        return relationship('DiseaseGroup')

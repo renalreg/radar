@@ -1,6 +1,6 @@
 import re
-from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField
-from wtforms.widgets import TextInput, Select
+from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field
+from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from wtforms.ext.dateutil.fields import DateField
 from flask_wtf import Form
 
@@ -22,6 +22,9 @@ class RadarDateInput(TextInput):
     def __call__(self, field, **kwargs):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')
         kwargs['class'] = u'%s %s' % (c, 'datepicker')
+
+        kwargs['data-date-format'] = 'dd/mm/yy'
+
         return super(RadarDateInput, self).__call__(field, **kwargs)
 
 
@@ -80,6 +83,58 @@ class RadarPostcodeField(StringField):
 
         if self.data and not validate_postcode(self.data):
             raise ValueError('Not a valid postcode.')
+
+
+class RadarYesNoField(Field):
+    def __init__(self, label=None, widget=None, **kwargs):
+        if widget is None:
+            widget = RadarYesNoWidget()
+
+        super(RadarYesNoField, self).__init__(label=label, widget=widget, **kwargs)
+
+    def _value(self):
+        """ Value to use in the input tag """
+
+        if self.data is None:
+            return None
+        elif self.data:
+            return 'y'
+        else:
+            return 'n'
+
+    def process_formdata(self, valuelist):
+        """ Convert form value to a boolean """
+
+        try:
+            value = valuelist[0]
+
+            if value == 'y':
+                self.data = True
+            elif value == 'n':
+                self.data = False
+            else:
+                self.data = None
+        except IndexError:
+            self.data = None
+
+
+class RadarYesNoWidget(object):
+    def __call__(self, field, **kwargs):
+        html_attributes = kwargs
+        html_attributes.update({
+            'id': field.id,
+            'name': field.name,
+        })
+
+        html = []
+
+        for value, label in [('y', 'Yes'), ('n', 'No')]:
+            html_attributes['checked'] = field._value() == value
+            html_attributes['value'] = value
+            input_tag = '<input type="radio" {} />\n'.format(html_params(**html_attributes))
+            html.append('<label class="radio-inline">%s %s</label>' % (input_tag, label))
+
+        return HTMLString("\n".join(html))
 
 
 class DeleteForm(Form):

@@ -20,6 +20,9 @@
         {{ render_field(form.from_date) }}
         {{ render_field(form.to_date) }}
         {{ render_field(form.name) }}
-        <button type="submit" class="btn btn-success">Save</button>
+
+        {% if not read_only %}
+            <button type="submit" class="btn btn-success">Save</button>
+        {% endif %}
     </form>
 {% endblock %}

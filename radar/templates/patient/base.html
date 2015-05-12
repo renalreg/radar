@@ -107,8 +107,8 @@
                         {% endif %}
 
                         {% if disease_group.disease_group.has_feature('GENETICS') %}
-                            <li{% if current_patient_page == 'genetics' %} class="active"{% endif %}>
-                                <a href="#">Genetics</a>
+                            <li{% if current_patient_page == 'genetics' and current_disease_group == disease_group.disease_group %} class="active"{% endif %}>
+                                <a href="{{ url_for('genetics.view_genetics', patient_id=patient.id, disease_group_id=disease_group.id) }}">Genetics</a>
                             </li>
                         {% endif %}
                     </ul>
