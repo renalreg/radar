@@ -152,3 +152,13 @@ class DiseaseGroupMixin(object):
     @declared_attr
     def disease_group(cls):
         return relationship('DiseaseGroup')
+
+
+class UnitMixin(object):
+    @declared_attr
+    def unit_id(cls):
+        return Column(Integer, ForeignKey('units.id'))
+
+    @declared_attr
+    def unit(cls):
+        return relationship('Unit')

@@ -6,7 +6,7 @@ from flaskext.markdown import Markdown
 from radar.auth.services import load_user
 from radar.auth.views import require_login
 from radar.disease_groups.services import get_disease_groups_for_user
-from radar.models import BaseForm, CreatedModifiedMixin
+from radar.models import CreatedModifiedMixin
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.template_filters import datetime_format, nl2br, date_format, missing
