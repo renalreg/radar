@@ -1,16 +1,15 @@
 import re
-from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field
+from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
-from wtforms.ext.dateutil.fields import DateField
 from flask_wtf import Form
 
 
 class RadarDateField(DateField):
-    def __init__(self, label=None, widget=None, display_format="%d/%m/%Y", **kwargs):
+    def __init__(self, label=None, widget=None, format="%d/%m/%Y", **kwargs):
         if widget is None:
             widget = RadarDateInput()
 
-        super(RadarDateField, self).__init__(label, widget=widget, display_format=display_format, **kwargs)
+        super(RadarDateField, self).__init__(label, widget=widget, format=format, **kwargs)
 
 
 class RadarDOBField(RadarDateField):
@@ -23,6 +22,7 @@ class RadarDateInput(TextInput):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')
         kwargs['class'] = u'%s %s' % (c, 'datepicker')
 
+        # TODO shouldn't be hardcoded
         kwargs['data-date-format'] = 'dd/mm/yy'
 
         return super(RadarDateInput, self).__call__(field, **kwargs)
