@@ -5,7 +5,7 @@
 {% block content %}
     <h1 class="page-header">Lab Results</h1>
 
-    <ul class="nav patient-tabs">
+    <ul class="nav radar-tabs">
         <li{% if current_lab_results_page == 'list' %} class="active"{% endif %}>
             <a href="{{ url_for('lab_results.view_lab_result_list', patient_id=patient.id) }}">List</a>
         </li>

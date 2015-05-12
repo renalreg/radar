@@ -76,7 +76,7 @@
                     {% endif %}
                 </ul>
 
-                <ul class="nav patient-nav">
+                <ul class="nav radar-sidebar-nav">
                     {{ render_patient_li('demographics', 'patients.view_demographics_list', 'Demographics') }}
                     {{ render_patient_li('medications', 'medications.view_medication_list', 'Medications') }}
                     {{ render_patient_li('lab_results', 'lab_results.view_lab_result_list', 'Lab Results') }}
@@ -88,7 +88,7 @@
                 {% for disease_group in patient_data.disease_groups %}
                     <h4>{{ disease_group.disease_group.name }}</h4>
 
-                    <ul class="nav patient-nav">
+                    <ul class="nav radar-sidebar-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
                             {{ render_disease_group_li(disease_group.disease_group, 'diagnosis', 'diagnosis.view_diagnosis', 'Diagnosis') }}
                         {% endif %}
@@ -105,7 +105,7 @@
 
                 <h4>Groups</h4>
 
-                <ul class="nav patient-nav">
+                <ul class="nav radar-sidebar-nav">
                     {{ render_patient_li('disease_groups', 'patients.view_patient_disease_groups', 'Disease Groups') }}
                     {{ render_patient_li('units', 'patients.view_patient_units', 'Units') }}
                 </ul>

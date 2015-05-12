@@ -5,7 +5,7 @@
 {% block content %}
     <h1 class="page-header">{{ unit.name }}</h1>
 
-    <ul class="nav patient-tabs">
+    <ul class="nav radar-tabs">
         <li class="active"><a href="{{ url_for('patients.view_patient_list', unit_id=unit.id) }}">{{ unit.name }}</a></li>
 
         {% if unit_user.has_view_patient_permission %}

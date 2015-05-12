@@ -54,15 +54,15 @@ $radar-navbar-link-color: #FFF;
 $radar-navbar-bg-color: $radar-primary;
 $radar-navbar-hover-bg-color: $radar-primary-selected;
 
-$patient-nav-text: $radar-secondary-text;
-$patient-nav-hover-bg: #d9e6f3; // column 9
-$patient-nav-active-text: #FFF;
-$patient-nav-active-bg: $radar-secondary;
+$radar-sidebar-nav-text: $radar-secondary-text;
+$radar-sidebar-nav-hover-bg: #d9e6f3; // column 9
+$radar-sidebar-nav-active-text: #FFF;
+$radar-sidebar-nav-active-bg: $radar-secondary;
 
-$patient-tabs-text: $radar-secondary-text;
-$patient-tabs-hover-bg: #d9e6f3; // column 9
-$patient-tabs-active-text: #FFF;
-$patient-tabs-active-bg: $radar-secondary;
+$radar-tabs-text: $radar-secondary-text;
+$radar-tabs-hover-bg: #d9e6f3; // column 9
+$radar-tabs-active-text: #FFF;
+$radar-tabs-active-bg: $radar-secondary;
 
 @import "bootstrap";
 
@@ -169,49 +169,49 @@ ul.patient-info {
     }
 }
 
-ul.patient-nav {
+ul.radar-sidebar-nav {
     margin-left: -1 * $block-padding;
     margin-right: -1 * $block-padding;
     margin-bottom: 18px;
 
     > li > a {
         padding: 5px 20px;
-        color: $patient-nav-text;
+        color: $radar-sidebar-nav-text;
     }
 
     > li.active > a {
         &,
         &:hover,
         &:focus {
-            background-color: $patient-nav-active-bg;
-            color: $patient-nav-active-text;
+            background-color: $radar-sidebar-nav-active-bg;
+            color: $radar-sidebar-nav-active-text;
         }
     }
 
     > li > a {
         &:hover,
         &:focus {
-            background-color: $patient-nav-hover-bg;
+            background-color: $radar-sidebar-nav-hover-bg;
         }
     }
 }
 
-ul.patient-tabs {
-    border-bottom: 1px solid $patient-tabs-active-bg;
+ul.radar-tabs {
+    border-bottom: 1px solid $radar-tabs-active-bg;
     margin-bottom: $line-height-computed / 2;
 
     > li {
         float: left;
 
         > a {
-            color: $patient-tabs-text;
+            color: $radar-tabs-text;
             margin-right: 2px;
             border-top-left-radius: $border-radius-base;
             border-top-right-radius: $border-radius-base;
 
             &:hover,
             &:focus {
-                background-color: $patient-tabs-hover-bg;
+                background-color: $radar-tabs-hover-bg;
             }
         }
 
@@ -219,8 +219,8 @@ ul.patient-tabs {
             &,
             &:hover,
             &:focus {
-                background-color: $patient-tabs-active-bg;
-                color: $patient-tabs-active-text;
+                background-color: $radar-tabs-active-bg;
+                color: $radar-tabs-active-text;
             }
         }
     }
