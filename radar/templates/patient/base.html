@@ -2,6 +2,18 @@
 
 {% from 'macros/flash.html' import render_flashed_messages %}
 
+{% macro render_patient_li(id, endpoint, text) %}
+    <li{% if current_patient_page == id %} class="active"{% endif %}>
+        <a href="{{ url_for(endpoint, patient_id=patient.id) }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+
+{% macro render_disease_group_li(disease_group, id, endpoint, text) %}
+    <li{% if current_patient_page == id and current_patient_disease_group == disease_group %} class="active"{% endif %}>
+        <a href="{{ url_for(endpoint, patient_id=patient.id, disease_group_id=disease_group.id) }}">{{ text }}</a>
+    </li>
+{% endmacro %}
+
 {% block body %}
     <div class="row">
         <div class="col-md-3">
@@ -65,29 +77,12 @@
                 </ul>
 
                 <ul class="nav patient-nav">
-                    <li{% if current_patient_page == 'demographics' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patients.view_demographics_list', patient_id=patient.id) }}">Demographics</a>
-                    </li>
-
-                    <li{% if current_patient_page == 'medications' %} class="active"{% endif %}>
-                        <a href="{{ url_for('medications.view_medication_list', patient_id=patient.id) }}">Medications</a>
-                    </li>
-
-                    <li{% if current_patient_page == 'lab_results' %} class="active"{% endif %}>
-                        <a href="{{ url_for('lab_results.view_lab_result_list', patient_id=patient.id) }}">Lab Results</a>
-                    </li>
-
-                    <li>
-                        <a href="#">Hospitalisation</a>
-                    </li>
-
-                    <li>
-                        <a href="#">Pathology</a>
-                    </li>
-
-                    <li>
-                        <a href="#">Transplants</a>
-                    </li>
+                    {{ render_patient_li('demographics', 'patients.view_demographics_list', 'Demographics') }}
+                    {{ render_patient_li('medications', 'medications.view_medication_list', 'Medications') }}
+                    {{ render_patient_li('lab_results', 'lab_results.view_lab_result_list', 'Lab Results') }}
+                    {{ render_patient_li('hospitalisation', 'patients.view_patient', 'Hospitalisation') }}
+                    {{ render_patient_li('pathology', 'patients.view_patient', 'Pathology') }}
+                    {{ render_patient_li('transplants', 'patients.view_patient', 'Transplants') }}
                 </ul>
 
                 {% for disease_group in patient_data.disease_groups %}
@@ -95,21 +90,15 @@
 
                     <ul class="nav patient-nav">
                         {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
-                            <li{% if current_patient_page == 'diagnosis' and current_patient_disease_group == disease_group.disease_group %} class="active"{% endif %}>
-                                <a href="{{ url_for('diagnosis.view_diagnosis', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Diagnosis</a>
-                            </li>
+                            {{ render_disease_group_li(disease_group.disease_group, 'diagnosis', 'diagnosis.view_diagnosis', 'Diagnosis') }}
                         {% endif %}
 
                         {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
-                            <li{% if current_patient_page == 'renal_imaging' %} class="active"{% endif %}>
-                                <a href="{{ url_for('renal_imaging.view_result_list', patient_id=patient.id, disease_group_id=disease_group.disease_group.id) }}">Renal Imaging</a>
-                            </li>
+                            {{ render_patient_li('renal_imaging', 'renal_imaging.view_result_list', 'Renal Imaging') }}
                         {% endif %}
 
                         {% if disease_group.disease_group.has_feature('GENETICS') %}
-                            <li{% if current_patient_page == 'genetics' and current_disease_group == disease_group.disease_group %} class="active"{% endif %}>
-                                <a href="{{ url_for('genetics.view_genetics', patient_id=patient.id, disease_group_id=disease_group.id) }}">Genetics</a>
-                            </li>
+                            {{ render_disease_group_li(disease_group.disease_group, 'genetics', 'genetics.view_genetics', 'Genetics') }}
                         {% endif %}
                     </ul>
                 {% endfor %}
@@ -117,13 +106,8 @@
                 <h4>Groups</h4>
 
                 <ul class="nav patient-nav">
-                    <li{% if current_patient_page == 'disease_groups' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patients.view_patient_disease_groups', patient_id=patient.id) }}">Disease Groups</a>
-                    </li>
-
-                    <li{% if current_patient_page == 'units' %} class="active"{% endif %}>
-                        <a href="{{ url_for('patients.view_patient_units', patient_id=patient.id) }}">Units</a>
-                    </li>
+                    {{ render_patient_li('disease_groups', 'patients.view_patient_disease_groups', 'Disease Groups') }}
+                    {{ render_patient_li('units', 'patients.view_patient_units', 'Units') }}
                 </ul>
             </div>
         </div>
