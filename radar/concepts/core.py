@@ -48,7 +48,8 @@ def validate_concepts(concepts):
     return valid, errors
 
 
-def concepts_to_sda_bundle(patient, concepts):
+def concepts_to_sda_bundle(concepts, patient):
+    # TODO
     facility = Facility.query.get(1)
 
     sda_bundle = SDABundle(patient=patient, facility=facility)

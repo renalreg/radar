@@ -6,6 +6,7 @@ from flaskext.markdown import Markdown
 from radar.auth.services import load_user
 from radar.auth.views import require_login
 from radar.disease_groups.services import get_disease_groups_for_user
+from radar.forms import DeleteForm
 from radar.models import CreatedModifiedMixin
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
@@ -79,6 +80,10 @@ def create_app(config_filename):
     app.add_template_filter(nl2br)
     app.add_template_filter(missing)
 
+    app.add_template_global(url_for_order_by)
+    app.add_template_global(url_for_page)
+    app.add_template_global(url_for_per_page)
+
     @app.context_processor
     def inject_navigation():
         navigation = dict()
@@ -89,9 +94,9 @@ def create_app(config_filename):
 
         return dict(navigation=navigation)
 
-    app.add_template_global(url_for_order_by)
-    app.add_template_global(url_for_page)
-    app.add_template_global(url_for_per_page)
+    @app.context_processor
+    def inject_delete_form():
+        return dict(delete_form=DeleteForm())
 
     # Automatically set the created_user and modified_user
     @event.listens_for(SignallingSession, 'before_flush')

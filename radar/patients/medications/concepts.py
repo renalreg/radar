@@ -10,7 +10,11 @@ class MedicationToMedicationConcept(object):
         self.medication_concept = MedicationConcept(
             self.medication.from_date,
             self.medication.to_date,
-            self.medication.name
+            self.medication.name,
+            self.medication.dose_quantity,
+            self.medication.dose_unit,
+            self.medication.frequency,
+            self.medication.route,
         )
 
     def validate(self):
@@ -22,6 +26,12 @@ class MedicationToMedicationConcept(object):
             errors['from_date'].extend(self.medication_concept.errors['from_date'])
             errors['to_date'].extend(self.medication_concept.errors['to_date'])
             errors['name'].extend(self.medication_concept.errors['name'])
+            errors['dose_quantity'].extend(self.medication_concept.errors['dose_quantity'])
+            errors['dose_unit_id'].extend(self.medication_concept.errors['dose_unit'])
+            errors['frequency_id'].extend(self.medication_concept.errors['frequency'])
+            errors['route_id'].extend(self.medication_concept.errors['route'])
+
+            print self.medication_concept.errors
 
         return valid, errors
 

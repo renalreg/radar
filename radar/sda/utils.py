@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from decimal import Decimal
 
 import pytz
 import dateutil.parser
@@ -44,5 +45,7 @@ def serialize_jsonb(data):
         return datetime_to_jsonb(data)
     elif isinstance(data, date):
         return date_to_jsonb(data)
+    elif isinstance(data, Decimal):
+        return float(data)
     else:
         return data

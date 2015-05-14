@@ -60,6 +60,28 @@ class RadarSelectField(SelectField):
         super(SelectField, self).process_data(value)
 
 
+class RadarSelectObjectField(SelectField):
+    widget = Select()
+
+    def iter_choices(self):
+        for value, label, obj in self.choices:
+            yield (value, label, self.coerce(value) == self.data)
+
+    def pre_validate(self, form):
+        for value, label, obj in self.choices:
+            if self.data == value:
+                break
+        else:
+            raise ValueError(self.gettext('Not a valid choice'))
+
+    @property
+    def obj(self):
+        for value, label, obj in self.choices:
+            if self.data == value:
+                return obj
+
+        return None
+
 class RadarSelectMultiple(Select):
     def __init__(self):
         super(RadarSelectMultiple, self).__init__(True)
@@ -230,12 +252,17 @@ def add_empty_choice(choices):
     return choices
 
 
+def add_empty_object_choice(choices):
+    choices.insert(0, ('', '', None))
+    return choices
+
+
 class UnitFormMixin(object):
     def __init__(self, obj=None, *args, **kwargs):
-        super(UnitFormMixin, self).__init__(*args, **kwargs)
+        super(UnitFormMixin, self).__init__(obj=obj, *args, **kwargs)
 
         if obj is not None:
             units = obj.patient.available_units_for_user(current_user)
-            self.unit_id.choices = [(x.unit.id, x.unit.name) for x in units]
+            self.unit_id.choices = [(x.unit.id, x.unit.name, x.unit) for x in units]
 
-    unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=int)
+    unit_id = RadarSelectObjectField('Unit', validators=[InputRequired()], coerce=int)

@@ -175,4 +175,4 @@ class LookupTableMixin(object):
 
     @classmethod
     def choices(cls, session):
-        return [(x.id, x.name) for x in session.query(cls).order_by(cls.name).all()]
+        return [(x.id, x.name, x) for x in session.query(cls).order_by(cls.name).all()]

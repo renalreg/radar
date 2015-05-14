@@ -4,6 +4,7 @@ from flask_login import current_user
 from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.concepts.utils import add_errors_to_form
 from radar.database import db
+from radar.forms import DeleteForm
 from radar.patients.medications.forms import MedicationForm
 from radar.patients.medications.models import Medication
 from radar.patients.models import Patient
@@ -32,13 +33,18 @@ def view_medication_list(patient_id):
     medications = []
 
     for sda_medication in sda_medications:
+        data_source = sda_medication.sda_bundle.data_source
+
         medication = dict()
         medication['id'] = sda_medication.id
         medication['name'] = get_path_as_text(sda_medication.data, ['order_item', 'description'])
         medication['from_date'] = get_path_as_datetime(sda_medication.data, ['from_time'])
         medication['to_date'] = get_path_as_datetime(sda_medication.data, ['to_time'])
-
-        data_source = sda_medication.sda_bundle.data_source
+        medication['dose_quantity'] = get_path_as_text(sda_medication.data, ['dose_quantity'])
+        medication['dose_unit'] = get_path_as_text(sda_medication.data, ['dose_uom', 'description'])
+        medication['frequency'] = get_path_as_text(sda_medication.data, ['frequency', 'description'])
+        medication['route'] = get_path_as_text(sda_medication.data, ['route', 'description'])
+        medication['source'] = get_path_as_text(sda_medication.data, ['entering_organization', 'description'])
 
         if data_source.can_view(current_user):
             medication['view_url'] = data_source.view_url()
@@ -89,13 +95,20 @@ def view_medication(patient_id, medication_id=None):
             abort(403)
 
         if form.validate():
-            form.populate_obj(medication)
+            medication.unit = form.unit_id.obj
+            medication.from_date = form.from_date.data
+            medication.to_date = form.to_date.data
+            medication.name = form.name.data
+            medication.dose_quantity = form.dose_quantity.data
+            medication.dose_unit = form.dose_unit_id.obj
+            medication.frequency = form.frequency_id.obj
+            medication.route = form.route_id.obj
 
             concepts = medication.to_concepts()
             valid, errors = validate_concepts(concepts)
 
             if valid:
-                sda_bundle = concepts_to_sda_bundle(medication.patient, concepts)
+                sda_bundle = concepts_to_sda_bundle(concepts, medication.patient)
                 sda_bundle.serialize()
                 medication.sda_bundle = sda_bundle
                 db.session.add(medication)
@@ -115,6 +128,19 @@ def view_medication(patient_id, medication_id=None):
     return render_template('patient/medication.html', **context)
 
 
-@bp.route('/<int:medication_id>/', endpoint='delete_medication', methods=['POST'])
-def delete_medication(medication_id):
-    pass
+@bp.route('/<int:medication_id>/delete/', endpoint='delete_medication', methods=['POST'])
+def delete_medication(patient_id, medication_id):
+    medication = Medication.query\
+        .filter(Medication.id == medication_id)\
+        .filter(Medication.patient_id == patient_id)\
+        .first_or_404()
+
+    form = DeleteForm()
+
+    if not medication.can_edit(current_user) or not form.validate_on_submit():
+        abort(403)
+
+    db.session.delete(medication)
+    db.session.commit()
+
+    return redirect(url_for('medications.view_medication_list', patient_id=patient_id))

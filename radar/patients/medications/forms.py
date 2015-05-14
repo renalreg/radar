@@ -4,22 +4,22 @@ from radar.patients.medications.models import MedicationDoseUnit, MedicationFreq
 from wtforms import StringField, DecimalField
 from wtforms.validators import InputRequired, Optional
 
-from radar.forms import RadarDateField, RadarSelectField, add_empty_choice, UnitFormMixin
+from radar.forms import RadarDateField, add_empty_object_choice, UnitFormMixin, RadarSelectObjectField
 
 
 class MedicationForm(UnitFormMixin, Form):
     def __init__(self, *args, **kwargs):
         super(MedicationForm, self).__init__(*args, **kwargs)
 
-        self.dose_unit_id.choices = add_empty_choice(MedicationDoseUnit.choices(db.session))
-        self.frequency_id.choices = add_empty_choice(MedicationFrequency.choices(db.session))
-        self.route_id.choices = add_empty_choice(MedicationRoute.choices(db.session))
+        self.dose_unit_id.choices = add_empty_object_choice(MedicationDoseUnit.choices(db.session))
+        self.frequency_id.choices = add_empty_object_choice(MedicationFrequency.choices(db.session))
+        self.route_id.choices = add_empty_object_choice(MedicationRoute.choices(db.session))
 
     from_date = RadarDateField(validators=[InputRequired()])
     to_date = RadarDateField(validators=[Optional()])
 
     name = StringField(validators=[InputRequired()])
     dose_quantity = DecimalField(validators=[InputRequired()])
-    dose_unit_id = RadarSelectField('Dose Unit', validators=[InputRequired()])
-    frequency_id = RadarSelectField('Frequency', validators=[InputRequired()])
-    route_id = RadarSelectField('Route', validators=[InputRequired()])
+    dose_unit_id = RadarSelectObjectField('Dose Unit', validators=[InputRequired()])
+    frequency_id = RadarSelectObjectField('Frequency', validators=[InputRequired()])
+    route_id = RadarSelectObjectField('Route', validators=[InputRequired()])

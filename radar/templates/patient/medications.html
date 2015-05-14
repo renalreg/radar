@@ -14,6 +14,11 @@
                 <th>From Date</th>
                 <th>To Date</th>
                 <th>Name</th>
+                <th>Dose Quantity</th>
+                <th>Dose Unit</th>
+                <th>Frequency</th>
+                <th>Route</th>
+                <th>Source</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,10 +38,17 @@
                         <td>{{ medication.from_date | date_format | missing }}</td>
                         <td>{{ medication.to_date | date_format | missing }}</td>
                         <td>{{ medication.name | missing }}</td>
+                        <td>{{ medication.dose_quantity | missing }}</td>
+                        <td>{{ medication.dose_unit | missing }}</td>
+                        <td>{{ medication.frequency | missing }}</td>
+                        <td>{{ medication.route | missing }}</td>
+                        <td>{{ medication.source | missing }}</td>
 
                         <td align="right">
                             {% if medication.delete_url %}
                                 <form method="POST" action="{{ medication.delete_url }}" class="form-inline">
+                                    {{ delete_form.hidden_tag() }}
+
                                     <button type="submit" class="btn btn-link btn-xs">
                                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
                                     </button>
@@ -47,7 +59,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="5">No medications.</td>
+                    <td colspan="10">No medications.</td>
                 </tr>
             {% endif %}
         </tbody>
