@@ -167,6 +167,20 @@ class UnitMixin(object):
 class LookupTableMixin(object):
     @declared_attr
     def id(cls):
+        return Column(Integer, primary_key=True)
+
+    @declared_attr
+    def name(cls):
+        return Column(String)
+
+    @classmethod
+    def choices(cls, session):
+        return [(x.id, x.name, x) for x in session.query(cls).order_by(cls.name).all()]
+
+
+class StringLookupTableMixin(object):
+    @declared_attr
+    def id(cls):
         return Column(String, primary_key=True)
 
     @declared_attr

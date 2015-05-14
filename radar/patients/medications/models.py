@@ -4,7 +4,7 @@ from sqlalchemy import Column, Date, String, ForeignKey, Numeric
 
 from sqlalchemy import Integer
 from radar.patients.medications.concepts import MedicationToMedicationConcept
-from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, LookupTableMixin, UnitMixin
+from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, StringLookupTableMixin, UnitMixin
 from sqlalchemy.orm import relationship
 
 
@@ -54,11 +54,11 @@ class Medication(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
         return url_for('medications.delete_medication', patient_id=self.patient.id, medication_id=self.id)
 
 
-class MedicationFrequency(db.Model, LookupTableMixin):
+class MedicationFrequency(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_frequencies'
 
-class MedicationRoute(db.Model, LookupTableMixin):
+class MedicationRoute(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_routes'
 
-class MedicationDoseUnit(db.Model, LookupTableMixin):
+class MedicationDoseUnit(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_dose_units'
