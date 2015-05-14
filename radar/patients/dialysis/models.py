@@ -1,6 +1,6 @@
 from radar.database import db
 from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin, LookupTableMixin
-from sqlalchemy import Column, Integer, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Date
 from sqlalchemy.orm import relationship
 
 
@@ -9,9 +9,9 @@ class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
-    date_started = Column(DateTime(timezone=True), nullable=False)
-    date_stopped = Column(DateTime(timezone=True))
-    dialysis_type_id = Column(Integer, nullable=False)
+    date_started = Column(Date, nullable=False)
+    date_stopped = Column(Date)
+    dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
 
     def can_view(self, user):
