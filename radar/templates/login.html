@@ -22,7 +22,7 @@
             {{ form.password.label }}
             {{ form.password(class='form-control') }}
             {{ render_field_errors(form.password) }}
-            <span class="help-block"><a href="#">Forgotten your password?</a></span>
+            <span class="help-block"><a href="{{ url_for('auth.forgot_password') }}">Forgotten your password?</a></span>
         {% endcall %}
 
         <button type="submit" class="btn btn-primary">Login</button>

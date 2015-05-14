@@ -69,7 +69,7 @@
                         {% call render_field_group(login_form.password) %}
                             {{ login_form.password.label }}
                             {{ login_form.password(class='form-control') }}
-                            <span class="help-block"><a href="#">Forgotten your password?</a></span>
+                            <span class="help-block"><a href="{{ url_for('auth.forgot_password') }}">Forgotten your password?</a></span>
                         {% endcall %}
 
                         <button type="submit" class="btn btn-primary">Login</button>

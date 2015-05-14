@@ -7,7 +7,7 @@ bp = Blueprint('auth', __name__)
 
 
 def require_login():
-    if request.endpoint not in ['radar.index', 'auth.login', 'static'] and not current_user.is_authenticated():
+    if request.endpoint not in ['radar.index', 'auth.login', 'auth.forgot_password', 'auth.reset_password', 'static'] and not current_user.is_authenticated():
         return current_app.login_manager.unauthorized()
 
 
@@ -35,3 +35,13 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('radar.index'))
+
+
+@bp.route('/forgot-password/', methods=['GET', 'POST'])
+def forgot_password():
+    return render_template('forgot_password.html')
+
+
+@bp.route('/reset-password/', methods=['GET', 'POST'])
+def reset_password():
+    return render_template('reset_password.html')
