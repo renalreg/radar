@@ -20,6 +20,12 @@ class UserQueryBuilder(object):
     def email(self, email):
         self.query = self.query.filter(User.email.ilike(email + '%'))
 
+    def first_name(self, first_name):
+        self.query = self.query.filter(User.first_name.ilike(first_name + '%'))
+
+    def last_name(self, last_name):
+        self.query = self.query.filter(User.last_name.ilike(last_name + '%'))
+
     def unit(self, unit_id):
         self.query = self.query\
             .outerjoin(User.units)\

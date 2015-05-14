@@ -19,6 +19,8 @@ ORDER_BY = {
     'id': User.id,
     'username': User.username,
     'email': User.email,
+    'first_name': User.first_name,
+    'last_name': User.last_name,
 }
 
 
@@ -48,6 +50,12 @@ def view_user_list():
 
         if form.email.data:
             builder.email(form.email.data)
+
+        if form.first_name.data:
+            builder.first_name(form.first_name.data)
+
+        if form.last_name.data:
+            builder.last_name(form.last_name.data)
 
         # Filter by disease group access
         if form.disease_group_id.data:

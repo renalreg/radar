@@ -11,7 +11,7 @@
 
     {% for demographics in demographics_list %}
         {% call render_panel(demographics.facility.name, 'panel-default') %}
-            <table class="table demographics">
+            <table class="table kv">
                 {% if patient.can_view_demographics(current_user) %}
                     <tr>
                         <th width="20%">First Name</th>

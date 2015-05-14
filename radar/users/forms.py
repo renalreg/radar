@@ -20,6 +20,8 @@ class UnitRoleForm(Form):
 class UserSearchForm(Form):
     username = StringField(validators=[Optional()])
     email = StringField(validators=[Optional()])
+    first_name = StringField(validators=[Optional()])
+    last_name = StringField(validators=[Optional()])
     unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[Optional()])
     disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[Optional()])
 

@@ -18,6 +18,8 @@ class User(db.Model):
     username = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
 
     units = relationship('UnitUser', back_populates='user')

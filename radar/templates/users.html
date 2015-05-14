@@ -15,6 +15,8 @@
                 <form method="GET">
                     {{ render_field(form.username) }}
                     {{ render_field(form.email) }}
+                    {{ render_field(form.first_name) }}
+                    {{ render_field(form.last_name) }}
 
                     {% if disease_groups %}
                         {{ render_field(form.disease_group_id) }}
@@ -43,6 +45,8 @@
                             <th>{{ render_sortable_column(ordering, 'id', 'ID') }}</th>
                             <th>{{ render_sortable_column(ordering, 'username', 'Username') }}</th>
                             <th>{{ render_sortable_column(ordering, 'email', 'Email') }}</th>
+                            <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
+                            <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
                             <th>Disease Groups</th>
                             <th>Units</th>
                         </tr>
@@ -54,6 +58,8 @@
                                 <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.id }}</a></td>
                                 <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
                                 <td>{{ user.email }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
 
                                 <td>
                                     {% if user_data.disease_groups %}

@@ -7,6 +7,33 @@
 {% block content %}
     <h1 class="page-header">{{ user.username }}</h1>
 
+    <table class="table kv">
+        <tr>
+            <th width="20%">Username</th>
+            <td>{{ user.username }}</td>
+        </tr>
+
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+
+        <tr>
+            <th>First Name</th>
+            <td>{{ user.first_name }}</td>
+        </tr>
+
+        <tr>
+            <th>Last Name</th>
+            <td>{{ user.last_name }}</td>
+        </tr>
+
+        <tr>
+            <th>Admin</th>
+            <td>{% if user.is_admin %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
+        </tr>
+    </table>
+
     {% call render_panel('Disease Groups', 'panel-default') %}
         <table class="table table-striped">
             <thead>
