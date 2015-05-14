@@ -34,7 +34,7 @@ def view_genetics(patient_id, disease_group_id):
 
     read_only = not genetics.can_edit(current_user)
 
-    form = GeneticsForm(obj=genetics, sample_sent=(genetics is not None))
+    form = GeneticsForm(obj=genetics, sample_sent=(genetics.sample_sent_date is not None))
 
     if form.validate_on_submit():
         if read_only:
