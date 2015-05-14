@@ -1,0 +1,49 @@
+{% extends 'patient/base.html' %}
+
+{% set current_patient_page = 'hospitalisations' %}
+
+{% block content %}
+    <h1 class="page-header">Hospitalisation</h1>
+
+    <p><a href="{{ url_for('hospitalisation.add_hospitalisation', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
+
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date of Admission</th>
+                <th>Date of Discharge</th>
+                <th>Reason for Admission</th>
+                <th>Comments</th>
+                <th>Source</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if hospitalisations %}
+                {% for hospitalisation in hospitalisations %}
+                    <tr>
+                        <td>
+                            {% if hospitalisation.can_edit(current_user) %}
+                                <a href="{{ url_for('hospitalisation.edit_hospitalisation', patient_id=patient.id, hospitalisation_id=hospitalisation.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                            {% elif hospitalisation.can_view(current_user) %}
+                                <a href="{{ url_for('hospitalisation.view_hospitalisation', patient_id=patient.id, hospitalisation_id=hospitalisation.id) }}" class="btn btn-primary btn-xs">View</a>
+                            {% endif %}
+                        </td>
+                        <td>{{ hospitalisation.date_of_admission | date_format | missing }}</td>
+                        <td>{{ hospitalisation.date_of_discharge | date_format | missing }}</td>
+                        <td>{{ hospitalisation.reason_for_admission | missing }}</td>
+                        <td>{{ hospitalisation.comments | missing }}</td>
+                        <td>{{ hospitalisation.unit.name }}</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7">No hospitalisations.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
