@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, redirect, request, url_for, render_template, current_app
 from flask_login import login_user, logout_user, current_user
+from radar.auth.constants import PUBLIC_ENDPOINTS
 from radar.auth.forms import LoginForm
 from radar.auth.services import check_login
 
@@ -7,7 +8,7 @@ bp = Blueprint('auth', __name__)
 
 
 def require_login():
-    if request.endpoint not in ['radar.index', 'auth.login', 'auth.forgot_password', 'auth.reset_password', 'static'] and not current_user.is_authenticated():
+    if request.endpoint not in PUBLIC_ENDPOINTS and not current_user.is_authenticated():
         return current_app.login_manager.unauthorized()
 
 
