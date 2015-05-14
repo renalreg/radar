@@ -1,3 +1,4 @@
+from datetime import date
 from markupsafe import Markup
 import re
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
@@ -7,16 +8,25 @@ from flask_wtf import Form
 
 
 class RadarDateField(DateField):
-    def __init__(self, label=None, widget=None, format="%d/%m/%Y", **kwargs):
+    def __init__(self, label=None, widget=None, **kwargs):
         if widget is None:
             widget = RadarDateInput()
 
-        super(RadarDateField, self).__init__(label, widget=widget, format=format, **kwargs)
+        super(RadarDateField, self).__init__(label, widget=widget, format="%d/%m/%Y", **kwargs)
 
 
 class RadarDOBField(RadarDateField):
-    def __init__(self, label="Date of Birth", **kwargs):
-        super(RadarDOBField, self).__init__(label, **kwargs)
+    def __init__(self, label="Date of Birth", widget=None, **kwargs):
+        if widget is None:
+            widget = RadarDOBInput()
+
+        super(RadarDOBField, self).__init__(label, widget=widget, **kwargs)
+
+    def process_formdata(self, valuelist):
+        super(RadarDOBField, self).process_formdata(valuelist)
+
+        if self.data and self.data > date.today():
+            raise ValidationError("Can't be in the future.")
 
 
 class RadarDateInput(TextInput):
@@ -24,10 +34,18 @@ class RadarDateInput(TextInput):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')
         kwargs['class'] = u'%s %s' % (c, 'datepicker')
 
-        # TODO shouldn't be hardcoded
         kwargs['data-date-format'] = 'dd/mm/yy'
+        kwargs.setdefault('placeholder', 'DD/MM/YYYY')
 
         return super(RadarDateInput, self).__call__(field, **kwargs)
+
+
+class RadarDOBInput(RadarDateInput):
+    def __call__(self, field, **kwargs):
+        # Can't be in the future
+        kwargs['data-max-date'] = '0D'
+
+        return super(RadarDOBInput, self).__call__(field, **kwargs)
 
 
 class RadarSelectField(SelectField):

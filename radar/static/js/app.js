@@ -1,11 +1,26 @@
 $(function() {
     $('.datepicker').each(function () {
-        var options = {};
+        var options = {
+            changeMonth: true,
+            changeYear: true,
+        };
 
         var dateFormat = $(this).attr('data-date-format');
 
         if (dateFormat !== undefined) {
-            options['dateFormat'] = dateFormat;
+            options.dateFormat = dateFormat;
+        }
+
+        var minDate = $(this).attr('data-min-date');
+
+        if (minDate !== undefined) {
+            options.minDate = minDate;
+        }
+
+        var maxDate = $(this).attr('data-max-date');
+
+        if (maxDate !== undefined) {
+            options.maxDate = maxDate;
         }
 
         $(this).datepicker(options);
