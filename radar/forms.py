@@ -220,3 +220,8 @@ def validate_nhs_no(value):
         return False
 
     return True
+
+
+def add_empty_choice(choices):
+    choices.insert(0, ('', ''))
+    return choices

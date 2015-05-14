@@ -1,16 +1,28 @@
 from flask_wtf import Form
-from wtforms import StringField
-from wtforms.validators import InputRequired
+from radar.database import db
+from radar.patients.medications.models import MedicationDoseUnit, MedicationFrequency, MedicationRoute
+from radar.utils import optional_int
+from wtforms import StringField, DecimalField, IntegerField
+from wtforms.validators import InputRequired, Optional
 
-from radar.forms import RadarDateField
+from radar.forms import RadarDateField, RadarSelectField, add_empty_choice
 
 
 class MedicationForm(Form):
-    from_date = RadarDateField(validators=[InputRequired()])
-    to_date = RadarDateField(validators=[InputRequired()])
-    name = StringField(validators=[InputRequired()])
+    def __init__(self, *args, **kwargs):
+        super(MedicationForm, self).__init__(*args, **kwargs)
 
-    def populate_obj(self, obj):
-        obj.from_date = self.from_date.data
-        obj.to_date = self.to_date.data
-        obj.name = self.name.data
+        self.dose_unit_id.choices = add_empty_choice(MedicationDoseUnit.choices(db.session))
+        self.frequency_id.choices = add_empty_choice(MedicationFrequency.choices(db.session))
+        self.route_id.choices = add_empty_choice(MedicationRoute.choices(db.session))
+
+    unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=optional_int)
+
+    from_date = RadarDateField(validators=[InputRequired()])
+    to_date = RadarDateField(validators=[Optional()])
+
+    name = StringField(validators=[InputRequired()])
+    dose_quantity = DecimalField(validators=[InputRequired()])
+    dose_unit_id = RadarSelectField('Dose Unit', validators=[InputRequired()])
+    frequency_id = RadarSelectField('Frequency', validators=[InputRequired()])
+    route_id = RadarSelectField('Route', validators=[InputRequired()])

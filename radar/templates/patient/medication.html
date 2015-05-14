@@ -9,20 +9,36 @@
 {% endif %}
 
 {% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
 
 {% block content %}
-    <h1 class="page-header">Medication</h1>
+    {% if medication.id %}
+        <h1 class="page-header">Edit Medication</h1>
+    {% else %}
+        <h1 class="page-header">New Medication</h1>
+    {% endif %}
 
     {{ render_form_errors(form) }}
 
     <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
+
+        {{ render_field(form.unit_id) }}
+
+        <hr />
+
         {{ render_field(form.from_date) }}
         {{ render_field(form.to_date) }}
         {{ render_field(form.name) }}
+        {{ render_field(form.dose_quantity) }}
+        {{ render_field(form.dose_unit_id) }}
+        {{ render_field(form.frequency_id) }}
+        {{ render_field(form.route_id) }}
 
         {% if not read_only %}
-            <button type="submit" class="btn btn-success">Save</button>
+            {% call render_button() %}
+                <button type="submit" class="btn btn-success">Save</button>
+            {% endcall %}
         {% endif %}
     </form>
 {% endblock %}
