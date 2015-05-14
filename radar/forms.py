@@ -1,8 +1,11 @@
 from datetime import date
+from flask_login import current_user
 from markupsafe import Markup
+from radar.utils import optional_int
 import re
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
     RadioField
+from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
 
@@ -225,3 +228,14 @@ def validate_nhs_no(value):
 def add_empty_choice(choices):
     choices.insert(0, ('', ''))
     return choices
+
+
+class UnitFormMixin(object):
+    def __init__(self, obj=None, *args, **kwargs):
+        super(UnitFormMixin, self).__init__(*args, **kwargs)
+
+        if obj is not None:
+            units = obj.patient.available_units_for_user(current_user)
+            self.unit_id.choices = [(x.unit.id, x.unit.name) for x in units]
+
+    unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=int)

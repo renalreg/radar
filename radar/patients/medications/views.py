@@ -84,9 +84,6 @@ def view_medication(patient_id, medication_id=None):
 
     form = MedicationForm(obj=medication)
 
-    # TODO
-    form.unit_id.choices = [(1, 'Bristol')]
-
     if request.method == 'POST':
         if read_only:
             abort(403)

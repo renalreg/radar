@@ -140,10 +140,14 @@ class Patient(db.Model):
         return False
 
     def filter_units_for_user(self, user):
+        """ Patient units a user can view """
+
         _ = user
         return self.units
 
     def filter_disease_groups_for_user(self, user):
+        """ Patient disease groups a user can view """
+
         # The user can view all of the patient's disease groups if:
         # * The user is an admin
         # * The patient belongs to one of the user's units
@@ -154,6 +158,12 @@ class Patient(db.Model):
             user_disease_groups = set([x.disease_group for x in user.disease_groups])
             common_disease_groups = [x for x in self.disease_groups if x.disease_group in user_disease_groups]
             return common_disease_groups
+
+    def available_units_for_user(self, user):
+        """ Patient units that a user can save data under """
+
+        # TODO intersect patient units with user units with write permissions
+        return self.units
 
     def in_disease_group(self, disease_group):
         # TODO
