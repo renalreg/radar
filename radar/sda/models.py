@@ -26,6 +26,7 @@ class SDABundle(db.Model):
     sda_medications = relationship('SDAMedication', cascade='all')
     sda_lab_orders = relationship('SDALabOrder', cascade='all')
     sda_procedures = relationship('SDAProcedure', cascade='all')
+    sda_encounters = relationship('SDAEncounter', cascade='all')
 
     def serialize(self):
         if self.sda_patient is not None:
@@ -38,6 +39,9 @@ class SDABundle(db.Model):
             x.serialize()
 
         for x in self.sda_procedures:
+            x.serialize()
+
+        for x in self.sda_encounters:
             x.serialize()
 
 
@@ -309,6 +313,20 @@ class SDALabResult(db.Model):
 
 class SDAProcedure(db.Model):
     __tablename__ = 'sda_procedures'
+
+    id = Column(Integer, primary_key=True)
+
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle = relationship('SDABundle')
+
+    data = Column(JSONB, nullable=False)
+
+    def serialize(self):
+        self.data = serialize_jsonb(self.data)
+
+
+class SDAEncounter(db.Model):
+    __tablename__ = 'sda_encounters'
 
     id = Column(Integer, primary_key=True)
 
