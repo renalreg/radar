@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION parse_date_to_lower(date_str text) RETURNS timestampt
 		(date_str || ':00:00')::timestamptz
 	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d$' THEN
 		(date_str || ':00')::timestamptz
-	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d:\d\d(\.\d+)?((\+|\-)\d\d:\d\d)?$' THEN -- full date
+	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d:\d\d(\.\d+)?((\+|\-)\d\d:\d\d)?$' THEN
 		date_str::timestamptz
 	ELSE
 		NULL
@@ -43,7 +43,7 @@ CREATE OR REPLACE FUNCTION parse_date_to_upper(date_str text) RETURNS timestampt
 		(date_str || ':59:59')::timestamptz
 	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d$' THEN
 		(date_str || ':59')::timestamptz
-	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d:\d\d(\.\d+)?((\+|\-)\d\d:\d\d)?$' THEN -- full date
+	WHEN date_str ~ '^\d\d\d\d-\d\d-\d\d( |T)\d\d:\d\d:\d\d(\.\d+)?((\+|\-)\d\d:\d\d)?$' THEN
 		date_str::timestamptz
 	ELSE
 		NULL
