@@ -5,13 +5,11 @@ from flaskext.markdown import Markdown
 
 from radar.auth.services import load_user
 from radar.auth.views import require_login
-from radar.disease_groups.services import get_disease_groups_for_user
-from radar.forms import DeleteForm
+from radar.context_processors import inject_navigation, inject_delete_form
 from radar.models import CreatedModifiedMixin
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.template_filters import datetime_format, nl2br, date_format, missing
-from radar.units.services import get_units_for_user
 from radar.views import bp as radar_bp
 from radar.patients.diagnosis.views import bp as diagnosis_bp
 from radar.disease_groups.views import bp as disease_groups_bp
@@ -86,19 +84,8 @@ def create_app(config_filename):
     app.add_template_global(url_for_page)
     app.add_template_global(url_for_per_page)
 
-    @app.context_processor
-    def inject_navigation():
-        navigation = dict()
-
-        if current_user.is_authenticated():
-            navigation['units'] = get_units_for_user(current_user)
-            navigation['disease_groups'] = get_disease_groups_for_user(current_user)
-
-        return dict(navigation=navigation)
-
-    @app.context_processor
-    def inject_delete_form():
-        return dict(delete_form=DeleteForm())
+    app.context_processor(inject_navigation)
+    app.context_processor(inject_delete_form)
 
     # Automatically set the created_user and modified_user
     @event.listens_for(SignallingSession, 'before_flush')
