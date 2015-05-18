@@ -14,6 +14,7 @@ class Patient(db.Model):
 
     registered_user_id = Column(Integer, ForeignKey('users.id'))
     registered_date = Column(DateTime(timezone=False), default=datetime.now)
+    registered_unit_id = Column(Integer, ForeignKey('units.id'))
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
