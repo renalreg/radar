@@ -3,7 +3,7 @@ from wtforms.validators import Optional, InputRequired, Email, DataRequired
 from flask_wtf import Form
 
 from radar.forms import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarPostcodeField, \
-    RadarDOBField
+    RadarDOBField, RadarDODField
 from radar.ordering import ASCENDING, DESCENDING
 from radar.utils import optional_int
 
@@ -25,7 +25,10 @@ class DemographicsForm(Form):
     last_name = StringField(validators=[InputRequired()])
 
     # TODO validation
-    date_of_birth = RadarDOBField()
+    date_of_birth = RadarDOBField(validators=[InputRequired()])
+
+    # TODO validation
+    date_of_death = RadarDateField('Date of Death', validators=[Optional()])
 
     gender = RadarSelectField(choices=[('', ''), (1, 'Male'), (2, 'Female')], coerce=optional_int, validators=[InputRequired()])
 

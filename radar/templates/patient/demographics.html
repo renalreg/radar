@@ -36,6 +36,17 @@
                 </tr>
 
                 <tr>
+                    <th>Date of Death</th>
+                    <td>
+                        {% if patient.can_view_demographics(current_user) %}
+                            {{ demographics.date_of_death | date_format | missing }}
+                        {% else %}
+                            {{ demographics.date_of_death | datetime_format('%Y') | missing }}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
                     <th>Gender</th>
                     <td>{{ demographics.gender | missing }}</td>
                 </tr>

@@ -85,6 +85,10 @@ class SDAPatient(db.Model):
         return get_path_as_datetime(self.data, ['birth_time'])
 
     @hybrid_property
+    def date_of_death(self):
+        return get_path_as_datetime(self.data, ['death_time'])
+
+    @hybrid_property
     def gender(self):
         gender = get_path_as_text(self.data, ['gender', 'code']).upper()
 
@@ -114,6 +118,10 @@ class SDAPatient(db.Model):
     @date_of_birth.expression
     def date_of_birth(cls):
         return func.parse_date_to_lower(SDAPatient.data['birth_time'].astext)
+
+    @date_of_death.expression
+    def date_of_death(cls):
+        return func.parse_date_to_lower(SDAPatient.data['death_time'].astext)
 
     @gender.expression
     def gender(cls):

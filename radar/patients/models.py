@@ -183,6 +183,7 @@ class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):
     first_name = Column(String)
     last_name = Column(String)
     date_of_birth = Column(Date)
+    date_of_death = Column(Date)
     gender = Column(Integer)
 
     # TODO

@@ -126,6 +126,7 @@ def view_demographics_list(patient_id):
         demographics['first_name'] = sda_patient.first_name
         demographics['last_name'] = sda_patient.last_name
         demographics['date_of_birth'] = sda_patient.date_of_birth
+        demographics['date_of_death'] = sda_patient.date_of_death
 
         if sda_patient.gender == 'M':
             demographics['gender'] = 'Male'

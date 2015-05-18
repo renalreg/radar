@@ -32,6 +32,9 @@ class RadarDOBField(RadarDateField):
             raise ValidationError("Can't be in the future.")
 
 
+RadarDODField = RadarDOBField
+
+
 class RadarDateInput(TextInput):
     def __call__(self, field, **kwargs):
         c = kwargs.pop('class', '') or kwargs.pop('class_', '')

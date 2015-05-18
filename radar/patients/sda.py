@@ -30,6 +30,9 @@ def demographics_to_sda_bundle(demographics):
         }
     }
 
+    if demographics.date_of_death:
+        sda_patient.data['death_time'] = demographics.date_of_death
+
     sda_bundle.sda_patient = sda_patient
 
     sda_patient_address = SDAPatientAddress()
