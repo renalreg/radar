@@ -1,0 +1,75 @@
+{% extends 'patient/base.html' %}
+
+{% set current_patient_page = 'dialysis' %}
+
+{% if read_only %}
+    {% from 'macros/forms.html' import render_horizontal_field_read_only as render_field %}
+{% else %}
+    {% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% endif %}
+
+{% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+
+{% block content %}
+    <h1>Dialysis</h1>
+
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date Started</th>
+                <th>Date Stopped</th>
+                <th>Dialysis Type</th>
+                <th></th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            {% for dialysis in dialysis_list %}
+                <tr>
+                    <td>
+                        {% if dialysis.can_edit(current_user) %}
+                            <a href="{{ url_for('dialysis.edit_dialysis', patient_id=patient.id, dialysis_id=dialysis.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% elif dialysis.can_view(current_user) %}
+                            <a href="{{ url_for('dialysis.view_dialysis', patient_id=patient.id, dialysis_id=dialysis.id) }}" class="btn btn-primary btn-xs">View</a>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ dialysis.date_started | date_format | missing }}</td>
+                    <td>{{ dialysis.date_started | date_format | missing }}</td>
+                    <td>{{ dialysis.dialysis_type.name | missing }}</td>
+
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if dialysis.id %}
+        <h2>Edit Dialysis</h2>
+    {% else %}
+        <h2>New Dialysis</h2>
+    {% endif %}
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST" class="form-horizontal">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.unit_id) }}
+
+        <hr />
+
+        {{ render_field(form.date_started) }}
+        {{ render_field(form.date_stopped) }}
+        {{ render_field(form.dialysis_type_id) }}
+
+        {% if not read_only %}
+            {% call render_button() %}
+                <button type="submit" class="btn btn-success">Save</button>
+            {% endcall %}
+        {% endif %}
+    </form>
+{% endblock %}

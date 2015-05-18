@@ -26,4 +26,4 @@ class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
 
 
 class DialysisType(db.Model, LookupTableMixin):
-    __table_name__ = 'dialysis_types'
+    __tablename__ = 'dialysis_types'
