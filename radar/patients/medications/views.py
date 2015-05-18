@@ -16,6 +16,72 @@ from radar.utils import get_path_as_text, get_path_as_datetime
 bp = Blueprint('medications', __name__)
 
 
+class MedicationProxy(object):
+    def __init__(self, sda_medication):
+        self.sda_medication = sda_medication
+
+    @property
+    def id(self):
+        return self.sda_medication.id
+
+    @property
+    def name(self):
+        return get_path_as_text(self.sda_medication.data, ['order_item', 'description'])
+
+    @property
+    def from_date(self):
+        return get_path_as_datetime(self.sda_medication.data, ['from_time'])
+
+    @property
+    def to_date(self):
+        return get_path_as_datetime(self.sda_medication.data, ['to_time'])
+
+    @property
+    def dose_quantity(self):
+        return get_path_as_text(self.sda_medication.data, ['dose_quantity'])
+
+    @property
+    def dose_unit(self):
+        return get_path_as_text(self.sda_medication.data, ['dose_uom', 'description'])
+
+    @property
+    def frequency(self):
+        return get_path_as_text(self.sda_medication.data, ['frequency', 'description'])
+
+    @property
+    def route(self):
+        return get_path_as_text(self.sda_medication.data, ['route', 'description'])
+
+    @property
+    def source(self):
+        return get_path_as_text(self.sda_medication.data, ['entering_organization', 'description'])
+
+    @property
+    def _data_source(self):
+        return self.sda_medication.sda_bundle.data_source
+
+    @property
+    def view_url(self):
+        if self._data_source.can_view(current_user):
+            return self._data_source.view_url()
+        else:
+            return None
+
+    @property
+    def edit_url(self):
+        if self._data_source.can_edit(current_user):
+            return self._data_source.view_url()
+        else:
+            return None
+
+    @property
+    def delete_url(self):
+        if self._data_source.can_edit(current_user):
+            return self._data_source.view_url()
+        else:
+            return None
+
+
 @bp.route('/')
 def view_medication_list(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -33,29 +99,8 @@ def view_medication_list(patient_id):
     medications = []
 
     for sda_medication in sda_medications:
-        data_source = sda_medication.sda_bundle.data_source
-
-        medication = dict()
-        medication['id'] = sda_medication.id
-        medication['name'] = get_path_as_text(sda_medication.data, ['order_item', 'description'])
-        medication['from_date'] = get_path_as_datetime(sda_medication.data, ['from_time'])
-        medication['to_date'] = get_path_as_datetime(sda_medication.data, ['to_time'])
-        medication['dose_quantity'] = get_path_as_text(sda_medication.data, ['dose_quantity'])
-        medication['dose_unit'] = get_path_as_text(sda_medication.data, ['dose_uom', 'description'])
-        medication['frequency'] = get_path_as_text(sda_medication.data, ['frequency', 'description'])
-        medication['route'] = get_path_as_text(sda_medication.data, ['route', 'description'])
-        medication['source'] = get_path_as_text(sda_medication.data, ['entering_organization', 'description'])
-
-        if data_source.can_view(current_user):
-            medication['view_url'] = data_source.view_url()
-
-        if data_source.can_edit(current_user):
-            medication['edit_url'] = data_source.edit_url()
-
-        if data_source.can_edit(current_user):
-            medication['delete_url'] = data_source.delete_url()
-
-        medications.append(medication)
+        medication_proxy = MedicationProxy(sda_medication)
+        medications.append(medication_proxy)
 
     context = dict(
         medications=medications,
