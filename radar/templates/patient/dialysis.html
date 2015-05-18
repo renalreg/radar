@@ -21,7 +21,7 @@
                 <th>Date Started</th>
                 <th>Date Stopped</th>
                 <th>Dialysis Type</th>
-                <th></th>
+                <th>Source</th>
             </tr>
 
         </thead>
@@ -40,6 +40,7 @@
                     <td>{{ dialysis.date_started | date_format | missing }}</td>
                     <td>{{ dialysis.date_started | date_format | missing }}</td>
                     <td>{{ dialysis.dialysis_type.name | missing }}</td>
+                    <td>{{ dialysis.unit.name }}</td>
 
                     <td></td>
                 </tr>
