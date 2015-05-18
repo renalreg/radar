@@ -2,6 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
+from radar.error_handlers import page_not_found, forbidden
 from sqlalchemy import event
 
 from radar.auth.services import load_user
@@ -89,6 +90,10 @@ def create_app(config_filename):
     # Register context processors (data available in all templates)
     app.context_processor(inject_navigation)
     app.context_processor(inject_delete_form)
+
+    # Register error handlers
+    app.register_error_handler(403, forbidden)
+    app.register_error_handler(404, page_not_found)
 
     # Automatically set the created_user and modified_user
     event.listen(SignallingSession, 'before_flush', receive_before_flush)
