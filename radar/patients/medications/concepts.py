@@ -31,8 +31,6 @@ class MedicationToMedicationConcept(object):
             errors['frequency_id'].extend(self.medication_concept.errors['frequency'])
             errors['route_id'].extend(self.medication_concept.errors['route'])
 
-            print self.medication_concept.errors
-
         return valid, errors
 
     def to_sda(self, sda_bundle):

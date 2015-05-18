@@ -1,11 +1,11 @@
 from radar.concepts.core import Concept
+from radar.sda.models import SDAEncounter
 from radar.validators import required, not_empty
 
 
 class DialysisConcept(Concept):
     validators = {
         'from_date': [required],
-        'to_date': [not_empty],
         'dialysis_type': [required],
     }
 
@@ -26,4 +26,25 @@ class DialysisConcept(Concept):
         return not self.errors
 
     def to_sda(self, sda_bundle):
-        pass
+        sda_encounter = SDAEncounter()
+
+        data = {
+            'from_time': self.from_date,
+            'admit_reason': {
+                'sda_coding_standard': 'RADAR',
+                'code': self.dialysis_type.id,
+                'description': self.dialysis_type.name,
+            },
+            'publicity_code': {
+                'sda_coding_standard': 'RADAR',
+                'code': self.dialysis_type.id,
+                'description': self.dialysis_type.name,
+            }
+        }
+
+        if self.to_date is not None:
+            data['to_time'] = self.to_date
+
+        sda_encounter.data = data
+
+        sda_bundle.sda_encounters.append(sda_encounter)
