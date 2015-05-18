@@ -8,6 +8,8 @@ bp = Blueprint('auth', __name__)
 
 
 def require_login():
+    """ Makes sure the user is logged in """
+
     if request.endpoint not in PUBLIC_ENDPOINTS and not current_user.is_authenticated():
         return current_app.login_manager.unauthorized()
 

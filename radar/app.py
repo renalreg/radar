@@ -1,14 +1,15 @@
 from flask import Flask
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
+from sqlalchemy import event
 
 from radar.auth.services import load_user
 from radar.auth.views import require_login
 from radar.context_processors import inject_navigation, inject_delete_form
-from radar.models import CreatedModifiedMixin
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
+from radar.sqlalchemy_events import receive_before_flush
 from radar.template_filters import datetime_format, nl2br, date_format, missing
 from radar.views import bp as radar_bp
 from radar.patients.diagnosis.views import bp as diagnosis_bp
@@ -29,7 +30,6 @@ from radar.patients.transplants.views import bp as transplants_bp
 from radar.patients.salt_wasting.views import bp as salt_wasting_bp
 from radar.patients.plasmapheresis.views import bp as plasmapheresis_bp
 from radar.database import db
-from sqlalchemy import event
 
 
 def create_app(config_filename):
@@ -75,30 +75,22 @@ def create_app(config_filename):
 
     app.before_request(require_login)
 
+    # Register template filters
     app.add_template_filter(date_format)
     app.add_template_filter(datetime_format)
     app.add_template_filter(nl2br)
     app.add_template_filter(missing)
 
+    # Register template globals/functions
     app.add_template_global(url_for_order_by)
     app.add_template_global(url_for_page)
     app.add_template_global(url_for_per_page)
 
+    # Register context processors (data available in all templates)
     app.context_processor(inject_navigation)
     app.context_processor(inject_delete_form)
 
     # Automatically set the created_user and modified_user
-    @event.listens_for(SignallingSession, 'before_flush')
-    def receive_before_flush(session, flush_context, instances):
-        for obj in session.new:
-            if isinstance(obj, CreatedModifiedMixin):
-                if obj.created_user is None:
-                    obj.created_user = current_user
-
-                obj.modified_user = current_user
-
-        for obj in session.dirty:
-            if isinstance(obj, CreatedModifiedMixin):
-                obj.modified_user = current_user
+    event.listen(SignallingSession, 'before_flush', receive_before_flush)
 
     return app
