@@ -14,15 +14,15 @@ class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
 
+    __mapper_args__ = {
+        'polymorphic_identity': 'dialysis',
+    }
+
     def can_view(self, user):
         return self.patient.can_view(user)
 
     def can_edit(self, user):
         return self.patient.can_edit(user)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'dialysis',
-    }
 
 
 class DialysisType(db.Model, LookupTableMixin):
