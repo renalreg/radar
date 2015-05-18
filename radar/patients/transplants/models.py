@@ -25,4 +25,4 @@ class Transplant(DataSource, PatientMixin, CreatedModifiedMixin):
 
 
 class TransplantTypes(db.Model, LookupTableMixin):
-    __table_name__ = 'transplant_types'
+    __tablename__ = 'transplant_types'
