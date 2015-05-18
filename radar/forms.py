@@ -173,8 +173,10 @@ class RadarYesNoWidget(object):
 
         html = []
 
-        for value, label in [('y', 'Yes'), ('n', 'No')]:
-            html_attributes['checked'] = field._value() == value
+        for value, label in [('y', 'Yes'), ('n', 'No'), ('', 'Not Answered')]:
+            field_value = field._value()
+            checked = field_value == value or (value == '' and field_value is None)
+            html_attributes['checked'] = checked
             html_attributes['value'] = value
             input_tag = '<input type="radio" {} />\n'.format(html_params(**html_attributes))
             html.append('<label class="radio-inline">%s %s</label>' % (input_tag, label))

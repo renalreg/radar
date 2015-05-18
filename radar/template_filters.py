@@ -28,3 +28,12 @@ def missing(value):
         return '-'
     else:
         return value
+
+
+def yn(value):
+    if value is None:
+        return None
+    elif value:
+        return 'Yes'
+    else:
+        return 'No'

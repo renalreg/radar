@@ -66,4 +66,5 @@ def view_dialysis_list(patient_id, dialysis_id=None):
 
 @bp.route('/<int:dialysis_id>/delete/')
 def delete_dialysis(patient_id, dialysis_id):
+    # TODO
     pass

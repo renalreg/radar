@@ -11,7 +11,7 @@ from radar.context_processors import inject_navigation, inject_delete_form
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.sqlalchemy_events import receive_before_flush
-from radar.template_filters import datetime_format, nl2br, date_format, missing
+from radar.template_filters import datetime_format, nl2br, date_format, missing, yn
 from radar.views import bp as radar_bp
 from radar.patients.diagnosis.views import bp as diagnosis_bp
 from radar.disease_groups.views import bp as disease_groups_bp
@@ -81,6 +81,7 @@ def create_app(config_filename):
     app.add_template_filter(datetime_format)
     app.add_template_filter(nl2br)
     app.add_template_filter(missing)
+    app.add_template_filter(yn)
 
     # Register template globals/functions
     app.add_template_global(url_for_order_by)
