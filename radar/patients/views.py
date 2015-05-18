@@ -80,6 +80,12 @@ def view_patient_list():
         if form.year_of_birth.data:
             builder.year_of_birth(form.year_of_birth.data)
 
+        if form.date_of_death.data:
+            builder.date_of_death(form.date_of_death.data)
+
+        if form.year_of_death.data:
+            builder.year_of_death(form.year_of_death.data)
+
         builder.order_by(form.order_by.data, form.order_direction.data)
 
     query = builder.build()

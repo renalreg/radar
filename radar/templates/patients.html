@@ -13,6 +13,11 @@
                 <h2>Search</h2>
 
                 <form method="GET">
+                    <p>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="{{ url_for('patients.view_patient_list') }}" class="btn btn-link">Reset</a>
+                    </p>
+
                     {{ render_field(form.radar_id) }}
 
                     {% if current_user.has_view_demographics_permission %}
@@ -28,6 +33,12 @@
                     {% endif %}
 
                     {{ render_field(form.year_of_birth) }}
+
+                    {% if current_user.has_view_demographics_permission %}
+                        {{ render_field(form.date_of_death) }}
+                    {% endif %}
+
+                    {{ render_field(form.year_of_death) }}
 
                     {{ render_field(form.gender) }}
 

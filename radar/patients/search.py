@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 
-from sqlalchemy import or_, case, desc, func
+from sqlalchemy import or_, case, desc, func, and_
 from sqlalchemy.orm import aliased
 
 from radar.users.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
@@ -33,11 +33,6 @@ class PatientQueryBuilder():
         self.query = self.query.filter(filter_by_last_name(last_name))
         return self
 
-    def date_of_birth(self, date_of_birth):
-        self.filtering_by_demographics = True
-        self.query = self.query.filter(filter_by_date_of_birth(date_of_birth))
-        return self
-
     def gender(self, gender):
         self.filtering_by_demographics = True
         self.query = self.query.filter(filter_by_gender(gender))
@@ -52,8 +47,22 @@ class PatientQueryBuilder():
         self.query = self.query.filter(filter_by_radar_id(radar_id))
         return self
 
+    def date_of_birth(self, value):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_date_of_birth(value))
+        return self
+
     def year_of_birth(self, value):
         self.query = self.query.filter(filter_by_year_of_birth(value))
+        return self
+
+    def date_of_death(self, value):
+        self.filtering_by_demographics = True
+        self.query = self.query.filter(filter_by_date_of_death(value))
+        return self
+
+    def year_of_death(self, value):
+        self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
     def unit(self, unit):
@@ -149,11 +158,19 @@ def filter_by_last_name(last_name):
     return or_(patient_filter, alias_filter)
 
 
-def filter_by_date_of_birth(date_of_birth):
-    return sda_patient_sub_query(
-        SDAPatient.date_of_birth >= date_of_birth,
-        SDAPatient.date_of_birth < date_of_birth + timedelta(days=1)
+def _date_filter(column, date):
+    return and_(
+        column >= date,
+        column < date + timedelta(days=1)
     )
+
+
+def filter_by_date_of_birth(date_of_birth):
+    return sda_patient_sub_query(_date_filter(SDAPatient.date_of_birth, date_of_birth))
+
+
+def filter_by_date_of_death(date_of_death):
+    return sda_patient_sub_query(_date_filter(SDAPatient.date_of_death, date_of_death))
 
 
 def filter_by_patient_number(number):
@@ -175,11 +192,19 @@ def filter_by_gender(gender_code):
     return sda_patient_sub_query(SDAPatient.gender == gender_code)
 
 
-def filter_by_year_of_birth(year):
-    return sda_patient_sub_query(
-        SDAPatient.date_of_birth >= datetime(year, 1, 1),
-        SDAPatient.date_of_birth < datetime(year + 1, 1, 1)
+def _year_filter(column, year):
+    return and_(
+        column >= datetime(year, 1, 1),
+        column < datetime(year + 1, 1, 1)
     )
+
+
+def filter_by_year_of_birth(year):
+    return sda_patient_sub_query(_year_filter(SDAPatient.date_of_birth, year))
+
+
+def filter_by_year_of_death(year):
+    return sda_patient_sub_query(_year_filter(SDAPatient.date_of_death, year))
 
 
 def filter_by_nhs_no(nhs_no):

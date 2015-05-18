@@ -54,18 +54,26 @@ class DemographicsForm(Form):
 
 
 class PatientSearchForm(Form):
+    radar_id = IntegerField('RaDaR ID', validators=[Optional()])
+
     first_name = StringField()
     last_name = StringField()
+    gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
+
+    patient_number = StringField()
+
     unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[Optional()])
     disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[Optional()])
+
     date_of_birth = RadarDateField('Date of Birth', validators=[Optional()])
-    patient_number = StringField()
-    gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
-    radar_id = IntegerField('RaDaR ID', validators=[Optional()])
     year_of_birth = IntegerField('Year of Birth', validators=[Optional()])
+    date_of_death = RadarDateField('Date of Death', validators=[Optional()])
+    year_of_death = IntegerField('Year of Death', validators=[Optional()])
+
     order_by = RadarSelectField(choices=ORDER_BY_CHOICES)
     order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING)
-    per_page = RadarSelectField(coerce=int, default=50, choices=PER_PAGE_CHOICES)
+
+    per_page = RadarSelectField(coerce=int, default=PER_PAGE_DEFAULT, choices=PER_PAGE_CHOICES)
     page = IntegerField()
 
 
