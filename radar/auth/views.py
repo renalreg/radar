@@ -40,6 +40,11 @@ def logout():
     return redirect(url_for('radar.index'))
 
 
+@bp.route('/forgot-username/', methods=['GET', 'POST'])
+def forgot_username():
+    return render_template('forgot_username.html')
+
+
 @bp.route('/forgot-password/', methods=['GET', 'POST'])
 def forgot_password():
     return render_template('forgot_password.html')

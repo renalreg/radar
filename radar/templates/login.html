@@ -16,7 +16,12 @@
     <form method="POST">
         {{ form.hidden_tag() }}
 
-        {{ render_field(form.username) }}
+        {% call render_field_group(form.username) %}
+            {{ form.username.label }}
+            {{ form.username(class='form-control') }}
+            {{ render_field_errors(form.username) }}
+            <span class="help-block"><a href="{{ url_for('auth.forgot_username') }}">Forgotten your username?</a></span>
+        {% endcall %}
 
         {% call render_field_group(form.password) %}
             {{ form.password.label }}
