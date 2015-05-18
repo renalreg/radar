@@ -9,8 +9,8 @@ class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
-    date_started = Column(Date, nullable=False)
-    date_stopped = Column(Date)
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
 

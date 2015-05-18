@@ -12,6 +12,6 @@ class DialysisForm(UnitFormMixin, Form):
 
         self.dialysis_type_id.choices = add_empty_object_choice(DialysisType.choices(db.session))
 
-    date_started = RadarDateField(validators=[InputRequired()])
-    date_stopped = RadarDateField(validators=[Optional()])
+    from_date = RadarDateField(validators=[InputRequired()])
+    to_date = RadarDateField(validators=[Optional()])
     dialysis_type_id = RadarSelectObjectField('Dialysis Type', validators=[InputRequired()], coerce=optional_int)

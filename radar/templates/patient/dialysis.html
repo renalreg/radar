@@ -18,8 +18,8 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Date Started</th>
-                <th>Date Stopped</th>
+                <th>From Date</th>
+                <th>To Date</th>
                 <th>Dialysis Type</th>
                 <th>Source</th>
             </tr>
@@ -37,8 +37,8 @@
                         {% endif %}
                     </td>
 
-                    <td>{{ dialysis.date_started | date_format | missing }}</td>
-                    <td>{{ dialysis.date_started | date_format | missing }}</td>
+                    <td>{{ dialysis.from_date | date_format | missing }}</td>
+                    <td>{{ dialysis.to_date | date_format | missing }}</td>
                     <td>{{ dialysis.dialysis_type.name | missing }}</td>
                     <td>{{ dialysis.unit.name }}</td>
 
@@ -63,8 +63,8 @@
 
         <hr />
 
-        {{ render_field(form.date_started) }}
-        {{ render_field(form.date_stopped) }}
+        {{ render_field(form.from_date) }}
+        {{ render_field(form.to_date) }}
         {{ render_field(form.dialysis_type_id) }}
 
         {% if not read_only %}

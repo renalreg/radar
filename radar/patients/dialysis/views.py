@@ -43,8 +43,8 @@ def view_dialysis_list(patient_id, dialysis_id=None):
 
         if form.validate():
             dialysis.unit = form.unit_id.obj
-            dialysis.date_started = form.date_started.data
-            dialysis.date_stopped = form.date_stopped.data
+            dialysis.from_date = form.from_date.data
+            dialysis.to_date = form.to_date.data
             dialysis.dialysis_type = form.dialysis_type_id.obj
 
             db.session.add(dialysis)
