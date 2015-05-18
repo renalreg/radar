@@ -13,5 +13,6 @@ def inject_navigation():
 
         return dict(navigation=navigation)
 
+
 def inject_delete_form():
     return dict(delete_form=DeleteForm())
