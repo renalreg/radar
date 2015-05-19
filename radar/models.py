@@ -9,46 +9,6 @@ from sqlalchemy import event
 from radar.database import db
 
 
-class UnitPatient(db.Model):
-    __tablename__ = 'unit_patients'
-
-    id = Column(Integer, primary_key=True)
-
-    unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
-    unit = relationship('Unit')
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    created_date = Column(DateTime(timezone=True), default=datetime.now)
-    created_user_id = Column(Integer, ForeignKey('users.id'))
-    created_user = relationship('User')
-
-    __table_args__ = (
-        UniqueConstraint('unit_id', 'patient_id'),
-    )
-
-
-class DiseaseGroupPatient(db.Model):
-    __tablename__ = 'disease_group_patients'
-
-    id = Column(Integer, primary_key=True)
-
-    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
-    disease_group = relationship('DiseaseGroup')
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    created_date = Column(DateTime(timezone=True), default=datetime.now)
-    created_user_id = Column(Integer, ForeignKey('users.id'))
-    created_user = relationship('User')
-
-    __table_args__ = (
-        UniqueConstraint('disease_group_id', 'patient_id'),
-    )
-
-
 class Facility(db.Model):
     __tablename__ = 'facilities'
 

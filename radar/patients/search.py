@@ -6,10 +6,9 @@ from sqlalchemy.orm import aliased
 from radar.users.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
 from radar.database import db
-from radar.models import UnitPatient, DiseaseGroupPatient
 from radar.units.models import Unit
 from radar.disease_groups.models import DiseaseGroup
-from radar.patients.models import Patient
+from radar.patients.models import Patient, UnitPatient, DiseaseGroupPatient
 from radar.users.models import UnitUser, DiseaseGroupUser
 from radar.ordering import DESCENDING
 from radar.sda.models import SDAPatient, SDABundle, SDAPatientNumber, SDAPatientAlias

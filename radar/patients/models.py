@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
@@ -173,6 +173,46 @@ class Patient(db.Model):
     def in_unit(self, unit):
         # TODO
         return False
+
+
+class UnitPatient(db.Model):
+    __tablename__ = 'unit_patients'
+
+    id = Column(Integer, primary_key=True)
+
+    unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
+    unit = relationship('Unit')
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    created_date = Column(DateTime(timezone=True), default=datetime.now)
+    created_user_id = Column(Integer, ForeignKey('users.id'))
+    created_user = relationship('User')
+
+    __table_args__ = (
+        UniqueConstraint('unit_id', 'patient_id'),
+    )
+
+
+class DiseaseGroupPatient(db.Model):
+    __tablename__ = 'disease_group_patients'
+
+    id = Column(Integer, primary_key=True)
+
+    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
+    disease_group = relationship('DiseaseGroup')
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    created_date = Column(DateTime(timezone=True), default=datetime.now)
+    created_user_id = Column(Integer, ForeignKey('users.id'))
+    created_user = relationship('User')
+
+    __table_args__ = (
+        UniqueConstraint('disease_group_id', 'patient_id'),
+    )
 
 
 class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):

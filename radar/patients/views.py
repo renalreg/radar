@@ -5,8 +5,7 @@ from flask_login import current_user
 
 from radar.database import db
 from radar.disease_groups.models import DiseaseGroup
-from radar.models import UnitPatient, DiseaseGroupPatient
-from radar.patients.models import Patient, Demographics
+from radar.patients.models import Patient, Demographics, UnitPatient, DiseaseGroupPatient
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
 from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
