@@ -33,7 +33,7 @@
 
         <div class="col-md-9">
             <div class="block">
-                <h1 class="page-header">Users</h1>
+                <h1 class="page-header">Users <small>{{ pagination.total }} {% if pagination.total == 1 %}user{% else %}users{% endif %}</small></h1>
 
                 {% if current_user.has_add_user_permission %}
                     <p><a href="{{ url_for('users.add_user') }}" class="btn btn-primary">Add User</a></p>
