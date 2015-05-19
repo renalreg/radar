@@ -194,6 +194,10 @@ class UnitPatient(db.Model, CreatedModifiedMixin):
         UniqueConstraint('unit_id', 'patient_id'),
     )
 
+    def can_edit(self, current_user):
+        # TODO
+        return True
+
 
 class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
     __tablename__ = 'disease_group_patients'
@@ -211,6 +215,10 @@ class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
     __table_args__ = (
         UniqueConstraint('disease_group_id', 'patient_id'),
     )
+
+    def can_edit(self, current_user):
+        # TODO
+        return True
 
 
 class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):

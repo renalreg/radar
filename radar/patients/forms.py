@@ -113,5 +113,9 @@ class PatientUnitForm(Form):
     unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=int)
 
 
-class PatientDiseaseGroupForm(Form):
+class AddPatientDiseaseGroupForm(Form):
     disease_group_id = RadarSelectField('Disease Group', validators=[InputRequired()], coerce=int)
+
+
+class EditPatientDiseaseGroupForm(Form):
+    is_active = BooleanField('Active')
