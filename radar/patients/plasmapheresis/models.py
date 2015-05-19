@@ -10,8 +10,8 @@ class Plasmapheresis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
-    date_started = Column(Date, nullable=False)
-    date_stopped = Column(Date)
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
     no_of_exchanges = Column(Integer)
     response_id = Column(Integer, ForeignKey('plasmapheresis_responses.id'))
     response = relationship('PlasmapheresisResponse')
