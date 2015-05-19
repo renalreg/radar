@@ -624,7 +624,6 @@ def save_radar_demographics(demographics):
 
 def add_patient_to_unit(patient, unit):
     unit_patient = UnitPatient()
-    unit_patient.created_user = current_user
     unit_patient.patient = patient
     unit_patient.unit = unit
 
@@ -635,7 +634,6 @@ def add_patient_to_unit(patient, unit):
 
 def add_patient_to_disease_group(patient, disease_group):
     disease_group_patient = DiseaseGroupPatient()
-    disease_group_patient.created_user = current_user
     disease_group_patient.patient = patient
     disease_group_patient.disease_group = disease_group
 
