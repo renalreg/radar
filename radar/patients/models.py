@@ -12,9 +12,12 @@ class Patient(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    registered_user_id = Column(Integer, ForeignKey('users.id'))
-    registered_date = Column(DateTime(timezone=False), default=datetime.now)
-    registered_unit_id = Column(Integer, ForeignKey('units.id'))
+    recruited_user_id = Column(Integer, ForeignKey('users.id'))
+    recruited_date = Column(DateTime(timezone=False), default=datetime.now)
+    recruited_unit_id = Column(Integer, ForeignKey('units.id'))
+
+    recruited_user = relationship('User')
+    recruited_unit = relationship('Unit')
 
     is_active = Column(Boolean, nullable=False, default=True)
 

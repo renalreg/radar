@@ -123,4 +123,29 @@
             {% endif %}
         {% endcall %}
     {% endfor %}
+
+    {% call render_panel('Meta', 'panel-default') %}
+        <table class="table kv">
+            <tr>
+                <th width="20%">Date Recruited</th>
+                <td>{{ patient.recruited_date | missing }}</td>
+            </tr>
+
+            <tr>
+                <th width="20%">Recruiting User</th>
+                <td>{{ patient.recruited_user | missing }}</td>
+            </tr>
+
+            <tr>
+                <th width="20%">Recruiting Unit</th>
+                <td>
+                    {% if patient.recruited_unit %}
+                        {{ patient.recruited_unit.name }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    {% endcall %}
 {% endblock %}
