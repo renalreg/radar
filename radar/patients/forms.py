@@ -1,4 +1,4 @@
-from wtforms import StringField, IntegerField
+from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import Optional, InputRequired, Email, DataRequired
 from flask_wtf import Form
 
@@ -69,6 +69,8 @@ class PatientSearchForm(Form):
     year_of_birth = IntegerField('Year of Birth', validators=[Optional()])
     date_of_death = RadarDateField('Date of Death', validators=[Optional()])
     year_of_death = IntegerField('Year of Death', validators=[Optional()])
+
+    is_active = BooleanField('Active', default=True, validators=[Optional()])
 
     order_by = RadarSelectField(choices=ORDER_BY_CHOICES)
     order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING)

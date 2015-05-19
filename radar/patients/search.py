@@ -64,17 +64,24 @@ class PatientQueryBuilder():
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def unit(self, unit):
-        self.query = self.query.join(UnitPatient).filter(UnitPatient.unit == unit)
+    def unit(self, unit, is_active):
+        self.query = self.query\
+            .join(UnitPatient)\
+            .filter(UnitPatient.unit == unit)\
+            .filter(UnitPatient.is_active == is_active)
+
         return self
 
-    def disease_group(self, disease_group):
+    def disease_group(self, disease_group, is_active):
         # The disease group counts as demographics if the user can't view patients in the disease group
         if not disease_group.can_view_patient(self.user):
             self.filtering_by_demographics = True
 
         # Filter by disease group
-        self.query = self.query.join(DiseaseGroupPatient).filter(DiseaseGroupPatient.disease_group == disease_group)
+        self.query = self.query\
+            .join(DiseaseGroupPatient)\
+            .filter(DiseaseGroupPatient.disease_group == disease_group)\
+            .filter(DiseaseGroupPatient.is_active == is_active)
 
         return self
 
@@ -85,6 +92,11 @@ class PatientQueryBuilder():
     def chi_no(self, chi_no):
         # TODO
         return self.query
+
+    def is_active(self, is_active):
+        self.query = self.query.filter(Patient.is_active == is_active)
+
+        return self
 
     def order_by(self, column, direction):
         self.query = self.query.order_by(*order_patients(self.user, column, direction))

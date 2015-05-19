@@ -58,11 +58,11 @@ def view_patient_list():
 
         if form.unit_id.data:
             unit = Unit.query.get_or_404(form.unit_id.data)
-            builder.unit(unit)
+            builder.unit(unit, form.is_active.data)
 
         if form.disease_group_id.data:
             disease_group = DiseaseGroup.query.get_or_404(form.disease_group_id.data)
-            builder.disease_group(disease_group)
+            builder.disease_group(disease_group, form.is_active.data)
 
         if form.date_of_birth.data:
             builder.date_of_birth(form.date_of_birth.data)
@@ -84,6 +84,8 @@ def view_patient_list():
 
         if form.year_of_death.data:
             builder.year_of_death(form.year_of_death.data)
+
+        builder.is_active(form.is_active.data)
 
         builder.order_by(form.order_by.data, form.order_direction.data)
 

@@ -16,7 +16,7 @@ class Patient(db.Model):
     registered_date = Column(DateTime(timezone=False), default=datetime.now)
     registered_unit_id = Column(Integer, ForeignKey('units.id'))
 
-    active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True)
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
@@ -188,7 +188,7 @@ class UnitPatient(db.Model, CreatedModifiedMixin):
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
 
-    active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         UniqueConstraint('unit_id', 'patient_id'),
@@ -206,7 +206,7 @@ class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
 
-    active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         UniqueConstraint('disease_group_id', 'patient_id'),
