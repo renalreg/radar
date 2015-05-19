@@ -177,7 +177,7 @@ class Patient(db.Model):
         return False
 
 
-class UnitPatient(db.Model):
+class UnitPatient(db.Model, CreatedModifiedMixin):
     __tablename__ = 'unit_patients'
 
     id = Column(Integer, primary_key=True)
@@ -188,10 +188,6 @@ class UnitPatient(db.Model):
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
 
-    created_date = Column(DateTime(timezone=True), default=datetime.now)
-    created_user_id = Column(Integer, ForeignKey('users.id'))
-    created_user = relationship('User')
-
     active = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
@@ -199,7 +195,7 @@ class UnitPatient(db.Model):
     )
 
 
-class DiseaseGroupPatient(db.Model):
+class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
     __tablename__ = 'disease_group_patients'
 
     id = Column(Integer, primary_key=True)
@@ -209,10 +205,6 @@ class DiseaseGroupPatient(db.Model):
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
-
-    created_date = Column(DateTime(timezone=True), default=datetime.now)
-    created_user_id = Column(Integer, ForeignKey('users.id'))
-    created_user = relationship('User')
 
     active = Column(Boolean, nullable=False, default=True)
 
