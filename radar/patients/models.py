@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, UniqueConstraint, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
@@ -15,6 +15,8 @@ class Patient(db.Model):
     registered_user_id = Column(Integer, ForeignKey('users.id'))
     registered_date = Column(DateTime(timezone=False), default=datetime.now)
     registered_unit_id = Column(Integer, ForeignKey('units.id'))
+
+    active = Column(Boolean, nullable=False, default=True)
 
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
@@ -190,6 +192,8 @@ class UnitPatient(db.Model):
     created_user_id = Column(Integer, ForeignKey('users.id'))
     created_user = relationship('User')
 
+    active = Column(Boolean, nullable=False, default=True)
+
     __table_args__ = (
         UniqueConstraint('unit_id', 'patient_id'),
     )
@@ -209,6 +213,8 @@ class DiseaseGroupPatient(db.Model):
     created_date = Column(DateTime(timezone=True), default=datetime.now)
     created_user_id = Column(Integer, ForeignKey('users.id'))
     created_user = relationship('User')
+
+    active = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         UniqueConstraint('disease_group_id', 'patient_id'),
