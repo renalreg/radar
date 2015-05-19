@@ -1,8 +1,9 @@
+from sqlalchemy import Column, Integer, ForeignKey, Date
+from sqlalchemy.orm import relationship
+
 from radar.database import db
 from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin, LookupTableMixin
 from radar.patients.dialysis.concepts import DialysisToDialysisConcept
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Date
-from sqlalchemy.orm import relationship
 
 
 class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):

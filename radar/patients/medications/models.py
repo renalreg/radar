@@ -57,8 +57,10 @@ class Medication(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
 class MedicationFrequency(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_frequencies'
 
+
 class MedicationRoute(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_routes'
+
 
 class MedicationDoseUnit(db.Model, StringLookupTableMixin):
     __tablename__ = 'medication_dose_units'

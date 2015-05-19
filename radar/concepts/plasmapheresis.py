@@ -34,7 +34,7 @@ class PlasmapheresisConcept(Concept):
             'from_time': self.from_date,
             'procedure': {
                 'sda_coding_standard': 'RADAR',
-                'code': 'PLASMAPHERESIS', # TODO
+                'code': 'PLASMAPHERESIS',  # TODO
                 'description': 'Plasmapheresis',
             },
         }

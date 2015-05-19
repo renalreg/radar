@@ -1,6 +1,6 @@
 from radar.concepts.core import Concept
 from radar.sda.models import SDAEncounter
-from radar.validators import required, not_empty
+from radar.validators import required
 
 
 class DialysisConcept(Concept):

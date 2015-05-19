@@ -1,8 +1,8 @@
 from datetime import date
+import re
+
 from flask_login import current_user
 from markupsafe import Markup
-from radar.utils import optional_int
-import re
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
     RadioField
 from wtforms.validators import InputRequired
@@ -84,6 +84,7 @@ class RadarSelectObjectField(SelectField):
                 return obj
 
         return None
+
 
 class RadarSelectMultiple(Select):
     def __init__(self):

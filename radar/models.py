@@ -1,10 +1,6 @@
-from datetime import datetime
-from flask_login import current_user
-
 from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, DateTime, func
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-from sqlalchemy import event
 
 from radar.database import db
 
