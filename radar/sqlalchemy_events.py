@@ -1,19 +1,25 @@
+from itertools import chain
+
 from flask_login import current_user
-from radar.models import CreatedModifiedMixin
+from radar.models import CreatedMixin, ModifiedMixin
 
 
-def receive_before_flush(session, flush_context, instances):
-    """ Sets the created user and modified user fields """
+def before_flush_set_created_listener(session, flush_context, instances):
+    """ Sets the created user field """
 
     _ = flush_context, instances
 
     for obj in session.new:
-        if isinstance(obj, CreatedModifiedMixin):
+        if isinstance(obj, CreatedMixin):
             if obj.created_user is None:
                 obj.created_user = current_user
 
-            obj.modified_user = current_user
 
-    for obj in session.dirty:
-        if isinstance(obj, CreatedModifiedMixin):
+def before_flush_set_modified_listener(session, flush_context, instances):
+    """ Sets the modified user field """
+
+    _ = flush_context, instances
+
+    for obj in chain(session.new, session.dirty):
+        if isinstance(obj, ModifiedMixin):
             obj.modified_user = current_user

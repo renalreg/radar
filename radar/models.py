@@ -108,7 +108,7 @@ class DataImport(DataSource):
     )
 
 
-class CreatedModifiedMixin(object):
+class CreatedMixin(object):
     @declared_attr
     def created_user_id(cls):
         return Column(Integer, ForeignKey('users.id'))
@@ -121,6 +121,8 @@ class CreatedModifiedMixin(object):
     def created_at(cls):
         return Column(DateTime(timezone=True), server_default=func.now())
 
+
+class ModifiedMixin(object):
     @declared_attr
     def modified_user_id(cls):
         return Column(Integer, ForeignKey('users.id'))
@@ -132,6 +134,10 @@ class CreatedModifiedMixin(object):
     @declared_attr
     def modified_at(cls):
         return Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.current_timestamp())
+
+
+class CreatedModifiedMixin(CreatedMixin, ModifiedMixin):
+    pass
 
 
 class PatientMixin(object):

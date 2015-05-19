@@ -10,7 +10,7 @@ from radar.auth.views import require_login
 from radar.context_processors import inject_navigation, inject_delete_form
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
-from radar.sqlalchemy_events import receive_before_flush
+from radar.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
 from radar.template_filters import datetime_format, nl2br, date_format, missing, yn
 from radar.views import bp as radar_bp
 from radar.patients.diagnosis.views import bp as diagnosis_bp
@@ -97,6 +97,7 @@ def create_app(config_filename):
     app.register_error_handler(404, page_not_found)
 
     # Automatically set the created_user and modified_user
-    event.listen(SignallingSession, 'before_flush', receive_before_flush)
+    event.listen(SignallingSession, 'before_flush', before_flush_set_created_listener)
+    event.listen(SignallingSession, 'before_flush', before_flush_set_modified_listener)
 
     return app
