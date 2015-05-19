@@ -147,5 +147,7 @@
                 </td>
             </tr>
         </table>
+
+        <p><a href="{{ url_for('patients.delete_patient', patient_id=patient.id) }}" class="btn btn-danger btn-xs">Delete Patient</a></p>
     {% endcall %}
 {% endblock %}

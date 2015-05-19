@@ -312,6 +312,19 @@ def view_patient_units(patient_id):
     return render_template('patient/units.html', **context)
 
 
+@bp.route('/<int:patient_id>/delete/')
+def delete_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient)
+    )
+
+    return render_template('patient/delete.html', **context)
+
+
+
 RECRUIT_PATIENT_SEARCH = 1
 RECRUIT_PATIENT_RADAR = 2
 RECRUIT_PATIENT_RDC = 3
