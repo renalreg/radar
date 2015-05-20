@@ -146,6 +146,17 @@
                     {% endif %}
                 </td>
             </tr>
+
+            <tr>
+                <th width="20%">Active</th>
+                <td>
+                    {% if patient.is_active %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove"></span>
+                    {% endif %}
+                </td>
+            </tr>
         </table>
 
         <p><a href="{{ url_for('patients.delete_patient', patient_id=patient.id) }}" class="btn btn-danger btn-xs">Delete Patient</a></p>
