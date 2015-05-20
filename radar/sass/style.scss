@@ -95,6 +95,14 @@ input, select {
     max-width: 400px;
 }
 
+.input-group {
+    max-width: 400px;
+
+    input, select {
+        max-width: none;
+    }
+}
+
 .radar-navbar {
     background-color: $radar-navbar-bg-color;
     border: none;
@@ -286,4 +294,8 @@ form.lab-result-table select {
 .form-group.required .control-label:after {
     content: "*";
     color: red;
+}
+
+.ui-datepicker {
+    z-index: 9999 !important;
 }
