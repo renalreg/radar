@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
@@ -14,6 +14,8 @@ class LabOrderDefinition(db.Model):
 
     pre_post = Column(Boolean, nullable=False)
 
+    lab_result_definitions = relationship('LabResultDefinition')
+
 
 class LabResultDefinition(db.Model):
     __tablename__ = 'lab_result_definitions'
@@ -24,12 +26,19 @@ class LabResultDefinition(db.Model):
 
     code = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    units = Column(String)
+
+    # weight = Column(Integer, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('lab_order_definition_id', 'code'),
+    )
 
 
 class LabOrder(DataSource, PatientMixin, UnitMixin, CreatedModifiedMixin):
     __tablename__ = 'lab_orders'
 
-    id = Column(Integer, ForeignKey('lab_orders.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
     lab_order_definition_id = Column(Integer, ForeignKey('lab_order_definitions.id'), nullable=False)
     lab_order_definition = relationship('LabOrderDefinition')
@@ -40,7 +49,7 @@ class LabOrder(DataSource, PatientMixin, UnitMixin, CreatedModifiedMixin):
     lab_results = relationship('LabResult', cascade='all, delete-orphan')
 
     __mapper_args__ = {
-        'polymorphic_identity': 'hospitalisations',
+        'polymorphic_identity': 'lab_orders',
     }
 
 

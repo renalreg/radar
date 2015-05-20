@@ -1,13 +1,16 @@
 from collections import defaultdict
 from datetime import datetime
 
-from flask import Blueprint, render_template, abort, request, jsonify
+from flask import Blueprint, render_template, abort, request, jsonify, redirect, url_for
 from flask_login import current_user
 from sqlalchemy import desc, func
+
 from radar.database import db
-from radar.patients.lab_results.forms import LabResultTableForm, LabResultGraphForm
+from radar.patients.lab_results.forms import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
+    SelectLabOrderForm
 from radar.ordering import order_query, DESCENDING, ordering_from_request
 from radar.pagination import paginate_query
+from radar.patients.lab_results.models import LabOrderDefinition, LabOrder, LabResult
 from radar.patients.models import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDABundle, SDALabOrder, SDALabResult
@@ -258,20 +261,84 @@ def view_lab_result_graph_json(patient_id):
 
 
 @bp.route('/new/', endpoint='add_lab_result', methods=['GET', 'POST'])
-@bp.route('/<int:lab_result_id>/', endpoint='view_lab_result')
-@bp.route('/<int:lab_result_id>/', endpoint='edit_lab_result', methods=['GET', 'POST'])
-def view_lab_result(patient_id):
+@bp.route('/<int:record_id>/', endpoint='view_lab_result')
+@bp.route('/<int:record_id>/', endpoint='edit_lab_result', methods=['GET', 'POST'])
+def view_lab_result(patient_id, record_id=None):
     patient = Patient.query.get_or_404(patient_id)
 
     if not patient.can_view(current_user):
         abort(403)
 
+    select_form = SelectLabOrderForm()
+    select_form.lab_order_definition_id.choices = [(x.id, x.description) for x in LabOrderDefinition.query.order_by(LabOrderDefinition.description).all()]
+
+    lab_order_definition = None
+    form = None
+
+    if record_id is None:
+        lab_order = LabOrder(patient=patient)
+
+        if select_form.validate_on_submit():
+            lab_order_definition_id = select_form.lab_order_definition_id.data
+            lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
+    else:
+        lab_order = LabOrder.query\
+            .filter(LabOrder.patient == patient)\
+            .filter(LabOrder.id == record_id)\
+            .first_or_404()
+        lab_order_definition = lab_order.lab_order_definition
+
+    if lab_order_definition is not None:
+        data = dict()
+
+        for lab_result in lab_order.lab_results:
+            data[lab_result.lab_result_definition.code] = lab_result.value
+
+        form_class = lab_order_to_form(lab_order_definition)
+        form = form_class(obj=lab_order, data=data)
+
+        if 'lab_order_form' in request.form and form.validate_on_submit():
+            lab_order.lab_order_definition = lab_order_definition
+            lab_order.unit = form.unit_id.obj
+            lab_order.date = form.date.data
+            lab_order.lab_results = []
+
+            for lab_result_definition in lab_order_definition.lab_result_definitions:
+                lab_result = LabResult()
+                lab_result.lab_result_definition = lab_result_definition
+                value = getattr(form, lab_result_definition.code).data
+                lab_result.value = value
+                lab_order.lab_results.append(lab_result)
+
+            db.session.add(lab_order)
+            db.session.commit()
+            return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
+
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
+        select_form=select_form,
+        form=form,
+        lab_order=lab_order,
     )
 
     return render_template('patient/lab_result.html', **context)
+
+
+@bp.route('/forms/<int:lab_order_id>/', methods=['GET', 'POST'])
+def lab_result_form(patient_id, lab_order_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    lab_order_definition = LabOrderDefinition.query.get(lab_order_id)
+    form_class = lab_order_to_form(lab_order_definition)
+    lab_order = LabOrder(patient=patient)
+    form = form_class(obj=lab_order)
+
+    context = dict(
+        form=form,
+    )
+
+    return render_template('patient/lab_result_form.html', **context)
 
 
 def get_test_item_choices():
