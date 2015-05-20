@@ -5,6 +5,7 @@ from flask_login import current_user
 
 from radar.database import db
 from radar.disease_groups.models import DiseaseGroup
+from radar.forms import DeleteForm
 from radar.patients.models import Patient, Demographics, UnitPatient, DiseaseGroupPatient
 from radar.ordering import Ordering
 from radar.pagination import paginate_query
@@ -312,17 +313,29 @@ def view_patient_units(patient_id):
     return render_template('patient/units.html', **context)
 
 
-@bp.route('/<int:patient_id>/delete/')
+@bp.route('/<int:patient_id>/delete/', methods=['GET', 'POST'])
 def delete_patient(patient_id):
     patient = Patient.query.get_or_404(patient_id)
 
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient)
-    )
+    # TODO probably shouldn't be able to delete a patient who belongs to non-editable units
 
-    return render_template('patient/delete.html', **context)
+    if not patient.can_edit(current_user):
+        abort(403)
 
+    form = DeleteForm()
+
+    if form.validate_on_submit():
+        db.session.delete(patient)
+        db.session.commit()
+        flash('Patient deleted.', 'success')
+        return redirect(url_for('patients.view_patient_list'))
+    else:
+        context = dict(
+            patient=patient,
+            patient_data=get_patient_data(patient)
+        )
+
+        return render_template('patient/delete.html', **context)
 
 
 RECRUIT_PATIENT_SEARCH = 1

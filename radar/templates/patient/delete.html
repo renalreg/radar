@@ -4,4 +4,11 @@
 
 {% block content %}
     <h1 class="page-header">Delete Patient</h1>
+
+    <p>Are you sure you want to delete this patient from RaDaR? This will remove all of their data.</p>
+
+    <form method="POST">
+        {{ delete_form.hidden_tag() }}
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
 {% endblock %}

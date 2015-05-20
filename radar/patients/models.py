@@ -21,10 +21,10 @@ class Patient(db.Model):
 
     is_active = Column(Boolean, nullable=False, default=True)
 
-    units = relationship('UnitPatient')
-    disease_groups = relationship('DiseaseGroupPatient')
+    units = relationship('UnitPatient', passive_deletes=True)
+    disease_groups = relationship('DiseaseGroupPatient', passive_deletes=True)
 
-    sda_bundles = relationship('SDABundle')
+    sda_bundles = relationship('SDABundle', passive_deletes=True)
 
     def _latest_sda_patient_attr(self, attr):
         sda_patient = self.latest_sda_patient
@@ -185,10 +185,10 @@ class UnitPatient(db.Model, CreatedModifiedMixin):
 
     id = Column(Integer, primary_key=True)
 
-    unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
+    unit_id = Column(Integer, ForeignKey('units.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     unit = relationship('Unit')
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
     is_active = Column(Boolean, nullable=False, default=True)
@@ -207,10 +207,10 @@ class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
 
     id = Column(Integer, primary_key=True)
 
-    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
+    disease_group_id = Column(Integer, ForeignKey('disease_groups.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     disease_group = relationship('DiseaseGroup')
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
     is_active = Column(Boolean, nullable=False, default=True)

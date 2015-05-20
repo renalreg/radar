@@ -14,7 +14,7 @@ class SDABundle(db.Model):
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
     data_source = relationship('DataSource')
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
@@ -22,11 +22,11 @@ class SDABundle(db.Model):
 
     mpiid = Column(Integer)
 
-    sda_patient = relationship('SDAPatient', uselist=False, cascade='all')
-    sda_medications = relationship('SDAMedication', cascade='all')
-    sda_lab_orders = relationship('SDALabOrder', cascade='all')
-    sda_procedures = relationship('SDAProcedure', cascade='all')
-    sda_encounters = relationship('SDAEncounter', cascade='all')
+    sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan', passive_deletes=True)
+    sda_medications = relationship('SDAMedication', cascade='all, delete-orphan', passive_deletes=True)
+    sda_lab_orders = relationship('SDALabOrder', cascade='all, delete-orphan', passive_deletes=True)
+    sda_procedures = relationship('SDAProcedure', cascade='all, delete-orphan', passive_deletes=True)
+    sda_encounters = relationship('SDAEncounter', cascade='all, delete-orphan', passive_deletes=True)
 
     def serialize(self):
         if self.sda_patient is not None:
@@ -49,7 +49,7 @@ class SDAMedication(db.Model):
     __tablename__ = 'sda_medications'
 
     id = Column(Integer, primary_key=True)
-    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB)
@@ -63,14 +63,14 @@ class SDAPatient(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB, nullable=False)
 
-    aliases = relationship('SDAPatientAlias', cascade='all')
-    numbers = relationship('SDAPatientNumber', cascade='all')
-    addresses = relationship('SDAPatientAddress', cascade='all')
+    aliases = relationship('SDAPatientAlias', cascade='all, delete-orphan', passive_deletes=True)
+    numbers = relationship('SDAPatientNumber', cascade='all, delete-orphan', passive_deletes=True)
+    addresses = relationship('SDAPatientAddress', cascade='all, delete-orphan', passive_deletes=True)
 
     @hybrid_property
     def first_name(self):
@@ -154,7 +154,7 @@ class SDAPatientAlias(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB, nullable=False)
@@ -184,7 +184,7 @@ class SDAPatientNumber(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB, nullable=False)
@@ -230,7 +230,7 @@ class SDAPatientAddress(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id'))
+    sda_patient_id = Column(Integer, ForeignKey('sda_patients.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_patient = relationship('SDAPatient')
 
     data = Column(JSONB, nullable=False)
@@ -270,12 +270,12 @@ class SDALabOrder(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB, nullable=False)
 
-    results = relationship('SDALabResult')
+    results = relationship('SDALabResult', cascade='all, delete-orphan', passive_deletes=True)
 
     @hybrid_property
     def from_time(self):
@@ -297,7 +297,7 @@ class SDALabResult(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_lab_order_id = Column(Integer, ForeignKey('sda_lab_orders.id'))
+    sda_lab_order_id = Column(Integer, ForeignKey('sda_lab_orders.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_lab_order = relationship('SDALabOrder')
 
     data = Column(JSONB, nullable=False)
@@ -324,7 +324,7 @@ class SDAProcedure(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB, nullable=False)
@@ -338,7 +338,7 @@ class SDAEncounter(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id'))
+    sda_bundle_id = Column(Integer, ForeignKey('sda_bundles.id', ondelete='CASCADE', onupdate='CASCADE'))
     sda_bundle = relationship('SDABundle')
 
     data = Column(JSONB, nullable=False)

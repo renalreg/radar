@@ -49,10 +49,10 @@ class DataImport(DataSource):
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
-    patient_id = Column(Integer, ForeignKey('patients.id'))
-    facility_id = Column(Integer, ForeignKey('facilities.id'))
-
+    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'))
     patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'))
     facility = relationship('Facility')
 
     __mapper_args__ = {
@@ -99,7 +99,7 @@ class CreatedModifiedMixin(CreatedMixin, ModifiedMixin):
 class PatientMixin(object):
     @declared_attr
     def patient_id(cls):
-        return Column(Integer, ForeignKey('patients.id'))
+        return Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'))
 
     @declared_attr
     def patient(cls):
