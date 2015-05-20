@@ -320,22 +320,24 @@ def view_lab_result(patient_id, record_id=None):
         select_form=select_form,
         form=form,
         lab_order=lab_order,
+        lab_order_definition=lab_order_definition,
     )
 
     return render_template('patient/lab_result.html', **context)
 
 
-@bp.route('/forms/<int:lab_order_id>/', methods=['GET', 'POST'])
-def lab_result_form(patient_id, lab_order_id):
+@bp.route('/forms/<int:lab_order_definition_id>/', methods=['GET', 'POST'])
+def lab_result_form(patient_id, lab_order_definition_id):
     patient = Patient.query.get_or_404(patient_id)
 
-    lab_order_definition = LabOrderDefinition.query.get(lab_order_id)
+    lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
     form_class = lab_order_to_form(lab_order_definition)
     lab_order = LabOrder(patient=patient)
     form = form_class(obj=lab_order)
 
     context = dict(
         form=form,
+        lab_order_definition=lab_order_definition,
     )
 
     return render_template('patient/lab_result_form.html', **context)

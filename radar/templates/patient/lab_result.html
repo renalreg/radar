@@ -4,6 +4,7 @@
 
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% from 'macros/lab_results.html' import render_lab_order_form %}
 
 {% block content %}
     {% if lab_order.id %}
@@ -28,29 +29,23 @@
 
     <div id="lab_order_form">
         {% if form %}
-            <form method="POST" class="form-horizontal">
-                {{ form.hidden_tag() }}
-
-                {{ form.lab_order_definition_id }}
-
-                {{ render_field(form.unit_id) }}
-
-                <hr />
-
-                {{ render_field(form.date) }}
-
-                {% if form.pre_post %}
-                    {{ render_field(form.pre_post) }}
-                {% endif %}
-
-                {% for field in form.result_fields %}
-                    {{ render_field(field) }}
-                {% endfor %}
-
-                {% call render_button() %}
-                    <button type="submit" class="btn btn-success" name="lab_order_form">Save</button>
-                {% endcall %}
-            </form>
+            {{ render_lab_order_form(lab_order_definition, form) }}
+        {% else %}
+            <p>Please choose a lab order above.</p>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block body_js %}
+    <script>
+        $(function() {
+            $('#lab_order_definition_id').change(function() {
+                var lab_order_definition_id = $(this).val();
+                var url = '../forms/' + lab_order_definition_id + '/';
+                $.get(url, function(data) {
+                    $('#lab_order_form').html(data);
+                });
+            });
+        });
+    </script>
 {% endblock %}
