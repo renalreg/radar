@@ -28,6 +28,7 @@ class LabResultDefinition(db.Model):
     description = Column(String, nullable=False)
     units = Column(String)
 
+    # TODO use this to order fields
     # weight = Column(Integer, nullable=False)
 
     __table_args__ = (
