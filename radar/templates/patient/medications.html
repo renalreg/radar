@@ -46,7 +46,7 @@
 
                         <td align="right">
                             {% if medication.delete_url %}
-                                <form method="POST" action="{{ medication.delete_url }}" class="form-inline">
+                                <form method="POST" action="{{ medication.delete_url }}" class="form-inline confirm-delete">
                                     {{ delete_form.hidden_tag() }}
 
                                     <button type="submit" class="btn btn-link btn-xs">

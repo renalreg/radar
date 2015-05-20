@@ -27,6 +27,14 @@ $(function() {
     });
 
     $('.chosen-select').chosen();
+
+    $(document).on('submit', 'form.confirm-delete', function(event) {
+        var r = confirm('Are you sure you want to delete this record?');
+
+        if (!r) {
+            event.preventDefault();
+        }
+    });
 });
 
 function toggle_extra_fields(input_name, extra_selector, value) {
