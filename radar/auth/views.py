@@ -53,3 +53,8 @@ def forgot_password():
 @bp.route('/reset-password/', methods=['GET', 'POST'])
 def reset_password():
     return render_template('reset_password.html')
+
+
+@bp.route('/account/', methods=['GET', 'POST'])
+def account():
+    return render_template('account.html')
