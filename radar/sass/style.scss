@@ -163,9 +163,20 @@ ul.patient-info {
     list-style-type: none;
     padding: 0;
     margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
 
     a {
         color: $text-color;
+    }
+
+    li {
+        padding: 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    li:last-child {
+        border: 0;
     }
 }
 
