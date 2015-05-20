@@ -270,7 +270,7 @@ def view_lab_result(patient_id, record_id=None):
         abort(403)
 
     select_form = SelectLabOrderForm()
-    select_form.lab_order_definition_id.choices = [(x.id, x.description) for x in LabOrderDefinition.query.order_by(LabOrderDefinition.description).all()]
+    select_form.lab_order_definition_id.choices = get_lab_order_choices()
 
     lab_order_definition = None
     form = None
@@ -281,6 +281,7 @@ def view_lab_result(patient_id, record_id=None):
         if select_form.validate_on_submit():
             lab_order_definition_id = select_form.lab_order_definition_id.data
             lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
+            lab_order.lab_order_definition = lab_order_definition
     else:
         lab_order = LabOrder.query\
             .filter(LabOrder.patient == patient)\
@@ -289,27 +290,12 @@ def view_lab_result(patient_id, record_id=None):
         lab_order_definition = lab_order.lab_order_definition
 
     if lab_order_definition is not None:
-        data = dict()
-
-        for lab_result in lab_order.lab_results:
-            data[lab_result.lab_result_definition.code] = lab_result.value
-
+        data = get_lab_order_form_data(lab_order)
         form_class = lab_order_to_form(lab_order_definition)
         form = form_class(obj=lab_order, data=data)
 
         if 'lab_order_form' in request.form and form.validate_on_submit():
-            lab_order.lab_order_definition = lab_order_definition
-            lab_order.unit = form.unit_id.obj
-            lab_order.date = form.date.data
-            lab_order.lab_results = []
-
-            for lab_result_definition in lab_order_definition.lab_result_definitions:
-                lab_result = LabResult()
-                lab_result.lab_result_definition = lab_result_definition
-                value = getattr(form, lab_result_definition.code).data
-                lab_result.value = value
-                lab_order.lab_results.append(lab_result)
-
+            update_lab_order(lab_order, form)
             db.session.add(lab_order)
             db.session.commit()
             return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
@@ -333,6 +319,7 @@ def lab_result_form(patient_id, lab_order_definition_id):
     lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
     form_class = lab_order_to_form(lab_order_definition)
     lab_order = LabOrder(patient=patient)
+    lab_order.lab_order_definition_id = lab_order_definition.id
     form = form_class(obj=lab_order)
 
     context = dict(
@@ -355,3 +342,40 @@ def get_test_item_choices():
         .order_by(SDALabResult.data[('test_item_code', 'description')])\
         .distinct()\
         .all()
+
+
+def update_lab_order(lab_order, form):
+    lab_order.unit = form.unit_id.obj
+    lab_order.date = form.date.data
+    lab_order.lab_results = []
+
+    lab_result_definitions = lab_order.lab_order_definition
+
+    for lab_result_definition in lab_result_definitions:
+        lab_result = LabResult()
+        lab_result.lab_result_definition = lab_result_definition
+        value = getattr(form, lab_result_definition.code).data
+        lab_result.value = value
+        lab_order.lab_results.append(lab_result)
+
+
+def get_lab_order_form_data(lab_order):
+    data = dict()
+
+    for lab_result in lab_order.lab_results:
+        data[lab_result.lab_result_definition.code] = lab_result.value
+
+    return data
+
+
+def get_lab_order_choices():
+    choices = []
+
+    lab_order_definitions = LabOrderDefinition.query\
+        .order_by(LabOrderDefinition.description)\
+        .all()
+
+    for x in lab_order_definitions:
+        choices.append((x.id, x.description))
+
+    return choices
