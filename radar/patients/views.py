@@ -613,7 +613,8 @@ def recruit_patient_new_step():
 
         # Create new patient
         patient = Patient()
-        patient.registered_user = current_user
+        patient.recruited_user = current_user
+        patient.recruited_unit = unit
         db.session.add(patient)
 
         # Save demographics
