@@ -44,6 +44,7 @@
                 var url = '../forms/' + lab_order_definition_id + '/';
                 $.get(url, function(data) {
                     $('#lab_order_form').html(data);
+                    init_datepickers();
                 });
             });
         });

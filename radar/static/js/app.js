@@ -1,4 +1,18 @@
 $(function() {
+    init_datepickers();
+
+    $('.chosen-select').chosen();
+
+    $(document).on('submit', 'form.confirm-delete', function(event) {
+        var r = confirm('Are you sure you want to delete this record?');
+
+        if (!r) {
+            event.preventDefault();
+        }
+    });
+});
+
+function init_datepickers() {
     $('.datepicker').each(function () {
         var options = {
             changeMonth: true,
@@ -25,17 +39,7 @@ $(function() {
 
         $(this).datepicker(options);
     });
-
-    $('.chosen-select').chosen();
-
-    $(document).on('submit', 'form.confirm-delete', function(event) {
-        var r = confirm('Are you sure you want to delete this record?');
-
-        if (!r) {
-            event.preventDefault();
-        }
-    });
-});
+}
 
 function toggle_extra_fields(input_name, extra_selector, value) {
     $('input[name=' + input_name + '], select[name=' + input_name + ']').change(function() {

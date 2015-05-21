@@ -25,7 +25,12 @@
         <tbody>
             {% for result in results %}
                 <tr>
-                    <td></td>
+                    <td>
+                        {% if result.edit_url %}
+                            <a href="{{ result.edit_url }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% endif %}
+                    </td>
+
                     <td>{{ result.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
                     <td>{{ result.test | missing }}</td>
                     <td>{{ result.item | missing }}</td>

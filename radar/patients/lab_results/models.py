@@ -1,7 +1,9 @@
+from flask import url_for
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
+from radar.patients.lab_results.concepts import LabOrderToLabOrderConcept
 
 
 class LabOrderDefinition(db.Model):
@@ -52,6 +54,23 @@ class LabOrder(DataSource, PatientMixin, UnitMixin, CreatedModifiedMixin):
     __mapper_args__ = {
         'polymorphic_identity': 'lab_orders',
     }
+
+    def to_concepts(self):
+        return [
+            LabOrderToLabOrderConcept(self)
+        ]
+
+    def can_view(self, current_user):
+        return self.patient.can_view(current_user)
+
+    def can_edit(self, current_user):
+        return self.patient.can_edit(current_user)
+
+    def view_url(self):
+        return url_for('lab_results.view_lab_result', patient_id=self.patient.id, record_id=self.id)
+
+    def edit_url(self):
+        return url_for('lab_results.edit_lab_result', patient_id=self.patient.id, record_id=self.id)
 
 
 class LabResult(db.Model):

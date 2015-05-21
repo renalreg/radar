@@ -4,6 +4,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, abort, request, jsonify, redirect, url_for
 from flask_login import current_user
 from sqlalchemy import desc, func
+from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
+from radar.concepts.utils import add_errors_to_form
 
 from radar.database import db
 from radar.patients.lab_results.forms import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
@@ -66,6 +68,12 @@ def view_lab_result_list(patient_id):
         result['value'] = get_path_as_text(sda_lab_result.data, ['result_value'])
         result['units'] = get_path_as_text(sda_lab_result.data, ['result_value_units'])
         result['source'] = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
+
+        data_source = sda_lab_order.sda_bundle.data_source
+
+        if data_source.can_edit(current_user):
+            result['edit_url'] = data_source.edit_url()
+
         results.append(result)
 
     context = dict(
@@ -296,9 +304,21 @@ def view_lab_result(patient_id, record_id=None):
 
         if 'lab_order_form' in request.form and form.validate_on_submit():
             update_lab_order(lab_order, form)
-            db.session.add(lab_order)
-            db.session.commit()
-            return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
+
+            concepts = lab_order.to_concepts()
+            valid, errors = validate_concepts(concepts)
+
+            if valid:
+                sda_bundle = concepts_to_sda_bundle(concepts, lab_order.patient)
+                sda_bundle.serialize()
+                lab_order.sda_bundle = sda_bundle
+
+                db.session.add(lab_order)
+                db.session.commit()
+
+                return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
+            else:
+                add_errors_to_form(form, errors)
 
     context = dict(
         patient=patient,
@@ -349,7 +369,7 @@ def update_lab_order(lab_order, form):
     lab_order.date = form.date.data
     lab_order.lab_results = []
 
-    lab_result_definitions = lab_order.lab_order_definition
+    lab_result_definitions = lab_order.lab_order_definition.lab_result_definitions
 
     for lab_result_definition in lab_result_definitions:
         lab_result = LabResult()

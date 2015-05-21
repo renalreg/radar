@@ -22,11 +22,11 @@ class SDABundle(db.Model):
 
     mpiid = Column(Integer)
 
-    sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan', passive_deletes=True)
-    sda_medications = relationship('SDAMedication', cascade='all, delete-orphan', passive_deletes=True)
-    sda_lab_orders = relationship('SDALabOrder', cascade='all, delete-orphan', passive_deletes=True)
-    sda_procedures = relationship('SDAProcedure', cascade='all, delete-orphan', passive_deletes=True)
-    sda_encounters = relationship('SDAEncounter', cascade='all, delete-orphan', passive_deletes=True)
+    sda_patient = relationship('SDAPatient', uselist=False, cascade='all, delete-orphan')
+    sda_medications = relationship('SDAMedication', cascade='all, delete-orphan')
+    sda_lab_orders = relationship('SDALabOrder', cascade='all, delete-orphan')
+    sda_procedures = relationship('SDAProcedure', cascade='all, delete-orphan')
+    sda_encounters = relationship('SDAEncounter', cascade='all, delete-orphan')
 
     def serialize(self):
         if self.sda_patient is not None:
@@ -68,9 +68,9 @@ class SDAPatient(db.Model):
 
     data = Column(JSONB, nullable=False)
 
-    aliases = relationship('SDAPatientAlias', cascade='all, delete-orphan', passive_deletes=True)
-    numbers = relationship('SDAPatientNumber', cascade='all, delete-orphan', passive_deletes=True)
-    addresses = relationship('SDAPatientAddress', cascade='all, delete-orphan', passive_deletes=True)
+    aliases = relationship('SDAPatientAlias', cascade='all, delete-orphan')
+    numbers = relationship('SDAPatientNumber', cascade='all, delete-orphan')
+    addresses = relationship('SDAPatientAddress', cascade='all, delete-orphan')
 
     @hybrid_property
     def first_name(self):
@@ -275,7 +275,7 @@ class SDALabOrder(db.Model):
 
     data = Column(JSONB, nullable=False)
 
-    results = relationship('SDALabResult', cascade='all, delete-orphan', passive_deletes=True)
+    results = relationship('SDALabResult', cascade='all, delete-orphan')
 
     @hybrid_property
     def from_time(self):

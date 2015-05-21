@@ -11,7 +11,18 @@ class LabOrderConcept(Concept):
     def to_sda(self, sda_bundle):
         sda_lab_order = SDALabOrder()
 
-        data = {}
+        lab_order_defintion = self.lab_order.lab_order_definition
+
+        data = {
+            'order_item': {
+                'sda_coding_standard': 'RADAR',  # TODO
+                'code': lab_order_defintion.code,
+                'description': lab_order_defintion.description
+            },
+            'result_time': self.lab_order.date,
+            'from_time': self.lab_order.date
+        }
+
         sda_lab_order.data = data
 
         for lab_result in self.lab_order.lab_results:
@@ -25,11 +36,11 @@ class LabOrderConcept(Concept):
                     'code': lab_result_definition.code,
                     'description': lab_result_definition.description,
                 },
-                'result_value': lab_result.value
+                'result_value': lab_result.value,
             }
 
-            if lab_result.units is not None:
-                data['result_value_units'] = lab_result.units
+            if lab_result_definition.units is not None:
+                data['result_value_units'] = lab_result_definition.units
 
             sda_lab_result.data = data
 
