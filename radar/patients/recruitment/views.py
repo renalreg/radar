@@ -129,7 +129,7 @@ def recruit_patient_search_step():
         form=form
     )
 
-    return render_template('recruit_patient/search.html', **context)
+    return render_template('recruitment/search.html', **context)
 
 
 def recruit_patient_radar_step():
@@ -201,7 +201,7 @@ def recruit_patient_radar_step():
         form=form
     )
 
-    return render_template('recruit_patient/radar.html', **context)
+    return render_template('recruitment/radar.html', **context)
 
 
 def recruit_patient_rdc_step():
@@ -245,7 +245,7 @@ def recruit_patient_rdc_step():
         form=form,
     )
 
-    return render_template('recruit_patient/rdc.html', **context)
+    return render_template('recruitment/rdc.html', **context)
 
 
 def recruit_patient_new_step():
@@ -314,7 +314,7 @@ def recruit_patient_new_step():
         form=form
     )
 
-    return render_template('recruit_patient/new.html', **context)
+    return render_template('recruitment/new.html', **context)
 
 
 def recruit_patient_added_step():
@@ -340,4 +340,4 @@ def recruit_patient_added_step():
     )
 
     set_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
-    return render_template('recruit_patient/added.html', **context)
+    return render_template('recruitment/added.html', **context)

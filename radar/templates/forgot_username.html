@@ -1,5 +1,18 @@
 {% extends 'simple.html' %}
 
+{% from 'macros/forms.html' import render_field %}
+{% from 'macros/forms.html' import render_form_errors %}
+
 {% block content %}
     <h1 class="page-header">Forgot Username</h1>
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.email) }}
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
 {% endblock %}

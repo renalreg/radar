@@ -1,7 +1,8 @@
 from flask import Blueprint, flash, redirect, request, url_for, render_template, current_app
 from flask_login import login_user, logout_user, current_user
 from radar.auth.constants import PUBLIC_ENDPOINTS
-from radar.auth.forms import LoginForm
+from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
+    ChangePasswordForm, AccountForm
 from radar.auth.services import check_login
 
 bp = Blueprint('auth', __name__)
@@ -42,19 +43,57 @@ def logout():
 
 @bp.route('/forgot-username/', methods=['GET', 'POST'])
 def forgot_username():
-    return render_template('forgot_username.html')
+    form = ForgotUsernameForm()
+
+    context = dict(
+        form=form,
+    )
+
+    return render_template('forgot_username.html', **context)
 
 
 @bp.route('/forgot-password/', methods=['GET', 'POST'])
 def forgot_password():
-    return render_template('forgot_password.html')
+    form = ForgotPasswordForm()
+
+    context = dict(
+        form=form,
+    )
+
+    return render_template('forgot_password.html', **context)
 
 
 @bp.route('/reset-password/', methods=['GET', 'POST'])
 def reset_password():
-    return render_template('reset_password.html')
+    form = ResetPasswordForm()
+
+    context = dict(
+        form=form,
+    )
+
+    return render_template('reset_password.html', **context)
 
 
 @bp.route('/account/', methods=['GET', 'POST'])
 def account():
-    return render_template('account.html')
+    account_form = AccountForm(prefix='account', obj=current_user)
+    change_password_form = ChangePasswordForm(prefix='change-password')
+    change_email_form = ChangeEmailForm(prefix='change-email')
+
+    if 'account-submit' in request.form:
+        if account_form.validate():
+            pass
+    elif 'change-password-submit' in request.form:
+        if change_password_form.validate():
+            pass
+    elif 'change-email-submit' in request.form:
+        if change_email_form.validate():
+            pass
+
+    context = dict(
+        account_form=account_form,
+        change_password_form=change_password_form,
+        change_email_form=change_email_form,
+    )
+
+    return render_template('account.html', **context)

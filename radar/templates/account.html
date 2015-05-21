@@ -1,13 +1,53 @@
 {% extends 'simple.html' %}
 
-{% from 'macros/forms.html' import render_field, render_field_group, render_field_errors %}
+{% from 'macros/forms.html' import render_field %}
+{% from 'macros/forms.html' import render_form_errors %}
 
 {% set current_page = 'account' %}
 
 {% block content %}
     <h1 class="page-header">Account</h1>
 
+    {{ render_form_errors(account_form) }}
+
+    <form method="POST">
+        {{ account_form.hidden_tag() }}
+
+        {{ render_field(account_form.first_name) }}
+        {{ render_field(account_form.last_name) }}
+
+        <button type="submit" class="btn btn-success" name="account-submit">Save</button>
+    </form>
+
+    <hr />
+
     <h2>Change Email</h2>
 
+    {{ render_form_errors(change_email_form) }}
+
+    <form method="POST">
+        {{ change_email_form.hidden_tag() }}
+
+        {{ render_field(change_email_form.password) }}
+        {{ render_field(change_email_form.new_email) }}
+        {{ render_field(change_email_form.new_email_confirm) }}
+
+        <button type="submit" class="btn btn-success" name="change-email-submit">Save</button>
+    </form>
+
+    <hr />
+
     <h2>Change Password</h2>
+
+    {{ render_form_errors(change_password_form) }}
+
+    <form method="POST">
+        {{ change_password_form.hidden_tag() }}
+
+        {{ render_field(change_password_form.password) }}
+        {{ render_field(change_password_form.new_password) }}
+        {{ render_field(change_password_form.new_password_confirm) }}
+
+        <button type="submit" class="btn btn-success" name="change-password-submit">Save</button>
+    </form>
 {% endblock %}

@@ -39,9 +39,9 @@ class Patient(db.Model):
         patient_alias = aliased(Patient)
 
         # TODO last updated
-        return select([column]) \
-            .select_from(join(SDAPatient, SDABundle).join(patient_alias)) \
-            .where(patient_alias.id == cls.id) \
+        return select([column])\
+            .select_from(join(SDAPatient, SDABundle).join(patient_alias))\
+            .where(patient_alias.id == cls.id)\
             .limit(1)\
             .as_scalar()
 
