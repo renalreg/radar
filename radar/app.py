@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_mail import Mail
 from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
 from radar.error_handlers import page_not_found, forbidden
@@ -8,6 +9,7 @@ from sqlalchemy import event
 from radar.auth.services import load_user
 from radar.auth.views import require_login
 from radar.context_processors import inject_navigation, inject_delete_form
+from radar.mail import mail
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
@@ -44,6 +46,8 @@ def create_app(config_filename):
     login_manager.init_app(app)
 
     Markdown(app)
+
+    mail.init_app(app)
 
     app.register_blueprint(radar_bp)
     app.register_blueprint(auth_bp)

@@ -9,27 +9,41 @@ class LoginForm(Form):
 
 
 class ForgotUsernameForm(Form):
-    email = StringField()
+    email = StringField(validators=[InputRequired()])
 
 
 class ForgotPasswordForm(Form):
-    username = StringField()
+    username = StringField(validators=[InputRequired()])
 
 
-class ResetPasswordForm(Form):
-    new_password = PasswordField()
-    new_password_confirm = PasswordField()
+class BaseChangePasswordForm(Form):
+    new_password = PasswordField('New Password', validators=[InputRequired()])
+    new_password_confirm = PasswordField('Confirm New Password', validators=[InputRequired()])
+
+    def validate(self):
+        if not super(BaseChangePasswordForm, self).validate():
+            return False
+
+        valid = True
+
+        if self.new_password.data != self.new_password_confirm.data:
+            self.new_password_confirm.errors.append("Passwords don't match.")
+            valid = False
+
+        return valid
+
+
+class ResetPasswordForm(BaseChangePasswordForm):
+    pass
 
 
 class AccountForm(Form):
-    first_name = StringField()
-    last_name = StringField()
+    first_name = StringField(validators=[InputRequired()])
+    last_name = StringField(validators=[InputRequired()])
 
 
-class ChangePasswordForm(Form):
-    password = PasswordField('Current Passowrd')
-    new_password = PasswordField('New Password')
-    new_password_confirm = PasswordField('Confirm New Password')
+class ChangePasswordForm(BaseChangePasswordForm):
+    password = PasswordField('Current Password')
 
 
 class ChangeEmailForm(Form):

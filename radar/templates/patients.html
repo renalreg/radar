@@ -15,7 +15,7 @@
                 <form method="GET">
                     <p>
                         <button type="submit" class="btn btn-primary">Search</button>
-                        <a href="{{ url_for('patients.view_patient_list') }}" class="btn btn-link">Reset</a>
+                        <a href="{{ url_for('patients.view_patient_list') }}" class="btn btn-link">Clear</a>
                     </p>
 
                     {{ render_field(form.radar_id) }}
@@ -75,7 +75,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Search</button>
-                    <a href="{{ url_for('patients.view_patient_list') }}" class="btn btn-link">Reset</a>
+                    <a href="{{ url_for('patients.view_patient_list') }}" class="btn btn-link">Clear</a>
                 </form>
             </div>
         </div>

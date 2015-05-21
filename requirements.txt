@@ -1,11 +1,13 @@
 Flask
 Flask-Login
-SQLAlchemy
 Flask-Script
+Flask-Mail
 Flask-Markdown
 Flask-SQLAlchemy
 Flask-WTF
-python-dateutil
-pytz
+itsdangerous
 pandas
 psycopg2
+python-dateutil
+pytz
+SQLAlchemy

@@ -2,52 +2,81 @@
 
 {% from 'macros/forms.html' import render_field %}
 {% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/panels.html' import render_panel %}
 
 {% set current_page = 'account' %}
 
 {% block content %}
     <h1 class="page-header">Account</h1>
 
-    {{ render_form_errors(account_form) }}
+    <table class="table kv">
+        <tr>
+            <th width="20%">Username</th>
+            <td>{{ current_user.username }}</td>
+        </tr>
 
-    <form method="POST">
-        {{ account_form.hidden_tag() }}
+        <tr>
+            <th width="20%">Email</th>
+            <td>{{ current_user.email }}</td>
+        </tr>
+    </table>
 
-        {{ render_field(account_form.first_name) }}
-        {{ render_field(account_form.last_name) }}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">User Details</h3>
+        </div>
 
-        <button type="submit" class="btn btn-success" name="account-submit">Save</button>
-    </form>
+        <div class="panel-body">
+            {{ render_form_errors(account_form) }}
 
-    <hr />
+            <form method="POST">
+                {{ account_form.hidden_tag() }}
 
-    <h2>Change Email</h2>
+                {{ render_field(account_form.first_name) }}
+                {{ render_field(account_form.last_name) }}
 
-    {{ render_form_errors(change_email_form) }}
+                <button type="submit" class="btn btn-success" name="account-submit">Save</button>
+            </form>
+        </div>
+    </div>
 
-    <form method="POST">
-        {{ change_email_form.hidden_tag() }}
+    <div id="change-email" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Change Email</h3>
+        </div>
 
-        {{ render_field(change_email_form.password) }}
-        {{ render_field(change_email_form.new_email) }}
-        {{ render_field(change_email_form.new_email_confirm) }}
+        <div class="panel-body">
+            {{ render_form_errors(change_email_form) }}
 
-        <button type="submit" class="btn btn-success" name="change-email-submit">Save</button>
-    </form>
+            <form method="POST">
+                {{ change_email_form.hidden_tag() }}
 
-    <hr />
+                {{ render_field(change_email_form.password) }}
+                {{ render_field(change_email_form.new_email) }}
+                {{ render_field(change_email_form.new_email_confirm) }}
 
-    <h2>Change Password</h2>
+                <button type="submit" class="btn btn-success" name="change-email-submit">Save</button>
+            </form>
+        </div>
+    </div>
 
-    {{ render_form_errors(change_password_form) }}
+    <div id="change-password" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Change Password</h3>
+        </div>
 
-    <form method="POST">
-        {{ change_password_form.hidden_tag() }}
+        <div class="panel-body">
+            {{ render_form_errors(change_password_form) }}
 
-        {{ render_field(change_password_form.password) }}
-        {{ render_field(change_password_form.new_password) }}
-        {{ render_field(change_password_form.new_password_confirm) }}
+            <form method="POST">
+                {{ change_password_form.hidden_tag() }}
 
-        <button type="submit" class="btn btn-success" name="change-password-submit">Save</button>
-    </form>
+                {{ render_field(change_password_form.password) }}
+                {{ render_field(change_password_form.new_password) }}
+                {{ render_field(change_password_form.new_password_confirm) }}
+
+                <button type="submit" class="btn btn-success" name="change-password-submit">Save</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

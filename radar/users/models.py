@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
+import os
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint, DateTime, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,11 +23,15 @@ class User(db.Model):
     last_name = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
 
+    reset_password_token = Column(String)
+    reset_password_date = Column(DateTime)
+
     units = relationship('UnitUser', back_populates='user')
     disease_groups = relationship('DiseaseGroupUser', back_populates='user')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+        self.reset_password_token = None
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
