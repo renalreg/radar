@@ -20,7 +20,11 @@ class LabOrderConcept(Concept):
                 'description': lab_order_defintion.description
             },
             'result_time': self.lab_order.date,
-            'from_time': self.lab_order.date
+            'from_time': self.lab_order.date,
+            'entering_organization': {
+                'code': sda_bundle.facility.code,
+                'description': sda_bundle.facility.name,
+            }
         }
 
         sda_lab_order.data = data
