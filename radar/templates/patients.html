@@ -85,7 +85,7 @@
                 <h1 class="page-header">Patients <small>{{ pagination.total }} {% if pagination.total == 1 %}patient{% else %}patients{% endif %}</small></h1>
 
                 {% if current_user.has_recruit_patient_permission %}
-                    <p><a href="{{ url_for('recruit.recruit_patient') }}" class="btn btn-primary">Recruit Patient</a></p>
+                    <p><a href="{{ url_for('recruitment.recruit_patient') }}" class="btn btn-primary">Recruit Patient</a></p>
                 {% endif %}
 
                 <table class="table table-condensed table-striped">

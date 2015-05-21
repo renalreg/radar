@@ -86,36 +86,6 @@ class PatientSearchForm(Form):
     page = IntegerField()
 
 
-class RecruitPatientSearchForm(Form):
-    date_of_birth = RadarDOBField(validators=[DataRequired()])
-    unit_id = RadarSelectField('Unit', coerce=optional_int)
-    disease_group_id = RadarSelectField('Disease Group', coerce=optional_int)
-    first_name = StringField(validators=[Optional()])
-    last_name = StringField(validators=[Optional()])
-    nhs_no = RadarNHSNoField(validators=[Optional()])
-    chi_no = RadarCHINoField(validators=[Optional()])
-
-    def validate(self):
-        if not super(RecruitPatientSearchForm, self).validate():
-            return False
-
-        valid = True
-
-        if not ((self.first_name.data and self.last_name.data) or self.nhs_no.data or self.chi_no.data):
-            self.first_name.errors.append('Please supply a first name and last name, NHS number or CHI number.')
-            valid = False
-
-        return valid
-
-
-class RecruitPatientRadarForm(Form):
-    patient_id = IntegerField(validators=[Optional()])
-
-
-class RecruitPatientRdcForm(Form):
-    mpiid = IntegerField(validators=[Optional()])
-
-
 class PatientUnitForm(Form):
     unit_id = RadarSelectField('Unit', validators=[InputRequired()], coerce=int)
 

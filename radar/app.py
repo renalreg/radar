@@ -30,7 +30,7 @@ from radar.patients.pathology.views import bp as pathology_bp
 from radar.patients.transplants.views import bp as transplants_bp
 from radar.patients.salt_wasting.views import bp as salt_wasting_bp
 from radar.patients.plasmapheresis.views import bp as plasmapheresis_bp
-from radar.patients.recruit.views import bp as recruit_bp
+from radar.patients.recruitment.views import bp as recruit_bp
 from radar.database import db
 
 
