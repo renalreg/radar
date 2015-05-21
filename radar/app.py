@@ -30,6 +30,7 @@ from radar.patients.pathology.views import bp as pathology_bp
 from radar.patients.transplants.views import bp as transplants_bp
 from radar.patients.salt_wasting.views import bp as salt_wasting_bp
 from radar.patients.plasmapheresis.views import bp as plasmapheresis_bp
+from radar.patients.recruit.views import bp as recruit_bp
 from radar.database import db
 
 
@@ -50,6 +51,7 @@ def create_app(config_filename):
     app.register_blueprint(units_bp, url_prefix='/units')
     app.register_blueprint(users_bp, url_prefix='/users')
     app.register_blueprint(patients_bp, url_prefix='/patients')
+    app.register_blueprint(recruit_bp, url_prefix='/patients')
     app.register_blueprint(news_bp, url_prefix='/news')
 
     patient_blueprints = [

@@ -5,6 +5,7 @@ from flask_wtf import Form
 from radar.forms import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarPostcodeField, \
     RadarDOBField
 from radar.ordering import ASCENDING, DESCENDING
+from radar.patients.search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.utils import optional_int
 
 
@@ -54,6 +55,12 @@ class DemographicsForm(Form):
 
 
 class PatientSearchForm(Form):
+    def __init__(self, user, *args, **kwargs):
+        super(PatientSearchForm, self).__init__(*args, **kwargs)
+
+        self.disease_group_id.choices = get_disease_group_filter_choices(user)
+        self.unit_id.choices = get_unit_filter_choices(user)
+
     radar_id = IntegerField('RaDaR ID', validators=[Optional()])
 
     first_name = StringField()

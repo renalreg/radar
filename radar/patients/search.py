@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 
 from sqlalchemy import or_, case, desc, func, and_
 from sqlalchemy.orm import aliased
+from radar.forms import add_empty_choice
 
 from radar.users.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
@@ -354,3 +355,15 @@ def get_disease_group_filters_for_user(user):
         query = query.join(DiseaseGroup.users).filter(DiseaseGroupUser.user == user, DiseaseGroupUser.has_view_patient_permission)
 
     return query.order_by(DiseaseGroup.name).all()
+
+
+def get_disease_group_filter_choices(user):
+    disease_group_choices = [(x.id, x.name) for x in get_disease_group_filters_for_user(user)]
+    disease_group_choices = add_empty_choice(disease_group_choices)
+    return disease_group_choices
+
+
+def get_unit_filter_choices(user):
+    unit_choices = [(x.id, x.name) for x in get_unit_filters_for_user(user)]
+    unit_choices = add_empty_choice(unit_choices)
+    return unit_choices
