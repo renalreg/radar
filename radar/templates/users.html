@@ -58,8 +58,8 @@
                                 <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.id }}</a></td>
                                 <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.first_name }}</td>
-                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.first_name | missing }}</td>
+                                <td>{{ user.last_name | missing }}</td>
 
                                 <td>
                                     {% if user_data.disease_groups %}

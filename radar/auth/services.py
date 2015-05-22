@@ -1,18 +1,21 @@
 import os
 import base64
+from random import SystemRandom
 
 from flask import render_template, url_for
 from flask_mail import Message
+import re
+from radar.auth.constants import GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH, PASSWORD_REGEXES
 
 from radar.mail import mail
 from radar.users.models import User
 
 
-RESET_PASSWORD_MAX_AGE = 86400
-
-
 def check_login(username, password):
     """ Authenticate a user """
+
+    # Usernames are stored in lower case
+    username = username.lower()
 
     # Get user by username
     user = User.query.filter(User.username == username).first()
@@ -52,3 +55,15 @@ def send_username_reminder_email(email, users):
     msg = Message('RaDaR Username Reminder', recipients=[email])
     msg.html = render_template('emails/username_reminder.html', email=email, users=users)
     mail.send(msg)
+
+
+def generate_password():
+    return ''.join(SystemRandom().sample(GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH))
+
+
+def check_password_policy(password):
+    for regex in PASSWORD_REGEXES:
+        if not re.search(regex, password):
+            return False
+
+    return True

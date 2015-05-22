@@ -4,7 +4,7 @@ import re
 from flask_login import current_user
 from markupsafe import Markup
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
-    RadioField
+    RadioField, PasswordField
 from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
@@ -30,9 +30,6 @@ class RadarDOBField(RadarDateField):
 
         if self.data and self.data > date.today():
             raise ValidationError("Can't be in the future.")
-
-
-RadarDODField = RadarDOBField
 
 
 class RadarDateInput(TextInput):

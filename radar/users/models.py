@@ -18,9 +18,9 @@ class User(db.Model):
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    first_name = Column(String)
+    last_name = Column(String)
     is_admin = Column(Boolean, default=False, nullable=False)
 
     reset_password_token = Column(String)

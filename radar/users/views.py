@@ -1,5 +1,6 @@
 from flask import render_template, request, abort, Blueprint, flash, url_for, redirect
 from flask_login import current_user
+from radar.auth.services import generate_password
 
 from radar.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
@@ -10,7 +11,7 @@ from radar.units.services import get_units_for_user_with_permissions
 from radar.users.models import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
 from radar.users.search import UserQueryBuilder
-from radar.users.services import get_managed_units, get_managed_disease_groups
+from radar.users.services import get_managed_units, get_managed_disease_groups, send_new_user_email
 from radar.users.forms import DiseaseGroupRoleForm, UserSearchForm, UnitRoleForm, AddUserForm
 from radar.users.models import User
 
@@ -162,18 +163,22 @@ def add_user():
     if form.validate_on_submit():
         user = User()
 
-        user.username = form.username.data
+        user.username = form.username.data.lower()
         user.email = form.email.data
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
 
-        # TODO email users a link to login
-        user.set_password('password')
+        password = generate_password()
+        user.set_password(password)
 
         db.session.add(user)
         db.session.commit()
 
+        send_new_user_email(user, password)
+
         message = (
             "User added successfully. "
-            "An email has been sent to %s with instructions on how to set a password and login. "
+            "An email has been sent to %s with the initial password and instructions on how to login. "
             "Don't forget to add the user to groups."
         ) % user.email
 

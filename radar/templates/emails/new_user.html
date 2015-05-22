@@ -1,0 +1,14 @@
+<p>Hello {{ user.first_name or user.username }},</p>
+
+<p>You have been registered as a user on RaDaR.</p>
+
+<p>
+    Username: {{ user.username }}<br />
+    Initial password: {{ password }}
+</p>
+
+<p>You can login using the url below:</p>
+
+<p><a href="{{ login_url }}">{{ login_url }}</a></p>
+
+<p>- RaDaR</p>

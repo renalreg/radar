@@ -29,6 +29,8 @@ class UserSearchForm(Form):
 class AddUserForm(Form):
     username = StringField(validators=[InputRequired()])
     email = StringField(validators=[InputRequired(), Email()])
+    first_name = StringField(validators=[InputRequired()])
+    last_name = StringField(validators=[InputRequired()])
 
     def validate(self):
         if not super(AddUserForm, self).validate():
@@ -38,10 +40,6 @@ class AddUserForm(Form):
 
         if User.query.filter(User.username == self.username.data).count() > 0:
             self.username.errors.append('Username taken.')
-            valid = False
-
-        if User.query.filter(User.email == self.email.data).count() > 0:
-            self.email.errors.append('An account already exists with this email address.')
             valid = False
 
         return valid
