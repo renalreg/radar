@@ -43,7 +43,12 @@ def generate_reset_password_token():
 def send_reset_password_email(user, token):
     url = url_for('auth.reset_password', token=token, _external=True)
 
-    msg = Message('Reset RaDaR Password', recipients=[user.email])
-    msg.body = render_template('emails/reset_password.txt', user=user, url=url)
+    msg = Message('RaDaR Reset Password', recipients=[user.email])
+    msg.html = render_template('emails/reset_password.html', user=user, url=url)
+    mail.send(msg)
 
+
+def send_username_reminder_email(email, users):
+    msg = Message('RaDaR Username Reminder', recipients=[email])
+    msg.html = render_template('emails/username_reminder.html', email=email, users=users)
     mail.send(msg)

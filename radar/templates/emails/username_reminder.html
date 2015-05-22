@@ -1,0 +1,13 @@
+<p>Hello,</p>
+
+<p>We received a request to remind you of the username(s) associated with your RaDaR email address ({{ email }}).</p>
+
+<p>These are the usernames registered with this email address:
+
+<ul>
+    {% for user in users %}
+        <li>{{ user.username }}</li>
+    {% endfor %}
+</ul>
+
+<p>- RaDaR</p>

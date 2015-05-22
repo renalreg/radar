@@ -7,7 +7,7 @@ from radar.auth.constants import PUBLIC_ENDPOINTS
 from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
     ChangePasswordForm, AccountForm
 from radar.auth.services import check_login, RESET_PASSWORD_MAX_AGE, generate_reset_password_token, \
-    send_reset_password_email
+    send_reset_password_email, send_username_reminder_email
 from radar.database import db
 from radar.users.models import User
 
@@ -51,6 +51,17 @@ def logout():
 @bp.route('/forgot-username/', methods=['GET', 'POST'], endpoint='forgot_username')
 def forgot_username_view():
     form = ForgotUsernameForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+        users = User.query.filter(User.email == form.email.data).order_by(User.username).all()
+
+        if len(users) > 0:
+            send_username_reminder_email(email, users)
+            flash('A username reminder email has been sent.', 'success')
+            return redirect(url_for('radar.index'))
+        else:
+            form.email.errors.append('Email not found.')
 
     context = dict(
         form=form,
