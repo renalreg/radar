@@ -22,6 +22,12 @@ def require_login():
         return current_app.login_manager.unauthorized()
 
 
+def force_password_change():
+    if current_user.is_authenticated and current_user.force_password_change and request.endpoint not in ['auth.change_password', 'auth.logout', 'static']:
+        flash('Please update your password.')
+        return redirect(url_for('auth.change_password'))
+
+
 @bp.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -162,3 +168,21 @@ def account_view():
     )
 
     return render_template('account.html', **context)
+
+
+@bp.route('/change-password/', methods=['GET', 'POST'])
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        password = form.new_password.data
+        current_user.set_password(password)
+        db.session.commit()
+        flash('Password updated.', 'success')
+        return redirect(url_for('radar.index'))
+
+    context = dict(
+        form=form,
+    )
+
+    return render_template('change_password.html', **context)

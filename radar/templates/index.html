@@ -2,7 +2,7 @@
 
 {% set current_page = 'index' %}
 
-{% from 'macros/forms.html' import render_field, render_field_group %}
+{% from 'macros/login.html' import render_login_form %}
 {% from 'macros/flash.html' import render_flashed_messages %}
 
 {% block body %}
@@ -61,23 +61,7 @@
                 <div class="block">
                     <h3>Login</h3>
 
-                    <form method="POST" action="{{ url_for('auth.login') }}">
-                        {{ login_form.hidden_tag() }}
-
-                        {% call render_field_group(login_form.username) %}
-                            {{ login_form.username.label }}
-                            {{ login_form.username(class='form-control') }}
-                            <span class="help-block"><a href="{{ url_for('auth.forgot_username') }}">Forgotten your username?</a></span>
-                        {% endcall %}
-
-                        {% call render_field_group(login_form.password) %}
-                            {{ login_form.password.label }}
-                            {{ login_form.password(class='form-control') }}
-                            <span class="help-block"><a href="{{ url_for('auth.forgot_password') }}">Forgotten your password?</a></span>
-                        {% endcall %}
-
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
+                    {{ render_login_form(login_form) }}
                 </div>
             </div>
         {% endif %}

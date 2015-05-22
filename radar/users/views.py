@@ -167,9 +167,8 @@ def add_user():
         user.email = form.email.data
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
-
         password = generate_password()
-        user.set_password(password)
+        user.set_initial_password(password)
 
         db.session.add(user)
         db.session.commit()

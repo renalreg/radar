@@ -19,6 +19,28 @@
             <th width="20%">Email</th>
             <td>{{ current_user.email }}</td>
         </tr>
+
+        <tr>
+            <th width="20%">First Name</th>
+            <td>{{ current_user.first_name | missing }}</td>
+        </tr>
+
+        <tr>
+            <th width="20%">Last Name</th>
+            <td>{{ current_user.last_name | missing }}</td>
+        </tr>
+
+        <tr>
+            <th width="20%">Registered</th>
+            <td>{{ current_user.created_at | date_format | missing }}</td>
+        </tr>
+
+        {% if current_user.is_admin %}
+            <tr>
+                <th>Admin</th>
+                <td><span class="glyphicon glyphicon-ok"></span></td>
+            </tr>
+        {% endif %}
     </table>
 
     <div class="panel panel-default">

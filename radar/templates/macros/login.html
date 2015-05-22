@@ -1,0 +1,23 @@
+{% from 'macros/forms.html' import render_field, render_field_group, render_field_errors %}
+
+{% macro render_login_form(form) %}
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        {{ form.hidden_tag() }}
+
+        {% call render_field_group(form.username) %}
+            {{ form.username.label }}
+            {{ form.username(class='form-control') }}
+            {{ render_field_errors(form.username) }}
+            <span class="help-block"><a href="{{ url_for('auth.forgot_username') }}" tabindex="-1">Forgotten your username?</a></span>
+        {% endcall %}
+
+        {% call render_field_group(form.password) %}
+            {{ form.password.label }}
+            {{ form.password(class='form-control') }}
+            {{ render_field_errors(form.password) }}
+            <span class="help-block"><a href="{{ url_for('auth.forgot_password') }}" tabindex="-1">Forgotten your password?</a></span>
+        {% endcall %}
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+{% endmacro %}

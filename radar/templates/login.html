@@ -1,6 +1,6 @@
 {% extends 'simple.html' %}
 
-{% from 'macros/forms.html' import render_field, render_field_group, render_field_errors %}
+{% from 'macros/login.html' import render_login_form %}
 
 {% set current_page = 'login' %}
 
@@ -13,23 +13,5 @@
         </div>
     {% endif %}
 
-    <form method="POST">
-        {{ form.hidden_tag() }}
-
-        {% call render_field_group(form.username) %}
-            {{ form.username.label }}
-            {{ form.username(class='form-control') }}
-            {{ render_field_errors(form.username) }}
-            <span class="help-block"><a href="{{ url_for('auth.forgot_username') }}">Forgotten your username?</a></span>
-        {% endcall %}
-
-        {% call render_field_group(form.password) %}
-            {{ form.password.label }}
-            {{ form.password(class='form-control') }}
-            {{ render_field_errors(form.password) }}
-            <span class="help-block"><a href="{{ url_for('auth.forgot_password') }}">Forgotten your password?</a></span>
-        {% endcall %}
-
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    {{ render_login_form(form) }}
 {% endblock %}

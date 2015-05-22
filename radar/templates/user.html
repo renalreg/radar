@@ -29,6 +29,11 @@
         </tr>
 
         <tr>
+            <th>Registered</th>
+            <td>{{ user.created_at | date_format | missing }}</td>
+        </tr>
+
+        <tr>
             <th>Admin</th>
             <td>{% if user.is_admin %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
         </tr>

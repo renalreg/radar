@@ -7,7 +7,7 @@ from radar.error_handlers import page_not_found, forbidden
 from sqlalchemy import event
 
 from radar.auth.services import load_user
-from radar.auth.views import require_login
+from radar.auth.views import require_login, force_password_change
 from radar.context_processors import inject_navigation, inject_delete_form
 from radar.mail import mail
 from radar.ordering import url_for_order_by
@@ -81,6 +81,7 @@ def create_app(config_filename):
     login_manager.login_view = 'auth.login'
 
     app.before_request(require_login)
+    app.before_request(force_password_change)
 
     # Register template filters
     app.add_template_filter(date_format)

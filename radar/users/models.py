@@ -1,9 +1,11 @@
-import os
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint, DateTime
+from sqlalchemy.ext.declarative import declared_attr
+
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from radar.models import CreatedModifiedMixin, ModifiedMixin, CreatedMixin
 from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
@@ -12,7 +14,19 @@ from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
 from radar.database import db
 
 
-class User(db.Model):
+class UserCreatedMixin(CreatedMixin):
+    @declared_attr
+    def created_user(cls):
+        return relationship('User', foreign_keys=[cls.created_user_id], remote_side='User.id', post_update=True)
+
+
+class UserModifiedMixin(ModifiedMixin):
+    @declared_attr
+    def modified_user(cls):
+        return relationship('User', foreign_keys=[cls.modified_user_id], remote_side='User.id', post_update=True)
+
+
+class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -26,12 +40,19 @@ class User(db.Model):
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
+    force_password_change = Column(Boolean, default=False, nullable=False)
+
     units = relationship('UnitUser', back_populates='user')
     disease_groups = relationship('DiseaseGroupUser', back_populates='user')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
         self.reset_password_token = None
+        self.force_password_change = False
+
+    def set_initial_password(self, password):
+        self.set_password(password)
+        self.force_password_change = True
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)

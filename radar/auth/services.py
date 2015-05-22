@@ -33,10 +33,12 @@ def check_login(username, password):
 
 
 def load_user(user_id):
-    """ Load a user by id """
+    """ Load a user by id, returns None if not found """
 
-    # Get user by id, returns None if not found
-    return User.query.get(user_id)
+    user = User.query.get(user_id)
+
+    # Get user by id,
+    return user
 
 
 def generate_reset_password_token():

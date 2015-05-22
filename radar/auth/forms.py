@@ -1,6 +1,10 @@
+from flask_login import current_user
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Email
+from radar.auth.constants import PASSWORD_POLICY
+from radar.auth.services import check_login
+from radar.forms import radar_password_check
 
 
 class LoginForm(Form):
@@ -17,7 +21,7 @@ class ForgotPasswordForm(Form):
 
 
 class BaseChangePasswordForm(Form):
-    new_password = PasswordField('New Password', validators=[InputRequired()])
+    new_password = PasswordField('New Password', description=PASSWORD_POLICY, validators=[InputRequired(), radar_password_check])
     new_password_confirm = PasswordField('Confirm New Password', validators=[InputRequired()])
 
     def validate(self):
@@ -44,6 +48,23 @@ class AccountForm(Form):
 
 class ChangePasswordForm(BaseChangePasswordForm):
     password = PasswordField('Current Password')
+
+    def validate(self):
+        if not super(BaseChangePasswordForm, self).validate():
+            return False
+
+        valid = True
+
+        if not check_login(current_user.username, self.password.data):
+            self.password.errors.append('Incorrect password.')
+            valid = False
+
+        if self.password.data == self.new_password.data:
+            self.new_password.errors.append('Same as current password.')
+            valid = False
+
+        return valid
+
 
 
 class ChangeEmailForm(Form):

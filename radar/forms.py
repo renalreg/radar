@@ -8,6 +8,8 @@ from wtforms import SelectField, SelectMultipleField, ValidationError, StringFie
 from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
+from radar.auth.constants import PASSWORD_POLICY
+from radar.auth.services import check_password_policy
 
 
 class RadarDateField(DateField):
@@ -269,3 +271,10 @@ class UnitFormMixin(object):
             self.unit_id.choices = [(x.unit.id, x.unit.name, x.unit) for x in units]
 
     unit_id = RadarSelectObjectField('Unit', validators=[InputRequired()], coerce=int)
+
+
+def radar_password_check(form, field):
+    _ = form
+
+    if not check_password_policy(field.data):
+        raise ValidationError("Password doesn't meet the password policy.")

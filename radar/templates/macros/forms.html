@@ -26,6 +26,10 @@
             {{ field(class='form-control', disabled=read_only) }}
         {% endif %}
 
+        {% if field.description %}
+            <span class="help-block">{{ field.description }}</span>
+        {% endif %}
+
         {{ render_field_errors(field) }}
     {% endcall %}
 {% endmacro %}
@@ -43,6 +47,10 @@
                 </div>
             {% else %}
                 {{ field(class='form-control', disabled=read_only) }}
+            {% endif %}
+
+            {% if field.description %}
+                <span class="help-block">{{ field.description }}</span>
             {% endif %}
 
             {{ render_field_errors(field) }}
