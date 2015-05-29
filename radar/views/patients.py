@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from flask import render_template, Blueprint, abort, request, url_for, redirect, flash
 from flask_login import current_user
 
@@ -8,14 +6,12 @@ from radar.lib.facilities import get_radar_facility
 from radar.lib.patients import get_facility_patients
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.common import DeleteForm
-from radar.models.facilities import PatientLatestImport, Facility
-from radar.models.patients import Patient, PatientDemographics, PatientNumber, PatientAlias, PatientAddress
+from radar.models.patients import Patient, PatientDemographics
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
 from radar.lib.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
-    PatientUnitForm, \
-    AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
+    PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
 from radar.lib.demographics_sda import demographics_to_sda_bundle
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
@@ -91,8 +87,6 @@ def view_patient_list():
     form = PatientSearchForm(user=current_user, formdata=request.args, csrf_enabled=False)
 
     query = build_patient_search_query(current_user, form)
-
-    print query
 
     ordering = Ordering(form.order_by.data, form.order_direction.data)
     pagination = paginate_query(query, default_per_page=PER_PAGE_DEFAULT)

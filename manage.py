@@ -3,7 +3,7 @@ from flask_script import Manager
 from radar.app import create_app
 from radar.lib.database import db
 from radar.models.users import User
-from radar.data import fixtures
+from radar.lib import fixtures
 
 app = create_app('settings.py')
 

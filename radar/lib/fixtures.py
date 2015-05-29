@@ -1,5 +1,7 @@
 import random
 from datetime import date, timedelta
+
+from radar.app import create_app
 from radar.lib.database import db
 from radar.models.facilities import Facility
 from radar.models.patients import Patient, PatientDemographics
@@ -235,3 +237,10 @@ def create_fixtures():
             d.nhs_no = generate_nhs_no()
 
         db.session.add(patient)
+
+
+if __name__ == '__main__':
+    app = create_app('settings.py')
+
+    with app.app_context():
+        create_fixtures()

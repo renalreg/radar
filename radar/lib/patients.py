@@ -1,5 +1,6 @@
 from collections import defaultdict
-from radar.models.facilities import PatientLatestImport, Facility
+from radar.models.facilities import Facility
+from radar.models.sync import PatientLatestImport
 from radar.models.patients import PatientDemographics, PatientNumber, PatientAlias, PatientAddress
 
 

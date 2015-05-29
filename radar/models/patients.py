@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, BigInteger, join
+from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, BigInteger, join, \
+    UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
@@ -186,7 +187,7 @@ class PatientDemographics(db.Model, MetadataMixin):
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
 
-    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False, unique=True)
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
 
     first_name = Column(String)
@@ -205,6 +206,10 @@ class PatientDemographics(db.Model, MetadataMixin):
 
     nhs_no = Column(BigInteger)
     chi_no = Column(BigInteger)
+
+    __table_args__ = (
+        UniqueConstraint('patient_id', 'facility_id'),
+    )
 
     def can_view(self, user):
         return self.patient.can_view(user)
