@@ -8,7 +8,7 @@ from radar.lib.error_handlers import page_not_found, forbidden
 from radar.auth.services import load_user
 from radar.views.auth import require_login, force_password_change
 from radar.lib.context_processors import inject_navigation, inject_delete_form
-from radar.lib import mail
+from radar.lib.mail import mail
 from radar.lib.ordering import url_for_order_by
 from radar.lib.pagination import url_for_per_page, url_for_page
 from radar.lib.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
