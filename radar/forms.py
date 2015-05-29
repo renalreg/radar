@@ -4,11 +4,11 @@ import re
 from flask_login import current_user
 from markupsafe import Markup
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
-    RadioField, PasswordField
+    RadioField
 from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
-from radar.auth.constants import PASSWORD_POLICY
+
 from radar.auth.services import check_password_policy
 
 
