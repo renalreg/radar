@@ -13,11 +13,12 @@ class Unit(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    facility_id = Column(Integer, ForeignKey('facilities.id'))
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
 
-    patients = relationship('UnitPatient')
-    users = relationship('UnitUser')
+    unit_patients = relationship('UnitPatient')
+    unit_users = relationship('UnitUser')
 
 
 class UnitPatient(db.Model, MetadataMixin):
@@ -25,10 +26,10 @@ class UnitPatient(db.Model, MetadataMixin):
 
     id = Column(Integer, primary_key=True)
 
-    unit_id = Column(Integer, ForeignKey('units.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
     unit = relationship('Unit')
 
-    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
 
     is_active = Column(Boolean, nullable=False, default=True, server_default='1')

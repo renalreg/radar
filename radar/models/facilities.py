@@ -11,8 +11,8 @@ class Facility(db.Model):
     name = Column(String)
 
 
-class PatientFacilityImport(db.Model):
-    __tablename__ = 'patient_facility_imports'
+class PatientLatestImport(db.Model):
+    __tablename__ = 'patient_latest_imports'
 
     id = Column(Integer, primary_key=True)
 

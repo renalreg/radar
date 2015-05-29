@@ -1,13 +1,13 @@
 from collections import defaultdict
-from datetime import datetime
 
 from flask import render_template, Blueprint, abort, request, url_for, redirect, flash
 from flask_login import current_user
 
 from radar.lib.database import db
+from radar.lib.patients import get_facility_patients
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.common import DeleteForm
-from radar.models.facilities import Facility
+from radar.models.facilities import PatientLatestImport
 from radar.models.patients import Patient, PatientDemographics, PatientNumber, PatientAlias, PatientAddress
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
@@ -17,9 +17,7 @@ from radar.lib.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PA
     AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
 from radar.lib.demographics_sda import demographics_to_sda_bundle
 from radar.lib.patient_search import PatientQueryBuilder
-from radar.lib.sda.models import SDAPatient
 from radar.models.units import Unit, UnitPatient
-from radar.lib.utils import get_path_as_text
 
 
 bp = Blueprint('patients', __name__)
@@ -107,35 +105,6 @@ def view_patient_list():
     return render_template('patients.html', **context)
 
 
-class FacilityPatient(object):
-    def __init__(self, facility, patient, demographics=None, numbers=None, aliases=None, addresses=None):
-        if numbers is None:
-            numbers = []
-
-        if aliases is None:
-            aliases = []
-
-        if addresses is None:
-            addresses = []
-
-        self.facility = facility
-        self.patient = patient
-        self.demographics = demographics
-        self.numbers = numbers
-        self.aliases = aliases
-        self.addresses = addresses
-
-
-def get_facility_patient(map, facility, patient):
-    facility_patient = map.get(facility)
-
-    if facility_patient is None:
-        facility_patient = FacilityPatient(facility, patient)
-        map[facility] = facility_patient
-
-    return facility_patient
-
-
 @bp.route('/<int:patient_id>/', endpoint='view_demographics_list')
 @bp.route('/<int:patient_id>/', endpoint='view_patient')
 def view_demographics_list(patient_id):
@@ -144,46 +113,7 @@ def view_demographics_list(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    patient_demographics_list = PatientDemographics.query\
-        .join(Patient)\
-        .filter(Patient.id == patient_id)\
-        .all()
-    patient_numbers = PatientNumber.query\
-        .join(Patient)\
-        .filter(Patient.id == patient_id)\
-        .all()
-    patient_aliases = PatientAlias.query\
-        .join(Patient)\
-        .filter(Patient.id == patient_id)\
-        .all()
-    patient_addresses = PatientAddress.query\
-        .join(Patient)\
-        .filter(Patient.id == patient_id)\
-        .all()
-
-    facility_patient_map = defaultdict(FacilityPatient)
-
-    for patient_demographics in patient_demographics_list:
-        facility = patient_demographics.facility
-        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
-        facility_patient.demographics = patient_demographics
-
-    for patient_number in patient_numbers:
-        facility = patient_number.facility
-        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
-        facility_patient.numbers.append(patient_number)
-
-    for patient_alias in patient_aliases:
-        facility = patient_alias.facility
-        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
-        facility_patient.aliases.append(patient_alias)
-
-    for patient_address in patient_addresses:
-        facility = patient_address.facility
-        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
-        facility_patient.addresses.append(patient_address)
-
-    facility_patients = facility_patient_map.values()
+    facility_patients = get_facility_patients(patient)
 
     context = dict(
         patient=patient,

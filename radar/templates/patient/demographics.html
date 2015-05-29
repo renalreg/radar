@@ -26,7 +26,20 @@
                     {% endif %}
 
                     <tr>
-                        <th>Date of Birth</th>
+                        <th width="20%">Gender</th>
+                        <td>
+                            {% if facility_patient.demographics.gender == 'M' %}
+                                Male
+                            {% elif facility_patient.demographics.gender == 'F' %}
+                                Female
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th width="20%">Date of Birth</th>
                         <td>
                             {% if patient.can_view_demographics(current_user) %}
                                 {{ facility_patient.demographics.date_of_birth | date_format | missing }}
@@ -37,7 +50,7 @@
                     </tr>
 
                     <tr>
-                        <th>Date of Death</th>
+                        <th width="20%">Date of Death</th>
                         <td>
                             {% if patient.can_view_demographics(current_user) %}
                                 {{ facility_patient.demographics.date_of_death | date_format | missing }}
@@ -46,11 +59,42 @@
                             {% endif %}
                         </td>
                     </tr>
+                </table>
+            {% endif %}
 
-                    <tr>
-                        <th>Gender</th>
-                        <td>{{ facility_patient.demographics.gender | missing }}</td>
-                    </tr>
+            {% if facility_patient.demographics and patient.can_view_demographics(current_user) and (facility_patient.demographics.home_number or facility_patient.demographics.work_number or facility_patient.demographics.mobile_number or facility_patient.demographics.email_address) %}
+                <h4>Contact Details</h4>
+
+                <table class="table kv">
+                    {% if patient.can_view_demographics(current_user) %}
+                        {% if facility_patient.demographics.home_number %}
+                            <tr>
+                                <th width="20%">Home Number</th>
+                                <td>{{ facility_patient.demographics.home_number }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if facility_patient.demographics.mobile_number %}
+                            <tr>
+                                <th width="20%">Mobile Number</th>
+                                <td>{{ facility_patient.demographics.mobile_number }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if facility_patient.demographics.work_number %}
+                            <tr>
+                                <th width="20%">Work Number</th>
+                                <td>{{ facility_patient.demographics.work_number }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if facility_patient.demographics.email_address %}
+                            <tr>
+                                <th width="20%">Email Address</th>
+                                <td>{{ facility_patient.demographics.email_address }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
                 </table>
             {% endif %}
 
@@ -71,17 +115,26 @@
                     </tr>
 
                     {% if patient.can_view_demographics(current_user) %}
-                        {% if facility_patient.demographics.nhs_no %}
-                            <tr>
-                                <td>NHS</td>
-                                <td>{{ facility_patient.demographics.nhs_no }}</td>
-                            </tr>
+                        {% if facility_patient.demographics %}
+                            {% if facility_patient.demographics.nhs_no %}
+                                <tr>
+                                    <td>NHS</td>
+                                    <td>{{ facility_patient.demographics.nhs_no }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if facility_patient.demographics.chi_no %}
+                                <tr>
+                                    <td>CHI</td>
+                                    <td>{{ facility_patient.demographics.chi_no }}</td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
 
-                        {% if facility_patient.demographics.nhs_no %}
+                        {% if facility_patient.latest_import %}
                             <tr>
-                                <td>CHI</td>
-                                <td>{{ facility_patient.demographics.chi_no }}</td>
+                                <td>MPIID</td>
+                                <td>{{ facility_patient.latest_import.mpiid }}</td>
                             </tr>
                         {% endif %}
 

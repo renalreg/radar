@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, BigInteger
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
@@ -25,9 +25,9 @@ class Patient(db.Model):
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
 
-    demographics = relationship('PatientDemographics')
-    numbers = relationship('PatientNumber')
-    alias = relationship('PatientAlias')
+    demographics = relationship('PatientDemographics', backref='patient')
+    numbers = relationship('PatientNumber', backref='patient')
+    alias = relationship('PatientAlias', backref='patient')
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
@@ -185,7 +185,6 @@ class PatientDemographics(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
@@ -194,23 +193,18 @@ class PatientDemographics(db.Model, MetadataMixin):
     last_name = Column(String)
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
-    gender = Column(Integer)
+    gender = Column(String)  # TODO enum
 
     # TODO
     ethnicity = Column(String)
-
-    address_line_1 = Column(String)
-    address_line_2 = Column(String)
-    address_line_3 = Column(String)
-    postcode = Column(String)
 
     home_number = Column(String)
     work_number = Column(String)
     mobile_number = Column(String)
     email_address = Column(String)
 
-    nhs_no = Column(Integer)
-    chi_no = Column(Integer)
+    nhs_no = Column(BigInteger)
+    chi_no = Column(BigInteger)
 
     def can_view(self, user):
         return self.patient.can_view(user)
@@ -225,7 +219,6 @@ class PatientAlias(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
@@ -284,7 +277,6 @@ class PatientNumber(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility', foreign_keys=[facility_id])
