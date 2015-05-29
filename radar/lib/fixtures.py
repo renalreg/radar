@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from radar.app import create_app
 from radar.lib.database import db
 from radar.models.facilities import Facility
+from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.models.patients import Patient, PatientDemographics
 from radar.models.units import Unit
 from radar.models.users import User
@@ -237,6 +238,19 @@ def create_fixtures():
             d.nhs_no = generate_nhs_no()
 
         db.session.add(patient)
+
+    db.session.add(MedicationDoseUnit(id='ml', label='ml'))
+    db.session.add(MedicationDoseUnit(id='l', label='l'))
+    db.session.add(MedicationDoseUnit(id='mg', label='mg'))
+    db.session.add(MedicationDoseUnit(id='g', label='g'))
+    db.session.add(MedicationDoseUnit(id='kg', label='kg'))
+
+    db.session.add(MedicationFrequency(id='Daily', label='Daily'))
+    db.session.add(MedicationFrequency(id='Weekly', label='Weekly'))
+    db.session.add(MedicationFrequency(id='Monthly', label='Monthly'))
+
+    db.session.add(MedicationRoute(id='Oral', label='Oral'))
+    db.session.add(MedicationRoute(id='Rectal', label='Rectal'))
 
 
 if __name__ == '__main__':

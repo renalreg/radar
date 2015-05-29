@@ -2,12 +2,12 @@ from flask_wtf import Form
 from wtforms.validators import InputRequired, Optional
 
 from radar.lib.database import db
-from radar.lib.forms.common import UnitFormMixin, RadarDateField, RadarSelectObjectField, RadarYesNoField, add_empty_object_choice
+from radar.lib.forms.common import FacilityFormMixin, RadarDateField, RadarSelectObjectField, RadarYesNoField, add_empty_object_choice
 from radar.models.transplants import TransplantType
 from radar.lib.utils import optional_int
 
 
-class TransplantForm(UnitFormMixin, Form):
+class TransplantForm(FacilityFormMixin, Form):
     def __init__(self, *args, **kwargs):
         super(TransplantForm, self).__init__(*args, **kwargs)
 

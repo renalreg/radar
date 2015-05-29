@@ -262,15 +262,15 @@ def add_empty_object_choice(choices):
     return choices
 
 
-class UnitFormMixin(object):
+class FacilityFormMixin(object):
     def __init__(self, obj=None, *args, **kwargs):
-        super(UnitFormMixin, self).__init__(obj=obj, *args, **kwargs)
+        super(FacilityFormMixin, self).__init__(obj=obj, *args, **kwargs)
 
         if obj is not None:
-            units = obj.patient.available_units_for_user(current_user)
-            self.unit_id.choices = [(x.unit.id, x.unit.name, x.unit) for x in units]
+            facilities = obj.patient.intersect_facilities(current_user, with_edit_permission=True)
+            self.facility_id.choices = [(x.id, x.name, x) for x in facilities]
 
-    unit_id = RadarSelectObjectField('Unit', validators=[InputRequired()], coerce=int)
+    facility_id = RadarSelectObjectField('Data Source', validators=[InputRequired()], coerce=int)
 
 
 def radar_password_check(form, field):

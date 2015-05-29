@@ -28,10 +28,10 @@
                 {% for medication in medications %}
                     <tr>
                         <td>
-                            {% if medication.edit_url %}
-                                <a href="{{ medication.edit_url }}" class="btn btn-primary btn-xs">Edit</a>
-                            {% elif medication.view_url %}
-                                <a href="{{ medication.view_url }}" class="btn btn-primary btn-xs">View</a>
+                            {% if medication.can_edit(current_user) %}
+                                <a href="{{ url_for('medications.edit_medication', patient_id=patient.id, medication_id=medication.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                            {% elif medication.can_view(current_user) %}
+                                <a href="{{ url_for('medications.view_medication', patient_id=patient.id, medication_id=medication.id) }}" class="btn btn-primary btn-xs">View</a>
                             {% endif %}
                         </td>
 
@@ -39,14 +39,14 @@
                         <td>{{ medication.to_date | date_format | missing }}</td>
                         <td>{{ medication.name | missing }}</td>
                         <td>{{ medication.dose_quantity | missing }}</td>
-                        <td>{{ medication.dose_unit | missing }}</td>
-                        <td>{{ medication.frequency | missing }}</td>
-                        <td>{{ medication.route | missing }}</td>
-                        <td>{{ medication.source | missing }}</td>
+                        <td>{{ medication.dose_unit.label | missing }}</td>
+                        <td>{{ medication.frequency.label | missing }}</td>
+                        <td>{{ medication.route.label | missing }}</td>
+                        <td>{{ medication.facility.name }}</td>
 
                         <td align="right">
                             {% if medication.delete_url %}
-                                <form method="POST" action="{{ medication.delete_url }}" class="form-inline confirm-delete">
+                                <form method="POST" action="{{ url_for('medications.delete_medication', patient_id=patient.id, medication_id=medication.id) }}" class="form-inline confirm-delete">
                                     {{ delete_form.hidden_tag() }}
 
                                     <button type="submit" class="btn btn-link btn-xs">
@@ -64,4 +64,8 @@
             {% endif %}
         </tbody>
     </table>
+
+    {% if medication %}
+        {% include "patient/_edit_medication.html" %}
+    {% endif %}
 {% endblock %}

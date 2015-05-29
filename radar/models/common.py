@@ -55,4 +55,4 @@ class StringLookupTable(db.Model):
 
     @classmethod
     def choices(cls, session):
-        return [(x.id, x.name, x) for x in session.query(cls).order_by(cls.label).all()]
+        return [(x.id, x.label, x) for x in session.query(cls).order_by(cls.label).all()]

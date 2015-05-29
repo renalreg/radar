@@ -5,7 +5,7 @@ from wtforms.validators import Optional, InputRequired
 from flask_wtf import Form
 from wtforms.widgets import HiddenInput
 
-from radar.lib.forms.common import RadarSelectMultipleField, RadarSelectField, RadarMeasurementInput, UnitFormMixin, RadarDateField
+from radar.lib.forms.common import RadarSelectMultipleField, RadarSelectField, RadarMeasurementInput, FacilityFormMixin, RadarDateField
 from radar.lib.utils import optional_int
 
 
@@ -21,7 +21,7 @@ class SelectLabOrderForm(Form):
     lab_order_definition_id = RadarSelectField('Lab Order', validators=[InputRequired()], coerce=optional_int)
 
 
-class AbstractLabOrderForm(UnitFormMixin, Form):
+class AbstractLabOrderForm(FacilityFormMixin, Form):
     _result_fields = []
 
     lab_order_definition_id = IntegerField(widget=HiddenInput())

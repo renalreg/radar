@@ -23,12 +23,20 @@ class Patient(db.Model):
 
     is_active = Column(Boolean, nullable=False, default=True, server_default='1')
 
-    units = relationship('UnitPatient')
-    disease_groups = relationship('DiseaseGroupPatient')
+    unit_patients = relationship('UnitPatient')
+    disease_group_patients = relationship('DiseaseGroupPatient')
 
     demographics = relationship('PatientDemographics', backref='patient')
     numbers = relationship('PatientNumber', backref='patient')
     alias = relationship('PatientAlias', backref='patient')
+
+    @property
+    def units(self):
+        return [x.unit for x in self.unit_patients]
+
+    @property
+    def disease_groups(self):
+        return [x.disease_group for x in self.disease_group_patients]
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
@@ -102,18 +110,18 @@ class Patient(db.Model):
         return cls.latest_demographics_query(PatientDemographics.gender)
 
     def _has_unit_permission(self, user, permission):
-        patient_units = set([x.unit for x in self.units])
+        patient_units = set([x for x in self.units])
 
-        for unit_user in user.units:
+        for unit_user in user.unit_users:
             if getattr(unit_user, 'has_' + permission + '_permission') and unit_user.unit in patient_units:
                 return True
 
         return False
 
     def _has_disease_group_permission(self, user, permission):
-        patient_disease_groups = set([x.disease_group for x in self.disease_groups])
+        patient_disease_groups = set([x for x in self.disease_groups])
 
-        for disease_group_user in user.disease_groups:
+        for disease_group_user in user.disease_group_users:
             if getattr(disease_group_user, 'has_' + permission + '_permission') and\
                             disease_group_user.disease_group in patient_disease_groups:
                 return True
@@ -149,7 +157,7 @@ class Patient(db.Model):
         """ Patient units a user can view """
 
         _ = user
-        return self.units
+        return self.unit_patients
 
     def filter_disease_groups_for_user(self, user):
         """ Patient disease groups a user can view """
@@ -158,17 +166,37 @@ class Patient(db.Model):
         # * The user is an admin
         # * The patient belongs to one of the user's units
         if user.is_admin or self._has_unit_permission(user, 'view_patient'):
-            return self.disease_groups
+            return self.disease_group_patients
         else:
             # Otherwise intersect the disease groups of the patient and the user
-            user_disease_groups = set([x.disease_group for x in user.disease_groups])
-            common_disease_groups = [x for x in self.disease_groups if x.disease_group in user_disease_groups]
+            user_disease_groups = set([x for x in user.disease_groups])
+            common_disease_groups = [x for x in self.disease_groups_patients if x.disease_group in user_disease_groups]
             return common_disease_groups
 
-    def available_units_for_user(self, user):
-        """ Patient units that a user can save data under """
+    def intersect_facilities(self, user, with_edit_permission=False):
+        """ Intersect user facilities with patient facilities """
 
-        # TODO intersect patient units with user units with write permissions
+        patient_facilities = set(x.facility for x in self.units)
+
+        if user.is_admin:
+            return patient_facilities
+
+        if with_edit_permission:
+            user_facilities = set(x.unit.facility for x in user.user_units if x.has_edit_patient_permission)
+        else:
+            user_facilities = set(x.facility for x in user.units)
+
+        common_facilities = patient_facilities & user_facilities
+
+        return common_facilities
+
+
+
+
+
+
+
+
         return self.units
 
     def in_disease_group(self, disease_group):

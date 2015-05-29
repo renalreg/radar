@@ -4,10 +4,10 @@ from wtforms.validators import InputRequired, Optional
 
 from radar.lib.database import db
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
-from radar.lib.forms.common import RadarDateField, add_empty_object_choice, UnitFormMixin, RadarSelectObjectField
+from radar.lib.forms.common import RadarDateField, add_empty_object_choice, FacilityFormMixin, RadarSelectObjectField
 
 
-class MedicationForm(UnitFormMixin, Form):
+class MedicationForm(FacilityFormMixin, Form):
     def __init__(self, *args, **kwargs):
         super(MedicationForm, self).__init__(*args, **kwargs)
 
