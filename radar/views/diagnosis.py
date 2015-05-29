@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
-from radar.patients.views import get_patient_data
+from radar.views.patients import get_patient_data
 
 
 bp = Blueprint('diagnosis', __name__)

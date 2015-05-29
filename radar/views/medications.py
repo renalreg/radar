@@ -8,7 +8,7 @@ from radar.forms import DeleteForm
 from radar.patients.medications.forms import MedicationForm
 from radar.models.medications import Medication
 from radar.models.patients import Patient
-from radar.patients.views import get_patient_data
+from radar.views.patients import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle
 from radar.utils import get_path_as_text, get_path_as_datetime
 

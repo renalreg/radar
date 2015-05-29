@@ -1,38 +1,37 @@
 from flask import Flask
 from flask_login import LoginManager
-from flask_mail import Mail
 from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
-from radar.error_handlers import page_not_found, forbidden
 from sqlalchemy import event
 
+from radar.error_handlers import page_not_found, forbidden
 from radar.auth.services import load_user
-from radar.auth.views import require_login, force_password_change
+from radar.views.auth import require_login, force_password_change
 from radar.context_processors import inject_navigation, inject_delete_form
 from radar.mail import mail
 from radar.ordering import url_for_order_by
 from radar.pagination import url_for_per_page, url_for_page
 from radar.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
 from radar.template_filters import datetime_format, nl2br, date_format, missing, yn
-from radar.views import bp as radar_bp
-from radar.patients.diagnosis.views import bp as diagnosis_bp
-from radar.disease_groups.views import bp as disease_groups_bp
-from radar.patients.medications.views import bp as medications_bp
-from radar.patients.views import bp as patients_bp
-from radar.units.views import bp as units_bp
-from radar.users.views import bp as users_bp
-from radar.patients.lab_results.views import bp as lab_results_bp
-from radar.patients.renal_imaging.views import bp as renal_imaging_bp
-from radar.news.views import bp as news_bp
-from radar.auth.views import bp as auth_bp
-from radar.patients.genetics.views import bp as genetics_bp
-from radar.patients.dialysis.views import bp as dialysis_bp
-from radar.patients.hospitalisation.views import bp as hospitalisation_bp
-from radar.patients.pathology.views import bp as pathology_bp
-from radar.patients.transplants.views import bp as transplants_bp
-from radar.patients.salt_wasting.views import bp as salt_wasting_bp
-from radar.patients.plasmapheresis.views import bp as plasmapheresis_bp
-from radar.patients.recruitment.views import bp as recruit_bp
+from radar.views.index import bp as radar_bp
+from radar.views.diagnosis import bp as diagnosis_bp
+from radar.views.disease_groups import bp as disease_groups_bp
+from radar.views.medications import bp as medications_bp
+from radar.views.patients import bp as patients_bp
+from radar.views.units import bp as units_bp
+from radar.views.users import bp as users_bp
+from radar.views.lab_results import bp as lab_results_bp
+from radar.views.renal_imaging import bp as renal_imaging_bp
+from radar.views.news import bp as news_bp
+from radar.views.auth import bp as auth_bp
+from radar.views.genetics import bp as genetics_bp
+from radar.views.dialysis import bp as dialysis_bp
+from radar.views.hospitalisation import bp as hospitalisation_bp
+from radar.views.pathology import bp as pathology_bp
+from radar.views.transplants import bp as transplants_bp
+from radar.views.salt_wasting import bp as salt_wasting_bp
+from radar.views.plasmapheresis import bp as plasmapheresis_bp
+from radar.views.recruitment import bp as recruit_bp
 from radar.database import db
 
 

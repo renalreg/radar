@@ -9,7 +9,7 @@ from radar.models.patients import Patient, Demographics
 from radar.patients.recruitment.forms import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
 from radar.patients.forms import DemographicsForm
 from radar.patients.recruitment.services import find_existing_radar_patients, find_existing_rdc_patients
-from radar.patients.views import save_radar_demographics, add_patient_to_unit, add_patient_to_disease_group
+from radar.views.patients import save_radar_demographics, add_patient_to_unit, add_patient_to_disease_group
 from radar.models.units import Unit
 
 

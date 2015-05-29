@@ -7,7 +7,7 @@ from radar.database import db
 from radar.patients.dialysis.forms import DialysisForm
 from radar.models.dialysis import Dialysis
 from radar.models.patients import Patient
-from radar.patients.views import get_patient_data
+from radar.views.patients import get_patient_data
 
 
 bp = Blueprint('dialysis', __name__)
