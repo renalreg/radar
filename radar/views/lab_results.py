@@ -5,7 +5,6 @@ from flask import Blueprint, render_template, abort, request, jsonify, redirect,
 from flask_login import current_user
 from sqlalchemy import desc, func
 
-from radar.lib.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.lib.concepts.utils import add_errors_to_form
 from radar.lib.database import db
 from radar.lib.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
@@ -305,20 +304,15 @@ def view_lab_result(patient_id, record_id=None):
         if 'lab_order_form' in request.form and form.validate_on_submit():
             update_lab_order(lab_order, form)
 
-            concepts = lab_order.to_concepts()
-            valid, errors = validate_concepts(concepts)
+            concept_map = lab_order.to_concepts()
+            valid, errors = concept_map.validate()
 
             if valid:
-                sda_bundle = concepts_to_sda_bundle(concepts, lab_order.patient)
-                sda_bundle.serialize()
-                lab_order.sda_bundle = sda_bundle
-
                 db.session.add(lab_order)
                 db.session.commit()
-
                 return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
             else:
-                add_errors_to_form(form, errors)
+                form.add_errors(errors)
 
     context = dict(
         patient=patient,

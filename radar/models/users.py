@@ -34,12 +34,12 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     email = Column(String, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False, server_default='0')
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False)
+    force_password_change = Column(Boolean, default=False, nullable=False, server_default='0')
 
     units = relationship('UnitUser', back_populates='user')
     disease_groups = relationship('DiseaseGroupUser', back_populates='user')

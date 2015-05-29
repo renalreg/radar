@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, abort, request, url_for, redirect
 from flask_login import current_user
 
-from radar.lib.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.lib.concepts.utils import add_errors_to_form
 from radar.lib.database import db
 from radar.lib.forms.common import DeleteForm
@@ -149,18 +148,15 @@ def view_medication(patient_id, medication_id=None):
             medication.frequency = form.frequency_id.obj
             medication.route = form.route_id.obj
 
-            concepts = medication.to_concepts()
-            valid, errors = validate_concepts(concepts)
+            concept_map = medication.to_concepts()
+            valid, errors = concept_map.validate()
 
             if valid:
-                sda_bundle = concepts_to_sda_bundle(concepts, medication.patient)
-                sda_bundle.serialize()
-                medication.sda_bundle = sda_bundle
                 db.session.add(medication)
                 db.session.commit()
                 return redirect(url_for('medications.view_medication_list', patient_id=medication.patient.id))
             else:
-                add_errors_to_form(form, errors)
+                form.add_errors(errors)
 
     context = dict(
         patient=medication.patient,

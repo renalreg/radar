@@ -4,7 +4,7 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.patients.medications.concepts import MedicationToMedicationConcept
+from radar.lib.concept_maps.medications import MedicationConceptMap
 from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, StringLookupTableMixin, UnitMixin
 
 
@@ -39,10 +39,8 @@ class Medication(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
     def can_edit(self, user):
         return self.patient.can_edit(user)
 
-    def to_concepts(self):
-        return [
-            MedicationToMedicationConcept(self)
-        ]
+    def concept_map(self):
+        return MedicationConceptMap(self)
 
     def view_url(self):
         return url_for('medications.view_medication', patient_id=self.patient.id, medication_id=self.id)

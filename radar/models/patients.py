@@ -21,10 +21,10 @@ class Patient(db.Model):
     recruited_user = relationship('User')
     recruited_unit = relationship('Unit')
 
-    is_active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
 
-    units = relationship('UnitPatient', passive_deletes=True)
-    disease_groups = relationship('DiseaseGroupPatient', passive_deletes=True)
+    units = relationship('UnitPatient')
+    disease_groups = relationship('DiseaseGroupPatient')
 
     sda_bundles = relationship('SDABundle', passive_deletes=True)
 
@@ -193,7 +193,7 @@ class UnitPatient(db.Model, CreatedModifiedMixin):
     patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
-    is_active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
 
     __table_args__ = (
         UniqueConstraint('unit_id', 'patient_id'),
@@ -215,7 +215,7 @@ class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
     patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
-    is_active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
 
     __table_args__ = (
         UniqueConstraint('disease_group_id', 'patient_id'),

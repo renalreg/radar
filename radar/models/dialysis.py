@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin, LookupTableMixin
-from radar.patients.dialysis.concepts import DialysisToDialysisConcept
+from radar.lib.concept_maps.dialysis import DialysisConceptMap
 
 
 class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
@@ -16,14 +16,12 @@ class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
 
-    def to_concepts(self):
-        return [
-            DialysisToDialysisConcept(self)
-        ]
-
     __mapper_args__ = {
         'polymorphic_identity': 'dialysis',
     }
+
+    def concept_map(self):
+        return DialysisConceptMap(self)
 
     def can_view(self, user):
         return self.patient.can_view(user)

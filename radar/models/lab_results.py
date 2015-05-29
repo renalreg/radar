@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.models.base import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
-from radar.patients.lab_results.concepts import LabOrderToLabOrderConcept
+from radar.lib.concept_maps.lab_orders import LabOrderConceptMap
 
 
 class LabOrderDefinition(db.Model):
@@ -56,10 +56,8 @@ class LabOrder(DataSource, PatientMixin, UnitMixin, CreatedModifiedMixin):
         'polymorphic_identity': 'lab_orders',
     }
 
-    def to_concepts(self):
-        return [
-            LabOrderToLabOrderConcept(self)
-        ]
+    def concept_map(self):
+        return LabOrderConceptMap(self)
 
     def can_view(self, current_user):
         return self.patient.can_view(current_user)
