@@ -2,6 +2,8 @@
 
 {% set current_disease_group = disease_group %}
 
+{% from 'macros/news.html' import render_latest_news %}
+
 {% block content %}
     <h1 class="page-header">{{ disease_group.name }}</h1>
 
@@ -35,17 +37,7 @@
         </div>
     </div>
 
-    <h2><a href="{{ url_for('news.view_story_list') }}">Latest News</a></h2>
-
-    {% for story in stories %}
-        <h3><a href="{{ url_for('news.view_story', story_id=story.id) }}">{{ story.title }}</a> <small>{{ story.published | datetime_format('%d %b %Y') }}</small></h3>
-
-        <div class="latest-news-body">
-            {{ story.body | markdown }}
-        </div>
-    {% endfor %}
-
-    <p><a href="{{ url_for('news.view_story_list') }}">More News</a></p>
+    {{ render_latest_news(posts) }}
 {% endblock %}
 
 {% block body_js %}

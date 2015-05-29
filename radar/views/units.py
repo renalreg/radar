@@ -1,11 +1,10 @@
 from flask_login import current_user
 from flask import render_template, Blueprint, jsonify, request
 
-from radar.models.news import Story
+from radar.lib.news import get_latest_news
 from radar.lib.recruitment_stats import recruitment_by_month
 from radar.models.units import Unit, UnitPatient, UnitUser
 from radar.lib.roles import UNIT_GOD
-
 
 bp = Blueprint('units', __name__)
 
@@ -35,12 +34,12 @@ def list_units():
 def view_unit(unit_id):
     unit_user = get_unit_user(unit_id)
 
-    stories = Story.query.order_by(Story.published.desc()).limit(1).all()
+    posts = get_latest_news()
 
     context = dict(
         unit=unit_user.unit,
         unit_user=unit_user,
-        stories=stories,
+        posts=posts,
     )
 
     return render_template('unit.html', **context)

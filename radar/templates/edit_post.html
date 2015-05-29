@@ -3,14 +3,14 @@
 {% from 'macros/forms.html' import render_field, render_form_errors, render_field_errors, render_field_group %}
 
 {% block content %}
-    {% if story %}
-        <h1 class="page-header">Edit Story</h1>
+    {% if post %}
+        <h1 class="page-header">Edit Post</h1>
     {% else %}
-        <h1 class="page-header">New Story</h1>
+        <h1 class="page-header">New Post</h1>
     {% endif %}
 
-    {% if story %}
-        <form method="POST" action="{{ url_for('news.delete_story', story_id=story.id) }}">
+    {% if post %}
+        <form method="POST" action="{{ url_for('news.delete_post', post_id=post.id) }}">
             {{ delete_form.hidden_tag() }}
 
             <p>

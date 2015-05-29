@@ -19,8 +19,8 @@ PUBLIC_ENDPOINTS = [
     'auth.forgot_password',
     'auth.reset_password',
     'static',
-    'news.view_story_list',
-    'news.view_story',
+    'news.view_posts',
+    'news.view_post',
 ]
 
 # Flask endpoints that can be accessed while the user has the force password change flag set

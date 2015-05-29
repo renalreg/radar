@@ -1,11 +1,10 @@
 from flask_login import current_user
 from flask import render_template, Blueprint, request, jsonify
 
+from radar.lib.news import get_latest_news
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupUser
-from radar.models.news import Story
 from radar.lib.recruitment_stats import recruitment_by_month
 from radar.lib.roles import DISEASE_GROUP_GOD
-
 
 bp = Blueprint('disease_groups', __name__)
 
@@ -35,12 +34,12 @@ def list_disease_groups():
 def view_disease_group(disease_group_id):
     disease_group_user = get_disease_group_user(disease_group_id)
 
-    stories = Story.query.order_by(Story.published.desc()).limit(1).all()
+    posts = get_latest_news()
 
     context = dict(
         disease_group=disease_group_user.disease_group,
         disease_group_user=disease_group_user,
-        stories=stories,
+        posts=posts,
     )
 
     return render_template('disease_group.html', **context)

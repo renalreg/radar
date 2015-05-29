@@ -4,6 +4,6 @@ from wtforms.validators import InputRequired
 from wtforms.widgets import TextArea
 
 
-class StoryForm(Form):
+class PostForm(Form):
     title = StringField(validators=[InputRequired()])
     body = StringField(validators=[InputRequired()], widget=TextArea())

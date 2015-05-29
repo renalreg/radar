@@ -20,7 +20,7 @@
             {% for unit in patient_data.units %}
                 <tr>
                     <td>{{ unit.unit.name }}</td>
-                    <td>{{ unit.created_at | date_format | missing }}</td>
+                    <td>{{ unit.created_date | date_format | missing }}</td>
 
                     <td>
                         {% if unit.created_user %}

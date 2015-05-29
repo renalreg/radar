@@ -14,7 +14,7 @@
 
 {% macro render_field(field, read_only=False) %}
     {% call render_field_group(field) %}
-        {{ field.label }}
+        {{ field.label(class='control-label') }}
 
         {% if field.type == 'RadarYesNoField' %}
             {{ field(disabled=read_only) }}

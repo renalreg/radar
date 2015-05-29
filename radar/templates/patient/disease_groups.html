@@ -34,7 +34,7 @@
                     </td>
 
                     <td>{{ disease_group.disease_group.name }}</td>
-                    <td>{{ disease_group.created_at | date_format | missing }}</td>
+                    <td>{{ disease_group.created_date | date_format | missing }}</td>
 
                     <td>
                         {% if disease_group.created_user %}

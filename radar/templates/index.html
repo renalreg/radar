@@ -4,6 +4,7 @@
 
 {% from 'macros/login.html' import render_login_form %}
 {% from 'macros/flash.html' import render_flashed_messages %}
+{% from 'macros/news.html' import render_latest_news %}
 
 {% block body %}
     <div class="row">
@@ -28,17 +29,7 @@
 
                 <hr />
 
-                <h2><a href="{{ url_for('news.view_story_list') }}">Latest News</a></h2>
-
-                {% for story in stories %}
-                    <h3><a href="{{ url_for('news.view_story', story_id=story.id) }}">{{ story.title }}</a> <small>{{ story.published | datetime_format('%d %b %Y') }}</small></h3>
-
-                    <div class="latest-news-body">
-                        {{ story.body | markdown }}
-                    </div>
-                {% endfor %}
-
-                <p><a href="{{ url_for('news.view_story_list') }}">More News</a></p>
+                {{ render_latest_news(posts) }}
 
                 <hr />
 
