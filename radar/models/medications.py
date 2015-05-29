@@ -1,11 +1,11 @@
 from flask import url_for
-from radar.database import db
 from sqlalchemy import Column, Date, String, ForeignKey, Numeric
-
 from sqlalchemy import Integer
-from radar.patients.medications.concepts import MedicationToMedicationConcept
-from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, StringLookupTableMixin, UnitMixin
 from sqlalchemy.orm import relationship
+
+from radar.database import db
+from radar.patients.medications.concepts import MedicationToMedicationConcept
+from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, StringLookupTableMixin, UnitMixin
 
 
 class Medication(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):

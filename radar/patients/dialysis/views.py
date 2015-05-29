@@ -1,11 +1,12 @@
 from flask import Blueprint, abort, render_template, request, url_for, redirect
 from flask_login import current_user
+
 from radar.concepts.core import concepts_to_sda_bundle, validate_concepts
 from radar.concepts.utils import add_errors_to_form
 from radar.database import db
 from radar.patients.dialysis.forms import DialysisForm
-from radar.patients.dialysis.models import Dialysis
-from radar.patients.models import Patient
+from radar.models.dialysis import Dialysis
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
 
 

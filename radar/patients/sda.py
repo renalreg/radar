@@ -1,4 +1,4 @@
-from radar.models import Facility
+from radar.models.base import Facility
 from radar.sda.models import SDABundle, SDAPatient, SDAPatientAddress, SDAPatientAlias
 from radar.utils import set_path
 

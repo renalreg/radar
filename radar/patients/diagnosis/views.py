@@ -1,8 +1,10 @@
 from flask import Blueprint, abort, render_template
 from flask_login import current_user
-from radar.disease_groups.models import DiseaseGroup
-from radar.patients.models import Patient
+
+from radar.models.disease_groups import DiseaseGroup
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
+
 
 bp = Blueprint('diagnosis', __name__)
 

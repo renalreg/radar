@@ -1,5 +1,6 @@
 from flask import render_template, Blueprint
-from radar.news.models import Story
+
+from radar.models.news import Story
 from radar.auth.forms import LoginForm
 
 

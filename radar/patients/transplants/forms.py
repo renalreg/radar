@@ -1,9 +1,11 @@
 from flask_wtf import Form
-from radar.database import db
-from radar.forms import UnitFormMixin, RadarDateField, RadarSelectObjectField, RadarYesNoField, add_empty_object_choice
-from radar.patients.transplants.models import TransplantType
-from radar.utils import optional_int
 from wtforms.validators import InputRequired, Optional
+
+from radar.database import db
+
+from radar.forms import UnitFormMixin, RadarDateField, RadarSelectObjectField, RadarYesNoField, add_empty_object_choice
+from radar.models.transplants import TransplantType
+from radar.utils import optional_int
 
 
 class TransplantForm(UnitFormMixin, Form):

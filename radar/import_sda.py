@@ -3,9 +3,9 @@ import xml.etree.ElementTree as ET
 from flask import Flask
 
 from radar.database import db
-from radar.models import Facility
-from radar.patients.models import Patient
-from radar.models import DataImport
+from radar.models.base import Facility
+from radar.models.patients import Patient
+from radar.models.base import DataImport
 from radar.sda.parser import parse_container
 
 
@@ -86,10 +86,6 @@ def import_sda(facility_code, xml_data):
 def create_app(config_filename):
     app = Flask(__name__)
     app.config.from_pyfile(config_filename)
-
-    import radar.users.models
-    import radar.disease_groups.models
-    import radar.units.models
 
     db.init_app(app)
 

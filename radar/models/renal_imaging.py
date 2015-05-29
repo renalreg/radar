@@ -1,5 +1,6 @@
-from radar.models import DataSource, PatientMixin, CreatedModifiedMixin
 from sqlalchemy import Column, Integer, ForeignKey, String, Numeric, Boolean, DateTime
+
+from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin
 
 
 class RenalImaging(DataSource, PatientMixin, CreatedModifiedMixin):

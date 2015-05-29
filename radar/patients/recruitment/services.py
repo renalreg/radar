@@ -1,5 +1,6 @@
 from sqlalchemy import and_, or_
-from radar.patients.models import Patient
+
+from radar.models.patients import Patient
 from radar.patients.search import filter_by_date_of_birth, filter_by_first_name, filter_by_last_name, filter_by_nhs_no, \
     filter_by_chi_no
 

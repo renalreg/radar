@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from radar.models import Facility
+from radar.models.base import Facility
 from radar.sda.models import SDABundle
 from radar.validators import ValidationError, StopValidation
 

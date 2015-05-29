@@ -1,5 +1,6 @@
-from radar.models import DataSource, CreatedModifiedMixin, PatientMixin, DiseaseGroupMixin
 from sqlalchemy import Column, Integer, ForeignKey, String, Text, DateTime
+
+from radar.models.base import DataSource, CreatedModifiedMixin, PatientMixin, DiseaseGroupMixin
 
 
 class Genetics(DataSource, CreatedModifiedMixin, PatientMixin, DiseaseGroupMixin):

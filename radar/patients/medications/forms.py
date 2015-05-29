@@ -1,9 +1,9 @@
 from flask_wtf import Form
-from radar.database import db
-from radar.patients.medications.models import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from wtforms import StringField, DecimalField
 from wtforms.validators import InputRequired, Optional
 
+from radar.database import db
+from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.forms import RadarDateField, add_empty_object_choice, UnitFormMixin, RadarSelectObjectField
 
 

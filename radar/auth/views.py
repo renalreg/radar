@@ -9,7 +9,7 @@ from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, F
 from radar.auth.services import check_login, generate_reset_password_token, \
     send_reset_password_email, send_username_reminder_email
 from radar.database import db
-from radar.users.models import User
+from radar.models.users import User
 
 
 bp = Blueprint('auth', __name__)

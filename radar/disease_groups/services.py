@@ -1,5 +1,5 @@
-from radar.disease_groups.models import DiseaseGroup
-from radar.users.models import DiseaseGroupUser
+from radar.models.disease_groups import DiseaseGroup
+from radar.models.users import DiseaseGroupUser
 
 
 def get_disease_groups_for_user(user):

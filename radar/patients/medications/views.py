@@ -6,8 +6,8 @@ from radar.concepts.utils import add_errors_to_form
 from radar.database import db
 from radar.forms import DeleteForm
 from radar.patients.medications.forms import MedicationForm
-from radar.patients.medications.models import Medication
-from radar.patients.models import Patient
+from radar.models.medications import Medication
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
 from radar.sda.models import SDAMedication, SDABundle
 from radar.utils import get_path_as_text, get_path_as_datetime

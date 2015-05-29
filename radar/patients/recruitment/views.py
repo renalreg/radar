@@ -4,13 +4,13 @@ from flask import render_template, abort, request, url_for, redirect, session, f
 from flask_login import current_user
 
 from radar.database import db
-from radar.disease_groups.models import DiseaseGroup
-from radar.patients.models import Patient, Demographics
+from radar.models.disease_groups import DiseaseGroup
+from radar.models.patients import Patient, Demographics
 from radar.patients.recruitment.forms import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
 from radar.patients.forms import DemographicsForm
 from radar.patients.recruitment.services import find_existing_radar_patients, find_existing_rdc_patients
 from radar.patients.views import save_radar_demographics, add_patient_to_unit, add_patient_to_disease_group
-from radar.units.models import Unit
+from radar.models.units import Unit
 
 
 bp = Blueprint('recruitment', __name__)

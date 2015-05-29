@@ -1,11 +1,12 @@
 from flask import Blueprint, abort, render_template, url_for, request
 from flask_login import current_user
+from werkzeug.utils import redirect
+
 from radar.database import db
 from radar.patients.hospitalisation.forms import HospitalisationForm
-from radar.patients.hospitalisation.models import Hospitalisation
-from radar.patients.models import Patient
+from radar.models.hospitalisation import Hospitalisation
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
-from werkzeug.utils import redirect
 
 
 bp = Blueprint('hospitalisation', __name__)

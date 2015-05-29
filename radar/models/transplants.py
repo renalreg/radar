@@ -1,7 +1,8 @@
-from radar.database import db
-from radar.models import DataSource, PatientMixin, CreatedModifiedMixin, LookupTableMixin
 from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship
+
+from radar.database import db
+from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, LookupTableMixin
 
 
 class Transplant(DataSource, PatientMixin, CreatedModifiedMixin):

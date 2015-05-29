@@ -1,8 +1,9 @@
-from radar.database import db
-from radar.models import UnitMixin, PatientMixin, CreatedModifiedMixin, DataSource, LookupTableMixin
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy import Date
 from sqlalchemy.orm import relationship
+
+from radar.database import db
+from radar.models.base import UnitMixin, PatientMixin, CreatedModifiedMixin, DataSource, LookupTableMixin
 
 
 class Plasmapheresis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):

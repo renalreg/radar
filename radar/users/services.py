@@ -1,8 +1,9 @@
 from flask import url_for, render_template
 from flask_mail import Message
-from radar.disease_groups.models import DiseaseGroup
+
+from radar.models.disease_groups import DiseaseGroup
 from radar.mail import mail
-from radar.units.models import Unit
+from radar.models.units import Unit
 
 
 def get_managed_units(user):

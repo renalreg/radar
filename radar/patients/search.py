@@ -2,15 +2,15 @@ from datetime import timedelta, datetime
 
 from sqlalchemy import or_, case, desc, func, and_
 from sqlalchemy.orm import aliased
-from radar.forms import add_empty_choice
 
+from radar.forms import add_empty_choice
 from radar.users.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
 from radar.database import db
-from radar.units.models import Unit
-from radar.disease_groups.models import DiseaseGroup
-from radar.patients.models import Patient, UnitPatient, DiseaseGroupPatient
-from radar.users.models import UnitUser, DiseaseGroupUser
+from radar.models.units import Unit
+from radar.models.disease_groups import DiseaseGroup
+from radar.models.patients import Patient, UnitPatient, DiseaseGroupPatient
+from radar.models.users import UnitUser, DiseaseGroupUser
 from radar.ordering import DESCENDING
 from radar.sda.models import SDAPatient, SDABundle, SDAPatientNumber, SDAPatientAlias
 

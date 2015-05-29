@@ -1,11 +1,13 @@
 from flask import Blueprint, abort, render_template, request, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
+
 from radar.database import db
-from radar.patients.models import Patient
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
 from radar.patients.renal_imaging.forms import RenalImagingForm
-from radar.patients.renal_imaging.models import RenalImaging
-from werkzeug.utils import redirect
+from radar.models.renal_imaging import RenalImaging
+
 
 bp = Blueprint('renal_imaging', __name__)
 

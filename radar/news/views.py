@@ -2,11 +2,11 @@ from datetime import datetime
 
 from flask import render_template, Blueprint, abort, redirect, url_for
 from flask_login import current_user
+
 from radar.database import db
 from radar.forms import DeleteForm
 from radar.news.forms import StoryForm
-
-from radar.news.models import Story
+from radar.models.news import Story
 from radar.pagination import paginate_query
 
 

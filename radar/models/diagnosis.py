@@ -1,9 +1,10 @@
-from radar.models import DataSource, PatientMixin, CreatedModifiedMixin
 from sqlalchemy import Column, Integer, ForeignKey
 
+from radar.models.base import DataSource, DiseaseGroupMixin, PatientMixin, CreatedModifiedMixin
 
-class Pathology(DataSource, PatientMixin, CreatedModifiedMixin):
-    __tablename__ = 'pathology'
+
+class Diagnosis(DataSource, DiseaseGroupMixin, PatientMixin, CreatedModifiedMixin):
+    __tablename__ = 'diagnosis'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
 
@@ -14,5 +15,5 @@ class Pathology(DataSource, PatientMixin, CreatedModifiedMixin):
         return self.patient.can_edit(user)
 
     __mapper_args__ = {
-        'polymorphic_identity': 'pathology',
+        'polymorphic_identity': 'diagnosis',
     }

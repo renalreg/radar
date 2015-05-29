@@ -3,7 +3,7 @@ from wtforms import StringField
 from wtforms.validators import InputRequired, Optional, Email
 
 from radar.forms import RadarSelectField
-from radar.users.models import User
+from radar.models.users import User
 from radar.utils import optional_int
 
 

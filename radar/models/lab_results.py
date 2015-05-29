@@ -1,8 +1,9 @@
 from flask import url_for
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
+
 from radar.database import db
-from radar.models import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
+from radar.models.base import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
 from radar.patients.lab_results.concepts import LabOrderToLabOrderConcept
 
 

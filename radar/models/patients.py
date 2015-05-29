@@ -1,9 +1,11 @@
 from datetime import datetime
+
 from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, UniqueConstraint, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
+
 from radar.database import db
-from radar.models import DataSource, CreatedModifiedMixin, PatientMixin
+from radar.models.base import DataSource, CreatedModifiedMixin, PatientMixin
 from radar.sda.models import SDAPatient, SDABundle
 
 

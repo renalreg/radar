@@ -1,14 +1,15 @@
 import os
 import base64
 from random import SystemRandom
+import re
 
 from flask import render_template, url_for
-from flask_mail import Message
-import re
-from radar.auth.constants import GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH, PASSWORD_REGEXES
 
+from flask_mail import Message
+
+from radar.auth.constants import GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH, PASSWORD_REGEXES
 from radar.mail import mail
-from radar.users.models import User
+from radar.models.users import User
 
 
 def check_login(username, password):

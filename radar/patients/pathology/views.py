@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
-from radar.patients.models import Patient
+
+from radar.models.patients import Patient
 from radar.patients.views import get_patient_data
 
 

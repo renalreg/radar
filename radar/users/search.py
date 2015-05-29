@@ -2,9 +2,9 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.disease_groups.models import DiseaseGroup
-from radar.units.models import Unit
-from radar.users.models import User, DiseaseGroupUser, UnitUser
+from radar.models.disease_groups import DiseaseGroup
+from radar.models.units import Unit
+from radar.models.users import User, DiseaseGroupUser, UnitUser
 from radar.users.roles import UNIT_VIEW_USER_ROLES
 from radar.users.roles import DISEASE_GROUP_VIEW_USER_ROLES
 

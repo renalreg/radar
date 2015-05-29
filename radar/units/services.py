@@ -1,5 +1,5 @@
-from radar.units.models import Unit
-from radar.users.models import UnitUser
+from radar.models.units import Unit
+from radar.models.users import UnitUser
 
 
 def get_units_for_user(user):
