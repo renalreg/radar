@@ -341,7 +341,7 @@ def lab_result_form(patient_id, lab_order_definition_id):
         lab_order_definition=lab_order_definition,
     )
 
-    return render_template('patient/lab_result_form.html', **context)
+    return render_template('patient/edit_lab_result.html', **context)
 
 
 def get_test_item_choices():

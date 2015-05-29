@@ -2,16 +2,12 @@
 
 {% set current_patient_page = 'demographics' %}
 
-{% if read_only %}
-    {% from 'macros/forms.html' import render_horizontal_field_read_only as render_field %}
-{% else %}
-    {% from 'macros/forms.html' import render_horizontal_field as render_field %}
-{% endif %}
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
 
 {% from 'macros/forms.html' import render_form_errors %}
 
 {% block content %}
-    <h1 class="page-header">Demographics <small>RaDaR</small></h1>
+    <h1 class="page-header">Edit Demographics</h1>
 
     {{ render_form_errors(form) }}
 
@@ -26,28 +22,14 @@
                 {{ render_field(form.date_of_death) }}
                 {{ render_field(form.gender) }}
                 {{ render_field(form.ethnicity) }}
-
-                {{ render_field(form.alias_first_name) }}
-                {{ render_field(form.alias_last_name) }}
             </div>
 
             <div class="col-sm-6">
                 {{ render_field(form.nhs_no) }}
                 {{ render_field(form.chi_no) }}
-            </div>
-        </div>
 
-        <hr />
+                <hr />
 
-        <div class="row">
-            <div class="col-sm-6">
-                {{ render_field(form.address_line_1) }}
-                {{ render_field(form.address_line_2) }}
-                {{ render_field(form.address_line_3) }}
-                {{ render_field(form.postcode) }}
-            </div>
-
-            <div class="col-sm-6">
                 {{ render_field(form.home_number) }}
                 {{ render_field(form.work_number) }}
                 {{ render_field(form.mobile_number) }}
@@ -55,8 +37,6 @@
             </div>
         </div>
 
-        {% if not read_only %}
-            <button class="btn btn-success">Save</button>
-        {% endif %}
+        <button class="btn btn-success">Save</button>
     </form>
 {% endblock %}

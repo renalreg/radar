@@ -44,7 +44,7 @@ class Patient(db.Model):
         return select([column])\
             .select_from(PatientDemographics.join(patient_alias))\
             .where(patient_alias.id == cls.id)\
-            .order_by(PatientDemographics.modified_date)\
+            .order_by(PatientDemographics.modified_date.desc())\
             .limit(1)\
             .as_scalar()
 
@@ -55,10 +55,10 @@ class Patient(db.Model):
         if len(demographics_list) == 0:
             return None
 
-        def latest(x):
+        def by_modified_date(x):
             return x.modified_date or datetime.min
 
-        return min(demographics_list, key=latest)
+        return max(demographics_list, key=by_modified_date)
 
     @hybrid_property
     def first_name(self):
@@ -186,7 +186,7 @@ class PatientDemographics(db.Model, MetadataMixin):
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
 
-    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False, unique=True)
     facility = relationship('Facility')
 
     first_name = Column(String)

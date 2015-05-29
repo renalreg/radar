@@ -10,6 +10,9 @@ class Facility(db.Model):
     code = Column(String, unique=True)
     name = Column(String)
 
+    @property
+    def is_radar(self):
+        return self.code == 'RADAR'
 
 class PatientLatestImport(db.Model):
     __tablename__ = 'patient_latest_imports'

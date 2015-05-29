@@ -170,6 +170,9 @@ def create_fixtures():
     admin.set_password('password')
     db.session.add(admin)
 
+    radar_facility = Facility(code='RADAR', name='RADAR')
+    db.session.add(radar_facility)
+
     # http://en.wikipedia.org/wiki/List_of_fictional_institutions#Hospitals
     units = [
         Unit(

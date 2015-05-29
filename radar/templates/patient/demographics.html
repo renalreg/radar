@@ -7,10 +7,12 @@
 {% block content %}
     <h1 class="page-header">Demographics</h1>
 
-    <p><a href="{{ url_for('patients.edit_radar_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
-
     {% for facility_patient in facility_patients %}
         {% call render_panel(facility_patient.facility.name, 'panel-default') %}
+            {% if facility_patient.can_edit(current_user) %}
+                <p><a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
+            {% endif %}
+
             {% if facility_patient.demographics %}
                 <table class="table kv">
                     {% if patient.can_view_demographics(current_user) %}
@@ -105,6 +107,7 @@
                     <tr>
                         <th width="20%">Organisation</th>
                         <th>Number</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -112,6 +115,7 @@
                     <tr>
                         <td>RaDaR</td>
                         <td>{{ patient.id }}</td>
+                        <td></td>
                     </tr>
 
                     {% if patient.can_view_demographics(current_user) %}
@@ -120,6 +124,11 @@
                                 <tr>
                                     <td>NHS</td>
                                     <td>{{ facility_patient.demographics.nhs_no }}</td>
+                                    <td>
+                                        {% if facility_patient.can_edit(current_user) %}
+                                            <a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endif %}
 
@@ -127,6 +136,11 @@
                                 <tr>
                                     <td>CHI</td>
                                     <td>{{ facility_patient.demographics.chi_no }}</td>
+                                    <td>
+                                        {% if facility_patient.can_edit(current_user) %}
+                                            <a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endif %}
@@ -135,6 +149,7 @@
                             <tr>
                                 <td>MPIID</td>
                                 <td>{{ facility_patient.latest_import.mpiid }}</td>
+                                <td></td>
                             </tr>
                         {% endif %}
 
@@ -142,6 +157,7 @@
                             <tr>
                                 <td>{{ number.number_facility.name | missing }}</td>
                                 <td>{{ number.number | missing }}</td>
+                                <td></td>
                             </tr>
                         {% endfor %}
                     {% endif %}
@@ -156,6 +172,7 @@
                         <tr>
                             <th width="20%">First Name</th>
                             <th>Last Name</th>
+                            <th></th>
                         </tr>
                     </thead>
 
@@ -164,6 +181,7 @@
                             <tr>
                                 <td>{{ alias.first_name | missing }}</td>
                                 <td>{{ alias.last_name | missing }}</td>
+                                <td></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -179,6 +197,7 @@
                             <th width="20%">From Date</th>
                             <th width="20%">To Date</th>
                             <th>Address</th>
+                            <th></th>
                         </tr>
                     </thead>
 
@@ -188,6 +207,7 @@
                                 <td>{{ address.from_date | date_format | missing }}</td>
                                 <td>{{ address.to_date | date_format | missing }}</td>
                                 <td>{{ address.full_address | nl2br }}</td>
+                                <td></td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -4,10 +4,11 @@ from flask import render_template, Blueprint, abort, request, url_for, redirect,
 from flask_login import current_user
 
 from radar.lib.database import db
+from radar.lib.facilities import get_radar_facility
 from radar.lib.patients import get_facility_patients
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.common import DeleteForm
-from radar.models.facilities import PatientLatestImport
+from radar.models.facilities import PatientLatestImport, Facility
 from radar.models.patients import Patient, PatientDemographics, PatientNumber, PatientAlias, PatientAddress
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
@@ -124,29 +125,26 @@ def view_demographics_list(patient_id):
     return render_template('patient/demographics.html', **context)
 
 
-@bp.route('/<int:patient_id>/radar/', endpoint='view_radar_demographics')
-@bp.route('/<int:patient_id>/radar/', endpoint='edit_radar_demographics', methods=['POST'])
-def view_radar_demographics(patient_id):
+@bp.route('/<int:patient_id>/edit/', endpoint='edit_demographics', methods=['GET', 'POST'])
+def edit_demographics(patient_id):
+    facility = get_radar_facility()
     patient = Patient.query.get_or_404(patient_id)
-    demographics = Demographics.query.filter(Demographics.patient == patient).with_for_update(read=True).first()
+    demographics = PatientDemographics.query\
+        .filter(PatientDemographics.patient == patient)\
+        .filter(PatientDemographics.facility == facility)\
+        .first()
 
     if demographics is None:
-        demographics = Demographics(patient=patient)
+        demographics = PatientDemographics(patient=patient, facility=facility)
 
-    if not demographics.can_view(current_user):
+    if not demographics.can_edit(current_user):
         abort(403)
-
-    read_only = not demographics.can_edit(current_user)
 
     form = DemographicsForm(obj=demographics)
 
     if request.method == 'POST':
-        if read_only:
-            abort(403)
-
         if form.validate():
             form.populate_obj(demographics)
-            save_radar_demographics(demographics)
             db.session.add(demographics)
             db.session.commit()
             return redirect(url_for('patients.view_demographics_list', patient_id=demographics.patient.id))
@@ -156,10 +154,9 @@ def view_radar_demographics(patient_id):
         patient_data=get_patient_data(demographics.patient),
         demographics=demographics,
         form=form,
-        read_only=read_only
     )
 
-    return render_template('patient/radar_demographics.html', **context)
+    return render_template('patient/edit_demographics.html', **context)
 
 
 @bp.route('/<int:patient_id>/disease-groups/', endpoint='view_patient_disease_groups')
