@@ -5,11 +5,11 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
-from radar.lib.forms import DeleteForm
+from radar.lib.forms.common import DeleteForm
 from radar.models.patients import Patient, Demographics, UnitPatient, DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
-from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
+from radar.lib.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
     PatientUnitForm, \
     AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
 from radar.patients.sda import demographics_to_sda_bundle

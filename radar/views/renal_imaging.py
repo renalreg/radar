@@ -5,7 +5,7 @@ from werkzeug.utils import redirect
 from radar.lib.database import db
 from radar.models.patients import Patient
 from radar.views.patients import get_patient_data
-from radar.patients.renal_imaging.forms import RenalImagingForm
+from radar.lib.forms.renal_imaging import RenalImagingForm
 from radar.models.renal_imaging import RenalImaging
 
 

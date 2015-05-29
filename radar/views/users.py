@@ -12,7 +12,7 @@ from radar.models.users import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
 from radar.users.search import UserQueryBuilder
 from radar.users.services import get_managed_units, get_managed_disease_groups, send_new_user_email
-from radar.users.forms import DiseaseGroupRoleForm, UserSearchForm, UnitRoleForm, AddUserForm
+from radar.lib.forms.users import DiseaseGroupRoleForm, UserSearchForm, UnitRoleForm, AddUserForm
 from radar.models.users import User
 
 

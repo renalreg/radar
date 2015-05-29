@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.models.patients import Patient
-from radar.patients.transplants.forms import TransplantForm
+from radar.lib.forms.transplants import TransplantForm
 from radar.models.transplants import Transplant
 from radar.views.patients import get_patient_data
 

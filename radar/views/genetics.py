@@ -4,7 +4,7 @@ from werkzeug.utils import redirect
 
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
-from radar.patients.genetics.forms import GeneticsForm
+from radar.lib.forms.genetics import GeneticsForm
 from radar.models.genetics import Genetics
 from radar.models.patients import Patient
 from radar.views.patients import get_patient_data

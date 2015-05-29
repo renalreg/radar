@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.models.patients import Patient
-from radar.patients.plasmapheresis.forms import PlasmapheresisForm
+from radar.lib.forms.plasmapheresis import PlasmapheresisForm
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.views.patients import get_patient_data
 

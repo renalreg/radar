@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint
 
 from radar.models.news import Story
-from radar.auth.forms import LoginForm
+from radar.lib.forms.auth import LoginForm
 
 
 bp = Blueprint('radar', __name__)

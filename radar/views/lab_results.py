@@ -8,7 +8,7 @@ from sqlalchemy import desc, func
 from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.concepts.utils import add_errors_to_form
 from radar.lib.database import db
-from radar.patients.lab_results.forms import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
+from radar.lib.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
     SelectLabOrderForm
 from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query

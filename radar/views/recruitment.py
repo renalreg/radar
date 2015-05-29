@@ -6,8 +6,8 @@ from flask_login import current_user
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, Demographics
-from radar.patients.recruitment.forms import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
-from radar.patients.forms import DemographicsForm
+from radar.lib.forms.recruitment import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
+from radar.lib.forms.patients import DemographicsForm
 from radar.patients.recruitment.services import find_existing_radar_patients, find_existing_rdc_patients
 from radar.views.patients import save_radar_demographics, add_patient_to_unit, add_patient_to_disease_group
 from radar.models.units import Unit

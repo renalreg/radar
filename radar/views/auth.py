@@ -4,7 +4,7 @@ from flask import Blueprint, flash, redirect, request, url_for, render_template,
 from flask_login import login_user, logout_user, current_user
 
 from radar.auth.constants import PUBLIC_ENDPOINTS, RESET_PASSWORD_MAX_AGE, FORCE_PASSWORD_CHANGE_ENDPOINTS
-from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
+from radar.lib.forms.auth import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
     ChangePasswordForm, AccountForm
 from radar.auth.services import check_login, generate_reset_password_token, \
     send_reset_password_email, send_username_reminder_email

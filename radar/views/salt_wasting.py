@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.models.patients import Patient
-from radar.patients.salt_wasting.forms import SaltWastingClinicalFeaturesForm
+from radar.lib.forms.salt_wasting import SaltWastingClinicalFeaturesForm
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.views.patients import get_patient_data
 
