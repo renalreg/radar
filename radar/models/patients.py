@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, BigInteger
+from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, BigInteger, join
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
@@ -42,7 +42,7 @@ class Patient(db.Model):
         patient_alias = aliased(Patient)
 
         return select([column])\
-            .select_from(PatientDemographics.join(patient_alias))\
+            .select_from(join(PatientDemographics, patient_alias))\
             .where(patient_alias.id == cls.id)\
             .order_by(PatientDemographics.modified_date.desc())\
             .limit(1)\

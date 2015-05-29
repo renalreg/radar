@@ -38,6 +38,8 @@ def build_patient_search_query(user, form):
     builder = PatientQueryBuilder(user)
 
     if form.validate():
+        include_inactive = form.include_inactive.data
+
         if form.first_name.data:
                 builder.first_name(form.first_name.data)
 
@@ -46,11 +48,11 @@ def build_patient_search_query(user, form):
 
         if form.unit_id.data:
             unit = Unit.query.get_or_404(form.unit_id.data)
-            builder.unit(unit, form.is_active.data)
+            builder.unit(unit, include_inactive)
 
         if form.disease_group_id.data:
             disease_group = DiseaseGroup.query.get_or_404(form.disease_group_id.data)
-            builder.disease_group(disease_group, form.is_active.data)
+            builder.disease_group(disease_group, include_inactive)
 
         if form.date_of_birth.data:
             builder.date_of_birth(form.date_of_birth.data)
@@ -73,7 +75,8 @@ def build_patient_search_query(user, form):
         if form.year_of_death.data:
             builder.year_of_death(form.year_of_death.data)
 
-        builder.is_active(form.is_active.data)
+        if not include_inactive:
+            builder.is_active(True)
 
         builder.order_by(form.order_by.data, form.order_direction.data)
 
@@ -88,6 +91,8 @@ def view_patient_list():
     form = PatientSearchForm(user=current_user, formdata=request.args, csrf_enabled=False)
 
     query = build_patient_search_query(current_user, form)
+
+    print query
 
     ordering = Ordering(form.order_by.data, form.order_direction.data)
     pagination = paginate_query(query, default_per_page=PER_PAGE_DEFAULT)
