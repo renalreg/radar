@@ -12,8 +12,8 @@ bp = Blueprint('transplants', __name__)
 
 @bp.route('/', endpoint='view_transplant_list')
 @bp.route('/', endpoint='add_transplant', methods=['GET', 'POST'])
-@bp.route('/<int:dialysis_id>/', endpoint='view_transplant')
-@bp.route('/<int:dialysis_id>/', endpoint='edit_transplant', methods=['GET', 'POST'])
+@bp.route('/<int:transplant_id>/', endpoint='view_transplant')
+@bp.route('/<int:transplant_id>/', endpoint='edit_transplant', methods=['GET', 'POST'])
 def view_transplant_list(patient_id, transplant_id=None):
     patient = Patient.query.get_or_404(patient_id)
 
