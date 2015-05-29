@@ -9,6 +9,11 @@ function load_recruitment_graph(url, id, title) {
             graphData.push([date, count]);
         }
 
+        if (graphData.length <= 1) {
+            $('#' + id).replaceWith('<p>Not enough data yet!</p>');
+            return;
+        }
+
         var options = {
             chart: {
                 zoomType: 'x',
