@@ -61,11 +61,11 @@ class PatientSearchForm(Form):
 
     radar_id = IntegerField('RaDaR ID', validators=[Optional()])
 
-    first_name = StringField()
-    last_name = StringField()
+    first_name = StringField(validators=[Optional()])
+    last_name = StringField(validators=[Optional()])
     gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
 
-    patient_number = StringField()
+    patient_number = StringField(validators=[Optional()])
 
     unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[Optional()])
     disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[Optional()])
@@ -77,11 +77,10 @@ class PatientSearchForm(Form):
 
     include_inactive = BooleanField('Include Inactive', default=False, validators=[Optional()])
 
-    order_by = RadarSelectField(choices=ORDER_BY_CHOICES)
-    order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING)
+    order_by = RadarSelectField(choices=ORDER_BY_CHOICES, validators=[Optional()])
+    order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING, validators=[Optional()])
 
-    per_page = RadarSelectField(coerce=int, default=PER_PAGE_DEFAULT, choices=PER_PAGE_CHOICES)
-    page = IntegerField()
+    per_page = RadarSelectField(coerce=int, default=PER_PAGE_DEFAULT, choices=PER_PAGE_CHOICES, validators=[Optional()])
 
 
 class PatientUnitForm(Form):
