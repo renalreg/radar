@@ -1,14 +1,14 @@
 from sqlalchemy import Column, Integer, ForeignKey, Boolean, String
 from sqlalchemy.orm import relationship
-from radar.lib.database import db
 
-from radar.models.common import PatientMixin, MetadataMixin
+from radar.lib.database import db
+from radar.models.common import MetadataMixin
 
 
 class SaltWastingClinicalFeatures(db.Model, MetadataMixin):
     __tablename__ = 'salt_wasting_clinical_features'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
@@ -33,7 +33,3 @@ class SaltWastingClinicalFeatures(db.Model, MetadataMixin):
 
     def can_edit(self, user):
         return self.patient.can_edit(user)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'salt_wasting_clinical_features',
-    }

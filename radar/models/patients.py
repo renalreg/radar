@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.models.common import DataSource, MetadataMixin, PatientMixin
+from radar.models.common import MetadataMixin
 
 
 class Patient(db.Model):
@@ -44,7 +44,7 @@ class Patient(db.Model):
         return select([column])\
             .select_from(PatientDemographics.join(patient_alias))\
             .where(patient_alias.id == cls.id)\
-            .order_by(PatientDemographics.modified_at)\
+            .order_by(PatientDemographics.modified_date)\
             .limit(1)\
             .as_scalar()
 
@@ -56,7 +56,7 @@ class Patient(db.Model):
             return None
 
         def latest(x):
-            return x.modified_at or datetime.min
+            return x.modified_date or datetime.min
 
         return min(demographics_list, key=latest)
 

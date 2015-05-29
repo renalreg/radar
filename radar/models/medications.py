@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.concept_maps.medications import MedicationConceptMap
-from radar.models.common import DataSource, PatientMixin, MetadataMixin, StringLookupTableMixin, UnitMixin
+from radar.models.common import MetadataMixin, StringLookupTable
 
 
 class Medication(db.Model, MetadataMixin):
@@ -35,10 +35,6 @@ class Medication(db.Model, MetadataMixin):
     route_id = Column(String, ForeignKey('medication_routes.id'), nullable=False)
     route = relationship('MedicationRoute')
 
-    __mapper_args__ = {
-        'polymorphic_identity': 'medications',
-    }
-
     def can_view(self, user):
         return self.patient.can_view(user)
 
@@ -58,13 +54,13 @@ class Medication(db.Model, MetadataMixin):
         return url_for('medications.delete_medication', patient_id=self.patient.id, medication_id=self.id)
 
 
-class MedicationFrequency(db.Model, StringLookupTableMixin):
+class MedicationFrequency(StringLookupTable):
     __tablename__ = 'medication_frequencies'
 
 
-class MedicationRoute(db.Model, StringLookupTableMixin):
+class MedicationRoute(StringLookupTable):
     __tablename__ = 'medication_routes'
 
 
-class MedicationDoseUnit(db.Model, StringLookupTableMixin):
+class MedicationDoseUnit(StringLookupTable):
     __tablename__ = 'medication_dose_units'

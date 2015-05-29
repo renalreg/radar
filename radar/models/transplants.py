@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.common import MetadataMixin, LookupTableMixin
+from radar.models.common import MetadataMixin, IntegerLookupTable
 
 
 class Transplant(db.Model, MetadataMixin):
@@ -30,5 +30,5 @@ class Transplant(db.Model, MetadataMixin):
         return self.patient.can_edit(user)
 
 
-class TransplantType(db.Model, LookupTableMixin):
+class TransplantType(IntegerLookupTable):
     __tablename__ = 'transplant_types'

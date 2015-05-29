@@ -3,7 +3,7 @@ from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.common import MetadataMixin, LookupTableMixin
+from radar.models.common import MetadataMixin, IntegerLookupTable
 
 
 class Plasmapheresis(db.Model, MetadataMixin):
@@ -30,5 +30,5 @@ class Plasmapheresis(db.Model, MetadataMixin):
         return self.patient.can_edit(user)
 
 
-class PlasmapheresisResponse(db.Model, LookupTableMixin):
+class PlasmapheresisResponse(IntegerLookupTable):
     __tablename__ = 'plasmapheresis_responses'

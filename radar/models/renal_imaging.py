@@ -43,7 +43,3 @@ class RenalImaging(db.Model, MetadataMixin):
 
     def can_edit(self, user):
         return self.patient.can_edit(user)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'renal_imaging',
-    }
