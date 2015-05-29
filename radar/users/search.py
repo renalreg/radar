@@ -1,7 +1,7 @@
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.units import Unit
 from radar.models.users import User, DiseaseGroupUser, UnitUser

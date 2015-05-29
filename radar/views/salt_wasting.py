@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, request, redirect, url_for, render_template
 from flask_login import current_user
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.patients import Patient
 from radar.patients.salt_wasting.forms import SaltWastingClinicalFeaturesForm
 from radar.models.salt_wasting import SaltWastingClinicalFeatures

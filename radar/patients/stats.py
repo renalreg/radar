@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas
 from sqlalchemy import cast, extract, Integer, func
 
-from radar.database import db
+from radar.lib.database import db
 
 
 def recruitment_by_month(date_column, filters, cumulative=False):

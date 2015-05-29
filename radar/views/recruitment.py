@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import render_template, abort, request, url_for, redirect, session, flash, Blueprint
 from flask_login import current_user
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, Demographics
 from radar.patients.recruitment.forms import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm

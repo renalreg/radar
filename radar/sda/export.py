@@ -1,6 +1,7 @@
 from xml.etree.ElementTree import Element, SubElement
+
 from radar.sda.models import SDALabOrder, SDABundle
-from radar.utils import get_path_as_datetime
+from radar.lib.utils import get_path_as_datetime
 
 
 def patient_to_xml(patient):

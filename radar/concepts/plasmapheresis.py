@@ -1,6 +1,6 @@
 from radar.concepts.core import Concept
 from radar.sda.models import SDAProcedure
-from radar.validators import required
+from radar.lib.validators import required
 
 
 class PlasmapheresisConcept(Concept):

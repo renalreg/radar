@@ -8,7 +8,7 @@ from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, F
     ChangePasswordForm, AccountForm
 from radar.auth.services import check_login, generate_reset_password_token, \
     send_reset_password_email, send_username_reminder_email
-from radar.database import db
+from radar.lib.database import db
 from radar.models.users import User
 
 

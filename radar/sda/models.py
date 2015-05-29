@@ -3,9 +3,9 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
-from radar.database import db
+from radar.lib.database import db
 from radar.sda.utils import serialize_jsonb
-from radar.utils import get_path_as_text, get_path_as_datetime
+from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 
 class SDABundle(db.Model):

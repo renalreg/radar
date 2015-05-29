@@ -2,7 +2,7 @@ from sqlalchemy import Integer, Column, String, ForeignKey, UniqueConstraint, Da
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
-from radar.database import db
+from radar.lib.database import db
 
 
 class Facility(db.Model):

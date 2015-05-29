@@ -2,7 +2,7 @@ from flask import Blueprint, abort, render_template, url_for, request
 from flask_login import current_user
 from werkzeug.utils import redirect
 
-from radar.database import db
+from radar.lib.database import db
 from radar.patients.hospitalisation.forms import HospitalisationForm
 from radar.models.hospitalisation import Hospitalisation
 from radar.models.patients import Patient

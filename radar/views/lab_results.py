@@ -7,16 +7,16 @@ from sqlalchemy import desc, func
 
 from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
 from radar.concepts.utils import add_errors_to_form
-from radar.database import db
+from radar.lib.database import db
 from radar.patients.lab_results.forms import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
     SelectLabOrderForm
-from radar.ordering import order_query, DESCENDING, ordering_from_request
-from radar.pagination import paginate_query
+from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
+from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabOrderDefinition, LabOrder, LabResult
 from radar.models.patients import Patient
 from radar.views.patients import get_patient_data
 from radar.sda.models import SDABundle, SDALabOrder, SDALabResult
-from radar.utils import get_path_as_text, get_path_as_datetime
+from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 
 SORT_ITEM_PREFIX = 'item_'

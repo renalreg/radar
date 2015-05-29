@@ -4,15 +4,15 @@ from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
 from sqlalchemy import event
 
-from radar.error_handlers import page_not_found, forbidden
+from radar.lib.error_handlers import page_not_found, forbidden
 from radar.auth.services import load_user
 from radar.views.auth import require_login, force_password_change
-from radar.context_processors import inject_navigation, inject_delete_form
-from radar.mail import mail
-from radar.ordering import url_for_order_by
-from radar.pagination import url_for_per_page, url_for_page
-from radar.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
-from radar.template_filters import datetime_format, nl2br, date_format, missing, yn
+from radar.lib.context_processors import inject_navigation, inject_delete_form
+from radar.lib import mail
+from radar.lib.ordering import url_for_order_by
+from radar.lib.pagination import url_for_per_page, url_for_page
+from radar.lib.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
+from radar.lib.template_filters import datetime_format, nl2br, date_format, missing, yn
 from radar.views.index import bp as radar_bp
 from radar.views.diagnosis import bp as diagnosis_bp
 from radar.views.disease_groups import bp as disease_groups_bp
@@ -32,7 +32,7 @@ from radar.views.transplants import bp as transplants_bp
 from radar.views.salt_wasting import bp as salt_wasting_bp
 from radar.views.plasmapheresis import bp as plasmapheresis_bp
 from radar.views.recruitment import bp as recruit_bp
-from radar.database import db
+from radar.lib.database import db
 
 
 def create_app(config_filename):

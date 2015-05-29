@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.base import UnitMixin, PatientMixin, CreatedModifiedMixin, DataSource, LookupTableMixin
 
 

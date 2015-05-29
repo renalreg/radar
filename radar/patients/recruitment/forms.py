@@ -1,8 +1,9 @@
 from flask_wtf import Form
 from wtforms import StringField, IntegerField
 from wtforms.validators import Optional, DataRequired
-from radar.forms import RadarDOBField, RadarSelectField, RadarNHSNoField, RadarCHINoField
-from radar.utils import optional_int
+
+from radar.lib.forms import RadarDOBField, RadarSelectField, RadarNHSNoField, RadarCHINoField
+from radar.lib.utils import optional_int
 
 
 class RecruitPatientSearchForm(Form):

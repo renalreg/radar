@@ -1,7 +1,8 @@
 from flask_wtf import Form
-from radar.forms import UnitFormMixin, RadarDateField
 from wtforms import StringField
 from wtforms.validators import InputRequired, Optional
+
+from radar.lib.forms import UnitFormMixin, RadarDateField
 
 
 class HospitalisationForm(UnitFormMixin, Form):

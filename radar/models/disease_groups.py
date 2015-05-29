@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from radar.database import db
+
+from radar.lib.database import db
 
 
 class DiseaseGroup(db.Model):

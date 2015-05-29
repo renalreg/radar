@@ -2,11 +2,11 @@ from flask import render_template, request, abort, Blueprint, flash, url_for, re
 from flask_login import current_user
 
 from radar.auth.services import generate_password
-from radar.database import db
+from radar.lib.database import db
 from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
 from radar.models.disease_groups import DiseaseGroup
-from radar.ordering import order_query
-from radar.pagination import paginate_query
+from radar.lib.ordering import order_query
+from radar.lib.pagination import paginate_query
 from radar.units.services import get_units_for_user_with_permissions
 from radar.models.users import DiseaseGroupUser, UnitUser
 from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES

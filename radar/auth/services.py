@@ -4,11 +4,10 @@ from random import SystemRandom
 import re
 
 from flask import render_template, url_for
-
 from flask_mail import Message
 
 from radar.auth.constants import GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH, PASSWORD_REGEXES
-from radar.mail import mail
+from radar.lib import mail
 from radar.models.users import User
 
 

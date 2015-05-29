@@ -2,9 +2,9 @@ from flask_wtf import Form
 from wtforms import StringField
 from wtforms.validators import InputRequired, Optional, Email
 
-from radar.forms import RadarSelectField
+from radar.lib.forms import RadarSelectField
 from radar.models.users import User
-from radar.utils import optional_int
+from radar.lib.utils import optional_int
 
 
 class DiseaseGroupRoleForm(Form):

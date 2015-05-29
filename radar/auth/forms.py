@@ -2,9 +2,10 @@ from flask_login import current_user
 from flask_wtf import Form
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Email
+
 from radar.auth.constants import PASSWORD_POLICY
 from radar.auth.services import check_login
-from radar.forms import radar_password_check
+from radar.lib.forms import radar_password_check
 
 
 class LoginForm(Form):

@@ -1,7 +1,8 @@
 from flask_wtf import Form
-from radar.forms import RadarDateField, RadarSelectField, RadarYesNoField, RadarInlineRadioField, RadarMeasurementInput
 from wtforms import StringField, DecimalField
 from wtforms.widgets import TextArea
+
+from radar.lib.forms import RadarDateField, RadarSelectField, RadarYesNoField, RadarInlineRadioField, RadarMeasurementInput
 
 
 class RenalImagingForm(Form):

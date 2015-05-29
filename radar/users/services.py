@@ -2,7 +2,7 @@ from flask import url_for, render_template
 from flask_mail import Message
 
 from radar.models.disease_groups import DiseaseGroup
-from radar.mail import mail
+from radar.lib import mail
 from radar.models.units import Unit
 
 

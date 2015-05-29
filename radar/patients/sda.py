@@ -1,6 +1,6 @@
 from radar.models.base import Facility
 from radar.sda.models import SDABundle, SDAPatient, SDAPatientAddress, SDAPatientAlias
-from radar.utils import set_path
+from radar.lib.utils import set_path
 
 
 def demographics_to_sda_bundle(demographics):

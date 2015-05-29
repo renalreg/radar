@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.base import DataSource, CreatedModifiedMixin, PatientMixin
 from radar.sda.models import SDAPatient, SDABundle
 

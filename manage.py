@@ -1,7 +1,7 @@
 from flask_script import Manager
 
 from radar.app import create_app
-from radar.database import db
+from radar.lib.database import db
 from radar.models.users import User
 
 app = create_app('settings.py')

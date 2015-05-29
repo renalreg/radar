@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from radar.models.base import Facility
 from radar.sda.models import SDABundle
-from radar.validators import ValidationError, StopValidation
+from radar.lib.validators import ValidationError, StopValidation
 
 
 class Concept(object):

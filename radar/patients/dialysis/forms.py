@@ -1,10 +1,10 @@
 from flask_wtf import Form
 from wtforms.validators import InputRequired, Optional
 
-from radar.database import db
-from radar.forms import RadarDateField, UnitFormMixin, add_empty_object_choice, RadarSelectObjectField
+from radar.lib.database import db
+from radar.lib.forms import RadarDateField, UnitFormMixin, add_empty_object_choice, RadarSelectObjectField
 from radar.models.dialysis import DialysisType
-from radar.utils import optional_int
+from radar.lib.utils import optional_int
 
 
 class DialysisForm(UnitFormMixin, Form):

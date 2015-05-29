@@ -1,8 +1,9 @@
 from flask_wtf import Form
-from radar.forms import RadarYesNoField, RadarDateField
 from wtforms import StringField
 from wtforms.validators import Optional
 from wtforms.widgets import TextArea
+
+from radar.lib.forms import RadarYesNoField, RadarDateField
 
 
 class GeneticsForm(Form):

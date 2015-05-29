@@ -1,6 +1,6 @@
 from radar.concepts.core import Concept
 from radar.sda.models import SDAMedication
-from radar.validators import required, not_empty
+from radar.lib.validators import required, not_empty
 
 
 class MedicationConcept(Concept):

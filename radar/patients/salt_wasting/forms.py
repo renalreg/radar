@@ -1,8 +1,9 @@
 from flask_wtf import Form
-from radar.forms import RadarYesNoField
 from wtforms import StringField, TextAreaField, IntegerField
 from wtforms.validators import InputRequired, NumberRange, Optional
 from wtforms.widgets import TextArea
+
+from radar.lib.forms import RadarYesNoField
 
 
 class SaltWastingClinicalFeaturesForm(Form):

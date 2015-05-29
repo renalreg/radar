@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Text, DateTime
-from radar.database import db
+
+from radar.lib.database import db
 
 
 class Story(db.Model):

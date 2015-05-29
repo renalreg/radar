@@ -3,12 +3,12 @@ from datetime import datetime
 from flask import render_template, Blueprint, abort, request, url_for, redirect, flash
 from flask_login import current_user
 
-from radar.database import db
+from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
-from radar.forms import DeleteForm
+from radar.lib.forms import DeleteForm
 from radar.models.patients import Patient, Demographics, UnitPatient, DiseaseGroupPatient
-from radar.ordering import Ordering
-from radar.pagination import paginate_query
+from radar.lib.ordering import Ordering
+from radar.lib.pagination import paginate_query
 from radar.patients.forms import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
     PatientUnitForm, \
     AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
@@ -16,7 +16,7 @@ from radar.patients.sda import demographics_to_sda_bundle
 from radar.patients.search import PatientQueryBuilder
 from radar.sda.models import SDAPatient
 from radar.models.units import Unit
-from radar.utils import get_path_as_text
+from radar.lib.utils import get_path_as_text
 
 
 bp = Blueprint('patients', __name__)
