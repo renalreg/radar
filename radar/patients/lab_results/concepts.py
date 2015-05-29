@@ -1,5 +1,6 @@
 from collections import defaultdict
-from radar.concepts.lab_orders import LabOrderConcept
+
+from radar.lib.concepts.lab_orders import LabOrderConcept
 
 
 class LabOrderToLabOrderConcept(object):

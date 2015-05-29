@@ -1,17 +1,17 @@
 from flask import render_template, request, abort, Blueprint, flash, url_for, redirect
 from flask_login import current_user
 
-from radar.auth.services import generate_password
+from radar.lib.auth import generate_password
 from radar.lib.database import db
-from radar.disease_groups.services import get_disease_groups_for_user_with_permissions
+from radar.lib.disease_groups import get_disease_groups_for_user_with_permissions
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.ordering import order_query
 from radar.lib.pagination import paginate_query
-from radar.units.services import get_units_for_user_with_permissions
+from radar.lib.units import get_units_for_user_with_permissions
 from radar.models.users import DiseaseGroupUser, UnitUser
-from radar.users.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
-from radar.users.search import UserQueryBuilder
-from radar.users.services import get_managed_units, get_managed_disease_groups, send_new_user_email
+from radar.lib.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
+from radar.lib.user_search import UserQueryBuilder
+from radar.lib.users import get_managed_units, get_managed_disease_groups, send_new_user_email
 from radar.lib.forms.users import DiseaseGroupRoleForm, UserSearchForm, UnitRoleForm, AddUserForm
 from radar.models.users import User
 

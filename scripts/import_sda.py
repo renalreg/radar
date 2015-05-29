@@ -6,7 +6,7 @@ from radar.lib.database import db
 from radar.models.base import Facility
 from radar.models.patients import Patient
 from radar.models.base import DataImport
-from radar.sda.parser import parse_container
+from radar.lib.sda.parser import parse_container
 
 
 class Error(Exception):

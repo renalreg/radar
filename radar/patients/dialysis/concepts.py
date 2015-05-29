@@ -1,5 +1,6 @@
 from collections import defaultdict
-from radar.concepts.dialysis import DialysisConcept
+
+from radar.lib.concepts.dialysis import DialysisConcept
 
 
 class DialysisToDialysisConcept(object):

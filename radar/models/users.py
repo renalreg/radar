@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.models.base import ModifiedMixin, CreatedMixin
-from radar.users.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
+from radar.lib.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
     UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES, \

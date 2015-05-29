@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from radar.concepts.medications import MedicationConcept
+from radar.lib.concepts.medications import MedicationConcept
 
 
 class MedicationToMedicationConcept(object):

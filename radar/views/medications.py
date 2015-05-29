@@ -1,15 +1,15 @@
 from flask import Blueprint, render_template, abort, request, url_for, redirect
 from flask_login import current_user
 
-from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
-from radar.concepts.utils import add_errors_to_form
+from radar.lib.concepts.core import validate_concepts, concepts_to_sda_bundle
+from radar.lib.concepts.utils import add_errors_to_form
 from radar.lib.database import db
 from radar.lib.forms.common import DeleteForm
 from radar.lib.forms.medications import MedicationForm
 from radar.models.medications import Medication
 from radar.models.patients import Patient
 from radar.views.patients import get_patient_data
-from radar.sda.models import SDAMedication, SDABundle
+from radar.lib.sda.models import SDAMedication, SDABundle
 from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 

@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
 from radar.models.base import DataSource, CreatedModifiedMixin, PatientMixin
-from radar.sda.models import SDAPatient, SDABundle
+from radar.lib.sda.models import SDAPatient, SDABundle
 
 
 class Patient(db.Model):

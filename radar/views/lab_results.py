@@ -5,8 +5,8 @@ from flask import Blueprint, render_template, abort, request, jsonify, redirect,
 from flask_login import current_user
 from sqlalchemy import desc, func
 
-from radar.concepts.core import validate_concepts, concepts_to_sda_bundle
-from radar.concepts.utils import add_errors_to_form
+from radar.lib.concepts.core import validate_concepts, concepts_to_sda_bundle
+from radar.lib.concepts.utils import add_errors_to_form
 from radar.lib.database import db
 from radar.lib.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
     SelectLabOrderForm
@@ -15,7 +15,7 @@ from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabOrderDefinition, LabOrder, LabResult
 from radar.models.patients import Patient
 from radar.views.patients import get_patient_data
-from radar.sda.models import SDABundle, SDALabOrder, SDALabResult
+from radar.lib.sda.models import SDABundle, SDALabOrder, SDALabResult
 from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 

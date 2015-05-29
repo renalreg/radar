@@ -5,7 +5,7 @@ from flaskext.markdown import Markdown
 from sqlalchemy import event
 
 from radar.lib.error_handlers import page_not_found, forbidden
-from radar.auth.services import load_user
+from radar.lib.auth import load_user
 from radar.views.auth import require_login, force_password_change
 from radar.lib.context_processors import inject_navigation, inject_delete_form
 from radar.lib.mail import mail

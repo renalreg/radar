@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from flask import Blueprint, flash, redirect, request, url_for, render_template, current_app
 from flask_login import login_user, logout_user, current_user
 
-from radar.auth.constants import PUBLIC_ENDPOINTS, RESET_PASSWORD_MAX_AGE, FORCE_PASSWORD_CHANGE_ENDPOINTS
+from radar.lib.auth import PUBLIC_ENDPOINTS, RESET_PASSWORD_MAX_AGE, FORCE_PASSWORD_CHANGE_ENDPOINTS
 from radar.lib.forms.auth import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
     ChangePasswordForm, AccountForm
-from radar.auth.services import check_login, generate_reset_password_token, \
+from radar.lib.auth import check_login, generate_reset_password_token, \
     send_reset_password_email, send_username_reminder_email
 from radar.lib.database import db
 from radar.models.users import User
