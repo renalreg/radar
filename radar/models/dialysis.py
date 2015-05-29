@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import DataSource, PatientMixin, MetadataMixin, UnitMixin, LookupTableMixin
+from radar.models.common import DataSource, PatientMixin, MetadataMixin, UnitMixin, LookupTableMixin
 from radar.lib.concept_maps.dialysis import DialysisConceptMap
 
 

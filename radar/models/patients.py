@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.models.base import DataSource, MetadataMixin, PatientMixin
+from radar.models.common import DataSource, MetadataMixin, PatientMixin
 
 
 class Patient(db.Model):
@@ -179,10 +179,16 @@ class Patient(db.Model):
         return False
 
 
-class PatientDemographics(db.Model, PatientMixin, MetadataMixin):
+class PatientDemographics(db.Model, MetadataMixin):
     __tablename__ = 'patient_demographics'
 
     id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     first_name = Column(String)
     last_name = Column(String)
@@ -207,31 +213,43 @@ class PatientDemographics(db.Model, PatientMixin, MetadataMixin):
     chi_no = Column(Integer)
 
     def can_view(self, user):
-        return self.patient.can_view_demographics(user)
+        return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+        return self.patient.can_edit(user) and self.patient.can_view(user)
 
 
-class PatientAlias(db.Model, PatientMixin, MetadataMixin):
+class PatientAlias(db.Model, MetadataMixin):
     __tablename__ = 'patient_aliases'
 
     id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     first_name = Column(String)
     last_name = Column(String)
 
     def can_view(self, user):
-        return self.patient.can_view_demographics(user)
+        return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+        return self.patient.can_edit(user) and self.patient.can_view(user)
 
 
-class PatientAddress(db.Model, PatientMixin, MetadataMixin):
+class PatientAddress(db.Model, MetadataMixin):
     __tablename__ = 'patient_addresses'
 
     id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     from_date = Column(Date)
     to_date = Column(Date)
@@ -240,52 +258,44 @@ class PatientAddress(db.Model, PatientMixin, MetadataMixin):
     address_line_3 = Column(String)
     postcode = Column(String)
 
-    def can_view(self, user):
-        return self.patient.can_view_demographics(user)
+    @property
+    def full_address(self):
+        parts = []
 
-    def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+        parts.extend([
+            self.address_line_1,
+            self.address_line_2,
+            self.address_line_3,
+            self.postcode,
+        ])
 
-
-class Demographics(DataSource, PatientMixin, MetadataMixin):
-    __tablename__ = 'demographics'
-
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
-
-    first_name = Column(String)
-    last_name = Column(String)
-    date_of_birth = Column(Date)
-    date_of_death = Column(Date)
-    gender = Column(Integer)
-
-    # TODO
-    ethnicity = Column(String)
-
-    alias_first_name = Column(String)
-    alias_last_name = Column(String)
-
-    address_line_1 = Column(String)
-    address_line_2 = Column(String)
-    address_line_3 = Column(String)
-    postcode = Column(String)
-
-    home_number = Column(String)
-    work_number = Column(String)
-    mobile_number = Column(String)
-    email_address = Column(String)
-
-    nhs_no = Column(Integer)
-    chi_no = Column(Integer)
+        return "\n".join(x for x in parts if x)
 
     def can_view(self, user):
-        return self.patient.can_view_demographics(user)
+        return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+        return self.patient.can_edit(user) and self.patient.can_view(user)
 
 
-class PatientNumber(db.Model, PatientMixin, MetadataMixin):
+class PatientNumber(db.Model, MetadataMixin):
     __tablename__ = 'patient_numbers'
 
     id = Column(Integer, primary_key=True)
-    number =  Column(String)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility', foreign_keys=[facility_id])
+
+    number_facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    number_facility = relationship('Facility', foreign_keys=[number_facility_id])
+
+    number = Column(String, nullable=False)
+
+    def can_view(self, user):
+        return self.patient.can_view(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user) and self.patient.can_view(user)

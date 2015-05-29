@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
 
-from radar.models.base import DataSource, PatientMixin, MetadataMixin, UnitMixin
+from radar.models.common import DataSource, PatientMixin, MetadataMixin, UnitMixin
 
 
 class Hospitalisation(DataSource, PatientMixin, MetadataMixin, UnitMixin):

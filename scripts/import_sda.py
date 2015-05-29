@@ -3,9 +3,9 @@ import xml.etree.ElementTree as ET
 from flask import Flask
 
 from radar.lib.database import db
-from radar.models.base import Facility
+from radar.models.facilities import Facility
 from radar.models.patients import Patient
-from radar.models.base import DataImport
+from radar.models.common import DataImport
 from radar.lib.sda.parser import parse_container
 
 

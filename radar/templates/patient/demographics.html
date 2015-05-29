@@ -9,74 +9,93 @@
 
     <p><a href="{{ url_for('patients.edit_radar_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
 
-    {% for demographics in demographics_list %}
-        {% call render_panel(demographics.facility.name, 'panel-default') %}
-            <table class="table kv">
-                {% if patient.can_view_demographics(current_user) %}
-                    <tr>
-                        <th width="20%">First Name</th>
-                        <td>{{ demographics.first_name }}</td>
-                    </tr>
-
-                    <tr>
-                        <th>Last Name</th>
-                        <td>{{ demographics.last_name }}</td>
-                    </tr>
-                {% endif %}
-
-                <tr>
-                    <th>Date of Birth</th>
-                    <td>
-                        {% if patient.can_view_demographics(current_user) %}
-                            {{ demographics.date_of_birth | date_format | missing }}
-                        {% else %}
-                            {{ demographics.date_of_birth | datetime_format('%Y') | missing }}
-                        {% endif %}
-                    </td>
-                </tr>
-
-                <tr>
-                    <th>Date of Death</th>
-                    <td>
-                        {% if patient.can_view_demographics(current_user) %}
-                            {{ demographics.date_of_death | date_format | missing }}
-                        {% else %}
-                            {{ demographics.date_of_death | datetime_format('%Y') | missing }}
-                        {% endif %}
-                    </td>
-                </tr>
-
-                <tr>
-                    <th>Gender</th>
-                    <td>{{ demographics.gender | missing }}</td>
-                </tr>
-            </table>
-
-            {% if demographics.numbers and patient.can_view_demographics(current_user) %}
-                <h4>Identifiers</h4>
-
-                <table class="table table-striped">
-                    <thead>
+    {% for facility_patient in facility_patients %}
+        {% call render_panel(facility_patient.facility.name, 'panel-default') %}
+            {% if facility_patient.demographics %}
+                <table class="table kv">
+                    {% if patient.can_view_demographics(current_user) %}
                         <tr>
-                            <th width="20%">Organisation</th>
-                            <th width="20%">Number</th>
-                            <th>Type</th>
+                            <th width="20%">First Name</th>
+                            <td>{{ facility_patient.demographics.first_name }}</td>
                         </tr>
-                    </thead>
 
-                    <tbody>
-                        {% for number in demographics.numbers %}
-                            <tr>
-                                <td>{{ number.organization | missing }}</td>
-                                <td>{{ number.number | missing }}</td>
-                                <td>{{ number.number_type | missing }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
+                        <tr>
+                            <th>Last Name</th>
+                            <td>{{ facility_patient.demographics.last_name }}</td>
+                        </tr>
+                    {% endif %}
+
+                    <tr>
+                        <th>Date of Birth</th>
+                        <td>
+                            {% if patient.can_view_demographics(current_user) %}
+                                {{ facility_patient.demographics.date_of_birth | date_format | missing }}
+                            {% else %}
+                                {{ facility_patient.demographics.date_of_birth | datetime_format('%Y') | missing }}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Date of Death</th>
+                        <td>
+                            {% if patient.can_view_demographics(current_user) %}
+                                {{ facility_patient.demographics.date_of_death | date_format | missing }}
+                            {% else %}
+                                {{ facility_patient.demographics.date_of_death | datetime_format('%Y') | missing }}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Gender</th>
+                        <td>{{ facility_patient.demographics.gender | missing }}</td>
+                    </tr>
                 </table>
             {% endif %}
 
-            {% if demographics.aliases and patient.can_view_demographics(current_user) %}
+            <h4>Identifiers</h4>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="20%">Organisation</th>
+                        <th>Number</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>RaDaR</td>
+                        <td>{{ patient.id }}</td>
+                    </tr>
+
+                    {% if patient.can_view_demographics(current_user) %}
+                        {% if facility_patient.demographics.nhs_no %}
+                            <tr>
+                                <td>NHS</td>
+                                <td>{{ facility_patient.demographics.nhs_no }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if facility_patient.demographics.nhs_no %}
+                            <tr>
+                                <td>CHI</td>
+                                <td>{{ facility_patient.demographics.chi_no }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% for number in facility_patient.numbers %}
+                            <tr>
+                                <td>{{ number.number_facility.name | missing }}</td>
+                                <td>{{ number.number | missing }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            {% if facility_patient.aliases and patient.can_view_demographics(current_user) %}
                 <h4>Aliases</h4>
 
                 <table class="table table-striped">
@@ -88,7 +107,7 @@
                     </thead>
 
                     <tbody>
-                        {% for alias in demographics.aliases %}
+                        {% for alias in facility_patient.aliases %}
                             <tr>
                                 <td>{{ alias.first_name | missing }}</td>
                                 <td>{{ alias.last_name | missing }}</td>
@@ -98,7 +117,7 @@
                 </table>
             {% endif %}
 
-            {% if demographics.addresses and patient.can_view_demographics(current_user) %}
+            {% if facility_patient.addresses and patient.can_view_demographics(current_user) %}
                 <h4>Addresses</h4>
 
                 <table class="table table-striped">
@@ -111,11 +130,11 @@
                     </thead>
 
                     <tbody>
-                        {% for address in demographics.addresses %}
+                        {% for address in facility_patient.addresses %}
                             <tr>
-                                <td>{{ address.from_time | date_format | missing }}</td>
-                                <td>{{ address.to_time | date_format | missing }}</td>
-                                <td>{{ address.address | nl2br }}</td>
+                                <td>{{ address.from_date | date_format | missing }}</td>
+                                <td>{{ address.to_date | date_format | missing }}</td>
+                                <td>{{ address.full_address | nl2br }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

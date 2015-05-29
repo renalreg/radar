@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.roles import DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, DISEASE_GROUP_MANAGED_ROLES, DISEASE_GROUP_ROLE_NAMES
-from radar.models.base import MetadataMixin
+from radar.models.common import MetadataMixin
 
 
 class DiseaseGroup(db.Model):

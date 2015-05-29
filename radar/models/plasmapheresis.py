@@ -3,7 +3,7 @@ from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import UnitMixin, PatientMixin, MetadataMixin, DataSource, LookupTableMixin
+from radar.models.common import UnitMixin, PatientMixin, MetadataMixin, DataSource, LookupTableMixin
 
 
 class Plasmapheresis(DataSource, PatientMixin, MetadataMixin, UnitMixin):

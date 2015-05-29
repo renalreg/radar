@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 from flask import render_template, Blueprint, abort, request, url_for, redirect, flash
@@ -6,7 +7,8 @@ from flask_login import current_user
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.common import DeleteForm
-from radar.models.patients import Patient, Demographics
+from radar.models.facilities import Facility
+from radar.models.patients import Patient, PatientDemographics, PatientNumber, PatientAlias, PatientAddress
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
@@ -105,6 +107,35 @@ def view_patient_list():
     return render_template('patients.html', **context)
 
 
+class FacilityPatient(object):
+    def __init__(self, facility, patient, demographics=None, numbers=None, aliases=None, addresses=None):
+        if numbers is None:
+            numbers = []
+
+        if aliases is None:
+            aliases = []
+
+        if addresses is None:
+            addresses = []
+
+        self.facility = facility
+        self.patient = patient
+        self.demographics = demographics
+        self.numbers = numbers
+        self.aliases = aliases
+        self.addresses = addresses
+
+
+def get_facility_patient(map, facility, patient):
+    facility_patient = map.get(facility)
+
+    if facility_patient is None:
+        facility_patient = FacilityPatient(facility, patient)
+        map[facility] = facility_patient
+
+    return facility_patient
+
+
 @bp.route('/<int:patient_id>/', endpoint='view_demographics_list')
 @bp.route('/<int:patient_id>/', endpoint='view_patient')
 def view_demographics_list(patient_id):
@@ -113,65 +144,51 @@ def view_demographics_list(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    sda_patients = SDAPatient.query\
-        .join(SDAPatient.sda_bundle)\
+    patient_demographics_list = PatientDemographics.query\
+        .join(Patient)\
+        .filter(Patient.id == patient_id)\
+        .all()
+    patient_numbers = PatientNumber.query\
+        .join(Patient)\
+        .filter(Patient.id == patient_id)\
+        .all()
+    patient_aliases = PatientAlias.query\
+        .join(Patient)\
+        .filter(Patient.id == patient_id)\
+        .all()
+    patient_addresses = PatientAddress.query\
         .join(Patient)\
         .filter(Patient.id == patient_id)\
         .all()
 
-    demographics_list = []
+    facility_patient_map = defaultdict(FacilityPatient)
 
-    for sda_patient in sda_patients:
-        demographics = dict()
+    for patient_demographics in patient_demographics_list:
+        facility = patient_demographics.facility
+        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
+        facility_patient.demographics = patient_demographics
 
-        demographics['facility'] = sda_patient.sda_bundle.facility
-        demographics['first_name'] = sda_patient.first_name
-        demographics['last_name'] = sda_patient.last_name
-        demographics['date_of_birth'] = sda_patient.date_of_birth
-        demographics['date_of_death'] = sda_patient.date_of_death
+    for patient_number in patient_numbers:
+        facility = patient_number.facility
+        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
+        facility_patient.numbers.append(patient_number)
 
-        if sda_patient.gender == 'M':
-            demographics['gender'] = 'Male'
-        else:
-            demographics['gender'] = 'Female'
+    for patient_alias in patient_aliases:
+        facility = patient_alias.facility
+        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
+        facility_patient.aliases.append(patient_alias)
 
-        demographics['addresses'] = []
+    for patient_address in patient_addresses:
+        facility = patient_address.facility
+        facility_patient = get_facility_patient(facility_patient_map, facility, patient)
+        facility_patient.addresses.append(patient_address)
 
-        # Sort by to time
-        addresses = sorted(sda_patient.addresses, key=lambda x: (x.to_time or datetime.max), reverse=True)
-
-        for address in addresses:
-            demographics['addresses'].append({
-                'from_time': address.from_time,
-                'to_time': address.to_time,
-                'address': address.full_address
-            })
-
-        demographics['aliases'] = []
-
-        for alias in sda_patient.aliases:
-            demographics['aliases'].append({
-                'first_name': alias.first_name,
-                'last_name': alias.last_name,
-            })
-
-        demographics['numbers'] = []
-
-        numbers = sorted(sda_patient.numbers, key=lambda x: get_path_as_text(x.data, ['organization', 'description']))
-
-        for number in numbers:
-            demographics['numbers'] = [{
-                'organization': get_path_as_text(number.data, ['organization', 'description']),
-                'number': get_path_as_text(number.data, ['number']),
-                'number_type': get_path_as_text(number.data, ['number_type'])
-            }]
-
-        demographics_list.append(demographics)
+    facility_patients = facility_patient_map.values()
 
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
-        demographics_list=demographics_list
+        facility_patients=facility_patients
     )
 
     return render_template('patient/demographics.html', **context)

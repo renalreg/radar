@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boole
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import PatientMixin, UnitMixin, MetadataMixin, DataSource
+from radar.models.common import PatientMixin, UnitMixin, MetadataMixin, DataSource
 from radar.lib.concept_maps.lab_orders import LabOrderConceptMap
 
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.concept_maps.medications import MedicationConceptMap
-from radar.models.base import DataSource, PatientMixin, MetadataMixin, StringLookupTableMixin, UnitMixin
+from radar.models.common import DataSource, PatientMixin, MetadataMixin, StringLookupTableMixin, UnitMixin
 
 
 class Medication(DataSource, PatientMixin, MetadataMixin, UnitMixin):

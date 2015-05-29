@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from radar.models.base import ModifiedMixin, CreatedMixin
+from radar.models.common import ModifiedMixin, CreatedMixin
 from radar.lib.roles import UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES
 from radar.lib.database import db
 

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, Boolean, String
 
-from radar.models.base import DataSource, PatientMixin, MetadataMixin
+from radar.models.common import DataSource, PatientMixin, MetadataMixin
 
 
 class SaltWastingClinicalFeatures(DataSource, PatientMixin, MetadataMixin):

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey
 
-from radar.models.base import DataSource, DiseaseGroupMixin, PatientMixin, MetadataMixin
+from radar.models.common import DataSource, DiseaseGroupMixin, PatientMixin, MetadataMixin
 
 
 class Diagnosis(DataSource, DiseaseGroupMixin, PatientMixin, MetadataMixin):
