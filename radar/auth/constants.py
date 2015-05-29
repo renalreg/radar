@@ -1,5 +1,6 @@
 import string
 
+# Flask endpoints that don't require login
 PUBLIC_ENDPOINTS = [
     'radar.index',
     'auth.login',
@@ -11,8 +12,16 @@ PUBLIC_ENDPOINTS = [
     'news.view_story',
 ]
 
-RESET_PASSWORD_MAX_AGE = 86400
+# Flask endpoints that can be accessed while the user has the force password change flag set
+FORCE_PASSWORD_CHANGE_ENDPOINTS = [
+    'auth.change_password',
+    'auth.logout',
+    'static'
+]
 
+RESET_PASSWORD_MAX_AGE = 86400  # 1 day
+
+# Parameters to user for password generation
 GENERATE_PASSWORD_ALPHABET = string.ascii_letters + string.digits
 GENERATE_PASSWORD_LENGTH = 10
 

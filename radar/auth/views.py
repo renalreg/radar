@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, flash, redirect, request, url_for, render_template, current_app
 from flask_login import login_user, logout_user, current_user
 
-from radar.auth.constants import PUBLIC_ENDPOINTS, RESET_PASSWORD_MAX_AGE
+from radar.auth.constants import PUBLIC_ENDPOINTS, RESET_PASSWORD_MAX_AGE, FORCE_PASSWORD_CHANGE_ENDPOINTS
 from radar.auth.forms import LoginForm, ResetPasswordForm, ForgotPasswordForm, ForgotUsernameForm, ChangeEmailForm, \
     ChangePasswordForm, AccountForm
 from radar.auth.services import check_login, generate_reset_password_token, \
@@ -23,7 +23,7 @@ def require_login():
 
 
 def force_password_change():
-    if current_user.is_authenticated and current_user.force_password_change and request.endpoint not in ['auth.change_password', 'auth.logout', 'static']:
+    if current_user.is_authenticated() and current_user.force_password_change and request.endpoint not in FORCE_PASSWORD_CHANGE_ENDPOINTS:
         flash('Please update your password.')
         return redirect(url_for('auth.change_password'))
 
