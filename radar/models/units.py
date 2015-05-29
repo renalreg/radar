@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.roles import UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, UNIT_EDIT_PATIENT_ROLES, \
     UNIT_VIEW_USER_ROLES, UNIT_MANAGED_ROLES, UNIT_RECRUIT_PATIENT_ROLES, UNIT_ROLE_NAMES
-from radar.models.base import CreatedModifiedMixin
+from radar.models.base import MetadataMixin
 
 
 class Unit(db.Model):
@@ -20,7 +20,7 @@ class Unit(db.Model):
     users = relationship('UnitUser')
 
 
-class UnitPatient(db.Model, CreatedModifiedMixin):
+class UnitPatient(db.Model, MetadataMixin):
     __tablename__ = 'unit_patients'
 
     id = Column(Integer, primary_key=True)

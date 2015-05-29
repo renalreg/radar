@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boole
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import PatientMixin, UnitMixin, CreatedModifiedMixin, DataSource
+from radar.models.base import PatientMixin, UnitMixin, MetadataMixin, DataSource
 from radar.lib.concept_maps.lab_orders import LabOrderConceptMap
 
 
@@ -39,7 +39,7 @@ class LabResultDefinition(db.Model):
     )
 
 
-class LabOrder(DataSource, PatientMixin, UnitMixin, CreatedModifiedMixin):
+class LabOrder(DataSource, PatientMixin, UnitMixin, MetadataMixin):
     __tablename__ = 'lab_orders'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.roles import DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, \
     DISEASE_GROUP_VIEW_USER_ROLES, DISEASE_GROUP_MANAGED_ROLES, DISEASE_GROUP_ROLE_NAMES
-from radar.models.base import CreatedModifiedMixin
+from radar.models.base import MetadataMixin
 
 
 class DiseaseGroup(db.Model):
@@ -40,7 +40,7 @@ class DiseaseGroupFeatures(db.Model):
     feature_name = Column(String, nullable=False)
 
 
-class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
+class DiseaseGroupPatient(db.Model, MetadataMixin):
     __tablename__ = 'disease_group_patients'
 
     id = Column(Integer, primary_key=True)

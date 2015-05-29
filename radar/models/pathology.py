@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, ForeignKey
 
-from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin
+from radar.models.base import DataSource, PatientMixin, MetadataMixin
 
 
-class Pathology(DataSource, PatientMixin, CreatedModifiedMixin):
+class Pathology(DataSource, PatientMixin, MetadataMixin):
     __tablename__ = 'pathology'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

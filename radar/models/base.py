@@ -92,7 +92,7 @@ class ModifiedMixin(object):
         return Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.current_timestamp())
 
 
-class CreatedModifiedMixin(CreatedMixin, ModifiedMixin):
+class MetadataMixin(CreatedMixin, ModifiedMixin):
     pass
 
 

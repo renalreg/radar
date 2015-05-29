@@ -2,11 +2,11 @@ from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin, LookupTableMixin
+from radar.models.base import DataSource, PatientMixin, MetadataMixin, UnitMixin, LookupTableMixin
 from radar.lib.concept_maps.dialysis import DialysisConceptMap
 
 
-class Dialysis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
+class Dialysis(DataSource, PatientMixin, MetadataMixin, UnitMixin):
     __tablename__ = 'dialysis'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

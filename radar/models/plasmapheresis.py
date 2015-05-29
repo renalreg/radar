@@ -3,10 +3,10 @@ from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import UnitMixin, PatientMixin, CreatedModifiedMixin, DataSource, LookupTableMixin
+from radar.models.base import UnitMixin, PatientMixin, MetadataMixin, DataSource, LookupTableMixin
 
 
-class Plasmapheresis(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
+class Plasmapheresis(DataSource, PatientMixin, MetadataMixin, UnitMixin):
     __tablename__ = 'plasmapheresis'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

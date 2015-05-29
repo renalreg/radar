@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.concept_maps.medications import MedicationConceptMap
-from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, StringLookupTableMixin, UnitMixin
+from radar.models.base import DataSource, PatientMixin, MetadataMixin, StringLookupTableMixin, UnitMixin
 
 
-class Medication(DataSource, PatientMixin, CreatedModifiedMixin, UnitMixin):
+class Medication(DataSource, PatientMixin, MetadataMixin, UnitMixin):
     __tablename__ = 'medications'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

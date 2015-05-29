@@ -2,10 +2,10 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.base import DataSource, PatientMixin, CreatedModifiedMixin, LookupTableMixin
+from radar.models.base import DataSource, PatientMixin, MetadataMixin, LookupTableMixin
 
 
-class Transplant(DataSource, PatientMixin, CreatedModifiedMixin):
+class Transplant(DataSource, PatientMixin, MetadataMixin):
     __tablename__ = 'transplants'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)

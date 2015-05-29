@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.models.base import DataSource, CreatedModifiedMixin, PatientMixin
-from radar.lib.sda.models import SDAPatient, SDABundle
+from radar.models.base import DataSource, MetadataMixin, PatientMixin
 
 
 class Patient(db.Model):
@@ -26,58 +25,56 @@ class Patient(db.Model):
     units = relationship('UnitPatient')
     disease_groups = relationship('DiseaseGroupPatient')
 
-    sda_bundles = relationship('SDABundle', passive_deletes=True)
+    demographics = relationship('PatientDemographics')
+    numbers = relationship('PatientNumber')
+    alias = relationship('PatientAlias')
 
-    def _latest_sda_patient_attr(self, attr):
-        sda_patient = self.latest_sda_patient
+    def latest_demographics_attr(self, attr):
+        demographics = self.latest_demographics
 
-        if sda_patient is None:
+        if demographics is None:
             return None
 
-        return getattr(sda_patient, attr)
+        return getattr(demographics, attr)
 
     @classmethod
-    def _latest_sda_patient_query(cls, column):
+    def latest_demographics_query(cls, column):
         patient_alias = aliased(Patient)
 
-        # TODO last updated
         return select([column])\
-            .select_from(join(SDAPatient, SDABundle).join(patient_alias))\
+            .select_from(PatientDemographics.join(patient_alias))\
             .where(patient_alias.id == cls.id)\
+            .order_by(PatientDemographics.modified_at)\
             .limit(1)\
             .as_scalar()
 
     @property
-    def latest_sda_patient(self):
-        latest_sda_patient = None
+    def latest_demographics(self):
+        demographics_list = self.demographics
 
-        for sda_bundle in self.sda_bundles:
-            sda_patient = sda_bundle.sda_patient
+        if len(demographics_list) == 0:
+            return None
 
-            if sda_patient is None:
-                continue
+        def latest(x):
+            return x.modified_at or datetime.min
 
-            # TODO last updated
-            latest_sda_patient = sda_patient
-            break
-
-        return latest_sda_patient
+        return min(demographics_list, key=latest)
 
     @hybrid_property
     def first_name(self):
-        return self._latest_sda_patient_attr('first_name')
+        return self.latest_demographics_attr('first_name')
 
     @hybrid_property
     def last_name(self):
-        return self._latest_sda_patient_attr('last_name')
+        return self.latest_demographics_attr('last_name')
 
     @hybrid_property
     def date_of_birth(self):
-        return self._latest_sda_patient_attr('date_of_birth')
+        return self.latest_demographics_attr('date_of_birth')
 
     @hybrid_property
     def gender(self):
-        return self._latest_sda_patient_attr('gender')
+        return self.latest_demographics_attr('gender')
 
     @hybrid_property
     def is_male(self):
@@ -89,19 +86,19 @@ class Patient(db.Model):
 
     @first_name.expression
     def first_name(cls):
-        return cls._latest_sda_patient_query(SDAPatient.first_name)
+        return cls.latest_demographics_query(PatientDemographics.first_name)
 
     @last_name.expression
     def last_name(cls):
-        return cls._latest_sda_patient_query(SDAPatient.last_name)
+        return cls.latest_demographics_query(PatientDemographics.last_name)
 
     @date_of_birth.expression
     def date_of_birth(cls):
-        return cls._latest_sda_patient_query(SDAPatient.date_of_birth)
+        return cls.latest_demographics_query(PatientDemographics.date_of_birth)
 
     @gender.expression
     def gender(cls):
-        return cls._latest_sda_patient_query(SDAPatient.gender)
+        return cls.latest_demographics_query(PatientDemographics.gender)
 
     def _has_unit_permission(self, user, permission):
         patient_units = set([x.unit for x in self.units])
@@ -182,7 +179,75 @@ class Patient(db.Model):
         return False
 
 
-class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):
+class PatientDemographics(db.Model, PatientMixin, MetadataMixin):
+    __tablename__ = 'patient_demographics'
+
+    id = Column(Integer, primary_key=True)
+
+    first_name = Column(String)
+    last_name = Column(String)
+    date_of_birth = Column(Date)
+    date_of_death = Column(Date)
+    gender = Column(Integer)
+
+    # TODO
+    ethnicity = Column(String)
+
+    address_line_1 = Column(String)
+    address_line_2 = Column(String)
+    address_line_3 = Column(String)
+    postcode = Column(String)
+
+    home_number = Column(String)
+    work_number = Column(String)
+    mobile_number = Column(String)
+    email_address = Column(String)
+
+    nhs_no = Column(Integer)
+    chi_no = Column(Integer)
+
+    def can_view(self, user):
+        return self.patient.can_view_demographics(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+
+
+class PatientAlias(db.Model, PatientMixin, MetadataMixin):
+    __tablename__ = 'patient_aliases'
+
+    id = Column(Integer, primary_key=True)
+
+    first_name = Column(String)
+    last_name = Column(String)
+
+    def can_view(self, user):
+        return self.patient.can_view_demographics(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+
+
+class PatientAddress(db.Model, PatientMixin, MetadataMixin):
+    __tablename__ = 'patient_addresses'
+
+    id = Column(Integer, primary_key=True)
+
+    from_date = Column(Date)
+    to_date = Column(Date)
+    address_line_1 = Column(String)
+    address_line_2 = Column(String)
+    address_line_3 = Column(String)
+    postcode = Column(String)
+
+    def can_view(self, user):
+        return self.patient.can_view_demographics(user)
+
+    def can_edit(self, user):
+        return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+
+
+class Demographics(DataSource, PatientMixin, MetadataMixin):
     __tablename__ = 'demographics'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
@@ -212,12 +277,15 @@ class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):
     nhs_no = Column(Integer)
     chi_no = Column(Integer)
 
-    __mapper_args__ = {
-        'polymorphic_identity': 'demographics',
-    }
-
     def can_view(self, user):
         return self.patient.can_view_demographics(user)
 
     def can_edit(self, user):
         return self.patient.can_edit(user) and self.patient.can_view_demographics(user)
+
+
+class PatientNumber(db.Model, PatientMixin, MetadataMixin):
+    __tablename__ = 'patient_numbers'
+
+    id = Column(Integer, primary_key=True)
+    number =  Column(String)
