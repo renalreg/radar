@@ -32,7 +32,7 @@
 
         <tr>
             <th width="20%">Registered</th>
-            <td>{{ current_user.created_at | date_format | missing }}</td>
+            <td>{{ current_user.created_date | date_format | missing }}</td>
         </tr>
 
         {% if current_user.is_admin %}
