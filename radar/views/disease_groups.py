@@ -1,11 +1,9 @@
 from flask_login import current_user
 from flask import render_template, Blueprint, request, jsonify
 
-from radar.models.disease_groups import DiseaseGroup
-from radar.models.patients import DiseaseGroupPatient
+from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupUser
 from radar.models.news import Story
 from radar.lib.recruitment_stats import recruitment_by_month
-from radar.models.users import DiseaseGroupUser
 from radar.lib.roles import DISEASE_GROUP_GOD
 
 

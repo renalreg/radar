@@ -6,7 +6,8 @@ from flask_login import current_user
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.common import DeleteForm
-from radar.models.patients import Patient, Demographics, UnitPatient, DiseaseGroupPatient
+from radar.models.patients import Patient, Demographics
+from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
 from radar.lib.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
@@ -15,7 +16,7 @@ from radar.lib.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PA
 from radar.lib.demographics_sda import demographics_to_sda_bundle
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.lib.sda.models import SDAPatient
-from radar.models.units import Unit
+from radar.models.units import Unit, UnitPatient
 from radar.lib.utils import get_path_as_text
 
 

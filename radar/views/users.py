@@ -4,11 +4,11 @@ from flask_login import current_user
 from radar.lib.auth import generate_password
 from radar.lib.database import db
 from radar.lib.disease_groups import get_disease_groups_for_user_with_permissions
-from radar.models.disease_groups import DiseaseGroup
+from radar.models.disease_groups import DiseaseGroup, DiseaseGroupUser
 from radar.lib.ordering import order_query
 from radar.lib.pagination import paginate_query
 from radar.lib.units import get_units_for_user_with_permissions
-from radar.models.users import DiseaseGroupUser, UnitUser
+from radar.models.units import UnitUser
 from radar.lib.roles import DISEASE_GROUP_ROLE_NAMES, UNIT_ROLE_NAMES
 from radar.lib.user_search import UserQueryBuilder
 from radar.lib.users import get_managed_units, get_managed_disease_groups, send_new_user_email

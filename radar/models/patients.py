@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, UniqueConstraint, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, String, select, join, Date, DateTime, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
@@ -180,50 +180,6 @@ class Patient(db.Model):
     def in_unit(self, unit):
         # TODO
         return False
-
-
-class UnitPatient(db.Model, CreatedModifiedMixin):
-    __tablename__ = 'unit_patients'
-
-    id = Column(Integer, primary_key=True)
-
-    unit_id = Column(Integer, ForeignKey('units.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    unit = relationship('Unit')
-
-    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    patient = relationship('Patient')
-
-    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
-
-    __table_args__ = (
-        UniqueConstraint('unit_id', 'patient_id'),
-    )
-
-    def can_edit(self, current_user):
-        # TODO
-        return True
-
-
-class DiseaseGroupPatient(db.Model, CreatedModifiedMixin):
-    __tablename__ = 'disease_group_patients'
-
-    id = Column(Integer, primary_key=True)
-
-    disease_group_id = Column(Integer, ForeignKey('disease_groups.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    disease_group = relationship('DiseaseGroup')
-
-    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    patient = relationship('Patient')
-
-    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
-
-    __table_args__ = (
-        UniqueConstraint('disease_group_id', 'patient_id'),
-    )
-
-    def can_edit(self, current_user):
-        # TODO
-        return True
 
 
 class Demographics(DataSource, PatientMixin, CreatedModifiedMixin):

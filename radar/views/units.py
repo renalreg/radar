@@ -1,11 +1,9 @@
 from flask_login import current_user
 from flask import render_template, Blueprint, jsonify, request
 
-from radar.models.patients import UnitPatient
 from radar.models.news import Story
 from radar.lib.recruitment_stats import recruitment_by_month
-from radar.models.units import Unit
-from radar.models.users import UnitUser
+from radar.models.units import Unit, UnitPatient, UnitUser
 from radar.lib.roles import UNIT_GOD
 
 

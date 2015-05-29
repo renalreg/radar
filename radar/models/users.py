@@ -1,15 +1,10 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, UniqueConstraint, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from radar.models.base import ModifiedMixin, CreatedMixin
-from radar.lib.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, \
-    DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, UNIT_VIEW_PATIENT_ROLES, \
-    DISEASE_GROUP_VIEW_USER_ROLES, UNIT_VIEW_USER_ROLES, UNIT_EDIT_PATIENT_ROLES, DISEASE_GROUP_ROLE_NAMES, \
-    UNIT_ROLE_NAMES, UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES, \
-    UNIT_RECRUIT_PATIENT_ROLES
+from radar.lib.roles import UNIT_ROLES, DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, UNIT_MANAGED_ROLES
 from radar.lib.database import db
 
 
@@ -180,94 +175,4 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
         if len(current_user.managed_unit_roles) == 0:
             return False
 
-        return True
-
-
-class DiseaseGroupUser(db.Model):
-    __tablename__ = 'disease_group_users'
-
-    id = Column(Integer, primary_key=True)
-    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    role = Column(String, nullable=False)
-
-    user = relationship('User')
-    disease_group = relationship('DiseaseGroup')
-
-    __table_args__ = (
-        UniqueConstraint('disease_group_id', 'user_id'),
-    )
-
-    @hybrid_property
-    def has_view_demographics_permission(self):
-        return self.role in DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
-
-    @hybrid_property
-    def has_view_patient_permission(self):
-        return self.role in DISEASE_GROUP_VIEW_PATIENT_ROLES
-
-    @hybrid_property
-    def has_view_user_permission(self):
-        return self.role in DISEASE_GROUP_VIEW_USER_ROLES
-
-    @property
-    def has_edit_user_membership_permission(self):
-        managed_roles = DISEASE_GROUP_MANAGED_ROLES.get(self.role)
-        return managed_roles is not None and len(managed_roles) > 0
-
-    def can_edit(self, user):
-        # TODO
-        return True
-
-    @property
-    def role_name(self):
-        return DISEASE_GROUP_ROLE_NAMES.get(self.role)
-
-
-class UnitUser(db.Model):
-    __tablename__ = 'unit_users'
-
-    id = Column(Integer, primary_key=True)
-    unit_id = Column(Integer, ForeignKey('units.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    role = Column(String, nullable=False)
-
-    unit = relationship('Unit')
-    user = relationship('User')
-
-    __table_args__ = (
-        UniqueConstraint('unit_id', 'user_id'),
-    )
-
-    @hybrid_property
-    def has_view_demographics_permission(self):
-        return self.role in UNIT_VIEW_DEMOGRAPHICS_ROLES
-
-    @hybrid_property
-    def has_view_patient_permission(self):
-        return self.role in UNIT_VIEW_PATIENT_ROLES
-
-    @hybrid_property
-    def has_edit_patient_permission(self):
-        return self.role in UNIT_EDIT_PATIENT_ROLES
-
-    @hybrid_property
-    def has_view_user_permission(self):
-        return self.role in UNIT_VIEW_USER_ROLES
-
-    @property
-    def has_edit_user_membership_permission(self):
-        managed_roles = UNIT_MANAGED_ROLES.get(self.role)
-        return managed_roles is not None and len(managed_roles) > 0
-
-    @hybrid_property
-    def has_recruit_patient_permission(self):
-        return self.role in UNIT_RECRUIT_PATIENT_ROLES
-
-    @property
-    def role_name(self):
-        return UNIT_ROLE_NAMES.get(self.role)
-
-    def can_edit(self, user):
-        # TODO
         return True
