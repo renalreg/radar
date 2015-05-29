@@ -1,12 +1,20 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
+from sqlalchemy.orm import relationship
+from radar.lib.database import db
 
-from radar.models.common import DataSource, PatientMixin, MetadataMixin, UnitMixin
+from radar.models.common import MetadataMixin
 
 
-class Hospitalisation(DataSource, PatientMixin, MetadataMixin, UnitMixin):
+class Hospitalisation(db.Model, MetadataMixin):
     __tablename__ = 'hospitalisations'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     date_of_admission = Column(DateTime(timezone=True))
     date_of_discharge = Column(DateTime(timezone=True))
@@ -18,7 +26,3 @@ class Hospitalisation(DataSource, PatientMixin, MetadataMixin, UnitMixin):
 
     def can_edit(self, user):
         return self.patient.can_edit(user)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'hospitalisations',
-    }

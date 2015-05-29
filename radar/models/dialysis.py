@@ -6,19 +6,22 @@ from radar.models.common import DataSource, PatientMixin, MetadataMixin, UnitMix
 from radar.lib.concept_maps.dialysis import DialysisConceptMap
 
 
-class Dialysis(DataSource, PatientMixin, MetadataMixin, UnitMixin):
+class Dialysis(db.Model, MetadataMixin):
     __tablename__ = 'dialysis'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
+
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'dialysis',
-    }
 
     def concept_map(self):
         return DialysisConceptMap(self)

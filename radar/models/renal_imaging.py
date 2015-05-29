@@ -1,12 +1,20 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Numeric, Boolean, DateTime
+from sqlalchemy.orm import relationship
 
-from radar.models.common import DataSource, PatientMixin, MetadataMixin
+from radar.lib.database import db
+from radar.models.common import MetadataMixin
 
 
-class RenalImaging(DataSource, PatientMixin, MetadataMixin):
+class RenalImaging(db.Model, MetadataMixin):
     __tablename__ = 'renal_imaging'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     date = Column(DateTime(timezone=True))
 

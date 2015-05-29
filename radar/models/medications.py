@@ -8,10 +8,16 @@ from radar.lib.concept_maps.medications import MedicationConceptMap
 from radar.models.common import DataSource, PatientMixin, MetadataMixin, StringLookupTableMixin, UnitMixin
 
 
-class Medication(DataSource, PatientMixin, MetadataMixin, UnitMixin):
+class Medication(db.Model, MetadataMixin):
     __tablename__ = 'medications'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)

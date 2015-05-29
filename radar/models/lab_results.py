@@ -39,10 +39,16 @@ class LabResultDefinition(db.Model):
     )
 
 
-class LabOrder(DataSource, PatientMixin, UnitMixin, MetadataMixin):
+class LabOrder(db.Model, MetadataMixin):
     __tablename__ = 'lab_orders'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     lab_order_definition_id = Column(Integer, ForeignKey('lab_order_definitions.id'), nullable=False)
     lab_order_definition = relationship('LabOrderDefinition')
@@ -51,10 +57,6 @@ class LabOrder(DataSource, PatientMixin, UnitMixin, MetadataMixin):
     pre_post = Column(String)
 
     lab_results = relationship('LabResult', cascade='all, delete-orphan')
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'lab_orders',
-    }
 
     def concept_map(self):
         return LabOrderConceptMap(self)

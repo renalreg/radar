@@ -3,23 +3,25 @@ from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.common import UnitMixin, PatientMixin, MetadataMixin, DataSource, LookupTableMixin
+from radar.models.common import MetadataMixin, LookupTableMixin
 
 
-class Plasmapheresis(DataSource, PatientMixin, MetadataMixin, UnitMixin):
+class Plasmapheresis(db.Model, MetadataMixin):
     __tablename__ = 'plasmapheresis'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
+    facility = relationship('Facility')
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
     no_of_exchanges = Column(Integer)
     response_id = Column(Integer, ForeignKey('plasmapheresis_responses.id'))
     response = relationship('PlasmapheresisResponse')
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'plasmapheresis',
-    }
 
     def can_view(self, user):
         return self.patient.can_view(user)

@@ -1,12 +1,17 @@
 from sqlalchemy import Column, Integer, ForeignKey, Boolean, String
+from sqlalchemy.orm import relationship
+from radar.lib.database import db
 
-from radar.models.common import DataSource, PatientMixin, MetadataMixin
+from radar.models.common import PatientMixin, MetadataMixin
 
 
-class SaltWastingClinicalFeatures(DataSource, PatientMixin, MetadataMixin):
+class SaltWastingClinicalFeatures(db.Model, MetadataMixin):
     __tablename__ = 'salt_wasting_clinical_features'
 
     id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
 
     normal_pregnancy = Column(Boolean)
     abnormal_pregnancy_text = Column(String)

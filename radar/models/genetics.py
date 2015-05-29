@@ -1,12 +1,20 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Text, DateTime
+from sqlalchemy.orm import relationship
 
-from radar.models.common import DataSource, MetadataMixin, PatientMixin, DiseaseGroupMixin
+from radar.lib.database import db
+from radar.models.common import MetadataMixin
 
 
-class Genetics(DataSource, MetadataMixin, PatientMixin, DiseaseGroupMixin):
+class Genetics(db.Model, MetadataMixin):
     __tablename__ = 'genetics'
 
-    id = Column(Integer, ForeignKey('data_sources.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
+
+    disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
+    disease_group = relationship('DiseaseGroup')
 
     sample_sent_date = Column(DateTime(timezone=True))
     laboratory = Column(String)
@@ -18,7 +26,3 @@ class Genetics(DataSource, MetadataMixin, PatientMixin, DiseaseGroupMixin):
 
     def can_edit(self, user):
         return self.patient.can_edit(user)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'genetics',
-    }
