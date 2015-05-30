@@ -3,10 +3,11 @@ from datetime import date, timedelta
 
 from radar.app import create_app
 from radar.lib.database import db
+from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
 from radar.models.facilities import Facility
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.models.patients import Patient, PatientDemographics
-from radar.models.units import Unit
+from radar.models.units import Unit, UnitPatient
 from radar.models.users import User
 
 FEMALE = 'F'
@@ -203,39 +204,54 @@ def create_fixtures():
     for unit in units:
         db.session.add(unit)
 
+    disease_groups = [
+        DiseaseGroup(name="SRNS"),
+        DiseaseGroup(name="MPGN"),
+        DiseaseGroup(name="Salt Wasting"),
+    ]
+
+    for disease_group in disease_groups:
+        db.session.add(disease_group)
+
     for _ in range(1000):
         patient = Patient()
 
-        unit = random.choice(units)
-        facility = unit.facility
+        for unit in random.sample(units, random.randint(1,3)):
+            facility = unit.facility
+            unit_patient = UnitPatient(unit=unit, patient=patient)
+            db.session.add(unit_patient)
 
-        gender = generate_gender()
-        d = PatientDemographics()
-        d.patient = patient
-        d.facility = facility
-        d.first_name = generate_first_name(gender)
-        d.last_name = generate_last_name()
-        d.gender = gender
-        d.date_of_birth = generate_date_of_birth()
+            gender = generate_gender()
+            d = PatientDemographics()
+            d.patient = patient
+            d.facility = facility
+            d.first_name = generate_first_name(gender)
+            d.last_name = generate_last_name()
+            d.gender = gender
+            d.date_of_birth = generate_date_of_birth()
 
-        # 10% chance of being dead :(
-        if random.random() < 0.1:
-            d.date_of_death = generate_date_of_death()
+            # 10% chance of being dead :(
+            if random.random() < 0.1:
+                d.date_of_death = generate_date_of_death()
 
-        d.home_number = generate_phone_number()
-        d.mobile_number = generate_mobile_number()
-        d.work_number = generate_phone_number()
-        d.email_address = generate_email_address(d.first_name, d.last_name)
+            d.home_number = generate_phone_number()
+            d.mobile_number = generate_mobile_number()
+            d.work_number = generate_phone_number()
+            d.email_address = generate_email_address(d.first_name, d.last_name)
 
-        r = random.random()
+            r = random.random()
 
-        if r > 0.9:
-            d.nhs_no = generate_nhs_no()
-            d.chi_no = generate_chi_no()
-        elif r > 0.8:
-            d.chi_no = generate_chi_no()
-        elif r > 0.1:
-            d.nhs_no = generate_nhs_no()
+            if r > 0.9:
+                d.nhs_no = generate_nhs_no()
+                d.chi_no = generate_chi_no()
+            elif r > 0.8:
+                d.chi_no = generate_chi_no()
+            elif r > 0.1:
+                d.nhs_no = generate_nhs_no()
+
+        for disease_group in random.sample(disease_groups, random.randint(1, 2)):
+            disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
+            db.session.add(disease_group_patient)
 
         db.session.add(patient)
 

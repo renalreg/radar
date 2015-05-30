@@ -33,9 +33,15 @@ def create_admin():
 
 
 @manager.command
-def create_fixtures():
+def load_data():
     fixtures.create_fixtures()
     db.session.commit()
+
+
+@manager.command
+def reload_data():
+    create_tables()
+    load_data()
 
 
 if __name__ == '__main__':
