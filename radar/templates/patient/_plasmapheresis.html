@@ -5,10 +5,10 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            {% if medication.id %}
-                Edit Medication
+            {% if object.id %}
+                Edit Plasmapheresis
             {% else %}
-                New Medication
+                New Plasmapheresis
             {% endif %}
         </h3>
     </div>
@@ -25,17 +25,12 @@
 
             {{ render_field(form.from_date) }}
             {{ render_field(form.to_date) }}
-            {{ render_field(form.name) }}
-            {{ render_field(form.dose_quantity) }}
-            {{ render_field(form.dose_unit_id) }}
-            {{ render_field(form.frequency_id) }}
-            {{ render_field(form.route_id) }}
+            {{ render_field(form.no_of_exchanges) }}
+            {{ render_field(form.response_id) }}
 
-            {% if not read_only %}
-                {% call render_button() %}
-                    <button type="submit" class="btn btn-success">Save</button>
-                {% endcall %}
-            {% endif %}
+            {% call render_button() %}
+                <button type="submit" class="btn btn-success">Save</button>
+            {% endcall %}
         </form>
     </div>
 </div>

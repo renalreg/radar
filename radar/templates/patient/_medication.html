@@ -1,0 +1,39 @@
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% if object.id %}
+                Edit Medication
+            {% else %}
+                New Medication
+            {% endif %}
+        </h3>
+    </div>
+
+    <div class="panel-body">
+        {{ render_form_errors(form) }}
+
+        <form method="POST" class="form-horizontal">
+            {{ form.hidden_tag() }}
+
+            {{ render_field(form.facility_id) }}
+
+            <hr />
+
+            {{ render_field(form.from_date) }}
+            {{ render_field(form.to_date) }}
+            {{ render_field(form.name) }}
+            {{ render_field(form.dose_quantity) }}
+            {{ render_field(form.dose_unit_id) }}
+            {{ render_field(form.frequency_id) }}
+            {{ render_field(form.route_id) }}
+
+            {% call render_button() %}
+                <button type="submit" class="btn btn-success">Save</button>
+            {% endcall %}
+        </form>
+    </div>
+</div>

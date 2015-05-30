@@ -9,25 +9,10 @@ from radar.models.patients import Patient
 from radar.views.patients import get_patient_data
 
 
-class PatientDataListAddView(View):
-    methods = ['GET', 'POST']
+class PatientDataListView(View):
+    methods = ['GET']
 
-    def get_obj_list(self, patient):
-        raise NotImplementedError
-
-    def new_obj(self, patient):
-        raise NotImplementedError
-
-    def form_to_obj(self, form, obj):
-        raise NotImplementedError
-
-    def get_form(self, obj):
-        raise NotImplementedError
-
-    def success_endpoint(self):
-        raise NotImplementedError
-
-    def get_context(self, obj_list, obj):
+    def get_objects(self, patient):
         raise NotImplementedError
 
     def get_template_name(self):
@@ -39,10 +24,45 @@ class PatientDataListAddView(View):
         if not patient.can_view(current_user):
             abort(403)
 
-        obj_list = self.get_obj_list(patient)
+        objects = self.get_objects(patient)
+
+        context = dict(
+            patient=patient,
+            patient_data=get_patient_data(patient),
+            objects=objects,
+        )
+
+        return render_template(self.get_template_name(), **context)
+
+
+class PatientDataListAddView(View):
+    methods = ['GET', 'POST']
+
+    def get_objects(self, patient):
+        raise NotImplementedError
+
+    def new_object(self, patient):
+        raise NotImplementedError
+
+    def get_form(self, obj):
+        raise NotImplementedError
+
+    def success_endpoint(self):
+        raise NotImplementedError
+
+    def get_template_name(self):
+        raise NotImplementedError
+
+    def dispatch_request(self, patient_id):
+        patient = Patient.query.get_or_404(patient_id)
+
+        if not patient.can_view(current_user):
+            abort(403)
+
+        objects = self.get_objects(patient)
 
         if patient.can_edit(current_user):
-            obj = self.new_obj(patient)
+            obj = self.new_object(patient)
             form = self.get_form(obj)
         else:
             obj = None
@@ -64,31 +84,20 @@ class PatientDataListAddView(View):
             patient=patient,
             patient_data=get_patient_data(patient),
             form=form,
+            objects=objects,
+            object=obj
         )
-        context.update(self.get_context(obj_list, obj))
 
         return render_template(self.get_template_name(), **context)
 
 
-class PatientDataListEditView(View):
+class PatientDataListDetailView(View):
     methods = ['GET', 'POST']
 
-    def get_obj(self, patient, **kwargs):
+    def get_object(self, patient, **kwargs):
         raise NotImplementedError
 
-    def get_obj_list(self, patient):
-        raise NotImplementedError
-
-    def form_to_obj(self, form, obj):
-        raise NotImplementedError
-
-    def get_form(self, obj):
-        raise NotImplementedError
-
-    def success_endpoint(self):
-        raise NotImplementedError
-
-    def get_context(self, obj_list, obj):
+    def get_objects(self, patient):
         raise NotImplementedError
 
     def get_template_name(self):
@@ -100,17 +109,55 @@ class PatientDataListEditView(View):
         if not patient.can_view(current_user):
             abort(403)
 
-        obj_list = self.get_obj_list(patient)
+        objects = self.get_objects(patient)
 
-        obj = self.get_obj(patient, **kwargs)
+        obj = self.get_object(patient, **kwargs)
+
+        if not obj.can_view(current_user):
+            abort(403)
+
+        context = dict(
+            patient=patient,
+            patient_data=get_patient_data(patient),
+            objects=objects,
+            object=obj,
+        )
+
+        return render_template(self.get_template_name(), **context)
+
+
+class PatientDataListEditView(View):
+    methods = ['GET', 'POST']
+
+    def get_object(self, patient, **kwargs):
+        raise NotImplementedError
+
+    def get_objects(self, patient):
+        raise NotImplementedError
+
+    def get_form(self, obj):
+        raise NotImplementedError
+
+    def success_endpoint(self):
+        raise NotImplementedError
+
+    def get_template_name(self):
+        raise NotImplementedError
+
+    def dispatch_request(self, patient_id, **kwargs):
+        patient = Patient.query.get_or_404(patient_id)
+
+        if not patient.can_view(current_user):
+            abort(403)
+
+        objects = self.get_objects(patient)
+
+        obj = self.get_object(patient, **kwargs)
 
         if not obj.can_edit(current_user):
             abort(403)
 
         form = self.get_form(obj)
-
-        if form.validate_on_submit():
-            self.form_to_obj(form, obj)
 
         if request.method == 'POST':
             if obj is None:
@@ -128,8 +175,9 @@ class PatientDataListEditView(View):
             patient=patient,
             patient_data=get_patient_data(patient),
             form=form,
+            objects=objects,
+            object=obj,
         )
-        context.update(self.get_context(obj_list, obj))
 
         return render_template(self.get_template_name(), **context)
 
@@ -137,7 +185,7 @@ class PatientDataListEditView(View):
 class PatientDataDeleteView(View):
     methods = ['POST']
 
-    def get_obj(self, patient_id, **kwargs):
+    def get_object(self, patient_id, **kwargs):
         raise NotImplementedError
 
     def success_endpoint(self):
@@ -146,7 +194,7 @@ class PatientDataDeleteView(View):
     def dispatch_request(self, patient_id, **kwargs):
         patient = Patient.query.get_or_404(patient_id)
 
-        obj = self.get_obj(patient, **kwargs)
+        obj = self.get_object(patient, **kwargs)
 
         form = DeleteForm()
 

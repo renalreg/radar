@@ -1,0 +1,53 @@
+{% if objects %}
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Name</th>
+                <th>Dose Quantity</th>
+                <th>Dose Unit</th>
+                <th>Frequency</th>
+                <th>Route</th>
+                <th>Data Source</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for x in objects %}
+                <tr>
+                    <td>
+                        {% if x.can_edit(current_user) %}
+                            <a href="{{ url_for('medications.edit_medication', patient_id=patient.id, medication_id=x.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ x.from_date | date_format | missing }}</td>
+                    <td>{{ x.to_date | date_format | missing }}</td>
+                    <td>{{ x.name | missing }}</td>
+                    <td>{{ x.dose_quantity | missing }}</td>
+                    <td>{{ x.dose_unit.label | missing }}</td>
+                    <td>{{ x.frequency.label | missing }}</td>
+                    <td>{{ x.route.label | missing }}</td>
+                    <td>{{ x.facility.name }}</td>
+
+                    <td align="right">
+                        {% if x.can_edit(current_user) %}
+                            <form method="POST" action="{{ url_for('medications.delete_medication', patient_id=patient.id, medication_id=x.id) }}" class="form-inline confirm-delete">
+                                {{ delete_form.hidden_tag() }}
+
+                                <button type="submit" class="btn btn-link btn-xs">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No medications.</p>
+{% endif %}

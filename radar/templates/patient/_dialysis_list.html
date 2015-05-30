@@ -1,0 +1,45 @@
+{% if objects %}
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Dialysis Type</th>
+                <th>Data Source</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for x in objects %}
+                <tr>
+                    <td>
+                        {% if x.can_edit(current_user) %}
+                            <a href="{{ url_for('dialysis.edit_dialysis', patient_id=patient.id, dialysis_id=x.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ x.from_date | date_format }}</td>
+                    <td>{{ x.to_date | date_format | missing }}</td>
+                    <td>{{ x.dialysis_type.label }}</td>
+                    <td>{{ x.facility.name }}</td>
+
+                    <td align="right">
+                        {% if x.can_edit(current_user) %}
+                            <form method="POST" action="{{ url_for('dialysis.delete_dialysis', patient_id=patient.id, dialysis_id=x.id) }}" class="form-inline confirm-delete">
+                                {{ delete_form.hidden_tag() }}
+
+                                <button type="submit" class="btn btn-link btn-xs">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No dialysis records.</p>
+{% endif %}

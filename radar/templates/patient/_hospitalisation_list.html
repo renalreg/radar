@@ -1,0 +1,49 @@
+{% if objects %}
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date of Admission</th>
+                <th>Date of Discharge</th>
+                <th>Reason for Admission</th>
+                <th>Source</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for x in objects %}
+                <tr>
+                    <td>
+                        <div class="btn-group">
+                            {% if x.can_view(current_user) %}
+                                <a href="{{ url_for('hospitalisations.view_hospitalisation', patient_id=patient.id, hospitalisation_id=x.id) }}" class="btn btn-default btn-xs">View</a>
+                            {% endif %}
+
+                            {% if x.can_edit(current_user) %}
+                                <a href="{{ url_for('hospitalisations.edit_hospitalisation', patient_id=patient.id, hospitalisation_id=x.id) }}" class="btn btn-default btn-xs btn-primary">Edit</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ x.date_of_admission | date_format | missing }}</td>
+                    <td>{{ x.date_of_discharge | date_format | missing }}</td>
+                    <td>{{ x.reason_for_admission | missing }}</td>
+                    <td>{{ x.facility.name }}</td>
+                    <td align="right">
+                        {% if x.can_edit(current_user) %}
+                            <form method="POST" action="{{ url_for('hospitalisations.delete_hospitalisation', patient_id=patient.id, hospitalisation_id=x.id) }}" class="form-inline confirm-delete">
+                                {{ delete_form.hidden_tag() }}
+
+                                <button type="submit" class="btn btn-link btn-xs">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hospitalisations.</p>
+{% endif %}

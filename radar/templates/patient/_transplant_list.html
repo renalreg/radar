@@ -1,0 +1,31 @@
+{% if objects %}
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Reoccurred</th>
+                <th>Date Reoccurred</th>
+                <th>Date Failure</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for object in objects %}
+                <tr>
+                    <td></td>
+                    <td>{{ transplant.transplant_date | date_format }}</td>
+                    <td>{{ transplant.transplant_type.name }}</td>
+                    <td>{{ transplant.reoccurred | yn | missing }}</td>
+                    <td>{{ transplant.dated_reoccurred }}</td>
+                    <td>{{ transplant.date_failed }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No transplants.</p>
+{% endif %}

@@ -3,10 +3,12 @@ from datetime import date, timedelta
 
 from radar.app import create_app
 from radar.lib.database import db
+from radar.models.dialysis import DialysisType
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
 from radar.models.facilities import Facility
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.models.patients import Patient, PatientDemographics
+from radar.models.transplants import TransplantType
 from radar.models.units import Unit, UnitPatient
 from radar.models.users import User
 
@@ -215,10 +217,12 @@ def create_fixtures():
 
     for _ in range(1000):
         patient = Patient()
+        patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
         for unit in random.sample(units, random.randint(1,3)):
             facility = unit.facility
             unit_patient = UnitPatient(unit=unit, patient=patient)
+            unit_patient.created_date = random_date(patient.recruited_date, date.today())
             db.session.add(unit_patient)
 
             gender = generate_gender()
@@ -251,6 +255,7 @@ def create_fixtures():
 
         for disease_group in random.sample(disease_groups, random.randint(1, 2)):
             disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
+            disease_group_patient.created_date = random_date(patient.recruited_date, date.today())
             db.session.add(disease_group_patient)
 
         db.session.add(patient)
@@ -267,6 +272,13 @@ def create_fixtures():
 
     db.session.add(MedicationRoute(id='Oral', label='Oral'))
     db.session.add(MedicationRoute(id='Rectal', label='Rectal'))
+
+    db.session.add(TransplantType(label='Foo'))
+    db.session.add(TransplantType(label='Bar'))
+    db.session.add(TransplantType(label='Baz'))
+
+    db.session.add(DialysisType(label='HD'))
+    db.session.add(DialysisType(label='PD'))
 
 
 if __name__ == '__main__':

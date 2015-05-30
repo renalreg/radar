@@ -2,7 +2,8 @@ from flask import Blueprint
 
 from radar.lib.forms.medications import MedicationForm
 from radar.models.medications import Medication
-from radar.views.patient_data import PatientDataDeleteView, PatientDataListAddView, PatientDataListEditView
+from radar.views.patient_data import PatientDataDeleteView, PatientDataListAddView, PatientDataListEditView, \
+    PatientDataListDetailView, PatientDataListView
 
 bp = Blueprint('medications', __name__)
 
@@ -23,11 +24,19 @@ def get_medication(patient, medication_id):
     return medication
 
 
-class MedicationListAddView(PatientDataListAddView):
-    def get_obj_list(self, patient):
+class MedicationListView(PatientDataListView):
+    def get_objects(self, patient):
         return get_medications(patient)
 
-    def new_obj(self, patient):
+    def get_template_name(self):
+        return 'patient/medications.html'
+
+
+class MedicationListAddView(PatientDataListAddView):
+    def get_objects(self, patient):
+        return get_medications(patient)
+
+    def new_object(self, patient):
         return Medication(patient=patient)
 
     def get_form(self, obj):
@@ -36,21 +45,15 @@ class MedicationListAddView(PatientDataListAddView):
     def success_endpoint(self):
         return 'medications.view_medication_list'
 
-    def get_context(self, obj_list, obj):
-        return dict(
-            medications=obj_list,
-            medication=obj,
-        )
-
     def get_template_name(self):
         return 'patient/medications.html'
 
 
 class MedicationListEditView(PatientDataListEditView):
-    def get_obj(self, patient, medication_id):
+    def get_object(self, patient, medication_id):
         return get_medication(patient, medication_id)
 
-    def get_obj_list(self, patient):
+    def get_objects(self, patient):
         return get_medications(patient)
 
     def get_form(self, obj):
@@ -59,25 +62,19 @@ class MedicationListEditView(PatientDataListEditView):
     def success_endpoint(self):
         return 'medications.view_medication_list'
 
-    def get_context(self, obj_list, obj):
-        return dict(
-            medications=obj_list,
-            medication=obj,
-        )
-
     def get_template_name(self):
         return 'patient/medications.html'
 
 
 class MedicationDeleteView(PatientDataDeleteView):
-    def get_obj(self, patient, medication_id):
+    def get_object(self, patient, medication_id):
         return get_medication(patient, medication_id)
 
     def success_endpoint(self):
         return 'medications.view_medication_list'
 
 
-bp.add_url_rule('/', view_func=MedicationListAddView.as_view('view_medication_list'))
-bp.add_url_rule('/', view_func=MedicationListAddView.as_view('add_medication'))
+bp.add_url_rule('/', view_func=MedicationListView.as_view('view_medication_list'))
+bp.add_url_rule('/add/', view_func=MedicationListAddView.as_view('add_medication'))
 bp.add_url_rule('/<int:medication_id>/edit/', view_func=MedicationListEditView.as_view('edit_medication'))
 bp.add_url_rule('/<int:medication_id>/delete/', view_func=MedicationDeleteView.as_view('delete_medication'))

@@ -1,66 +1,93 @@
-from flask import Blueprint, redirect, render_template, url_for, abort, request
-from flask_login import current_user
+from flask import Blueprint
 
-from radar.lib.database import db
-from radar.models.patients import Patient
 from radar.lib.forms.plasmapheresis import PlasmapheresisForm
 from radar.models.plasmapheresis import Plasmapheresis
-from radar.views.patients import get_patient_data
+from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
+    PatientDataListDetailView, PatientDataListView
 
 
 bp = Blueprint('plasmapheresis', __name__)
 
 
-@bp.route('/', endpoint='view_plasmapheresis_list')
-@bp.route('/', endpoint='add_plasmapheresis', methods=['GET', 'POST'])
-@bp.route('/<int:record_id>/', endpoint='view_plasmapheresis')
-@bp.route('/<int:record_id>/', endpoint='edit_plasmapheresis', methods=['GET', 'POST'])
-def view_plasmapheresis_list(patient_id, record_id=None):
-    patient = Patient.query.get_or_404(patient_id)
+def get_plasmapheresis_list(patient):
+    plasmapheresis_list = Plasmapheresis.query\
+        .filter(Plasmapheresis.patient == patient)\
+        .order_by(Plasmapheresis.from_date.desc())\
+        .all()
+    return plasmapheresis_list
 
-    if not patient.can_view(current_user):
-        abort(403)
 
-    records = Plasmapheresis.query.all()
+def get_plasmapheresis(patient, plasmapheresis_id):
+    plasmapheresis = Plasmapheresis.query\
+        .filter(Plasmapheresis.patient == patient)\
+        .filter(Plasmapheresis.id == plasmapheresis_id)\
+        .first_or_404()
+    return plasmapheresis
 
-    if record_id is None:
-        record = Plasmapheresis(patient=patient)
-    else:
-        record = Plasmapheresis.query\
-            .filter(Plasmapheresis.patient == patient)\
-            .filter(Plasmapheresis.id == record_id)\
-            .first_or_404()
 
-    if not record.can_view(current_user):
-        abort(403)
+class PlasmapheresisListView(PatientDataListView):
+    def get_objects(self, patient):
+        return get_plasmapheresis_list(patient)
 
-    read_only = not record.can_edit(current_user)
+    def get_template_name(self):
+        return 'patient/plasmapheresis.html'
 
-    form = PlasmapheresisForm(obj=record)
 
-    if request.method == 'POST':
-        if read_only:
-            abort(403)
+class PlasmapheresisListAddView(PatientDataListAddView):
+    def get_objects(self, patient):
+        return get_plasmapheresis_list(patient)
 
-        if form.validate():
-            record.unit = form.unit_id.obj
-            record.from_date = form.from_date.data
-            record.to_date = form.to_date.data
-            record.no_of_exchanges = form.no_of_exchanges.data
-            record.response = form.response_id.obj
+    def new_object(self, patient):
+        return Plasmapheresis(patient=patient)
 
-            db.session.add(record)
-            db.session.commit()
+    def get_form(self, obj):
+        return PlasmapheresisForm(obj=obj)
 
-            return redirect(url_for('plasmapheresis.view_plasmapheresis_list', patient_id=patient_id))
+    def success_endpoint(self):
+        return 'plasmapheresis.view_plasmapheresis_list'
 
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
-        records=records,
-        record=record,
-        form=form,
-        read_only=read_only,
-    )
+    def get_template_name(self):
+        return 'patient/plasmapheresis.html'
 
-    return render_template('patient/plasmapheresis.html', **context)
+
+class PlasmapheresisListDetailView(PatientDataListDetailView):
+    def get_object(self, patient, plasmapheresis_id):
+        return get_plasmapheresis(patient, plasmapheresis_id)
+
+    def get_objects(self, patient):
+        return get_plasmapheresis_list(patient)
+
+    def get_template_name(self):
+        return 'patient/plasmapheresis.html'
+
+
+class PlasmapheresisListEditView(PatientDataListEditView):
+    def get_object(self, patient, plasmapheresis_id):
+        return get_plasmapheresis(patient, plasmapheresis_id)
+
+    def get_objects(self, patient):
+        return get_plasmapheresis_list(patient)
+
+    def get_form(self, obj):
+        return PlasmapheresisForm(obj=obj)
+
+    def success_endpoint(self):
+        return 'plasmapheresis.view_plasmapheresis_list'
+
+    def get_template_name(self):
+        return 'patient/plasmapheresis.html'
+
+
+class PlasmapheresisDeleteView(PatientDataDeleteView):
+    def get_object(self, patient, plasmapheresis_id):
+        return get_plasmapheresis(patient, plasmapheresis_id)
+
+    def success_endpoint(self):
+        return 'plasmapheresis.view_plasmapheresis_list'
+
+
+bp.add_url_rule('/', view_func=PlasmapheresisListView.as_view('view_plasmapheresis_list'))
+bp.add_url_rule('/add/', view_func=PlasmapheresisListAddView.as_view('add_plasmapheresis'))
+bp.add_url_rule('/<int:plasmapheresis_id>/', view_func=PlasmapheresisListDetailView.as_view('view_plasmapheresis'))
+bp.add_url_rule('/<int:plasmapheresis_id>/edit/', view_func=PlasmapheresisListEditView.as_view('edit_plasmapheresis'))
+bp.add_url_rule('/<int:plasmapheresis_id>/delete/', view_func=PlasmapheresisDeleteView.as_view('delete_plasmapheresis'))

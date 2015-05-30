@@ -1,76 +1,93 @@
-from flask import Blueprint, abort, render_template, request, url_for, redirect
-from flask_login import current_user
+from flask import Blueprint
 
-from radar.lib.database import db
 from radar.lib.forms.dialysis import DialysisForm
 from radar.models.dialysis import Dialysis
-from radar.models.patients import Patient
-from radar.views.patients import get_patient_data
+from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
+    PatientDataListDetailView, PatientDataListView
 
 
 bp = Blueprint('dialysis', __name__)
 
 
-@bp.route('/', endpoint='view_dialysis_list')
-@bp.route('/', endpoint='add_dialysis', methods=['GET', 'POST'])
-@bp.route('/<int:dialysis_id>/', endpoint='view_dialysis')
-@bp.route('/<int:dialysis_id>/', endpoint='edit_dialysis', methods=['GET', 'POST'])
-def view_dialysis_list(patient_id, dialysis_id=None):
-    patient = Patient.query.get_or_404(patient_id)
-
-    if not patient.can_view(current_user):
-        abort(403)
-
-    dialysis_list = Dialysis.query.all()
-
-    if dialysis_id is None:
-        dialysis = Dialysis(patient=patient)
-    else:
-        dialysis = Dialysis.query\
-            .filter(Dialysis.patient == patient)\
-            .filter(Dialysis.id == dialysis_id)\
-            .first_or_404()
-
-    if not dialysis.can_view(current_user):
-        abort(403)
-
-    read_only = not dialysis.can_edit(current_user)
-
-    form = DialysisForm(obj=dialysis)
-
-    if request.method == 'POST':
-        if read_only:
-            abort(403)
-
-        if form.validate():
-            dialysis.unit = form.unit_id.obj
-            dialysis.from_date = form.from_date.data
-            dialysis.to_date = form.to_date.data
-            dialysis.dialysis_type = form.dialysis_type_id.obj
-
-            concept_map = dialysis.concept_map()
-            valid, errors = concept_map.validate()
-
-            if valid:
-                db.session.add(dialysis)
-                db.session.commit()
-                return redirect(url_for('dialysis.view_dialysis_list', patient_id=patient_id))
-            else:
-                form.add_errors(errors)
-
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
-        dialysis_list=dialysis_list,
-        dialysis=dialysis,
-        form=form,
-        read_only=read_only,
-    )
-
-    return render_template('patient/dialysis.html', **context)
+def get_dialysis_list(patient):
+    dialysis_list = Dialysis.query\
+        .filter(Dialysis.patient == patient)\
+        .order_by(Dialysis.from_date.desc())\
+        .all()
+    return dialysis_list
 
 
-@bp.route('/<int:dialysis_id>/delete/')
-def delete_dialysis(patient_id, dialysis_id):
-    # TODO
-    pass
+def get_dialysis(patient, dialysis_id):
+    dialysis = Dialysis.query\
+        .filter(Dialysis.patient == patient)\
+        .filter(Dialysis.id == dialysis_id)\
+        .first_or_404()
+    return dialysis
+
+
+class DialysisListView(PatientDataListView):
+    def get_objects(self, patient):
+        return get_dialysis_list(patient)
+
+    def get_template_name(self):
+        return 'patient/dialysis.html'
+
+
+class DialysisListAddView(PatientDataListAddView):
+    def get_objects(self, patient):
+        return get_dialysis_list(patient)
+
+    def new_object(self, patient):
+        return Dialysis(patient=patient)
+
+    def get_form(self, obj):
+        return DialysisForm(obj=obj)
+
+    def success_endpoint(self):
+        return 'dialysis.view_dialysis_list'
+
+    def get_template_name(self):
+        return 'patient/dialysis.html'
+
+
+class DialysisListDetailView(PatientDataListDetailView):
+    def get_object(self, patient, dialysis_id):
+        return get_dialysis(patient, dialysis_id)
+
+    def get_objects(self, patient):
+        return get_dialysis_list(patient)
+
+    def get_template_name(self):
+        return 'patient/dialysis.html'
+
+
+class DialysisListEditView(PatientDataListEditView):
+    def get_object(self, patient, dialysis_id):
+        return get_dialysis(patient, dialysis_id)
+
+    def get_objects(self, patient):
+        return get_dialysis_list(patient)
+
+    def get_form(self, obj):
+        return DialysisForm(obj=obj)
+
+    def success_endpoint(self):
+        return 'dialysis.view_dialysis_list'
+
+    def get_template_name(self):
+        return 'patient/dialysis.html'
+
+
+class DialysisDeleteView(PatientDataDeleteView):
+    def get_object(self, patient, dialysis_id):
+        return get_dialysis(patient, dialysis_id)
+
+    def success_endpoint(self):
+        return 'dialysis.view_dialysis_list'
+
+
+bp.add_url_rule('/', view_func=DialysisListView.as_view('view_dialysis_list'))
+bp.add_url_rule('/add/', view_func=DialysisListAddView.as_view('add_dialysis'))
+bp.add_url_rule('/<int:dialysis_id>/', view_func=DialysisListDetailView.as_view('view_dialysis'))
+bp.add_url_rule('/<int:dialysis_id>/edit/', view_func=DialysisListEditView.as_view('edit_dialysis'))
+bp.add_url_rule('/<int:dialysis_id>/delete/', view_func=DialysisDeleteView.as_view('delete_dialysis'))

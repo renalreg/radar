@@ -1,72 +1,16 @@
 {% extends 'patient/base.html' %}
 
 {% set current_patient_page = 'transplants' %}
-
-{% if read_only %}
-    {% from 'macros/forms.html' import render_horizontal_field_read_only as render_field %}
-{% else %}
-    {% from 'macros/forms.html' import render_horizontal_field as render_field %}
-{% endif %}
-
-{% from 'macros/forms.html' import render_form_errors %}
-{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% set title = "Transplants" %}
 
 {% block content %}
-    <h1>Transplants</h1>
+    <h1 class="page-header">Transplants</h1>
 
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Reoccurred</th>
-                <th>Date Reoccurred</th>
-                <th>Date Failure</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for transplant in transplants %}
-                <tr>
-                    <td></td>
-                    <td>{{ transplant.transplant_date | date_format }}</td>
-                    <td>{{ transplant.transplant_type.name }}</td>
-                    <td>{{ transplant.reoccurred | yn | missing }}</td>
-                    <td>{{ transplant.dated_reoccurred }}</td>
-                    <td>{{ transplant.date_failed }}</td>
-                    <td></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% if transplant.id %}
-        <h2>Edit Transplant</h2>
-    {% else %}
-        <h2>New Transplant</h2>
+    {% if object %}
+        {% include "patient/_transplant.html" %}
     {% endif %}
 
-    {{ render_form_errors(form) }}
+    <p><a href="{{ url_for('transplants.add_transplant', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 
-    <form method="POST" class="form-horizontal">
-        {{ form.hidden_tag() }}
-
-        {{ render_field(form.unit_id) }}
-
-        <hr />
-
-        {{ render_field(form.transplant_date) }}
-        {{ render_field(form.transplant_type_id) }}
-        {{ render_field(form.reoccurred) }}
-        {{ render_field(form.date_reoccurred) }}
-        {{ render_field(form.date_failed) }}
-
-        {% if not read_only %}
-            {% call render_button() %}
-                <button type="submit" class="btn btn-success">Save</button>
-            {% endcall %}
-        {% endif %}
-    </form>
+    {% include "patient/_transplant_list.html" %}
 {% endblock %}

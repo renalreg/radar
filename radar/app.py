@@ -26,7 +26,7 @@ from radar.views.news import bp as news_bp
 from radar.views.auth import bp as auth_bp
 from radar.views.genetics import bp as genetics_bp
 from radar.views.dialysis import bp as dialysis_bp
-from radar.views.hospitalisation import bp as hospitalisation_bp
+from radar.views.hospitalisations import bp as hospitalisations_bp
 from radar.views.pathology import bp as pathology_bp
 from radar.views.transplants import bp as transplants_bp
 from radar.views.salt_wasting import bp as salt_wasting_bp
@@ -61,7 +61,7 @@ def create_app(config_filename):
         (diagnosis_bp, '/diagnosis'),
         (dialysis_bp, '/dialysis'),
         (genetics_bp, '/genetics'),
-        (hospitalisation_bp, '/hospitalisation'),
+        (hospitalisations_bp, '/hospitalisations'),
         (lab_results_bp, '/lab-results'),
         (medications_bp, '/medications'),
         (pathology_bp, '/pathology'),

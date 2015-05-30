@@ -18,3 +18,10 @@ class PlasmapheresisForm(FacilityFormMixin, Form):
     to_date = RadarDateField(validators=[Optional()])
     no_of_exchanges = IntegerField('No. of Exchanges', validators=[Optional()])
     response_id = RadarSelectObjectField('Response', validators=[Optional()], coerce=optional_int)
+
+    def populate_obj(self, obj):
+        obj.facility = self.facility_id.obj
+        obj.from_date = self.from_date.data
+        obj.to_date = self.to_date.data
+        obj.no_of_exchanges = self.no_of_exchanges.data
+        obj.response = self.response_id.obj

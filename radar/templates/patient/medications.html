@@ -1,71 +1,16 @@
 {% extends 'patient/base.html' %}
 
 {% set current_patient_page = 'medications' %}
+{% set title = "Medications" %}
 
 {% block content %}
     <h1 class="page-header">Medications</h1>
 
+    {% if object %}
+        {% include "patient/_medication.html" %}
+    {% endif %}
+
     <p><a href="{{ url_for('medications.add_medication', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
 
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th></th>
-                <th>From Date</th>
-                <th>To Date</th>
-                <th>Name</th>
-                <th>Dose Quantity</th>
-                <th>Dose Unit</th>
-                <th>Frequency</th>
-                <th>Route</th>
-                <th>Data Source</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% if medications %}
-                {% for medication in medications %}
-                    <tr>
-                        <td>
-                            {% if medication.can_edit(current_user) %}
-                                <a href="{{ url_for('medications.edit_medication', patient_id=patient.id, medication_id=medication.id) }}" class="btn btn-primary btn-xs">Edit</a>
-                            {% elif medication.can_view(current_user) %}
-                                <a href="{{ url_for('medications.view_medication', patient_id=patient.id, medication_id=medication.id) }}" class="btn btn-primary btn-xs">View</a>
-                            {% endif %}
-                        </td>
-
-                        <td>{{ medication.from_date | date_format | missing }}</td>
-                        <td>{{ medication.to_date | date_format | missing }}</td>
-                        <td>{{ medication.name | missing }}</td>
-                        <td>{{ medication.dose_quantity | missing }}</td>
-                        <td>{{ medication.dose_unit.label | missing }}</td>
-                        <td>{{ medication.frequency.label | missing }}</td>
-                        <td>{{ medication.route.label | missing }}</td>
-                        <td>{{ medication.facility.name }}</td>
-
-                        <td align="right">
-                            {% if medication.delete_url %}
-                                <form method="POST" action="{{ url_for('medications.delete_medication', patient_id=patient.id, medication_id=medication.id) }}" class="form-inline confirm-delete">
-                                    {{ delete_form.hidden_tag() }}
-
-                                    <button type="submit" class="btn btn-link btn-xs">
-                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                                    </button>
-                                </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="10">No medications.</td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
-
-    {% if medication %}
-        {% include "patient/_edit_medication.html" %}
-    {% endif %}
+    {% include "patient/_medication_list.html" %}
 {% endblock %}

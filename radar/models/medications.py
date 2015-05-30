@@ -41,14 +41,6 @@ class Medication(db.Model, MetadataMixin):
     def can_edit(self, user):
         return self.patient.can_edit(user)
 
-    def validate(self):
-        errors = defaultdict(list)
-
-        if self.to_date is not None and self.to_date < self.from_date:
-            errors['to_date'].append('Must be on or after from date.')
-
-        return errors
-
 
 class MedicationFrequency(StringLookupTable):
     __tablename__ = 'medication_frequencies'
