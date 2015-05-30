@@ -62,7 +62,7 @@ def view_hospitalisation(patient_id, hospitalisation_id=None):
             abort(403)
 
         if form.validate():
-            hospitalisation.unit = form.unit_id.obj
+            hospitalisation.facility = form.facility_id.obj
             hospitalisation.date_of_admission = form.date_of_admission.data
             hospitalisation.date_of_discharge = form.date_of_discharge.data
             hospitalisation.reason_for_admission = form.reason_for_admission.data

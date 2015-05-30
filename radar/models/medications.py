@@ -1,10 +1,10 @@
-from flask import url_for
+from collections import defaultdict
+
 from sqlalchemy import Column, Date, String, ForeignKey, Numeric
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.lib.concept_maps.medications import MedicationConceptMap
 from radar.models.common import MetadataMixin, StringLookupTable
 
 
@@ -41,17 +41,13 @@ class Medication(db.Model, MetadataMixin):
     def can_edit(self, user):
         return self.patient.can_edit(user)
 
-    def concept_map(self):
-        return MedicationConceptMap(self)
+    def validate(self):
+        errors = defaultdict(list)
 
-    def view_url(self):
-        return url_for('medications.view_medication', patient_id=self.patient.id, medication_id=self.id)
+        if self.to_date is not None and self.to_date < self.from_date:
+            errors['to_date'].append('Must be on or after from date.')
 
-    def edit_url(self):
-        return url_for('medications.edit_medication', patient_id=self.patient.id, medication_id=self.id)
-
-    def delete_url(self):
-        return url_for('medications.delete_medication', patient_id=self.patient.id, medication_id=self.id)
+        return errors
 
 
 class MedicationFrequency(StringLookupTable):
