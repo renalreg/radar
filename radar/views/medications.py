@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
 
 from radar.lib.forms.medications import MedicationForm
 from radar.lib.validation.core import FormErrorHandler
@@ -16,7 +17,7 @@ class MedicationDetailService(DetailService):
         medication = Medication.query\
             .filter(Medication.id == medication_id)\
             .filter(Medication.patient == patient)\
-            .first_or_404()
+            .first()
         return medication
 
     def new_object(self, patient):
@@ -57,8 +58,8 @@ class MedicationListAddView(PatientDataListAddView):
             MedicationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'medications.view_medication_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('medications.view_medication_lis', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/medications.html'
@@ -84,8 +85,8 @@ class MedicationDeleteView(PatientDataDeleteView):
             MedicationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'medications.view_medication_list'
+    def deleted(self, patient):
+        return redirect(url_for('medications.view_medication_list', patient_id=patient.id))
 
 
 bp.add_url_rule('/', view_func=MedicationListView.as_view('view_medication_list'))

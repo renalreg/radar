@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
 from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.dialysis import validate_dialysis
 
@@ -26,7 +27,7 @@ class DialysisDetailService(DetailService):
         dialysis = Dialysis.query\
             .filter(Dialysis.patient == patient)\
             .filter(Dialysis.id == dialysis_id)\
-            .first_or_404()
+            .first()
         return dialysis
 
     def new_object(self, patient):
@@ -58,8 +59,8 @@ class DialysisListAddView(PatientDataListAddView):
             DialysisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'dialysis.view_dialysis_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('dialysis.view_dialysis_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/dialysis.html'
@@ -96,8 +97,8 @@ class DialysisDeleteView(PatientDataDeleteView):
             DialysisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'dialysis.view_dialysis_list'
+    def deleted(self, patient):
+        return redirect(url_for('dialysis.view_dialysis_list', patient_id=patient.id))
 
 
 bp.add_url_rule('/', view_func=DialysisListView.as_view('view_dialysis_list'))

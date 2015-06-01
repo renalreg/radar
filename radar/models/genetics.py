@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Text, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -16,6 +16,7 @@ class Genetics(db.Model, MetadataMixin):
     disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
     disease_group = relationship('DiseaseGroup')
 
+    sample_sent = Column(Boolean, nullable=False)
     sample_sent_date = Column(DateTime(timezone=True))
     laboratory = Column(String)
     laboratory_reference_number = Column(String)

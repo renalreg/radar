@@ -16,7 +16,7 @@ class DiseaseGroup(db.Model):
 
     patients = relationship('DiseaseGroupPatient')
     users = relationship('DiseaseGroupUser')
-    features = relationship('DiseaseGroupFeatures', backref='disease_group')
+    features = relationship('DiseaseGroupFeature')
 
     def has_feature(self, feature_name):
         return any(x.feature_name == feature_name for x in self.features)
@@ -32,11 +32,14 @@ class DiseaseGroup(db.Model):
         return False
 
 
-class DiseaseGroupFeatures(db.Model):
+class DiseaseGroupFeature(db.Model):
     __tablename__ = 'disease_group_features'
 
     id = Column(Integer, primary_key=True)
+
     disease_group_id = Column(Integer, ForeignKey('disease_groups.id'))
+    disease_group = relationship('DiseaseGroup')
+
     feature_name = Column(String, nullable=False)
 
 

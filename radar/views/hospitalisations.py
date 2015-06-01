@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
 
 from radar.lib.forms.hospitalisations import HospitalisationForm
 from radar.lib.validation.core import FormErrorHandler
@@ -17,7 +18,7 @@ class HospitalisationDetailService(DetailService):
         hospitalisation = Hospitalisation.query\
             .filter(Hospitalisation.patient == patient)\
             .filter(Hospitalisation.id == hospitalisation_id)\
-            .first_or_404()
+            .first()
         return hospitalisation
 
     def new_object(self, patient):
@@ -58,8 +59,8 @@ class HospitalisationListAddView(PatientDataListAddView):
             HospitalisationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'hospitalisations.view_hospitalisation_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('hospitalisations.view_hospitalisation_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/hospitalisations.html'
@@ -96,8 +97,8 @@ class HospitalisationDeleteView(PatientDataDeleteView):
             HospitalisationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'hospitalisations.view_hospitalisation_list'
+    def deleted(self, patient):
+        return redirect(url_for('hospitalisations.view_hospitalisation_list', patient_id=patient.id))
 
 
 bp.add_url_rule('/', view_func=HospitalisationListView.as_view('view_hospitalisation_list'))

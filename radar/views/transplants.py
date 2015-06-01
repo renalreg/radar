@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
 from wtforms import IntegerField
 
 from radar.lib.forms.transplants import TransplantForm
@@ -18,7 +19,7 @@ class TransplantDetailService(DetailService):
         transplant = Transplant.query\
             .filter(Transplant.patient == patient)\
             .filter(Transplant.id == transplant_id)\
-            .first_or_404()
+            .first()
         return transplant
 
     def new_object(self, patient):
@@ -73,8 +74,8 @@ class TransplantListAddView(PatientDataListAddView):
             TransplantDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'transplants.view_transplant_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('transplants.view_transplant_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/transplants.html'
@@ -111,8 +112,8 @@ class TransplantDeleteView(PatientDataDeleteView):
             TransplantDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'transplants.view_transplant_list'
+    def deleted(self, patient):
+        return redirect(url_for('transplants.view_transplant_list', patient_id=patient.id))
 
 
 bp.add_url_rule('/', view_func=TransplantListView.as_view('view_transplant_list'))

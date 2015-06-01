@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from radar.app import create_app
 from radar.lib.database import db
 from radar.models.dialysis import DialysisType
-from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
+from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupFeature
 from radar.models.facilities import Facility
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.models.patients import Patient, PatientDemographics
@@ -151,7 +151,7 @@ def generate_mobile_number():
 
 def generate_nhs_no():
     while True:
-        number = "".join(str(random.randint(0, 9)) for _ in range(9))
+        number = ''.join(str(random.randint(0, 9)) for _ in range(9))
 
         check_digit = 0
 
@@ -210,9 +210,9 @@ def create_fixtures():
         db.session.add(unit)
 
     disease_groups = [
-        DiseaseGroup(name="SRNS"),
-        DiseaseGroup(name="MPGN"),
-        DiseaseGroup(name="Salt Wasting"),
+        DiseaseGroup(name='SRNS', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
+        DiseaseGroup(name='MPGN', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
+        DiseaseGroup(name='Salt Wasting', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
     ]
 
     for disease_group in disease_groups:

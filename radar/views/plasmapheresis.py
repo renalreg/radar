@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_login import current_user
+from werkzeug.utils import redirect
 
 from radar.lib.forms.plasmapheresis import PlasmapheresisForm
 from radar.lib.validation.core import FormErrorHandler
@@ -27,7 +28,7 @@ class PlasmapheresisDetailService(DetailService):
         plasmapheresis = Plasmapheresis.query\
             .filter(Plasmapheresis.patient == patient)\
             .filter(Plasmapheresis.id == plasmapheresis_id)\
-            .first_or_404()
+            .first()
         return plasmapheresis
 
     def new_object(self, patient):
@@ -59,8 +60,8 @@ class PlasmapheresisListAddView(PatientDataListAddView):
             PlasmapheresisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'plasmapheresis.view_plasmapheresis_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('plasmapheresis.view_plasmapheresis_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/plasmapheresis.html'
@@ -97,8 +98,8 @@ class PlasmapheresisDeleteView(PatientDataDeleteView):
             PlasmapheresisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'plasmapheresis.view_plasmapheresis_list'
+    def deleted(self, patient):
+        return redirect(url_for('plasmapheresis.view_plasmapheresis_list', patient_id=patient.id))
 
 
 bp.add_url_rule('/', view_func=PlasmapheresisListView.as_view('view_plasmapheresis_list'))

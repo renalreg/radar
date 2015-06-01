@@ -1,64 +1,73 @@
-from flask import Blueprint, render_template, abort, url_for
+from flask import Blueprint, url_for, render_template
 from flask_login import current_user
 from werkzeug.utils import redirect
 
-from radar.lib.database import db
-from radar.models.disease_groups import DiseaseGroup
 from radar.lib.forms.genetics import GeneticsForm
 from radar.models.genetics import Genetics
-from radar.models.patients import Patient
+from radar.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
 from radar.views.patients import get_patient_data
 
 
 bp = Blueprint('genetics', __name__)
 
 
-@bp.route('/<int:disease_group_id>', endpoint='view_genetics')
-@bp.route('/<int:disease_group_id>', endpoint='edit_genetics', methods=['GET', 'POST'])
-def view_genetics(patient_id, disease_group_id):
-    genetics = Genetics.query\
-        .filter(Genetics.patient_id == patient_id)\
-        .filter(Genetics.disease_group_id == disease_group_id)\
-        .first()
+class GeneticsDetailService(DetailService):
+    def get_object(self, patient, disease_group):
+        genetics = Genetics.query\
+            .filter(Genetics.patient == patient)\
+            .filter(Genetics.disease_group == disease_group)\
+            .first()
+        return genetics
 
-    if genetics is None:
-        patient = Patient.query.get_or_404(patient_id)
-        disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
+    def new_object(self, patient, disease_group):
+        return Genetics(patient=patient, disease_group=disease_group)
 
-        genetics = Genetics(
-            patient=patient,
-            disease_group=disease_group,
+    def get_form(self, obj):
+        return GeneticsForm(obj=obj)
+
+
+class GeneticsDetailView(PatientDataDetailView):
+    disease_group = True
+
+    def __init__(self):
+        super(GeneticsDetailView, self).__init__(
+            GeneticsDetailService(current_user),
         )
 
-    if not genetics.can_view(current_user):
-        abort(403)
+    def not_found(self, patient, disease_group):
+        new_obj = self.detail_service.new_object(patient, disease_group)
 
-    read_only = not genetics.can_edit(current_user)
-
-    form = GeneticsForm(obj=genetics, sample_sent=(genetics.sample_sent_date is not None))
-
-    if form.validate_on_submit():
-        if read_only:
-            abort(403)
-
-        if form.sample_sent.data:
-            form.populate_obj(genetics)
-
-            db.session.add(genetics)
-            db.session.commit()
+        if new_obj.can_edit(current_user):
+            return redirect(url_for('genetics.edit_genetics', patient_id=patient.id, disease_group_id=disease_group.id))
         else:
-            if genetics.id:
-                db.session.delete(genetics)
-                db.session.commit()
+            context = dict(
+                patient=patient,
+                patient_data=get_patient_data(patient),
+                disease_group=disease_group,
+                obj=new_obj,
+            )
 
-        return redirect(url_for('genetics.view_genetics', patient_id=patient_id, disease_group_id=disease_group_id))
+            return render_template(self.get_template_name(), **context)
 
-    context = dict(
-        patient=genetics.patient,
-        patient_data=get_patient_data(genetics.patient),
-        disease_group=genetics.disease_group,
-        form=form,
-        read_only=read_only,
-    )
+    def get_template_name(self):
+        return 'patient/genetics.html'
 
-    return render_template('patient/genetics.html', **context)
+
+class GeneticsEditView(PatientDataEditView):
+    disease_group = True
+    create = True
+
+    def __init__(self):
+        super(GeneticsEditView, self).__init__(
+            GeneticsDetailService(current_user),
+        )
+
+    def saved(self, patient, obj, disease_group):
+        return redirect(url_for('genetics.view_genetics', patient_id=patient.id, disease_group_id=disease_group.id))
+
+    def get_template_name(self):
+        return 'patient/edit_genetics.html'
+
+
+bp.add_url_rule('/<int:disease_group_id>/', view_func=GeneticsDetailView.as_view('view_genetics'))
+bp.add_url_rule('/<int:disease_group_id>/edit/', view_func=GeneticsEditView.as_view('edit_genetics'))
