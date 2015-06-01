@@ -2,7 +2,6 @@ from flask_script import Manager
 
 from radar.app import create_app
 from radar.lib.database import db
-from radar.models.users import User
 from radar.lib import fixtures
 
 app = create_app('settings.py')
@@ -19,17 +18,6 @@ def create_tables():
 @manager.command
 def drop_tables():
     db.drop_all()
-
-
-@manager.command
-def create_admin():
-    user = User()
-    user.username = 'admin'
-    user.email = 'admin@example.org'
-    user.set_password('password')
-    user.is_admin = True
-    db.session.add(user)
-    db.session.commit()
 
 
 @manager.command
