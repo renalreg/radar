@@ -5,11 +5,11 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
-from radar.models.patients import Patient
+from radar.models.patients import Patient, PatientDemographics
 from radar.web.forms.recruitment import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
 from radar.web.forms.patients import DemographicsForm
 from radar.lib.recruitment import find_existing_radar_patients, find_existing_rdc_patients
-from radar.web.views.patients import save_radar_demographics, add_patient_to_unit, add_patient_to_disease_group
+from radar.web.views.patients import add_patient_to_unit, add_patient_to_disease_group
 from radar.models.units import Unit
 
 
@@ -296,9 +296,8 @@ def recruit_patient_new_step():
         db.session.add(patient)
 
         # Save demographics
-        demographics = Demographics(patient=patient)
+        demographics = PatientDemographics(patient=patient)
         form.populate_obj(demographics)
-        save_radar_demographics(demographics)
         db.session.add(demographics)
 
         # Add to groups

@@ -6,7 +6,7 @@ from radar.web.forms.genetics import GeneticsForm
 from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.genetics import validate_genetics
 from radar.models.genetics import Genetics
-from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
+from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView, get_patient_data
 from radar.web.views.patients import get_patient_data
 
 

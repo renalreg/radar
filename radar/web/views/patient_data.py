@@ -7,7 +7,6 @@ from radar.lib.database import db
 from radar.web.forms.core import DeleteForm
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
-from radar.web.views.patients import get_patient_data
 
 
 class ListService(object):
@@ -201,18 +200,14 @@ class PatientDataEditView(View):
 
         form = self.detail_service.get_form(obj)
 
-        if request.method == 'POST':
-            if obj is None:
-                abort(403)
+        if form.validate_on_submit():
+            form.populate_obj(obj)
 
-            if form.validate():
-                form.populate_obj(obj)
-
-                if self.detail_service.validate(form, obj):
-                    db.session.add(obj)
-                    db.session.commit()
-                    flash('Saved.', 'success')
-                    return self.saved(patient, obj, *args)
+            if self.detail_service.validate(form, obj):
+                db.session.add(obj)
+                db.session.commit()
+                flash('Saved.', 'success')
+                return self.saved(patient, obj, *args)
 
         context.update(dict(
             object=obj,
@@ -438,11 +433,14 @@ class PatientDataListEditView(View):
 
         form = self.detail_service.get_form(obj)
 
-        if form.validate_on_submit() and self.detail_service.validate(form, obj):
-            db.session.add(obj)
-            db.session.commit()
-            flash('Saved.', 'success')
-            return self.saved(patient, obj, *args)
+        if form.validate_on_submit():
+            form.populate_obj(obj)
+
+            if self.detail_service.validate(form, obj):
+                db.session.add(obj)
+                db.session.commit()
+                flash('Saved.', 'success')
+                return self.saved(patient, obj, *args)
 
         context.update(dict(
             objects=objects,
@@ -497,3 +495,13 @@ class PatientDataDeleteView(View):
         db.session.commit()
 
         return self.deleted(patient, *args)
+
+
+def get_patient_data(patient):
+    units = sorted(patient.filter_units_for_user(current_user), key=lambda x: x.unit.name.lower())
+    disease_groups = sorted(patient.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name.lower())
+
+    return dict(
+        units=units,
+        disease_groups=disease_groups,
+    )

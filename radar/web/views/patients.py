@@ -15,19 +15,10 @@ from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PA
 from radar.lib.demographics_sda import demographics_to_sda_bundle
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
+from radar.web.views.patient_data import get_patient_data, PatientDataEditView, DetailService
 
 
 bp = Blueprint('patients', __name__)
-
-
-def get_patient_data(patient):
-    units = sorted(patient.filter_units_for_user(current_user), key=lambda x: x.unit.name.lower())
-    disease_groups = sorted(patient.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name.lower())
-
-    return dict(
-        units=units,
-        disease_groups=disease_groups,
-    )
 
 
 def build_patient_search_query(user, form):
@@ -124,38 +115,37 @@ def view_demographics_list(patient_id):
     return render_template('patient/demographics.html', **context)
 
 
-@bp.route('/<int:patient_id>/edit/', endpoint='edit_demographics', methods=['GET', 'POST'])
-def edit_demographics(patient_id):
-    facility = get_radar_facility()
-    patient = Patient.query.get_or_404(patient_id)
-    demographics = PatientDemographics.query\
-        .filter(PatientDemographics.patient == patient)\
-        .filter(PatientDemographics.facility == facility)\
-        .first()
+class DemographicsDetailService(DetailService):
+    def get_object(self, patient):
+        demographics = PatientDemographics.query\
+            .filter(PatientDemographics.patient == patient)\
+            .filter(PatientDemographics.facility == get_radar_facility())\
+            .first()
+        return demographics
 
-    if demographics is None:
-        demographics = PatientDemographics(patient=patient, facility=facility)
+    def new_object(self, patient):
+        return PatientDemographics(patient=patient, facility=get_radar_facility())
 
-    if not demographics.can_edit(current_user):
-        abort(403)
+    def get_form(self, obj):
+        return DemographicsForm(obj=obj)
 
-    form = DemographicsForm(obj=demographics)
 
-    if request.method == 'POST':
-        if form.validate():
-            form.populate_obj(demographics)
-            db.session.add(demographics)
-            db.session.commit()
-            return redirect(url_for('patients.view_demographics_list', patient_id=demographics.patient.id))
+class DemographicsEditView(PatientDataEditView):
+    create = True
 
-    context = dict(
-        patient=demographics.patient,
-        patient_data=get_patient_data(demographics.patient),
-        demographics=demographics,
-        form=form,
-    )
+    def __init__(self):
+        super(DemographicsEditView, self).__init__(
+            DemographicsDetailService(current_user),
+        )
 
-    return render_template('patient/edit_demographics.html', **context)
+    def saved(self, patient, obj):
+        return redirect(url_for('patients.view_demographics_list', patient_id=patient.id))
+
+    def get_template_name(self):
+        return 'patient/edit_demographics.html'
+
+
+bp.add_url_rule('/<int:patient_id>/edit/', view_func=DemographicsEditView.as_view('edit_demographics'))
 
 
 @bp.route('/<int:patient_id>/disease-groups/', endpoint='view_patient_disease_groups')
@@ -272,12 +262,6 @@ def delete_patient(patient_id):
         )
 
         return render_template('patient/delete.html', **context)
-
-
-def save_radar_demographics(demographics):
-    sda_bundle = demographics_to_sda_bundle(demographics)
-    sda_bundle.serialize()
-    demographics.sda_bundle = sda_bundle
 
 
 def add_patient_to_unit(patient, unit):

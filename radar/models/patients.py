@@ -26,9 +26,9 @@ class Patient(db.Model):
     unit_patients = relationship('UnitPatient')
     disease_group_patients = relationship('DiseaseGroupPatient')
 
-    demographics = relationship('PatientDemographics', backref='patient')
-    numbers = relationship('PatientNumber', backref='patient')
-    alias = relationship('PatientAlias', backref='patient')
+    demographics = relationship('PatientDemographics')
+    numbers = relationship('PatientNumber')
+    alias = relationship('PatientAlias')
 
     @property
     def units(self):
@@ -190,15 +190,6 @@ class Patient(db.Model):
 
         return common_facilities
 
-
-
-
-
-
-
-
-        return self.units
-
     def in_disease_group(self, disease_group):
         # TODO
         return False
@@ -214,6 +205,7 @@ class PatientDemographics(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
@@ -252,6 +244,7 @@ class PatientAlias(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
@@ -310,6 +303,7 @@ class PatientNumber(db.Model, MetadataMixin):
     id = Column(Integer, primary_key=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    patient = relationship('Patient')
 
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility', foreign_keys=[facility_id])

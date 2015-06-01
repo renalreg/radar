@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 
 from radar.models.patients import Patient
-from radar.web.views.patients import get_patient_data
+from radar.web.views.patient_data import get_patient_data
 
 
 bp = Blueprint('pathology', __name__)

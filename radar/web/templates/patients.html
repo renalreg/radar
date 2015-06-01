@@ -105,10 +105,7 @@
                             <th>{{ render_sortable_column(ordering, 'gender', 'Gender') }}</th>
 
                             <th>Disease Groups</th>
-
-                            {% if current_user.has_view_demographics_permission %}
-                                <th>Units</th>
-                            {% endif %}
+                            <th>Units</th>
                         </tr>
                     </thead>
 
@@ -161,24 +158,22 @@
                                     <td>
                                         {% if patient_data.disease_groups %}
                                             {% for disease_group in patient_data.disease_groups %}
-                                                {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                                                {{ disease_group.disease_group.name }}{% if not loop.last %}<br />{% endif %}
                                             {% endfor %}
                                         {% else %}
                                             -
                                         {% endif %}
                                     </td>
 
-                                    {% if current_user.has_view_demographics_permission %}
-                                        <td>
-                                            {% if patient_data.units %}
-                                                {% for unit in patient_data.units %}
-                                                    {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                                                {% endfor %}
-                                            {% else %}
-                                                -
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
+                                    <td>
+                                        {% if patient_data.units %}
+                                            {% for unit in patient_data.units %}
+                                                {{ unit.unit.name }}{% if not loop.last %}<br />{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% else %}

@@ -12,7 +12,7 @@ from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabOrderDefinition, LabOrder, LabResult
 from radar.models.patients import Patient
-from radar.web.views.patients import get_patient_data
+from radar.web.views.patient_data import get_patient_data
 from radar.lib.sda.models import SDABundle, SDALabOrder, SDALabResult
 from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
