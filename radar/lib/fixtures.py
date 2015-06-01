@@ -1,5 +1,5 @@
 import random
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from radar.app import create_app
 from radar.lib.database import db
@@ -7,6 +7,7 @@ from radar.models.dialysis import DialysisType
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupFeature
 from radar.models.facilities import Facility
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
+from radar.models.news import Post
 from radar.models.patients import Patient, PatientDemographics
 from radar.models.transplants import TransplantType
 from radar.models.units import Unit, UnitPatient
@@ -282,6 +283,12 @@ def create_fixtures():
 
     db.session.add(DialysisType(label='HD'))
     db.session.add(DialysisType(label='PD'))
+
+    post = Post()
+    post.title = 'Hello'
+    post.body = 'Hello World!'
+    post.published = datetime.now()
+    db.session.add(post)
 
 
 if __name__ == '__main__':
