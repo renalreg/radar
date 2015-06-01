@@ -91,7 +91,7 @@ gulp.task('libs', function() { 
 });
 
 gulp.task('sass', function() {
-    return gulp.src('radar/sass/**/*.scss')
+    return gulp.src('radar/web/sass/**/*.scss')
     .pipe(sass({
         includePaths: [config.bootstrap + '/assets/stylesheets']
     }))
