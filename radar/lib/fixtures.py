@@ -125,6 +125,9 @@ def generate_date_of_death():
 
 
 def random_date(start_date, end_date):
+    if start_date == end_date:
+        return start_date
+
     days = (end_date - start_date).days
     random_date = start_date + timedelta(days=random.randint(1, days))
     return random_date
