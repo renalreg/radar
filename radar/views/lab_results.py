@@ -5,7 +5,6 @@ from flask import Blueprint, render_template, abort, request, jsonify, redirect,
 from flask_login import current_user
 from sqlalchemy import desc, func
 
-from radar.lib.concepts.utils import add_errors_to_form
 from radar.lib.database import db
 from radar.lib.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
     SelectLabOrderForm

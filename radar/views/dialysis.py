@@ -1,47 +1,62 @@
 from flask import Blueprint
+from flask_login import current_user
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.dialysis import validate_dialysis
 
 from radar.lib.forms.dialysis import DialysisForm
 from radar.models.dialysis import Dialysis
 from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView
+    PatientDataListDetailView, PatientDataListView, DetailService, ListService
 
 
 bp = Blueprint('dialysis', __name__)
 
 
-def get_dialysis_list(patient):
-    dialysis_list = Dialysis.query\
-        .filter(Dialysis.patient == patient)\
-        .order_by(Dialysis.from_date.desc())\
-        .all()
-    return dialysis_list
-
-
-def get_dialysis(patient, dialysis_id):
-    dialysis = Dialysis.query\
-        .filter(Dialysis.patient == patient)\
-        .filter(Dialysis.id == dialysis_id)\
-        .first_or_404()
-    return dialysis
-
-
-class DialysisListView(PatientDataListView):
+class DialysisListService(ListService):
     def get_objects(self, patient):
-        return get_dialysis_list(patient)
+        dialysis_list = Dialysis.query\
+            .filter(Dialysis.patient == patient)\
+            .order_by(Dialysis.from_date.desc())\
+            .all()
+        return dialysis_list
 
-    def get_template_name(self):
-        return 'patient/dialysis.html'
 
-
-class DialysisListAddView(PatientDataListAddView):
-    def get_objects(self, patient):
-        return get_dialysis_list(patient)
+class DialysisDetailService(DetailService):
+    def get_object(self, patient, dialysis_id):
+        dialysis = Dialysis.query\
+            .filter(Dialysis.patient == patient)\
+            .filter(Dialysis.id == dialysis_id)\
+            .first_or_404()
+        return dialysis
 
     def new_object(self, patient):
         return Dialysis(patient=patient)
 
     def get_form(self, obj):
         return DialysisForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_dialysis(errors, obj)
+        return errors.is_valid()
+
+
+class DialysisListView(PatientDataListView):
+    def __init__(self):
+        super(DialysisListView, self).__init__(
+            DialysisListService(current_user),
+        )
+
+    def get_template_name(self):
+        return 'patient/dialysis.html'
+
+
+class DialysisListAddView(PatientDataListAddView):
+    def __init__(self):
+        super(DialysisListAddView, self).__init__(
+            DialysisListService(current_user),
+            DialysisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'dialysis.view_dialysis_list'
@@ -51,25 +66,22 @@ class DialysisListAddView(PatientDataListAddView):
 
 
 class DialysisListDetailView(PatientDataListDetailView):
-    def get_object(self, patient, dialysis_id):
-        return get_dialysis(patient, dialysis_id)
-
-    def get_objects(self, patient):
-        return get_dialysis_list(patient)
+    def __init__(self):
+        super(DialysisListDetailView, self).__init__(
+            DialysisListService(current_user),
+            DialysisDetailService(current_user),
+        )
 
     def get_template_name(self):
         return 'patient/dialysis.html'
 
 
 class DialysisListEditView(PatientDataListEditView):
-    def get_object(self, patient, dialysis_id):
-        return get_dialysis(patient, dialysis_id)
-
-    def get_objects(self, patient):
-        return get_dialysis_list(patient)
-
-    def get_form(self, obj):
-        return DialysisForm(obj=obj)
+    def __init__(self):
+        super(DialysisListEditView, self).__init__(
+            DialysisListService(current_user),
+            DialysisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'dialysis.view_dialysis_list'
@@ -79,8 +91,10 @@ class DialysisListEditView(PatientDataListEditView):
 
 
 class DialysisDeleteView(PatientDataDeleteView):
-    def get_object(self, patient, dialysis_id):
-        return get_dialysis(patient, dialysis_id)
+    def __init__(self):
+        super(DialysisDeleteView, self).__init__(
+            DialysisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'dialysis.view_dialysis_list'

@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.models.common import MetadataMixin
-from radar.lib.concept_maps.lab_orders import LabOrderConceptMap
 
 
 class LabOrderDefinition(db.Model):
@@ -57,9 +56,6 @@ class LabOrder(db.Model, MetadataMixin):
     pre_post = Column(String)
 
     lab_results = relationship('LabResult', cascade='all, delete-orphan')
-
-    def concept_map(self):
-        return LabOrderConceptMap(self)
 
     def can_view(self, current_user):
         return self.patient.can_view(current_user)

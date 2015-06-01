@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.models.common import MetadataMixin, IntegerLookupTable
-from radar.lib.concept_maps.dialysis import DialysisConceptMap
 
 
 class Dialysis(db.Model, MetadataMixin):
@@ -22,9 +21,6 @@ class Dialysis(db.Model, MetadataMixin):
 
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
-
-    def concept_map(self):
-        return DialysisConceptMap(self)
 
     def can_view(self, user):
         return self.patient.can_view(user)
