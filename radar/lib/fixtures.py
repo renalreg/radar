@@ -1,7 +1,7 @@
 import random
 from datetime import date, timedelta, datetime
 
-from radar.app import create_app
+from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.dialysis import DialysisType
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupFeature
@@ -12,6 +12,7 @@ from radar.models.patients import Patient, PatientDemographics
 from radar.models.transplants import TransplantType
 from radar.models.units import Unit, UnitPatient
 from radar.models.users import User
+
 
 FEMALE = 'F'
 MALE = 'M'

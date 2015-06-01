@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 from sqlalchemy import or_, case, desc, func, and_
 from sqlalchemy.orm import aliased
 
-from radar.lib.forms.core import add_empty_choice
+from radar.web.forms.core import add_empty_choice
 from radar.lib.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
     DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
 from radar.lib.database import db
