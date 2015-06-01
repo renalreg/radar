@@ -4,15 +4,15 @@ from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
 from sqlalchemy import event
 
-from radar.lib.error_handlers import page_not_found, forbidden
+from radar.web.views.error_handlers import page_not_found, forbidden
 from radar.lib.auth import load_user
 from radar.web.views.auth import require_login, force_password_change
-from radar.lib.context_processors import inject_navigation, inject_delete_form
+from radar.web.context_processors import inject_navigation, inject_delete_form
 from radar.lib.mail import mail
 from radar.lib.ordering import url_for_order_by
 from radar.lib.pagination import url_for_per_page, url_for_page
 from radar.lib.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
-from radar.lib.template_filters import datetime_format, nl2br, date_format, missing, yn
+from radar.web.template_filters import datetime_format, nl2br, date_format, missing, yn
 from radar.web.views.index import bp as radar_bp
 from radar.web.views.diagnosis import bp as diagnosis_bp
 from radar.web.views.disease_groups import bp as disease_groups_bp
