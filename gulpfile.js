@@ -11,7 +11,7 @@ var replace = require('gulp-replace');
 var config = {
     bower: 'bower_components',
     bootstrap: 'bower_components/bootstrap-sass',
-    static: 'radar/static'
+    static: 'radar/web/static'
 };
 
 gulp.task('libs', function() { 
@@ -31,7 +31,8 @@ gulp.task('libs', function() { 
         config.bower + '/jquery-ui/themes/smoothness/images/*.gif',
         config.bower + '/chosen/chosen.min.css',
         config.bower + '/chosen/chosen-sprite.png',
-        config.bower + '/chosen/chosen-sprite@2x.png'
+        config.bower + '/chosen/chosen-sprite@2x.png',
+        config.bower + '/bootstrap-sortable/Contents/bootstrap-sortable.css',
     ]))
 
     /*

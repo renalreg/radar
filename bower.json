@@ -10,6 +10,7 @@
     "html5shiv": "~3.7.2",
     "respond": "~1.4.2",
     "chosen": "~1.4.2",
-    "highcharts-release": "~4.1.5"
+    "highcharts-release": "~4.1.5",
+    "bootstrap-sortable": "~1.11.2"
   }
 }

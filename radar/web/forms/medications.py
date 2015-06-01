@@ -1,14 +1,13 @@
+from flask_wtf import Form
 from wtforms import StringField, DecimalField
-
 from wtforms.validators import InputRequired, Optional
 
 from radar.lib.database import db
-
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.web.forms.core import RadarDateField, add_empty_object_choice, FacilityFormMixin, RadarSelectObjectField
 
 
-class MedicationForm(FacilityFormMixin):
+class MedicationForm(FacilityFormMixin, Form):
     def __init__(self, *args, **kwargs):
         super(MedicationForm, self).__init__(*args, **kwargs)
 

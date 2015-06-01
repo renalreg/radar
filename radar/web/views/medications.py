@@ -60,7 +60,7 @@ class MedicationListAddView(PatientDataListAddView):
         )
 
     def saved(self, patient, obj):
-        return redirect(url_for('medications.view_medication_lis', patient_id=patient.id))
+        return redirect(url_for('medications.view_medication_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/medications.html'

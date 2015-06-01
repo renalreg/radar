@@ -1,8 +1,8 @@
 *.pyc
 node_modules/
 bower_components/
-radar/static/libs
-radar/static/css/style.css
+radar/web/static/libs
+radar/web/static/css/style.css
 .idea/workspace.xml
 .idea/dictionaries/nbj2301.xml
 venv
