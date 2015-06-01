@@ -3,7 +3,6 @@
 {% set current_patient_page = 'genetics' %}
 {% set current_patient_disease_group = disease_group %}
 
-{% from 'macros/forms.html' import render_field_group, render_field_errors %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_form_errors %}
@@ -22,16 +21,7 @@
             {{ render_field(form.sample_sent_date) }}
             {{ render_field(form.laboratory) }}
             {{ render_field(form.laboratory_reference_number) }}
-
-            <!-- TODO -->
-            {% call render_field_group(form.results) %}
-                {{ form.results.label(class='col-sm-4 control-label') }}
-
-                <div class="col-sm-8">
-                    {{ form.results(class='form-control', rows=10) }}
-                    {{ render_field_errors(form.results) }}
-                </div>
-            {% endcall %}
+            {{ render_field(form.results, rendered_field=form.results(class='form-control', rows=10)) }}
         </div>
 
         {% call render_button() %}
