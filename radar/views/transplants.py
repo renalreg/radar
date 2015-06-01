@@ -3,6 +3,8 @@ from flask_login import current_user
 from wtforms import IntegerField
 
 from radar.lib.forms.transplants import TransplantForm
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.transplants import validate_transplant
 from radar.models.transplants import Transplant
 from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
     PatientDataListDetailView, PatientDataListView, ListService, DetailService
@@ -30,6 +32,11 @@ class TransplantDetailService(DetailService):
             _TransplantForm.apples = IntegerField()
 
         return _TransplantForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_transplant(errors, obj)
+        return errors.is_valid()
 
     def show_apples(self):
         return True

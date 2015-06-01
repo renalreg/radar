@@ -1,47 +1,63 @@
 from flask import Blueprint
+from flask_login import current_user
 
 from radar.lib.forms.plasmapheresis import PlasmapheresisForm
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.hospitalisations import validate_hospitalisation
+from radar.lib.validation.plasmapheresis import validate_plasmapheresis
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView
+    PatientDataListDetailView, PatientDataListView, ListService, DetailService
 
 
 bp = Blueprint('plasmapheresis', __name__)
 
 
-def get_plasmapheresis_list(patient):
-    plasmapheresis_list = Plasmapheresis.query\
-        .filter(Plasmapheresis.patient == patient)\
-        .order_by(Plasmapheresis.from_date.desc())\
-        .all()
-    return plasmapheresis_list
-
-
-def get_plasmapheresis(patient, plasmapheresis_id):
-    plasmapheresis = Plasmapheresis.query\
-        .filter(Plasmapheresis.patient == patient)\
-        .filter(Plasmapheresis.id == plasmapheresis_id)\
-        .first_or_404()
-    return plasmapheresis
-
-
-class PlasmapheresisListView(PatientDataListView):
+class PlasmapheresisListService(ListService):
     def get_objects(self, patient):
-        return get_plasmapheresis_list(patient)
+        plasmapheresis_list = Plasmapheresis.query\
+            .filter(Plasmapheresis.patient == patient)\
+            .order_by(Plasmapheresis.from_date.desc())\
+            .all()
+        return plasmapheresis_list
 
-    def get_template_name(self):
-        return 'patient/plasmapheresis.html'
 
-
-class PlasmapheresisListAddView(PatientDataListAddView):
-    def get_objects(self, patient):
-        return get_plasmapheresis_list(patient)
+class PlasmapheresisDetailService(DetailService):
+    def get_object(self, patient, plasmapheresis_id):
+        plasmapheresis = Plasmapheresis.query\
+            .filter(Plasmapheresis.patient == patient)\
+            .filter(Plasmapheresis.id == plasmapheresis_id)\
+            .first_or_404()
+        return plasmapheresis
 
     def new_object(self, patient):
         return Plasmapheresis(patient=patient)
 
     def get_form(self, obj):
         return PlasmapheresisForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_plasmapheresis(errors, obj)
+        return errors.is_valid()
+
+
+class PlasmapheresisListView(PatientDataListView):
+    def __init__(self):
+        super(PlasmapheresisListView, self).__init__(
+            PlasmapheresisListService(current_user),
+        )
+
+    def get_template_name(self):
+        return 'patient/plasmapheresis.html'
+
+
+class PlasmapheresisListAddView(PatientDataListAddView):
+    def __init__(self):
+        super(PlasmapheresisListAddView, self).__init__(
+            PlasmapheresisListService(current_user),
+            PlasmapheresisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'plasmapheresis.view_plasmapheresis_list'
@@ -51,25 +67,22 @@ class PlasmapheresisListAddView(PatientDataListAddView):
 
 
 class PlasmapheresisListDetailView(PatientDataListDetailView):
-    def get_object(self, patient, plasmapheresis_id):
-        return get_plasmapheresis(patient, plasmapheresis_id)
-
-    def get_objects(self, patient):
-        return get_plasmapheresis_list(patient)
+    def __init__(self):
+        super(PlasmapheresisListDetailView, self).__init__(
+            PlasmapheresisListService(current_user),
+            PlasmapheresisDetailService(current_user),
+        )
 
     def get_template_name(self):
         return 'patient/plasmapheresis.html'
 
 
 class PlasmapheresisListEditView(PatientDataListEditView):
-    def get_object(self, patient, plasmapheresis_id):
-        return get_plasmapheresis(patient, plasmapheresis_id)
-
-    def get_objects(self, patient):
-        return get_plasmapheresis_list(patient)
-
-    def get_form(self, obj):
-        return PlasmapheresisForm(obj=obj)
+    def __init__(self):
+        super(PlasmapheresisListEditView, self).__init__(
+            PlasmapheresisListService(current_user),
+            PlasmapheresisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'plasmapheresis.view_plasmapheresis_list'
@@ -79,8 +92,10 @@ class PlasmapheresisListEditView(PatientDataListEditView):
 
 
 class PlasmapheresisDeleteView(PatientDataDeleteView):
-    def get_object(self, patient, plasmapheresis_id):
-        return get_plasmapheresis(patient, plasmapheresis_id)
+    def __init__(self):
+        super(PlasmapheresisDeleteView, self).__init__(
+            PlasmapheresisDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'plasmapheresis.view_plasmapheresis_list'

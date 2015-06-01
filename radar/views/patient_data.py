@@ -104,10 +104,11 @@ class PatientDataListAddView(View):
             if form.validate():
                 form.populate_obj(obj)
 
-                db.session.add(obj)
-                db.session.commit()
-                flash('Saved.', 'success')
-                return redirect(url_for(self.success_endpoint(), patient_id=patient_id))
+                if self.detail_service.validate(form, obj):
+                    db.session.add(obj)
+                    db.session.commit()
+                    flash('Saved.', 'success')
+                    return redirect(url_for(self.success_endpoint(), patient_id=patient_id))
 
         context = dict(
             patient=patient,

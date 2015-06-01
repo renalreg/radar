@@ -62,6 +62,9 @@ class FormErrorHandler(BaseErrorHandler):
 
         form_field = getattr(self.form, field_name, None)
 
+        if form_field is None:
+            form_field = getattr(self.form, field_name + '_id', None)
+
         if form_field is not None:
             form_field.errors.append(error)
 
