@@ -27,9 +27,11 @@
 
                 <p>If you need patient information sheets and consent forms you can find them <a href="http://rarerenal.org/radar-registry/criteria-and-consent/" target="_blank">here</a>.</p>
 
-                <hr />
+                {% if posts %}
+                    <hr />
 
-                {{ render_latest_news(posts) }}
+                    {{ render_latest_news(posts) }}
+                {% endif %}
 
                 <hr />
 

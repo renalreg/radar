@@ -1,7 +1,7 @@
 {% macro render_latest_news(posts) %}
-    {% if posts %}
-        <h2><a href="{{ url_for('news.view_posts') }}">Latest News</a></h2>
+    <h2><a href="{{ url_for('news.view_posts') }}">Latest News</a></h2>
 
+    {% if posts %}
         {% for post in posts %}
             <h3><a href="{{ url_for('news.view_post', post_id=post.id) }}">{{ post.title }}</a> <small>{{ post.published | datetime_format('%d %b %Y') }}</small></h3>
 
@@ -11,5 +11,7 @@
         {% endfor %}
 
         <p><a href="{{ url_for('news.view_posts') }}">More news &#8230;</a></p>
+    {% else %}
+        <p>No news yet.</p>
     {% endif %}
 {% endmacro %}
