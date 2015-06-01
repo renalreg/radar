@@ -91,6 +91,66 @@ class PatientDataDetailView(View):
         return render_template(self.get_template_name(), **context)
 
 
+class PatientDataAddView(View):
+    methods = ['GET', 'POST']
+    disease_group = False
+
+    def __init__(self, detail_service):
+        self.detail_service = detail_service
+
+    def saved(self, patient, obj, *args):
+        raise NotImplementedError
+
+    def get_template_name(self):
+        raise NotImplementedError
+
+    def dispatch_request(self, patient_id, **kwargs):
+        patient = Patient.query.get_or_404(patient_id)
+
+        if not patient.can_view(current_user):
+            abort(403)
+
+        context = dict(
+            patient=patient,
+            patient_data=get_patient_data(patient)
+        )
+
+        args = []
+
+        # TODO permissions
+        if self.disease_group:
+            disease_group_id = kwargs.pop('disease_group_id')
+            disease_group = DiseaseGroup.query.get(disease_group_id)
+            args.append(disease_group)
+            context['disease_group'] = disease_group
+
+        obj = self.detail_service.new_object(patient, *args)
+
+        if not obj.can_edit(current_user):
+            abort(403)
+
+        form = self.detail_service.get_form(obj)
+
+        if form.validate_on_submit():
+            form.populate_obj(obj)
+
+            if self.detail_service.validate(form, obj):
+                db.session.add(obj)
+                db.session.commit()
+                flash('Saved.', 'success')
+                return self.saved(patient, obj, *args)
+
+        print form.errors
+
+        context.update(dict(
+            form=form,
+            object=obj
+        ))
+        context.update(self.detail_service.get_context())
+
+        return render_template(self.get_template_name(), **context)
+
+
 class PatientDataEditView(View):
     methods = ['GET', 'POST']
     disease_group = False
@@ -251,7 +311,7 @@ class PatientDataListAddView(View):
             form = None
 
         if request.method == 'POST':
-            if obj is None:
+            if obj is None or not obj.can_edit(current_user):
                 abort(403)
 
             if form.validate():

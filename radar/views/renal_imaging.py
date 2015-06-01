@@ -1,71 +1,98 @@
-from flask import Blueprint, abort, render_template, request, url_for
+from flask import Blueprint, url_for
 from flask_login import current_user
 from werkzeug.utils import redirect
-
-from radar.lib.database import db
-from radar.models.patients import Patient
-from radar.views.patients import get_patient_data
 from radar.lib.forms.renal_imaging import RenalImagingForm
+
 from radar.models.renal_imaging import RenalImaging
+from radar.views.patient_data import PatientDataDeleteView, \
+    PatientDataListView, ListService, DetailService, PatientDataDetailView, PatientDataEditView, PatientDataAddView
 
 
 bp = Blueprint('renal_imaging', __name__)
 
 
-@bp.route('/')
-def view_result_list(patient_id):
-    patient = Patient.query.get_or_404(patient_id)
-
-    if not patient.can_view(current_user):
-        abort(403)
-
-    results = RenalImaging.query.order_by(RenalImaging.date.desc(), RenalImaging.imaging_type).all()
-
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
-        results=results,
-    )
-
-    return render_template('patient/renal_imaging_list.html', **context)
+class RenalImagingListService(ListService):
+    def get_objects(self, patient):
+        renal_imaging_list = RenalImaging.query\
+            .filter(RenalImaging.patient == patient)\
+            .order_by(RenalImaging.date.desc())\
+            .all()
+        return renal_imaging_list
 
 
-@bp.route('/new/', endpoint='add_result', methods=['GET', 'POST'])
-@bp.route('/<int:result_id>/', endpoint='view_result')
-@bp.route('/<int:result_id>/', endpoint='edit_result', methods=['GET', 'POST'])
-def view_result(patient_id, result_id=None):
-    if result_id is None:
-        patient = Patient.query.get_or_404(patient_id)
-        result = RenalImaging(patient=patient)
-    else:
-        result = RenalImaging.query\
-            .filter(RenalImaging.patient_id == patient_id)\
-            .filter(RenalImaging.id == result_id)\
-            .first_or_404()
+class RenalImagingDetailService(DetailService):
+    def get_object(self, patient, renal_imaging_id):
+        renal_imaging = RenalImaging.query\
+            .filter(RenalImaging.patient == patient)\
+            .filter(RenalImaging.id == renal_imaging_id)\
+            .first()
+        return renal_imaging
 
-    if not result.can_view(current_user):
-        abort(403)
+    def new_object(self, patient):
+        return RenalImaging(patient=patient)
 
-    read_only = not result.can_edit(current_user)
+    def get_form(self, obj):
+        return RenalImagingForm(obj=obj)
 
-    form = RenalImagingForm(obj=result)
 
-    if request.method == 'POST':
-        if read_only:
-            abort(403)
+class RenalImagingListView(PatientDataListView):
+    def __init__(self):
+        super(RenalImagingListView, self).__init__(
+            RenalImagingListService(current_user),
+        )
 
-        if form.validate():
-            form.populate_obj(result)
-            db.session.add(result)
-            db.session.commit()
-            return redirect(url_for('renal_imaging.view_result_list', patient_id=patient_id))
+    def get_template_name(self):
+        return 'patient/renal_imaging.html'
 
-    context = dict(
-        patient=result.patient,
-        patient_data=get_patient_data(result.patient),
-        form=form,
-        result=result,
-        read_only=read_only
-    )
 
-    return render_template('patient/renal_imaging.html', **context)
+class RenalImagingAddView(PatientDataAddView):
+    def __init__(self):
+        super(RenalImagingAddView, self).__init__(
+            RenalImagingDetailService(current_user),
+        )
+
+    def saved(self, patient, obj):
+        return redirect(url_for('renal_imaging.view_renal_imaging_list', patient_id=patient.id))
+
+    def get_template_name(self):
+        return 'patient/renal_imaging_form.html'
+
+
+class RenalImagingDetailView(PatientDataDetailView):
+    def __init__(self):
+        super(RenalImagingDetailView, self).__init__(
+            RenalImagingDetailService(current_user),
+        )
+
+    def get_template_name(self):
+        return 'patient/renal_imaging_detail.html'
+
+
+class RenalImagingEditView(PatientDataEditView):
+    def __init__(self):
+        super(RenalImagingEditView, self).__init__(
+            RenalImagingDetailService(current_user),
+        )
+
+    def saved(self, patient, obj):
+        return redirect(url_for('renal_imaging.view_renal_imaging_list', patient_id=patient.id))
+
+    def get_template_name(self):
+        return 'patient/renal_imaging_form.html'
+
+
+class RenalImagingDeleteView(PatientDataDeleteView):
+    def __init__(self):
+        super(RenalImagingDeleteView, self).__init__(
+            RenalImagingDetailService(current_user),
+        )
+
+    def deleted(self, patient):
+        return redirect(url_for('renal_imaging.view_renal_imaging_list', patient_id=patient.id))
+
+
+bp.add_url_rule('/', view_func=RenalImagingListView.as_view('view_renal_imaging_list'))
+bp.add_url_rule('/add/', view_func=RenalImagingAddView.as_view('add_renal_imaging'))
+bp.add_url_rule('/<int:renal_imaging_id>/', view_func=RenalImagingDetailView.as_view('view_renal_imaging'))
+bp.add_url_rule('/<int:renal_imaging_id>/edit/', view_func=RenalImagingEditView.as_view('edit_renal_imaging'))
+bp.add_url_rule('/<int:renal_imaging_id>/delete/', view_func=RenalImagingDeleteView.as_view('delete_renal_imaging'))
