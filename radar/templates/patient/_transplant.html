@@ -33,6 +33,10 @@
             {{ render_field(form.date_reoccurred) }}
             {{ render_field(form.date_failed) }}
 
+            {% if show_apples %}
+                {{ render_field(form.apples) }}
+            {% endif %}
+
             {% call render_button() %}
                 <button type="submit" class="btn btn-success">Save</button>
             {% endcall %}

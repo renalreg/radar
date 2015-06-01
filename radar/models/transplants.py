@@ -22,6 +22,7 @@ class Transplant(db.Model, MetadataMixin):
     reoccurred = Column(Boolean)
     date_reoccurred = Column(Date)
     date_failure = Column(Date)
+    apples = Column(Integer)
 
     def can_view(self, user):
         return self.patient.can_view(user)

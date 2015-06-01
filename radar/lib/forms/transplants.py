@@ -26,3 +26,4 @@ class TransplantForm(FacilityFormMixin, Form):
         obj.reoccurred = self.reoccurred.data
         obj.date_reoccurred = self.date_reoccurred.data
         obj.date_failed = self.date_failed.data
+        obj.apples = self.apples.data

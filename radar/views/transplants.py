@@ -1,47 +1,70 @@
 from flask import Blueprint
+from flask_login import current_user
+from wtforms import IntegerField
 
 from radar.lib.forms.transplants import TransplantForm
 from radar.models.transplants import Transplant
 from radar.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView
+    PatientDataListDetailView, PatientDataListView, ListService, DetailService
 
 
 bp = Blueprint('transplants', __name__)
 
 
-def get_transplants(patient):
-    transplants = Transplant.query\
-        .filter(Transplant.patient == patient)\
-        .order_by(Transplant.transplant_date.desc())\
-        .all()
-    return transplants
+class TransplantDetailService(DetailService):
+    def get_object(self, patient, transplant_id):
+        transplant = Transplant.query\
+            .filter(Transplant.patient == patient)\
+            .filter(Transplant.id == transplant_id)\
+            .first_or_404()
+        return transplant
+
+    def new_object(self, patient):
+        return Transplant(patient=patient)
+
+    def get_form(self, obj):
+        class _TransplantForm(TransplantForm):
+            pass
+
+        if self.show_apples():
+            _TransplantForm.apples = IntegerField()
+
+        return _TransplantForm(obj=obj)
+
+    def show_apples(self):
+        return True
+
+    def get_context(self):
+        return {
+            'show_apples': self.show_apples()
+        }
 
 
-def get_transplant(patient, transplant_id):
-    transplant = Transplant.query\
-        .filter(Transplant.patient == patient)\
-        .filter(Transplant.id == transplant_id)\
-        .first_or_404()
-    return transplant
+class TransplantListService(ListService):
+    def get_objects(self, patient):
+        transplants = Transplant.query\
+            .filter(Transplant.patient == patient)\
+            .order_by(Transplant.transplant_date.desc())\
+            .all()
+        return transplants
 
 
 class TransplantListView(PatientDataListView):
-    def get_objects(self, patient):
-        return get_transplants(patient)
+    def __init__(self):
+        super(TransplantListView, self).__init__(
+            TransplantListService(current_user),
+        )
 
     def get_template_name(self):
         return 'patient/transplants.html'
 
 
 class TransplantListAddView(PatientDataListAddView):
-    def get_objects(self, patient):
-        return get_transplants(patient)
-
-    def new_object(self, patient):
-        return Transplant(patient=patient)
-
-    def get_form(self, obj):
-        return TransplantForm(obj=obj)
+    def __init__(self):
+        super(TransplantListAddView, self).__init__(
+            TransplantListService(current_user),
+            TransplantDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'transplants.view_transplant_list'
@@ -51,25 +74,22 @@ class TransplantListAddView(PatientDataListAddView):
 
 
 class TransplantListDetailView(PatientDataListDetailView):
-    def get_object(self, patient, transplant_id):
-        return get_transplant(patient, transplant_id)
-
-    def get_objects(self, patient):
-        return get_transplants(patient)
+    def __init__(self):
+        super(TransplantListDetailView, self).__init__(
+            TransplantListService(current_user),
+            TransplantDetailService(current_user),
+        )
 
     def get_template_name(self):
         return 'patient/transplants.html'
 
 
 class TransplantListEditView(PatientDataListEditView):
-    def get_object(self, patient, transplant_id):
-        return get_transplant(patient, transplant_id)
-
-    def get_objects(self, patient):
-        return get_transplants(patient)
-
-    def get_form(self, obj):
-        return TransplantForm(obj=obj)
+    def __init__(self):
+        super(TransplantListEditView, self).__init__(
+            TransplantListService(current_user),
+            TransplantDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'transplants.view_transplant_list'
@@ -79,8 +99,10 @@ class TransplantListEditView(PatientDataListEditView):
 
 
 class TransplantDeleteView(PatientDataDeleteView):
-    def get_object(self, patient, transplant_id):
-        return get_transplant(patient, transplant_id)
+    def __init__(self):
+        super(TransplantDeleteView, self).__init__(
+            TransplantDetailService(current_user),
+        )
 
     def success_endpoint(self):
         return 'transplants.view_transplant_list'
