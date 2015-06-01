@@ -2,7 +2,7 @@ from flask_wtf import Form
 from wtforms import StringField, IntegerField
 from wtforms.validators import Optional, InputRequired
 
-from radar.lib.forms.common import RadarDOBField, RadarSelectField, RadarNHSNoField, RadarCHINoField
+from radar.lib.forms.core import RadarDOBField, RadarSelectField, RadarNHSNoField, RadarCHINoField
 from radar.lib.utils import optional_int
 
 

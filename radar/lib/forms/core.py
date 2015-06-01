@@ -278,12 +278,3 @@ def radar_password_check(form, field):
 
     if not check_password_policy(field.data):
         raise ValidationError("Password doesn't meet the password policy.")
-
-
-class RadarForm(Form):
-    def add_errors(self, errors):
-        for field_name, field_errors in errors.items():
-            field = getattr(self, field_name, None)
-
-            if field:
-                field.errors.extend(field_errors)

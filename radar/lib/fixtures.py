@@ -210,9 +210,9 @@ def create_fixtures():
         db.session.add(unit)
 
     disease_groups = [
-        DiseaseGroup(name='SRNS', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
-        DiseaseGroup(name='MPGN', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
-        DiseaseGroup(name='Salt Wasting', features=[DiseaseGroupFeature(feature_name='GENETICS')]),
+        DiseaseGroup(name='SRNS', features=[DiseaseGroupFeature(feature_name='GENETICS'), DiseaseGroupFeature(feature_name='RENAL_IMAGING'), DiseaseGroupFeature(feature_name='SALT_WASTING_CLINICAL_FEATURES')]),
+        DiseaseGroup(name='MPGN', features=[DiseaseGroupFeature(feature_name='GENETICS'), DiseaseGroupFeature(feature_name='RENAL_IMAGING'), DiseaseGroupFeature(feature_name='SALT_WASTING_CLINICAL_FEATURES')]),
+        DiseaseGroup(name='Salt Wasting', features=[DiseaseGroupFeature(feature_name='GENETICS'), DiseaseGroupFeature(feature_name='RENAL_IMAGING'), DiseaseGroupFeature(feature_name='SALT_WASTING_CLINICAL_FEATURES')]),
     ]
 
     for disease_group in disease_groups:

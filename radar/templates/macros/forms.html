@@ -60,14 +60,6 @@
     {% endcall %}
 {% endmacro %}
 
-{% macro render_horizontal_field_read_only(field) %}
-    {{ render_horizontal_field(field, read_only=True) }}
-{% endmacro %}
-
-{% macro render_field_read_only(field) %}
-    {{ render_field(field, read_only=True) }}
-{% endmacro %}
-
 {% macro render_form_errors(form) %}
     {% if form.errors %}
         {% call render_panel('Error', 'panel-danger') %}

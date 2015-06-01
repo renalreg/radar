@@ -3,6 +3,8 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from radar.lib.forms.genetics import GeneticsForm
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.genetics import validate_genetics
 from radar.models.genetics import Genetics
 from radar.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
 from radar.views.patients import get_patient_data
@@ -24,6 +26,11 @@ class GeneticsDetailService(DetailService):
 
     def get_form(self, obj):
         return GeneticsForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_genetics(errors, obj)
+        return errors.is_valid()
 
 
 class GeneticsDetailView(PatientDataDetailView):

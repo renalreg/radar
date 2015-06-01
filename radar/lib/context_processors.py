@@ -1,7 +1,7 @@
 from flask_login import current_user
 
 from radar.lib.disease_groups import get_disease_groups_for_user
-from radar.lib.forms.common import DeleteForm
+from radar.lib.forms.core import DeleteForm
 from radar.lib.units import get_units_for_user
 
 

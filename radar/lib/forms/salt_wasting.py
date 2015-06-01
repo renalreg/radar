@@ -3,7 +3,7 @@ from wtforms import StringField, TextAreaField, IntegerField
 from wtforms.validators import InputRequired, NumberRange, Optional
 from wtforms.widgets import TextArea
 
-from radar.lib.forms.common import RadarYesNoField
+from radar.lib.forms.core import RadarYesNoField
 
 
 class SaltWastingClinicalFeaturesForm(Form):

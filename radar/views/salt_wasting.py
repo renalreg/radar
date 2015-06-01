@@ -1,49 +1,68 @@
-from flask import Blueprint, abort, request, redirect, url_for, render_template
+from flask import Blueprint, url_for, render_template
 from flask_login import current_user
+from werkzeug.utils import redirect
 
-from radar.lib.database import db
-from radar.models.patients import Patient
 from radar.lib.forms.salt_wasting import SaltWastingClinicalFeaturesForm
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
+from radar.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
 from radar.views.patients import get_patient_data
 
 
 bp = Blueprint('salt_wasting', __name__)
 
 
-@bp.route('/clinical-features/')
-@bp.route('/clinical-features/', endpoint='edit_clinical_features', methods=['GET', 'POST'])
-def view_clinical_features(patient_id):
-    record = SaltWastingClinicalFeatures.query\
-        .filter(SaltWastingClinicalFeatures.patient_id == patient_id)\
-        .first()
+class SaltWastingClinicalFeaturesDetailService(DetailService):
+    def get_object(self, patient):
+        x = SaltWastingClinicalFeatures.query\
+            .filter(SaltWastingClinicalFeatures.patient == patient)\
+            .first()
+        return x
 
-    if record is None:
-        patient = Patient.query.get_or_404(patient_id)
-        record = SaltWastingClinicalFeatures(patient=patient)
+    def new_object(self, patient):
+        return SaltWastingClinicalFeatures(patient=patient)
 
-    if not record.can_view(current_user):
-        abort(403)
+    def get_form(self, obj):
+        return SaltWastingClinicalFeaturesForm(obj=obj)
 
-    read_only = not record.can_edit(current_user)
 
-    form = SaltWastingClinicalFeaturesForm(obj=record)
+class SaltWastingClinicalFeaturesDetailView(PatientDataDetailView):
+    def __init__(self):
+        super(SaltWastingClinicalFeaturesDetailView, self).__init__(
+            SaltWastingClinicalFeaturesDetailService(current_user),
+        )
 
-    if request.method == 'POST':
-        if read_only:
-            abort(403)
+    def not_found(self, patient):
+        new_obj = self.detail_service.new_object(patient)
 
-        if form.validate():
-            form.populate_obj(record)
-            db.session.add(record)
-            db.session.commit()
-            return redirect(url_for('salt_wasting.view_clinical_features', patient_id=patient_id))
+        if new_obj.can_edit(current_user):
+            return redirect(url_for('salt_wasting.edit_clinical_features', patient_id=patient.id))
+        else:
+            context = dict(
+                patient=patient,
+                patient_data=get_patient_data(patient),
+                obj=new_obj,
+            )
 
-    context = dict(
-        patient=record.patient,
-        patient_data=get_patient_data(record.patient),
-        form=form,
-        read_only=read_only,
-    )
+            return render_template(self.get_template_name(), **context)
 
-    return render_template('patient/salt_wasting_clinical_features.html', **context)
+    def get_template_name(self):
+        return 'patient/salt_wasting_clinical_features.html'
+
+
+class SaltWastingClinicalFeaturesEditView(PatientDataEditView):
+    create = True
+
+    def __init__(self):
+        super(SaltWastingClinicalFeaturesEditView, self).__init__(
+            SaltWastingClinicalFeaturesDetailService(current_user),
+        )
+
+    def saved(self, patient, obj):
+        return redirect(url_for('salt_wasting.view_clinical_features', patient_id=patient.id))
+
+    def get_template_name(self):
+        return 'patient/edit_salt_wasting_clinical_features.html'
+
+
+bp.add_url_rule('/clinical-features/', view_func=SaltWastingClinicalFeaturesDetailView.as_view('view_clinical_features'))
+bp.add_url_rule('/clinical-features/edit/', view_func=SaltWastingClinicalFeaturesEditView.as_view('edit_clinical_features'))

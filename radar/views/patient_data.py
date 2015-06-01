@@ -4,7 +4,7 @@ from flask_login import current_user
 from flask import abort, redirect
 
 from radar.lib.database import db
-from radar.lib.forms.common import DeleteForm
+from radar.lib.forms.core import DeleteForm
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
 from radar.models.transplants import Transplant

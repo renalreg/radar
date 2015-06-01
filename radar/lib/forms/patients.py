@@ -2,7 +2,7 @@ from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import Optional, InputRequired, Email
 from flask_wtf import Form
 
-from radar.lib.forms.common import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField
+from radar.lib.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField
 from radar.lib.ordering import ASCENDING, DESCENDING
 from radar.lib.patient_search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.lib.utils import optional_int

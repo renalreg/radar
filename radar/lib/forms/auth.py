@@ -5,7 +5,7 @@ from wtforms.validators import InputRequired, Email
 
 from radar.lib.auth import PASSWORD_POLICY
 from radar.lib.auth import check_login
-from radar.lib.forms.common import radar_password_check
+from radar.lib.forms.core import radar_password_check
 
 
 class LoginForm(Form):

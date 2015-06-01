@@ -3,7 +3,7 @@ from wtforms import IntegerField
 from wtforms.validators import InputRequired, Optional
 
 from radar.lib.database import db
-from radar.lib.forms.common import FacilityFormMixin, RadarDateField, RadarSelectObjectField, add_empty_object_choice
+from radar.lib.forms.core import FacilityFormMixin, RadarDateField, RadarSelectObjectField, add_empty_object_choice
 from radar.models.plasmapheresis import PlasmapheresisResponse
 from radar.lib.utils import optional_int
 

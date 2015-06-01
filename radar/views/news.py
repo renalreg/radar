@@ -4,7 +4,7 @@ from flask import render_template, Blueprint, abort, redirect, url_for
 from flask_login import current_user
 
 from radar.lib.database import db
-from radar.lib.forms.common import DeleteForm
+from radar.lib.forms.core import DeleteForm
 from radar.lib.forms.news import PostForm
 from radar.models.news import Post
 from radar.lib.pagination import paginate_query

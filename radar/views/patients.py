@@ -5,7 +5,7 @@ from radar.lib.database import db
 from radar.lib.facilities import get_radar_facility
 from radar.lib.patients import get_facility_patients
 from radar.models.disease_groups import DiseaseGroup
-from radar.lib.forms.common import DeleteForm
+from radar.lib.forms.core import DeleteForm
 from radar.models.patients import Patient, PatientDemographics
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
