@@ -1,5 +1,7 @@
 {% extends 'simple.html' %}
 
+{% set title = post.title %}
+
 {% block content %}
     <h1 class="page-header">{{ post.title }} <small>{{ post.published | date_format('%d %b %Y') }}</small></h1>
 

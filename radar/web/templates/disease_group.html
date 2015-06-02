@@ -1,6 +1,7 @@
 {% extends 'simple.html' %}
 
 {% set current_disease_group = disease_group %}
+{% set title = disease_group.name %}
 
 {% from 'macros/news.html' import render_latest_news %}
 
