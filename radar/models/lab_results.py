@@ -25,6 +25,25 @@ class LabGroup(db.Model, MetadataMixin):
 
     lab_results = relationship('LabResult', cascade='all, delete-orphan')
 
+    @property
+    def sorted_lab_results(self):
+        """ Return lab results in the correct order (by weight) """
+
+        lab_results_dict = {}
+
+        for lab_result in self.lab_results:
+            lab_results_dict[lab_result.lab_result_definition.id] = lab_result
+
+        output = []
+
+        for lab_result_definition in self.lab_group_definition.lab_result_definitions:
+            lab_result = lab_results_dict.get(lab_result_definition.id)
+
+            if lab_result is not None:
+                output.append(lab_result)
+
+        return output
+
     def can_view(self, current_user):
         return self.patient.can_view(current_user)
 

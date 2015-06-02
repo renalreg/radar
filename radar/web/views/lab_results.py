@@ -12,7 +12,7 @@ from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView, \
-    PatientDataDeleteView
+    PatientDataDeleteView, PatientDataDetailView
 
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -268,7 +268,18 @@ class LabGroupDeleteView(PatientDataDeleteView):
         return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient.id))
 
 
+class LabGroupDetailView(PatientDataDetailView):
+    def __init__(self):
+        super(LabGroupDetailView, self).__init__(
+            LabGroupDetailService(current_user),
+        )
+
+    def get_template_name(self):
+        return 'patient/lab_group.html'
+
+
 bp.add_url_rule('/add/', view_func=LabGroupAddView.as_view('add_lab_group'))
+bp.add_url_rule('/<int:lab_group_id>/', view_func=LabGroupDetailView.as_view('view_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/edit/', view_func=LabGroupEditView.as_view('edit_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/delete/', view_func=LabGroupDeleteView.as_view('delete_lab_group'))
 

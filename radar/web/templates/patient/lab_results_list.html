@@ -30,9 +30,15 @@
             {% for x in lab_results %}
                 <tr>
                     <td>
-                        {% if x.can_edit(current_user) %}
-                            <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-primary btn-xs">Edit</a>
-                        {% endif %}
+                        <div class="btn-group">
+                            {% if x.can_view(current_user) %}
+                                <a href="{{ url_for('lab_results.view_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-default btn-xs">View</a>
+                            {% endif %}
+
+                            {% if x.can_edit(current_user) %}
+                                <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                            {% endif %}
+                        </div>
                     </td>
 
                     <td>{{ x.lab_group.date | datetime_format("%d/%m/%Y %H:%M") }}</td>

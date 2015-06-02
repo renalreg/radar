@@ -1,0 +1,53 @@
+{% extends 'patient/base.html' %}
+
+{% set current_patient_page = 'lab_results' %}
+{% set title = 'Lab Results' %}
+
+{% block content %}
+    <h1 class="page-header">Lab Result</h1>
+
+    {% if object.can_edit(current_user) %}
+        <p>
+            <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=object.id) }}" class="btn btn-primary">Edit</a>
+        </p>
+    {% endif %}
+
+    {% set lgd = object.lab_group_definition %}
+
+    <table class="table kv">
+        <tr>
+            <th width="20%">Data Source</th>
+            <td>{{ object.facility.name }}</td>
+        </tr>
+
+        <tr>
+            <th>Lab Group</th>
+            <td>{{ lgd.name }}</td>
+        </tr>
+
+        <tr>
+            <th>Date</th>
+            <td>{{ object.date | datetime_format('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+
+        {% if lgd.pre_post %}
+            <tr>
+                <th>Pre / Post</th>
+                <td>
+                    {% if object.pre_post == 'pre' %}
+                        Pre
+                    {% else %}
+                        Post
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+
+        {% for x in object.sorted_lab_results %}
+            <tr>
+                <th>{{ x.lab_result_definition.name }}</th>
+                <td>{{ x.value }} {{ x.lab_result_definition.units }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
