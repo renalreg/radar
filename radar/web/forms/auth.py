@@ -51,7 +51,7 @@ class ChangePasswordForm(BaseChangePasswordForm):
     password = PasswordField('Current Password')
 
     def validate(self):
-        if not super(BaseChangePasswordForm, self).validate():
+        if not super(ChangePasswordForm, self).validate():
             return False
 
         valid = True

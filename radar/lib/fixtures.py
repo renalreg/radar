@@ -341,7 +341,7 @@ def create_fixtures():
 
 
 if __name__ == '__main__':
-    app = create_app('settings.py')
+    app = create_app()
 
     with app.app_context():
         create_fixtures()
