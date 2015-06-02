@@ -13,30 +13,30 @@
             <tr>
                 <th></th>
                 <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
-                <th>{{ render_sortable_column(ordering, 'test', 'Test') }}</th>
-                <th>{{ render_sortable_column(ordering, 'item', 'Item') }}</th>
+                <th>{{ render_sortable_column(ordering, 'group', 'Group') }}</th>
+                <th>{{ render_sortable_column(ordering, 'result', 'Result') }}</th>
                 <th>{{ render_sortable_column(ordering, 'value', 'Value') }}</th>
                 <th>{{ render_sortable_column(ordering, 'units', 'Units') }}</th>
-                <th>{{ render_sortable_column(ordering, 'source', 'Source') }}</th>
+                <th>{{ render_sortable_column(ordering, 'source', 'Data Source') }}</th>
                 <th></th>
             </tr>
         </thead>
 
         <tbody>
-            {% for result in results %}
+            {% for x in lab_results %}
                 <tr>
                     <td>
-                        {% if result.edit_url %}
-                            <a href="{{ result.edit_url }}" class="btn btn-primary btn-xs">Edit</a>
+                        {% if x.can_edit(current_user) %}
+                            <a href="#" class="btn btn-primary btn-xs">Edit</a>
                         {% endif %}
                     </td>
 
-                    <td>{{ result.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
-                    <td>{{ result.test | missing }}</td>
-                    <td>{{ result.item | missing }}</td>
-                    <td>{{ result.value | missing }}</td>
-                    <td>{{ result.units | missing }}</td>
-                    <td>{{ result.source | missing }}</td>
+                    <td>{{ x.lab_group.date | datetime_format("%d/%m/%Y %H:%M") }}</td>
+                    <td>{{ x.lab_group.lab_group_definition.name }}</td>
+                    <td>{{ x.lab_result_definition.name }}</td>
+                    <td>{{ x.value }}</td>
+                    <td>{{ x.lab_result_definition.units | missing }}</td>
+                    <td>{{ x.lab_group.facility.name }}</td>
                     <td></td>
                 </tr>
             {% endfor %}

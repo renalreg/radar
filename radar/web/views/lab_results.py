@@ -6,11 +6,12 @@ from flask_login import current_user
 from sqlalchemy import desc, func
 
 from radar.lib.database import db
+from radar.models import Facility
 from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
     SelectLabOrderForm
 from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
-from radar.models.lab_results import LabOrderDefinition, LabOrder, LabResult
+from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data
 from radar.lib.sda.models import SDABundle, SDALabOrder, SDALabResult
@@ -19,13 +20,14 @@ from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 SORT_ITEM_PREFIX = 'item_'
 
+# TODO these should be functions
 LIST_ORDER_BY = {
-    'date': SDALabOrder.from_time,
-    'test': SDALabOrder.data[('order_item', 'description')],
-    'item': SDALabResult.data[('test_item_code', 'description')],
-    'value': [func.parse_numeric(SDALabResult.data['result_value'].astext), SDALabResult.data['result_value']],
-    'units': SDALabResult.data['result_value_units'],
-    'source': SDALabOrder.data[('entering_organization', 'description')],
+    'date': LabGroup.date,
+    'group': LabGroupDefinition.name,
+    'result': LabResultDefinition.name,
+    'value': LabResult.value,
+    'units': LabResultDefinition.units,
+    'source': Facility.name,
 }
 
 bp = Blueprint('lab_results', __name__)
@@ -38,48 +40,31 @@ def view_lab_result_list(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    query = SDALabResult.query\
-        .join(SDALabResult.sda_lab_order)\
-        .join(SDALabOrder.sda_bundle)\
-        .filter(SDABundle.patient == patient)
+    query = LabResult.query\
+        .join(LabResult.lab_group)\
+        .join(LabResult.lab_result_definition)\
+        .join(LabGroup.lab_group_definition)\
+        .join(LabGroup.lab_group_definition)\
+        .join(LabGroup.facility)\
+        .filter(LabGroup.patient == patient)
 
     query, ordering = order_query(query, LIST_ORDER_BY, 'date', DESCENDING)
 
     query = query.order_by(
-        desc(SDALabOrder.from_time),
-        SDALabOrder.data[('order_item', 'description')],
-        SDALabResult.data[('test_item_code', 'description')],
+        desc(LabGroup.date),
+        LabGroupDefinition.name,
+        LabResultDefinition.name,
     )
 
     pagination = paginate_query(query, default_per_page=50)
-    sda_lab_results = pagination.items
-
-    results = []
-
-    for sda_lab_result in sda_lab_results:
-        sda_lab_order = sda_lab_result.sda_lab_order
-
-        result = dict()
-        result['date'] = sda_lab_order.from_time
-        result['test'] = get_path_as_text(sda_lab_order.data, ['order_item', 'description'])
-        result['item'] = get_path_as_text(sda_lab_result.data, ['test_item_code', 'description'])
-        result['value'] = get_path_as_text(sda_lab_result.data, ['result_value'])
-        result['units'] = get_path_as_text(sda_lab_result.data, ['result_value_units'])
-        result['source'] = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-
-        data_source = sda_lab_order.sda_bundle.data_source
-
-        if data_source.can_edit(current_user):
-            result['edit_url'] = data_source.edit_url()
-
-        results.append(result)
+    lab_results = pagination.items
 
     context = dict(
-        results=results,
         patient=patient,
         patient_data=get_patient_data(patient),
         pagination=pagination,
         ordering=ordering,
+        lab_results=lab_results,
     )
 
     return render_template('patient/lab_results_list.html', **context)

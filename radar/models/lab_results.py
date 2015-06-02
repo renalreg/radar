@@ -1,45 +1,13 @@
-from flask import url_for
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint
+
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
-from radar.models.common import MetadataMixin
+from radar.models import MetadataMixin
 
 
-class LabOrderDefinition(db.Model):
-    __tablename__ = 'lab_order_definitions'
-
-    id = Column(Integer, primary_key=True)
-
-    code = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-
-    pre_post = Column(Boolean, nullable=False)
-
-    lab_result_definitions = relationship('LabResultDefinition')
-
-
-class LabResultDefinition(db.Model):
-    __tablename__ = 'lab_result_definitions'
-
-    id = Column(Integer, primary_key=True)
-
-    lab_order_definition_id = Column(Integer, ForeignKey('lab_order_definitions.id'), nullable=False)
-
-    code = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    units = Column(String)
-
-    # TODO use this to order fields
-    # weight = Column(Integer, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('lab_order_definition_id', 'code'),
-    )
-
-
-class LabOrder(db.Model, MetadataMixin):
-    __tablename__ = 'lab_orders'
+class LabGroup(db.Model, MetadataMixin):
+    __tablename__ = 'lab_groups'
 
     id = Column(Integer, primary_key=True)
 
@@ -49,13 +17,11 @@ class LabOrder(db.Model, MetadataMixin):
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
 
-    lab_order_definition_id = Column(Integer, ForeignKey('lab_order_definitions.id'), nullable=False)
-    lab_order_definition = relationship('LabOrderDefinition')
+    lab_group_definition_id = Column(Integer, ForeignKey('lab_group_definitions.id'), nullable=False)
+    lab_group_definition = relationship('LabGroupDefinition')
 
     date = Column(Date, nullable=False)
     pre_post = Column(String)
-
-    lab_results = relationship('LabResult', cascade='all, delete-orphan')
 
     def can_view(self, current_user):
         return self.patient.can_view(current_user)
@@ -63,22 +29,78 @@ class LabOrder(db.Model, MetadataMixin):
     def can_edit(self, current_user):
         return self.patient.can_edit(current_user)
 
-    def view_url(self):
-        return url_for('lab_results.view_lab_result', patient_id=self.patient.id, record_id=self.id)
-
-    def edit_url(self):
-        return url_for('lab_results.edit_lab_result', patient_id=self.patient.id, record_id=self.id)
-
 
 class LabResult(db.Model):
     __tablename__ = 'lab_results'
 
     id = Column(Integer, primary_key=True)
 
-    lab_order_id = Column(Integer, ForeignKey('lab_orders.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    lab_order = relationship('LabOrder')
+    lab_group_id = Column(Integer, ForeignKey('lab_groups.id'), nullable=False)
+    lab_group = relationship('LabGroup')
 
     lab_result_definition_id = Column(Integer, ForeignKey('lab_result_definitions.id'), nullable=False)
     lab_result_definition = relationship('LabResultDefinition')
 
     value = Column(Numeric, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('lab_group_id', 'lab_result_definition_id'),
+    )
+
+    def can_view(self, current_user):
+        return self.lab_group.patient.can_view(current_user)
+
+    def can_edit(self, current_user):
+        return self.lab_group.patient.can_edit(current_user)
+
+
+class LabGroupDefinition(db.Model):
+    __tablename__ = 'lab_group_definitions'
+
+    id = Column(Integer, primary_key=True)
+    code = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False)
+    short_name = Column(String, nullable=False)
+    pre_post = Column(Boolean, nullable=False)
+
+    lab_group_result_definitions = relationship('LabGroupResultDefinition')
+
+    @classmethod
+    def find_by_code(cls, code):
+        return cls.query.filter(cls.code == code).first()
+
+
+class LabResultDefinition(db.Model):
+    __tablename__ = 'lab_result_definitions'
+
+    id = Column(Integer, primary_key=True)
+    code = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False)
+    short_name = Column(String, nullable=False)
+    units = Column(String)
+    min_value = Column(Numeric)
+    max_value = Column(Numeric)
+
+    lab_group_result_definitions = relationship('LabGroupResultDefinition')
+
+    @classmethod
+    def find_by_code(cls, code):
+        return cls.query.filter(cls.code == code).first()
+
+
+class LabGroupResultDefinition(db.Model):
+    __tablename__ = 'lab_group_result_definitions'
+
+    id = Column(Integer, primary_key=True)
+
+    lab_group_definition_id = Column(Integer, ForeignKey('lab_group_definitions.id'), nullable=False)
+    lab_group_definition = relationship('LabGroupDefinition')
+
+    lab_result_definition_id = Column(Integer, ForeignKey('lab_result_definitions.id'), nullable=False)
+    lab_result_definition = relationship('LabResultDefinition')
+
+    weight = Column(Integer, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('lab_group_definition_id', 'lab_result_definition_id'),
+    )
