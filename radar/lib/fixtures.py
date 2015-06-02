@@ -297,7 +297,7 @@ def create_fixtures():
                     facility=facility,
                     lab_group_definition=group_definition,
                     date=random_datetime(datetime(2000, 1, 1), datetime.now()),
-                    pre_post=random_bool()
+                    pre_post='pre'
                 )
                 test_group.lab_results = [
                     LabResult(lab_group=test_group, lab_result_definition=result1_definition, value=random.randint(1, 100)),

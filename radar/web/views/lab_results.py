@@ -2,15 +2,16 @@ from flask import Blueprint, render_template, abort, request, jsonify, redirect,
 from flask_login import current_user
 from sqlalchemy import desc
 
-from radar.lib.database import db
 from radar.lib.lab_results import LabResultTable
 from radar.models import Facility
-from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form
+from radar.web.forms.core import add_empty_choice
+from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, \
+    lab_group_to_form_data, lab_group_to_form, SelectLabGroupForm
 from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
-from radar.web.views.patient_data import get_patient_data
+from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView
 
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -38,7 +39,6 @@ def view_lab_result_list(patient_id):
     query = LabResult.query\
         .join(LabResult.lab_group)\
         .join(LabResult.lab_result_definition)\
-        .join(LabGroup.lab_group_definition)\
         .join(LabGroup.lab_group_definition)\
         .join(LabGroup.facility)\
         .filter(LabGroup.patient == patient)
@@ -191,81 +191,92 @@ def view_lab_result_graph_json(patient_id):
     })
 
 
-@bp.route('/new/', endpoint='add_lab_result', methods=['GET', 'POST'])
-@bp.route('/<int:record_id>/', endpoint='view_lab_result')
-@bp.route('/<int:record_id>/', endpoint='edit_lab_result', methods=['GET', 'POST'])
-def view_lab_result(patient_id, record_id=None):
-    patient = Patient.query.get_or_404(patient_id)
+class LabGroupDetailService(DetailService):
+    def get_object(self, patient, lab_group_id):
+        lab_group = LabGroup.query\
+            .filter(LabGroup.patient == patient)\
+            .filter(LabGroup.id == lab_group_id)\
+            .first()
+        return lab_group
 
-    if not patient.can_view(current_user):
-        abort(403)
+    def new_object(self, patient):
+        return LabGroup(patient=patient)
 
-    select_form = SelectLabOrderForm()
-    select_form.lab_order_definition_id.choices = get_lab_order_choices()
+    def get_form(self, obj, lab_group_definition=None):
+        if obj.lab_group_definition is not None:
+            lab_group_definition = obj.lab_group_definition
 
-    lab_order_definition = None
-    form = None
+        form_class = lab_group_to_form(lab_group_definition)
+        data = lab_group_to_form_data(obj)
+        return form_class(obj=obj, data=data)
 
-    if record_id is None:
-        lab_order = LabOrder(patient=patient)
+
+class LabGroupEditView(PatientDataEditView):
+    def __init__(self):
+        super(LabGroupEditView, self).__init__(
+            LabGroupDetailService(current_user),
+        )
+
+    def saved(self, patient, obj):
+        return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient.id))
+
+    def get_template_name(self):
+        return 'patient/lab_group_form.html'
+
+
+class LabGroupAddView(PatientDataAddView):
+    def __init__(self):
+        super(LabGroupAddView, self).__init__(
+            LabGroupDetailService(current_user),
+        )
+
+        self.select_form = None
+
+    def get_form(self, obj):
+        select_form = SelectLabGroupForm()
+        select_form.lab_group_definition_id.choices = get_lab_group_choices()
+        self.select_form = select_form
 
         if select_form.validate_on_submit():
-            lab_order_definition_id = select_form.lab_order_definition_id.data
-            lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
-            lab_order.lab_order_definition = lab_order_definition
-    else:
-        lab_order = LabOrder.query\
-            .filter(LabOrder.patient == patient)\
-            .filter(LabOrder.id == record_id)\
-            .first_or_404()
-        lab_order_definition = lab_order.lab_order_definition
+            lab_group_definition_id = select_form.lab_group_definition_id.data
+            lab_group_definition = LabGroupDefinition.query.get_or_404(lab_group_definition_id)
+            obj.lab_group_definition = lab_group_definition
+            return super(LabGroupAddView, self).get_form(obj)
+        else:
+            return None
 
-    if lab_order_definition is not None:
-        data = get_lab_order_form_data(lab_order)
-        form_class = lab_order_to_form(lab_order_definition)
-        form = form_class(obj=lab_order, data=data)
+    def saved(self, patient, obj):
+        return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient.id))
 
-        if 'lab_order_form' in request.form and form.validate_on_submit():
-            update_lab_order(lab_order, form)
+    def get_template_name(self):
+        return 'patient/lab_group_form.html'
 
-            concept_map = lab_order.to_concepts()
-            valid, errors = concept_map.validate()
-
-            if valid:
-                db.session.add(lab_order)
-                db.session.commit()
-                return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient_id))
-            else:
-                form.add_errors(errors)
-
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
-        select_form=select_form,
-        form=form,
-        lab_order=lab_order,
-        lab_order_definition=lab_order_definition,
-    )
-
-    return render_template('patient/lab_result.html', **context)
+    def get_context(self):
+        return {
+            'select_form': self.select_form
+        }
 
 
-@bp.route('/forms/<int:lab_order_definition_id>/', methods=['GET', 'POST'])
-def lab_result_form(patient_id, lab_order_definition_id):
+bp.add_url_rule('/add/', view_func=LabGroupAddView.as_view('add_lab_group'))
+bp.add_url_rule('/<int:lab_group_id>/edit/', view_func=LabGroupEditView.as_view('edit_lab_group'))
+
+
+@bp.route('/forms/<int:lab_group_definition_id>/', methods=['GET', 'POST'])
+def lab_group_form(patient_id, lab_group_definition_id):
     patient = Patient.query.get_or_404(patient_id)
 
-    lab_order_definition = LabOrderDefinition.query.get_or_404(lab_order_definition_id)
-    form_class = lab_order_to_form(lab_order_definition)
-    lab_order = LabOrder(patient=patient)
-    lab_order.lab_order_definition_id = lab_order_definition.id
-    form = form_class(obj=lab_order)
+    lab_group_definition = LabGroupDefinition.query.get_or_404(lab_group_definition_id)
+    form_class = lab_group_to_form(lab_group_definition)
+    lab_group = LabGroup(patient=patient)
+    lab_group.lab_group_definition_id = lab_group_definition.id
+    form = form_class(obj=lab_group)
 
     context = dict(
         form=form,
-        lab_order_definition=lab_order_definition,
+        lab_group_definition=lab_group_definition,
     )
 
-    return render_template('patient/edit_lab_result.html', **context)
+    return render_template('patient/lab_group_form_ajax.html', **context)
 
 
 def get_result_code_choices():
@@ -291,23 +302,16 @@ def update_lab_order(lab_order, form):
         lab_order.lab_results.append(lab_result)
 
 
-def get_lab_order_form_data(lab_order):
-    data = dict()
-
-    for lab_result in lab_order.lab_results:
-        data[lab_result.lab_result_definition.code] = lab_result.value
-
-    return data
-
-
-def get_lab_order_choices():
+def get_lab_group_choices():
     choices = []
 
-    lab_order_definitions = LabOrderDefinition.query\
-        .order_by(LabOrderDefinition.description)\
+    lab_group_definitions = LabGroupDefinition.query\
+        .order_by(LabGroupDefinition.name)\
         .all()
 
-    for x in lab_order_definitions:
-        choices.append((x.id, x.description))
+    for x in lab_group_definitions:
+        choices.append((x.id, x.name))
+
+    choices = add_empty_choice(choices)
 
     return choices

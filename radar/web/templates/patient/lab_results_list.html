@@ -31,7 +31,7 @@
                 <tr>
                     <td>
                         {% if x.can_edit(current_user) %}
-                            <a href="#" class="btn btn-primary btn-xs">Edit</a>
+                            <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-primary btn-xs">Edit</a>
                         {% endif %}
                     </td>
 

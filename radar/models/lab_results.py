@@ -21,9 +21,9 @@ class LabGroup(db.Model, MetadataMixin):
     lab_group_definition = relationship('LabGroupDefinition')
 
     date = Column(DateTime(timezone=True), nullable=False)
-    pre_post = Column(String)
+    pre_post = Column(String)  # TODO constraint
 
-    lab_results = relationship('LabResult')
+    lab_results = relationship('LabResult', cascade='all, delete-orphan')
 
     def can_view(self, current_user):
         return self.patient.can_view(current_user)
@@ -45,9 +45,10 @@ class LabResult(db.Model):
 
     value = Column(Numeric, nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint('lab_group_id', 'lab_result_definition_id'),
-    )
+    # TODO re-enable - need to figure out how to delete children before adding new ones (see populate_obj)
+    #__table_args__ = (
+    #   UniqueConstraint('lab_group_id', 'lab_result_definition_id'),
+    #)
 
     def can_view(self, current_user):
         return self.lab_group.patient.can_view(current_user)

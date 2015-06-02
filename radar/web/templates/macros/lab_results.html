@@ -23,9 +23,11 @@
 
         <hr />
 
-        {% call render_panel('Error', 'panel-danger') %}
-            Please enter at least one result.
-        {% endcall %}
+        {% if form.no_results_entered %}
+            {% call render_panel('Error', 'panel-danger') %}
+                Please enter at least one result.
+            {% endcall %}
+        {% endif %}
 
         {% for field in form.result_fields %}
             {{ render_field(field) }}
