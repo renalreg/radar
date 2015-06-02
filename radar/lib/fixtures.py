@@ -289,6 +289,8 @@ def create_fixtures():
             elif r > 0.1:
                 d.nhs_no = generate_nhs_no()
 
+            db.session.add(d)
+
             for x in range(10):
                 test_group = LabGroup(
                     patient=patient,
