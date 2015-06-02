@@ -20,12 +20,12 @@
 
         <tr>
             <th>First Name</th>
-            <td>{{ user.first_name }}</td>
+            <td>{{ user.first_name | missing }}</td>
         </tr>
 
         <tr>
             <th>Last Name</th>
-            <td>{{ user.last_name }}</td>
+            <td>{{ user.last_name | missing }}</td>
         </tr>
 
         <tr>
