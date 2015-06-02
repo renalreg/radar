@@ -30,6 +30,8 @@ class LabResultTable(object):
             self.rows_dict[key].append(row)
             self.rows.append(row)
 
+        row.set_code_value(result_code, result_value)
+
     def add_all(self, lab_results):
         for lab_result in lab_results:
             self.add(lab_result)

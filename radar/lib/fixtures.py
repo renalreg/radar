@@ -1,5 +1,6 @@
 import random
 from datetime import date, timedelta, datetime
+from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult
 
 from radar.web.app import create_app
 from radar.lib.database import db
@@ -135,6 +136,15 @@ def random_date(start_date, end_date):
     return random_date
 
 
+def random_bool():
+    return random.randint(0, 1) == 1
+
+
+def random_datetime(start_dt, end_dt):
+    seconds = int((end_dt - start_dt).total_seconds())
+    return start_dt + timedelta(seconds=random.randrange(seconds))
+
+
 def generate_email_address(first_name, last_name):
     return '%s.%s@example.org' % (first_name.lower(), last_name.lower())
 
@@ -220,7 +230,28 @@ def create_fixtures():
     for disease_group in disease_groups:
         db.session.add(disease_group)
 
-    for _ in range(1000):
+    group_definition = LabGroupDefinition(code='TEST', name='Test', short_name='Test', pre_post=True)
+    db.session.add(group_definition)
+
+    result1_definition = LabResultDefinition(code='FOO', name='Foo', short_name='Foo', units='foo')
+    db.session.add(result1_definition)
+
+    result2_definition = LabResultDefinition(code='BAR', name='Bar', short_name='Bar', units='bar')
+    db.session.add(result2_definition)
+
+    result3_definition = LabResultDefinition(code='BAZ', name='Baz', short_name='Baz', units='baz')
+    db.session.add(result3_definition)
+
+    group_result1_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result1_definition, weight=1)
+    db.session.add(group_result1_definition)
+
+    group_result2_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result2_definition, weight=2)
+    db.session.add(group_result2_definition)
+
+    group_result3_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result3_definition, weight=3)
+    db.session.add(group_result3_definition)
+
+    for _ in range(100):
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
@@ -257,6 +288,21 @@ def create_fixtures():
                 d.chi_no = generate_chi_no()
             elif r > 0.1:
                 d.nhs_no = generate_nhs_no()
+
+            for x in range(10):
+                test_group = LabGroup(
+                    patient=patient,
+                    facility=facility,
+                    lab_group_definition=group_definition,
+                    date=random_datetime(datetime(2000, 1, 1), datetime.now()),
+                    pre_post=random_bool()
+                )
+                test_group.lab_results = [
+                    LabResult(lab_group=test_group, lab_result_definition=result1_definition, value=random.randint(1, 100)),
+                    LabResult(lab_group=test_group, lab_result_definition=result2_definition, value=random.randint(1, 100)),
+                    LabResult(lab_group=test_group, lab_result_definition=result3_definition, value=random.randint(1, 100)),
+                ]
+                db.session.add(test_group)
 
         for disease_group in random.sample(disease_groups, random.randint(1, 2)):
             disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)

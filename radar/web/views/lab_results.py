@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort, request, jsonify, redirect, url_for
 from flask_login import current_user
-from sqlalchemy import desc, func
+from sqlalchemy import desc
 
 from radar.lib.database import db
 from radar.lib.lab_results import LabResultTable
@@ -11,7 +11,6 @@ from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data
-from radar.lib.sda.models import SDABundle, SDALabOrder, SDALabResult
 
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -97,6 +96,7 @@ def view_lab_result_table(patient_id):
         .join(LabResult.lab_result_definition)\
         .join(LabResult.lab_group)\
         .filter(LabResultDefinition.code.in_(result_codes))\
+        .filter(LabGroup.patient == patient)\
         .order_by(LabGroup.id)\
         .order_by(LabResult.id)\
         .all()
@@ -143,7 +143,7 @@ def view_lab_result_graph(patient_id):
         abort(403)
 
     form = LabResultGraphForm()
-    form.test_item.choices = get_test_item_choices()
+    form.result_code.choices = get_result_code_choices()
 
     context = dict(
         patient=patient,
@@ -161,34 +161,32 @@ def view_lab_result_graph_json(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
-    test_item = request.args.get('test_item')
+    result_code = request.args.get('result_code')
 
-    if test_item is None:
+    if result_code is None:
         abort(404)
 
-    dt_column = SDALabOrder.from_time
-    value_column = func.parse_numeric(SDALabResult.data['result_value'].astext)
+    result_definition = LabResultDefinition.find_by_code(result_code)
 
-    query = db.session\
-        .query(dt_column, value_column)\
-        .join(SDALabResult.sda_lab_order)\
-        .join(SDALabOrder.sda_bundle)\
-        .filter(
-            SDABundle.patient == patient,
-            SDALabResult.test_item_code == test_item.lower(),
-            dt_column != None,
-            value_column != None
-        )\
-        .order_by(dt_column)
+    if result_definition is None:
+        abort(404)
+
+    lab_results = LabResult.query\
+        .join(LabResult.lab_group)\
+        .join(LabResult.lab_result_definition)\
+        .filter(LabGroup.patient == patient)\
+        .filter(LabResultDefinition.code == result_code)\
+        .order_by(LabGroup.date, LabResult.id)\
+        .all()
 
     data = []
 
-    for dt, value in query.all():
-        data.append((dt.isoformat(), float(value)))
+    for lab_result in lab_results:
+        data.append((lab_result.lab_group.date.isoformat(), float(lab_result.value)))
 
     return jsonify({
-        'name': test_item.upper(),  # TODO
-        'units': 'TODO',
+        'name': result_definition.name,
+        'units': result_definition.units or '',
         'data': data,
     })
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, Boolean, UniqueConstraint, DateTime
 
 from sqlalchemy.orm import relationship
 
@@ -20,8 +20,10 @@ class LabGroup(db.Model, MetadataMixin):
     lab_group_definition_id = Column(Integer, ForeignKey('lab_group_definitions.id'), nullable=False)
     lab_group_definition = relationship('LabGroupDefinition')
 
-    date = Column(Date, nullable=False)
+    date = Column(DateTime(timezone=True), nullable=False)
     pre_post = Column(String)
+
+    lab_results = relationship('LabResult')
 
     def can_view(self, current_user):
         return self.patient.can_view(current_user)
