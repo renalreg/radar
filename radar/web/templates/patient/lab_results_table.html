@@ -24,7 +24,13 @@
                     <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
 
                     {% for x, sort_key in result_columns %}
-                        <th>{{ render_sortable_column(ordering, sort_key, x.short_name) }}</th>
+                        <th>
+                            {{ render_sortable_column(ordering, sort_key, x.short_name) }}
+
+                            {% if x.units %}
+                                <small>({{ x.units }})</small>
+                            {% endif %}
+                        </th>
                     {% endfor %}
 
                     <th>{{ render_sortable_column(ordering, 'source', 'Data Source') }}</th>
