@@ -38,16 +38,5 @@
 {% endblock %}
 
 {% block body_js %}
-    <script>
-        $(function() {
-            $('#lab_group_definition_id').change(function() {
-                var lab_group_definition_id = $(this).val();
-                var url = '../forms/' + lab_group_definition_id + '/';
-                $.get(url, function(data) {
-                    $('#lab_group_form').html(data);
-                    init_datepickers();
-                });
-            });
-        });
-    </script>
+    <script src="/static/js/lab-result-form.js"></script>
 {% endblock %}
