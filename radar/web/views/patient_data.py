@@ -13,13 +13,10 @@ class ListService(object):
     def __init__(self, user):
         self.user = user
 
-    def get_args(self, patient, kwargs, *args):
-        return []
-
     def get_objects(self, patient, *args, **kwargs):
         raise NotImplementedError
 
-    def get_context(self, patient, objects, *args, **kwargs):
+    def get_context(self):
         return {}
 
 
@@ -255,8 +252,6 @@ class PatientDataListView(View):
             args.append(disease_group)
             context['disease_group'] = disease_group
 
-        args.extend(self.list_service.get_args(patient, kwargs, *args))
-
         objects = self.list_service.get_objects(patient, *args, **kwargs)
 
         context = dict(
@@ -264,8 +259,7 @@ class PatientDataListView(View):
             patient_data=get_patient_data(patient),
             objects=objects,
         )
-
-        context.update(self.list_service.get_context(patient, objects, *args, **kwargs))
+        context.update(self.list_service.get_context())
 
         return render_template(self.get_template_name(), **context)
 
