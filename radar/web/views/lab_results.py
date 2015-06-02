@@ -37,12 +37,30 @@ def view_lab_result_list(patient_id):
     if not patient.can_view(current_user):
         abort(403)
 
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient),
+    )
+
+    lab_group_definition_id = request.args.get('lab_group_definition_id')
+
+    if lab_group_definition_id is not None:
+        try:
+            lab_group_definition_id = int(lab_group_definition_id)
+        except ValueError:
+            lab_group_definition_id = None
+
     query = LabResult.query\
         .join(LabResult.lab_group)\
         .join(LabResult.lab_result_definition)\
         .join(LabGroup.lab_group_definition)\
         .join(LabGroup.facility)\
         .filter(LabGroup.patient == patient)
+
+    if lab_group_definition_id is not None:
+        lab_group_definition = LabGroupDefinition.query.get_or_404(lab_group_definition_id)
+        query = query.filter(LabGroup.lab_group_definition == lab_group_definition)
+        context['lab_group_definition'] = lab_group_definition
 
     query, ordering = order_query(query, LIST_ORDER_BY, 'date', DESCENDING)
 
@@ -55,13 +73,11 @@ def view_lab_result_list(patient_id):
     pagination = paginate_query(query, default_per_page=50)
     lab_results = pagination.items
 
-    context = dict(
-        patient=patient,
-        patient_data=get_patient_data(patient),
+    context.update(dict(
         pagination=pagination,
         ordering=ordering,
         lab_results=lab_results,
-    )
+    ))
 
     return render_template('patient/lab_results_list.html', **context)
 
@@ -234,14 +250,26 @@ class LabGroupAddView(PatientDataAddView):
         self.select_form = None
 
     def get_form(self, obj):
-        select_form = SelectLabGroupForm()
-        select_form.lab_group_definition_id.choices = get_lab_group_choices()
-        self.select_form = select_form
+        lab_group_definition_id = request.args.get('lab_group_definition_id')
 
-        if select_form.validate_on_submit():
-            lab_group_definition_id = select_form.lab_group_definition_id.data
+        if lab_group_definition_id is not None:
+            try:
+                lab_group_definition_id = int(lab_group_definition_id)
+            except ValueError:
+                lab_group_definition_id = None
+
+        if lab_group_definition_id is None:
+            select_form = SelectLabGroupForm()
+            select_form.lab_group_definition_id.choices = get_lab_group_choices()
+            self.select_form = select_form
+
+            if select_form.validate_on_submit():
+                lab_group_definition_id = select_form.lab_group_definition_id.data
+
+        if lab_group_definition_id is not None:
             lab_group_definition = LabGroupDefinition.query.get_or_404(lab_group_definition_id)
             obj.lab_group_definition = lab_group_definition
+            obj.lab_group_definition_id = lab_group_definition.id  # needed for form
             return super(LabGroupAddView, self).get_form(obj)
         else:
             return None
@@ -282,38 +310,6 @@ bp.add_url_rule('/add/', view_func=LabGroupAddView.as_view('add_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/', view_func=LabGroupDetailView.as_view('view_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/edit/', view_func=LabGroupEditView.as_view('edit_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/delete/', view_func=LabGroupDeleteView.as_view('delete_lab_group'))
-
-
-class LabGroupSpecificListService(ListService):
-    def get_args(self, patient, kwargs):
-        lab_group_definition_id = kwargs.pop('lab_group_definition_id')
-        return [LabGroupDefinition.query.get_or_404(lab_group_definition_id)]
-
-    def get_objects(self, patient, lab_group_definition):
-        lab_groups = LabGroup.query\
-            .filter(LabGroup.patient == patient)\
-            .filter(LabGroup.lab_group_definition == lab_group_definition)\
-            .order_by(LabGroup.date.desc())\
-            .all()
-        return lab_groups
-
-    def get_context(self, patient, objects, lab_group_definition):
-        return {
-            'lab_group_definition': lab_group_definition,
-        }
-
-
-class LabGroupSpecificListView(PatientDataListView):
-    def __init__(self):
-        super(LabGroupSpecificListView, self).__init__(
-            LabGroupSpecificListService(current_user),
-        )
-
-    def get_template_name(self):
-        return 'patient/lab_group_specific_list.html'
-
-
-bp.add_url_rule('/groups/<int:lab_group_definition_id>/', view_func=LabGroupSpecificListView.as_view('view_lab_group_specific_list'))
 
 
 @bp.route('/forms/<int:lab_group_definition_id>/', methods=['GET', 'POST'])

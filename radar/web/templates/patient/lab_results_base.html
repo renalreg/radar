@@ -4,7 +4,11 @@
 {% set title = 'Lab Results' %}
 
 {% block content %}
-    <h1 class="page-header">Lab Results</h1>
+    {% if lab_group_definition %}
+        <h1 class="page-header">Lab Results - {{ lab_group_definition.name }}</h1>
+    {% else %}
+        <h1 class="page-header">Lab Results</h1>
+    {% endif %}
 
     <ul class="nav radar-tabs">
         <li{% if current_lab_results_page == 'list' %} class="active"{% endif %}>

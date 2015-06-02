@@ -14,7 +14,7 @@
         <h1 class="page-header">New Lab Result</h1>
     {% endif %}
 
-    {% if not object.id %}
+    {% if not object.lab_group_definition %}
         <form class="form-horizontal" method="POST">
             {{ select_form.hidden_tag() }}
 
@@ -27,6 +27,8 @@
 
         <hr />
     {% endif %}
+
+    {{ form.errors }}
 
     <div id="lab_group_form">
         {% if form %}
