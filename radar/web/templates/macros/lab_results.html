@@ -1,13 +1,17 @@
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/panels.html' import render_panel %}
 
-{% macro render_lab_order_form(lab_order_definition, form) %}
-    <h3>{{ lab_order_definition.description }}</h3>
+{% macro render_lab_group_form(lab_group_definition, form) %}
+    <h3>{{ lab_group_definition.name }}</h3>
+
+    {{ render_form_errors(form) }}
 
     <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
 
-        {{ render_field(form.unit_id) }}
+        {{ render_field(form.facility_id) }}
 
         <hr />
 
@@ -16,6 +20,12 @@
         {% if form.pre_post %}
             {{ render_field(form.pre_post) }}
         {% endif %}
+
+        <hr />
+
+        {% call render_panel('Error', 'panel-danger') %}
+            Please enter at least one result.
+        {% endcall %}
 
         {% for field in form.result_fields %}
             {{ render_field(field) }}

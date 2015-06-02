@@ -102,6 +102,12 @@ class PatientDataAddView(View):
     def get_template_name(self):
         raise NotImplementedError
 
+    def get_form(self, obj):
+        return self.detail_service.get_form(obj)
+
+    def get_context(self):
+        return {}
+
     def dispatch_request(self, patient_id, **kwargs):
         patient = Patient.query.get_or_404(patient_id)
 
@@ -127,9 +133,9 @@ class PatientDataAddView(View):
         if not obj.can_edit(current_user):
             abort(403)
 
-        form = self.detail_service.get_form(obj)
+        form = self.get_form(obj)
 
-        if form.validate_on_submit():
+        if form and form.validate_on_submit():
             form.populate_obj(obj)
 
             if self.detail_service.validate(form, obj):
@@ -138,12 +144,11 @@ class PatientDataAddView(View):
                 flash('Saved.', 'success')
                 return self.saved(patient, obj, *args)
 
-        print form.errors
-
         context.update(dict(
             form=form,
             object=obj
         ))
+        context.update(self.get_context())
         context.update(self.detail_service.get_context())
 
         return render_template(self.get_template_name(), **context)

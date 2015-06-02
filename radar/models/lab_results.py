@@ -71,6 +71,10 @@ class LabGroupDefinition(db.Model):
     def find_by_code(cls, code):
         return cls.query.filter(cls.code == code).first()
 
+    @property
+    def lab_result_definitions(self):
+        return [x.lab_result_definition for x in sorted(self.lab_group_result_definitions, key=lambda y: y.weight)]
+
 
 class LabResultDefinition(db.Model):
     __tablename__ = 'lab_result_definitions'
