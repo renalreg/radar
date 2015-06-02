@@ -11,7 +11,8 @@ from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
-from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView
+from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView, \
+    PatientDataDeleteView
 
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -257,8 +258,19 @@ class LabGroupAddView(PatientDataAddView):
         }
 
 
+class LabGroupDeleteView(PatientDataDeleteView):
+    def __init__(self):
+        super(LabGroupDeleteView, self).__init__(
+            LabGroupDetailService(current_user),
+        )
+
+    def deleted(self, patient):
+        return redirect(url_for('lab_results.view_lab_result_list', patient_id=patient.id))
+
+
 bp.add_url_rule('/add/', view_func=LabGroupAddView.as_view('add_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/edit/', view_func=LabGroupEditView.as_view('edit_lab_group'))
+bp.add_url_rule('/<int:lab_group_id>/delete/', view_func=LabGroupDeleteView.as_view('delete_lab_group'))
 
 
 @bp.route('/forms/<int:lab_group_definition_id>/', methods=['GET', 'POST'])
