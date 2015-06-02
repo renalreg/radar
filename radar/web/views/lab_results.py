@@ -1,24 +1,20 @@
-from collections import defaultdict
-from datetime import datetime
-
 from flask import Blueprint, render_template, abort, request, jsonify, redirect, url_for
 from flask_login import current_user
 from sqlalchemy import desc, func
 
 from radar.lib.database import db
+from radar.lib.lab_results import LabResultTable
 from radar.models import Facility
-from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form, \
-    SelectLabOrderForm
+from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, lab_order_to_form
 from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data
 from radar.lib.sda.models import SDABundle, SDALabOrder, SDALabResult
-from radar.lib.utils import get_path_as_text, get_path_as_datetime
 
 
-SORT_ITEM_PREFIX = 'item_'
+RESULT_CODE_SORT_PREFIX = 'result_'
 
 # TODO these should be functions
 LIST_ORDER_BY = {
@@ -79,115 +75,61 @@ def view_lab_result_table(patient_id):
         abort(403)
 
     form = LabResultTableForm(formdata=request.args, csrf_enabled=False)
-    form.test_item.choices = get_test_item_choices()
+    form.result_codes.choices = get_result_code_choices()
 
-    test_items = form.test_item.data
+    result_codes = form.result_codes.data
 
-    if not test_items:
-        test_items = ['creatinine']
-        form.test_item.data = test_items
+    # Default result codes
+    if not result_codes:
+        result_codes = ['CREATININE']
+
+    lab_result_definitions = LabResultDefinition.query\
+        .filter(LabResultDefinition.code.in_(result_codes))\
+        .all()
+    lab_result_definition_dict = {x.code: x for x in lab_result_definitions}
+
+    # Remove invalid result codes
+    result_codes = [x for x in result_codes if x in lab_result_definition_dict]
+    form.result_codes.data = result_codes
 
     # Sorting is done later to keep item grouping consistent
-    sda_lab_results = SDALabResult.query\
-        .join(SDALabResult.sda_lab_order)\
-        .join(SDALabOrder.sda_bundle)\
-        .filter(SDABundle.patient == patient)\
-        .filter(SDALabResult.test_item_code.in_(test_items))\
-        .order_by(SDALabOrder.id)\
-        .order_by(SDALabResult.id)\
+    lab_results = LabResult.query\
+        .join(LabResult.lab_result_definition)\
+        .join(LabResult.lab_group)\
+        .filter(LabResultDefinition.code.in_(result_codes))\
+        .order_by(LabGroup.id)\
+        .order_by(LabResult.id)\
         .all()
 
-    # Results list for display
-    results = list()
+    table = LabResultTable(result_codes)
+    table.add_all(lab_results)
 
-    # Results for each group of fields
-    result_dict = defaultdict(list)
-
-    for sda_lab_result in sda_lab_results:
-        sda_lab_order = sda_lab_result.sda_lab_order
-
-        date = get_path_as_datetime(sda_lab_order.data, ['from_time'])
-        source = get_path_as_text(sda_lab_order.data, ['entering_organization', 'description'])
-        item = sda_lab_result.test_item_code
-        value = get_path_as_text(sda_lab_result.data, ['result_value'])
-
-        # Fields to group by
-        group = (date, source)
-
-        # Existing results in this group (i.e. result rows from a site at a particular time)
-        group_results = result_dict[group]
-
-        # The existing result to use
-        result = None
-
-        # Find an existing result to fill in before creating a new one
-        for group_result in group_results:
-            if item not in group_result['columns']:
-                result = group_result
-                break
-
-        # First result for this group or all existing results have this item filled
-        if result is None:
-            result = dict()
-            result['source'] = source
-            result['date'] = date
-            result['columns'] = dict()
-            results.append(result)
-            result_dict[group].append(result)
-
-        result['columns'][item] = value
-
+    # Build list of sortable columns
     sort_columns = ['date', 'source']
-    sort_item_columns = [SORT_ITEM_PREFIX + x for x in test_items]
-    sort_columns.extend(sort_item_columns)
+    sort_columns.extend([RESULT_CODE_SORT_PREFIX + x for x in result_codes])
 
     ordering = ordering_from_request(sort_columns, 'date', DESCENDING)
 
     sort_column = ordering.column
-    sort_direction = ordering.direction
+    reverse = ordering.direction == DESCENDING
 
-    def get_date(x):
-        return x['date'] or datetime.min
-
-    def get_source(x):
-        return x['source']
-
-    def get_item_value(x, item_column):
-        value = x['columns'].get(item_column)
-
-        if value is None:
-            return None
-
-        try:
-            value = float(value)
-        except ValueError:
-            pass
-
-        return value
-
-    if sort_column.startswith(SORT_ITEM_PREFIX):
-        sort_item_column = sort_column.split(SORT_ITEM_PREFIX)[1]
-        sort_f = lambda x: (get_item_value(x, sort_item_column), get_date(x), get_source(x))
+    if sort_column.startswith(RESULT_CODE_SORT_PREFIX):
+        sort_result_code = sort_column.split(RESULT_CODE_SORT_PREFIX)[1]
+        table.sort_by_result_code(sort_result_code, reverse)
     elif sort_column == 'source':
-        sort_f = lambda x: (get_source(x), get_date(x))
+        table.sort_by_facility(reverse)
     else:
-        sort_f = lambda x: (get_date(x), get_source(x))
+        table.sort_by_date(reverse)
 
-    results = sorted(results, key=sort_f, reverse=(sort_direction == DESCENDING))
-
-    # Convert columns from dict to list for display
-    for result in results:
-        result['columns'] = [result['columns'].get(x) for x in test_items]
-
-    item_columns = zip([x.upper() for x in test_items], sort_item_columns)
+    result_columns = [(lab_result_definition_dict[x], RESULT_CODE_SORT_PREFIX + x) for x in result_codes]
 
     context = dict(
         patient=patient,
         patient_data=get_patient_data(patient),
-        results=results,
-        item_columns=item_columns,
+        table=table,
         ordering=ordering,
         form=form,
+        result_columns=result_columns,
     )
 
     return render_template('patient/lab_results_table.html', **context)
@@ -328,18 +270,12 @@ def lab_result_form(patient_id, lab_order_definition_id):
     return render_template('patient/edit_lab_result.html', **context)
 
 
-def get_test_item_choices():
-    # TODO will get slow
-    # TODO multiple labels for same code
-    # TODO coding standards
-    return db.session\
-        .query(
-            SDALabResult.test_item_code,
-            SDALabResult.data[('test_item_code', 'description')]
-        )\
-        .order_by(SDALabResult.data[('test_item_code', 'description')])\
-        .distinct()\
+def get_result_code_choices():
+    results = LabResultDefinition.query\
+        .order_by(LabResultDefinition.name)\
         .all()
+
+    return [(x.code, x.name) for x in results]
 
 
 def update_lab_order(lab_order, form):

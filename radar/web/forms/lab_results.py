@@ -10,15 +10,15 @@ from radar.lib.utils import optional_int
 
 
 class LabResultTableForm(Form):
-    test_item = RadarSelectMultipleField('Columns', validators=[Optional()])
+    result_codes = RadarSelectMultipleField('Columns', validators=[Optional()])
 
 
 class LabResultGraphForm(Form):
-    test_item = RadarSelectField()
+    result_code = RadarSelectField()
 
 
-class SelectLabOrderForm(Form):
-    lab_order_definition_id = RadarSelectField('Lab Order', validators=[InputRequired()], coerce=optional_int)
+class SelectLabGroupForm(Form):
+    lab_group_definition_id = RadarSelectField('Lab Group', validators=[InputRequired()], coerce=optional_int)
 
 
 class AbstractLabOrderForm(FacilityFormMixin, Form):

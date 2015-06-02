@@ -9,7 +9,7 @@
 
     <form class="form lab-result-table" method="GET">
         <p>
-            {{ form.test_item(class='form-control') }}
+            {{ form.result_codes(class='form-control') }}
         </p>
 
         <p>
@@ -17,31 +17,35 @@
         </p>
     </form>
 
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
-
-                {% for name, key in item_columns %}
-                    <th>{{ render_sortable_column(ordering, key, name) }}</th>
-                {% endfor %}
-
-                <th>{{ render_sortable_column(ordering, 'source', 'Source') }}</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for result in results %}
+    {% if table %}
+        <table class="table table-condensed table-striped">
+            <thead>
                 <tr>
-                    <td>{{ result.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
+                    <th>{{ render_sortable_column(ordering, 'date', 'Date') }}</th>
 
-                    {% for column in result.columns %}
-                        <td>{{ column | missing }}</td>
+                    {% for x, sort_key in result_columns %}
+                        <th>{{ render_sortable_column(ordering, sort_key, x.short_name) }}</th>
                     {% endfor %}
 
-                    <td>{{ result.source | missing }}</td>
+                    <th>{{ render_sortable_column(ordering, 'source', 'Data Source') }}</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+                {% for x in table %}
+                    <tr>
+                        <td>{{ x.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
+
+                        {% for value in x %}
+                            <td>{{ value | missing }}</td>
+                        {% endfor %}
+
+                        <td>{{ x.facility.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No matching lab results.</p>
+    {% endif %}
 {% endblock %}
