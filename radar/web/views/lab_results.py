@@ -12,7 +12,7 @@ from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView, \
-    PatientDataDeleteView, PatientDataDetailView
+    PatientDataDeleteView, PatientDataDetailView, PatientDataListView, ListService
 
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -282,6 +282,38 @@ bp.add_url_rule('/add/', view_func=LabGroupAddView.as_view('add_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/', view_func=LabGroupDetailView.as_view('view_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/edit/', view_func=LabGroupEditView.as_view('edit_lab_group'))
 bp.add_url_rule('/<int:lab_group_id>/delete/', view_func=LabGroupDeleteView.as_view('delete_lab_group'))
+
+
+class LabGroupSpecificListService(ListService):
+    def get_args(self, patient, kwargs):
+        lab_group_definition_id = kwargs.pop('lab_group_definition_id')
+        return [LabGroupDefinition.query.get_or_404(lab_group_definition_id)]
+
+    def get_objects(self, patient, lab_group_definition):
+        lab_groups = LabGroup.query\
+            .filter(LabGroup.patient == patient)\
+            .filter(LabGroup.lab_group_definition == lab_group_definition)\
+            .order_by(LabGroup.date.desc())\
+            .all()
+        return lab_groups
+
+    def get_context(self, patient, objects, lab_group_definition):
+        return {
+            'lab_group_definition': lab_group_definition,
+        }
+
+
+class LabGroupSpecificListView(PatientDataListView):
+    def __init__(self):
+        super(LabGroupSpecificListView, self).__init__(
+            LabGroupSpecificListService(current_user),
+        )
+
+    def get_template_name(self):
+        return 'patient/lab_group_specific_list.html'
+
+
+bp.add_url_rule('/groups/<int:lab_group_definition_id>/', view_func=LabGroupSpecificListView.as_view('view_lab_group_specific_list'))
 
 
 @bp.route('/forms/<int:lab_group_definition_id>/', methods=['GET', 'POST'])
