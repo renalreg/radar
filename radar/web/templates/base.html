@@ -99,7 +99,7 @@
                             </li>
 
                             <li{% if current_page == 'stats' %} class="active"{% endif %}>
-                                <a href="#">Stats</a>
+                                <a href="{{ url_for('stats.view_stats') }}">Stats</a>
                             </li>
                         {% else %}
                             <li{% if current_page == 'news' %} class="active"{% endif %}>

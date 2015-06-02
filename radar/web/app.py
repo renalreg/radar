@@ -23,6 +23,7 @@ from radar.web.views.users import bp as users_bp
 from radar.web.views.lab_results import bp as lab_results_bp
 from radar.web.views.renal_imaging import bp as renal_imaging_bp
 from radar.web.views.news import bp as news_bp
+from radar.web.views.stats import bp as stats_bp
 from radar.web.views.auth import bp as auth_bp
 from radar.web.views.genetics import bp as genetics_bp
 from radar.web.views.dialysis import bp as dialysis_bp
@@ -58,6 +59,7 @@ def create_app():
     app.register_blueprint(patients_bp, url_prefix='/patients')
     app.register_blueprint(recruit_bp, url_prefix='/patients')
     app.register_blueprint(news_bp, url_prefix='/news')
+    app.register_blueprint(stats_bp, url_prefix='/stats')
 
     patient_blueprints = [
         (diagnosis_bp, '/diagnosis'),
