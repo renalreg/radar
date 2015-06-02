@@ -80,7 +80,7 @@ class LabGroupDefinition(db.Model):
     __tablename__ = 'lab_group_definitions'
 
     id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False, unique=True)
+    code = Column(String, nullable=False, unique=True)  # TODO force casing
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
     pre_post = Column(Boolean, nullable=False)
@@ -100,7 +100,7 @@ class LabResultDefinition(db.Model):
     __tablename__ = 'lab_result_definitions'
 
     id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False, unique=True)
+    code = Column(String, nullable=False, unique=True)  # TODO force casing
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
     units = Column(String)
