@@ -12,11 +12,9 @@ from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
 from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
     PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
-from radar.lib.demographics_sda import demographics_to_sda_bundle
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
 from radar.web.views.patient_data import get_patient_data, PatientDataEditView, DetailService
-
 
 bp = Blueprint('patients', __name__)
 

@@ -1,12 +1,10 @@
-from collections import OrderedDict
-
 from wtforms import FloatField, IntegerField
 from wtforms.validators import Optional, InputRequired
 from flask_wtf import Form
 from wtforms.widgets import HiddenInput
+
 from radar.lib.database import db
 from radar.models import LabResult
-
 from radar.web.forms.core import RadarSelectMultipleField, RadarSelectField, RadarMeasurementInput, FacilityFormMixin, RadarDateField
 from radar.lib.utils import optional_int
 

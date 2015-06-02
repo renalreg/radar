@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from sqlalchemy import Column, Date, String, ForeignKey, Numeric
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship

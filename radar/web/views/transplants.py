@@ -99,8 +99,8 @@ class TransplantListEditView(PatientDataListEditView):
             TransplantDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'transplants.view_transplant_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('transplants.view_transplant_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/transplants.html'

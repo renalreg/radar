@@ -13,7 +13,7 @@ from radar.models.patients import Patient, PatientDemographics, PatientAlias, Pa
 from radar.lib.ordering import DESCENDING
 
 
-class PatientQueryBuilder():
+class PatientQueryBuilder(object):
     def __init__(self, user):
         self.query = Patient.query
         self.user = user

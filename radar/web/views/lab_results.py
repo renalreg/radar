@@ -12,8 +12,7 @@ from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView, \
-    PatientDataDeleteView, PatientDataDetailView, PatientDataListView, ListService
-
+    PatientDataDeleteView, PatientDataDetailView
 
 RESULT_CODE_SORT_PREFIX = 'result_'
 

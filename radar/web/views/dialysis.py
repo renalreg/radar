@@ -84,8 +84,8 @@ class DialysisListEditView(PatientDataListEditView):
             DialysisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'dialysis.view_dialysis_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('dialysis.view_dialysis_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/dialysis.html'

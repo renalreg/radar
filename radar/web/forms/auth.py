@@ -67,7 +67,6 @@ class ChangePasswordForm(BaseChangePasswordForm):
         return valid
 
 
-
 class ChangeEmailForm(Form):
     password = PasswordField('Current Password', validators=[InputRequired()])
     new_email = StringField('New Email', validators=[Email(), InputRequired()])

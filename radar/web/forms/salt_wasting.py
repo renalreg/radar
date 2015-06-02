@@ -6,7 +6,6 @@ from wtforms.widgets import TextArea
 from radar.web.forms.core import RadarYesNoField
 
 
-
 # TODO validation
 class SaltWastingClinicalFeaturesForm(Form):
     normal_pregnancy = RadarYesNoField("Was mother's pregnancy normal?", validators=[InputRequired()])

@@ -255,7 +255,7 @@ def create_fixtures():
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
-        for unit in random.sample(units, random.randint(1,3)):
+        for unit in random.sample(units, random.randint(1, 3)):
             facility = unit.facility
             unit_patient = UnitPatient(unit=unit, patient=patient)
             unit_patient.created_date = random_date(patient.recruited_date, date.today())

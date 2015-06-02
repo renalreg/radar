@@ -73,8 +73,8 @@ class MedicationListEditView(PatientDataListEditView):
             MedicationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'medications.view_medication_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('medications.view_medication_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/medications.html'
