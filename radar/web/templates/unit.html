@@ -47,11 +47,5 @@
 
 {% block body_js %}
     <script src="/static/js/recruitment.js"></script>
-
-    <script>
-        $(function () {
-            load_recruitment_graph('recruitment.json', 'new_patients', 'New Patients by Month');
-            load_recruitment_graph('recruitment.json?cumulative=1', 'total_patients', 'Total Patients by Month');
-        });
-    </script>
+    <script src="/static/js/unit.js"></script>
 {% endblock %}
