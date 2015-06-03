@@ -4,6 +4,7 @@ from flask import render_template, abort, request, url_for, redirect, session, f
 from flask_login import current_user
 
 from radar.lib.database import db
+from radar.lib.facilities import get_radar_facility
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, PatientDemographics
 from radar.web.forms.recruitment import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
@@ -296,7 +297,7 @@ def recruit_patient_new_step():
         db.session.add(patient)
 
         # Save demographics
-        demographics = PatientDemographics(patient=patient)
+        demographics = PatientDemographics(patient=patient, facility=get_radar_facility())
         form.populate_obj(demographics)
         db.session.add(demographics)
 

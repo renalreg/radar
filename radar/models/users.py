@@ -212,3 +212,9 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
             return False
 
         return True
+
+    def __str__(self):
+        if self.first_name and self.last_name:
+            return '%s %s (%s)' % (self.first_name, self.last_name, self.email)
+        else:
+            return '%s (%s)' % (self.username, self.email)

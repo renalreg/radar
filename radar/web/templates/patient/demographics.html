@@ -310,7 +310,13 @@
 
             <tr>
                 <th width="20%">Recruiting User</th>
-                <td>{{ patient.recruited_user | missing }}</td>
+                <td>
+                    {% if patient.recruited_user %}
+                        {{ patient.recruited_user }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
 
             <tr>
