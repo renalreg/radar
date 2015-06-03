@@ -118,3 +118,7 @@ class PatientAddressForm(Form):
     address_line_2 = StringField(validators=[Optional()])
     address_line_3 = StringField(validators=[Optional()])
     postcode = RadarPostcodeField(validators=[InputRequired()])
+
+
+class PatientActiveForm(Form):
+    is_active = BooleanField('Active')

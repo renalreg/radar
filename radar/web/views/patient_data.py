@@ -40,6 +40,23 @@ class PatientDataDetailService(object):
         return True
 
 
+class PatientDataEditService(object):
+    def __init__(self, user):
+        self.user = user
+
+    def get_object(self, patient, *args, **kwargs):
+        raise NotImplementedError
+
+    def get_form(self, obj):
+        raise NotImplementedError
+
+    def get_context(self):
+        return {}
+
+    def validate(self, form, obj):
+        return True
+
+
 class PatientDataDetailView(View):
     methods = ['GET']
     disease_group = False

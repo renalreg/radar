@@ -18,9 +18,11 @@ from radar.web.views.patient_data import get_patient_data, PatientDataEditView, 
 from radar.web.views import patient_addresses
 from radar.web.views import patient_aliases
 from radar.web.views import patient_numbers
+from radar.web.views import patient_active
 
 
 bp = Blueprint('patients', __name__)
+patient_active.register_routes(bp)
 patient_addresses.register_routes(bp)
 patient_aliases.register_routes(bp)
 patient_numbers.register_routes(bp)

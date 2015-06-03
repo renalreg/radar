@@ -1,0 +1,23 @@
+{% extends 'patient/base.html' %}
+
+{% set title = 'Patient Addresses' %}
+
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% from 'macros/forms.html' import render_form_errors %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+
+{% block content %}
+    <h1 class="page-header">Edit Patient Active</h1>
+
+    {{ render_form_errors(form) }}
+
+    <form method="POST" class="form-horizontal">
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.is_active) }}
+
+        {% call render_button() %}
+            <button type="submit" class="btn btn-success">Save</button>
+        {% endcall %}
+    </form>
+{% endblock %}

@@ -332,6 +332,10 @@
                     {% else %}
                         <span class="glyphicon glyphicon-remove"></span>
                     {% endif %}
+
+                    {% if patient.can_edit(current_user) %}
+                        <a href="{{ url_for('patients.edit_patient_active', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                    {% endif %}
                 </td>
             </tr>
         </table>
