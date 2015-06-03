@@ -301,13 +301,13 @@ class PatientDataListAddView(View):
 
         objects = self.list_service.get_objects(patient, *args)
 
+        obj = None
+        form = None
+
         if patient.can_edit(current_user):
             obj = self.detail_service.new_object(patient, *args)
             form = self.detail_service.get_form(obj)
-        elif self.always_show_list:
-            obj = None
-            form = None
-        else:
+        elif not self.always_show_list:
             abort(403)
 
         if request.method == 'POST':
