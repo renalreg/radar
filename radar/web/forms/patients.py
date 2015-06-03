@@ -112,8 +112,8 @@ class PatientAliasForm(Form):
 
 
 class PatientAddressForm(Form):
-    from_date = RadarDateField(validators=[InputRequired()])
-    to_date = RadarDateField(validators=[InputRequired()])
+    from_date = RadarDateField(validators=[Optional()])
+    to_date = RadarDateField(validators=[Optional()])
     address_line_1 = StringField(validators=[InputRequired()])
     address_line_2 = StringField(validators=[Optional()])
     address_line_3 = StringField(validators=[Optional()])
