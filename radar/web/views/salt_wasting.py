@@ -4,13 +4,13 @@ from werkzeug.utils import redirect
 
 from radar.web.forms.salt_wasting import SaltWastingClinicalFeaturesForm
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
-from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
+from radar.web.views.patient_data import PatientDataDetailService, PatientDataDetailView, PatientDataEditView
 from radar.web.views.patients import get_patient_data
 
 bp = Blueprint('salt_wasting', __name__)
 
 
-class SaltWastingClinicalFeaturesDetailService(DetailService):
+class SaltWastingClinicalFeaturesDetailService(PatientDataDetailService):
     def get_object(self, patient):
         x = SaltWastingClinicalFeatures.query\
             .filter(SaltWastingClinicalFeatures.patient == patient)\

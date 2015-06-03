@@ -6,13 +6,13 @@ from radar.web.forms.genetics import GeneticsForm
 from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.genetics import validate_genetics
 from radar.models.genetics import Genetics
-from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
+from radar.web.views.patient_data import PatientDataDetailService, PatientDataDetailView, PatientDataEditView
 from radar.web.views.patients import get_patient_data
 
 bp = Blueprint('genetics', __name__)
 
 
-class GeneticsDetailService(DetailService):
+class GeneticsDetailService(PatientDataDetailService):
     def get_object(self, patient, disease_group):
         genetics = Genetics.query\
             .filter(Genetics.patient == patient)\

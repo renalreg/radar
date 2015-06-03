@@ -1,8 +1,10 @@
+from flask_login import current_user
 from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import Optional, InputRequired, Email
 from flask_wtf import Form
 
-from radar.web.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField
+from radar.web.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField, \
+    FacilityFormMixin, RadarSelectObjectField
 from radar.lib.ordering import ASCENDING, DESCENDING
 from radar.lib.patient_search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.lib.utils import optional_int
@@ -20,7 +22,7 @@ ORDER_BY_CHOICES = [
 ]
 
 
-class DemographicsForm(Form):
+class PatientDemographicsForm(Form):
     first_name = StringField(validators=[InputRequired()])
     last_name = StringField(validators=[InputRequired()])
 
@@ -93,3 +95,20 @@ class AddPatientDiseaseGroupForm(Form):
 
 class EditPatientDiseaseGroupForm(Form):
     is_active = BooleanField('Active')
+
+
+class PatientNumberForm(Form):
+    def __init__(self, obj=None, *args, **kwargs):
+        super(PatientNumberForm, self).__init__(obj=obj, *args, **kwargs)
+
+        if obj is not None:
+            facilities = obj.patient.intersect_internal_facilities(current_user, with_edit_patient_permission=True)
+            facilities.sort(key=lambda x: x.name)
+            self.number_facility_id.choices = [(x.id, x.name, x) for x in facilities]
+
+    number_facility_id = RadarSelectObjectField('Organisation', validators=[InputRequired()], coerce=int)
+    number = StringField(validators=[InputRequired()])
+
+    def populate_obj(self, obj):
+        obj.number_facility = self.number_facility_id.obj
+        obj.number = self.number.data

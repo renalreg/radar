@@ -7,13 +7,13 @@ from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.hospitalisations import validate_hospitalisation
 from radar.models.hospitalisations import Hospitalisation
 from radar.web.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView, DetailService, ListService
+    PatientDataListDetailView, PatientDataListView, PatientDataDetailService, PatientDataListService
 
 
 bp = Blueprint('hospitalisations', __name__)
 
 
-class HospitalisationDetailService(DetailService):
+class HospitalisationDetailService(PatientDataDetailService):
     def get_object(self, patient, hospitalisation_id):
         hospitalisation = Hospitalisation.query\
             .filter(Hospitalisation.patient == patient)\
@@ -33,7 +33,7 @@ class HospitalisationDetailService(DetailService):
         return errors.is_valid()
 
 
-class HospitalisationListService(ListService):
+class HospitalisationListService(PatientDataListService):
     def get_objects(self, patient):
         hospitalisations = Hospitalisation.query\
             .filter(Hospitalisation.patient == patient)\

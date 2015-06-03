@@ -5,13 +5,13 @@ from werkzeug.utils import redirect
 from radar.web.forms.renal_imaging import RenalImagingForm
 from radar.models.renal_imaging import RenalImaging
 from radar.web.views.patient_data import PatientDataDeleteView, \
-    PatientDataListView, ListService, DetailService, PatientDataDetailView, PatientDataEditView, PatientDataAddView
+    PatientDataListView, PatientDataListService, PatientDataDetailService, PatientDataDetailView, PatientDataEditView, PatientDataAddView
 
 
 bp = Blueprint('renal_imaging', __name__)
 
 
-class RenalImagingListService(ListService):
+class RenalImagingListService(PatientDataListService):
     def get_objects(self, patient):
         renal_imaging_list = RenalImaging.query\
             .filter(RenalImaging.patient == patient)\
@@ -20,7 +20,7 @@ class RenalImagingListService(ListService):
         return renal_imaging_list
 
 
-class RenalImagingDetailService(DetailService):
+class RenalImagingDetailService(PatientDataDetailService):
     def get_object(self, patient, renal_imaging_id):
         renal_imaging = RenalImaging.query\
             .filter(RenalImaging.patient == patient)\

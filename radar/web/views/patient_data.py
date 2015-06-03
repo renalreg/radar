@@ -9,7 +9,7 @@ from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
 
 
-class ListService(object):
+class PatientDataListService(object):
     def __init__(self, user):
         self.user = user
 
@@ -20,7 +20,7 @@ class ListService(object):
         return {}
 
 
-class DetailService(object):
+class PatientDataDetailService(object):
     def __init__(self, user):
         self.user = user
 

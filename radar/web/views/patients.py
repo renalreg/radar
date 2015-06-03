@@ -6,15 +6,16 @@ from radar.lib.facilities import get_radar_facility
 from radar.lib.patients import get_facility_patients
 from radar.models.disease_groups import DiseaseGroup
 from radar.web.forms.core import DeleteForm
-from radar.models.patients import Patient, PatientDemographics
+from radar.models.patients import Patient, PatientDemographics, PatientNumber
 from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
-from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, DemographicsForm, \
-    PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
+from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, PatientDemographicsForm, \
+    PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm, PatientNumberForm
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
-from radar.web.views.patient_data import get_patient_data, PatientDataEditView, DetailService
+from radar.web.views.patient_data import get_patient_data, PatientDataEditView, PatientDataDetailService, PatientDataListService, \
+    PatientDataDeleteView, PatientDataAddView
 
 bp = Blueprint('patients', __name__)
 
@@ -113,7 +114,7 @@ def view_demographics_list(patient_id):
     return render_template('patient/demographics.html', **context)
 
 
-class DemographicsDetailService(DetailService):
+class PatientDemographicsDetailService(PatientDataDetailService):
     def get_object(self, patient):
         demographics = PatientDemographics.query\
             .filter(PatientDemographics.patient == patient)\
@@ -125,15 +126,15 @@ class DemographicsDetailService(DetailService):
         return PatientDemographics(patient=patient, facility=get_radar_facility())
 
     def get_form(self, obj):
-        return DemographicsForm(obj=obj)
+        return PatientDemographicsForm(obj=obj)
 
 
-class DemographicsEditView(PatientDataEditView):
+class PatientDemographicsEditView(PatientDataEditView):
     create = True
 
     def __init__(self):
-        super(DemographicsEditView, self).__init__(
-            DemographicsDetailService(current_user),
+        super(PatientDemographicsEditView, self).__init__(
+            PatientDemographicsDetailService(current_user),
         )
 
     def saved(self, patient, obj):
@@ -143,7 +144,63 @@ class DemographicsEditView(PatientDataEditView):
         return 'patient/edit_demographics.html'
 
 
-bp.add_url_rule('/<int:patient_id>/edit/', view_func=DemographicsEditView.as_view('edit_demographics'))
+bp.add_url_rule('/<int:patient_id>/edit/', view_func=PatientDemographicsEditView.as_view('edit_demographics'))
+
+
+class PatientNumberDetailService(PatientDataDetailService):
+    def get_object(self, patient, patient_number_id):
+        patient_number = PatientNumber.query\
+            .filter(PatientNumber.patient == patient)\
+            .filter(PatientNumber.id == patient_number_id)\
+            .first()
+        return patient_number
+
+    def new_object(self, patient):
+        return PatientNumber(patient=patient, facility=get_radar_facility())
+
+    def get_form(self, obj):
+        return PatientNumberForm(obj=obj)
+
+
+class PatientNumberAddView(PatientDataAddView):
+    def __init__(self):
+        super(PatientNumberAddView, self).__init__(
+            PatientNumberDetailService(current_user)
+        )
+
+    def get_template_name(self):
+        return 'patient/patient_number_form.html'
+
+    def saved(self, patient, obj):
+        return redirect(url_for('patients.view_demographics_list', patient_id=patient.id))
+
+
+class PatientNumberEditView(PatientDataEditView):
+    def __init__(self):
+        super(PatientNumberEditView, self).__init__(
+            PatientNumberDetailService(current_user)
+        )
+
+    def get_template_name(self):
+        return 'patient/patient_number_form.html'
+
+    def saved(self, patient, obj):
+        return redirect(url_for('patients.view_demographics_list', patient_id=patient.id))
+
+
+class PatientNumberDeleteView(PatientDataDeleteView):
+    def __init__(self):
+        super(PatientNumberDeleteView, self).__init__(
+            PatientNumberDetailService(current_user)
+        )
+
+    def deleted(self, patient):
+        return redirect(url_for('patients.view_demographics_list', patient_id=patient.id))
+
+
+bp.add_url_rule('/<int:patient_id>/numbers/add/', view_func=PatientNumberAddView.as_view('add_patient_number'))
+bp.add_url_rule('/<int:patient_id>/numbers/<int:patient_number_id>/edit/', view_func=PatientNumberEditView.as_view('edit_patient_number'))
+bp.add_url_rule('/<int:patient_id>/numbers/<int:patient_number_id>/delete/', view_func=PatientNumberDeleteView.as_view('delete_patient_number'))
 
 
 @bp.route('/<int:patient_id>/disease-groups/', endpoint='view_patient_disease_groups')

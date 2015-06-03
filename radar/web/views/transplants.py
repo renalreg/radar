@@ -8,13 +8,13 @@ from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.transplants import validate_transplant
 from radar.models.transplants import Transplant
 from radar.web.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView, ListService, DetailService
+    PatientDataListDetailView, PatientDataListView, PatientDataListService, PatientDataDetailService
 
 
 bp = Blueprint('transplants', __name__)
 
 
-class TransplantDetailService(DetailService):
+class TransplantDetailService(PatientDataDetailService):
     def get_object(self, patient, transplant_id):
         transplant = Transplant.query\
             .filter(Transplant.patient == patient)\
@@ -48,7 +48,7 @@ class TransplantDetailService(DetailService):
         }
 
 
-class TransplantListService(ListService):
+class TransplantListService(PatientDataListService):
     def get_objects(self, patient):
         transplants = Transplant.query\
             .filter(Transplant.patient == patient)\

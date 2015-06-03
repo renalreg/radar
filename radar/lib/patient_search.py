@@ -184,7 +184,7 @@ def filter_by_date_of_death(date_of_death):
 def filter_by_patient_number(number):
     # One of the patient's identifiers matches
     number_like = number + '%'
-    number_filter = patient_number_sub_query(PatientNumber.like(number_like))
+    number_filter = patient_number_sub_query(PatientNumber.number.like(number_like))
 
     # RaDaR ID matches
     radar_id_filter = filter_by_radar_id(number)

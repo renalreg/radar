@@ -7,13 +7,13 @@ from radar.lib.validation.dialysis import validate_dialysis
 from radar.web.forms.dialysis import DialysisForm
 from radar.models.dialysis import Dialysis
 from radar.web.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView, DetailService, ListService
+    PatientDataListDetailView, PatientDataListView, PatientDataDetailService, PatientDataListService
 
 
 bp = Blueprint('dialysis', __name__)
 
 
-class DialysisListService(ListService):
+class DialysisListService(PatientDataListService):
     def get_objects(self, patient):
         dialysis_list = Dialysis.query\
             .filter(Dialysis.patient == patient)\
@@ -22,7 +22,7 @@ class DialysisListService(ListService):
         return dialysis_list
 
 
-class DialysisDetailService(DetailService):
+class DialysisDetailService(PatientDataDetailService):
     def get_object(self, patient, dialysis_id):
         dialysis = Dialysis.query\
             .filter(Dialysis.patient == patient)\

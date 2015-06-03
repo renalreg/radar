@@ -250,7 +250,7 @@ class PatientDemographics(db.Model, MetadataMixin):
         return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view(user)
+        return self.facility.is_radar and self.patient.can_edit(user)
 
 
 class PatientAlias(db.Model, MetadataMixin):
@@ -271,7 +271,7 @@ class PatientAlias(db.Model, MetadataMixin):
         return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view(user)
+        return self.facility.is_radar and self.patient.can_edit(user)
 
 
 class PatientAddress(db.Model, MetadataMixin):
@@ -309,9 +309,10 @@ class PatientAddress(db.Model, MetadataMixin):
         return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view(user)
+        return self.facility.is_radar and self.patient.can_edit(user)
 
 
+# TODO unique constraint on (patient_id, facility_id, number_facility_id)?
 class PatientNumber(db.Model, MetadataMixin):
     __tablename__ = 'patient_numbers'
 
@@ -332,4 +333,4 @@ class PatientNumber(db.Model, MetadataMixin):
         return self.patient.can_view(user)
 
     def can_edit(self, user):
-        return self.patient.can_edit(user) and self.patient.can_view(user)
+        return self.facility.is_radar and self.patient.can_edit(user)

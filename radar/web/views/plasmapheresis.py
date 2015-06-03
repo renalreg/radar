@@ -7,13 +7,13 @@ from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.plasmapheresis import validate_plasmapheresis
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.web.views.patient_data import PatientDataListAddView, PatientDataListEditView, PatientDataDeleteView, \
-    PatientDataListDetailView, PatientDataListView, ListService, DetailService
+    PatientDataListDetailView, PatientDataListView, PatientDataListService, PatientDataDetailService
 
 
 bp = Blueprint('plasmapheresis', __name__)
 
 
-class PlasmapheresisListService(ListService):
+class PlasmapheresisListService(PatientDataListService):
     def get_objects(self, patient):
         plasmapheresis_list = Plasmapheresis.query\
             .filter(Plasmapheresis.patient == patient)\
@@ -22,7 +22,7 @@ class PlasmapheresisListService(ListService):
         return plasmapheresis_list
 
 
-class PlasmapheresisDetailService(DetailService):
+class PlasmapheresisDetailService(PatientDataDetailService):
     def get_object(self, patient, plasmapheresis_id):
         plasmapheresis = Plasmapheresis.query\
             .filter(Plasmapheresis.patient == patient)\

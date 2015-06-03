@@ -7,7 +7,7 @@ from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, PatientDemographics
 from radar.web.forms.recruitment import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
-from radar.web.forms.patients import DemographicsForm
+from radar.web.forms.patients import PatientDemographicsForm
 from radar.lib.recruitment import find_existing_radar_patients, find_existing_rdc_patients
 from radar.web.views.patients import add_patient_to_unit, add_patient_to_disease_group
 from radar.models.units import Unit
@@ -266,7 +266,7 @@ def recruit_patient_new_step():
     if unit is None or disease_group is None:
         return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
 
-    form = DemographicsForm(
+    form = PatientDemographicsForm(
         date_of_birth=date_of_birth,
         first_name=first_name,
         last_name=last_name,

@@ -11,7 +11,7 @@ from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
-from radar.web.views.patient_data import get_patient_data, DetailService, PatientDataEditView, PatientDataAddView, \
+from radar.web.views.patient_data import get_patient_data, PatientDataDetailService, PatientDataEditView, PatientDataAddView, \
     PatientDataDeleteView, PatientDataDetailView
 
 RESULT_CODE_SORT_PREFIX = 'result_'
@@ -207,7 +207,7 @@ def view_lab_result_graph_json(patient_id):
     })
 
 
-class LabGroupDetailService(DetailService):
+class LabGroupDetailService(PatientDataDetailService):
     def get_object(self, patient, lab_group_id):
         lab_group = LabGroup.query\
             .filter(LabGroup.patient == patient)\

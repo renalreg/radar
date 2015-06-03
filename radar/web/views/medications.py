@@ -7,13 +7,13 @@ from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.medications import validate_medication
 from radar.models.medications import Medication
 from radar.web.views.patient_data import PatientDataDeleteView, PatientDataListAddView, PatientDataListEditView, \
-    PatientDataListView, ListService, DetailService
+    PatientDataListView, PatientDataListService, PatientDataDetailService
 
 
 bp = Blueprint('medications', __name__)
 
 
-class MedicationDetailService(DetailService):
+class MedicationDetailService(PatientDataDetailService):
     def get_object(self, patient, medication_id):
         medication = Medication.query\
             .filter(Medication.id == medication_id)\
@@ -33,7 +33,7 @@ class MedicationDetailService(DetailService):
         return errors.is_valid()
 
 
-class MedicationListService(ListService):
+class MedicationListService(PatientDataListService):
     def get_objects(self, patient):
         medications = Medication.query\
             .filter(Medication.patient == patient)\
