@@ -31,8 +31,8 @@ class DiseaseGroup(db.Model):
     def lab_group_definitions(self):
         return [x.lab_group_definition for x in self.disease_group_lab_group_definitions]
 
-    def has_feature(self, feature_name):
-        return any(x.feature_name == feature_name for x in self.features)
+    def has_feature(self, name):
+        return any(x.name == name for x in self.features)
 
     def can_view_patient(self, user):
         if user.is_admin:
@@ -53,7 +53,7 @@ class DiseaseGroupFeature(db.Model):
     disease_group_id = Column(Integer, ForeignKey('disease_groups.id'))
     disease_group = relationship('DiseaseGroup')
 
-    feature_name = Column(String, nullable=False)
+    name = Column(String, nullable=False)
 
 
 class DiseaseGroupPatient(db.Model, MetadataMixin):

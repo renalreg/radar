@@ -77,35 +77,22 @@
                 </ul>
 
                 <ul class="nav radar-sidebar-nav">
-                    {{ render_patient_li('demographics', 'patients.view_demographics_list', 'Demographics') }}
-                    {{ render_patient_li('medications', 'medications.view_medication_list', 'Medications') }}
-                    {{ render_patient_li('lab_results', 'lab_results.view_lab_result_list', 'Lab Results') }}
-                    {{ render_patient_li('hospitalisations', 'hospitalisations.view_hospitalisation_list', 'Hospitalisations') }}
-                    {{ render_patient_li('pathology', 'pathology.view_pathology_list', 'Pathology') }}
-                    {{ render_patient_li('transplants', 'transplants.view_transplant_list', 'Transplants') }}
-                    {{ render_patient_li('dialysis', 'dialysis.view_dialysis_list', 'Dialysis') }}
-                    {{ render_patient_li('plasmapheresis', 'plasmapheresis.view_plasmapheresis_list', 'Plasmapheresis') }}
+                    {% for link in patient_data.links %}
+                        <li{% if link.is_active() %} class="active"{% endif %}>
+                            <a href="{{ link.url() }}">{{ link.text() }}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
 
-                {% for disease_group in patient_data.disease_groups %}
+                {% for disease_group, links in patient_data.disease_group_links %}
                     <h4>{{ disease_group.disease_group.name }}</h4>
 
                     <ul class="nav radar-sidebar-nav">
-                        {% if disease_group.disease_group.has_feature('DIAGNOSIS') %}
-                            {{ render_disease_group_li(disease_group.disease_group, 'diagnosis', 'diagnosis.view_diagnosis', 'Diagnosis') }}
-                        {% endif %}
-
-                        {% if disease_group.disease_group.has_feature('RENAL_IMAGING') %}
-                            {{ render_patient_li('renal_imaging', 'renal_imaging.view_renal_imaging_list', 'Renal Imaging') }}
-                        {% endif %}
-
-                        {% if disease_group.disease_group.has_feature('GENETICS') %}
-                            {{ render_disease_group_li(disease_group.disease_group, 'genetics', 'genetics.view_genetics', 'Genetics') }}
-                        {% endif %}
-
-                        {% if disease_group.disease_group.has_feature('SALT_WASTING_CLINICAL_FEATURES') %}
-                            {{ render_patient_li('salt_wasting_clinical_features', 'salt_wasting.view_clinical_features', 'Clinical Features') }}
-                        {% endif %}
+                        {% for link in links %}
+                            <li{% if link.is_active() %} class="active"{% endif %}>
+                                <a href="{{ link.url() }}">{{ link.text() }}</a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 {% endfor %}
 

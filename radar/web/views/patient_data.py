@@ -7,6 +7,7 @@ from radar.lib.database import db
 from radar.web.forms.core import DeleteForm
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
+from radar.web.links import PatientLink, get_patient_links, get_disease_group_links
 
 
 class PatientDataListService(object):
@@ -525,8 +526,12 @@ class PatientDataDeleteView(View):
 def get_patient_data(patient):
     units = sorted(patient.filter_units_for_user(current_user), key=lambda x: x.unit.name.lower())
     disease_groups = sorted(patient.filter_disease_groups_for_user(current_user), key=lambda x: x.disease_group.name.lower())
+    links = get_patient_links(patient)
+    disease_group_links = [(x, get_disease_group_links(patient, x.disease_group)) for x in disease_groups]
 
     return dict(
         units=units,
         disease_groups=disease_groups,
+        links=links,
+        disease_group_links=disease_group_links,
     )
