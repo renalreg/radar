@@ -11,7 +11,7 @@
     {% for facility_patient in facility_patients %}
         {% call render_panel(facility_patient.facility.name, 'panel-default') %}
             {% if facility_patient.can_edit(current_user) %}
-                <p><a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
+                <p><a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Edit Demographics</a></p>
             {% endif %}
 
             {% if facility_patient.demographics %}
@@ -65,43 +65,57 @@
                 </table>
             {% endif %}
 
-            {% if facility_patient.demographics and patient.can_view_demographics(current_user) and (facility_patient.demographics.home_number or facility_patient.demographics.work_number or facility_patient.demographics.mobile_number or facility_patient.demographics.email_address) %}
+            {% if facility_patient.can_edit(current_user) or (facility_patient.demographics and patient.can_view_demographics(current_user) and (facility_patient.demographics.home_number or facility_patient.demographics.work_number or facility_patient.demographics.mobile_number or facility_patient.demographics.email_address)) %}
                 <h4>Contact Details</h4>
 
-                <table class="table kv">
-                    {% if patient.can_view_demographics(current_user) %}
-                        {% if facility_patient.demographics.home_number %}
-                            <tr>
-                                <th width="20%">Home Number</th>
-                                <td>{{ facility_patient.demographics.home_number }}</td>
-                            </tr>
-                        {% endif %}
+                {% if facility_patient.can_edit(current_user) %}
+                    <p>
+                        <a href="{{ url_for('patients.edit_demographics', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Edit Contact Details</a>
+                    </p>
+                {% endif %}
 
-                        {% if facility_patient.demographics.mobile_number %}
-                            <tr>
-                                <th width="20%">Mobile Number</th>
-                                <td>{{ facility_patient.demographics.mobile_number }}</td>
-                            </tr>
-                        {% endif %}
+                {% if facility_patient.demographics and patient.can_view_demographics(current_user) and (facility_patient.demographics.home_number or facility_patient.demographics.work_number or facility_patient.demographics.mobile_number or facility_patient.demographics.email_address) %}
+                    <table class="table kv">
+                        {% if patient.can_view_demographics(current_user) %}
+                            {% if facility_patient.demographics.home_number %}
+                                <tr>
+                                    <th width="20%">Home Number</th>
+                                    <td>{{ facility_patient.demographics.home_number }}</td>
+                                </tr>
+                            {% endif %}
 
-                        {% if facility_patient.demographics.work_number %}
-                            <tr>
-                                <th width="20%">Work Number</th>
-                                <td>{{ facility_patient.demographics.work_number }}</td>
-                            </tr>
-                        {% endif %}
+                            {% if facility_patient.demographics.mobile_number %}
+                                <tr>
+                                    <th width="20%">Mobile Number</th>
+                                    <td>{{ facility_patient.demographics.mobile_number }}</td>
+                                </tr>
+                            {% endif %}
 
-                        {% if facility_patient.demographics.email_address %}
-                            <tr>
-                                <th width="20%">Email Address</th>
-                                <td>{{ facility_patient.demographics.email_address }}</td>
-                            </tr>
+                            {% if facility_patient.demographics.work_number %}
+                                <tr>
+                                    <th width="20%">Work Number</th>
+                                    <td>{{ facility_patient.demographics.work_number }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if facility_patient.demographics.email_address %}
+                                <tr>
+                                    <th width="20%">Email Address</th>
+                                    <td>{{ facility_patient.demographics.email_address }}</td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </table>
+                    </table>
+                {% endif %}
             {% endif %}
 
             <h4>Identifiers</h4>
+
+            {% if facility_patient.can_edit(current_user) %}
+                <p>
+                    <a href="#" class="btn btn-primary btn-xs">Add Identifier</a>
+                </p>
+            {% endif %}
 
             <table class="table table-striped">
                 <thead>
@@ -165,54 +179,70 @@
                 </tbody>
             </table>
 
-            {% if facility_patient.aliases and patient.can_view_demographics(current_user) %}
+            {% if facility_patient.can_edit(current_user) or (facility_patient.aliases and patient.can_view_demographics(current_user)) %}
                 <h4>Aliases</h4>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th width="20%">First Name</th>
-                            <th>Last Name</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+                {% if facility_patient.can_edit(current_user) %}
+                    <p>
+                        <a href="#" class="btn btn-primary btn-xs">Add Alias</a>
+                    </p>
+                {% endif %}
 
-                    <tbody>
-                        {% for alias in facility_patient.aliases %}
+                {% if patient.aliases %}
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>{{ alias.first_name | missing }}</td>
-                                <td>{{ alias.last_name | missing }}</td>
-                                <td></td>
+                                <th width="20%">First Name</th>
+                                <th>Last Name</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {% for alias in facility_patient.aliases %}
+                                <tr>
+                                    <td>{{ alias.first_name | missing }}</td>
+                                    <td>{{ alias.last_name | missing }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             {% endif %}
 
-            {% if facility_patient.addresses and patient.can_view_demographics(current_user) %}
+            {% if facility_patient.can_edit(current_user) or (facility_patient.addresses and patient.can_view_demographics(current_user)) %}
                 <h4>Addresses</h4>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th width="20%">From Date</th>
-                            <th width="20%">To Date</th>
-                            <th>Address</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+                {% if facility_patient.can_edit(current_user) %}
+                    <p>
+                        <a href="#" class="btn btn-primary btn-xs">Add Address</a>
+                    </p>
+                {% endif %}
 
-                    <tbody>
-                        {% for address in facility_patient.addresses %}
+                {% if patient.addresses %}
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>{{ address.from_date | date_format | missing }}</td>
-                                <td>{{ address.to_date | date_format | missing }}</td>
-                                <td>{{ address.full_address | nl2br }}</td>
-                                <td></td>
+                                <th width="20%">From Date</th>
+                                <th width="20%">To Date</th>
+                                <th>Address</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {% for address in facility_patient.addresses %}
+                                <tr>
+                                    <td>{{ address.from_date | date_format | missing }}</td>
+                                    <td>{{ address.to_date | date_format | missing }}</td>
+                                    <td>{{ address.full_address | nl2br }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             {% endif %}
         {% endcall %}
     {% endfor %}
