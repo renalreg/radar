@@ -71,7 +71,7 @@ def load_user(user_id):
 
     user = User.query.get(user_id)
 
-    # Get user by id,
+    # Get user by id
     return user
 
 

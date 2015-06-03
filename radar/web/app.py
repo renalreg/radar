@@ -46,6 +46,8 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.user_loader(load_user)
+    login_manager.login_view = 'auth.login'
 
     Markdown(app)
 
@@ -79,9 +81,6 @@ def create_app():
 
     for bp, url_prefix in patient_blueprints:
         app.register_blueprint(bp, url_prefix=patient_base + url_prefix)
-
-    login_manager.user_loader(load_user)
-    login_manager.login_view = 'auth.login'
 
     app.before_request(require_login)
     app.before_request(force_password_change)

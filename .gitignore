@@ -1,3 +1,5 @@
+dist
+radar.egg-info
 *.pyc
 node_modules/
 bower_components/
