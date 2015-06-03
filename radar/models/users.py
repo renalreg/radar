@@ -36,8 +36,44 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
 
     force_password_change = Column(Boolean, default=False, nullable=False, server_default='0')
 
-    units = relationship('UnitUser', back_populates='user')
-    disease_groups = relationship('DiseaseGroupUser', back_populates='user')
+    unit_users = relationship('UnitUser', back_populates='user')
+    disease_group_users = relationship('DiseaseGroupUser', back_populates='user')
+
+    @property
+    def units(self):
+        return [x.unit for x in self.unit_users]
+
+    @property
+    def disease_groups(self):
+        return [x.disease_group for x in self.disease_group_users]
+
+    @property
+    def facilities(self):
+        facilities = []
+
+        for x in self.units:
+            facilities.extend(x.facilities)
+
+        return facilities
+
+    @property
+    def internal_facilities(self):
+        facilities = []
+
+        for x in self.units:
+            facilities.extend(x.internal_facilities)
+
+        return facilities
+
+    @property
+    def edit_patient_facilities(self):
+        facilities = []
+
+        for x in self.unit_users:
+            if x.unit.has_edit_patient_permission:
+                facilities.extend(x.unit.internal_facilities)
+
+        return facilities
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -67,31 +103,31 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     def has_view_patient_permission(self):
         return (
             self.is_admin or
-            any(x.has_view_patient_permission for x in self.disease_groups) or
-            any(x.has_view_patient_permission for x in self.units)
+            any(x.has_view_patient_permission for x in self.disease_group_users) or
+            any(x.has_view_patient_permission for x in self.unit_users)
         )
 
     @property
     def has_recruit_patient_permission(self):
         return (
             self.is_admin or
-            any(x.has_recruit_patient_permission for x in self.units)
+            any(x.has_recruit_patient_permission for x in self.unit_users)
         )
 
     @property
     def has_view_demographics_permission(self):
         return (
             self.is_admin or
-            any(x.has_demographics_permission for x in self.disease_groups) or
-            any(x.has_demographics_permission for x in self.units)
+            any(x.has_demographics_permission for x in self.disease_group_users) or
+            any(x.has_demographics_permission for x in self.unit_users)
         )
 
     @property
     def has_view_user_permission(self):
         return (
             self.is_admin or
-            any(x.has_view_user_permission for x in self.disease_groups) or
-            any(x.has_view_user_permission for x in self.units)
+            any(x.has_view_user_permission for x in self.disease_group_users) or
+            any(x.has_view_user_permission for x in self.unit_users)
         )
 
     @property
@@ -105,8 +141,8 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     def has_edit_user_membership_permission(self):
         return (
             self.is_admin or
-            any(x.has_edit_user_membership_permission for x in self.disease_groups) or
-            any(x.has_edit_user_membership_permission for x in self.units)
+            any(x.has_edit_user_membership_permission for x in self.disease_group_users) or
+            any(x.has_edit_user_membership_permission for x in self.unit_users)
         )
 
     @property
@@ -141,11 +177,11 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
 
     @property
     def managed_unit_roles(self):
-        return self._get_managed_roles(UNIT_ROLES, UNIT_MANAGED_ROLES, self.units)
+        return self._get_managed_roles(UNIT_ROLES, UNIT_MANAGED_ROLES, self.unit_users)
 
     @property
     def managed_disease_group_roles(self):
-        return self._get_managed_roles(DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, self.disease_groups)
+        return self._get_managed_roles(DISEASE_GROUP_ROLES, DISEASE_GROUP_MANAGED_ROLES, self.disease_group_users)
 
     def _can_edit_roles(self, current_user):
         # User's can't edit their own roles (unless they are an admin)

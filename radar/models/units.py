@@ -14,11 +14,13 @@ class Unit(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
-    facility = relationship('Facility')
-
+    facilities = relationship('Facility')
     unit_patients = relationship('UnitPatient')
     unit_users = relationship('UnitUser')
+
+    @property
+    def internal_facilities(self):
+        return [x for x in self.facilities if x.is_internal]
 
 
 class UnitPatient(db.Model, MetadataMixin):

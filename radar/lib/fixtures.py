@@ -191,35 +191,31 @@ def create_fixtures():
     admin.set_password('password')
     db.session.add(admin)
 
-    radar_facility = Facility(code='RADAR', name='RADAR')
+    radar_facility = Facility(code='RADAR', name='RADAR', is_internal=True)
     db.session.add(radar_facility)
 
     # http://en.wikipedia.org/wiki/List_of_fictional_institutions#Hospitals
     units = [
-        Unit(
-            name='All Saints Hospital',
-            facility=Facility(code='A', name='All Saints Hospital'),
-        ),
-        Unit(
-            name='Chelsea General Hospital',
-            facility=Facility(code='B', name='Chelsea General Hospital'),
-        ),
-        Unit(
-            name='Chicago Hope',
-            facility=Facility(code='C', name='Chicago Hope'),
-        ),
-        Unit(
-            name='County General Hospital',
-            facility=Facility(code='D', name='County General Hospital'),
-        ),
-        Unit(
-            name='Community General Hospital',
-            facility=Facility(code='E', name='Community General Hospital'),
-        ),
+        Unit(name='All Saints Hospital'),
+        Unit(name='Chelsea General Hospital'),
+        Unit(name='Chicago Hope'),
+        Unit(name='County General Hospital'),
+        Unit(name='Community General Hospital'),
     ]
 
     for unit in units:
         db.session.add(unit)
+
+    facilities = [
+        Facility(code='A', name='All Saints Hospital', unit=units[0], is_internal=True),
+        Facility(code='B', name='Chelsea General Hospital', unit=units[1], is_internal=True),
+        Facility(code='C', name='Chicago Hope', unit=units[2], is_internal=True),
+        Facility(code='D', name='County General Hospital', unit=units[3], is_internal=True),
+        Facility(code='E', name='Community General Hospital', unit=units[4], is_internal=True),
+    ]
+
+    for facility in facilities:
+        db.session.add(facility)
 
     disease_groups = [
         DiseaseGroup(name='SRNS', features=[DiseaseGroupFeature(feature_name='GENETICS'), DiseaseGroupFeature(feature_name='RENAL_IMAGING'), DiseaseGroupFeature(feature_name='SALT_WASTING_CLINICAL_FEATURES')]),
@@ -255,9 +251,8 @@ def create_fixtures():
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
-        for unit in random.sample(units, random.randint(1,3)):
-            facility = unit.facility
-            unit_patient = UnitPatient(unit=unit, patient=patient)
+        for facility in random.sample(facilities, random.randint(1,3)):
+            unit_patient = UnitPatient(unit=facility.unit, patient=patient)
             unit_patient.created_date = random_date(patient.recruited_date, date.today())
             db.session.add(unit_patient)
 

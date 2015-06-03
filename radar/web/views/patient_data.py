@@ -267,6 +267,7 @@ class PatientDataListView(View):
 class PatientDataListAddView(View):
     methods = ['GET', 'POST']
     disease_group = False
+    always_show_list = False
 
     def __init__(self, list_service, detail_service):
         self.list_service = list_service
@@ -303,9 +304,11 @@ class PatientDataListAddView(View):
         if patient.can_edit(current_user):
             obj = self.detail_service.new_object(patient, *args)
             form = self.detail_service.get_form(obj)
-        else:
+        elif self.always_show_list:
             obj = None
             form = None
+        else:
+            abort(403)
 
         if request.method == 'POST':
             if obj is None or not obj.can_edit(current_user):

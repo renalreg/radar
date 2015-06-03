@@ -35,6 +35,24 @@ class Patient(db.Model):
         return [x.unit for x in self.unit_patients]
 
     @property
+    def facilities(self):
+        facilities = list()
+
+        for x in self.units:
+            facilities.extend(x.facilities)
+
+        return facilities
+
+    @property
+    def internal_facilities(self):
+        facilities = list()
+
+        for x in self.units:
+            facilities.extend(x.internal_facilities)
+
+        return facilities
+
+    @property
     def disease_groups(self):
         return [x.disease_group for x in self.disease_group_patients]
 
@@ -136,10 +154,7 @@ class Patient(db.Model):
         )
 
     def can_edit(self, user):
-        return (
-           user.is_admin or
-           self._has_unit_permission(user, 'edit_patient')
-        )
+        return len(self.intersect_internal_facilities(user, with_edit_patient_permission=True)) > 0
 
     def can_view_demographics(self, user):
         if user.is_admin:
@@ -173,18 +188,18 @@ class Patient(db.Model):
             common_disease_groups = [x for x in self.disease_groups_patients if x.disease_group in user_disease_groups]
             return common_disease_groups
 
-    def intersect_facilities(self, user, with_edit_permission=False):
+    def intersect_internal_facilities(self, user, with_edit_patient_permission=False):
         """ Intersect user facilities with patient facilities """
 
-        patient_facilities = set(x.facility for x in self.units)
+        patient_facilities = self.internal_facilities
 
         if user.is_admin:
             return patient_facilities
 
-        if with_edit_permission:
-            user_facilities = set(x.unit.facility for x in user.user_units if x.has_edit_patient_permission)
+        if with_edit_patient_permission:
+            user_facilities = self.user.edit_patient_facilities
         else:
-            user_facilities = set(x.facility for x in user.units)
+            user_facilities = self.user.internal_facilities
 
         common_facilities = patient_facilities & user_facilities
 

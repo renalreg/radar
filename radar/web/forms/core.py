@@ -221,6 +221,18 @@ class DeleteForm(Form):
     pass
 
 
+class FacilityFormMixin(object):
+    def __init__(self, obj=None, *args, **kwargs):
+        super(FacilityFormMixin, self).__init__(obj=obj, *args, **kwargs)
+
+        if obj is not None:
+            facilities = obj.patient.intersect_internal_facilities(current_user, with_edit_patient_permission=True)
+            facilities.sort(key=lambda x: x.name)
+            self.facility_id.choices = [(x.id, x.name, x) for x in facilities]
+
+    facility_id = RadarSelectObjectField('Data Source', validators=[InputRequired()], coerce=int)
+
+
 def validate_postcode(value):
     regex = re.compile("GIR[ ]?0AA|((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|BX|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\\d[\\dA-Z]?[ ]?\\d[ABD-HJLN-UW-Z]{2}))|BFPO[ ]?\\d{1,4}")
     return bool(regex.match(value))
@@ -260,17 +272,6 @@ def add_empty_choice(choices):
 def add_empty_object_choice(choices):
     choices.insert(0, ('', '', None))
     return choices
-
-
-class FacilityFormMixin(object):
-    def __init__(self, obj=None, *args, **kwargs):
-        super(FacilityFormMixin, self).__init__(obj=obj, *args, **kwargs)
-
-        if obj is not None:
-            facilities = obj.patient.intersect_facilities(current_user, with_edit_permission=True)
-            self.facility_id.choices = [(x.id, x.name, x) for x in facilities]
-
-    facility_id = RadarSelectObjectField('Data Source', validators=[InputRequired()], coerce=int)
 
 
 def radar_password_check(form, field):
