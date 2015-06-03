@@ -500,6 +500,8 @@ class PatientDataDeleteView(View):
         db.session.delete(obj)
         db.session.commit()
 
+        flash('Deleted.', 'success')
+
         return self.deleted(patient, *args)
 
 
