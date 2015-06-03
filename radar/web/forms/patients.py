@@ -4,7 +4,7 @@ from wtforms.validators import Optional, InputRequired, Email
 from flask_wtf import Form
 
 from radar.web.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField, \
-    FacilityFormMixin, RadarSelectObjectField
+    FacilityFormMixin, RadarSelectObjectField, RadarPostcodeField
 from radar.lib.ordering import ASCENDING, DESCENDING
 from radar.lib.patient_search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.lib.utils import optional_int
@@ -36,14 +36,6 @@ class PatientDemographicsForm(Form):
 
     # TODO
     ethnicity = StringField(validators=[InputRequired()])
-
-    #alias_first_name = StringField(validators=[Optional()])
-    #alias_last_name = StringField(validators=[Optional()])
-
-    #address_line_1 = StringField(validators=[Optional()])
-    #address_line_2 = StringField(validators=[Optional()])
-    #address_line_3 = StringField(validators=[Optional()])
-    #postcode = RadarPostcodeField(validators=[InputRequired()])
 
     home_number = StringField(validators=[Optional()])
     work_number = StringField(validators=[Optional()])
@@ -117,3 +109,12 @@ class PatientNumberForm(Form):
 class PatientAliasForm(Form):
     first_name = StringField(validators=[InputRequired()])
     last_name = StringField(validators=[InputRequired()])
+
+
+class PatientAddressForm(Form):
+    from_date = RadarDateField(validators=[InputRequired()])
+    to_date = RadarDateField(validators=[InputRequired()])
+    address_line_1 = StringField(validators=[InputRequired()])
+    address_line_2 = StringField(validators=[Optional()])
+    address_line_3 = StringField(validators=[Optional()])
+    postcode = RadarPostcodeField(validators=[InputRequired()])

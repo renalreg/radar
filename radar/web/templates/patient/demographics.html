@@ -252,7 +252,7 @@
 
                 {% if facility_patient.can_edit(current_user) %}
                     <p>
-                        <a href="#" class="btn btn-primary btn-xs">Add Address</a>
+                        <a href="{{ url_for('patients.add_patient_address', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Address</a>
                     </p>
                 {% endif %}
 
@@ -271,11 +271,25 @@
                         <tbody>
                             {% for address in facility_patient.addresses %}
                                 <tr>
-                                    <td></td>
+                                    <td>
+                                        {% if address.can_edit(current_user) %}
+                                            <a href="{{ url_for('patients.edit_patient_address', patient_id=patient.id, patient_address_id=address.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ address.from_date | date_format | missing }}</td>
                                     <td>{{ address.to_date | date_format | missing }}</td>
                                     <td>{{ address.full_address | nl2br }}</td>
-                                    <td></td>
+                                    <td align="right">
+                                        {% if address.can_edit(current_user) %}
+                                            <form method="POST" action="{{ url_for('patients.delete_patient_address', patient_id=patient.id, patient_address_id=address.id) }}" class="form-inline confirm-delete">
+                                                {{ delete_form.hidden_tag() }}
+
+                                                <button type="submit" class="btn btn-link btn-xs">
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
