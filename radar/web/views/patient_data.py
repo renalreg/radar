@@ -7,7 +7,7 @@ from radar.lib.database import db
 from radar.web.forms.core import DeleteForm
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient
-from radar.web.links import PatientLink, get_patient_links, get_disease_group_links
+from radar.web.links import get_patient_links, get_disease_group_links
 
 
 class PatientDataListService(object):

@@ -54,6 +54,7 @@ class DiseaseGroupFeature(db.Model):
     disease_group = relationship('DiseaseGroup')
 
     name = Column(String, nullable=False)
+    weight = Column(Integer, nullable=False)
 
 
 class DiseaseGroupPatient(db.Model, MetadataMixin):
@@ -129,6 +130,8 @@ class DiseaseGroupLabGroupDefinition(db.Model):
 
     lab_group_definition_id = Column(Integer, ForeignKey('lab_group_definitions.id'), nullable=False)
     lab_group_definition = relationship('LabGroupDefinition')
+
+    weight = Column(Integer, nullable=False)
 
     __table_args__ = (
         UniqueConstraint('disease_group_id', 'lab_group_definition_id'),

@@ -1,6 +1,7 @@
 {% extends 'patient/lab_results_base.html' %}
 
 {% set current_lab_results_page = 'list' %}
+{% set current_lab_group_definition = lab_group_definition %}
 
 {% from 'macros/pagination.html' import render_pagination %}
 {% from 'macros/ordering.html' import render_sortable_column %}

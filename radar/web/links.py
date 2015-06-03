@@ -52,6 +52,29 @@ class DiseaseGroupLink(object):
         return partial(cls, name=name, endpoint=endpoint, patient_page=patient_page)
 
 
+class LabGroupLink(object):
+    def __init__(self, patient, lab_group_definition):
+        self.patient = patient
+        self.lab_group_definition = lab_group_definition
+
+    def text(self):
+        return self.lab_group_definition.name
+
+    def url(self):
+        return url_for(
+            'lab_results.view_lab_result_list',
+            patient_id=self.patient.id,
+            lab_group_definition_id=self.lab_group_definition.id,
+        )
+
+    @contextfunction
+    def is_active(self, context):
+        return (
+            context.vars.get('current_patient_page') == 'lab_results' and
+            context.vars.get('current_lab_group_definition') == self.lab_group_definition
+        )
+
+
 # Patient links
 demographics_link = PatientLink.partial('Demographics', 'patients.view_demographics_list', 'demographics')
 medications_link = PatientLink.partial('Medications', 'medications.view_medication_list', 'medications')
@@ -104,13 +127,19 @@ def get_disease_group_links(patient, disease_group):
         link = FEATURE_TO_PATIENT_LINK.get(x.name)
 
         if link is not None:
-            links.append(link(patient))
+            links.append((x.weight, link(patient)))
             continue
 
         link = FEATURE_TO_DISEASE_GROUP_LINK.get(x.name)
 
         if link is not None:
-            links.append(link(patient, disease_group))
+            links.append((x.weight, link(patient, disease_group)))
             continue
+
+    for x in disease_group.disease_group_lab_group_definitions:
+        link = LabGroupLink(patient, x.lab_group_definition)
+        links.append((x.weight, link))
+
+    links = [x[1] for x in sorted(links)]
 
     return links
