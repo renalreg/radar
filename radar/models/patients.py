@@ -156,6 +156,9 @@ class Patient(db.Model):
     def can_edit(self, user):
         return len(self.intersect_internal_facilities(user, with_edit_patient_permission=True)) > 0
 
+    def can_delete(self, user):
+        return user.is_admin
+
     def can_view_demographics(self, user):
         if user.is_admin:
             return True

@@ -308,6 +308,8 @@
             </tr>
         </table>
 
-        <p><a href="{{ url_for('patients.delete_patient', patient_id=patient.id) }}" class="btn btn-danger btn-xs">Delete Patient</a></p>
+        {% if patient.can_delete(current_user) %}
+            <p><a href="{{ url_for('patients.delete_patient', patient_id=patient.id) }}" class="btn btn-danger btn-xs">Delete Patient</a></p>
+        {% endif %}
     {% endcall %}
 {% endblock %}
