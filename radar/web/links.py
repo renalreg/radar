@@ -1,6 +1,7 @@
 from functools import partial
 from flask import url_for
 from jinja2 import contextfunction
+from radar.lib import features
 
 
 class PatientLink(object):
@@ -78,12 +79,12 @@ PATIENT_LINKS = [
 ]
 
 FEATURE_TO_PATIENT_LINK = {
-    'RENAL_IMAGING': renal_imaging_link,
-    'SALT_WASTING_CLINICAL_FEATURES': salt_wasting_clinical_features_link,
+    features.RENAL_IMAGING: renal_imaging_link,
+    features.SALT_WASTING_CLINICAL_FEATURES: salt_wasting_clinical_features_link,
 }
 
 FEATURE_TO_DISEASE_GROUP_LINK = {
-    'GENETICS': genetics_link,
+    features.GENETICS: genetics_link,
 }
 
 
