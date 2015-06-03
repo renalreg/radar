@@ -1,10 +1,10 @@
 from datetime import date
-import re
 
+import re
 from flask_login import current_user
 from markupsafe import Markup
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
-    RadioField, BooleanField
+    RadioField
 from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
@@ -59,7 +59,7 @@ class RadarSelectField(SelectField):
         if value is None:
             value = ''
 
-        super(SelectField, self).process_data(value)
+        super(RadarSelectField, self).process_data(value)
 
 
 class RadarSelectObjectField(SelectField):

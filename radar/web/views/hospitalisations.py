@@ -84,8 +84,8 @@ class HospitalisationListEditView(PatientDataListEditView):
             HospitalisationDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'hospitalisations.view_hospitalisation_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('hospitalisations.view_hospitalisation_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/hospitalisations.html'

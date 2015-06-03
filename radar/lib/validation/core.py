@@ -8,7 +8,7 @@ class BaseErrorHandler(object):
 
 class ErrorHandler(BaseErrorHandler):
     def __init__(self):
-        super(BaseErrorHandler, self).__init__()
+        super(ErrorHandler, self).__init__()
 
         self.errors = dict()
 
@@ -26,7 +26,7 @@ class ErrorHandler(BaseErrorHandler):
 
 class ProxyErrorHandler(BaseErrorHandler):
     def __init__(self, errors, prefix):
-        super(BaseErrorHandler, self).__init__()
+        super(ProxyErrorHandler, self).__init__()
 
         self.errors = errors
         self.prefix = prefix

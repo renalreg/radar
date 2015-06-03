@@ -4,9 +4,8 @@ from werkzeug.utils import redirect
 
 from radar.web.forms.salt_wasting import SaltWastingClinicalFeaturesForm
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
-from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView, get_patient_data
+from radar.web.views.patient_data import DetailService, PatientDataDetailView, PatientDataEditView
 from radar.web.views.patients import get_patient_data
-
 
 bp = Blueprint('salt_wasting', __name__)
 

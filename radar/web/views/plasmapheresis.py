@@ -84,8 +84,8 @@ class PlasmapheresisListEditView(PatientDataListEditView):
             PlasmapheresisDetailService(current_user),
         )
 
-    def success_endpoint(self):
-        return 'plasmapheresis.view_plasmapheresis_list'
+    def saved(self, patient, obj):
+        return redirect(url_for('plasmapheresis.view_plasmapheresis_list', patient_id=patient.id))
 
     def get_template_name(self):
         return 'patient/plasmapheresis.html'

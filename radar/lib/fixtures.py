@@ -251,7 +251,7 @@ def create_fixtures():
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
-        for facility in random.sample(facilities, random.randint(1,3)):
+        for facility in random.sample(facilities, random.randint(1, 3)):
             unit_patient = UnitPatient(unit=facility.unit, patient=patient)
             unit_patient.created_date = random_date(patient.recruited_date, date.today())
             db.session.add(unit_patient)
@@ -336,7 +336,7 @@ def create_fixtures():
 
 
 if __name__ == '__main__':
-    app = create_app('settings.py')
+    app = create_app()
 
     with app.app_context():
         create_fixtures()
