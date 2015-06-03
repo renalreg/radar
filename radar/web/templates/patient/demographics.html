@@ -113,7 +113,7 @@
 
             {% if facility_patient.can_edit(current_user) %}
                 <p>
-                    <a href="{{ url_for('patients.add_patient_number', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Identifier</a>
+                    <a href="{{ url_for('patients.add_patient_number', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Number</a>
                 </p>
             {% endif %}
 
