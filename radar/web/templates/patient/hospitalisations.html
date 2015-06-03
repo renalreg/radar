@@ -10,7 +10,9 @@
         {% include "patient/_hospitalisation.html" %}
     {% endif %}
 
-    <p><a href="{{ url_for('hospitalisations.add_hospitalisation', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
+    {% if patient.can_edit(current_user) %}
+        <p><a href="{{ url_for('hospitalisations.add_hospitalisation', patient_id=patient.id) }}" class="btn btn-primary">New</a></p>
+    {% endif %}
 
     {% include "patient/_hospitalisation_list.html" %}
 {% endblock %}
