@@ -112,3 +112,8 @@ class PatientNumberForm(Form):
     def populate_obj(self, obj):
         obj.number_facility = self.number_facility_id.obj
         obj.number = self.number.data
+
+
+class PatientAliasForm(Form):
+    first_name = StringField(validators=[InputRequired()])
+    last_name = StringField(validators=[InputRequired()])

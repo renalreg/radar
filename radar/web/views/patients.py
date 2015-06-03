@@ -14,10 +14,13 @@ from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PA
     PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm, PatientNumberForm
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
-from radar.web.views.patient_data import get_patient_data, PatientDataEditView, PatientDataDetailService, PatientDataListService, \
+from radar.web.views.patient_data import get_patient_data, PatientDataEditView, PatientDataDetailService, \
     PatientDataDeleteView, PatientDataAddView
+from radar.web.views import patient_aliases
+
 
 bp = Blueprint('patients', __name__)
+patient_aliases.register_routes(bp)
 
 
 def build_patient_search_query(user, form):

@@ -204,11 +204,11 @@
 
                 {% if facility_patient.can_edit(current_user) %}
                     <p>
-                        <a href="#" class="btn btn-primary btn-xs">Add Alias</a>
+                        <a href="{{ url_for('patients.add_patient_alias', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Alias</a>
                     </p>
                 {% endif %}
 
-                {% if patient.aliases %}
+                {% if facility_patient.aliases %}
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -222,10 +222,24 @@
                         <tbody>
                             {% for alias in facility_patient.aliases %}
                                 <tr>
-                                    <td></td>
+                                    <td>
+                                        {% if alias.can_edit(current_user) %}
+                                            <a href="{{ url_for('patients.edit_patient_alias', patient_id=patient.id, patient_alias_id=alias.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ alias.first_name | missing }}</td>
                                     <td>{{ alias.last_name | missing }}</td>
-                                    <td></td>
+                                    <td align="right">
+                                        {% if alias.can_edit(current_user) %}
+                                            <form method="POST" action="{{ url_for('patients.delete_patient_alias', patient_id=patient.id, patient_alias_id=alias.id) }}" class="form-inline confirm-delete">
+                                                {{ delete_form.hidden_tag() }}
+
+                                                <button type="submit" class="btn btn-link btn-xs">
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -242,7 +256,7 @@
                     </p>
                 {% endif %}
 
-                {% if patient.addresses %}
+                {% if facility_patient.addresses %}
                     <table class="table table-striped">
                         <thead>
                             <tr>

@@ -1,6 +1,6 @@
 {% extends 'patient/base.html' %}
 
-{% set title = 'Patient Numbers' %}
+{% set title = 'Patient Aliases' %}
 
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_form_errors %}
@@ -8,9 +8,9 @@
 
 {% block content %}
     {% if object.id %}
-        <h1 class="page-header">Edit Patient Number</h1>
+        <h1 class="page-header">Edit Patient Alias</h1>
     {% else %}
-        <h1 class="page-header">Add Patient Number</h1>
+        <h1 class="page-header">Add Patient Alias</h1>
     {% endif %}
 
     {{ render_form_errors(form) }}
@@ -18,8 +18,8 @@
     <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
 
-        {{ render_field(form.number_facility_id) }}
-        {{ render_field(form.number) }}
+        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name) }}
 
         {% call render_button() %}
             <button type="submit" class="btn btn-success">Save</button>
