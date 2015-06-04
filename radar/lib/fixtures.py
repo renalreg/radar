@@ -1,6 +1,7 @@
 import random
 from datetime import date, timedelta, datetime
-from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult
+from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult, \
+    DiseaseGroupLabGroupDefinition
 
 from radar.web.app import create_app
 from radar.lib.database import db
@@ -194,6 +195,27 @@ def create_fixtures():
     radar_facility = Facility(code='RADAR', name='RADAR', is_internal=True)
     db.session.add(radar_facility)
 
+    group_definition = LabGroupDefinition(code='TEST', name='Test', short_name='Test', pre_post=True)
+    db.session.add(group_definition)
+
+    result1_definition = LabResultDefinition(code='FOO', name='Foo', short_name='Foo', units='foo')
+    db.session.add(result1_definition)
+
+    result2_definition = LabResultDefinition(code='BAR', name='Bar', short_name='Bar', units='bar')
+    db.session.add(result2_definition)
+
+    result3_definition = LabResultDefinition(code='BAZ', name='Baz', short_name='Baz', units='baz')
+    db.session.add(result3_definition)
+
+    group_result1_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result1_definition, weight=1)
+    db.session.add(group_result1_definition)
+
+    group_result2_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result2_definition, weight=2)
+    db.session.add(group_result2_definition)
+
+    group_result3_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result3_definition, weight=3)
+    db.session.add(group_result3_definition)
+
     # http://en.wikipedia.org/wiki/List_of_fictional_institutions#Hospitals
     units = [
         Unit(name='All Saints Hospital'),
@@ -218,34 +240,45 @@ def create_fixtures():
         db.session.add(facility)
 
     disease_groups = [
-        DiseaseGroup(name='SRNS', features=[DiseaseGroupFeature(name='GENETICS', weight=1), DiseaseGroupFeature(name='RENAL_IMAGING', weight=2), DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=3)]),
-        DiseaseGroup(name='MPGN', features=[DiseaseGroupFeature(name='GENETICS', weight=3), DiseaseGroupFeature(name='RENAL_IMAGING', weight=2), DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=1)]),
-        DiseaseGroup(name='Salt Wasting', features=[DiseaseGroupFeature(name='GENETICS', weight=0), DiseaseGroupFeature(name='RENAL_IMAGING', weight=0), DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=0)]),
+        DiseaseGroup(
+            name='SRNS',
+            features=[
+                DiseaseGroupFeature(name='GENETICS', weight=1),
+                DiseaseGroupFeature(name='RENAL_IMAGING', weight=2),
+                DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=3)
+            ],
+            disease_group_lab_group_definitions=[
+                DiseaseGroupLabGroupDefinition(lab_group_definition=group_definition, weight=4)
+            ]
+        ),
+        DiseaseGroup(
+            name='MPGN',
+            features=[
+                DiseaseGroupFeature(name='GENETICS', weight=3),
+                DiseaseGroupFeature(name='RENAL_IMAGING', weight=2),
+                DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=1)
+            ],
+            disease_group_lab_group_definitions=[
+                DiseaseGroupLabGroupDefinition(lab_group_definition=group_definition, weight=4)
+            ]
+        ),
+        DiseaseGroup(
+            name='Salt Wasting',
+            features=[
+                DiseaseGroupFeature(name='GENETICS', weight=0),
+                DiseaseGroupFeature(name='RENAL_IMAGING', weight=0),
+                DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=0)
+            ],
+            disease_group_lab_group_definitions=[
+                DiseaseGroupLabGroupDefinition(lab_group_definition=group_definition, weight=4)
+            ]
+        ),
     ]
 
     for disease_group in disease_groups:
         db.session.add(disease_group)
 
-    group_definition = LabGroupDefinition(code='TEST', name='Test', short_name='Test', pre_post=True)
-    db.session.add(group_definition)
 
-    result1_definition = LabResultDefinition(code='FOO', name='Foo', short_name='Foo', units='foo')
-    db.session.add(result1_definition)
-
-    result2_definition = LabResultDefinition(code='BAR', name='Bar', short_name='Bar', units='bar')
-    db.session.add(result2_definition)
-
-    result3_definition = LabResultDefinition(code='BAZ', name='Baz', short_name='Baz', units='baz')
-    db.session.add(result3_definition)
-
-    group_result1_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result1_definition, weight=1)
-    db.session.add(group_result1_definition)
-
-    group_result2_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result2_definition, weight=2)
-    db.session.add(group_result2_definition)
-
-    group_result3_definition = LabGroupResultDefinition(lab_group_definition=group_definition, lab_result_definition=result3_definition, weight=3)
-    db.session.add(group_result3_definition)
 
     for _ in range(100):
         patient = Patient()
