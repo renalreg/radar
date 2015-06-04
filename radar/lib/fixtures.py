@@ -334,10 +334,10 @@ def create_fixtures():
                 ]
                 db.session.add(test_group)
 
-        for disease_group in random.sample(disease_groups, random.randint(1, 2)):
-            disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
-            disease_group_patient.created_date = random_date(patient.recruited_date, date.today())
-            db.session.add(disease_group_patient)
+        disease_group = random.choice(disease_groups)
+        disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
+        disease_group_patient.created_date = random_date(patient.recruited_date, date.today())
+        db.session.add(disease_group_patient)
 
         db.session.add(patient)
 
