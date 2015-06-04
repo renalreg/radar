@@ -22,5 +22,9 @@
         <li{% if current_lab_results_page == 'graph' %} class="active"{% endif %}>
             <a href="{{ url_for('lab_results.view_lab_result_graph', patient_id=patient.id) }}">Graph</a>
         </li>
+
+        <li{% if current_lab_results_page == 'definitions' %} class="active"{% endif %}>
+            <a href="{{ url_for('lab_results.view_lab_result_definitions', patient_id=patient.id) }}">Definitions</a>
+        </li>
     </ul>
 {% endblock %}

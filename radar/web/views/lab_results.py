@@ -211,6 +211,26 @@ def view_lab_result_graph_json(patient_id):
     })
 
 
+@bp.route('/definitions/')
+def view_lab_result_definitions(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+
+    if not patient.can_view(current_user):
+        abort(403)
+
+    lab_group_definitions = LabGroupDefinition.query\
+        .order_by(LabGroupDefinition.name)\
+        .all()
+
+    context = dict(
+        patient=patient,
+        patient_data=get_patient_data(patient),
+        lab_group_definitions=lab_group_definitions
+    )
+
+    return render_template('patient/lab_result_definitions.html', **context)
+
+
 class LabGroupDetailService(PatientDataDetailService):
     def get_object(self, patient, lab_group_id):
         lab_group = LabGroup.query\

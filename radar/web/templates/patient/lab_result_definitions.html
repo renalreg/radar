@@ -1,0 +1,45 @@
+{% extends 'patient/lab_results_base.html' %}
+
+{% set current_lab_results_page = 'definitions' %}
+
+{% block content %}
+    {{ super() }}
+
+    {% for lab_group_definition in lab_group_definitions %}
+        <h3>
+            {{ lab_group_definition.name }}
+
+            {% if lab_group_definition.name != lab_group_definition.short_name %}
+                <small>({{ lab_group_definition.short_name }})</small>
+            {% endif %}
+        </h3>
+
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="25%">Name</th>
+                    <th width="25%">Units</th>
+                    <th width="25%">Min</th>
+                    <th width="25%">Max</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for lab_result_definition in lab_group_definition.lab_result_definitions %}
+                    <tr>
+                        <td>
+                            {{ lab_result_definition.name }}
+
+                            {% if lab_result_definition.name != lab_result_definition.short_name %}
+                                <small>({{ lab_result_definition.short_name }})</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ lab_result_definition.units | missing }}</td>
+                        <td>{{ lab_result_definition.min_value | missing }}</td>
+                        <td>{{ lab_result_definition.max_value | missing }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}
