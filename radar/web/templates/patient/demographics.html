@@ -62,6 +62,15 @@
                             {% endif %}
                         </td>
                     </tr>
+
+                    {% if facility_patient.demographics.ethnicity_code %}
+                        <tr>
+                            <th width="20%">Ethnicity</th>
+                            <td>
+                                {{ facility_patient.demographics.ethnicity_code.label }} <small>({{ facility_patient.demographics.ethnicity_code.id }})</small>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </table>
             {% endif %}
 

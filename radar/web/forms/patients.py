@@ -2,9 +2,11 @@ from flask_login import current_user
 from wtforms import StringField, IntegerField, BooleanField
 from wtforms.validators import Optional, InputRequired, Email
 from flask_wtf import Form
+from radar.lib.database import db
+from radar.models import EthnicityCode
 
 from radar.web.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField, \
-    FacilityFormMixin, RadarSelectObjectField, RadarPostcodeField
+    FacilityFormMixin, RadarSelectObjectField, RadarPostcodeField, add_empty_object_choice
 from radar.lib.ordering import ASCENDING, DESCENDING
 from radar.lib.patient_search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.lib.utils import optional_int
@@ -23,6 +25,11 @@ ORDER_BY_CHOICES = [
 
 
 class PatientDemographicsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super(PatientDemographicsForm, self).__init__(*args, **kwargs)
+
+        self.ethnicity_code_id.choices = add_empty_object_choice(EthnicityCode.choices(db.session))
+
     first_name = StringField(validators=[InputRequired()])
     last_name = StringField(validators=[InputRequired()])
 
@@ -33,9 +40,7 @@ class PatientDemographicsForm(Form):
     date_of_death = RadarDateField('Date of Death', validators=[Optional()])
 
     gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[InputRequired()])
-
-    # TODO
-    ethnicity = StringField(validators=[InputRequired()])
+    ethnicity_code_id = RadarSelectObjectField('Ethnicity', validators=[InputRequired()])
 
     home_number = StringField(validators=[Optional()])
     work_number = StringField(validators=[Optional()])
@@ -44,6 +49,20 @@ class PatientDemographicsForm(Form):
 
     nhs_no = RadarNHSNoField(validators=[Optional()])
     chi_no = RadarCHINoField(validators=[Optional()])
+
+    def populate_obj(self, obj):
+        obj.first_name = self.first_name.data
+        obj.last_name = self.last_name.data
+        obj.date_of_birth = self.date_of_birth.data
+        obj.date_of_death = self.date_of_death.data
+        obj.gender = self.gender.data
+        obj.ethnicity_code = self.ethnicity_code_id.obj
+        obj.home_number = self.home_number.data
+        obj.work_number = self.work_number.data
+        obj.mobile_number = self.mobile_number.data
+        obj.email_address = self.email_address.data
+        obj.nhs_no = self.nhs_no.data
+        obj.chi_no = self.chi_no.data
 
 
 class PatientSearchForm(Form):

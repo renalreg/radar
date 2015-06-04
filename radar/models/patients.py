@@ -6,7 +6,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.models.common import MetadataMixin
+from radar.models.common import MetadataMixin, StringLookupTable
 
 
 class Patient(db.Model):
@@ -234,8 +234,8 @@ class PatientDemographics(db.Model, MetadataMixin):
     date_of_death = Column(Date)
     gender = Column(String)  # TODO enum
 
-    # TODO
-    ethnicity = Column(String)
+    ethnicity_code_id = Column(String, ForeignKey('ethnicity_codes.id'))
+    ethnicity_code = relationship('EthnicityCode')
 
     home_number = Column(String)
     work_number = Column(String)
@@ -254,6 +254,17 @@ class PatientDemographics(db.Model, MetadataMixin):
 
     def can_edit(self, user):
         return self.facility.is_radar and self.patient.can_edit(user)
+
+
+class EthnicityCode(db.Model):
+    __tablename__ = 'ethnicity_codes'
+
+    id = Column(String, primary_key=True)
+    label = Column(String, nullable=False)
+
+    @classmethod
+    def choices(cls, session):
+        return [(x.id, x.label, x) for x in session.query(cls).order_by(cls.id).all()]
 
 
 class PatientAlias(db.Model, MetadataMixin):

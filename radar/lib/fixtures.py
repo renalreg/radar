@@ -1,5 +1,6 @@
 import random
 from datetime import date, timedelta, datetime
+from radar.lib.initial_data import create_initial_data
 from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult, \
     DiseaseGroupLabGroupDefinition
 
@@ -188,6 +189,8 @@ def generate_chi_no():
 
 
 def create_fixtures():
+    create_initial_data()
+
     admin = User(username='admin', email='admin@example.org', is_admin=True)
     admin.set_password('password')
     db.session.add(admin)
