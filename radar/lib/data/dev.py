@@ -1,7 +1,10 @@
 import random
-from datetime import date, timedelta, datetime
+from datetime import date, datetime
 
 from radar.lib.data import create_initial_data
+from radar.lib.data.utils import random_date, generate_gender, generate_first_name, generate_last_name, \
+    generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
+    generate_email_address, generate_nhs_no, generate_chi_no, random_datetime
 from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult, \
     DiseaseGroupLabGroupDefinition
 from radar.web.app import create_app
@@ -12,185 +15,47 @@ from radar.models.news import Post
 from radar.models.patients import Patient, PatientDemographics
 from radar.models.units import Unit, UnitPatient
 from radar.models.users import User
+from jinja2.utils import generate_lorem_ipsum
 
 
-FEMALE = 'F'
-MALE = 'M'
-
-FIRST_NAMES = {
-    MALE: [
-        'JACK',
-        'JOSHUA',
-        'THOMAS',
-        'JAMES',
-        'OLIVER',
-        'DANIEL',
-        'SAMUEL',
-        'WILLIAM',
-        'HARRY',
-        'JOSEPH',
-        'BENJAMIN',
-        'CHARLIE',
-        'LUKE',
-        'CALLUM',
-        'MATTHEW',
-        'JAKE',
-        'GEORGE',
-        'ETHAN',
-        'LEWIS',
-        'MOHAMMED',
-        'JACOB',
-        'ALEXANDER',
-        'ALFIE',
-        'DYLAN',
-        'RYAN',
-    ],
-    FEMALE: [
-        'JESSICA',
-        'EMILY',
-        'SOPHIE',
-        'OLIVIA',
-        'ELLIE',
-        'CHLOE',
-        'GRACE',
-        'LUCY',
-        'CHARLOTTE',
-        'ELLA',
-        'KATIE',
-        'RUBY',
-        'MEGAN',
-        'HANNAH',
-        'AMELIA',
-        'LILY',
-        'AMY',
-        'MIA',
-        'HOLLY',
-        'ABIGAIL',
-        'MILLIE',
-        'MOLLY',
-        'EMMA',
-        'ISABELLA',
-        'LEAH',
-    ]
-}
-
-LAST_NAMES = [
-    'SMITH',
-    'JONES',
-    'TAYLOR',
-    'WILLIAMS',
-    'BROWN',
-    'DAVIES',
-    'EVANS',
-    'WILSON',
-    'THOMAS',
-    'ROBERTS',
-    'JOHNSON',
-    'LEWIS',
-    'WALKER',
-    'ROBINSON',
-    'WOOD',
-    'THOMPSON',
-    'WHITE',
-    'WATSON',
-    'JACKSON',
-    'WRIGHT',
-    'GREEN',
-    'HARRIS',
-    'COOPER',
-    'KING',
-    'LEE',
-]
+def create_users(n):
+    for x in range(n):
+        user = User()
+        user.first_name = generate_first_name().capitalize()
+        user.last_name = generate_last_name().capitalize()
+        user.username = '%s.%s%d' % (
+            user.first_name.lower(),
+            user.last_name.lower(),
+            x + 1
+        )
+        user.email = '%s@example.org' % user.username
+        user.set_password('password')
+        db.session.add(user)
 
 
-def generate_gender():
-    if random.random() > 0.5:
-        return MALE
-    else:
-        return FEMALE
+def create_admin_user():
+    admin = User(username='admin', email='admin@example.org', is_admin=True)
+    admin.set_password('password')
+    db.session.add(admin)
 
 
-def generate_first_name(gender):
-    return random.choice(FIRST_NAMES[gender])
+def create_posts(n):
+    for x in range(n):
+        d = random_date(date(2008, 1, 1), date.today())
 
-
-def generate_last_name():
-    return random.choice(LAST_NAMES)
-
-
-def generate_date_of_birth():
-    return random_date(date(1920, 1, 1), date(2000, 12, 31))
-
-
-def generate_date_of_death():
-    return random_date(date(1980, 1, 1), date(2014, 12, 31))
-
-
-def random_date(start_date, end_date):
-    if start_date == end_date:
-        return start_date
-
-    days = (end_date - start_date).days
-    random_date = start_date + timedelta(days=random.randint(1, days))
-    return random_date
-
-
-def random_bool():
-    return random.randint(0, 1) == 1
-
-
-def random_datetime(start_dt, end_dt):
-    seconds = int((end_dt - start_dt).total_seconds())
-    return start_dt + timedelta(seconds=random.randrange(seconds))
-
-
-def generate_email_address(first_name, last_name):
-    return '%s.%s@example.org' % (first_name.lower(), last_name.lower())
-
-
-def generate_phone_number():
-    return '0%d%s %s' % (
-        random.randint(1, 2),
-        ''.join(str(random.randint(0, 9)) for _ in range(3)),
-        ''.join(str(random.randint(0, 9)) for _ in range(6)),
-    )
-
-
-def generate_mobile_number():
-    return '07' + ''.join(str(random.randint(0, 9)) for _ in range(9))
-
-
-def generate_nhs_no():
-    while True:
-        number = ''.join(str(random.randint(0, 9)) for _ in range(9))
-
-        check_digit = 0
-
-        for i in range(9):
-            check_digit += int(number[i]) * (10 - i)
-
-        check_digit = 11 - (check_digit % 11)
-
-        if check_digit == 11:
-            check_digit = 0
-        elif check_digit == 10:
-            continue
-
-        number += str(check_digit)
-
-        return int(number)
-
-
-def generate_chi_no():
-    return generate_nhs_no()
+        post = Post()
+        post.title = '%s Newsletter' % d.strftime('%b %Y')
+        post.body = generate_lorem_ipsum(n=3, html=False)
+        post.published = d
+        db.session.add(post)
 
 
 def create_fixtures():
     create_initial_data()
 
-    admin = User(username='admin', email='admin@example.org', is_admin=True)
-    admin.set_password('password')
-    db.session.add(admin)
+    create_admin_user()
+    create_users(10)
+    create_posts(10)
 
     radar_facility = Facility(code='RADAR', name='RADAR', is_internal=True)
     db.session.add(radar_facility)
@@ -341,12 +206,6 @@ def create_fixtures():
         db.session.add(disease_group_patient)
 
         db.session.add(patient)
-
-    post = Post()
-    post.title = 'Hello'
-    post.body = 'Hello World!'
-    post.published = datetime.now()
-    db.session.add(post)
 
 
 if __name__ == '__main__':
