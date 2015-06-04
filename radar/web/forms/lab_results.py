@@ -17,8 +17,12 @@ class LabResultGraphForm(Form):
     result_code = RadarSelectField()
 
 
-class SelectLabGroupForm(Form):
+class SelectAddLabGroupForm(Form):
     lab_group_definition_id = RadarSelectField('Lab Group', validators=[InputRequired()], coerce=optional_int)
+
+
+class SelectLabGroupForm(Form):
+    lab_group_definition_id = RadarSelectField('Lab Group', validators=[Optional()], coerce=optional_int)
 
 
 def lab_group_to_form(lab_group_definition=None):

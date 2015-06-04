@@ -195,7 +195,7 @@ def create_fixtures():
     radar_facility = Facility(code='RADAR', name='RADAR', is_internal=True)
     db.session.add(radar_facility)
 
-    group_definition = LabGroupDefinition(code='TEST', name='Test', short_name='Test', pre_post=True)
+    group_definition = LabGroupDefinition(code='TEST', name='Example Test', short_name='Example Test', pre_post=True)
     db.session.add(group_definition)
 
     result1_definition = LabResultDefinition(code='FOO', name='Foo', short_name='Foo', units='foo')

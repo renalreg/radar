@@ -12,11 +12,13 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro render_field(field, read_only=False) %}
+{% macro render_field(field, read_only=False, rendered_field=None) %}
     {% call render_field_group(field) %}
         {{ field.label(class='control-label') }}
 
-        {% if field.type == 'RadarYesNoField' %}
+        {% if rendered_field %}
+            {{ rendered_field }}
+        {% elif field.type == 'RadarYesNoField' %}
             {{ field(disabled=read_only) }}
         {% elif field.type == 'BooleanField' %}
             <div class="checkbox">

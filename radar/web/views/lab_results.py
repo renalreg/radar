@@ -6,13 +6,14 @@ from radar.lib.lab_results import LabResultTable
 from radar.models import Facility
 from radar.web.forms.core import add_empty_choice
 from radar.web.forms.lab_results import LabResultTableForm, LabResultGraphForm, \
-    lab_group_to_form_data, lab_group_to_form, SelectLabGroupForm
+    lab_group_to_form_data, lab_group_to_form, SelectAddLabGroupForm, SelectLabGroupForm
 from radar.lib.ordering import order_query, DESCENDING, ordering_from_request
 from radar.lib.pagination import paginate_query
 from radar.models.lab_results import LabResult, LabGroup, LabGroupDefinition, LabResultDefinition
 from radar.models.patients import Patient
 from radar.web.views.patient_data import get_patient_data, PatientDataDetailService, PatientDataEditView, PatientDataAddView, \
     PatientDataDeleteView, PatientDataDetailView
+
 
 RESULT_CODE_SORT_PREFIX = 'result_'
 
@@ -41,13 +42,15 @@ def view_lab_result_list(patient_id):
         patient_data=get_patient_data(patient),
     )
 
-    lab_group_definition_id = request.args.get('lab_group_definition_id')
+    form = SelectLabGroupForm(formdata=request.args, csrf_enabled=False)
+    lab_group_choices = get_lab_group_choices()
+    lab_group_choices.insert(0, ('', 'All'))
+    form.lab_group_definition_id.choices = lab_group_choices
 
-    if lab_group_definition_id is not None:
-        try:
-            lab_group_definition_id = int(lab_group_definition_id)
-        except ValueError:
-            lab_group_definition_id = None
+    if form.validate():
+        lab_group_definition_id = form.lab_group_definition_id.data
+    else:
+        lab_group_definition_id = None
 
     query = LabResult.query\
         .join(LabResult.lab_group)\
@@ -76,6 +79,7 @@ def view_lab_result_list(patient_id):
         pagination=pagination,
         ordering=ordering,
         lab_results=lab_results,
+        form=form,
     ))
 
     return render_template('patient/lab_results_list.html', **context)
@@ -258,8 +262,10 @@ class LabGroupAddView(PatientDataAddView):
                 lab_group_definition_id = None
 
         if lab_group_definition_id is None:
-            select_form = SelectLabGroupForm()
-            select_form.lab_group_definition_id.choices = get_lab_group_choices()
+            select_form = SelectAddLabGroupForm()
+            lab_group_choices = get_lab_group_choices()
+            lab_group_choices = add_empty_choice(lab_group_choices)
+            select_form.lab_group_definition_id.choices = lab_group_choices
             self.select_form = select_form
 
             if select_form.validate_on_submit():
@@ -361,7 +367,5 @@ def get_lab_group_choices():
 
     for x in lab_group_definitions:
         choices.append((x.id, x.name))
-
-    choices = add_empty_choice(choices)
 
     return choices
