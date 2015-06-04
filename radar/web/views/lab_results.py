@@ -202,7 +202,11 @@ def view_lab_result_graph_json(patient_id):
     data = []
 
     for lab_result in lab_results:
-        data.append((lab_result.lab_group.date.isoformat(), float(lab_result.value)))
+        data.append({
+            'date': lab_result.lab_group.date.isoformat(),
+            'value': float(lab_result.value),
+            'source': lab_result.lab_group.facility.name,
+        })
 
     return jsonify({
         'name': result_definition.name,

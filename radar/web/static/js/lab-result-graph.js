@@ -11,9 +11,11 @@ function load_result_code(graph_selector, result_code) {
 
         for (var i = 0; i < data.data.length; i++) {
             var row = data.data[i];
-            var date = Date.parse(row[0]);
-            var value = row[1];
-            graphData.push([date, value]);
+            graphData.push({
+                x: Date.parse(row.date),
+                y: row.value,
+                source: row.source
+            });
         }
 
         var options = {
@@ -42,6 +44,9 @@ function load_result_code(graph_selector, result_code) {
                         enabled: true
                     }
                 }
+            },
+            tooltip: {
+                 pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b> ({point.source})<br/>',
             }
         };
 
