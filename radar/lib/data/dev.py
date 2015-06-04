@@ -6,13 +6,10 @@ from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResult
     DiseaseGroupLabGroupDefinition
 from radar.web.app import create_app
 from radar.lib.database import db
-from radar.models.dialysis import DialysisType
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupFeature
 from radar.models.facilities import Facility
-from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
 from radar.models.news import Post
 from radar.models.patients import Patient, PatientDemographics
-from radar.models.transplants import TransplantType
 from radar.models.units import Unit, UnitPatient
 from radar.models.users import User
 
@@ -284,8 +281,6 @@ def create_fixtures():
     for disease_group in disease_groups:
         db.session.add(disease_group)
 
-
-
     for _ in range(100):
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
@@ -346,26 +341,6 @@ def create_fixtures():
         db.session.add(disease_group_patient)
 
         db.session.add(patient)
-
-    db.session.add(MedicationDoseUnit(id='ml', label='ml'))
-    db.session.add(MedicationDoseUnit(id='l', label='l'))
-    db.session.add(MedicationDoseUnit(id='mg', label='mg'))
-    db.session.add(MedicationDoseUnit(id='g', label='g'))
-    db.session.add(MedicationDoseUnit(id='kg', label='kg'))
-
-    db.session.add(MedicationFrequency(id='Daily', label='Daily'))
-    db.session.add(MedicationFrequency(id='Weekly', label='Weekly'))
-    db.session.add(MedicationFrequency(id='Monthly', label='Monthly'))
-
-    db.session.add(MedicationRoute(id='Oral', label='Oral'))
-    db.session.add(MedicationRoute(id='Rectal', label='Rectal'))
-
-    db.session.add(TransplantType(label='Foo'))
-    db.session.add(TransplantType(label='Bar'))
-    db.session.add(TransplantType(label='Baz'))
-
-    db.session.add(DialysisType(label='HD'))
-    db.session.add(DialysisType(label='PD'))
 
     post = Post()
     post.title = 'Hello'

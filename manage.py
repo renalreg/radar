@@ -2,7 +2,7 @@ from flask_script import Manager
 
 from radar.web.app import create_app
 from radar.lib.database import db
-from radar.lib import fixtures
+from radar.lib.data import dev
 
 app = create_app()
 
@@ -22,7 +22,7 @@ def drop_tables():
 
 @manager.command
 def load_data():
-    fixtures.create_fixtures()
+    dev.create_fixtures()
     db.session.commit()
 
 
