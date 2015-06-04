@@ -26,7 +26,3 @@ def create_ethnicity_codes():
     for k, v in ETHNICITY_CODES:
         ethnicity_code = EthnicityCode(id=k, label=v)
         db.session.add(ethnicity_code)
-
-
-def create_initial_data():
-    create_ethnicity_codes()

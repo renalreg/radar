@@ -1,9 +1,9 @@
 import random
 from datetime import date, timedelta, datetime
-from radar.lib.initial_data import create_initial_data
+
+from radar.lib.data import create_initial_data
 from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition, LabGroup, LabResult, \
     DiseaseGroupLabGroupDefinition
-
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.dialysis import DialysisType
