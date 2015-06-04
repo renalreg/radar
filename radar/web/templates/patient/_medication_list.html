@@ -6,8 +6,7 @@
                 <th>From Date</th>
                 <th>To Date</th>
                 <th>Name</th>
-                <th>Dose Quantity</th>
-                <th>Dose Unit</th>
+                <th>Dose</th>
                 <th>Frequency</th>
                 <th>Route</th>
                 <th>Data Source</th>
@@ -27,8 +26,9 @@
                     <td data-dateformat="DD/MM/YYYY">{{ x.from_date | date_format | missing }}</td>
                     <td data-dateformat="DD/MM/YYYY">{{ x.to_date | date_format | missing }}</td>
                     <td>{{ x.name | missing }}</td>
-                    <td>{{ x.dose_quantity | missing }}</td>
-                    <td>{{ x.dose_unit.label | missing }}</td>
+                    <td data-value="{{ x.dose_quantity }}">
+                        {{ x.dose_quantity | missing }}{{ x.dose_unit.label }}
+                    </td>
                     <td>{{ x.frequency.label | missing }}</td>
                     <td>{{ x.route.label | missing }}</td>
                     <td>{{ x.facility.name }}</td>
