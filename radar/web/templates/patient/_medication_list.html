@@ -27,7 +27,7 @@
                     <td data-dateformat="DD/MM/YYYY">{{ x.to_date | date_format | missing }}</td>
                     <td>{{ x.name | missing }}</td>
                     <td data-value="{{ x.dose_quantity }}">
-                        {{ x.dose_quantity | missing }}{{ x.dose_unit.label }}
+                        {{ x.dose_quantity | missing }} {{ x.dose_unit.label }}
                     </td>
                     <td>{{ x.frequency.label | missing }}</td>
                     <td>{{ x.route.label | missing }}</td>
