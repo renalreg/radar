@@ -243,6 +243,7 @@ def create_fixtures():
         DiseaseGroup(
             name='SRNS',
             features=[
+                DiseaseGroupFeature(name='DEMOGRAPHICS', weight=0),
                 DiseaseGroupFeature(name='GENETICS', weight=1),
                 DiseaseGroupFeature(name='RENAL_IMAGING', weight=2),
                 DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=3)
@@ -254,6 +255,7 @@ def create_fixtures():
         DiseaseGroup(
             name='MPGN',
             features=[
+                DiseaseGroupFeature(name='DEMOGRAPHICS', weight=0),
                 DiseaseGroupFeature(name='GENETICS', weight=3),
                 DiseaseGroupFeature(name='RENAL_IMAGING', weight=2),
                 DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=1)
@@ -265,6 +267,7 @@ def create_fixtures():
         DiseaseGroup(
             name='Salt Wasting',
             features=[
+                DiseaseGroupFeature(name='DEMOGRAPHICS', weight=0),
                 DiseaseGroupFeature(name='GENETICS', weight=0),
                 DiseaseGroupFeature(name='RENAL_IMAGING', weight=0),
                 DiseaseGroupFeature(name='SALT_WASTING_CLINICAL_FEATURES', weight=0)
