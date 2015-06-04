@@ -27,7 +27,10 @@
                         {{ render_field(form.unit_id) }}
                     {% endif %}
 
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <p>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="{{ url_for('users.view_user_list') }}" class="btn btn-link">Clear</a>
+                    </p>
                 </form>
             </div>
         </div>
