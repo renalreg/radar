@@ -34,7 +34,7 @@ def list_units():
 def view_unit(unit_id):
     unit_user = get_unit_user(unit_id)
 
-    posts = get_latest_news()
+    posts = get_latest_news(1)
 
     context = dict(
         unit=unit_user.unit,

@@ -34,7 +34,7 @@ def list_disease_groups():
 def view_disease_group(disease_group_id):
     disease_group_user = get_disease_group_user(disease_group_id)
 
-    posts = get_latest_news()
+    posts = get_latest_news(1)
 
     context = dict(
         disease_group=disease_group_user.disease_group,
