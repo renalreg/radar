@@ -102,6 +102,14 @@ PATIENT_LINKS = [
 ]
 
 FEATURE_TO_PATIENT_LINK = {
+    features.DEMOGRAPHICS: demographics_link,
+    features.MEDICATIONS: medications_link,
+    features.LAB_RESULTS: lab_results_link,
+    features.HOSPITALISATIONS: hospitalisations_link,
+    features.PATHOLOGY: pathology_link,
+    features.TRANSPLANTS: transplants_link,
+    features.DIALYSIS: dialysis_link,
+    features.PLASMAPHERESIS: plasmapheresis_link,
     features.RENAL_IMAGING: renal_imaging_link,
     features.SALT_WASTING_CLINICAL_FEATURES: salt_wasting_clinical_features_link,
 }
