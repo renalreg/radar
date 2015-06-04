@@ -5,7 +5,7 @@
 
 {% block content %}
     {% if lab_group_definition %}
-        <h1 class="page-header">Lab Results - {{ lab_group_definition.name }}</h1>
+        <h1 class="page-header">{{ lab_group_definition.name }} <small>Lab Results</small></h1>
     {% else %}
         <h1 class="page-header">Lab Results</h1>
     {% endif %}
