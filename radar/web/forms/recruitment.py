@@ -8,12 +8,12 @@ from radar.lib.utils import optional_int
 
 class RecruitPatientSearchForm(Form):
     date_of_birth = RadarDOBField(validators=[InputRequired()])
-    unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[InputRequired()])
-    disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[InputRequired()])
     first_name = StringField(validators=[Optional()])
     last_name = StringField(validators=[Optional()])
     nhs_no = RadarNHSNoField(validators=[Optional()])
     chi_no = RadarCHINoField(validators=[Optional()])
+    unit_id = RadarSelectField('Add to Unit', coerce=optional_int, validators=[InputRequired()])
+    disease_group_id = RadarSelectField('Add to Disease Group', coerce=optional_int, validators=[InputRequired()])
 
     def validate(self):
         if not super(RecruitPatientSearchForm, self).validate():

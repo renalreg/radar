@@ -20,13 +20,14 @@
 
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{ render_field(form.unit_id) }}
-        {{ render_field(form.disease_group_id) }}
+
         {{ render_field(form.date_of_birth) }}
         {{ render_field(form.first_name) }}
         {{ render_field(form.last_name) }}
         {{ render_field(form.nhs_no) }}
         {{ render_field(form.chi_no) }}
+        {{ render_field(form.unit_id) }}
+        {{ render_field(form.disease_group_id) }}
 
         <button type="submit" class="btn btn-success" name="recruit_patient_search">Add Patient</button>
     </form>
