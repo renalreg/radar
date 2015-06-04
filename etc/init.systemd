@@ -1,0 +1,16 @@
+[Unit]
+Description=RaDaR
+After=network.target
+
+[Service]
+PIDFile=/home/radar/run/pid
+User=radar
+Group=radar
+WorkingDirectory=/home/radar
+ExecStart=/home/radar/envs/radar/bin/python /home/radar/envs/radar/bin/gunicorn -b 127.0.0.1:5000 --pid /home/radar/run/pid 'radar.web.app:create_app()' --reload --log-file -
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+EnvironmentFile=-/etc/sysconfig/radar
+
+[Install]
+WantedBy=multi-user.target
