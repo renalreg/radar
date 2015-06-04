@@ -76,14 +76,6 @@
                     {% endif %}
                 </ul>
 
-                <ul class="nav radar-sidebar-nav">
-                    {% for link in patient_data.links %}
-                        <li{% if link.is_active() %} class="active"{% endif %}>
-                            <a href="{{ link.url() }}">{{ link.text() }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
                 {% for disease_group, links in patient_data.disease_group_links %}
                     <h4>{{ disease_group.disease_group.name }}</h4>
 
@@ -95,6 +87,16 @@
                         {% endfor %}
                     </ul>
                 {% endfor %}
+
+                <h4>RaDaR</h4>
+
+                <ul class="nav radar-sidebar-nav">
+                    {% for link in patient_data.links %}
+                        <li{% if link.is_active() %} class="active"{% endif %}>
+                            <a href="{{ link.url() }}">{{ link.text() }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
 
                 <h4>Groups</h4>
 
