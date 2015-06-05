@@ -12,8 +12,9 @@ before_install:
   - conda create --yes -n condaenv python=$TRAVIS_PYTHON_VERSION
   - source activate condaenv
 install:
-  - conda install --yes pip
   - conda install --yes pandas psycopg2
+  - conda install --yes pip
+  - pip install pytest
   - pip install .
 script:
   - py.test tests
