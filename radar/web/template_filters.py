@@ -31,8 +31,6 @@ def datetime_format(dt, seconds=False):
         if is_date(dt):
             dt = date_to_datetime(dt)
 
-        print dt
-
         output = '%02d/%02d/%04d %02d:%02d' % (dt.day, dt.month, dt.year, dt.hour, dt.minute)
 
         if seconds:
