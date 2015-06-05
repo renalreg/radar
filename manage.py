@@ -27,10 +27,17 @@ def initdb():
 
 
 @manager.command
-def devdb():
+def devdb(quick=False):
     db.drop_all()
     db.create_all()
-    dev.create_data()
+
+    if quick:
+        patients_n = 5
+    else:
+        patients_n = 100
+
+    dev.create_data(patients_n)
+
     db.session.commit()
 
 

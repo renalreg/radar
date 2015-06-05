@@ -8,7 +8,7 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime
 from radar.lib.facilities import get_radar_facility
-from radar.models import LabGroupDefinition, LabGroup, LabResult
+from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -51,9 +51,9 @@ def create_posts(n):
         db.session.add(post)
 
 
-def create_lab_groups(patient, facility, lab_group_definitions):
+def create_lab_groups(patient, facility, lab_group_definitions, n):
     for lab_group_definition in lab_group_definitions:
-        for _ in range(10):
+        for _ in range(n):
             lab_group = LabGroup(
                 patient=patient,
                 facility=facility,
@@ -117,6 +117,8 @@ def create_patients(n):
     disease_groups = DiseaseGroup.query.all()
     lab_group_definitions = LabGroupDefinition.query.all()
 
+    create_dialysis = create_dialysis_f()
+
     for _ in range(n):
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
@@ -132,7 +134,8 @@ def create_patients(n):
             db.session.add(unit_patient)
 
             create_demographics(patient, facility, gender)
-            create_lab_groups(patient, facility, lab_group_definitions)
+            create_lab_groups(patient, facility, lab_group_definitions, 10)
+            create_dialysis(patient, facility, 5)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
@@ -140,7 +143,26 @@ def create_patients(n):
         db.session.add(disease_group_patient)
 
 
-def create_data():
+def create_dialysis_f():
+    dialysis_types = DialysisType.query.all()
+
+    def f(patient, facility, n):
+        for _ in range(n):
+            dialysis = Dialysis()
+            dialysis.patient = patient
+            dialysis.facility = facility
+            dialysis.from_date = random_date(patient.recruited_date, date.today())
+
+            if random.random() > 0.5:
+                dialysis.to_date = random_date(dialysis.from_date, date.today())
+
+            dialysis.dialysis_type = random.choice(dialysis_types)
+            db.session.add(dialysis)
+
+    return f
+
+
+def create_data(patients_n):
     # Always generate the same "random" data
     random.seed(0)
 
@@ -149,11 +171,11 @@ def create_data():
     create_admin_user()
     create_users(10)
     create_posts(10)
-    create_patients(100)
+    create_patients(patients_n)
 
 
 if __name__ == '__main__':
     app = create_app()
 
     with app.app_context():
-        create_data()
+        create_data(1)
