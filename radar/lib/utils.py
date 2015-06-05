@@ -1,6 +1,6 @@
 import dateutil.parser
 from flask import request
-from datetime import datetime
+from datetime import datetime, date
 
 
 def get_path(data, keys):
@@ -57,3 +57,6 @@ def get_request_args():
 def date_to_datetime(d):
     return datetime(d.year, d.month, d.day)
 
+
+def is_date(x):
+    return isinstance(x, date) and not isinstance(x, datetime)

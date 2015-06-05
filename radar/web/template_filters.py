@@ -1,6 +1,6 @@
 from jinja2 import escape, Markup, evalcontextfilter
-from radar.lib.utils import date_to_datetime
-from datetime import date
+
+from radar.lib.utils import date_to_datetime, is_date
 
 
 def strftime(dt, dt_format):
@@ -28,8 +28,10 @@ def datetime_format(dt, seconds=False):
     if dt is None:
         return ''
     else:
-        if isinstance(dt, date):
+        if is_date(dt):
             dt = date_to_datetime(dt)
+
+        print dt
 
         output = '%02d/%02d/%04d %02d:%02d' % (dt.day, dt.month, dt.year, dt.hour, dt.minute)
 
@@ -58,9 +60,9 @@ def missing(value):
 
 
 def yn(value):
-    if value is None or value == '':
-        return ''
-    elif value:
+    if value is True:
         return 'Yes'
-    else:
+    elif value is False:
         return 'No'
+    else:
+        return ''
