@@ -1,5 +1,6 @@
 import dateutil.parser
 from flask import request
+from datetime import datetime
 
 
 def get_path(data, keys):
@@ -51,3 +52,8 @@ def get_request_args():
     args = request.args.to_dict(flat=False)
     args.update(request.view_args)
     return args
+
+
+def date_to_datetime(d):
+    return datetime(d.year, d.month, d.day)
+

@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from radar.lib.utils import date_to_datetime
 
 
 def required(value):
@@ -53,9 +54,37 @@ def in_(values):
 
 
 def not_in_future(value):
-    # Convert dates to datetimes
+    # Convert date to datetime
     if isinstance(value, date):
-        value = datetime(value.year, value.month, value.day)
+        value = date_to_datetime(value)
 
     if value > datetime.now():
         return "Can't be in the future."
+
+
+def after(min_dt, dt_format='%d/%m/%Y'):
+    if isinstance(min_dt, date):
+        min_dt = date_to_datetime(min_dt)
+
+    def f(value):
+        if isinstance(value, date):
+            value = date_to_datetime(value)
+
+        if value < min_dt:
+            return 'Value is before %s.' % value.strftime(dt_format)
+
+    return f
+
+
+def before(max_dt, dt_format='%d/%m/%Y'):
+    if isinstance(max_dt, date):
+        max_dt = date_to_datetime(max_dt)
+
+    def f(value):
+        if isinstance(value, date):
+            value = date_to_datetime(value)
+
+        if value > max_dt:
+            return 'Value is after %s.' % value.strftime(dt_format)
+
+    return f
