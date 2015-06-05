@@ -4,3 +4,6 @@ ecdsa==0.13
 paramiko==1.15.2
 pycrypto==2.6
 gunicorn==19.3.0
+colorama==0.3.3
+pytest==2.7.1
+py==1.4.28
