@@ -5,6 +5,7 @@ from radar.lib.data.lab_results import create_lab_group_definitions, create_lab_
 from radar.lib.data.medications import create_medication_routes, create_medication_dose_units, \
     create_medication_frequencies
 from radar.lib.data.patients import create_ethnicity_codes
+from radar.lib.data.plasmapheresis import create_plasmapheresis_responses
 from radar.lib.data.transplants import create_transplant_types
 from radar.lib.data.units import create_units
 
@@ -27,3 +28,5 @@ def create_initial_data():
     create_medication_routes()
     create_medication_dose_units()
     create_medication_frequencies()
+
+    create_plasmapheresis_responses()

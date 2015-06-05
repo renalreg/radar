@@ -21,8 +21,14 @@
                     </td>
                     <td>{{ x.from_date | date_format }}</td>
                     <td>{{ x.to_date | date_format | missing }}</td>
-                    <td>{{ x.no_of_exchanges }}</td>
-                    <td>{{ x.response.name }}</td>
+                    <td>{{ x.no_of_exchanges | missing }}</td>
+                    <td>
+                        {% if x.response %}
+                            {{ x.response.label }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     <td align="right">
                         {% if x.can_edit(current_user) %}
                             <form method="POST" action="{{ url_for('plasmapheresis.delete_plasmapheresis', patient_id=patient.id, plasmapheresis_id=x.id) }}" class="form-inline confirm-delete">

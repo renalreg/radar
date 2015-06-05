@@ -10,7 +10,8 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
 from radar.lib.facilities import get_radar_facility
 from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
-    MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation
+    MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation, PlasmapheresisResponse, \
+    Plasmapheresis
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -186,6 +187,26 @@ def create_hospitalisations(patient, facility, n):
         db.session.add(hospitalisation)
 
 
+def create_plasmapheresis_f():
+    plasmapheresis_responses = PlasmapheresisResponse.query.all()
+
+    def f(patient, facility, n):
+        for _ in range(n):
+            plasmapheresis = Plasmapheresis()
+            plasmapheresis.patient = patient
+            plasmapheresis.facility = facility
+            plasmapheresis.from_date = random_date(date(2000, 1, 1), date.today())
+
+            if random.random() > 0.5:
+                plasmapheresis.to_date = random_date(plasmapheresis.from_date, date.today())
+
+            plasmapheresis.no_of_exchanges = random.randint(1, 10)
+            plasmapheresis.response = random.choice(plasmapheresis_responses)
+            db.session.add(plasmapheresis)
+
+    return f
+
+
 def create_patients(n):
     # TODO create data for remote facilities
 
@@ -200,6 +221,7 @@ def create_patients(n):
     create_dialysis = create_dialysis_f()
     create_medications = create_medications_f()
     create_transplants = create_transplants_f()
+    create_plasmapheresis = create_plasmapheresis_f()
 
     for _ in range(n):
         patient = Patient()
@@ -219,8 +241,9 @@ def create_patients(n):
             create_lab_groups(patient, facility, lab_group_definitions, 10)
             create_dialysis(patient, facility, 5)
             create_medications(patient, facility, 5)
-            create_transplants(patient, facility, 5)
+            create_transplants(patient, facility, 3)
             create_hospitalisations(patient, facility, 3)
+            create_plasmapheresis(patient, facility, 3)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
