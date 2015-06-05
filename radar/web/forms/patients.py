@@ -90,7 +90,7 @@ class PatientSearchForm(Form):
 
     include_inactive = BooleanField('Include Inactive', default=False, validators=[Optional()])
 
-    order_by = RadarSelectField(choices=ORDER_BY_CHOICES, validators=[Optional()])
+    order_by = RadarSelectField(choices=ORDER_BY_CHOICES, validators=[Optional()], default='radar_id')
     order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING, validators=[Optional()])
 
     per_page = RadarSelectField(coerce=int, default=PER_PAGE_DEFAULT, choices=PER_PAGE_CHOICES, validators=[Optional()])
