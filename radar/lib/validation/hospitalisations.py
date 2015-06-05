@@ -1,4 +1,5 @@
-from radar.lib.validation.core import run_validators, required
+from radar.lib.validation.core import run_validators
+from radar.lib.validation.validators import required
 
 
 def validate_hospitalisation(errors, obj):

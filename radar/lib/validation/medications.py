@@ -1,4 +1,5 @@
-from radar.lib.validation.core import run_validators, required, not_empty
+from radar.lib.validation.core import run_validators
+from radar.lib.validation.validators import required, not_empty
 
 
 def validate_medication(errors, obj):
