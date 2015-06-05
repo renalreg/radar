@@ -58,8 +58,8 @@ def missing(value):
 
 
 def yn(value):
-    if value is None:
-        return None
+    if value is None or value == '':
+        return ''
     elif value:
         return 'Yes'
     else:

@@ -107,7 +107,7 @@ LAB_GROUP_DEFINITIONS = [
     },
     {
         'code': 'HEAM',
-        'name': 'Heamatinics',
+        'name': 'Haematinics',
         'pre_post': False,
         'result_codes': [
             'FERRITIN',
