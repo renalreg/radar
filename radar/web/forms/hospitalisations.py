@@ -7,7 +7,7 @@ from radar.web.forms.core import FacilityFormMixin, RadarDateField
 
 class HospitalisationForm(FacilityFormMixin, Form):
     date_of_admission = RadarDateField('Date of Admission', validators=[InputRequired()])
-    date_of_discharge = RadarDateField('Date of Discharge', validators=[InputRequired()])
+    date_of_discharge = RadarDateField('Date of Discharge', validators=[Optional()])
     reason_for_admission = StringField('Reason for Admission', validators=[InputRequired()])
     comments = StringField('Comments', validators=[Optional()])
 

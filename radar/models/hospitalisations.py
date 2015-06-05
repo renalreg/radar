@@ -16,7 +16,7 @@ class Hospitalisation(db.Model, MetadataMixin):
     facility_id = Column(Integer, ForeignKey('facilities.id'), nullable=False)
     facility = relationship('Facility')
 
-    date_of_admission = Column(DateTime(timezone=True))
+    date_of_admission = Column(DateTime(timezone=True), nullable=False)
     date_of_discharge = Column(DateTime(timezone=True))
     reason_for_admission = Column(Text)
     comments = Column(Text)

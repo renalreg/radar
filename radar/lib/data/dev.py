@@ -10,7 +10,7 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
 from radar.lib.facilities import get_radar_facility
 from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
-    MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant
+    MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -116,7 +116,7 @@ def create_dialysis_f():
             dialysis = Dialysis()
             dialysis.patient = patient
             dialysis.facility = facility
-            dialysis.from_date = random_date(patient.recruited_date, date.today())
+            dialysis.from_date = random_date(date(2000, 1, 1), date.today())
 
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
@@ -137,7 +137,7 @@ def create_medications_f():
             medication = Medication()
             medication.patient = patient
             medication.facility = facility
-            medication.from_date = random_date(patient.recruited_date, date.today())
+            medication.from_date = random_date(date(2000, 1, 1), date.today())
 
             if random.random() > 0.5:
                 medication.to_date = random_date(medication.from_date, date.today())
@@ -160,7 +160,7 @@ def create_transplants_f():
             transplant = Transplant()
             transplant.patient = patient
             transplant.facility = facility
-            transplant.transplant_date = random_date(patient.recruited_date, date.today())
+            transplant.transplant_date = random_date(date(2000, 1, 1), date.today())
             transplant.transplant_type = random.choice(transplant_types)
             transplant.reoccurred = random_bool()
 
@@ -173,6 +173,17 @@ def create_transplants_f():
             db.session.add(transplant)
 
     return f
+
+
+def create_hospitalisations(patient, facility, n):
+    for _ in range(n):
+        hospitalisation = Hospitalisation()
+        hospitalisation.patient = patient
+        hospitalisation.facility = facility
+        hospitalisation.date_of_admission = random_date(date(2000, 1, 1), date.today())
+        hospitalisation.date_of_discharge = random_date(hospitalisation.date_of_admission, date.today())
+        hospitalisation.reason_for_admission = 'Test'
+        db.session.add(hospitalisation)
 
 
 def create_patients(n):
@@ -209,6 +220,7 @@ def create_patients(n):
             create_dialysis(patient, facility, 5)
             create_medications(patient, facility, 5)
             create_transplants(patient, facility, 5)
+            create_hospitalisations(patient, facility, 3)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
