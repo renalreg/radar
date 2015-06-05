@@ -20,7 +20,7 @@ class Transplant(db.Model, MetadataMixin):
     transplant_type_id = Column(Integer, ForeignKey('transplant_types.id'), nullable=False)
     transplant_type = relationship('TransplantType')
     reoccurred = Column(Boolean)  # TODO necessary?
-    date_reoccurred = Column(Date)
+    date_recurred = Column(Date)
     date_failed = Column(Date)
     apples = Column(Integer)
 

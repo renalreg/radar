@@ -16,7 +16,7 @@ class TransplantForm(FacilityFormMixin, Form):
     transplant_date = RadarDateField(validators=[InputRequired()])
     transplant_type_id = RadarSelectObjectField('Transplant Type', validators=[InputRequired()], coerce=optional_int)
     reoccurred = RadarYesNoField(validators=[Optional()])
-    date_reoccurred = RadarDateField(validators=[Optional()])
+    date_recurred = RadarDateField(validators=[Optional()])
     date_failed = RadarDateField(validators=[Optional()])
 
     def populate_obj(self, obj):
@@ -24,6 +24,6 @@ class TransplantForm(FacilityFormMixin, Form):
         obj.transplant_date = self.transplant_date.data
         obj.transplant_type = self.transplant_type_id.obj
         obj.reoccurred = self.reoccurred.data
-        obj.date_reoccurred = self.date_reoccurred.data
+        obj.date_reoccurred = self.date_recurred.data
         obj.date_failed = self.date_failed.data
         obj.apples = self.apples.data
