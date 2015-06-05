@@ -4,7 +4,7 @@ from flask_sqlalchemy import SignallingSession
 from flaskext.markdown import Markdown
 from sqlalchemy import event
 
-from radar.web.views.error_handlers import page_not_found, forbidden
+from radar.web.views.error_handlers import page_not_found, forbidden, internal_server_error
 from radar.lib.auth import load_user
 from radar.web.views.auth import require_login, force_password_change
 from radar.web.context_processors import inject_navigation, inject_delete_form
@@ -104,6 +104,7 @@ def create_app():
     # Register error handlers
     app.register_error_handler(403, forbidden)
     app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, internal_server_error)
 
     # Automatically set the created_user and modified_user
     event.listen(SignallingSession, 'before_flush', before_flush_set_created_listener)

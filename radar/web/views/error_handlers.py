@@ -7,3 +7,7 @@ def page_not_found(error):
 
 def forbidden(error):
     return render_template('403.html')
+
+
+def internal_server_error(error):
+    return render_template('500.html')
