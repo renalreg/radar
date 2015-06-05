@@ -4,11 +4,13 @@ from datetime import date, datetime
 from jinja2.utils import generate_lorem_ipsum
 
 from radar.lib.data import create_initial_data
+from radar.lib.data.dev_constants import MEDICATION_NAMES
 from radar.lib.data.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime
 from radar.lib.facilities import get_radar_facility
-from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis
+from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
+    MedicationFrequency, MedicationDoseUnit
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -106,6 +108,50 @@ def create_demographics(patient, facility, gender):
     db.session.add(d)
 
 
+def create_dialysis_f():
+    dialysis_types = DialysisType.query.all()
+
+    def f(patient, facility, n):
+        for _ in range(n):
+            dialysis = Dialysis()
+            dialysis.patient = patient
+            dialysis.facility = facility
+            dialysis.from_date = random_date(patient.recruited_date, date.today())
+
+            if random.random() > 0.5:
+                dialysis.to_date = random_date(dialysis.from_date, date.today())
+
+            dialysis.dialysis_type = random.choice(dialysis_types)
+            db.session.add(dialysis)
+
+    return f
+
+
+def create_medications_f():
+    medication_routes = MedicationRoute.query.all()
+    medication_frequencies = MedicationFrequency.query.all()
+    medication_dose_units = MedicationDoseUnit.query.all()
+
+    def f(patient, facility, n):
+        for _ in range(n):
+            medication = Medication()
+            medication.patient = patient
+            medication.facility = facility
+            medication.from_date = random_date(patient.recruited_date, date.today())
+
+            if random.random() > 0.5:
+                medication.to_date = random_date(medication.from_date, date.today())
+
+            medication.name = random.choice(MEDICATION_NAMES)
+            medication.dose_quantity = random.randint(1, 10)
+            medication.dose_unit = random.choice(medication_dose_units)
+            medication.frequency = random.choice(medication_frequencies)
+            medication.route = random.choice(medication_routes)
+            db.session.add(medication)
+
+    return f
+
+
 def create_patients(n):
     # TODO create data for remote facilities
 
@@ -118,6 +164,7 @@ def create_patients(n):
     lab_group_definitions = LabGroupDefinition.query.all()
 
     create_dialysis = create_dialysis_f()
+    create_medications = create_medications_f()
 
     for _ in range(n):
         patient = Patient()
@@ -136,30 +183,12 @@ def create_patients(n):
             create_demographics(patient, facility, gender)
             create_lab_groups(patient, facility, lab_group_definitions, 10)
             create_dialysis(patient, facility, 5)
+            create_medications(patient, facility, 5)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
         disease_group_patient.created_date = random_date(patient.recruited_date, date.today())
         db.session.add(disease_group_patient)
-
-
-def create_dialysis_f():
-    dialysis_types = DialysisType.query.all()
-
-    def f(patient, facility, n):
-        for _ in range(n):
-            dialysis = Dialysis()
-            dialysis.patient = patient
-            dialysis.facility = facility
-            dialysis.from_date = random_date(patient.recruited_date, date.today())
-
-            if random.random() > 0.5:
-                dialysis.to_date = random_date(dialysis.from_date, date.today())
-
-            dialysis.dialysis_type = random.choice(dialysis_types)
-            db.session.add(dialysis)
-
-    return f
 
 
 def create_data(patients_n):

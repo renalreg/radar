@@ -85,3 +85,10 @@ LAST_NAMES = [
     'KING',
     'LEE',
 ]
+
+
+MEDICATION_NAMES = [
+    'Paracetamol',
+    'Ibuprofen',
+    'Aspirin',
+]
