@@ -18,16 +18,12 @@
     <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
 
-        <div class="row">
-            <div class="col-md-6">
-                {{ render_field(form.facility_id) }}
+        {{ render_field(form.facility_id) }}
 
-                <hr />
+        <hr />
 
-                {{ render_field(form.date) }}
-                {{ render_field(form.imaging_type) }}
-            </div>
-        </div>
+        {{ render_field(form.date) }}
+        {{ render_field(form.imaging_type) }}
 
         <div class="row">
             <div class="col-md-6">

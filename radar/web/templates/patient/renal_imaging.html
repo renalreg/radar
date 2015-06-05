@@ -39,7 +39,7 @@
                             </div>
                         </td>
 
-                        <td><a href="{{ url_for('renal_imaging.view_renal_imaging', patient_id=patient.id, renal_imaging_id=x.id) }}">{{ x.date | date_format }}</a></td>
+                        <td>{{ x.date | date_format }}</td>
                         <td>{{ x.imaging_type }}</td>
 
                         <td align="right">

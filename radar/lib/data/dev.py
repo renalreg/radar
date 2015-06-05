@@ -222,16 +222,20 @@ def create_renal_imaging(patient, facility, n):
             renal_imaging.right_length = random.randint(11, 14)
             renal_imaging.right_cysts = random_bool()
             renal_imaging.right_calcification = random_bool()
-            renal_imaging.right_nephrocalcinosis = random_bool()
-            renal_imaging.right_nephrolithiasis = random_bool()
+
+            if renal_imaging.right_calcification:
+                renal_imaging.right_nephrocalcinosis = random_bool()
+                renal_imaging.right_nephrolithiasis = random_bool()
 
         if renal_imaging.left_present:
             renal_imaging.left_type = random.choice(['transplant', 'natural'])
             renal_imaging.left_length = random.randint(11, 14)
             renal_imaging.left_cysts = random_bool()
             renal_imaging.left_calcification = random_bool()
-            renal_imaging.left_nephrocalcinosis = random_bool()
-            renal_imaging.left_nephrolithiasis = random_bool()
+
+            if renal_imaging.left_calcification:
+                renal_imaging.left_nephrocalcinosis = random_bool()
+                renal_imaging.left_nephrolithiasis = random_bool()
 
         db.session.add(renal_imaging)
 

@@ -6,5 +6,137 @@
 {% block content %}
     <h1 class="page-header">Renal Imaging Result</h1>
 
-    <p>TODO</p>
+    <table class="table kv">
+        <tr>
+            <th width="20%">Data Source</th>
+            <td>{{ object.facility.name }}</td>
+        </tr>
+
+        <tr>
+            <th>Imaging Type</th>
+            <td>{{ object.imaging_type }}</td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Right Kidney</h3>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table kv">
+                        <tr>
+                            <th width="20%">Present</th>
+                            <td>{{ object.right_present | yn }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Type</th>
+                            <td>
+                                {% if object.right_type == 'natural' %}
+                                    Natural
+                                {% elif object.right_type == 'transplant' %}
+                                    Transplant
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Length</th>
+                            <td>{{ object.right_length | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Cysts</th>
+                            <td>{{ object.right_cysts | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Calcification Present</th>
+                            <td>{{ object.right_calcification | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nephrocalcinosis</th>
+                            <td>{{ object.right_nephrocalcinosis | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nephrolithiasis</th>
+                            <td>{{ object.right_nephrolithiasis | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Other Renal<br />Malformation Details</th>
+                            <td>{{ object.right_other_malformation | missing }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Left Kidney</h3>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table kv">
+                        <tr>
+                            <th width="20%">Present</th>
+                            <td>{{ object.left_present | yn }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Type</th>
+                            <td>
+                                {% if object.left_type == 'natural' %}
+                                    Natural
+                                {% elif object.left_type == 'transplant' %}
+                                    Transplant
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Length</th>
+                            <td>{{ object.left_length | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Cysts</th>
+                            <td>{{ object.left_cysts | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Calcification Present</th>
+                            <td>{{ object.left_calcification | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nephrocalcinosis</th>
+                            <td>{{ object.left_nephrocalcinosis | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Nephrolithiasis</th>
+                            <td>{{ object.left_nephrolithiasis | yn | missing }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Other Renal<br />Malformation Details</th>
+                            <td>{{ object.left_other_malformation | missing }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
