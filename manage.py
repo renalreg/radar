@@ -2,7 +2,7 @@ from flask_script import Manager
 
 from radar.web.app import create_app
 from radar.lib.database import db
-from radar.lib.data import dev
+from radar.lib.data import dev, create_initial_data
 
 app = create_app()
 
@@ -21,15 +21,17 @@ def drop_tables():
 
 
 @manager.command
-def load_data():
-    dev.create_fixtures()
-    db.session.commit()
+def initdb():
+    db.create_all()
+    create_initial_data()
 
 
 @manager.command
-def reload_data():
-    create_tables()
-    load_data()
+def devdb():
+    db.drop_all()
+    db.create_all()
+    dev.create_data()
+    db.session.commit()
 
 
 if __name__ == '__main__':

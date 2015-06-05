@@ -26,10 +26,10 @@ def deploy():
     run('rm -rf /tmp/radar /tmp/radar.tar.gz')
 
 
-def initdb():
+def devdb():
     run(
         'RADAR_SETTINGS=/home/radar/settings.py '
         '/home/radar/envs/radar/bin/python '
         '/home/radar/envs/radar/bin/manage.py '
-        'reload_data'
+        'devdb'
     )

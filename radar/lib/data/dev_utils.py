@@ -1,6 +1,6 @@
 import random
 from datetime import date, timedelta
-from radar.lib.data.constants import FIRST_NAMES, FEMALE, MALE, LAST_NAMES
+from radar.lib.data.dev_constants import FIRST_NAMES, FEMALE, MALE, LAST_NAMES
 
 
 def generate_gender():
