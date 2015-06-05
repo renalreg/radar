@@ -140,7 +140,7 @@
                                         {% if patient.can_view_demographics(current_user) %}
                                             {{ patient.date_of_birth | date_format | missing }}
                                         {% else %}
-                                            {{ patient.date_of_birth | datetime_format('%Y') | missing }}
+                                            {{ patient.date_of_birth | year_format | missing }}
                                         {% endif %}
                                     </td>
 

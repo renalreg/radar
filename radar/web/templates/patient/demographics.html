@@ -47,7 +47,7 @@
                             {% if patient.can_view_demographics(current_user) %}
                                 {{ facility_patient.demographics.date_of_birth | date_format | missing }}
                             {% else %}
-                                {{ facility_patient.demographics.date_of_birth | datetime_format('%Y') | missing }}
+                                {{ facility_patient.demographics.date_of_birth | year_format | missing }}
                             {% endif %}
                         </td>
                     </tr>
@@ -58,7 +58,7 @@
                             {% if patient.can_view_demographics(current_user) %}
                                 {{ facility_patient.demographics.date_of_death | date_format | missing }}
                             {% else %}
-                                {{ facility_patient.demographics.date_of_death | datetime_format('%Y') | missing }}
+                                {{ facility_patient.demographics.date_of_death | year_format | missing }}
                             {% endif %}
                         </td>
                     </tr>
@@ -314,7 +314,7 @@
         <table class="table kv">
             <tr>
                 <th width="20%">Date Recruited</th>
-                <td>{{ patient.recruited_date | datetime_format('%Y-%m-%d %H:%M:%S') | missing }}</td>
+                <td>{{ patient.recruited_date | datetime_format(seconds=True) | missing }}</td>
             </tr>
 
             <tr>

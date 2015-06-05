@@ -3,7 +3,7 @@
 
     {% if posts %}
         {% for post in posts %}
-            <h3><a href="{{ url_for('news.view_post', post_id=post.id) }}">{{ post.title }}</a> <small>{{ post.published | datetime_format('%d %b %Y') }}</small></h3>
+            <h3><a href="{{ url_for('news.view_post', post_id=post.id) }}">{{ post.title }}</a> <small>{{ post.published | strftime('%d %b %Y') }}</small></h3>
 
             <div class="latest-news-body">
                 {{ post.body | markdown }}

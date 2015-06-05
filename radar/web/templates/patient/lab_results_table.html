@@ -40,7 +40,7 @@
             <tbody>
                 {% for x in table %}
                     <tr>
-                        <td>{{ x.date | datetime_format("%d/%m/%Y %H:%M") | missing }}</td>
+                        <td>{{ x.date | datetime_format | missing }}</td>
 
                         {% for value in x %}
                             <td>{{ value | missing }}</td>
