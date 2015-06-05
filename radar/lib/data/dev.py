@@ -163,10 +163,10 @@ def create_transplants_f():
             transplant.facility = facility
             transplant.transplant_date = random_date(date(2000, 1, 1), date.today())
             transplant.transplant_type = random.choice(transplant_types)
-            transplant.reoccurred = random_bool()
+            transplant.recurred = random_bool()
 
-            if transplant.reoccurred:
-                transplant.date_reoccurred = random_date(transplant.transplant_date, date.today())
+            if transplant.recurred:
+                transplant.date_recurred = random_date(transplant.transplant_date, date.today())
 
             if random.random() > 0.75:
                 transplant.date_failed = random_date(transplant.transplant_date, date.today())

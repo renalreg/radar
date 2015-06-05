@@ -15,7 +15,7 @@ class TransplantForm(FacilityFormMixin, Form):
 
     transplant_date = RadarDateField(validators=[InputRequired()])
     transplant_type_id = RadarSelectObjectField('Transplant Type', validators=[InputRequired()], coerce=optional_int)
-    reoccurred = RadarYesNoField(validators=[Optional()])
+    recurred = RadarYesNoField(validators=[Optional()])
     date_recurred = RadarDateField(validators=[Optional()])
     date_failed = RadarDateField(validators=[Optional()])
 
@@ -23,7 +23,9 @@ class TransplantForm(FacilityFormMixin, Form):
         obj.facility = self.facility_id.obj
         obj.transplant_date = self.transplant_date.data
         obj.transplant_type = self.transplant_type_id.obj
-        obj.reoccurred = self.reoccurred.data
-        obj.date_reoccurred = self.date_recurred.data
+        obj.recurred = self.recurred.data
+        obj.date_curred = self.date_recurred.data
         obj.date_failed = self.date_failed.data
-        obj.apples = self.apples.data
+
+        if hasattr(self, 'apples'):
+            obj.apples = self.apples.data
