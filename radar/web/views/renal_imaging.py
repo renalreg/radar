@@ -1,6 +1,8 @@
 from flask import Blueprint, url_for
 from flask_login import current_user
 from werkzeug.utils import redirect
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.renal_imaging import validate_renal_imaging
 
 from radar.web.forms.renal_imaging import RenalImagingForm
 from radar.models.renal_imaging import RenalImaging
@@ -33,6 +35,11 @@ class RenalImagingDetailService(PatientDataDetailService):
 
     def get_form(self, obj):
         return RenalImagingForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_renal_imaging(errors, obj)
+        return errors.is_valid()
 
 
 class RenalImagingListView(PatientDataListView):

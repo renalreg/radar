@@ -18,7 +18,7 @@ class RenalImagingForm(FacilityFormMixin, Form):
     ], validators=[InputRequired()])
 
     right_present = RadarYesNoField('Right Kidney', validators=[InputRequired()])
-    right_type = RadarInlineRadioField('Kidney Type', choices=[('natural', 'Natural'), ('transplant', 'Transplant')], default='', validators=[Optional()])
+    right_type = RadarInlineRadioField('Kidney Type', choices=[('natural', 'Natural'), ('transplant', 'Transplant')], validators=[Optional()])
     right_length = DecimalField('Renal Length', widget=RadarMeasurementInput('cm'), validators=[Optional()])
     right_cysts = RadarYesNoField('Renal Cysts', validators=[Optional()])
     right_calcification = RadarYesNoField('Calcification Present', validators=[Optional()])
@@ -27,7 +27,7 @@ class RenalImagingForm(FacilityFormMixin, Form):
     right_other_malformation = StringField('Other Renal Malformation Details', widget=TextArea(), validators=[Optional()])
 
     left_present = RadarYesNoField('Left Kidney', validators=[InputRequired()])
-    left_type = RadarInlineRadioField('Kidney Type', choices=[('natural', 'Natural'), ('transplant', 'Transplant')], default='', validators=[Optional()])
+    left_type = RadarInlineRadioField('Kidney Type', choices=[('natural', 'Natural'), ('transplant', 'Transplant')], validators=[Optional()])
     left_length = DecimalField('Renal Length', widget=RadarMeasurementInput('cm'), validators=[Optional()])
     left_cysts = RadarYesNoField('Renal Cysts', validators=[Optional()])
     left_calcification = RadarYesNoField('Calcification Present', validators=[Optional()])

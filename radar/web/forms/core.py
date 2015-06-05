@@ -57,9 +57,9 @@ class RadarSelectField(SelectField):
     def process_data(self, value):
         # Fix for SelectField converting None to "None"
         if value is None:
-            value = ''
-
-        super(RadarSelectField, self).process_data(value)
+            self.data = None
+        else:
+            super(RadarSelectField, self).process_data(value)
 
 
 class RadarSelectObjectField(SelectField):
@@ -187,7 +187,16 @@ class RadarYesNoWidget(object):
         return HTMLString("\n".join(html))
 
 
-class RadarInlineRadioField(RadioField):
+class RadarRadioField(RadioField):
+    def process_data(self, value):
+        # Fix for RadioField converting None to "None"
+        if value is None:
+            self.data = None
+        else:
+            super(RadarRadioField, self).process_data(value)
+
+
+class RadarInlineRadioField(RadarRadioField):
     def __init__(self, label=None, widget=None, **kwargs):
         if widget is None:
             widget = RadarInlineRadioWidget()
