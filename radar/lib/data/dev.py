@@ -141,6 +141,9 @@ def create_patients(n):
 
 
 def create_data():
+    # Always generate the same "random" data
+    random.seed(0)
+
     create_initial_data()
 
     create_admin_user()
