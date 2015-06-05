@@ -1,4 +1,5 @@
-from datetime import date, datetime
+from datetime import datetime
+
 from radar.lib.utils import date_to_datetime, is_date
 
 
@@ -55,7 +56,7 @@ def in_(values):
 
 def not_in_future(value):
     # Convert date to datetime
-    if is_date(value, datetime):
+    if is_date(value):
         value = date_to_datetime(value)
 
     if value > datetime.now():
