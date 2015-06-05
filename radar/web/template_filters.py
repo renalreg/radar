@@ -7,7 +7,7 @@ def strftime(dt, dt_format):
     if dt is None:
         return ''
     else:
-        dt.strftime(dt_format)
+        return dt.strftime(dt_format)
 
 
 def year_format(dt):
