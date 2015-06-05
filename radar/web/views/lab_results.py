@@ -111,15 +111,18 @@ def view_lab_result_table(patient_id):
     result_codes = [x for x in result_codes if x in lab_result_definition_dict]
     form.result_codes.data = result_codes
 
-    # Sorting is done later to keep item grouping consistent
-    lab_results = LabResult.query\
-        .join(LabResult.lab_result_definition)\
-        .join(LabResult.lab_group)\
-        .filter(LabResultDefinition.code.in_(result_codes))\
-        .filter(LabGroup.patient == patient)\
-        .order_by(LabGroup.id)\
-        .order_by(LabResult.id)\
-        .all()
+    if result_codes:
+        # Sorting is done later to keep item grouping consistent
+        lab_results = LabResult.query\
+            .join(LabResult.lab_result_definition)\
+            .join(LabResult.lab_group)\
+            .filter(LabResultDefinition.code.in_(result_codes))\
+            .filter(LabGroup.patient == patient)\
+            .order_by(LabGroup.id)\
+            .order_by(LabResult.id)\
+            .all()
+    else:
+        lab_results = []
 
     table = LabResultTable(result_codes)
     table.add_all(lab_results)
