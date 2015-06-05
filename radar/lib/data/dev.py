@@ -7,10 +7,10 @@ from radar.lib.data import create_initial_data
 from radar.lib.data.dev_constants import MEDICATION_NAMES
 from radar.lib.data.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
-    generate_email_address, generate_nhs_no, generate_chi_no, random_datetime
+    generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
 from radar.lib.facilities import get_radar_facility
 from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
-    MedicationFrequency, MedicationDoseUnit
+    MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -152,6 +152,29 @@ def create_medications_f():
     return f
 
 
+def create_transplants_f():
+    transplant_types = TransplantType.query.all()
+
+    def f(patient, facility, n):
+        for _ in range(n):
+            transplant = Transplant()
+            transplant.patient = patient
+            transplant.facility = facility
+            transplant.transplant_date = random_date(patient.recruited_date, date.today())
+            transplant.transplant_type = random.choice(transplant_types)
+            transplant.reoccurred = random_bool()
+
+            if transplant.reoccurred:
+                transplant.date_reoccurred = random_date(transplant.transplant_date, date.today())
+
+            if random.random() > 0.75:
+                transplant.date_failed = random_date(transplant.transplant_date, date.today())
+
+            db.session.add(transplant)
+
+    return f
+
+
 def create_patients(n):
     # TODO create data for remote facilities
 
@@ -165,6 +188,7 @@ def create_patients(n):
 
     create_dialysis = create_dialysis_f()
     create_medications = create_medications_f()
+    create_transplants = create_transplants_f()
 
     for _ in range(n):
         patient = Patient()
@@ -184,6 +208,7 @@ def create_patients(n):
             create_lab_groups(patient, facility, lab_group_definitions, 10)
             create_dialysis(patient, facility, 5)
             create_medications(patient, facility, 5)
+            create_transplants(patient, facility, 5)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)

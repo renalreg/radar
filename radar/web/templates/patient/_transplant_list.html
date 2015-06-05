@@ -23,8 +23,8 @@
                     <td>{{ x.transplant_date | date_format }}</td>
                     <td>{{ x.transplant_type.label }}</td>
                     <td>{{ x.reoccurred | yn | missing }}</td>
-                    <td>{{ x.date_reoccurred }}</td>
-                    <td>{{ x.date_failed }}</td>
+                    <td>{{ x.date_reoccurred | date_format | missing }}</td>
+                    <td>{{ x.date_failed | date_format | missing }}</td>
                     <td align="right">
                         {% if x.can_edit(current_user) %}
                             <form method="POST" action="{{ url_for('transplants.delete_transplant', patient_id=patient.id, transplant_id=x.id) }}" class="form-inline confirm-delete">
