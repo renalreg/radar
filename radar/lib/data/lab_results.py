@@ -6,41 +6,53 @@ from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResult
 # TODO short names
 # TODO names
 LAB_RESULT_DEFINITIONS = [
-    ('ACR', 'ACR'),
-    ('PCR', 'PCR'),
-    ('ADJUSTEDCALCIUM', 'Adjusted Calcium'),
-    ('PHOSPHATE', 'Phosphate'),
-    ('ALBUMIN', 'Albumin'),
-    ('ALP', 'ALP'),
-    ('ALT', 'ALT'),
-    ('BILI', 'Bilirubin'),
-    ('GGT', 'GGT'),
-    ('CHOLESTEROL', 'Cholesterol'),
-    ('TG', 'TG'),
-    ('CICLOSPORIN', 'Ciclosporin'),
-    ('SIROLIMUS', 'Sirolimus'),
-    ('TACROLIMUS', 'Tacrolimus'),
-    ('SODIUM', 'Sodium'),
-    ('POTASSIUM', 'Potassium'),
-    ('HCO3', 'Bicarbonate HCO3'),
-    ('UREA', 'Urea'),
-    ('CREATININE', 'Creatinine'),
-    ('EGFR', 'eGFR'),
-    ('URATE', 'Urate'),
-    ('CRP', 'CRP'),
-    ('URR', 'URR'),
-    ('KTV', 'Kt/V'),
-    ('FERRITIN', 'Ferritin'),
-    ('IRON', 'Iron'),
-    ('IRONSAT', 'IronSat'),
-    ('TRANSFERRIN', 'Transferrin'),
-    ('GLUCOSE', 'Glucose'),
-    ('HBA1C', 'HbA1C'),
-    ('HB', 'HB'),
-    ('WBC', 'WBC'),
-    ('PLATELETS', 'Platelets'),
-    ('INR', 'INR'),
-    ('PTH', 'PTH'),
+    ('ACR', 'ACR', 'Albumin : Creatinine Ratio', 'mg/mmol'),
+    ('ADJUSTEDCALCIUM', 'AdjCa', 'Adjusted Calcium', 'mmol/l'),
+    ('ALBUMIN', 'Alb', 'Albumin', 'g/l'),
+    ('ALP', 'AlkP', 'AlkP', None),
+    ('ALT', 'ALT', 'ALT', None),
+    ('AST', 'AST', 'AST', None),
+    ('BILI', 'Bili', 'Bilirubin', None),
+    ('BPDIA', 'BPdia', 'Diastolic Blood Pressure', 'mm Hg'),
+    ('BPSYS', 'BPsys', 'Systolic Blood Pressure', 'mm Hg'),
+    ('CALCIUM', 'Ca', 'Calcium', 'mmol/l'),
+    ('CHOLESTEROL', 'Cholest', 'Cholesterol', 'mmol/l'),
+    ('CICLOSPORIN', 'Ciclo', 'Ciclosporin (Cyclosporine)', None),
+    ('CREATININE', 'Creatinine', 'Creatinine', 'micromol/l'),
+    ('CRP', 'CRP', 'C-Reactive Protein', None),
+    ('EGFR', 'eGFR', 'Estimated GFR', 'ml/min/1.73m2'),
+    ('FERRITIN', 'Ferr', 'Ferritin', None),
+    ('GGT', 'GGT', 'GGT', None),
+    ('GLUCOSE', 'Gluc', 'Glucose', 'mmol/l'),
+    ('HB', 'Hb', 'HB', 'g/l'),
+    ('HBA1C', 'HbA1C', 'HbA1C', None),
+    ('HCO3', 'Bicarb', 'Bicarbonate', 'mmol/l'),
+    ('HEIGHT', 'Height', 'Height', 'cm'),
+    ('INR', 'INR', 'INR', 'ratio'),
+    ('IRON', 'Iron', 'Iron', None),
+    ('IRONSAT', 'Fe Sat', 'Iron Saturation', None),
+    ('KTV', 'Kt/V', 'Kt/V', None),
+    ('LITHIUM', 'Lith', 'Lithium', None),
+    ('MAGNESIUM', 'Mg', 'Magnesium', None),
+    ('PCR', 'PCR', 'Protein : Creatinine Ratio', 'mg/mmol'),
+    ('PHEPKU', 'Phe', 'Phenylalanine (for PKU)', None),
+    ('PHOSPHATE', 'Phos', 'Phosphate', 'mmol/l'),
+    ('PLATELETS', 'Plats', 'Platelets', None),
+    ('POTASSIUM', 'Potassium', 'Potassium', 'mmol/l'),
+    ('PSA', 'PSA', 'PSA', None),
+    ('PTH', 'PTH', 'Parathyroid Hormone', None),
+    ('SIROLIMUS', 'Siro', 'Sirolimus', None),
+    ('SODIUM', 'Sodium', 'Sodium', 'mmol/l'),
+    ('TACROLIMUS', 'Tacro', 'Tacrolimus', None),
+    ('TESTOSTERONE', 'Serum Testosterone', 'Serum Testosterone', None),
+    ('TG', 'TG', 'Triglycerides', None),
+    ('TRANSFERRIN', 'Tferrin', 'Transferrin', None),
+    ('URATE', 'Urate', 'Uric Acid', 'mmol/l'),
+    ('UREA', 'Urea', 'Urea', 'mmol/l'),
+    ('URR', 'URR', 'Urea Reduction Ratio', None),
+    ('VITD', 'Vit D', 'Vitamin D', None),
+    ('WBC', 'WBC', 'White Blood Cell Count', None),
+    ('WEIGHT', 'Weight', 'Weight', 'kg'),
 ]
 
 
@@ -82,10 +94,11 @@ LAB_GROUP_DEFINITIONS = [
         'code': 'DRUGS',
         'name': 'Drugs',
         'pre_post': False,
-        'result_codes': [
+        'result_codes': [  # TODO order
             'CICLOSPORIN',
             'SIROLIMUS',
             'TACROLIMUS',
+            'LITHIUM',
         ],
     },
     {
@@ -151,12 +164,44 @@ LAB_GROUP_DEFINITIONS = [
             'PTH',
         ],
     },
+    {
+        'code': 'OBV',
+        'name': 'Observations',
+        'pre_post': True,
+        'result_codes': [  # TODO order
+            'WEIGHT',
+            'HEIGHT',
+            'BPDIA',
+            'BPSYS',
+        ]
+    },
+    {
+        'code': 'BBC',
+        'name': 'Bone Biochemistry',
+        'pre_post': False,
+        'result_codes': [  # TODO order
+            'CALCIUM',
+            'MAGNESIUM',
+            'PHOSPHATE',
+            'VITD',
+        ]
+    },
+    {
+        'code': 'HAM',
+        'name': 'Hormones and Markers',
+        'pre_post': False,
+        'result_codes': [  # TODO order
+            'PHEPKU',
+            'PSA',
+            'TESTOSTERONE',
+        ]
+    },
 ]
 
 
 def create_lab_result_definitions():
-    for code, name in LAB_RESULT_DEFINITIONS:
-        lab_result_definition = LabResultDefinition(code=code, name=name, short_name=name)
+    for code, short_name, name, units in LAB_RESULT_DEFINITIONS:
+        lab_result_definition = LabResultDefinition(code=code, name=name, short_name=short_name, units=units)
         db.session.add(lab_result_definition)
 
 
