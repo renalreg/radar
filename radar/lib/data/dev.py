@@ -11,7 +11,7 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
 from radar.lib.facilities import get_radar_facility
 from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
     MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation, PlasmapheresisResponse, \
-    Plasmapheresis
+    Plasmapheresis, RenalImaging
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -207,6 +207,35 @@ def create_plasmapheresis_f():
     return f
 
 
+def create_renal_imaging(patient, facility, n):
+    for _ in range(n):
+        renal_imaging = RenalImaging()
+        renal_imaging.patient = patient
+        renal_imaging.facility = facility
+        renal_imaging.date = random_date(date(2000, 1, 1), date.today())
+        renal_imaging.imaging_type = random.choice(['USS', 'CT', 'MRI'])
+        renal_imaging.right_present = random_bool()
+        renal_imaging.left_present = random_bool()
+
+        if renal_imaging.right_present:
+            renal_imaging.right_type = random.choice(['transplant', 'natural'])
+            renal_imaging.right_length = random.randint(11, 14)
+            renal_imaging.right_cysts = random_bool()
+            renal_imaging.right_calcification = random_bool()
+            renal_imaging.right_nephrocalcinosis = random_bool()
+            renal_imaging.right_nephrolithiasis = random_bool()
+
+        if renal_imaging.left_present:
+            renal_imaging.left_type = random.choice(['transplant', 'natural'])
+            renal_imaging.left_length = random.randint(11, 14)
+            renal_imaging.left_cysts = random_bool()
+            renal_imaging.left_calcification = random_bool()
+            renal_imaging.left_nephrocalcinosis = random_bool()
+            renal_imaging.left_nephrolithiasis = random_bool()
+
+        db.session.add(renal_imaging)
+
+
 def create_patients(n):
     # TODO create data for remote facilities
 
@@ -244,6 +273,7 @@ def create_patients(n):
             create_transplants(patient, facility, 3)
             create_hospitalisations(patient, facility, 3)
             create_plasmapheresis(patient, facility, 3)
+            create_renal_imaging(patient, facility, 3)
 
         disease_group = random.choice(disease_groups)
         disease_group_patient = DiseaseGroupPatient(disease_group=disease_group, patient=patient)
