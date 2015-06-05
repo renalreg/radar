@@ -12,7 +12,7 @@ DISEASE_GROUPS = [
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
         'lab_group_definitions': [
-            ('TEST', 4),
+            ('LFT', 4),
         ],
     },
     {
@@ -24,7 +24,7 @@ DISEASE_GROUPS = [
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
         'lab_group_definitions': [
-            ('TEST', 4),
+            ('LFT', 4),
         ],
     },
     {
@@ -36,7 +36,7 @@ DISEASE_GROUPS = [
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
         'lab_group_definitions': [
-            ('TEST', 4),
+            ('LFT', 4),
         ],
     }
 ]
