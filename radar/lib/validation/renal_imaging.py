@@ -1,9 +1,9 @@
 from radar.lib.validation.core import run_validators
-from radar.lib.validation.validators import required, in_, range_
+from radar.lib.validation.validators import required, in_, range_, not_in_future
 
 
 def validate_renal_imaging(errors, obj):
-    run_validators(errors, 'date', obj.date, [required])
+    run_validators(errors, 'date', obj.date, [required, not_in_future])
     run_validators(errors, 'imaging_type', obj.imaging_type, [required])
     run_validators(errors, 'right_present', obj.right_present, [required])
     run_validators(errors, 'left_present', obj.left_present, [required])
