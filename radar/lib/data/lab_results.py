@@ -157,14 +157,6 @@ LAB_GROUP_DEFINITIONS = [
         ],
     },
     {
-        'code': 'PTH',
-        'name': 'Parathyroid Hormone',
-        'pre_post': False,
-        'result_codes': [
-            'PTH',
-        ],
-    },
-    {
         'code': 'OBV',
         'name': 'Observations',
         'pre_post': True,
@@ -184,6 +176,7 @@ LAB_GROUP_DEFINITIONS = [
             'MAGNESIUM',
             'PHOSPHATE',
             'VITD',
+            'PTH',
         ]
     },
     {
