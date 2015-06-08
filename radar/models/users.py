@@ -11,13 +11,13 @@ from radar.lib.database import db
 class UserCreatedMixin(CreatedMixin):
     @declared_attr
     def created_user(cls):
-        return relationship('User', foreign_keys=[cls.created_user_id], remote_side='User.id', post_update=True)
+        return relationship('User', primaryjoin="User.id==%s.created_user_id" % cls.__name__, remote_side='User.id', post_update=True)
 
 
 class UserModifiedMixin(ModifiedMixin):
     @declared_attr
     def modified_user(cls):
-        return relationship('User', foreign_keys=[cls.modified_user_id], remote_side='User.id', post_update=True)
+        return relationship('User', primaryjoin="User.id==%s.modified_user_id" % cls.__name__, remote_side='User.id', post_update=True)
 
 
 class User(db.Model, UserCreatedMixin, UserModifiedMixin):

@@ -11,7 +11,7 @@ class CreatedMixin(object):
 
     @declared_attr
     def created_user(cls):
-        return relationship('User', foreign_keys=[cls.created_user_id])
+        return relationship('User', primaryjoin="User.id==%s.created_user_id" % cls.__name__)
 
     @declared_attr
     def created_date(cls):
@@ -25,7 +25,7 @@ class ModifiedMixin(object):
 
     @declared_attr
     def modified_user(cls):
-        return relationship('User', foreign_keys=[cls.modified_user_id])
+        return relationship('User', primaryjoin="User.id==%s.modified_user_id" % cls.__name__)
 
     @declared_attr
     def modified_date(cls):
