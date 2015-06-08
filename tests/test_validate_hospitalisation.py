@@ -4,7 +4,7 @@ import pytest
 
 from radar.lib.validation.core import ErrorHandler
 from radar.lib.validation.hospitalisations import validate_hospitalisation
-from radar.models import Patient, PatientDemographics, Plasmapheresis, PlasmapheresisResponse
+from radar.models import Patient, PatientDemographics, Plasmapheresis
 
 
 @pytest.fixture

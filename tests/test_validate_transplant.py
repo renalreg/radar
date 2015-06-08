@@ -4,7 +4,7 @@ import pytest
 
 from radar.lib.validation.core import ErrorHandler
 from radar.lib.validation.transplants import validate_transplant
-from radar.models import Patient, PatientDemographics, Plasmapheresis, PlasmapheresisResponse, Transplant, \
+from radar.models import Patient, PatientDemographics, Transplant, \
     TransplantType
 
 
