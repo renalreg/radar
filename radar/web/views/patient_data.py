@@ -160,6 +160,8 @@ class PatientDataAddView(View):
                 db.session.commit()
                 flash('Saved.', 'success')
                 return self.saved(patient, obj, *args)
+            else:
+                db.session.rollback()
 
         context.update(dict(
             form=form,
@@ -230,6 +232,8 @@ class PatientDataEditView(View):
                 db.session.commit()
                 flash('Saved.', 'success')
                 return self.saved(patient, obj, *args)
+            else:
+                db.session.rollback()
 
         context.update(dict(
             object=obj,
@@ -340,6 +344,8 @@ class PatientDataListAddView(View):
                     db.session.commit()
                     flash('Saved.', 'success')
                     return self.saved(patient, obj, *args)
+                else:
+                    db.session.rollback()
 
         context.update(dict(
             form=form,
@@ -465,6 +471,8 @@ class PatientDataListEditView(View):
                 db.session.commit()
                 flash('Saved.', 'success')
                 return self.saved(patient, obj, *args)
+            else:
+                db.session.rollback()
 
         context.update(dict(
             objects=objects,

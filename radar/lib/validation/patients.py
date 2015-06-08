@@ -1,11 +1,11 @@
 from radar.lib.validation.core import run_validators
 from radar.lib.validation.validators import required, not_empty, not_in_future, optional, in_, email_address, nhs_no, \
-    chi_no
+    chi_no, max_length
 
 
 def validate_patient_demographics(errors, obj):
-    run_validators(errors, 'first_name', obj.first_name, [not_empty])
-    run_validators(errors, 'last_name', obj.first_name, [not_empty])
+    run_validators(errors, 'first_name', obj.first_name, [not_empty, max_length(30)])
+    run_validators(errors, 'last_name', obj.last_name, [not_empty, max_length(30)])
     run_validators(errors, 'date_of_birth', obj.date_of_birth, [required, not_in_future])
     run_validators(errors, 'date_of_death', obj.date_of_death, [optional, not_in_future])
     run_validators(errors, 'gender', obj.gender, [required, in_(['M', 'F'])])
