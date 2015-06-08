@@ -73,12 +73,12 @@ LAB_GROUP_DEFINITIONS = [
         'pre_post': False,
         'result_codes': [
             'ADJUSTEDCALCIUM',
-            'PHOSPHATE',
             'ALBUMIN',
             'ALP',
             'ALT',
             'BILI',
             'GGT',
+            'AST'
         ],
     },
     {
