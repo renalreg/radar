@@ -4,6 +4,8 @@ from flask_login import current_user
 from radar.lib.database import db
 from radar.lib.facilities import get_radar_facility
 from radar.lib.patients import get_facility_patients
+from radar.lib.validation.core import FormErrorHandler
+from radar.lib.validation.patients import validate_patient_demographics
 from radar.models.disease_groups import DiseaseGroup
 from radar.web.forms.core import DeleteForm
 from radar.models.patients import Patient, PatientDemographics
@@ -135,6 +137,11 @@ class PatientDemographicsDetailService(PatientDataDetailService):
 
     def get_form(self, obj):
         return PatientDemographicsForm(obj=obj)
+
+    def validate(self, form, obj):
+        errors = FormErrorHandler(form)
+        validate_patient_demographics(errors, obj)
+        return errors.is_valid()
 
 
 class PatientDemographicsEditView(PatientDataEditView):

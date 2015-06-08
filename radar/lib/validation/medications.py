@@ -17,8 +17,5 @@ def validate_medication(errors, obj):
     if not errors.is_valid():
         return
 
-    if obj.to_date is not None:
-        run_validators(errors, 'to_date', obj.to_date, [not_in_future])
-
-        if obj.from_date > obj.to_date:
-            errors.add_error('to_date', 'Must be after from date.')
+    if obj.to_date is not None and obj.from_date > obj.to_date:
+        errors.add_error('to_date', 'Must be after from date.')
