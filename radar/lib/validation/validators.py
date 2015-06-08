@@ -103,7 +103,7 @@ def max_length(max_value):
 
 def min_length(min_value):
     def f(value):
-        if len(value) < min_length:
+        if len(value) < min_value:
             raise ValidationError('Value is too short (min length is %d characters).' % min_value)
 
     return f

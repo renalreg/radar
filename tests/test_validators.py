@@ -4,7 +4,7 @@ import pytest
 
 from radar.lib.validation.core import ValidationError, StopValidation
 from radar.lib.validation.validators import required, not_empty, min_, max_, range_, in_, not_in_future, before, after, \
-    optional
+    optional, min_length, max_length
 
 
 def test_required_str():
@@ -219,3 +219,38 @@ def test_optional_empty():
 
 def test_optional_str():
     optional('hello')
+
+
+def test_min_length_empty():
+    with pytest.raises(ValidationError):
+        min_length(3)('')
+
+
+def test_min_length_shorter():
+    with pytest.raises(ValidationError):
+        min_length(3)('aa')
+
+
+def test_min_length_equal():
+    min_length(3)('aaa')
+
+
+def test_min_length_longer():
+    min_length(3)('aaaa')
+
+
+def test_max_length_empty():
+    max_length(3)('')
+
+
+def test_max_length_shorter():
+    max_length(3)('aa')
+
+
+def test_max_length_equal():
+    max_length(3)('aaa')
+
+
+def test_max_length_longer():
+    with pytest.raises(ValidationError):
+        max_length(3)('aaaa')
