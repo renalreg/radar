@@ -1,22 +1,23 @@
 from datetime import datetime
 
 from radar.lib.utils import date_to_datetime, is_date
+from radar.lib.validation.core import ValidationError
 
 
 def required(value):
     if value is None:
-        return 'This field is required.'
+        raise ValidationError('This field is required.')
 
 
 def not_empty(value):
     if value is None or len(value) == 0:
-        return 'This field is required.'
+        raise ValidationError('This field is required.')
 
 
 def min_(min_value):
     def f(value):
         if value < min_value:
-            return 'Must be greater than or equal to %s.' % min_value
+            raise ValidationError('Must be greater than or equal to %s.' % min_value)
 
     return f
 
@@ -24,7 +25,7 @@ def min_(min_value):
 def max_(max_value):
     def f(value):
         if value > max_value:
-            return 'Must be less than or equal to %s.' % max_value
+            raise ValidationError('Must be less than or equal to %s.' % max_value)
 
     return f
 
@@ -32,16 +33,10 @@ def max_(max_value):
 def range_(min_value=None, max_value=None):
     def f(value):
         if min_value is not None:
-            r = min_(min_value)(value)
-
-            if r is not None:
-                return r
+            min_(min_value)(value)
 
         if max_value is not None:
-            r = max_(max_value)(value)
-
-            if r is not None:
-                return r
+            max_(max_value)(value)
 
     return f
 
@@ -49,7 +44,7 @@ def range_(min_value=None, max_value=None):
 def in_(values):
     def f(value):
         if value not in values:
-            return 'Not a valid value.'
+            raise ValidationError('Not a valid value.')
 
     return f
 
@@ -60,7 +55,7 @@ def not_in_future(value):
         value = date_to_datetime(value)
 
     if value > datetime.now():
-        return "Can't be in the future."
+        raise ValidationError("Can't be in the future.")
 
 
 def after(min_dt, dt_format='%d/%m/%Y'):
@@ -72,7 +67,7 @@ def after(min_dt, dt_format='%d/%m/%Y'):
             value = date_to_datetime(value)
 
         if value < min_dt:
-            return 'Value is before %s.' % value.strftime(dt_format)
+            raise ValidationError('Value is before %s.' % min_dt.strftime(dt_format))
 
     return f
 
@@ -86,6 +81,6 @@ def before(max_dt, dt_format='%d/%m/%Y'):
             value = date_to_datetime(value)
 
         if value > max_dt:
-            return 'Value is after %s.' % value.strftime(dt_format)
+            raise ValidationError('Value is after %s.' % max_dt.strftime(dt_format))
 
     return f

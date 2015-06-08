@@ -74,8 +74,16 @@ class FormErrorHandler(BaseErrorHandler):
 
 def run_validators(errors, field_name, value, validators):
     for validator in validators:
-        error = validator(value)
-
-        if error:
-            errors.add_error(field_name, error)
+        try:
+            validator(value)
+        except ValidationError as e:
+            errors.add_error(field_name, e.message)
             break
+
+
+class ValidationError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return repr(self.message)
