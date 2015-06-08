@@ -3,6 +3,7 @@ import re
 
 from radar.lib.utils import date_to_datetime, is_date
 from radar.lib.validation.core import ValidationError, StopValidation
+from radar.lib.validation.utils import validate_nhs_no
 
 
 def required(value):
@@ -95,3 +96,16 @@ def before(max_dt, dt_format='%d/%m/%Y'):
 def email_address(value):
     if not re.match(r'^.+@([^.@][^@]+)$', value):
         raise ValidationError('Not a valid email address.')
+
+
+def _nhs_no(value, number_type):
+    if not validate_nhs_no(value):
+        raise ValidationError('Not a valid %s number.' % number_type)
+
+
+def chi_no(value):
+    _nhs_no(value, 'CHI')
+
+
+def nhs_no(value):
+    _nhs_no(value, 'NHS')

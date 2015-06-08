@@ -1,5 +1,6 @@
 from radar.lib.validation.core import run_validators
-from radar.lib.validation.validators import required, not_empty, not_in_future, optional, in_, email_address
+from radar.lib.validation.validators import required, not_empty, not_in_future, optional, in_, email_address, nhs_no, \
+    chi_no
 
 
 def validate_patient_demographics(errors, obj):
@@ -10,6 +11,8 @@ def validate_patient_demographics(errors, obj):
     run_validators(errors, 'gender', obj.gender, [required, in_(['M', 'F'])])
     run_validators(errors, 'ethnicity_code', obj.ethnicity_code, [required])
     run_validators(errors, 'email_address', obj.email_address, [optional, email_address])
+    run_validators(errors, 'nhs_no', obj.nhs_no, [optional, nhs_no])
+    run_validators(errors, 'chi_no', obj.chi_no, [optional, chi_no])
 
     if not errors.is_valid():
         return
