@@ -93,6 +93,22 @@ def before(max_dt, dt_format='%d/%m/%Y'):
     return f
 
 
+def max_length(max_value):
+    def f(value):
+        if len(value) > max_value:
+            raise ValidationError('Value is too long (max length is %d characters).' % max_value)
+
+    return f
+
+
+def min_length(min_value):
+    def f(value):
+        if len(value) < min_length:
+            raise ValidationError('Value is too short (min length is %d characters).' % min_value)
+
+    return f
+
+
 def email_address(value):
     if not re.match(r'^.+@([^.@][^@]+)$', value):
         raise ValidationError('Not a valid email address.')
