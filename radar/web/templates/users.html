@@ -3,7 +3,7 @@
 {% set current_page = 'users' %}
 {% set title = 'Users' %}
 
-{% from 'macros/forms.html' import render_field %}
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/pagination.html' import render_pagination %}
 {% from 'macros/ordering.html' import render_sortable_column %}
 
@@ -13,7 +13,7 @@
             <div class="block">
                 <h2>Search</h2>
 
-                <form method="GET">
+                <form method="GET" class="form-horizontal">
                     {{ render_field(form.username) }}
                     {{ render_field(form.email) }}
                     {{ render_field(form.first_name) }}
