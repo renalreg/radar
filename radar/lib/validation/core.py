@@ -1,6 +1,3 @@
-from datetime import date, datetime
-
-
 class BaseErrorHandler(object):
     def __init__(self):
         self.valid = True
@@ -79,6 +76,8 @@ def run_validators(errors, field_name, value, validators):
         except ValidationError as e:
             errors.add_error(field_name, e.message)
             break
+        except StopValidation:
+            break
 
 
 class ValidationError(Exception):
@@ -87,3 +86,7 @@ class ValidationError(Exception):
 
     def __str__(self):
         return repr(self.message)
+
+
+class StopValidation(Exception):
+    pass

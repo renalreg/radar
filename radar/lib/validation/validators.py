@@ -1,12 +1,17 @@
 from datetime import datetime
 
 from radar.lib.utils import date_to_datetime, is_date
-from radar.lib.validation.core import ValidationError
+from radar.lib.validation.core import ValidationError, StopValidation
 
 
 def required(value):
     if value is None:
         raise ValidationError('This field is required.')
+
+
+def optional(value):
+    if value is None:
+        raise StopValidation()
 
 
 def not_empty(value):

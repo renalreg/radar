@@ -1,7 +1,8 @@
 from datetime import date, timedelta, datetime
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import required, not_empty, min_, max_, range_, in_, not_in_future, before, after
+from radar.lib.validation.core import ValidationError, StopValidation
+from radar.lib.validation.validators import required, not_empty, min_, max_, range_, in_, not_in_future, before, after, \
+    optional
 
 
 def test_required_str():
@@ -203,3 +204,16 @@ def test_after_dt_format():
         after(datetime(2015, 1, 1, 0, 0, 0), dt_format='%Y-%m-%d')(datetime(2014, 12, 31, 0, 0, 0))
 
     assert e.value.message == 'Value is before 2015-01-01.'
+
+
+def test_optional_none():
+    with pytest.raises(StopValidation) as e:
+        optional(None)
+
+
+def test_optional_empty():
+    optional('')
+
+
+def test_optional_str():
+    optional('hello')
