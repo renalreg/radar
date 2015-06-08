@@ -45,7 +45,7 @@ class PatientDemographicsForm(Form):
     home_number = StringField(validators=[Optional()])
     work_number = StringField(validators=[Optional()])
     mobile_number = StringField(validators=[Optional()])
-    email_address = StringField(validators=[Optional(), Email()])
+    email_address = StringField(validators=[Optional()])
 
     nhs_no = RadarNHSNoField(validators=[Optional()])
     chi_no = RadarCHINoField(validators=[Optional()])

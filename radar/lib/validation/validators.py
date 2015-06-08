@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 from radar.lib.utils import date_to_datetime, is_date
 from radar.lib.validation.core import ValidationError, StopValidation
@@ -89,3 +90,8 @@ def before(max_dt, dt_format='%d/%m/%Y'):
             raise ValidationError('Value is after %s.' % max_dt.strftime(dt_format))
 
     return f
+
+
+def email_address(value):
+    if not re.match(r'^.+@([^.@][^@]+)$', value):
+        raise ValidationError('Not a valid email address.')
