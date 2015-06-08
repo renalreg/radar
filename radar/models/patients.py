@@ -26,7 +26,7 @@ class Patient(db.Model):
     unit_patients = relationship('UnitPatient')
     disease_group_patients = relationship('DiseaseGroupPatient')
 
-    demographics = relationship('PatientDemographics')
+    demographics_list = relationship('PatientDemographics')
     numbers = relationship('PatientNumber')
     alias = relationship('PatientAlias')
 
@@ -77,7 +77,7 @@ class Patient(db.Model):
 
     @property
     def latest_demographics(self):
-        demographics_list = self.demographics
+        demographics_list = self.demographics_list
 
         if len(demographics_list) == 0:
             return None
@@ -215,6 +215,17 @@ class Patient(db.Model):
     def in_unit(self, unit):
         # TODO
         return False
+
+    @property
+    def earliest_date_of_birth(self):
+        earliest_date_of_birth = None
+
+        for demographics in self.demographics_list:
+            date_of_birth = demographics.date_of_birth
+            if date_of_birth is not None and (earliest_date_of_birth is None or date_of_birth < earliest_date_of_birth):
+                earliest_date_of_birth = date_of_birth
+
+        return earliest_date_of_birth
 
 
 class PatientDemographics(db.Model, MetadataMixin):
