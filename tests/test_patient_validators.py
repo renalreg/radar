@@ -1,5 +1,7 @@
 from datetime import date
+
 import pytest
+
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.patient_validators import after_date_of_birth
 from radar.models import Patient, PatientDemographics

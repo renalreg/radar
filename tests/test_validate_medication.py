@@ -9,12 +9,9 @@ from radar.models import Medication, MedicationDoseUnit, MedicationRoute, Medica
 @pytest.fixture
 def patient():
     patient = Patient()
-
     patient_demographics = PatientDemographics()
     patient_demographics.date_of_birth = date(2000, 1, 1)
-
     patient.demographics_list.append(patient_demographics)
-
     return patient
 
 
