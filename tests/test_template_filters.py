@@ -10,12 +10,8 @@ def test_yn_false():
     assert yn(False) == 'No'
 
 
-def test_yn_empty():
-    assert yn('') == ''
-
-
 def test_yn_none():
-    assert yn(None) == ''
+    assert yn(None) == '-'
 
 
 def test_missing_not_missing():

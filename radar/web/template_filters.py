@@ -58,9 +58,9 @@ def missing(value):
 
 
 def yn(value):
-    if value is True:
+    if value is None:
+        return '-'
+    elif value:
         return 'Yes'
-    elif value is False:
-        return 'No'
     else:
-        return ''
+        return 'No'
