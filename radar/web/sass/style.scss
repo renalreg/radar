@@ -157,6 +157,7 @@ $block-padding: $grid-gutter-width / 2;
     border-radius: $border-radius-base;
     margin-top: $grid-gutter-width / 2;
     padding: $block-padding;
+    border: 1px solid #ddd;
 
     > *:first-child {
         margin-top: 0;
