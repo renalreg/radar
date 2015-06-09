@@ -17,7 +17,7 @@
 {% block body %}
     <div class="row">
         <div class="col-md-3">
-            <div class="block">
+            <div class="patient-sidebar">
                 <h1 class="patient-name">
                     <a href="{{ url_for('patients.view_demographics_list', patient_id=patient.id) }}">
                         {% if patient.can_view_demographics(current_user) and (patient.first_name or patient.last_name) %}
@@ -28,82 +28,84 @@
                     </a>
                 </h1>
 
-                <ul class="patient-info">
-                    <li><strong>ID:</strong> {{ patient.id }}</li>
+                <div class="patient-sidebar-inner">
+                    <ul class="patient-info">
+                        <li><strong>ID:</strong> {{ patient.id }}</li>
 
-                    <li>
-                        <strong>DOB:</strong>
+                        <li>
+                            <strong>DOB:</strong>
 
-                        {% if patient.can_view_demographics(current_user) %}
-                            {{ patient.date_of_birth | date_format | missing }}
-                        {% else %}
-                            {{ patient.date_of_birth | year_format | missing }}
-                        {% endif %}
-                    </li>
-
-                    <li>
-                        <strong>Gender:</strong>
-
-                        {% with gender = patient.gender %}
-                            {% if gender == 'M' %}
-                                Male
-                            {% elif gender == 'F' %}
-                                Female
+                            {% if patient.can_view_demographics(current_user) %}
+                                {{ patient.date_of_birth | date_format | missing }}
                             {% else %}
-                                -
+                                {{ patient.date_of_birth | year_format | missing }}
                             {% endif %}
-                        {% endwith %}
-                    </li>
-
-                    {% if patient_data.disease_groups %}
-                        <li>
-                            <strong>Disease Groups:</strong>
-
-                            {% for disease_group in patient_data.disease_groups %}
-                                {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
-                            {% endfor %}
                         </li>
-                    {% endif %}
 
-                    {% if patient_data.units %}
                         <li>
-                            <strong>Units:</strong>
+                            <strong>Gender:</strong>
 
-                            {% for unit in patient_data.units %}
-                                {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                            {% endfor %}
+                            {% with gender = patient.gender %}
+                                {% if gender == 'M' %}
+                                    Male
+                                {% elif gender == 'F' %}
+                                    Female
+                                {% else %}
+                                    -
+                                {% endif %}
+                            {% endwith %}
                         </li>
-                    {% endif %}
-                </ul>
 
-                {% for disease_group, links in patient_data.disease_group_links %}
-                    <h4>{{ disease_group.disease_group.name }}</h4>
+                        {% if patient_data.disease_groups %}
+                            <li>
+                                <strong>Disease Groups:</strong>
+
+                                {% for disease_group in patient_data.disease_groups %}
+                                    {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+
+                        {% if patient_data.units %}
+                            <li>
+                                <strong>Units:</strong>
+
+                                {% for unit in patient_data.units %}
+                                    {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    {% for disease_group, links in patient_data.disease_group_links %}
+                        <h4>{{ disease_group.disease_group.name }}</h4>
+
+                        <ul class="nav radar-sidebar-nav">
+                            {% for link in links %}
+                                <li{% if link.is_active() %} class="active"{% endif %}>
+                                    <a href="{{ link.url() }}">{{ link.text() }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+
+                    <h4>RaDaR</h4>
 
                     <ul class="nav radar-sidebar-nav">
-                        {% for link in links %}
+                        {% for link in patient_data.links %}
                             <li{% if link.is_active() %} class="active"{% endif %}>
                                 <a href="{{ link.url() }}">{{ link.text() }}</a>
                             </li>
                         {% endfor %}
                     </ul>
-                {% endfor %}
 
-                <h4>RaDaR</h4>
+                    <h4>Groups</h4>
 
-                <ul class="nav radar-sidebar-nav">
-                    {% for link in patient_data.links %}
-                        <li{% if link.is_active() %} class="active"{% endif %}>
-                            <a href="{{ link.url() }}">{{ link.text() }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
-                <h4>Groups</h4>
-
-                <ul class="nav radar-sidebar-nav">
-                    {{ render_patient_li('disease_groups', 'patients.view_patient_disease_groups', 'Disease Groups') }}
-                    {{ render_patient_li('units', 'patients.view_patient_units', 'Units') }}
-                </ul>
+                    <ul class="nav radar-sidebar-nav">
+                        {{ render_patient_li('disease_groups', 'patients.view_patient_disease_groups', 'Disease Groups') }}
+                        {{ render_patient_li('units', 'patients.view_patient_units', 'Units') }}
+                    </ul>
+                </div>
             </div>
         </div>
 
