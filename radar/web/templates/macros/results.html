@@ -3,8 +3,8 @@
 {% from 'macros/forms.html' import render_form_errors %}
 {% from 'macros/panels.html' import render_panel %}
 
-{% macro render_lab_group_form(lab_group_definition, form) %}
-    <h3>{{ lab_group_definition.name }}</h3>
+{% macro render_result_group_form(result_group_definition, form) %}
+    <h3>{{ result_group_definition.name }}</h3>
 
     {{ render_form_errors(form) }}
 
@@ -34,7 +34,7 @@
         {% endfor %}
 
         {% call render_button() %}
-            <button type="submit" class="btn btn-success" name="lab_order_form">Save</button>
+            <button type="submit" class="btn btn-success" name="result_group_form">Save</button>
         {% endcall %}
     </form>
 {% endmacro %}

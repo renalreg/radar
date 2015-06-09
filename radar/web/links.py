@@ -52,33 +52,33 @@ class DiseaseGroupLink(object):
         return partial(cls, name=name, endpoint=endpoint, patient_page=patient_page)
 
 
-class LabGroupLink(object):
-    def __init__(self, patient, lab_group_definition):
+class ResultGroupLink(object):
+    def __init__(self, patient, result_group_definition):
         self.patient = patient
-        self.lab_group_definition = lab_group_definition
+        self.result_group_definition = result_group_definition
 
     def text(self):
-        return self.lab_group_definition.name
+        return self.result_group_definition.name
 
     def url(self):
         return url_for(
-            'lab_results.view_lab_result_list',
+            'results.view_result_list',
             patient_id=self.patient.id,
-            lab_group_definition_id=self.lab_group_definition.id,
+            result_group_definition_id=self.result_group_definition.id,
         )
 
     @contextfunction
     def is_active(self, context):
         return (
-            context.vars.get('current_patient_page') == 'lab_results' and
-            context.vars.get('current_lab_group_definition') == self.lab_group_definition
+            context.vars.get('current_patient_page') == 'results' and
+            context.vars.get('current_result_group_definition') == self.result_group_definition
         )
 
 
 # Patient links
 demographics_link = PatientLink.partial('Demographics', 'patients.view_demographics_list', 'demographics')
 medications_link = PatientLink.partial('Medications', 'medications.view_medication_list', 'medications')
-lab_results_link = PatientLink.partial('Lab Results', 'lab_results.view_lab_result_list', 'lab_results')
+results_link = PatientLink.partial('Results', 'results.view_result_list', 'results')
 hospitalisations_link = PatientLink.partial('Hospitalisations', 'hospitalisations.view_hospitalisation_list', 'hospitalisations')
 pathology_link = PatientLink.partial('Pathology', 'pathology.view_pathology_list', 'pathology')
 transplants_link = PatientLink.partial('Transplants', 'transplants.view_transplant_list', 'transplants')
@@ -93,7 +93,7 @@ genetics_link = DiseaseGroupLink.partial('Genetics', 'genetics.view_genetics', '
 PATIENT_LINKS = [
     demographics_link,
     medications_link,
-    lab_results_link,
+    results_link,
     hospitalisations_link,
     pathology_link,
     transplants_link,
@@ -104,7 +104,7 @@ PATIENT_LINKS = [
 FEATURE_TO_PATIENT_LINK = {
     features.DEMOGRAPHICS: demographics_link,
     features.MEDICATIONS: medications_link,
-    features.LAB_RESULTS: lab_results_link,
+    features.RESULTS: results_link,
     features.HOSPITALISATIONS: hospitalisations_link,
     features.PATHOLOGY: pathology_link,
     features.TRANSPLANTS: transplants_link,
@@ -144,8 +144,8 @@ def get_disease_group_links(patient, disease_group):
             links.append((x.weight, link(patient, disease_group)))
             continue
 
-    for x in disease_group.disease_group_lab_group_definitions:
-        link = LabGroupLink(patient, x.lab_group_definition)
+    for x in disease_group.disease_group_result_group_definitions:
+        link = ResultGroupLink(patient, x.result_group_definition)
         links.append((x.weight, link))
 
     links = [x[1] for x in sorted(links)]

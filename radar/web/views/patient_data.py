@@ -336,7 +336,7 @@ class PatientDataListAddView(View):
             if obj is None or not obj.can_edit(current_user):
                 abort(403)
 
-            if form.validate():
+            if form.validate_on_submit():
                 form.populate_obj(obj)
 
                 if self.detail_service.validate(form, obj):

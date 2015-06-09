@@ -1,11 +1,12 @@
 from radar.lib.database import db
-from radar.models import LabGroupDefinition, LabResultDefinition, LabGroupResultDefinition
+from radar.models import ResultDefinition, \
+    ResultGroupDefinition, ResultGroupResultDefinition
 
 
 # TODO units
 # TODO short names
 # TODO names
-LAB_RESULT_DEFINITIONS = [
+RESULT_DEFINITIONS = [
     ('ACR', 'ACR', 'Albumin : Creatinine Ratio', 'mg/mmol'),
     ('ADJUSTEDCALCIUM', 'AdjCa', 'Adjusted Calcium', 'mmol/l'),
     ('ALBUMIN', 'Alb', 'Albumin', 'g/l'),
@@ -57,7 +58,7 @@ LAB_RESULT_DEFINITIONS = [
 
 
 # TODO short names
-LAB_GROUP_DEFINITIONS = [
+RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'URINE',
         'name': 'Urine',
@@ -192,27 +193,27 @@ LAB_GROUP_DEFINITIONS = [
 ]
 
 
-def create_lab_result_definitions():
-    for code, short_name, name, units in LAB_RESULT_DEFINITIONS:
-        lab_result_definition = LabResultDefinition(code=code, name=name, short_name=short_name, units=units)
-        db.session.add(lab_result_definition)
+def create_result_definitions():
+    for code, short_name, name, units in RESULT_DEFINITIONS:
+        result_definition = ResultDefinition(code=code, name=name, short_name=short_name, units=units)
+        db.session.add(result_definition)
 
 
-def create_lab_group_definitions():
-    for x in LAB_GROUP_DEFINITIONS:
-        lab_group_definition = LabGroupDefinition(
+def create_result_group_definitions():
+    for x in RESULT_GROUP_DEFINITIONS:
+        result_group_definition = ResultGroupDefinition(
             code=x['code'],
             name=x['name'],
             short_name=x['name'],
             pre_post=x['pre_post'],
         )
-        db.session.add(lab_group_definition)
+        db.session.add(result_group_definition)
 
         for i, result_code in enumerate(x['result_codes']):
-            lab_result_definition = LabResultDefinition.query.filter(LabResultDefinition.code == result_code).one()
-            lab_group_result_definition = LabGroupResultDefinition(
-                lab_group_definition=lab_group_definition,
-                lab_result_definition=lab_result_definition,
+            result_definition = ResultDefinition.query.filter(ResultDefinition.code == result_code).one()
+            result_group_result_definition = ResultGroupResultDefinition(
+                result_group_definition=result_group_definition,
+                result_definition=result_definition,
                 weight=i,
             )
-            db.session.add(lab_group_result_definition)
+            db.session.add(result_group_result_definition)

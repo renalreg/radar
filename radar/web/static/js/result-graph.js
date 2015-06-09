@@ -1,4 +1,4 @@
-function load_result_code(graph_selector, result_code) {
+function load_result_graph(graph_selector, result_code) {
     $(graph_selector).html('<p><img src="/static/img/spinner.gif" /></p>');
 
     $.get('data.json', {'result_code': result_code}, function(data) {
@@ -57,6 +57,6 @@ function load_result_code(graph_selector, result_code) {
 $(function () {
     $("#result_code").change(function() {
         var result_code = $(this).val();
-        load_result_code('#graph', result_code);
+        load_result_graph('#graph', result_code);
     }).trigger("change");
 });

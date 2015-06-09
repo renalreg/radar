@@ -17,7 +17,7 @@ class DiseaseGroup(db.Model):
     disease_group_patients = relationship('DiseaseGroupPatient')
     disease_group_users = relationship('DiseaseGroupUser')
     features = relationship('DiseaseGroupFeature')
-    disease_group_lab_group_definitions = relationship('DiseaseGroupLabGroupDefinition')
+    disease_group_result_group_definitions = relationship('DiseaseGroupResultGroupDefinition')
 
     @property
     def patients(self):
@@ -28,8 +28,8 @@ class DiseaseGroup(db.Model):
         return [x.user for x in self.disease_group_users]
 
     @property
-    def lab_group_definitions(self):
-        return [x.lab_group_definition for x in self.disease_group_lab_group_definitions]
+    def result_group_definitions(self):
+        return [x.result_group_definition for x in self.disease_group_result_group_definitions]
 
     def has_feature(self, name):
         return any(x.name == name for x in self.features)
@@ -120,19 +120,19 @@ class DiseaseGroupUser(db.Model):
         return DISEASE_GROUP_ROLE_NAMES.get(self.role)
 
 
-class DiseaseGroupLabGroupDefinition(db.Model):
-    __tablename__ = 'disease_group_lab_group_definitions'
+class DiseaseGroupResultGroupDefinition(db.Model):
+    __tablename__ = 'disease_group_result_group_definitions'
 
     id = Column(Integer, primary_key=True)
 
     disease_group_id = Column(Integer, ForeignKey('disease_groups.id'), nullable=False)
     disease_group = relationship('DiseaseGroup')
 
-    lab_group_definition_id = Column(Integer, ForeignKey('lab_group_definitions.id'), nullable=False)
-    lab_group_definition = relationship('LabGroupDefinition')
+    result_group_definition_id = Column(Integer, ForeignKey('result_group_definitions.id'), nullable=False)
+    result_group_definition = relationship('ResultGroupDefinition')
 
     weight = Column(Integer, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('disease_group_id', 'lab_group_definition_id'),
+        UniqueConstraint('disease_group_id', 'result_group_definition_id'),
     )

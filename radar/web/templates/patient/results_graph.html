@@ -1,6 +1,6 @@
-{% extends 'patient/lab_results_base.html' %}
+{% extends 'patient/results_base.html' %}
 
-{% set current_lab_results_page = 'graph' %}
+{% set current_results_page = 'graph' %}
 
 {% block content %}
     {{ super() }}
@@ -13,5 +13,5 @@
 {% endblock %}
 
 {% block body_js %}
-    <script src="/static/js/lab-result-graph.js"></script>
+    <script src="/static/js/result-graph.js"></script>
 {% endblock %}

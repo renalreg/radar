@@ -1,6 +1,6 @@
-{% extends 'patient/lab_results_base.html' %}
+{% extends 'patient/results_base.html' %}
 
-{% set current_lab_results_page = 'table' %}
+{% set current_results_page = 'table' %}
 
 {% from 'macros/ordering.html' import render_sortable_column %}
 
@@ -52,6 +52,6 @@
             </tbody>
         </table>
     {% else %}
-        <p>No matching lab results.</p>
+        <p>No matching results.</p>
     {% endif %}
 {% endblock %}

@@ -1,18 +1,18 @@
 {% extends 'patient/base.html' %}
 
-{% set current_patient_page = 'lab_results' %}
-{% set title = 'Lab Results' %}
+{% set current_patient_page = 'results' %}
+{% set title = 'Results' %}
 
 {% block content %}
-    <h1 class="page-header">Lab Result</h1>
+    <h1 class="page-header">{{ x.result_group_definition.name }} <small>Result Group</small></h1>
 
     {% if object.can_edit(current_user) %}
         <p>
-            <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=object.id) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ url_for('results.edit_result_group', patient_id=patient.id, result_group_id=object.id) }}" class="btn btn-primary">Edit</a>
         </p>
     {% endif %}
 
-    {% set lgd = object.lab_group_definition %}
+    {% set lgd = object.result_group_definition %}
 
     <table class="table kv">
         <tr>
@@ -43,10 +43,10 @@
             </tr>
         {% endif %}
 
-        {% for x in object.sorted_lab_results %}
+        {% for x in object.sorted_results %}
             <tr>
-                <th>{{ x.lab_result_definition.name }}</th>
-                <td>{{ x.value }}{% if x.lab_result_definition.units %} {{ x.lab_result_definition.units }}{% endif %}</td>
+                <th>{{ x.result_definition.name }}</th>
+                <td>{{ x.value }}{% if x.result_definition.units %} {{ x.result_definition.units }}{% endif %}</td>
             </tr>
         {% endfor %}
     </table>

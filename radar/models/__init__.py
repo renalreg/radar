@@ -4,7 +4,7 @@ from radar.models.disease_groups import *
 from radar.models.facilities import *
 from radar.models.genetics import *
 from radar.models.hospitalisations import *
-from radar.models.lab_results import *
+from radar.models.results import *
 from radar.models.medications import *
 from radar.models.news import *
 from radar.models.pathology import *

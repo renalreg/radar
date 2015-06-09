@@ -1,7 +1,7 @@
-{% extends 'patient/lab_results_base.html' %}
+{% extends 'patient/results_base.html' %}
 
-{% set current_lab_results_page = 'list' %}
-{% set current_lab_group_definition = lab_group_definition %}
+{% set current_results_page = 'list' %}
+{% set current_result_group_definition = result_group_definition %}
 
 {% from 'macros/pagination.html' import render_pagination %}
 {% from 'macros/ordering.html' import render_sortable_column %}
@@ -13,11 +13,11 @@
     {% if patient.can_edit(current_user) %}
         <p>
             <div class="btn-group">
-                <a href="{{ url_for('lab_results.add_lab_group', patient_id=patient.id) }}" class="btn btn-primary">New</a>
+                <a href="{{ url_for('results.add_result_group', patient_id=patient.id) }}" class="btn btn-primary">New</a>
 
-                {% if lab_group_definition %}
-                    <a href="{{ url_for('lab_results.add_lab_group', patient_id=patient.id, lab_group_definition_id=lab_group_definition.id) }}" class="btn btn-primary">
-                        New {{ lab_group_definition.name }}
+                {% if result_group_definition %}
+                    <a href="{{ url_for('results.add_result_group', patient_id=patient.id, result_group_definition_id=result_group_definition.id) }}" class="btn btn-primary">
+                        New {{ result_group_definition.name }}
                     </a>
                 {% endif %}
             </div>
@@ -25,7 +25,7 @@
     {% endif %}
 
     <form method="GET" class="form-inline">
-        {{ render_field(form.lab_group_definition_id, rendered_field=form.lab_group_definition_id(class='form-control input-sm')) }}
+        {{ render_field(form.result_group_definition_id, rendered_field=form.result_group_definition_id(class='form-control input-sm')) }}
         <button type="submit" class="btn btn-primary btn-xs">Update</button>
     </form>
 
@@ -44,30 +44,30 @@
         </thead>
 
         <tbody>
-            {% for x in lab_results %}
+            {% for x in results %}
                 <tr>
                     <td>
                         <div class="btn-group">
                             {% if x.can_view(current_user) %}
-                                <a href="{{ url_for('lab_results.view_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-default btn-xs">View</a>
+                                <a href="{{ url_for('results.view_result_group', patient_id=patient.id, result_group_id=x.result_group.id) }}" class="btn btn-default btn-xs">View</a>
                             {% endif %}
 
                             {% if x.can_edit(current_user) %}
-                                <a href="{{ url_for('lab_results.edit_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="btn btn-primary btn-xs">Edit</a>
+                                <a href="{{ url_for('results.edit_result_group', patient_id=patient.id, result_group_id=x.result_group.id) }}" class="btn btn-primary btn-xs">Edit</a>
                             {% endif %}
                         </div>
                     </td>
 
-                    <td>{{ x.lab_group.date | datetime_format }}</td>
-                    <td>{{ x.lab_group.lab_group_definition.name }}</td>
-                    <td>{{ x.lab_result_definition.name }}</td>
+                    <td>{{ x.result_group.date | datetime_format }}</td>
+                    <td>{{ x.result_group.result_group_definition.name }}</td>
+                    <td>{{ x.result_definition.name }}</td>
                     <td>{{ x.value }}</td>
-                    <td>{{ x.lab_result_definition.units | missing }}</td>
-                    <td>{{ x.lab_group.facility.name }}</td>
+                    <td>{{ x.result_definition.units | missing }}</td>
+                    <td>{{ x.result_group.facility.name }}</td>
 
                     <td align="right">
                         {% if x.can_edit(current_user) %}
-                            <form method="POST" action="{{ url_for('lab_results.delete_lab_group', patient_id=patient.id, lab_group_id=x.lab_group.id) }}" class="form-inline confirm-delete">
+                            <form method="POST" action="{{ url_for('results.delete_result_group', patient_id=patient.id, result_group_id=x.result_group.id) }}" class="form-inline confirm-delete">
                                 {{ delete_form.hidden_tag() }}
 
                                 <button type="submit" class="btn btn-link btn-xs">

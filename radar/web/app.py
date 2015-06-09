@@ -20,7 +20,7 @@ from radar.web.views.medications import bp as medications_bp
 from radar.web.views.patients import bp as patients_bp
 from radar.web.views.units import bp as units_bp
 from radar.web.views.users import bp as users_bp
-from radar.web.views.lab_results import bp as lab_results_bp
+from radar.web.views.results import bp as results_bp
 from radar.web.views.renal_imaging import bp as renal_imaging_bp
 from radar.web.views.news import bp as news_bp
 from radar.web.views.stats import bp as stats_bp
@@ -68,7 +68,7 @@ def create_app():
         (dialysis_bp, '/dialysis'),
         (genetics_bp, '/genetics'),
         (hospitalisations_bp, '/hospitalisations'),
-        (lab_results_bp, '/lab-results'),
+        (results_bp, '/results'),
         (medications_bp, '/medications'),
         (pathology_bp, '/pathology'),
         (plasmapheresis_bp, '/plasmapheresis'),

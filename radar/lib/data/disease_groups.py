@@ -1,5 +1,5 @@
 from radar.lib.database import db
-from radar.models import DiseaseGroup, DiseaseGroupFeature, LabGroupDefinition, DiseaseGroupLabGroupDefinition
+from radar.models import DiseaseGroup, DiseaseGroupFeature, ResultGroupDefinition, DiseaseGroupResultGroupDefinition
 
 # TODO
 DISEASE_GROUPS = [
@@ -11,7 +11,7 @@ DISEASE_GROUPS = [
             ('RENAL_IMAGING', 2),
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
-        'lab_group_definitions': [
+        'result_group_definitions': [
             ('LFT', 4),
         ],
     },
@@ -23,7 +23,7 @@ DISEASE_GROUPS = [
             ('RENAL_IMAGING', 2),
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
-        'lab_group_definitions': [
+        'result_group_definitions': [
             ('LFT', 4),
         ],
     },
@@ -35,7 +35,7 @@ DISEASE_GROUPS = [
             ('RENAL_IMAGING', 2),
             ('SALT_WASTING_CLINICAL_FEATURES', 3),
         ],
-        'lab_group_definitions': [
+        'result_group_definitions': [
             ('LFT', 4),
         ],
     }
@@ -55,12 +55,12 @@ def create_disease_groups():
             )
             db.session.add(disease_group_feature)
 
-        for code, weight in x['lab_group_definitions']:
-            lab_group_definition = LabGroupDefinition.query.filter(LabGroupDefinition.code == code).one()
+        for code, weight in x['result_group_definitions']:
+            result_group_definition = ResultGroupDefinition.query.filter(ResultGroupDefinition.code == code).one()
 
-            disease_group_lab_group_definition = DiseaseGroupLabGroupDefinition(
+            disease_group_result_group_definition = DiseaseGroupResultGroupDefinition(
                 disease_group=disease_group,
-                lab_group_definition=lab_group_definition,
+                result_group_definition=result_group_definition,
                 weight=weight,
             )
-            db.session.add(disease_group_lab_group_definition)
+            db.session.add(disease_group_result_group_definition)

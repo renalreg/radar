@@ -1,0 +1,30 @@
+{% extends 'patient/base.html' %}
+
+{% set current_patient_page = 'results' %}
+{% set title = 'Lab Results' %}
+
+{% block content %}
+    {% if result_group_definition %}
+        <h1 class="page-header">{{ result_group_definition.name }} <small>Results</small></h1>
+    {% else %}
+        <h1 class="page-header">Results</h1>
+    {% endif %}
+
+    <ul class="nav radar-tabs">
+        <li{% if current_results_page == 'list' %} class="active"{% endif %}>
+            <a href="{{ url_for('results.view_result_list', patient_id=patient.id) }}">List</a>
+        </li>
+
+        <li{% if current_results_page == 'table' %} class="active"{% endif %}>
+            <a href="{{ url_for('results.view_result_table', patient_id=patient.id) }}">Table</a>
+        </li>
+
+        <li{% if current_results_page == 'graph' %} class="active"{% endif %}>
+            <a href="{{ url_for('results.view_result_graph', patient_id=patient.id) }}">Graph</a>
+        </li>
+
+        <li{% if current_results_page == 'definitions' %} class="active"{% endif %}>
+            <a href="{{ url_for('results.view_result_definitions', patient_id=patient.id) }}">Definitions</a>
+        </li>
+    </ul>
+{% endblock %}

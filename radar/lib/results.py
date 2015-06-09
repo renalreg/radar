@@ -1,23 +1,23 @@
 from collections import defaultdict
 
 
-class LabResultTable(object):
+class ResultTable(object):
     def __init__(self, result_codes):
         self.result_codes = result_codes
         self.rows_dict = defaultdict(list)
         self.rows = []
 
-    def add(self, lab_result):
-        date = lab_result.lab_group.date
-        facility = lab_result.lab_group.facility
+    def add(self, result):
+        date = result.result_group.date
+        facility = result.result_group.facility
 
         key = (date, facility)
 
         group_rows = self.rows_dict[key]
         row = None
 
-        result_code = lab_result.lab_result_definition.code
-        result_value = lab_result.value
+        result_code = result.result_definition.code
+        result_value = result.value
 
         for group_row in group_rows:
             if not group_row.has_code(result_code):
@@ -25,16 +25,16 @@ class LabResultTable(object):
                 break
 
         if row is None:
-            row = LabResultTableRow(self.result_codes, date, facility)
+            row = ResultTableRow(self.result_codes, date, facility)
             row.set_code_value(result_code, result_value)
             self.rows_dict[key].append(row)
             self.rows.append(row)
 
         row.set_code_value(result_code, result_value)
 
-    def add_all(self, lab_results):
-        for lab_result in lab_results:
-            self.add(lab_result)
+    def add_all(self, results):
+        for result in results:
+            self.add(result)
 
     def sort_by_facility(self, reverse=False):
         self._sort(lambda x: (x.facility.name, x.date), reverse)
@@ -55,7 +55,7 @@ class LabResultTable(object):
         return len(self.rows)
 
 
-class LabResultTableRow(object):
+class ResultTableRow(object):
     def __init__(self, result_codes, date, facility):
         self.result_codes = result_codes
         self.date = date

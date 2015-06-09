@@ -9,9 +9,9 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
 from radar.lib.facilities import get_radar_facility
-from radar.models import LabGroupDefinition, LabGroup, LabResult, DialysisType, Dialysis, Medication, MedicationRoute, \
+from radar.models import DialysisType, Dialysis, Medication, MedicationRoute, \
     MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation, PlasmapheresisResponse, \
-    Plasmapheresis, RenalImaging
+    Plasmapheresis, RenalImaging, Result, ResultGroup, ResultGroupDefinition
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -54,28 +54,28 @@ def create_posts(n):
         db.session.add(post)
 
 
-def create_lab_groups(patient, facility, lab_group_definitions, n):
-    for lab_group_definition in lab_group_definitions:
+def create_result_groups(patient, facility, result_group_definitions, n):
+    for result_group_definition in result_group_definitions:
         for _ in range(n):
-            lab_group = LabGroup(
+            result_group = ResultGroup(
                 patient=patient,
                 facility=facility,
-                lab_group_definition=lab_group_definition,
+                result_group_definition=result_group_definition,
                 date=random_datetime(datetime(2000, 1, 1), datetime.now()),
             )
 
-            if lab_group_definition.pre_post:
-                lab_group.pre_post = 'pre'  # TODO random
+            if result_group_definition.pre_post:
+                result_group.pre_post = 'pre'  # TODO random
 
-            db.session.add(lab_group)
+            db.session.add(result_group)
 
-            for lab_result_definition in lab_group_definition.lab_result_definitions:
-                lab_result = LabResult(
-                    lab_group=lab_group,
-                    lab_result_definition=lab_result_definition,
+            for result_definition in result_group_definition.result_definitions:
+                result = Result(
+                    result_group=result_group,
+                    result_definition=result_definition,
                     value=random.randint(1, 100),  # TODO use min max
                 )
-                db.session.add(lab_result)
+                db.session.add(result)
 
 
 def create_demographics(patient, facility, gender):
@@ -249,7 +249,7 @@ def create_patients(n):
         .filter(Facility.is_internal)\
         .all()
     disease_groups = DiseaseGroup.query.all()
-    lab_group_definitions = LabGroupDefinition.query.all()
+    result_group_definitions = ResultGroupDefinition.query.all()
 
     create_dialysis = create_dialysis_f()
     create_medications = create_medications_f()
@@ -271,7 +271,7 @@ def create_patients(n):
             db.session.add(unit_patient)
 
             create_demographics(patient, facility, gender)
-            create_lab_groups(patient, facility, lab_group_definitions, 10)
+            create_result_groups(patient, facility, result_group_definitions, 10)
             create_dialysis(patient, facility, 5)
             create_medications(patient, facility, 5)
             create_transplants(patient, facility, 3)
