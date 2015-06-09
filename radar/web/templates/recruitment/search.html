@@ -4,7 +4,7 @@
 {% from 'macros/panels.html' import render_panel %}
 
 {% block content %}
-    <h1>Recruit a Patient</h1>
+    <h1 class="page-header">Recruit a Patient</h1>
 
     {% if need_more_identifiers %}
         {% call render_panel('Error', 'panel-danger') %}
