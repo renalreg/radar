@@ -41,6 +41,9 @@ def datetime_format(dt, seconds=False):
 
 @evalcontextfilter
 def nl2br(eval_ctx, value):
+    if value is None:
+        return ''
+
     value = escape(value)
     value = value.replace('\n', Markup('<br />\n'))
 
