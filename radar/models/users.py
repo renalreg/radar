@@ -151,11 +151,11 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
 
     def filter_units_for_user(self, current_user):
         # TODO
-        return self.units
+        return self.unit_users
 
     def filter_disease_groups_for_user(self, current_user):
         # TODO
-        return self.disease_groups
+        return self.disease_group_users
 
     def can_view(self, user):
         # TODO
