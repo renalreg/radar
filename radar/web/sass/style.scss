@@ -315,13 +315,14 @@ form.result-table select {
 
     h1.patient-name {
         margin: 0;
+        word-wrap: break-word;
 
         a {
             padding: $block-padding;
             display: block;
             color: #FFF;
 
-            &:hover {
+            &:hover, &:focus {
                 text-decoration: none;
             }
         }
