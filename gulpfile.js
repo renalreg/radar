@@ -99,7 +99,7 @@ gulp.task('sass', function() {
 });
 
 gulp.task('watch', function() {
-    gulp.watch('radar/sass/**/*.scss', ['sass']);
+    gulp.watch('radar/web/sass/**/*.scss', ['sass']);
 });
 
 gulp.task('default', ['libs', 'sass']);
