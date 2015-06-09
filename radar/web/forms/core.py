@@ -188,6 +188,29 @@ class RadarYesNoWidget(object):
         return HTMLString("\n".join(html))
 
 
+class RadarStringField(StringField):
+    def __init__(self, label=None, none_if_empty=True, strip=True, **kwargs):
+        self.none_if_empty = none_if_empty
+        self.strip = strip
+        super(RadarStringField, self).__init__(label=label, **kwargs)
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            value = valuelist[0]
+
+            if self.none_if_empty and len(value) == 0:
+                value = None
+        elif self.none_if_empty:
+            value = None
+        else:
+            value = ''
+
+        if self.strip and value is not None:
+            value = value.strip()
+
+        self.data = value
+
+
 class RadarRadioField(RadioField):
     def process_data(self, value):
         # Fix for RadioField converting None to "None"

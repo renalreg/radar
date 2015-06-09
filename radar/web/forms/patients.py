@@ -1,12 +1,12 @@
 from flask_login import current_user
-from wtforms import StringField, IntegerField, BooleanField
-from wtforms.validators import Optional, InputRequired, Email
+from wtforms import IntegerField, BooleanField
+from wtforms.validators import Optional, InputRequired
 from flask_wtf import Form
+
 from radar.lib.database import db
 from radar.models import EthnicityCode
-
 from radar.web.forms.core import RadarDateField, RadarSelectField, RadarCHINoField, RadarNHSNoField, RadarDOBField, \
-    FacilityFormMixin, RadarSelectObjectField, RadarPostcodeField, add_empty_object_choice
+    RadarSelectObjectField, RadarPostcodeField, add_empty_object_choice, RadarStringField
 from radar.lib.ordering import ASCENDING, DESCENDING
 from radar.lib.patient_search import get_disease_group_filter_choices, get_unit_filter_choices
 from radar.lib.utils import optional_int
@@ -30,22 +30,17 @@ class PatientDemographicsForm(Form):
 
         self.ethnicity_code_id.choices = add_empty_object_choice(EthnicityCode.choices(db.session))
 
-    first_name = StringField(validators=[InputRequired()])
-    last_name = StringField(validators=[InputRequired()])
-
-    # TODO validation
+    first_name = RadarStringField(validators=[InputRequired()])
+    last_name = RadarStringField(validators=[InputRequired()])
     date_of_birth = RadarDOBField(validators=[InputRequired()])
-
-    # TODO validation
     date_of_death = RadarDateField('Date of Death', validators=[Optional()])
-
     gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[InputRequired()])
     ethnicity_code_id = RadarSelectObjectField('Ethnicity', validators=[InputRequired()])
 
-    home_number = StringField(validators=[Optional()])
-    work_number = StringField(validators=[Optional()])
-    mobile_number = StringField(validators=[Optional()])
-    email_address = StringField(validators=[Optional()])
+    home_number = RadarStringField(validators=[Optional()])
+    work_number = RadarStringField(validators=[Optional()])
+    mobile_number = RadarStringField(validators=[Optional()])
+    email_address = RadarStringField(validators=[Optional()])
 
     nhs_no = RadarNHSNoField(validators=[Optional()])
     chi_no = RadarCHINoField(validators=[Optional()])
@@ -74,11 +69,11 @@ class PatientSearchForm(Form):
 
     radar_id = IntegerField('RaDaR ID', validators=[Optional()])
 
-    first_name = StringField(validators=[Optional()])
-    last_name = StringField(validators=[Optional()])
+    first_name = RadarStringField(validators=[Optional()])
+    last_name = RadarStringField(validators=[Optional()])
     gender = RadarSelectField(choices=[('', ''), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
 
-    patient_number = StringField(validators=[Optional()])
+    patient_number = RadarStringField(validators=[Optional()])
 
     unit_id = RadarSelectField('Unit', coerce=optional_int, validators=[Optional()])
     disease_group_id = RadarSelectField('Disease Group', coerce=optional_int, validators=[Optional()])
@@ -118,7 +113,7 @@ class PatientNumberForm(Form):
             self.number_facility_id.choices = [(x.id, x.name, x) for x in facilities]
 
     number_facility_id = RadarSelectObjectField('Organisation', validators=[InputRequired()], coerce=int)
-    number = StringField(validators=[InputRequired()])
+    number = RadarStringField(validators=[InputRequired()])
 
     def populate_obj(self, obj):
         obj.number_facility = self.number_facility_id.obj
@@ -126,16 +121,16 @@ class PatientNumberForm(Form):
 
 
 class PatientAliasForm(Form):
-    first_name = StringField(validators=[InputRequired()])
-    last_name = StringField(validators=[InputRequired()])
+    first_name = RadarStringField(validators=[InputRequired()])
+    last_name = RadarStringField(validators=[InputRequired()])
 
 
 class PatientAddressForm(Form):
     from_date = RadarDateField(validators=[Optional()])
     to_date = RadarDateField(validators=[Optional()])
-    address_line_1 = StringField(validators=[InputRequired()])
-    address_line_2 = StringField(validators=[Optional()])
-    address_line_3 = StringField(validators=[Optional()])
+    address_line_1 = RadarStringField(validators=[InputRequired()])
+    address_line_2 = RadarStringField(validators=[Optional()])
+    address_line_3 = RadarStringField(validators=[Optional()])
     postcode = RadarPostcodeField(validators=[InputRequired()])
 
 

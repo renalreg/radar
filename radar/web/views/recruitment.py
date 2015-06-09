@@ -5,6 +5,8 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.lib.facilities import get_radar_facility
+from radar.lib.validation.core import FormErrorHandler, ErrorHandler
+from radar.lib.validation.patients import validate_patient_demographics
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, PatientDemographics
 from radar.web.forms.recruitment import RecruitPatientSearchForm, RecruitPatientRadarForm, RecruitPatientRDCForm
@@ -276,39 +278,51 @@ def recruit_patient_new_step():
     )
 
     if form.validate_on_submit():
-        date_of_birth = form.date_of_birth.data
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        nhs_no = form.nhs_no.data
-        chi_no = form.chi_no.data
-
-        session['recruit_patient_date_of_birth'] = date_of_birth.strftime('%Y-%m-%d')
-        session['recruit_patient_first_name'] = first_name
-        session['recruit_patient_first_name'] = last_name
-        session['recruit_patient_nhs_no'] = nhs_no
-        session['recruit_patient_chi_no'] = chi_no
-
-        # TODO fresh check against RaDaR and RDC
-
-        # Create new patient
-        patient = Patient()
-        patient.recruited_user = current_user
-        patient.recruited_unit = unit
-        db.session.add(patient)
-
-        # Save demographics
-        demographics = PatientDemographics(patient=patient, facility=get_radar_facility())
+        demographics = PatientDemographics(facility=get_radar_facility())
         form.populate_obj(demographics)
-        db.session.add(demographics)
 
-        # Add to groups
-        add_patient_to_unit(patient, unit)
-        add_patient_to_disease_group(patient, disease_group)
+        print type(demographics.home_number), demographics.home_number
 
-        db.session.commit()
+        errors = ErrorHandler()
+        validate_patient_demographics(errors, demographics)
+        print errors.is_valid()
+        print errors.errors
 
-        session['recruit_patient_patient_id'] = patient.id
-        return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
+        if errors.is_valid():
+            date_of_birth = form.date_of_birth.data
+            first_name = form.first_name.data
+            last_name = form.last_name.data
+            nhs_no = form.nhs_no.data
+            chi_no = form.chi_no.data
+
+            session['recruit_patient_date_of_birth'] = date_of_birth.strftime('%Y-%m-%d')
+            session['recruit_patient_first_name'] = first_name
+            session['recruit_patient_first_name'] = last_name
+            session['recruit_patient_nhs_no'] = nhs_no
+            session['recruit_patient_chi_no'] = chi_no
+
+            # TODO fresh check against RaDaR and RDC
+
+            # Create new patient
+            patient = Patient()
+            patient.recruited_user = current_user
+            patient.recruited_unit = unit
+
+            # Save patient
+            db.session.add(patient)
+
+            # Save demographics
+            demographics.patient = patient
+            db.session.add(demographics)
+
+            # Add to groups
+            add_patient_to_unit(patient, unit)
+            add_patient_to_disease_group(patient, disease_group)
+
+            db.session.commit()
+
+            session['recruit_patient_patient_id'] = patient.id
+            return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
 
     context = dict(
         form=form
