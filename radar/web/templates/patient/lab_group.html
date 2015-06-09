@@ -46,7 +46,7 @@
         {% for x in object.sorted_lab_results %}
             <tr>
                 <th>{{ x.lab_result_definition.name }}</th>
-                <td>{{ x.value }} {{ x.lab_result_definition.units }}</td>
+                <td>{{ x.value }}{% if x.lab_result_definition.units %} {{ x.lab_result_definition.units }}{% endif %}</td>
             </tr>
         {% endfor %}
     </table>
