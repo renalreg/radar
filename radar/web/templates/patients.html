@@ -85,33 +85,33 @@
             <div class="block">
                 <h1 class="page-header">Patients <small>{{ pagination.total }} {% if pagination.total == 1 %}patient{% else %}patients{% endif %}</small></h1>
 
+                {% if patients %}
                 {% if current_user.has_recruit_patient_permission %}
                     <p><a href="{{ url_for('recruitment.recruit_patient') }}" class="btn btn-primary">Recruit Patient</a></p>
                 {% endif %}
 
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ render_sortable_column(ordering, 'radar_id', 'ID') }}</th>
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th>{{ render_sortable_column(ordering, 'radar_id', 'ID') }}</th>
 
-                            {% if current_user.has_view_demographics_permission %}
-                                <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
-                            {% endif %}
+                                {% if current_user.has_view_demographics_permission %}
+                                    <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
+                                {% endif %}
 
-                            {% if current_user.has_view_demographics_permission %}
-                                <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
-                            {% endif %}
+                                {% if current_user.has_view_demographics_permission %}
+                                    <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
+                                {% endif %}
 
-                            <th>{{ render_sortable_column(ordering, 'date_of_birth', 'DOB') }}</th>
-                            <th>{{ render_sortable_column(ordering, 'gender', 'Gender') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'date_of_birth', 'DOB') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'gender', 'Gender') }}</th>
 
-                            <th>Disease Groups</th>
-                            <th>Units</th>
-                        </tr>
-                    </thead>
+                                <th>Disease Groups</th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        {% if patients %}
+                        <tbody>
                             {% for patient, patient_data in patients %}
                                 <tr>
                                     <td><a href="{{ url_for('patients.view_patient', patient_id=patient.id) }}">{{ patient.id }}</a></td>
@@ -177,13 +177,11 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="{% if current_user.has_view_demographics_permission %}7{% else %}4{% endif %}">No patients found.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No patients found.</p>
+                {% endif %}
 
                 {{ render_pagination(pagination) }}
 

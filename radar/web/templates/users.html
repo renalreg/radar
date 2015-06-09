@@ -43,51 +43,55 @@
                     <p><a href="{{ url_for('users.add_user') }}" class="btn btn-primary">Add User</a></p>
                 {% endif %}
 
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ render_sortable_column(ordering, 'id', 'ID') }}</th>
-                            <th>{{ render_sortable_column(ordering, 'username', 'Username') }}</th>
-                            <th>{{ render_sortable_column(ordering, 'email', 'Email') }}</th>
-                            <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
-                            <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
-                            <th>Disease Groups</th>
-                            <th>Units</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for user, user_data in users %}
+                {% if users %}
+                    <table class="table table-condensed table-striped">
+                        <thead>
                             <tr>
-                                <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.id }}</a></td>
-                                <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.first_name | missing }}</td>
-                                <td>{{ user.last_name | missing }}</td>
-
-                                <td>
-                                    {% if user_data.disease_groups %}
-                                        {% for disease_group in user_data.disease_groups %}
-                                            {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-
-                                <td>
-                                    {% if user_data.units %}
-                                        {% for unit in user_data.units %}
-                                            {{ unit.unit.name }}{% if not loop.last %},{% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
+                                <th>{{ render_sortable_column(ordering, 'id', 'ID') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'username', 'Username') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'email', 'Email') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'first_name', 'First Name') }}</th>
+                                <th>{{ render_sortable_column(ordering, 'last_name', 'Last Name') }}</th>
+                                <th>Disease Groups</th>
+                                <th>Units</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {% for user, user_data in users %}
+                                <tr>
+                                    <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.id }}</a></td>
+                                    <td><a href="{{ url_for('users.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.first_name | missing }}</td>
+                                    <td>{{ user.last_name | missing }}</td>
+
+                                    <td>
+                                        {% if user_data.disease_groups %}
+                                            {% for disease_group in user_data.disease_groups %}
+                                                {{ disease_group.disease_group.name }}{% if not loop.last %},{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if user_data.units %}
+                                            {% for unit in user_data.units %}
+                                                {{ unit.unit.name }}{% if not loop.last %},{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No users found.</p>
+                {% endif %}
 
                 {{ render_pagination(pagination) }}
             </div>
