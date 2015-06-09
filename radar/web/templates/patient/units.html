@@ -3,7 +3,9 @@
 {% set current_patient_page = 'units' %}
 {% set title = 'Units' %}
 
-{% from 'macros/forms.html' import render_field, render_form_errors %}
+{% from 'macros/forms.html' import render_horizontal_field as render_field %}
+{% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% from 'macros/forms.html' import render_form_errors %}
 
 {% block content %}
     <h1 class="page-header">Units</h1>
@@ -39,9 +41,12 @@
 
     {{ render_form_errors(form) }}
 
-    <form method="POST">
+    <form method="POST" class="form-horizontal">
         {{ form.hidden_tag() }}
         {{ render_field(form.unit_id) }}
-        <button type="submit" class="btn btn-success">Add to Unit</button>
+
+        {% call render_button() %}
+            <button type="submit" class="btn btn-success">Add to Unit</button>
+        {% endcall %}
     </form>
 {% endblock %}

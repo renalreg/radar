@@ -1,5 +1,6 @@
 from flask import render_template, Blueprint, abort, request, url_for, redirect, flash
 from flask_login import current_user
+from sqlalchemy.exc import IntegrityError
 
 from radar.lib.database import db
 from radar.lib.facilities import get_radar_facility
@@ -180,6 +181,8 @@ def view_patient_disease_groups(patient_id, disease_group_id=None):
         # TODO sort order
         form.disease_group_id.choices = [(x.id, x.name) for x in DiseaseGroup.query.all() if not patient.in_disease_group(x)]
 
+        # TODO check if already in disease group
+
         if request.method == 'POST':
             if not patient.can_edit(current_user):
                 abort(403)
@@ -187,8 +190,13 @@ def view_patient_disease_groups(patient_id, disease_group_id=None):
             if form.validate():
                 disease_group_id = form.disease_group_id.data
                 disease_group = DiseaseGroup.query.get_or_404(disease_group_id)
-                add_patient_to_disease_group(patient, disease_group)
-                db.session.commit()
+
+                try:
+                    add_patient_to_disease_group(patient, disease_group)
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()
+
                 flash('Saved.', 'success')
                 return redirect(url_for('patients.view_patient_disease_groups', patient_id=patient.id))
     else:
@@ -232,6 +240,8 @@ def view_patient_units(patient_id):
     # TODO sort order
     form.unit_id.choices = [(x.id, x.name) for x in Unit.query.all() if not patient.in_unit(x)]
 
+    # TODO check if already in unit
+
     if request.method == 'POST':
         if not patient.can_edit(current_user):
             abort(403)
@@ -239,9 +249,14 @@ def view_patient_units(patient_id):
         if form.validate():
             unit_id = form.unit_id.data
             unit = Unit.query.get_or_404(unit_id)
-            add_patient_to_unit(patient, unit)
-            db.session.commit()
 
+            try:
+                add_patient_to_unit(patient, unit)
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
+            flash('Saved.', 'success')
             return redirect(url_for('patients.view_patient_units', patient_id=patient.id))
 
     context = dict(
