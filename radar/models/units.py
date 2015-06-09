@@ -42,7 +42,7 @@ class UnitPatient(db.Model, MetadataMixin):
 
     def can_edit(self, current_user):
         # TODO
-        return True
+        return self.patient.can_edit(current_user)
 
 
 class UnitUser(db.Model):

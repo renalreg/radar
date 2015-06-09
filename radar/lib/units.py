@@ -12,7 +12,7 @@ def get_units_for_user_with_permissions(user, permissions=None):
     query = Unit.query
 
     if not user.is_admin:
-        query = query.join(Unit.users).filter(UnitUser.user == user)
+        query = query.join(Unit.unit_users).filter(UnitUser.user == user)
 
         for permission in permissions:
             query = query.filter(permission)

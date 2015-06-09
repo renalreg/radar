@@ -4,7 +4,7 @@
 {% set title = 'Results' %}
 
 {% block content %}
-    <h1 class="page-header">{{ x.result_group_definition.name }} <small>Result Group</small></h1>
+    <h1 class="page-header">{{ object.result_group_definition.name }} <small>Result Group</small></h1>
 
     {% if object.can_edit(current_user) %}
         <p>

@@ -39,7 +39,6 @@ class SaltWastingClinicalFeaturesDetailView(PatientDataDetailView):
             context = dict(
                 patient=patient,
                 patient_data=get_patient_data(patient),
-                obj=new_obj,
             )
 
             return render_template(self.get_template_name(), **context)

@@ -6,11 +6,11 @@
 {% block content %}
     <h1 class="page-header">Clinical Features</h1>
 
-    {% if object.can_edit(current_user) %}
+    {% if object and object.can_edit(current_user) %}
         <p><a href="{{ url_for('salt_wasting.edit_clinical_features', patient_id=patient.id) }}" class="btn btn-primary">Edit</a></p>
     {% endif %}
 
-    {% if object.id %}
+    {% if object %}
         <p>TODO</p>
     {% else %}
         <p>Not entered yet.</p>

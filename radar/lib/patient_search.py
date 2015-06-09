@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 
-from sqlalchemy import or_, case, desc, func, and_
+from sqlalchemy import or_, case, desc, func, and_, extract
 from sqlalchemy.orm import aliased
 
 from radar.web.forms.core import add_empty_choice
@@ -32,7 +32,6 @@ class PatientQueryBuilder(object):
         return self
 
     def gender(self, gender):
-        self.filtering_by_demographics = True
         self.query = self.query.filter(filter_by_gender(gender))
         return self
 
@@ -226,9 +225,9 @@ def filter_by_chi_no(chi_no):
 def filter_by_unit_roles(user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.units)\
+        .join(patient_alias.unit_patients)\
         .join(UnitPatient.unit)\
-        .join(Unit.users)\
+        .join(Unit.unit_users)\
         .filter(
             patient_alias.id == Patient.id,
             UnitUser.user_id == user.id,
@@ -241,9 +240,9 @@ def filter_by_unit_roles(user, roles):
 def filter_by_disease_group_roles(user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.disease_groups)\
+        .join(patient_alias.disease_group_patients)\
         .join(DiseaseGroupPatient.disease_group)\
-        .join(DiseaseGroup.users)\
+        .join(DiseaseGroup.disease_group_users)\
         .filter(
             patient_alias.id == Patient.id,
             DiseaseGroupUser.user_id == user.id,
@@ -310,7 +309,7 @@ def order_by_date_of_birth(user, direction):
         return [date_of_birth_order]
     else:
         # Users without demographics permissions can only see the year
-        year_order = order_by_field(func.substr(Patient.date_of_birth, 1, 4), direction)
+        year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
 
         # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
         anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
@@ -348,7 +347,7 @@ def get_disease_group_filters_for_user(user):
     # Unit users can filter patients in their unit by any disease group
     if len(user.units) == 0 and not user.is_admin:
         # Disease group users can only filter by disease groups they belong to with view patient permissions
-        query = query.join(DiseaseGroup.users).filter(DiseaseGroupUser.user == user, DiseaseGroupUser.has_view_patient_permission)
+        query = query.join(DiseaseGroup.disease_group_users).filter(DiseaseGroupUser.user == user, DiseaseGroupUser.has_view_patient_permission)
 
     return query.order_by(DiseaseGroup.name).all()
 

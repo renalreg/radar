@@ -14,7 +14,7 @@ from radar.models.disease_groups import DiseaseGroupPatient
 from radar.lib.ordering import Ordering
 from radar.lib.pagination import paginate_query
 from radar.web.forms.patients import PatientSearchForm, PER_PAGE_DEFAULT, PER_PAGE_CHOICES, PatientDemographicsForm, \
-    PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm
+    PatientUnitForm, AddPatientDiseaseGroupForm, EditPatientDiseaseGroupForm, ORDER_BY_CHOICES
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.models.units import Unit, UnitPatient
 from radar.web.views.patient_data import get_patient_data, PatientDataEditView, PatientDataDetailService
@@ -80,12 +80,23 @@ def build_patient_search_query(user, form):
     return builder.build()
 
 
+def get_patient_search_form(user):
+    form = PatientSearchForm(user=user, formdata=request.args, csrf_enabled=False)
+
+    if current_user.has_view_demographics_permission:
+        form.order_by.choices = [(x[0], x[1]) for x in ORDER_BY_CHOICES]
+    else:
+        form.order_by.choices = [(x[0], x[1]) for x in ORDER_BY_CHOICES if not x[2]]
+
+    return form
+
+
 @bp.route('/')
 def view_patient_list():
     if not current_user.has_view_patient_permission:
         abort(403)
 
-    form = PatientSearchForm(user=current_user, formdata=request.args, csrf_enabled=False)
+    form = get_patient_search_form(current_user)
 
     query = build_patient_search_query(current_user, form)
 

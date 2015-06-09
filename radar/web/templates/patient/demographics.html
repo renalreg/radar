@@ -41,28 +41,38 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <th width="20%">Date of Birth</th>
-                        <td>
-                            {% if patient.can_view_demographics(current_user) %}
-                                {{ facility_patient.demographics.date_of_birth | date_format | missing }}
-                            {% else %}
-                                {{ facility_patient.demographics.date_of_birth | year_format | missing }}
-                            {% endif %}
-                        </td>
-                    </tr>
-
-                    {% if facility_patient.demographics.date_of_death %}
+                    {% if patient.can_view_demographics(current_user) %}
                         <tr>
-                            <th width="20%">Date of Death</th>
+                            <th width="20%">Date of Birth</th>
                             <td>
-                                {% if patient.can_view_demographics(current_user) %}
-                                    {{ facility_patient.demographics.date_of_death | date_format }}
-                                {% else %}
-                                    {{ facility_patient.demographics.date_of_death | year_format }}
-                                {% endif %}
+                                {{ facility_patient.demographics.date_of_birth | date_format | missing }}
                             </td>
                         </tr>
+                    {% else %}
+                        <tr>
+                            <th width="20%">Year of Birth</th>
+                            <td>
+                                {{ facility_patient.demographics.date_of_birth | year_format | missing }}
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    {% if facility_patient.demographics.date_of_death %}
+                        {% if patient.can_view_demographics(current_user) %}
+                            <tr>
+                                <th width="20%">Date of Death</th>
+                                <td>
+                                    {{ facility_patient.demographics.date_of_death | date_format }}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <th width="20%">Year of Death</th>
+                                <td>
+                                    {{ facility_patient.demographics.date_of_death | year_format }}
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endif %}
 
                     {% if facility_patient.demographics.ethnicity_code %}
@@ -120,33 +130,27 @@
                 {% endif %}
             {% endif %}
 
-            <h4>Numbers</h4>
+            {% if patient.can_view_demographics(current_user) %}
+                <h4>Numbers</h4>
 
-            {% if facility_patient.can_edit(current_user) %}
-                <p>
-                    <a href="{{ url_for('patients.add_patient_number', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Number</a>
-                </p>
-            {% endif %}
+                {% if facility_patient.can_edit(current_user) %}
+                    <p>
+                        <a href="{{ url_for('patients.add_patient_number', patient_id=patient.id) }}" class="btn btn-primary btn-xs">Add Number</a>
+                    </p>
+                {% endif %}
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th width="10%"></th>
-                        <th width="20%">Organisation</th>
-                        <th>Number</th>
-                        <th></th>
-                    </tr>
-                </thead>
+                <!-- TODO don't display if no numbers -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="10%"></th>
+                            <th width="20%">Organisation</th>
+                            <th>Number</th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td>RaDaR</td>
-                        <td>{{ patient.id }}</td>
-                        <td></td>
-                    </tr>
-
-                    {% if patient.can_view_demographics(current_user) %}
+                    <tbody>
                         {% if facility_patient.demographics %}
                             {% if facility_patient.demographics.nhs_no %}
                                 <tr>
@@ -206,9 +210,9 @@
                                 </td>
                             </tr>
                         {% endfor %}
-                    {% endif %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {% endif %}
 
             {% if facility_patient.can_edit(current_user) or (facility_patient.aliases and patient.can_view_demographics(current_user)) %}
                 <h4>Aliases</h4>

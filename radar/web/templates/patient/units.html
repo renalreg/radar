@@ -13,6 +13,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th></th>
                 <th>Unit</th>
                 <th>Added On</th>
                 <th>Added By</th>
@@ -22,6 +23,7 @@
         <tbody>
             {% for unit in patient_data.units %}
                 <tr>
+                    <td></td>
                     <td>{{ unit.unit.name }}</td>
                     <td>{{ unit.created_date | date_format | missing }}</td>
 
@@ -37,16 +39,20 @@
         </tbody>
     </table>
 
-    <h2>Add to Unit</h2>
+    {% if patient.can_edit(current_user) %}
+        <hr />
 
-    {{ render_form_errors(form) }}
+        <h2>Add to Unit</h2>
 
-    <form method="POST" class="form-horizontal">
-        {{ form.hidden_tag() }}
-        {{ render_field(form.unit_id) }}
+        {{ render_form_errors(form) }}
 
-        {% call render_button() %}
-            <button type="submit" class="btn btn-success">Add to Unit</button>
-        {% endcall %}
-    </form>
+        <form method="POST" class="form-horizontal">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.unit_id) }}
+
+            {% call render_button() %}
+                <button type="submit" class="btn btn-success">Add to Unit</button>
+            {% endcall %}
+        </form>
+    {% endif %}
 {% endblock %}

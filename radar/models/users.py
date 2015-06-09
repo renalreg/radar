@@ -118,8 +118,8 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     def has_view_demographics_permission(self):
         return (
             self.is_admin or
-            any(x.has_demographics_permission for x in self.disease_group_users) or
-            any(x.has_demographics_permission for x in self.unit_users)
+            any(x.has_view_demographics_permission for x in self.disease_group_users) or
+            any(x.has_view_demographics_permission for x in self.unit_users)
         )
 
     @property

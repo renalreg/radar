@@ -10,9 +10,11 @@
 {% block content %}
     <h1 class="page-header">Disease Groups</h1>
 
-    <p>
-        <a class="btn btn-primary" href="{{ url_for('patients.add_patient_disease_group', patient_id=patient.id) }}">Add</a>
-    </p>
+    {% if patient.can_edit(current_user) %}
+        <p>
+            <a class="btn btn-primary" href="{{ url_for('patients.add_patient_disease_group', patient_id=patient.id) }}">Add</a>
+        </p>
+    {% endif %}
 
     <table class="table table-striped">
         <thead>
@@ -57,31 +59,33 @@
         </tbody>
     </table>
 
-    <hr />
+    {% if patient.can_edit(current_user) %}
+        <hr />
 
-    {% if disease_group %}
-        <h2>Edit {{ disease_group.disease_group.name }}</h2>
+        {% if disease_group %}
+            <h2>Edit {{ disease_group.disease_group.name }}</h2>
 
-        {{ render_form_errors(form) }}
+            {{ render_form_errors(form) }}
 
-        <form method="POST" class="form-horizontal">
-            {{ form.hidden_tag() }}
-            {{ render_field(form.is_active) }}
+            <form method="POST" class="form-horizontal">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.is_active) }}
 
-            {% call render_button() %}
-                <button type="submit" class="btn btn-success">Save</button>
-            {% endcall %}
-        </form>
-    {% else %}
-        <h2>Add to Disease Group</h2>
+                {% call render_button() %}
+                    <button type="submit" class="btn btn-success">Save</button>
+                {% endcall %}
+            </form>
+        {% else %}
+            <h2>Add to Disease Group</h2>
 
-        <form method="POST" class="form-horizontal">
-            {{ form.hidden_tag() }}
-            {{ render_field(form.disease_group_id) }}
+            <form method="POST" class="form-horizontal">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.disease_group_id) }}
 
-            {% call render_button() %}
-                <button type="submit" class="btn btn-success">Add to Disease Group</button>
-            {% endcall %}
-        </form>
+                {% call render_button() %}
+                    <button type="submit" class="btn btn-success">Add to Disease Group</button>
+                {% endcall %}
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}

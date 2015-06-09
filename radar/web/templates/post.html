@@ -9,5 +9,7 @@
         <p><a href="{{ url_for('news.edit_post', post_id=post.id) }}" class="btn btn-xs btn-primary">Edit</a></p>
     {% endif %}
 
-    {{ post.body | markdown }}
+    <div class="post">
+        {{ post.body | markdown }}
+    </div>
 {% endblock %}

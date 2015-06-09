@@ -50,7 +50,6 @@ class GeneticsDetailView(PatientDataDetailView):
                 patient=patient,
                 patient_data=get_patient_data(patient),
                 disease_group=disease_group,
-                obj=new_obj,
             )
 
             return render_template(self.get_template_name(), **context)

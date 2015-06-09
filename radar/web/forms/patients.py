@@ -16,11 +16,11 @@ PER_PAGE_CHOICES = [(10, '10'), (25, '25'), (50, '50'), (100, '100'), (-1, 'All'
 PER_PAGE_DEFAULT = 50
 
 ORDER_BY_CHOICES = [
-    ('radar_id', 'RaDaR ID'),
-    ('first_name', 'First Name'),
-    ('last_name', 'Last Name'),
-    ('date_of_birth', 'Date of Birth'),
-    ('gender', 'Gender'),
+    ('radar_id', 'RaDaR ID', False),
+    ('first_name', 'First Name', True),
+    ('last_name', 'Last Name', True),
+    ('date_of_birth', 'Date of Birth', False),
+    ('gender', 'Gender', False),
 ]
 
 
@@ -85,7 +85,7 @@ class PatientSearchForm(Form):
 
     include_inactive = BooleanField('Include Inactive', default=False, validators=[Optional()])
 
-    order_by = RadarSelectField(choices=ORDER_BY_CHOICES, validators=[Optional()], default='radar_id')
+    order_by = RadarSelectField(validators=[Optional()], default='radar_id')
     order_direction = RadarSelectField(choices=[(ASCENDING, 'Ascending'), (DESCENDING, 'Descending')], default=ASCENDING, validators=[Optional()])
 
     per_page = RadarSelectField(coerce=int, default=PER_PAGE_DEFAULT, choices=PER_PAGE_CHOICES, validators=[Optional()])

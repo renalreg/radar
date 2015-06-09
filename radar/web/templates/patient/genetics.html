@@ -1,17 +1,17 @@
 {% extends 'patient/base.html' %}
 
-{% set current_patient_page = 'salt_wasting_clinical_features' %}
+{% set current_patient_page = 'genetics' %}
 {% set current_patient_disease_group = disease_group %}
 {% set title = 'Genetics' %}
 
 {% block content %}
     <h1 class="page-header">Genetics</h1>
 
-    {% if object.can_edit(current_user) %}
+    {% if object and object.can_edit(current_user) %}
         <p><a href="{{ url_for('genetics.edit_genetics', patient_id=patient.id, disease_group_id=disease_group.id) }}" class="btn btn-primary">Edit</a></p>
     {% endif %}
 
-    {% if object.id %}
+    {% if object %}
         <table class="table kv">
             <tr>
                 <th width="20%">Sample Sent</th>

@@ -188,7 +188,7 @@ class Patient(db.Model):
         else:
             # Otherwise intersect the disease groups of the patient and the user
             user_disease_groups = set([x for x in user.disease_groups])
-            common_disease_groups = [x for x in self.disease_groups_patients if x.disease_group in user_disease_groups]
+            common_disease_groups = [x for x in self.disease_group_patients if x.disease_group in user_disease_groups]
             return common_disease_groups
 
     def intersect_internal_facilities(self, user, with_edit_patient_permission=False):
@@ -200,13 +200,13 @@ class Patient(db.Model):
             return patient_facilities
 
         if with_edit_patient_permission:
-            user_facilities = self.user.edit_patient_facilities
+            user_facilities = user.edit_patient_facilities
         else:
-            user_facilities = self.user.internal_facilities
+            user_facilities = user.internal_facilities
 
-        common_facilities = patient_facilities & user_facilities
+        common_facilities = set(patient_facilities) & set(user_facilities)
 
-        return common_facilities
+        return list(common_facilities)
 
     def in_disease_group(self, disease_group):
         # TODO
