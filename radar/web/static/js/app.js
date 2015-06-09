@@ -12,6 +12,31 @@ $(function() {
     });
 });
 
+$(function() {
+    $(document).on('change', 'form.confirm-unsaved-changes input', function() {
+        $(this).parents('form.confirm-unsaved-changes').data('confirm-unsaved-changes-dirty', true);
+    });
+
+    $(document).on('submit', 'form.confirm-unsaved-changes', function() {
+        $(this).data('confirm-unsaved-changes-submitted', true);
+    });
+
+    $(window).on('beforeunload', function() {
+        var unsavedChanges = false;
+
+        $('form.confirm-unsaved-changes').each(function() {
+            // Form wasn't submitted and the data has been modified or the previous save failed due to errors
+            if (!$(this).data('confirm-unsaved-changes-submitted') && ($(this).data('confirm-unsaved-changes-dirty') || $(this).find('.has-error').length)) {
+                unsavedChanges = true;
+            }
+        });
+
+        if (unsavedChanges) {
+            return 'There are unsaved changes!';
+        }
+    });
+});
+
 function init_datepickers() {
     $('.datepicker').each(function () {
         var options = {
