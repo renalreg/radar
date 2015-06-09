@@ -11,7 +11,7 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
 from radar.lib.facilities import get_radar_facility
 from radar.models import DialysisType, Dialysis, Medication, MedicationRoute, \
     MedicationFrequency, MedicationDoseUnit, TransplantType, Transplant, Hospitalisation, PlasmapheresisResponse, \
-    Plasmapheresis, RenalImaging, Result, ResultGroup, ResultGroupDefinition
+    Plasmapheresis, RenalImaging, Result, ResultGroup, ResultGroupDefinition, EthnicityCode
 from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
@@ -79,6 +79,8 @@ def create_result_groups(patient, facility, result_group_definitions, n):
 
 
 def create_demographics(patient, facility, gender):
+    ethnicity_codes = EthnicityCode.query.all()
+
     d = PatientDemographics()
     d.patient = patient
     d.facility = facility
@@ -86,6 +88,7 @@ def create_demographics(patient, facility, gender):
     d.last_name = generate_last_name()
     d.gender = gender
     d.date_of_birth = generate_date_of_birth()
+    d.ethnicity_code = random.choice(ethnicity_codes)
 
     # 10% chance of being dead :(
     if random.random() < 0.1:
