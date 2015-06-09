@@ -10,7 +10,7 @@
             </div>
         {% endfor %}
 
-        <p><a href="{{ url_for('news.view_posts') }}">More news &#8230;</a></p>
+        <p><a href="{{ url_for('news.view_posts') }}">More News</a> <span class="glyphicon glyphicon-chevron-right"></span></p>
     {% else %}
         <p>No news yet.</p>
     {% endif %}
