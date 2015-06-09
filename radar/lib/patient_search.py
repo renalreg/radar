@@ -84,7 +84,7 @@ class PatientQueryBuilder(object):
             .filter(DiseaseGroupPatient.disease_group == disease_group)
 
         if not include_inactive:
-            self.query = self.query.filter(UnitPatient.is_active)
+            self.query = self.query.filter(DiseaseGroupPatient.is_active)
 
         return self
 

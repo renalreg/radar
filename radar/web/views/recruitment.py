@@ -5,7 +5,7 @@ from flask_login import current_user
 
 from radar.lib.database import db
 from radar.lib.facilities import get_radar_facility
-from radar.lib.validation.core import FormErrorHandler, ErrorHandler
+from radar.lib.validation.core import FormErrorHandler
 from radar.lib.validation.patients import validate_patient_demographics
 from radar.models.disease_groups import DiseaseGroup
 from radar.models.patients import Patient, PatientDemographics
@@ -279,7 +279,7 @@ def recruit_patient_new_step():
         demographics = PatientDemographics(facility=get_radar_facility())
         form.populate_obj(demographics)
 
-        errors = ErrorHandler()
+        errors = FormErrorHandler(form)
         validate_patient_demographics(errors, demographics)
 
         if errors.is_valid():
