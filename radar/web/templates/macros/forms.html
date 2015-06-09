@@ -38,9 +38,9 @@
 
 {% macro render_horizontal_field(field, read_only=False, rendered_field=None) %}
     {% call render_field_group(field) %}
-        {{ field.label(class='col-sm-4 control-label') }}
+        {{ field.label(class='col-md-4 control-label') }}
 
-        <div class="col-sm-8">
+        <div class="col-md-8">
             {% if rendered_field %}
                 {{ rendered_field }}
             {% elif field.type == 'RadarYesNoField' %}
