@@ -167,12 +167,8 @@ def recruit_patient_radar_step():
 
         # User chose one of the existing RaDaR patients
         if patient_id is not None:
-            patient = None
-
             # Get the patient with this id
-            for x in patients:
-                if x.id == patient_id:
-                    patient = x
+            patient = Patient.query.get(patient_id)
 
             if patient is not None:
                 try:
@@ -186,6 +182,8 @@ def recruit_patient_radar_step():
 
                 if unit is None or disease_group is None:
                     return redirect_to_recruit_patient_step(RECRUIT_PATIENT_FIRST_STEP)
+
+                # TODO actually add to groups
 
                 session['recruit_patient_patient_id'] = patient_id
                 return redirect_to_recruit_patient_step(RECRUIT_PATIENT_ADDED)
