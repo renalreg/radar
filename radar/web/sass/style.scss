@@ -23,6 +23,7 @@ $radar-danger-bg: #ffab89; // column 7
 $radar-secondary: $radar-info;
 $radar-secondary-text: $radar-info-text;
 $radar-secondary-bg: $radar-info-bg;
+$radar-secondary-headings-color: #162e33;
 
 /* Bootstrap */
 
@@ -300,8 +301,8 @@ form.result-table select {
 }
 
 .patient-sidebar {
-    h1, h2, h3, h4, h5, h6, a {
-        color: #162e33;
+    h1, h2, h3, h4, h5, h6 {
+        color: $radar-secondary-headings-color;
     }
 }
 
@@ -318,6 +319,10 @@ form.result-table select {
             padding: $block-padding;
             display: block;
             color: #FFF;
+
+            &:hover {
+                text-decoration: none;
+            }
         }
     }
 }
