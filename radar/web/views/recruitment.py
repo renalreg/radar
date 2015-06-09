@@ -279,12 +279,8 @@ def recruit_patient_new_step():
         demographics = PatientDemographics(facility=get_radar_facility())
         form.populate_obj(demographics)
 
-        print type(demographics.home_number), demographics.home_number
-
         errors = ErrorHandler()
         validate_patient_demographics(errors, demographics)
-        print errors.is_valid()
-        print errors.errors
 
         if errors.is_valid():
             date_of_birth = form.date_of_birth.data
