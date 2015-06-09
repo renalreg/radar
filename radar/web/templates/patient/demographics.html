@@ -52,16 +52,18 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <th width="20%">Date of Death</th>
-                        <td>
-                            {% if patient.can_view_demographics(current_user) %}
-                                {{ facility_patient.demographics.date_of_death | date_format | missing }}
-                            {% else %}
-                                {{ facility_patient.demographics.date_of_death | year_format | missing }}
-                            {% endif %}
-                        </td>
-                    </tr>
+                    {% if facility_patient.demographics.date_of_death %}
+                        <tr>
+                            <th width="20%">Date of Death</th>
+                            <td>
+                                {% if patient.can_view_demographics(current_user) %}
+                                    {{ facility_patient.demographics.date_of_death | date_format }}
+                                {% else %}
+                                    {{ facility_patient.demographics.date_of_death | year_format }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
 
                     {% if facility_patient.demographics.ethnicity_code %}
                         <tr>
