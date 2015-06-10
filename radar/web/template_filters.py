@@ -44,7 +44,7 @@ def number_format(x):
     if x is None:
         return ''
     elif isinstance(x, Decimal):
-        return '{:f}'.format(x)
+        return '{:f}'.format(x.normalize())
     else:
         return str(x)
 
