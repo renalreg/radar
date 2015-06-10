@@ -189,11 +189,7 @@
                     <strong>Per Page:</strong>
 
                     {% for value, label in per_page_choices %}
-                        {% if pagination.per_page == value or (pagination.per_page == pagination.total and value == -1) %}
-                            <a href="{{ url_for_per_page(value) }}"><strong>{{ label }}</strong></a>{% if not loop.last %},{% endif %}
-                        {% else %}
-                            <a href="{{ url_for_per_page(value) }}">{{ label }}</a>{% if not loop.last %},{% endif %}
-                        {% endif %}
+                        <a href="{{ url_for_per_page(value) }}">{{ label }}</a>{% if not loop.last %},{% endif %}
                     {% endfor %}
                 </p>
             </div>

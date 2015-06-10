@@ -1,10 +1,10 @@
 from flask_wtf import Form
-from wtforms import StringField, DecimalField
 from wtforms.validators import InputRequired, Optional
 
 from radar.lib.database import db
 from radar.models.medications import MedicationDoseUnit, MedicationFrequency, MedicationRoute
-from radar.web.forms.core import RadarDateField, add_empty_object_choice, FacilityFormMixin, RadarSelectObjectField
+from radar.web.forms.core import RadarDateField, add_empty_object_choice, FacilityFormMixin, RadarSelectObjectField, \
+    RadarDecimalField, RadarStringField
 
 
 class MedicationForm(FacilityFormMixin, Form):
@@ -18,8 +18,8 @@ class MedicationForm(FacilityFormMixin, Form):
     from_date = RadarDateField(validators=[InputRequired()])
     to_date = RadarDateField(validators=[Optional()])
 
-    name = StringField(validators=[InputRequired()])
-    dose_quantity = DecimalField(validators=[InputRequired()])
+    name = RadarStringField(validators=[InputRequired()])
+    dose_quantity = RadarDecimalField(validators=[InputRequired()])
     dose_unit_id = RadarSelectObjectField('Dose Unit', validators=[InputRequired()])
     frequency_id = RadarSelectObjectField('Frequency', validators=[InputRequired()])
     route_id = RadarSelectObjectField('Route', validators=[InputRequired()])

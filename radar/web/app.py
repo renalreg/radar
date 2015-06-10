@@ -12,7 +12,8 @@ from radar.lib.mail import mail
 from radar.lib.ordering import url_for_order_by
 from radar.lib.pagination import url_for_per_page, url_for_page
 from radar.lib.sqlalchemy_events import before_flush_set_created_listener, before_flush_set_modified_listener
-from radar.web.template_filters import datetime_format, nl2br, date_format, missing, yn, year_format, strftime
+from radar.web.template_filters import datetime_format, nl2br, date_format, missing, yn, year_format, strftime, \
+    number_format
 from radar.web.views.index import bp as radar_bp
 from radar.web.views.diagnosis import bp as diagnosis_bp
 from radar.web.views.disease_groups import bp as disease_groups_bp
@@ -93,6 +94,7 @@ def create_app():
     app.add_template_filter(nl2br)
     app.add_template_filter(missing)
     app.add_template_filter(yn)
+    app.add_template_filter(number_format)
 
     # Register template globals/functions
     app.add_template_global(url_for_order_by)

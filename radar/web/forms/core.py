@@ -1,6 +1,7 @@
 from datetime import date
 
 import re
+import decimal
 from flask_login import current_user
 from markupsafe import Markup
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
@@ -102,6 +103,24 @@ class RadarSelectMultipleField(SelectMultipleField):
             widget = RadarSelectMultiple()
 
         super(RadarSelectMultipleField, self).__init__(label, widget=widget, **kwargs)
+
+
+class RadarDecimalField(StringField):
+    def _value(self):
+        if self.raw_data:
+            return self.raw_data[0]
+        elif self.data is not None:
+            return '{:f}'.format(self.data)
+        else:
+            return ''
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = decimal.Decimal(valuelist[0])
+            except (decimal.InvalidOperation, ValueError):
+                self.data = None
+                raise ValueError('Not a valid number.')
 
 
 class RadarNHSNoField(IntegerField):

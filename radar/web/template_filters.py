@@ -1,3 +1,4 @@
+from decimal import Decimal
 from jinja2 import escape, Markup, evalcontextfilter
 
 from radar.lib.utils import date_to_datetime, is_date
@@ -37,6 +38,15 @@ def datetime_format(dt, seconds=False):
             output += ':%02d' % dt.second
 
         return output
+
+
+def number_format(x):
+    if x is None:
+        return ''
+    elif isinstance(x, Decimal):
+        return '{:f}'.format(x)
+    else:
+        return str(x)
 
 
 @evalcontextfilter
