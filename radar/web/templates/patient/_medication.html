@@ -1,6 +1,7 @@
 {% from 'macros/forms.html' import render_horizontal_field as render_field %}
 {% from 'macros/forms.html' import render_form_errors %}
 {% from 'macros/forms.html' import render_horizontal_button as render_button %}
+{% from 'macros/panels.html' import render_panel %}
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -16,8 +17,17 @@
     <div class="panel-body">
         {{ render_form_errors(form) }}
 
+        {% if form.show_update_warning %}
+            {% call render_panel('Warning', 'panel-warning') %}
+                Are you sure you want to update this medication instead of creating a new one?
+                Click "Save" again to confirm.
+            {% endcall %}
+        {% endif %}
+
         <form method="POST" class="form-horizontal">
             {{ form.hidden_tag() }}
+
+            {{ form.shown_update_warning() }}
 
             {{ render_field(form.facility_id) }}
 
