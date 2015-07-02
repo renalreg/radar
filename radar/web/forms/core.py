@@ -5,7 +5,8 @@ import decimal
 from flask_login import current_user
 from markupsafe import Markup
 from wtforms import SelectField, SelectMultipleField, ValidationError, StringField, IntegerField, Field, DateField, \
-    RadioField
+    RadioField, FieldList
+from wtforms.utils import unset_value
 from wtforms.validators import InputRequired
 from wtforms.widgets import TextInput, Select, HTMLString, html_params
 from flask_wtf import Form
@@ -267,6 +268,24 @@ class RadarMeasurementInput(TextInput):
             super(RadarMeasurementInput, self).__call__(field, **kwargs),
             self.unit
         ))
+
+
+class RadarFieldList(FieldList):
+    def __init__(self, *args, **kwargs):
+        super(RadarFieldList, self).__init__(*args, **kwargs)
+
+        name = '%s-X' % self.short_name
+        id = '%s-X' % self.id
+        field = self.unbound_field.bind(form=None, name=name, prefix=self._prefix, id=id, _meta=self.meta)
+        field.process(None, None)
+        self.field_template = field
+
+    def process(self, formdata, data=unset_value):
+        return super(RadarFieldList, self).process(formdata, data)
+
+    def __iter__(self):
+        return iter([self.field_template] + self.entries)
+
 
 
 class DeleteForm(Form):

@@ -16,3 +16,53 @@
 
     {% include "patient/_transplant_list.html" %}
 {% endblock %}
+
+{% block body_js %}
+    <script>
+        $(function() {
+            $('button[data-toggle=fieldset-add-row]').click(function() {
+                var target = $($(this).data('target'));
+                var templateRow = target.find("[data-toggle=fieldset-entry]:first");
+                var lastRow = target.find("[data-toggle=fieldset-entry]:last");
+                var newRow = templateRow.clone(true, true);
+
+                var id = lastRow.find(":input")[0].id;
+
+                var regex = /-([0-9]+)-/gm
+                var match = regex.exec(id);
+
+                if (match) {
+                    index = parseInt(match[1]) + 1;
+                } else {
+                    index = 1;
+                }
+
+                newRow.attr('data-toggle', 'fieldset-entry');
+                newRow.show();
+
+                newRow.find(":input").each(function() {
+                    var id = $(this).attr('id');
+
+                    if (id) {
+                        id = id.replace('-X-', '-' + index + '-');
+                        $(this).attr('id', id);
+                        $(this).attr('name', id);
+                    }
+                });
+
+                lastRow.after(newRow);
+            });
+
+            $('button[data-toggle=fieldset-remove-row]').click(function() {
+                var row = $(this).closest("div[data-toggle=fieldset-entry]");
+                row.remove();
+            });
+        });
+
+        $('a.delete').click(function(event) {
+            event.preventDefault();
+            console.log('Clicked!');
+            $(this).closest('tr').remove();
+        });
+    </script>
+{% endblock %}

@@ -33,6 +33,27 @@
             {{ render_field(form.date_recurred) }}
             {{ render_field(form.date_failed) }}
 
+            <div id="foos">
+                {% for foo in form.foos %}
+                    {% if loop.index == 1 %}
+                        <div data-toggle="fieldset-entry" class="well" style="display: None">
+                    {% else %}
+                        <div data-toggle="fieldset-entry" class="well">
+                    {% endif %}
+
+                    {{ foo.hidden_tag() }}
+
+                    {{ render_field(foo.bar) }}
+                    {{ render_field(foo.baz) }}
+
+                    <p><button data-toggle="fieldset-remove-row" class="btn btn-danger">Delete</button></p>
+
+                    </div>
+                {% endfor %}
+
+                <button data-toggle="fieldset-add-row" data-target="#foos" type="button" class="btn btn-primary">Add</button>
+            </div>
+
             {% if show_apples %}
                 {{ render_field(form.apples) }}
             {% endif %}
