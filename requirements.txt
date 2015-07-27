@@ -1,3 +1,4 @@
+Delorean==0.4.5
 Flask==0.10.1
 Flask-Login==0.2.11
 Flask-Mail==0.9.1
