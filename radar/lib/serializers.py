@@ -33,7 +33,8 @@ class Field(object):
         self.default = default
         self.read_only = read_only
         self.write_only = write_only
-        self.source = None
+        self.source = source
+        self.field_name = None
 
         messages = {}
 
