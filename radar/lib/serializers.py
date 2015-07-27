@@ -10,7 +10,7 @@ from sqlalchemy.sql import sqltypes
 from radar.models import User, Facility
 
 
-class empty(object):
+class Empty(object):
     pass
 
 
@@ -26,7 +26,8 @@ class Field(object):
     _creation_counter = 0
     default_error_messages = {}
 
-    def __init__(self, read_only=False, write_only=False, default=empty, source=None, error_messages=None):
+    def __init__(self, read_only=False, write_only=False, default=Empty, source=None, error_messages=None):
+        # Keep track of field declaration order
         self._creation_counter = Field._creation_counter
         Field._creation_counter += 1
 
@@ -64,7 +65,7 @@ class Field(object):
         return getattr(value, self.source)
 
     def get_data(self, data):
-        return data.get(self.field_name, empty)
+        return data.get(self.field_name, Empty)
 
     def to_value(self, data):
         raise NotImplementedError()
@@ -313,12 +314,12 @@ class Serializer(Field):
             # Get the input data
             field_data = field.get_data(data)
 
-            if field_data is empty:
+            if field_data is Empty:
                 # No value supplied so use default
                 value = field.get_default()
 
                 # No default supplied so skip
-                if value is empty:
+                if value is Empty:
                     continue
             else:
                 # Convert the input data
