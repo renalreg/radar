@@ -6,7 +6,7 @@ from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.permissions import PatientDataPermission, FacilityDataPermission
 
-from radar.lib.serializers import ListField
+from radar.lib.serializers import ListField, ValidationError
 
 
 class ApiView(MethodView):
@@ -45,6 +45,8 @@ class ApiView(MethodView):
             return self.error_response(403, e.detail)
         except NotFound as e:
             return self.error_response(404, e.detail)
+        except ValidationError as e:
+            return jsonify(errors=e.detail), 422
 
 
 class GenericApiView(ApiView):

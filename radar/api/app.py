@@ -9,8 +9,6 @@ from radar.models import PatientDemographics, Dialysis
 class DemographicsSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
     class Meta:
         model = PatientDemographics
-        write_only = ['facility_id']  # TODO
-        exclude = ['created_user_id', 'modified_user_id']  # TODO
 
 
 class DemographicsList(FacilityDataMixin, PatientDataList):
@@ -30,8 +28,6 @@ class DemographicsDetail(FacilityDataMixin, PatientDataDetail):
 class DialysisSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
     class Meta:
         model = Dialysis
-        write_only = ['facility_id']  # TODO
-        exclude = ['created_user_id', 'modified_user_id']  # TODO
 
 
 class DialysisList(FacilityDataMixin, PatientDataList):

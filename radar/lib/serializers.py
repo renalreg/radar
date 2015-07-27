@@ -365,6 +365,31 @@ class ModelSerializer(Serializer):
     def get_model_class(self):
         return self.Meta.model
 
+    def get_model_fields(self):
+        """ List of model fields to include (defaults to all) """
+
+        model_fields = getattr(self.Meta, 'fields', None)
+
+        if model_fields:
+            model_fields = set(model_fields)
+
+        return model_fields
+
+    def get_model_exclude(self):
+        """ List of fields to exclude """
+
+        return set(getattr(self.Meta, 'exclude', []))
+
+    def get_model_read_only(self):
+        """ Fields that should be read only (serialized but not deserialized) """
+
+        return set(getattr(self.Meta, 'read_only', []))
+
+    def get_model_write_only(self):
+        """ Fields that should be write only (deserialized but not serialized) """
+
+        return set(getattr(self.Meta, 'write_only', []))
+
     def get_field_class(self, col_type):
         for sql_type, field_type in self.type_map.items():
             if isinstance(col_type, sql_type):
@@ -375,20 +400,10 @@ class ModelSerializer(Serializer):
     def get_fields(self):
         fields = super(ModelSerializer, self).get_fields()
 
-        # List of model fields to include (defaults to all)
-        model_fields = getattr(self.Meta, 'fields', None)
-
-        if model_fields:
-            model_fields = set(model_fields)
-
-        # Fields to exclude
-        model_exclude = set(getattr(self.Meta, 'exclude', []))
-
-        # Fields that should be read only (serialized but not deserialized)
-        model_read_only = set(getattr(self.Meta, 'read_only', []))
-
-        # Fields that should be write only (deserialized but not serialized)
-        model_write_only = set(getattr(self.Meta, 'write_only', []))
+        model_fields = self.get_model_fields()
+        model_exclude = self.get_model_exclude()
+        model_read_only = self.get_model_read_only()
+        model_write_only = self.get_model_write_only()
 
         props = inspect(self.get_model_class()).attrs
 
@@ -453,10 +468,32 @@ class EmbeddedFacilitySerializer(ModelSerializer):
         model = Facility
 
 
-class MetaSerializerMixin(object):
+class CreatedUserMixin(object):
     created_user = EmbeddedUserSerializer(read_only=True)
+
+    def get_model_exclude(self):
+        model_exclude = super(CreatedUserMixin, self).get_model_exclude()
+        model_exclude.add('created_user_id')
+        return model_exclude
+
+
+class ModifiedUserMixin(object):
     modified_user = EmbeddedUserSerializer(read_only=True)
+
+    def get_model_exclude(self):
+        model_exclude = super(ModifiedUserMixin, self).get_model_exclude()
+        model_exclude.add('modified_user_id')
+        return model_exclude
+
+
+class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin):
+    pass
 
 
 class FacilitySerializerMixin(object):
     facility = EmbeddedFacilitySerializer()
+
+    def get_model_write_only(self):
+        model_write_only = super(FacilitySerializerMixin, self).get_model_write_only()
+        model_write_only.add('facility_id')
+        return model_write_only
