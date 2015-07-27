@@ -3,6 +3,9 @@ from sqlalchemy import Column, Integer, Text, DateTime
 from radar.lib.database import db
 
 
+# TODO add metadata
+
+
 class Post(db.Model):
     __tablename__ = 'posts'
 
