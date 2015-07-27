@@ -451,7 +451,6 @@ class ModelSerializer(Serializer):
             if key in model_read_only or key == 'id':
                 field_kwargs['read_only'] = True
 
-
             # Write only field
             if key in model_write_only:
                 field_kwargs['write_only'] = True
