@@ -26,7 +26,7 @@ class Field(object):
     _creation_counter = 0
     default_error_messages = {}
 
-    def __init__(self, read_only=False, write_only=False, default=empty, source=None):
+    def __init__(self, read_only=False, write_only=False, default=empty, source=None, error_messages=None):
         self._creation_counter = Field._creation_counter
         Field._creation_counter += 1
 
@@ -35,8 +35,18 @@ class Field(object):
         self.write_only = write_only
         self.source = None
 
+        messages = {}
+
+        for cls in reversed(self.__class__.__mro__):
+            messages.update(getattr(cls, 'default_error_messages', {}))
+
+        if error_messages:
+            messages.update(error_messages)
+
+        self.error_messages = messages
+
     def fail(self, key, **kwargs):
-        message = self.default_error_messages[key]
+        message = self.error_messages[key]
         message = message.format(**kwargs)
         raise ValidationError(message)
 
