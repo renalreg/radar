@@ -75,14 +75,19 @@ class Field(object):
 
 
 class StringField(Field):
+    def __init__(self, **kwargs):
+        self.trim_whitespace = kwargs.pop('trim_whitespace', True)
+        super(StringField, self).__init__(**kwargs)
+
     def to_value(self, data):
         value = six.text_type(data)
+
+        if self.trim_whitespace:
+            value = value.strip()
+
         return value
 
     def to_data(self, value):
-        if value is None:
-            return None
-
         data = six.text_type(value)
         return data
 
@@ -321,6 +326,8 @@ class Serializer(Field):
                 # No default supplied so skip
                 if value is Empty:
                     continue
+            elif field_data is None:
+                value = None
             else:
                 # Convert the input data
                 try:
