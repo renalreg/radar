@@ -92,7 +92,12 @@ class GenericApiView(ApiView):
 class CreateModelMixin(object):
     def create(self, *args, **kwargs):
         serializer = self.get_serializer()
+
         json = request.get_json()
+
+        if json is None:
+            raise BadRequest('Expected JSON.')
+
         validated_data = serializer.to_value(json)
         obj = serializer.create(validated_data)
         db.session.add(obj)
@@ -121,7 +126,13 @@ class UpdateModelMixin(object):
     def update(self, *args, **kwargs):
         obj = self.get_object()
         serializer = self.get_serializer()
-        validated_data = serializer.to_value(request.json)
+
+        json = request.get_json()
+
+        if json is None:
+            raise BadRequest('Expected JSON.')
+
+        validated_data = serializer.to_value(json)
         obj = serializer.update(obj, validated_data)
         db.session.commit()
         data = serializer.to_data(obj)

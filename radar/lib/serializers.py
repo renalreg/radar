@@ -446,7 +446,7 @@ class ModelSerializer(Serializer):
         return fields
 
     def create(self, validated_data):
-        model_class = self.get_model_class()()
+        model_class = self.get_model_class()
         obj = model_class(**validated_data)
         return obj
 
