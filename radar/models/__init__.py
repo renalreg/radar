@@ -6,7 +6,7 @@ from radar.models.genetics import *
 from radar.models.hospitalisations import *
 from radar.models.results import *
 from radar.models.medications import *
-from radar.models.news import *
+from radar.models.posts import *
 from radar.models.pathology import *
 from radar.models.patients import *
 from radar.models.plasmapheresis import *

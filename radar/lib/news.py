@@ -1,4 +1,4 @@
-from radar.models.news import Post
+from radar.models.posts import Post
 
 
 def get_latest_news(n=3):

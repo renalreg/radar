@@ -16,7 +16,7 @@ from radar.web.app import create_app
 from radar.lib.database import db
 from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient
 from radar.models.facilities import Facility
-from radar.models.news import Post
+from radar.models.posts import Post
 from radar.models.patients import Patient, PatientDemographics
 from radar.models.units import UnitPatient
 from radar.models.users import User

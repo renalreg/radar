@@ -447,8 +447,10 @@ class ModelSerializer(Serializer):
             field_kwargs = {}
 
             # Read only field
-            if key in model_read_only:
+            # Don't allow id column to be updated
+            if key in model_read_only or key == 'id':
                 field_kwargs['read_only'] = True
+
 
             # Write only field
             if key in model_write_only:

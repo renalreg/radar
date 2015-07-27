@@ -6,7 +6,7 @@ from flask_login import current_user
 from radar.lib.database import db
 from radar.web.forms.core import DeleteForm
 from radar.web.forms.news import PostForm
-from radar.models.news import Post
+from radar.models.posts import Post
 from radar.lib.pagination import paginate_query
 
 
