@@ -368,7 +368,8 @@ class ModelSerializer(Serializer):
         sqltypes.BigInteger: IntegerField,
         sqltypes.Date: DateField,
         sqltypes.DateTime: DateTimeField,
-        sqltypes.Boolean: BooleanField
+        sqltypes.Boolean: BooleanField,
+        sqltypes.Numeric: FloatField,
     }
 
     class Meta:
@@ -503,7 +504,7 @@ class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin):
 
 
 class FacilitySerializerMixin(object):
-    facility = EmbeddedFacilitySerializer()
+    facility = EmbeddedFacilitySerializer(read_only=True)
 
     def get_model_write_only(self):
         model_write_only = super(FacilitySerializerMixin, self).get_model_write_only()
