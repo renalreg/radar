@@ -1,47 +1,8 @@
 from flask import Flask
+from radar.api.views.demographics import DemographicsList, DemographicsDetail
+from radar.api.views.dialysis import DialysisList, DialysisDetail
 
 from radar.lib.database import db
-from radar.lib.serializers import ModelSerializer, MetaSerializerMixin, FacilitySerializerMixin
-from radar.lib.views import FacilityDataMixin, PatientDataList, PatientDataDetail
-from radar.models import PatientDemographics, Dialysis
-
-
-class DemographicsSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    class Meta:
-        model = PatientDemographics
-
-
-class DemographicsList(FacilityDataMixin, PatientDataList):
-    serializer_class = DemographicsSerializer
-
-    def get_query(self):
-        return PatientDemographics.query
-
-
-class DemographicsDetail(FacilityDataMixin, PatientDataDetail):
-    serializer_class = DemographicsSerializer
-
-    def get_query(self):
-        return PatientDemographics.query
-
-
-class DialysisSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    class Meta:
-        model = Dialysis
-
-
-class DialysisList(FacilityDataMixin, PatientDataList):
-    serializer_class = DialysisSerializer
-
-    def get_query(self):
-        return Dialysis.query
-
-
-class DialysisDetail(FacilityDataMixin, PatientDataDetail):
-    serializer_class = DialysisSerializer
-
-    def get_query(self):
-        return Dialysis.query
 
 
 app = Flask(__name__)
