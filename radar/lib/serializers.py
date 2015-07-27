@@ -459,11 +459,15 @@ class ModelSerializer(Serializer):
         return fields
 
     def create(self, validated_data):
+        # TODO raise error if data is nested
+
         model_class = self.get_model_class()
         obj = model_class(**validated_data)
         return obj
 
     def update(self, obj, validated_data):
+        # TODO raise error if data is nested
+
         for attr, value in validated_data.items():
             setattr(obj, attr, value)
 
