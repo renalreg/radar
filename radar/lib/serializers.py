@@ -1,10 +1,13 @@
 from collections import OrderedDict
 import copy
+from datetime import datetime, date
+import delorean
 import six
 
-
-# error messages
-# required
+from sqlalchemy import inspect
+from sqlalchemy.orm import ColumnProperty
+from sqlalchemy.sql import sqltypes
+from radar.models import User, Facility
 
 
 class empty(object):
@@ -19,11 +22,18 @@ class ValidationError(Exception):
         self.detail = detail
 
 
-class BaseSerializer(object):
+class Field(object):
+    _creation_counter = 0
     default_error_messages = {}
 
-    def __init__(self):
-        self.default = empty
+    def __init__(self, read_only=False, write_only=False, default=empty, source=None):
+        self._creation_counter = Field._creation_counter
+        Field._creation_counter += 1
+
+        self.default = default
+        self.read_only = read_only
+        self.write_only = write_only
+        self.source = None
 
     def fail(self, key, **kwargs):
         message = self.default_error_messages[key]
@@ -33,11 +43,14 @@ class BaseSerializer(object):
     def bind(self, field_name):
         self.field_name = field_name
 
+        if self.source is None:
+            self.source = field_name
+
     def get_default(self):
         return self.default
 
     def get_value(self, value):
-        return getattr(value, self.field_name)
+        return getattr(value, self.source)
 
     def get_data(self, data):
         return data.get(self.field_name, empty)
@@ -49,23 +62,26 @@ class BaseSerializer(object):
         raise NotImplementedError()
 
 
-class StringSerializer(BaseSerializer):
+class StringField(Field):
     def to_value(self, data):
         value = six.text_type(data)
         return value
 
     def to_data(self, value):
+        if value is None:
+            return None
+
         data = six.text_type(value)
         return data
 
 
-class BooleanSerializer(BaseSerializer):
+class BooleanField(Field):
     default_error_messages = {
         'invalid': 'A valid boolean is required.'
     }
 
-    TRUE_VALUES = set(('t', 'T', 'true', 'True', 'TRUE', '1', 1, True))
-    FALSE_VALUES = set(('f', 'F', 'false', 'False', 'FALSE', '0', 0, False))
+    TRUE_VALUES = {'t', 'T', 'true', 'True', 'TRUE', '1', 1, True}
+    FALSE_VALUES = {'f', 'F', 'false', 'False', 'FALSE', '0', 0, False}
 
     def to_value(self, data):
         if data in self.TRUE_VALUES:
@@ -84,7 +100,7 @@ class BooleanSerializer(BaseSerializer):
             return bool(value)
 
 
-class IntegerSerializer(BaseSerializer):
+class IntegerField(Field):
     default_error_messages = {
         'invalid': 'A valid integer is required.'
     }
@@ -101,7 +117,7 @@ class IntegerSerializer(BaseSerializer):
         return int(value)
 
 
-class FloatSerializer(BaseSerializer):
+class FloatField(Field):
     default_error_messages = {
         'invalid': 'A valid number is required.'
     }
@@ -118,13 +134,61 @@ class FloatSerializer(BaseSerializer):
         return float(value)
 
 
-class ListSerializer(BaseSerializer):
+class DateField(Field):
+    default_error_messages = {
+        'invalid': 'Date has wrong format.',
+        'datetime': 'Expected a date but got a datetime.',
+    }
+
+    def to_value(self, data):
+        if isinstance(data, datetime):
+            self.fail('datetime')
+
+        if isinstance(data, date):
+            return data
+
+        try:
+            value = delorean.parse(data).date
+        except ValueError:
+            self.fail('invalid')
+
+        return value
+
+    def to_data(self, value):
+        return value.isoformat()
+
+
+class DateTimeField(Field):
+    default_error_messages = {
+        'invalid': 'Datetime has wrong format.',
+        'date': 'Expected a date but got a datetime.',
+    }
+
+    def to_value(self, data):
+        if isinstance(data, date) and not isinstance(data, datetime):
+            self.fail('date')
+
+        if isinstance(data, datetime):
+            return data
+
+        try:
+            value = delorean.parse(data).datetime
+        except ValueError:
+            self.fail('invalid')
+
+        return value
+
+    def to_data(self, value):
+        return value.isoformat()
+
+
+class ListField(Field):
     default_error_messages = {
         'not_a_list': 'Expected a list of items.'
     }
 
     def __init__(self, item_field):
-        super(ListSerializer, self).__init__()
+        super(ListField, self).__init__()
         self.item_field = item_field
 
     def to_value(self, data):
@@ -152,7 +216,10 @@ class ListSerializer(BaseSerializer):
         data = []
 
         for value in values:
-            data.append(self.item_field.to_data(value))
+            if value is None:
+                data.append(None)
+            else:
+                data.append(self.item_field.to_data(value))
 
         return data
 
@@ -166,21 +233,41 @@ class SerializerMetaclass(type):
     def get_fields(cls, bases, attrs):
         fields = []
 
+        # Get the fields declared on this class
         for field_name, obj in list(attrs.items()):
-            if isinstance(obj, BaseSerializer):
+            if isinstance(obj, Field):
                 fields.append((field_name, attrs.pop(field_name)))
 
+        # Sort the fields in the order they were declared
+        fields.sort(key=lambda x: x[1]._creation_counter)
+
+        # Loop in reverse to maintain correct field ordering
         for base in reversed(bases):
             if hasattr(base, '_declared_fields'):
+                # Copy fields from another serializer
+                # Parent serializer's fields go first
                 fields = list(base._declared_fields.items()) + fields
+            else:
+                # Copy fields from mixins
+                mixin_fields = []
+
+                for field_name, obj in base.__dict__.items():
+                    if isinstance(obj, Field):
+                        mixin_fields.append((field_name, obj))
+
+                # Sort the mixin fields in the order they were declared
+                mixin_fields.sort(key=lambda x: x[1]._creation_counter)
+
+                # Add the mixin fields
+                fields = mixin_fields + fields
 
         return OrderedDict(fields)
 
 
 @six.add_metaclass(SerializerMetaclass)
-class Serializer(BaseSerializer):
-    def __init__(self):
-        super(Serializer, self).__init__()
+class Serializer(Field):
+    def __init__(self, *args, **kwargs):
+        super(Serializer, self).__init__(*args, **kwargs)
         self._fields = None
 
     @property
@@ -190,7 +277,16 @@ class Serializer(BaseSerializer):
 
         return self._fields
 
+    @property
+    def readable_fields(self):
+        return [x for x in self.fields.values() if not x.write_only]
+
+    @property
+    def writeable_fields(self):
+        return [x for x in self.fields.values() if not x.read_only]
+
     def get_fields(self):
+        # Deep copy the fields before binding them
         fields = copy.deepcopy(self._declared_fields)
 
         for field_name, field in fields.items():
@@ -200,24 +296,28 @@ class Serializer(BaseSerializer):
 
     def to_value(self, data):
         errors = {}
-        validated_data = {}
+        validated_data = OrderedDict()
 
-        for field in self.fields.values():
+        for field in self.writeable_fields:
+            # Get the input data
             field_data = field.get_data(data)
 
             if field_data is empty:
+                # No value supplied so use default
                 value = field.get_default()
 
+                # No default supplied so skip
                 if value is empty:
                     continue
             else:
+                # Convert the input data
                 try:
                     value = field.to_value(field_data)
                 except ValidationError as e:
                     errors[field.field_name] = e.detail
                     continue
 
-            validated_data[field.field_name] = value
+            validated_data[field.source] = value
 
         if errors:
             raise ValidationError(errors)
@@ -225,29 +325,138 @@ class Serializer(BaseSerializer):
         return validated_data
 
     def to_data(self, value):
-        data = {}
+        data = OrderedDict()
 
-        for field in self.fields.values():
+        for field in self.readable_fields:
+            # Get the instance data
             field_value = field.get_value(value)
-            field_data = field.to_data(field_value)
+
+            # This saves fields having to handle None themselves
+            if field_value is None:
+                field_data = None
+            else:
+                # Convert the data for output
+                field_data = field.to_data(field_value)
+
             data[field.field_name] = field_data
 
         return data
 
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, obj, validated_data):
+        raise NotImplementedError()
+
 
 class ModelSerializer(Serializer):
+    type_map = {
+        sqltypes.String: StringField,
+        sqltypes.Integer: IntegerField,
+        sqltypes.BigInteger: IntegerField,
+        sqltypes.Date: DateField,
+        sqltypes.DateTime: DateTimeField,
+        sqltypes.Boolean: BooleanField
+    }
+
     class Meta:
         model = None
-        fields = None
+
+    def get_model_class(self):
+        return self.Meta.model
+
+    def get_field_class(self, col_type):
+        for sql_type, field_type in self.type_map.items():
+            if isinstance(col_type, sql_type):
+                return field_type
+
+        return None
 
     def get_fields(self):
         fields = super(ModelSerializer, self).get_fields()
 
-        # TODO
-        for x in ['foo', 'bar', 'baz']:
-            if x not in fields:
-                field = StringSerializer()
-                field.bind(x)
-                fields[x] = field
+        # List of model fields to include (defaults to all)
+        model_fields = getattr(self.Meta, 'fields', None)
+
+        if model_fields:
+            model_fields = set(model_fields)
+
+        # Fields to exclude
+        model_exclude = set(getattr(self.Meta, 'exclude', []))
+
+        # Fields that should be read only (serialized but not deserialized)
+        model_read_only = set(getattr(self.Meta, 'read_only', []))
+
+        # Fields that should be write only (deserialized but not serialized)
+        model_write_only = set(getattr(self.Meta, 'write_only', []))
+
+        props = inspect(self.get_model_class()).attrs
+
+        for prop in props:
+            if not isinstance(prop, ColumnProperty):
+                continue
+
+            key = prop.key
+
+            # Not in field list
+            if model_fields and key not in model_fields:
+                continue
+
+            # Field excluded
+            if key in model_exclude:
+                continue
+
+            col = prop.columns[0]
+            col_type = col.type
+
+            field_kwargs = {}
+
+            # Read only field
+            if key in model_read_only:
+                field_kwargs['read_only'] = True
+
+            # Write only field
+            if key in model_write_only:
+                field_kwargs['write_only'] = True
+
+            # Get the field class for this column type
+            field_class = self.get_field_class(col_type)
+
+            # This will skip column types we can't handle
+            if field_class:
+                field = field_class(**field_kwargs)
+                field.bind(key)
+                fields[key] = field
 
         return fields
+
+    def create(self, validated_data):
+        model_class = self.get_model_class()()
+        obj = model_class(**validated_data)
+        return obj
+
+    def update(self, obj, validated_data):
+        for attr, value in validated_data.items():
+            setattr(obj, attr, value)
+
+        return obj
+
+
+class EmbeddedUserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'username']
+
+
+class EmbeddedFacilitySerializer(ModelSerializer):
+    class Meta:
+        model = Facility
+
+
+class MetaSerializerMixin(object):
+    created_user = EmbeddedUserSerializer(read_only=True)
+    modified_user = EmbeddedUserSerializer(read_only=True)
+
+
+class FacilitySerializerMixin(object):
+    facility = EmbeddedFacilitySerializer()
