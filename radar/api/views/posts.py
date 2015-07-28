@@ -1,6 +1,6 @@
 from radar.lib.permissions import IsAdminOrReadOnly
 from radar.lib.serializers import MetaSerializerMixin, ModelSerializer
-from radar.lib.views import ListCreateApiView
+from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
 from radar.models import Post
 
 
@@ -17,7 +17,7 @@ class PostList(ListCreateApiView):
         return Post.query
 
 
-class PostDetail(ListCreateApiView):
+class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAdminOrReadOnly]
 
