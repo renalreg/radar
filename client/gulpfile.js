@@ -33,7 +33,7 @@ var paths = {
 		],
 		fonts: [
 			'bower_components/bootstrap-sass/assets/fonts/bootstrap/*'
-		],
+		]
 	}
 };
 
