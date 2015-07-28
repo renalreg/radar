@@ -1,0 +1,347 @@
+/* Palette */
+
+$radar-primary: #0fb153; // column 4
+$radar-primary-text: #07672a; // column 1
+$radar-primary-selected: #3abe68; // column 5
+
+$radar-success: #75cf34; // column 4
+$radar-success-text: #07672a; // column 1
+$radar-success-bg: #ade2b2; // column 7
+
+$radar-info: #4c90d6; // column 4
+$radar-info-text: #2a5366; // column 1
+$radar-info-bg: #c0d7ee; // column 7
+
+$radar-warning: #fac533; // column 4
+$radar-warning-text: #99741a; // column 1
+$radar-warning-bg: #fce8a3; // column 7
+
+$radar-danger: #ff0006; // column 4
+$radar-danger-text: #9d0002; // column 1
+$radar-danger-bg: #ffab89; // column 7
+
+$radar-secondary: $radar-info;
+$radar-secondary-text: $radar-info-text;
+$radar-secondary-bg: $radar-info-bg;
+$radar-secondary-headings-color: #162e33;
+
+/* Bootstrap */
+
+$icon-font-path: '../fonts/';
+$font-size-base: 13px;
+$body-bg: #f1f5f9;
+$link-color: $radar-primary-text;
+$headings-color: #033a16;
+
+$brand-primary: $radar-primary;
+$brand-success: $radar-success;
+$brand-info: $radar-info;
+$brand-warning: $radar-warning;
+$brand-danger: $radar-danger;
+
+$state-success-text: $radar-success-text;
+$state-success-bg: $radar-success-bg;
+$state-info-text: $radar-info-text;
+$state-info-bg: $radar-info-bg;
+$state-warning-text: $radar-warning-text;
+$state-warning-bg: $radar-warning-bg;
+$state-danger-text: $radar-danger-text;
+$state-danger-bg: $radar-danger-bg;
+
+/* RaDaR */
+
+$radar-navbar-color: #FFF;
+$radar-navbar-link-color: #FFF;
+$radar-navbar-bg-color: $radar-primary;
+$radar-navbar-hover-bg-color: $radar-primary-selected;
+
+$radar-sidebar-nav-text: $radar-secondary-text;
+$radar-sidebar-nav-hover-bg: #d9e6f3; // column 9
+$radar-sidebar-nav-active-text: #FFF;
+$radar-sidebar-nav-active-bg: $radar-secondary;
+
+$radar-tabs-text: $radar-secondary-text;
+$radar-tabs-hover-bg: #d9e6f3; // column 9
+$radar-tabs-active-text: #FFF;
+$radar-tabs-active-bg: $radar-secondary;
+
+$font-size-h1: floor(($font-size-base * 1.8)) !default;
+$font-size-h2: floor(($font-size-base * 1.6)) !default;
+$font-size-h3: ceil(($font-size-base * 1.4)) !default;
+$font-size-h4: ceil(($font-size-base * 1.2)) !default;
+$font-size-h5: $font-size-base;
+$font-size-h6: ceil(($font-size-base * 0.8)) !default;
+
+@import "bootstrap";
+
+$footer-height: 45px;
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: $footer-height;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    a {
+        text-decoration: none;
+        color: $headings-color;
+    }
+}
+
+a {
+    text-decoration: underline;
+}
+
+a.btn, .nav a {
+    text-decoration: none;
+}
+
+input, select {
+    max-width: 400px;
+}
+
+.input-group {
+    max-width: 400px;
+
+    input, select {
+        max-width: none;
+    }
+}
+
+.radar-navbar {
+    background-color: $radar-navbar-bg-color;
+    border: none;
+    color: $radar-navbar-color;
+    margin-bottom: 0;
+
+    a {
+        color: $radar-navbar-link-color;
+        text-decoration: none;
+    }
+
+    ul.navbar-nav {
+        > li > a:hover, > li.active > a, > li > a:active, > li > a:focus {
+            background-color: $radar-navbar-hover-bg-color;
+        }
+
+        @media (min-width: 768px) {
+            > li > a {
+                border-width: 0 0 2px 0;
+                border-style: solid;
+                border-color: transparent;
+            }
+
+            > li > a:hover, > li.active > a, > li > a:active, > li > a:focus {
+                border-color: #fff;
+            }
+        }
+    }
+
+    .icon-bar {
+        background-color: $radar-navbar-link-color;
+    }
+}
+
+.content {
+    padding: 0 $grid-gutter-width / 2 $grid-gutter-width / 2 $grid-gutter-width / 2;
+}
+
+$block-padding: $grid-gutter-width / 2;
+
+.block {
+    background-color: #FFF;
+    border-radius: $border-radius-base;
+    margin-top: $grid-gutter-width / 2;
+    padding: $block-padding;
+    border: 1px solid #ddd;
+
+    > *:first-child {
+        margin-top: 0;
+    }
+
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+ul.patient-info {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+
+    a {
+        color: $text-color;
+    }
+
+    li {
+        padding: 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    li:last-child {
+        border: 0;
+    }
+}
+
+ul.radar-sidebar-nav {
+    margin-left: -1 * $block-padding;
+    margin-right: -1 * $block-padding;
+    margin-bottom: 18px;
+
+    > li > a {
+        padding: 5px 20px 5px 40px;
+        color: $radar-sidebar-nav-text;
+    }
+
+    > li.active > a {
+        &,
+        &:hover,
+        &:focus {
+            background-color: $radar-sidebar-nav-active-bg;
+            color: $radar-sidebar-nav-active-text;
+        }
+    }
+
+    > li > a {
+        &:hover,
+        &:focus {
+            background-color: $radar-sidebar-nav-hover-bg;
+        }
+    }
+}
+
+ul.radar-tabs {
+    border-bottom: 1px solid $radar-tabs-active-bg;
+    margin-bottom: $line-height-computed / 2;
+
+    > li {
+        float: left;
+
+        > a {
+            color: $radar-tabs-text;
+            margin-right: 2px;
+            border-top-left-radius: $border-radius-base;
+            border-top-right-radius: $border-radius-base;
+
+            &:hover,
+            &:focus {
+                background-color: $radar-tabs-hover-bg;
+            }
+        }
+
+        &.active > a {
+            &,
+            &:hover,
+            &:focus {
+                background-color: $radar-tabs-active-bg;
+                color: $radar-tabs-active-text;
+            }
+        }
+    }
+}
+
+table.kv {
+    th {
+        white-space: nowrap;
+        text-align: right;
+    }
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: $footer-height;
+    padding: $grid-gutter-width / 2;
+    text-align: center;
+    font-size: 11px;
+    background-color: #FFF;
+
+    p {
+        margin-bottom: 0;
+    }
+
+    a {
+        color: $text-color;
+    }
+}
+
+.form-group.required .control-label:after {
+    content: "*";
+    color: red;
+}
+
+.ui-datepicker {
+    z-index: 9999 !important;
+}
+
+form.result-table select {
+    max-width: 100%;
+}
+
+.latest-news-body {
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: bold;
+        font-size: $font-size-base;
+        margin: 0 0 9px 0;
+    }
+}
+
+.logos {
+    text-align: center;
+
+    img {
+        max-height: 100px;
+    }
+}
+
+.patient-sidebar {
+    h1, h2, h3, h4, h5, h6 {
+        color: $radar-secondary-headings-color;
+    }
+}
+
+.patient-sidebar {
+    background-color: #4c90d6;
+    border-radius: $border-radius-base;
+    margin-top: $grid-gutter-width / 2;
+    border: 1px solid #4c90d6;
+
+    h1.patient-name {
+        margin: 0;
+        word-wrap: break-word;
+
+        a {
+            padding: $block-padding;
+            display: block;
+            color: #FFF;
+
+            &:hover, &:focus {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.patient-sidebar-inner {
+    background-color: #FFF;
+    padding: $block-padding;
+
+    > *:first-child {
+        margin-top: 0;
+    }
+
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.post {
+    max-width: 70em;
+}
