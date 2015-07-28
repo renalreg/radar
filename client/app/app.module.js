@@ -1,3 +1,3 @@
 /* exported app */
 
-var app = angular.module('radar', []);
+var app = angular.module('radar', ['ngResource', 'ngRoute']);

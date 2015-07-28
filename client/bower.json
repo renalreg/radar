@@ -9,6 +9,8 @@
   "dependencies": {
     "angular": "1.2",
     "bootstrap-sass": "~3.3.5",
-    "jquery": "1"
+    "jquery": "1",
+    "angular-resource": "1.2",
+    "angular-route": "1.2"
   }
 }

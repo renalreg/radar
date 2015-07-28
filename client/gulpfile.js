@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
@@ -29,7 +31,9 @@ var paths = {
 		scripts: [
 			'bower_components/jquery/dist/jquery.js',
 			'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-			'bower_components/angular/angular.js'
+			'bower_components/angular/angular.js',
+      'bower_components/angular-resource/angular-resource.js',
+      'bower_components/angular-route/angular-route.js'
 		],
 		fonts: [
 			'bower_components/bootstrap-sass/assets/fonts/bootstrap/*'
@@ -60,15 +64,15 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('sass', function() {
-    return gulp.src(paths.sass)
-		.pipe(sourcemaps.init())
-		.pipe(sass({
-			includePaths: ['bower_components/bootstrap-sass/assets/stylesheets']
-		}))
-		.pipe(concat('style.min.css'))
-		.pipe(minifyCss())
-		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('build/css'));
+  return gulp.src(paths.sass)
+    .pipe(sourcemaps.init())
+    .pipe(sass({
+      includePaths: ['bower_components/bootstrap-sass/assets/stylesheets']
+    }))
+    .pipe(concat('style.min.css'))
+    .pipe(minifyCss())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build/css'));
 });
 
 gulp.task('templates', function() {
@@ -124,7 +128,8 @@ gulp.task('serve', ['build'], function() {
 	browserSync.init({
 		server: {
 			baseDir: 'build'
-		}
+		},
+    open: false
 	});
 
 	gulp.watch(paths.scripts, ['scripts', 'jshint', browserSync.reload]);
