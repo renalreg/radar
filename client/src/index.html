@@ -1,13 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html ng-app="radar">
 <head>
   <title>RaDaR</title>
 
-  <script src="/js/vendor.min.js"></script>
-  <script src="/js/app.min.js"></script>
-  <script src="/js/app.templates.min.js"></script>
-
-  <link rel="stylesheet" href="/css/style.min.css">
+  <!-- build:css({.tmp/serve,src}) css/app.css -->
+  <!-- app:css -->
+  <!-- endinject -->
+  <!-- endbuild -->
 </head>
 
 <body>
@@ -33,5 +32,18 @@
   <div class="footer">
     <p>&copy; <a href="http://www.renalreg.org">UK Renal Registry</a>, <a href="http://www.renal.org">The Renal Association</a></p>
   </div>
+
+  <!-- build:js(.) js/vendor.js -->
+  <!-- vendor:js -->
+  <!-- endinject -->
+  <!-- endbuild -->
+
+  <!-- build:js({.tmp/serve,.tmp/templates,src}) js/app.js -->
+  <!-- app:js -->
+  <!-- endinject -->
+
+  <!-- templates:js -->
+  <!-- endinject -->
+  <!-- endbuild -->
 </body>
 </html>

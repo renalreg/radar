@@ -5,7 +5,7 @@
 
   app.config(function($routeProvider) {
     $routeProvider.when('/patients', {
-      templateUrl: 'patient-list.html',
+      templateUrl: 'app/patient-list.html',
       controller: 'PatientListController'
     });
 
