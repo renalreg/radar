@@ -12,6 +12,7 @@
 
     $stateProvider.state('patient', {
       url: '/patients/:patientId',
+      abstract: true,
       templateUrl: 'app/patient/patient-detail.html',
       controller: 'PatientDetailController',
       resolve: {

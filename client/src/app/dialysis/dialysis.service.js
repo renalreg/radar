@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar');
+  var app = angular.module('radar.dialysis');
 
   app.factory('DialysisService', function(Restangular) {
     return {

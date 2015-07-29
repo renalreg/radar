@@ -10,10 +10,16 @@
   </thead>
 
   <tbody>
-    <tr ng-repeat="dialysis in model">
-      <td>{{dialysis.id}}</td>
-      <td>{{dialysis.fromDate}}</td>
-      <td>{{dialysis.toDate}}</td>
+    <tr ng-repeat="item in items">
+      <td>{{item.id}}</td>
+      <td>{{item.fromDate}}</td>
+      <td>{{item.toDate}}</td>
     </tr>
   </tbody>
 </table>
+
+<form ng-submit="save()" novalidate>
+  <input ng-model="item.fromDate" />
+  <input ng-model="item.toDate" />
+  <button type="submit">Save</button>
+</form>

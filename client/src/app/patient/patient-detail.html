@@ -1,3 +1,29 @@
-<h1 class="page-header">{{patient.firstName}} {{patient.lastName}}</h1>
+<div class="row">
+  <div class="col-md-3">
+    <div class="patient-sidebar">
+      <h1 class="patient-name"><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.firstName}} {{patient.lastName}}</a></h1>
 
-<div ui-view></div>
+      <div class="patient-sidebar-inner">
+        <ul class="patient-info">
+          <li><strong>ID:</strong> {{ patient.id }}</li>
+        </ul>
+
+        <h4>RaDaR</h4>
+
+        <ul class="nav radar-sidebar-nav">
+          <li ui-sref-active="active">
+            <a ui-sref="patient.demographics({patientId: patient.id})">Demographics</a>
+          </li>
+
+          <li ui-sref-active="active">
+            <a ui-sref="patient.dialysis({patientId: patient.id})">Dialysis</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div class="block" ui-view></div>
+  </div>
+</div>

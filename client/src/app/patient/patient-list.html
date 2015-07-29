@@ -1,19 +1,21 @@
-<h1 class="page-header">Patients</h1>
+<div class="block">
+  <h1 class="page-header">Patients</h1>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-    </tr>
-  </thead>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <tr ng-repeat="patient in patients">
-      <td><a ui-sref="patient({patientId: patient.id})">{{patient.id}}</a></td>
-      <td>{{patient.firstName}}</td>
-      <td>{{patient.lastName}}</td>
-    </tr>
-  </tbody>
-</table>
+    <tbody>
+      <tr ng-repeat="patient in patients">
+        <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
+        <td>{{patient.firstName}}</td>
+        <td>{{patient.lastName}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

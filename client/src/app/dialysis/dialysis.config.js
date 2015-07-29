@@ -9,7 +9,7 @@
       templateUrl: 'app/dialysis/dialysis-list.html',
       controller: 'DialysisListController',
       resolve: {
-        model: function(patient, DialysisService) {
+        items: function(patient, DialysisService) {
           return DialysisService.getList(patient.id);
         }
       }
