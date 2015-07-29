@@ -1,5 +1,10 @@
 (function() {
   'use strict';
 
-  angular.module('radar', ['ngRoute', 'restangular']);
+  angular.module('radar', [
+    'radar.patient',
+    'radar.dialysis',
+    'ui.router',
+    'restangular'
+  ]);
 })();

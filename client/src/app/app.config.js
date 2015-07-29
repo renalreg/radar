@@ -1,3 +1,5 @@
+/* globals humps */
+
 (function() {
   'use strict';
 
@@ -14,14 +16,25 @@
         return data;
       }
     });
-  });
 
-  app.config(function($routeProvider) {
-    $routeProvider.when('/patients', {
-      templateUrl: 'app/patient-list.html',
-      controller: 'PatientListController'
+    RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url, headers, params) {
+      return {
+        element: humps.decamelizeKeys(element),
+        params: humps.decamelizeKeys(params)
+      };
     });
 
-    $routeProvider.otherwise({redirectTo: '/patients'});
+    RestangularProvider.addResponseInterceptor(function(element) {
+      return humps.camelizeKeys(element);
+    });
+  });
+
+  app.config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/');
+
+    $stateProvider.state('index', {
+      url: '/',
+      templateUrl: 'app/index.html'
+    });
   });
 })();

@@ -19,6 +19,7 @@ var revReplace = require('gulp-rev-replace');
 var gulpFilter = require('gulp-filter');
 var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
+var gutil = require('gulp-util');
 
 var del = require('del');
 var runSequence = require('run-sequence');
@@ -32,10 +33,10 @@ var paths = {
     'bower_components/jquery/dist/jquery.js',
     'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
     'bower_components/angular/angular.js',
-    'bower_components/angular-resource/angular-resource.js',
-    'bower_components/angular-route/angular-route.js',
     'bower_components/lodash/lodash.js',
-    'bower_components/restangular/src/restangular.js'
+    'bower_components/restangular/src/restangular.js',
+    'bower_components/ui-router/release/angular-ui-router.js',
+    'bower_components/humps/humps.js'
   ]
 };
 
@@ -57,7 +58,8 @@ gulp.task('inject', ['sass', 'scripts'], function() {
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(vendorScripts, {name: 'vendor'}))
-    .pipe(gulp.dest('.tmp/serve'));
+    .pipe(gulp.dest('.tmp/serve'))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('sass', function() {
@@ -72,10 +74,10 @@ gulp.task('sass', function() {
 
 gulp.task('scripts', function() {
   return gulp.src('src/app/**/*.js')
-    .pipe(jscs())
+    .pipe(jscs().on('error', gutil.log))
 		.pipe(jshint())
 		.pipe(jshint.reporter('jshint-stylish'))
-		.pipe(gulpIf(!browserSync.active, jshint.reporter('fail')))
+		// TODO .pipe(gulpIf(!browserSync.active, jshint.reporter('fail')))
     .pipe(browserSync.reload({stream: true}));
 });
 
@@ -177,7 +179,7 @@ gulp.task('watch', ['inject'], function() {
     }
   });
 
-  gulp.watch('src/app/index.html', ['inject']);
+  gulp.watch('src/index.html', ['inject']);
 });
 
 gulp.task('serve', ['watch'], function() {

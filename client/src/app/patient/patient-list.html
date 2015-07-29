@@ -11,9 +11,9 @@
 
   <tbody>
     <tr ng-repeat="patient in patients">
-      <td>{{patient.id}}</td>
-      <td>{{patient.first_name}}</td>
-      <td>{{patient.last_name}}</td>
+      <td><a ui-sref="patient({patientId: patient.id})">{{patient.id}}</a></td>
+      <td>{{patient.firstName}}</td>
+      <td>{{patient.lastName}}</td>
     </tr>
   </tbody>
 </table>

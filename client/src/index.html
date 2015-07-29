@@ -20,13 +20,21 @@
           <span class="icon-bar"></span>
         </button>
 
-        <a class="navbar-brand" href="#">RaDaR</a>
+        <a class="navbar-brand" ui-sref="index">RaDaR</a>
+      </div>
+
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li ui-sref-active="active">
+            <a ui-sref="patients">Patients</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
   <div class="content">
-    <div class="block" ng-view></div>
+    <div class="block" ui-view></div>
   </div>
 
   <div class="footer">

@@ -10,8 +10,8 @@
     "angular": "1.2",
     "bootstrap-sass": "~3.3.5",
     "jquery": "1",
-    "angular-resource": "1.2",
-    "angular-route": "1.2",
-    "restangular": "~1.5.1"
+    "restangular": "~1.5.1",
+    "ui-router": "~0.2.15",
+    "humps": "~0.6.0"
   }
 }
