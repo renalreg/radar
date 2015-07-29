@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar', ['ngResource', 'ngRoute']);
+  angular.module('radar', ['ngRoute', 'restangular']);
 })();

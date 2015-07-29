@@ -27,6 +27,18 @@ var browserSync = require('browser-sync').create();
 //var argv = require('yargs').argv;
 //var environment = argv.environment || 'development';
 
+var paths = {
+  vendorJs: [
+    'bower_components/jquery/dist/jquery.js',
+    'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
+    'bower_components/angular/angular.js',
+    'bower_components/angular-resource/angular-resource.js',
+    'bower_components/angular-route/angular-route.js',
+    'bower_components/lodash/lodash.js',
+    'bower_components/restangular/src/restangular.js'
+  ]
+};
+
 gulp.task('clean', function(cb) {
   del(['dist', '.tmp'], cb);
 });
@@ -39,13 +51,7 @@ gulp.task('inject', ['sass', 'scripts'], function() {
     {read: false}
   );
 
-  var vendorScripts = gulp.src([
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-    'bower_components/angular/angular.js',
-    'bower_components/angular-resource/angular-resource.js',
-    'bower_components/angular-route/angular-route.js'
-  ], {read: false});
+  var vendorScripts = gulp.src(paths.vendorJs, {read: false});
 
   return gulp.src('src/index.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
@@ -150,7 +156,7 @@ gulp.task('dist:size', function() {
     .pipe(size({title: 'dist', gzip: 'true', showFiles: true}));
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['inject'], function() {
   gulp.watch('src/app/**/*.js', function(event) {
     if (event.type === 'changed') {
       gulp.start('scripts');

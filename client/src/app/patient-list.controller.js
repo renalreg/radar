@@ -4,6 +4,6 @@
   var app = angular.module('radar');
 
   app.controller('PatientListController', function($scope, PatientService) {
-    $scope.patients = PatientService.query();
+    $scope.patients = PatientService.getPatients().$object;
   });
 })();
