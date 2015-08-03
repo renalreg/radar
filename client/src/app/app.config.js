@@ -7,7 +7,6 @@
 
   app.config(function(RestangularProvider) {
     RestangularProvider.setBaseUrl('http://localhost:5000');
-    RestangularProvider.setRequestSuffix('/');
 
     RestangularProvider.addResponseInterceptor(function(data, operation) {
       if (operation === 'getList') {
@@ -35,6 +34,11 @@
     $stateProvider.state('index', {
       url: '/',
       templateUrl: 'app/index.html'
+    });
+
+    $stateProvider.state('login', {
+      url: '/login',
+      templateUrl: 'app/login.html'
     });
   });
 })();

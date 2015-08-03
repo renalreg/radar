@@ -1,0 +1,26 @@
+<div rr-field-group required="required" has-error="!!errors || (form.field.$dirty && !!form.field.$invalid)" ng-form name="form">
+  <div rr-field-label>{{label}}</div>
+
+  <div rr-field-control>
+    <input rr-date-picker
+           rr-date
+           type="text"
+           class="form-control"
+           ng-required="required"
+           ng-model="model"
+           min-date="minDate"
+           max-date="maxDate"
+           date-picker-min-date="{{minDate}}"
+           date-picker-max-date="{{maxDate}}"
+           date-picker-default-date="{{defaultDate}}"
+           placeholder="DD/MM/YYYY"
+           name="field" />
+
+    <div rr-field-help ng-if="help">{{help}}</div>
+    <div rr-field-error ng-repeat="error in errors">{{error}}</div>
+
+    <div rr-field-error ng-show="form.field.$dirty && form.field.$error.required">{{requiredMessage || 'Date is required.'}}</div>
+    <div rr-field-error ng-show="form.field.$dirty && form.field.$error.minDate">Date is too early.</div>
+    <div rr-field-error ng-show="form.field.$dirty && form.field.$error.maxDate">{{maxDateMessage || 'Date is too late.'}}</div>
+  </div>
+</div>

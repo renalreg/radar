@@ -1,0 +1,16 @@
+<div rr-field-group required="required" has-error="!!errors || (form.field.$dirty && !!form.field.$invalid)" ng-form name="form">
+  <div rr-field-label>{{label}}</div>
+
+  <div rr-field-control>
+    <input type="text"
+           class="form-control"
+           ng-required="required"
+           ng-model="model"
+           name="field" />
+
+    <div rr-field-help ng-if="help">{{help}}</div>
+    <div rr-field-error ng-repeat="error in errors">{{error}}</div>
+
+    <div rr-field-error ng-show="form.field.$dirty && form.field.$error.required">{{requiredMessage || 'Field is required.'}}</div>
+  </div>
+</div>

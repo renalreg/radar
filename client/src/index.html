@@ -3,6 +3,11 @@
 <head>
   <title>RaDaR</title>
 
+  <!-- build:css(.) css/vendor.css -->
+  <!-- vendor:css -->
+  <!-- endinject -->
+  <!-- endbuild -->
+
   <!-- build:css({.tmp/serve,src}) css/app.css -->
   <!-- app:css -->
   <!-- endinject -->
@@ -27,6 +32,10 @@
         <ul class="nav navbar-nav">
           <li ui-sref-active="active">
             <a ui-sref="patients">Patients</a>
+          </li>
+
+          <li ui-sref-active="active">
+            <a ui-sref="login">Login</a>
           </li>
         </ul>
       </div>

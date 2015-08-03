@@ -1,0 +1,59 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">New</h3>
+  </div>
+
+  <div class="panel-body">
+    <form class="form-horizontal" ng-submit="save()" name="form">
+      <div rr-facility-field
+           patient="patient"
+           model="item.facility"
+           required="true"></div>
+
+      <div rr-select-field
+           label="Dialysis Type"
+           model="item.dialysisType"
+           errors="errors.dialysisType"
+           required="true"
+           options="dialysisTypes"></div>
+
+      <div rr-date-field
+           label="From Date"
+           model="item.fromDate"
+           errors="errors.fromDate"
+           required="true"></div>
+
+      <div rr-date-field
+           label="To Date"
+           model="item.toDate"
+           errors="errors.toDate"
+           min-date="item.fromDate"
+           default-date="item.fromDate"
+           min-date-message="Must be after from date."></div>
+
+      <div rr-save-button></div>
+    </form>
+
+    <pre>{{item | json}}</pre>
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>From Date</th>
+    <th>To Date</th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr ng-repeat="item in items">
+    <td>{{item.id}}</td>
+    <td>{{item.fromDate | date}}</td>
+    <td>{{item.toDate | date}}</td>
+    <td><button ng-click="edit(item)">Edit</button></td>
+  </tr>
+  </tbody>
+</table>

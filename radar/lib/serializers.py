@@ -433,6 +433,10 @@ class ModelSerializer(Serializer):
 
             key = prop.key
 
+            # Field explicitly defined
+            if key in fields:
+                continue
+
             # Not in field list
             if model_fields and key not in model_fields:
                 continue

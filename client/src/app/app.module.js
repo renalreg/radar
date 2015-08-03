@@ -5,7 +5,9 @@
     'radar.patient',
     'radar.demographics',
     'radar.dialysis',
+    'radar.form',
     'ui.router',
-    'restangular'
+    'restangular',
+    'ngResource'
   ]);
 })();
