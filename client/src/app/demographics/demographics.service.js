@@ -3,13 +3,19 @@
 
   var app = angular.module('radar.demographics');
 
-  app.factory('DemographicsService', function(Restangular) {
+  app.factory('DemographicsService', function(endpointFactory) {
+    var Endpoint = endpointFactory('/demographics/:id', {
+      params: {
+        id: '@id'
+      }
+    });
+
     return {
       getList: getList
     };
 
     function getList(patientId) {
-      return Restangular.all('demographics').getList({patientId: patientId});
+      return Endpoint.query({patientId: patientId});
     }
   });
 })();

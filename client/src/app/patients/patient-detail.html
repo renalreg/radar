@@ -6,6 +6,10 @@
       <div class="patient-sidebar-inner">
         <ul class="patient-info">
           <li><strong>ID:</strong> {{ patient.id }}</li>
+
+          <li><strong>Units:</strong> TODO</li>
+
+          <li><strong>Disease Groups:</strong> TODO</li>
         </ul>
 
         <h4>RaDaR</h4>
@@ -17,6 +21,18 @@
 
           <li ui-sref-active="active">
             <a ui-sref="patient.dialysis({patientId: patient.id})">Dialysis</a>
+          </li>
+        </ul>
+
+        <h4>Groups</h4>
+
+        <ul class="nav radar-sidebar-nav">
+          <li ui-sref-active="active">
+            <a ui-sref="patient.diseaseGroups({patientId: patient.id})">Disease Groups</a>
+          </li>
+
+          <li ui-sref-active="active">
+            <a ui-sref="patient.units({patientId: patient.id})">Units</a>
           </li>
         </ul>
       </div>

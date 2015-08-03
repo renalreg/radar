@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var app = angular.module('radar');
+  var app = angular.module('radar.facilities');
 
   app.directive('rrFacilityField', function(FacilityService) {
     return {
@@ -11,9 +11,9 @@
         model: '=',
         required: '='
       },
-      templateUrl: 'app/facility/facility-field.html',
+      templateUrl: 'app/facilities/facilities-field.html',
       link: function(scope) {
-        scope.facilities = FacilityService.getFacilitiesForPatient(scope.patient.id);
+        scope.facilities = FacilityService.getAvailableFacilities(scope.patient.id);
 
         if (!scope.model) {
           scope.model = scope.facilities[0];

@@ -204,9 +204,9 @@ class ListField(Field):
         'not_a_list': 'Expected a list of items.'
     }
 
-    def __init__(self, item_field):
-        super(ListField, self).__init__()
-        self.item_field = item_field
+    def __init__(self, field, **kwargs):
+        super(ListField, self).__init__(**kwargs)
+        self.field = field
 
     def to_value(self, data):
         if not isinstance(data, list):
@@ -217,7 +217,7 @@ class ListField(Field):
 
         for x in data:
             try:
-                value = self.item_field.to_value(x)
+                value = self.field.to_value(x)
             except ValidationError as e:
                 errors.append(e.detail)
             else:
@@ -236,7 +236,7 @@ class ListField(Field):
             if value is None:
                 data.append(None)
             else:
-                data.append(self.item_field.to_data(value))
+                data.append(self.field.to_data(value))
 
         return data
 

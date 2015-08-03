@@ -3,49 +3,53 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar');
+  var app = angular.module('radar.core');
 
-  function flattenRelationships(data) {
-    var newData;
+  app.factory('flattenRelationships', function() {
+    return function flattenRelationships(data) {
+      var newData;
 
-    if (angular.isArray(data)) {
-      newData = [];
+      if (angular.isArray(data)) {
+        newData = [];
 
-      _.each(data, function(value) {
-        if (angular.isObject(value)) {
-          newData.push(flattenRelationships(value));
-        } else {
-          newData.push(value);
-        }
-      });
-    } else if (angular.isObject(data)) {
-      newData = {};
-
-      _.each(data, function(value, key) {
-        if (angular.isArray(value)) {
-          newData[key] = flattenRelationships(value);
-        } else if (angular.isObject(value)) {
-          if (value.id !== undefined) {
-            newData[key + 'Id'] = value.id;
+        _.each(data, function(value) {
+          if (angular.isObject(value)) {
+            newData.push(flattenRelationships(value));
           } else {
-            newData[key] = flattenRelationships(value);
+            newData.push(value);
           }
-        } else {
-          newData[key] = value;
-        }
-      });
-    } else {
-      newData = data;
-    }
+        });
+      } else if (angular.isObject(data)) {
+        newData = {};
 
-    return newData;
-  }
+        _.each(data, function(value, key) {
+          if (angular.isArray(value)) {
+            newData[key] = flattenRelationships(value);
+          } else if (angular.isObject(value)) {
+            if (value.id !== undefined) {
+              newData[key + 'Id'] = value.id;
+            } else {
+              newData[key] = flattenRelationships(value);
+            }
+          } else {
+            newData[key] = value;
+          }
+        });
+      } else {
+        newData = data;
+      }
 
-  function ensureArray(value) {
-    return angular.isArray(value) ? value : [value];
-  }
+      return newData;
+    };
+  });
 
-  app.factory('endpointFactory', function($resource, $http) {
+  app.factory('ensureArray', function() {
+    return function ensureArray(value) {
+      return angular.isArray(value) ? value : [value];
+    };
+  });
+
+  app.factory('endpointFactory', function($resource, $http, ensureArray, flattenRelationships) {
     var defaultTransformRequest = ensureArray($http.defaults.transformRequest);
     var defaultTransformResponse = ensureArray($http.defaults.transformResponse);
 
@@ -104,6 +108,7 @@
           .concat(transformResponse);
       });
 
+      // TODO add to config
       var resourceUrl = 'http://localhost:5000' + url;
 
       return $resource(resourceUrl, resourceParams, resourceActions);

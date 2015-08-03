@@ -2,12 +2,14 @@
   'use strict';
 
   angular.module('radar', [
-    'radar.patient',
+    'radar.core',
+    'radar.patients',
+    'radar.diseaseGroups',
+    'radar.units',
     'radar.demographics',
     'radar.dialysis',
     'radar.form',
     'ui.router',
-    'restangular',
     'ngResource'
   ]);
 })();
