@@ -95,6 +95,8 @@ class CreateModelMixin(object):
 
         json = request.get_json()
 
+        print json
+
         if json is None:
             raise BadRequest('Expected JSON.')
 
@@ -147,6 +149,11 @@ class DestroyModelMixin(object):
         return '', 204
 
 
+class ListView(ListModelMixin, GenericApiView):
+    def get(self, *args, **kwargs):
+        return self.list(*args, **kwargs)
+
+
 class ListCreateApiView(ListModelMixin, CreateModelMixin, GenericApiView):
     def get(self, *args, **kwargs):
         return self.list(*args, **kwargs)
@@ -162,6 +169,9 @@ class RetrieveUpdateDestroyAPIView(RetrieveModelMixin, UpdateModelMixin, Destroy
     def put(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
+    def post(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
     def delete(self, *args, **kwargs):
         return self.destroy(*args, **kwargs)
 
@@ -175,13 +185,13 @@ class PatientDataMixin(object):
     def filter_query(self, query):
         query = super(PatientDataMixin, self).filter_query(query)
 
-        patient_id = request.args.get('patient_id')
+        patient_id = request.args.get('patientId')
 
         if patient_id is not None:
             try:
                 patient_id = int(patient_id)
             except ValueError:
-                raise BadRequest('patient_id must be an integer.')
+                raise BadRequest('patientId must be an integer.')
 
             # TODO permissions
             query = query.filter_by(patient_id=patient_id)
@@ -201,13 +211,13 @@ class FacilityDataMixin(object):
     def filter_query(self, query):
         query = super(FacilityDataMixin, self).filter_query(query)
 
-        facility_id = request.args.get('facility_id')
+        facility_id = request.args.get('facilityId')
 
         if facility_id is not None:
             try:
                 facility_id = int(facility_id)
             except ValueError:
-                raise BadRequest('facility_id must be an integer.')
+                raise BadRequest('facilityId must be an integer.')
 
             # TODO permissions
             query = query.filter_by(facility_id=facility_id)
