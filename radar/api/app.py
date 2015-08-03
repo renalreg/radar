@@ -3,11 +3,13 @@ from flask_cors import CORS
 
 from radar.api.views.demographics import DemographicsList, DemographicsDetail
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
+from radar.api.views.facilities import FacilityList, FacilityDetail
 from radar.api.views.patients import PatientList, PatientDetail
 from radar.api.views.posts import PostList, PostDetail
 from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesList, \
     SaltWastingClinicalFeaturesDetail
+from radar.api.views.users import UserDetail, UserList
 
 from radar.lib.database import db
 
@@ -33,6 +35,12 @@ app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinica
 app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetail.as_view('salt_wasting_clinical_features_detail'))
 app.add_url_rule('/renal-imaging', view_func=RenalImagingList.as_view('renal_imaging_list'))
 app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetail.as_view('renal_imaging_detail'))
+
+app.add_url_rule('/users', view_func=UserList.as_view('user_list'))
+app.add_url_rule('/users/<int:id>', view_func=UserDetail.as_view('user_detail'))
+
+app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
+app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
 
 app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
 app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))
