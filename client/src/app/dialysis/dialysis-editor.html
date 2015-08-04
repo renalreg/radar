@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title" ng-if="!item.id">New <span class="glyphicon glyphicon-asterisk" ng-if="modified()"></span></h3>
-    <h3 class="panel-title" ng-if="item.id">Edit <span class="glyphicon glyphicon-asterisk" ng-if="modified()"></span></h3>
+    <h3 class="panel-title" ng-if="!item.id">New <span class="glyphicon glyphicon-asterisk modified" ng-if="modified()" title="Unsaved Changes"></span></h3>
+    <h3 class="panel-title" ng-if="item.id">Edit <span class="glyphicon glyphicon-asterisk modified" ng-if="modified()" title="Unsaved Changes"></span></h3>
   </div>
 
   <div class="panel-body">
@@ -65,7 +65,7 @@
     </tr>
 
     <tr ng-repeat="item in paginatedItems">
-      <td><a ng-click="edit(item)" class="btn btn-primary btn-xs" href="">Edit</a></td>
+      <td><a class="btn btn-default btn-xs" href>View</a> <a ng-click="edit(item)" class="btn btn-primary btn-xs" href>Edit</a></td>
       <td>{{item.id}}</td>
       <td>{{item.fromDate | rrDate}}</td>
       <td>{{item.toDate | rrDate}}</td>
