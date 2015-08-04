@@ -345,3 +345,15 @@ form.result-table select {
 .post {
     max-width: 70em;
 }
+
+.search-clear {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  bottom: 0;
+  height: 13px;
+  margin: auto;
+  font-size: 13px;
+  cursor: pointer;
+  color: #ccc;
+}

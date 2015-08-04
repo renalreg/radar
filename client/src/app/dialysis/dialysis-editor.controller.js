@@ -3,7 +3,8 @@
 
   var app = angular.module('radar');
 
-  app.controller('DialysisEditorController', function($scope, DialysisService, DialysisTypeService, lodash, humps, $q, $timeout) {
+  app.controller('DialysisEditorController', function($scope, DialysisService, DialysisTypeService, lodash, humps, $q, $timeout, $filter) {
+    $scope.search = '';
     $scope.sortBy = 'id';
     $scope.reverse = false;
     $scope.page = 1;
@@ -17,11 +18,12 @@
       $scope.dialysisTypes = dialysisTypes;
     });
 
-    $scope.$watch('items', filter);
-    $scope.$watch('filteredItems', sort);
+    $scope.$watchCollection('items', filter);
+    $scope.$watch('search', filter);
+    $scope.$watchCollection('filteredItems', sort);
     $scope.$watch('sortBy', sort);
     $scope.$watch('reverse', sort);
-    $scope.$watch('sortedItems', paginate);
+    $scope.$watchCollection('sortedItems', paginate);
     $scope.$watch('page', paginate);
     $scope.$watch('perPage', paginate);
 
@@ -34,6 +36,7 @@
     $scope.modified = modified;
 
     create();
+    filter();
     sort();
     paginate();
 
@@ -77,7 +80,13 @@
     }
 
     function filter() {
-      $scope.filteredItems = $scope.items;
+      var filteredItems = $scope.items;
+
+      if ($scope.search) {
+          filteredItems = $filter('filter')(filteredItems, $scope.search);
+      }
+
+      $scope.filteredItems = filteredItems;
     }
 
     function save() {
@@ -104,7 +113,7 @@
     function sort() {
       $scope.page = 1;
 
-      var sortedItems = lodash.sortBy($scope.items, $scope.sortBy);
+      var sortedItems = lodash.sortBy($scope.filteredItems, $scope.sortBy);
 
       if ($scope.reverse) {
         sortedItems.reverse();

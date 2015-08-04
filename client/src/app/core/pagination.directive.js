@@ -27,7 +27,7 @@
           scope.totalPages = getTotalPages();
 
           if (scope.page > scope.totalPages) {
-            scope.page = scope.totalPages;
+            setPage(scope.totalPages);
           }
 
           scope.pages = getPages();
@@ -42,7 +42,9 @@
         }
 
         function setPage(page) {
-          scope.page = page;
+          if (page > 0 && page < scope.totalPages) {
+            scope.page = page;
+          }
         }
 
         function getPages() {

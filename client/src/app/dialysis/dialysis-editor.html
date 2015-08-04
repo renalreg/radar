@@ -44,6 +44,8 @@
   </div>
 </div>
 
+<div rr-search search="search"></div>
+
 <table class="table">
   <thead>
     <tr>
@@ -58,6 +60,10 @@
   </thead>
 
   <tbody>
+    <tr ng-if="!paginatedItems.length">
+      <td colspan="7">No results.</td>
+    </tr>
+
     <tr ng-repeat="item in paginatedItems">
       <td><a ng-click="edit(item)" class="btn btn-primary btn-xs" href="">Edit</a></td>
       <td>{{item.id}}</td>
