@@ -42,7 +42,7 @@
         }
 
         function setPage(page) {
-          if (page > 0 && page < scope.totalPages) {
+          if (page > 0 && page <= scope.totalPages) {
             scope.page = page;
           }
         }
