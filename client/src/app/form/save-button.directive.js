@@ -1,4 +1,4 @@
-(function () {
+(function() {
   'use strict';
 
   var app = angular.module('radar.form');
@@ -7,6 +7,7 @@
     return {
       restrict: 'A',
       require: '^form',
+      replace: true,
       templateUrl: 'app/form/save-button.html',
       link: function(scope, element, attrs, formCtrl) {
         scope.canSave = formCtrl.$valid;

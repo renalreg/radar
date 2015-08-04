@@ -16,7 +16,6 @@
     };
 
     function getPatient(id) {
-      console.log(id);
       return Endpoint.get({id: id}).$promise;
     }
 

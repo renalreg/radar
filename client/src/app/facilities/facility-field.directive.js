@@ -1,4 +1,4 @@
-(function () {
+(function() {
   'use strict';
 
   var app = angular.module('radar.facilities');
@@ -11,7 +11,7 @@
         model: '=',
         required: '='
       },
-      templateUrl: 'app/facilities/facilities-field.html',
+      templateUrl: 'app/facilities/facility-field.html',
       link: function(scope) {
         scope.facilities = FacilityService.getAvailableFacilities(scope.patient.id);
 

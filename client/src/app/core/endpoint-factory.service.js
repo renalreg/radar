@@ -1,18 +1,16 @@
-/* globals humps, _ */
-
 (function() {
   'use strict';
 
   var app = angular.module('radar.core');
 
-  app.factory('flattenRelationships', function() {
+  app.factory('flattenRelationships', function(lodash) {
     return function flattenRelationships(data) {
       var newData;
 
       if (angular.isArray(data)) {
         newData = [];
 
-        _.each(data, function(value) {
+        lodash.each(data, function(value) {
           if (angular.isObject(value)) {
             newData.push(flattenRelationships(value));
           } else {
@@ -22,7 +20,7 @@
       } else if (angular.isObject(data)) {
         newData = {};
 
-        _.each(data, function(value, key) {
+        lodash.each(data, function(value, key) {
           if (angular.isArray(value)) {
             newData[key] = flattenRelationships(value);
           } else if (angular.isObject(value)) {
@@ -49,7 +47,7 @@
     };
   });
 
-  app.factory('endpointFactory', function($resource, $http, ensureArray, flattenRelationships) {
+  app.factory('endpointFactory', function($resource, $http, ensureArray, flattenRelationships, humps, lodash) {
     var defaultTransformRequest = ensureArray($http.defaults.transformRequest);
     var defaultTransformResponse = ensureArray($http.defaults.transformResponse);
 
@@ -81,11 +79,10 @@
         }
       };
 
-      _.each(resourceActions, function(action) {
+      lodash.each(resourceActions, function(action) {
         var transformRequest = function(data) {
           data = flattenRelationships(data);
           data = humps.decamelizeKeys(data);
-
           return data;
         };
 
@@ -93,13 +90,15 @@
           .concat(defaultTransformRequest);
 
         var transformResponse = function(data) {
-          data = angular.fromJson(data);
+          if (data) {
+            if (angular.isDefined(data.data)) {
+              data = data.data;
+            }
 
-          if (angular.isDefined(data.data)) {
-            data = data.data;
+            data = humps.camelizeKeys(data);
+          } else {
+            data = null;
           }
-
-          data = humps.camelizeKeys(data);
 
           return data;
         };

@@ -1,0 +1,9 @@
+<nav>
+  <ul class="pagination">
+    <li ng-class="{disabled: !hasPrevious()}"><a href ng-click="setPage(1)">First</a></li>
+    <li ng-class="{disabled: !hasPrevious()}"><a href ng-click="setPage(page - 1)">Previous</a></li>
+    <li ng-class="{active: page.active}" ng-repeat="page in pages"><a href ng-click="setPage(page.number)">{{page.number}}</a></li>
+    <li ng-class="{disabled: !hasNext()}"><a href ng-click="setPage(page + 1)">Next</a></li>
+    <li ng-class="{disabled: !hasNext()}"><a href ng-click="setPage(totalPages)">Last</a></li>
+  </ul>
+</nav>

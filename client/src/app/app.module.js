@@ -3,6 +3,8 @@
 
   angular.module('radar', [
     'radar.core',
+    'radar.posts',
+    'radar.users',
     'radar.patients',
     'radar.diseaseGroups',
     'radar.units',

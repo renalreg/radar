@@ -1,11 +1,9 @@
-/* globals _ */
-
-(function () {
+(function() {
   'use strict';
 
   var app = angular.module('radar.facilities');
 
-  app.factory('FacilityService', function(CurrentUserService, endpointFactory) {
+  app.factory('FacilityService', function(CurrentUserService, endpointFactory, lodash) {
     var Endpoint = endpointFactory('/facilities');
 
     return {
@@ -39,11 +37,11 @@
     function getAvailableFacilities(patientId) {
       var patientFacilities = getPatientFacilities(patientId);
 
-      var userFacilityIds = _.map(getUserFacilities(), function(facility) {
+      var userFacilityIds = lodash.map(getUserFacilities(), function(facility) {
         return facility.id;
       });
 
-      return _.filter(patientFacilities, function(facility) {
+      return lodash.filter(patientFacilities, function(facility) {
         return userFacilityIds.indexOf(facility.id) >= 0;
       });
     }

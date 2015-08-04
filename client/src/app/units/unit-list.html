@@ -1,1 +1,15 @@
 <h1 class="page-header">Units</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Unit</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr ng-repeat="unit in patient.units">
+      <td>{{unit.unit.name}}</td>
+    </tr>
+  </tbody>
+</table>

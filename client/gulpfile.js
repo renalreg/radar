@@ -40,7 +40,8 @@ var paths = {
     'bower_components/humps/humps.js',
     'bower_components/angular-ui-grid/ui-grid.js',
     'bower_components/angular-resource/angular-resource.js',
-    'bower_components/moment/moment.js'
+    'bower_components/moment/moment.js',
+    'bower_components/ui.bootstrap/'
   ],
   vendorCss: [
     'bower_components/angular-ui-grid/ui-grid.css',

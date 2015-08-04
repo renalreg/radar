@@ -1,6 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">New</h3>
+    <h3 class="panel-title" ng-if="!item.id">New <span class="glyphicon glyphicon-asterisk" ng-if="modified()"></span></h3>
+    <h3 class="panel-title" ng-if="item.id">Edit <span class="glyphicon glyphicon-asterisk" ng-if="modified()"></span></h3>
   </div>
 
   <div class="panel-body">
@@ -31,7 +32,12 @@
            default-date="item.fromDate"
            min-date-message="Must be after from date."></div>
 
-      <div rr-save-button></div>
+      <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+          <div rr-save-button></div>
+          <div rr-cancel-button modified="modified()" action="cancel()"></div>
+        </div>
+      </div>
     </form>
 
     <pre>{{item | json}}</pre>
@@ -40,20 +46,28 @@
 
 <table class="table">
   <thead>
-  <tr>
-    <th>ID</th>
-    <th>From Date</th>
-    <th>To Date</th>
-    <th></th>
-  </tr>
+    <tr>
+      <th></th>
+      <th rr-sort by="sortBy" reverse="reverse" key="id">ID</th>
+      <th rr-sort by="sortBy" reverse="reverse" key="fromDate">From Date</th>
+      <th rr-sort by="sortBy" reverse="reverse" key="toDate">To Date</th>
+      <th rr-sort by="sortBy" reverse="reverse" key="dialysisType.label">Dialysis Type</th>
+      <th rr-sort by="sortBy" reverse="reverse" key="facility.name">Data Source</th>
+      <th></th>
+    </tr>
   </thead>
 
   <tbody>
-  <tr ng-repeat="item in items">
-    <td>{{item.id}}</td>
-    <td>{{item.fromDate | date}}</td>
-    <td>{{item.toDate | date}}</td>
-    <td><button ng-click="edit(item)">Edit</button></td>
-  </tr>
+    <tr ng-repeat="item in paginatedItems">
+      <td><a ng-click="edit(item)" class="btn btn-primary btn-xs" href="">Edit</a></td>
+      <td>{{item.id}}</td>
+      <td>{{item.fromDate | rrDate}}</td>
+      <td>{{item.toDate | rrDate}}</td>
+      <td>{{item.dialysisType.label}}</td>
+      <td>{{item.facility.name}}</td>
+      <td align="right"><div rr-delete-button action="remove(item)"></div></td>
+    </tr>
   </tbody>
 </table>
+
+<div rr-pagination page="page" total="filteredItems.length"></div>
