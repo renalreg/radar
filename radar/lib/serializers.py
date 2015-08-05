@@ -7,7 +7,7 @@ import six
 from sqlalchemy import inspect
 from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
-from radar.models import User, Facility
+from radar.models import User, Facility, Patient
 
 
 class Empty(object):
@@ -72,6 +72,14 @@ class Field(object):
 
     def to_data(self, value):
         raise NotImplementedError()
+
+    def transform_errors(self, errors):
+        transformed_errors = {}
+
+        if self.source in errors:
+            transformed_errors[self.field_name] = errors[self.source]
+
+        return transformed_errors
 
 
 class StringField(Field):
@@ -197,6 +205,65 @@ class DateTimeField(Field):
 
     def to_data(self, value):
         return value.isoformat()
+
+
+class LookupField(Field):
+    default_error_messages = {
+        'not_found': 'Object not found.'
+    }
+
+    field_class = IntegerField
+    model_class = None
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault('write_only', True)
+        super(LookupField, self).__init__(**kwargs)
+        self.field = self.get_field(**kwargs)
+
+    def bind(self, field_name):
+        if self.source is None and field_name.endswith('_id'):
+            self.source = field_name[:-3]
+
+        super(LookupField, self).bind(field_name)
+        self.field.bind(field_name)
+
+    def get_field(self, **kwargs):
+        field_kwargs = {}
+
+        if 'source' in kwargs:
+            field_kwargs['source'] = kwargs['source']
+
+        return self.field_class(**field_kwargs)
+
+    def get_object(self, id):
+        obj = self.model_class.query.get(id)
+
+        if obj is None:
+            self.fail('not_found')
+
+        return obj
+
+    def get_value(self, value):
+        return self.field.get_value(value)
+
+    def get_data(self, data):
+        return self.field.get_data(data)
+
+    def to_value(self, data):
+        id = self.field.to_value(data)
+        obj = self.get_object(id)
+        return obj
+
+    def to_data(self, data):
+        return self.field.to_data(data)
+
+
+class PatientLookupField(LookupField):
+    model_class = Patient
+
+
+class FacilityLookupField(LookupField):
+    model_class = Facility
 
 
 class ListField(Field):
@@ -367,6 +434,15 @@ class Serializer(Field):
     def update(self, obj, validated_data):
         raise NotImplementedError()
 
+    def transform_errors(self, errors):
+        transformed_errors = {}
+
+        for field in self.fields.values():
+            transformed_field_errors = field.transform_errors(errors)
+            transformed_errors.update(transformed_field_errors)
+
+        return transformed_errors
+
 
 class ModelSerializer(Serializer):
     type_map = {
@@ -380,10 +456,10 @@ class ModelSerializer(Serializer):
     }
 
     class Meta:
-        model = None
+        model_class = None
 
     def get_model_class(self):
-        return self.Meta.model
+        return self.Meta.model_class
 
     def get_model_fields(self):
         """ List of model fields to include (defaults to all) """
@@ -488,13 +564,13 @@ class ModelSerializer(Serializer):
 
 class EmbeddedUserSerializer(ModelSerializer):
     class Meta:
-        model = User
+        model_class = User
         fields = ['id', 'first_name', 'last_name', 'email', 'username']
 
 
 class EmbeddedFacilitySerializer(ModelSerializer):
     class Meta:
-        model = Facility
+        model_class = Facility
 
 
 class CreatedUserMixin(object):
@@ -521,8 +597,8 @@ class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin):
 
 class FacilitySerializerMixin(object):
     facility = EmbeddedFacilitySerializer(read_only=True)
+    facility_id = FacilityLookupField()
 
-    def get_model_write_only(self):
-        model_write_only = super(FacilitySerializerMixin, self).get_model_write_only()
-        model_write_only.add('facility_id')
-        return model_write_only
+
+class PatientSerializerMixin(object):
+    patient_id = PatientLookupField(write_only=False)
