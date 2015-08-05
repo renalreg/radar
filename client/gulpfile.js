@@ -30,6 +30,7 @@ var browserSync = require('browser-sync').create();
 
 var paths = {
   vendorJs: [
+    'bower_components/es5-shim/es5-shim.js',
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/jquery-ui.js',
     'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
@@ -40,12 +41,15 @@ var paths = {
     'bower_components/humps/humps.js',
     'bower_components/angular-ui-grid/ui-grid.js',
     'bower_components/angular-resource/angular-resource.js',
-    'bower_components/moment/moment.js',
-    'bower_components/ui.bootstrap/'
+    'bower_components/moment/moment.js'
   ],
   vendorCss: [
     'bower_components/angular-ui-grid/ui-grid.css',
     'bower_components/jquery-ui/themes/smoothness/jquery-ui.css'
+  ],
+  ieJs: [
+    'bower_components/html5shiv/dist/html5shiv.js',
+    'bower_components/respond/dest/respond.src.js'
   ]
 };
 
@@ -65,11 +69,14 @@ gulp.task('inject', ['sass', 'scripts'], function() {
 
   var vendorStyles = gulp.src(paths.vendorCss, {read: false});
 
+  var ieScripts = gulp.src(paths.ieJs, {read: false});
+
   return gulp.src('src/index.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(vendorScripts, {name: 'vendor'}))
     .pipe(inject(vendorStyles, {name: 'vendor'}))
+    .pipe(inject(ieScripts, {name: 'ie'}))
     .pipe(gulp.dest('.tmp/serve'))
     .pipe(browserSync.reload({stream: true}));
 });
