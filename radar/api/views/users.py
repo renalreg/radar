@@ -5,14 +5,14 @@ from radar.models import User, UnitUser
 
 class UnitUserSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta:
-        model = UnitUser
+        model_class = UnitUser
 
 
 class UserSerializer(MetaSerializerMixin, ModelSerializer):
     units = ListField(field=UnitUserSerializer(), source='unit_users')
 
     class Meta:
-        model = User
+        model_class = User
         fields = ('id', 'is_admin', 'username', 'email')
 
 

@@ -5,7 +5,7 @@ from radar.models import Facility
 
 class FacilitySerializer(MetaSerializerMixin, ModelSerializer):
     class Meta:
-        model = Facility
+        model_class = Facility
 
 
 class FacilityList(ListCreateApiView):

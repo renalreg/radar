@@ -5,7 +5,7 @@ from radar.models import RenalImaging
 
 class RenalImagingSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
     class Meta:
-        model = RenalImaging
+        model_class = RenalImaging
 
 
 class RenalImagingList(FacilityDataMixin, PatientDataList):

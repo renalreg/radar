@@ -6,7 +6,7 @@ from radar.models import Post
 
 class PostSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta:
-        model = Post
+        model_class = Post
 
 
 class PostList(ListCreateApiView):

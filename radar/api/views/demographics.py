@@ -5,7 +5,7 @@ from radar.models import PatientDemographics
 
 class DemographicsSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
     class Meta:
-        model = PatientDemographics
+        model_class = PatientDemographics
 
 
 class DemographicsList(FacilityDataMixin, PatientDataList):

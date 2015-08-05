@@ -5,14 +5,14 @@ from radar.models import Patient, UnitPatient, Unit
 
 class UnitSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta:
-        model = Unit
+        model_class = Unit
 
 
 class UnitPatientSerializer(MetaSerializerMixin, ModelSerializer):
     unit = UnitSerializer()
 
     class Meta:
-        model = UnitPatient
+        model_class = UnitPatient
         exclude = ['patient_id', 'unit_id']
 
 
@@ -22,7 +22,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     units = ListField(field=UnitPatientSerializer(), source='unit_patients')
 
     class Meta:
-        model = Patient
+        model_class = Patient
         fields = ['id']
 
 
