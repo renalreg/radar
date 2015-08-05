@@ -1,3 +1,5 @@
+<pre>page: {{list.page}}</pre>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title" ng-if="!item.id">New <span class="glyphicon glyphicon-asterisk modified" ng-if="modified()" title="Unsaved Changes"></span></h3>
@@ -42,27 +44,27 @@
   </div>
 </div>
 
-<div rr-search search="search"></div>
+<div rr-search search="list.search"></div>
 
 <table class="table">
   <thead>
     <tr>
       <th></th>
-      <th rr-sort by="sortBy" reverse="reverse" key="id">ID</th>
-      <th rr-sort by="sortBy" reverse="reverse" key="fromDate">From Date</th>
-      <th rr-sort by="sortBy" reverse="reverse" key="toDate">To Date</th>
-      <th rr-sort by="sortBy" reverse="reverse" key="dialysisType.label">Dialysis Type</th>
-      <th rr-sort by="sortBy" reverse="reverse" key="facility.name">Data Source</th>
+      <th rr-sort by="list.sortBy" reverse="list.reverse" key="id">ID</th>
+      <th rr-sort by="list.sortBy" reverse="list.reverse" key="fromDate">From Date</th>
+      <th rr-sort by="list.sortBy" reverse="list.reverse" key="toDate">To Date</th>
+      <th rr-sort by="list.sortBy" reverse="list.reverse" key="dialysisType.label">Dialysis Type</th>
+      <th rr-sort by="list.sortBy" reverse="list.reverse" key="facility.name">Data Source</th>
       <th></th>
     </tr>
   </thead>
 
   <tbody>
-    <tr ng-if="!paginatedItems.length">
+    <tr ng-if="!list.items.length">
       <td colspan="7">No results.</td>
     </tr>
 
-    <tr ng-repeat="item in paginatedItems">
+    <tr ng-repeat="item in list.items">
       <td><a class="btn btn-default btn-xs" href>View</a> <a ng-click="edit(item)" class="btn btn-primary btn-xs" href>Edit</a></td>
       <td>{{item.id}}</td>
       <td>{{item.fromDate | rrDate}}</td>
@@ -74,4 +76,4 @@
   </tbody>
 </table>
 
-<div rr-pagination page="page" total="filteredItems.length"></div>
+<div rr-pagination page="list.page" per-page="list.perPage" total="list.items.length"></div>

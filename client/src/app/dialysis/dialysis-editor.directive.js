@@ -14,29 +14,14 @@
     };
   });
 
-  app.controller('DialysisEditorController', function($scope, DialysisService, DialysisTypeService, lodash, humps, $q, $timeout, $filter) {
-    $scope.search = '';
-    $scope.sortBy = 'id';
-    $scope.reverse = false;
-    $scope.page = 1;
-    $scope.perPage = 3;
-
-    DialysisService.getList($scope.patient.id).then(function(items) {
-      $scope.items = items;
+  app.controller('DialysisEditorController', function($scope, DialysisService, DialysisTypeService, lodash, humps, $q, $timeout, $filter, ListService) {
+    $scope.list = new ListService(function() {
+      return DialysisService.getList($scope.patient.id);
     });
 
     DialysisTypeService.getDialysisTypes().then(function(dialysisTypes) {
       $scope.dialysisTypes = dialysisTypes;
     });
-
-    $scope.$watchCollection('items', filter);
-    $scope.$watch('search', filter);
-    $scope.$watchCollection('filteredItems', sort);
-    $scope.$watch('sortBy', sort);
-    $scope.$watch('reverse', sort);
-    $scope.$watchCollection('sortedItems', paginate);
-    $scope.$watch('page', paginate);
-    $scope.$watch('perPage', paginate);
 
     var original = null;
 
@@ -47,9 +32,6 @@
     $scope.modified = modified;
 
     create();
-    filter();
-    sort();
-    paginate();
 
     function create() {
       original = DialysisService.create({
@@ -90,16 +72,6 @@
       return $scope.form.$dirty && !angular.equals(original, $scope.item);
     }
 
-    function filter() {
-      var filteredItems = $scope.items;
-
-      if ($scope.search) {
-        filteredItems = $filter('filter')(filteredItems, $scope.search);
-      }
-
-      $scope.filteredItems = filteredItems;
-    }
-
     function save() {
       var savedOriginal = original;
 
@@ -120,24 +92,6 @@
           $scope.errors = humps.camelizeKeys(response.data.errors);
         }
       });
-    }
-
-    function sort() {
-      $scope.page = 1;
-
-      var sortedItems = lodash.sortBy($scope.filteredItems, $scope.sortBy);
-
-      if ($scope.reverse) {
-        sortedItems.reverse();
-      }
-
-      $scope.sortedItems = sortedItems;
-    }
-
-    function paginate() {
-      var startIndex = ($scope.page - 1) * $scope.perPage;
-      var endIndex = $scope.page * $scope.perPage;
-      $scope.paginatedItems = lodash.slice($scope.sortedItems, startIndex, endIndex);
     }
   });
 })();
