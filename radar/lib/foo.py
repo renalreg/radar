@@ -201,23 +201,5 @@ class PatientMixin(object):
         return context
 
 
-class DialysisValidator(PatientMixin, Validator):
-    from_date = Field(chain=[required])
-    to_date = Field(chain=[optional])
-
-    def validate_from_date(self, value):
-        return 'world'
-
-    def validate(self, obj):
-        return 'hello'
-
-
-dialysis = Dialysis()
-dialysis.from_date = 'hello'
-
-validator = DialysisValidator()
-
-try:
-    dialysis = validator.run_validation(dialysis)
-except ValidationError as e:
-    print e.detail
+class FacilityMixin(object):
+    facility = Field(chain=[required])

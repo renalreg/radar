@@ -51,6 +51,7 @@ class ApiView(MethodView):
 
 class GenericApiView(ApiView):
     serializer_class = None
+    validator_class = None
 
     def get_query(self):
         raise NotImplementedError()
@@ -88,6 +89,17 @@ class GenericApiView(ApiView):
     def get_serializer_class(self):
         return self.serializer_class
 
+    def get_validator_class(self):
+        return self.validator_class
+
+    def get_validator(self):
+        validator_class = self.get_validator_class()
+
+        if validator_class is None:
+            return None
+        else:
+            return validator_class()
+
 
 class CreateModelMixin(object):
     def create(self, *args, **kwargs):
@@ -95,13 +107,21 @@ class CreateModelMixin(object):
 
         json = request.get_json()
 
-        print json
-
         if json is None:
             raise BadRequest('Expected JSON.')
 
         validated_data = serializer.to_value(json)
         obj = serializer.create(validated_data)
+
+        validator = self.get_validator()
+
+        if validator is not None:
+            try:
+                validator.run_validation(obj)
+            except ValidationError as e:
+                errors = serializer.transform_errors(e.detail)
+                raise ValidationError(detail=errors)
+
         db.session.add(obj)
         db.session.commit()
         data = serializer.to_data(obj)
@@ -136,6 +156,16 @@ class UpdateModelMixin(object):
 
         validated_data = serializer.to_value(json)
         obj = serializer.update(obj, validated_data)
+
+        validator = self.get_validator()
+
+        if validator is not None:
+            try:
+                validator.run_validation(obj)
+            except ValidationError as e:
+                errors = serializer.transform_errors(e.detail)
+                raise ValidationError(detail=errors)
+
         db.session.commit()
         data = serializer.to_data(obj)
         return jsonify(data)
