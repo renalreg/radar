@@ -1,29 +1,25 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.dialysis');
+  var app = angular.module('radar.renalImaging');
 
-  app.directive('rrDialysisEditor', function() {
+  app.directive('rrRenalImagingEditor', function() {
     return {
       restrict: 'A',
       scope: {
         patient: '='
       },
-      templateUrl: 'app/dialysis/dialysis-editor.html',
-      controller: 'DialysisEditorController'
+      templateUrl: 'app/renal-imaging/renal-imaging-editor.html',
+      controller: 'RenalImagingEditorController'
     };
   });
 
-  app.controller('DialysisEditorController', function($scope, DialysisService, DialysisTypeService, lodash, humps, $q, $timeout, $filter, ListService, DetailService) {
+  app.controller('RenalImagingEditorController', function($scope, RenalImagingService, ListService, DetailService) {
     $scope.list = new ListService(function() {
-      return DialysisService.getList($scope.patient.id);
+      return RenalImagingService.getList($scope.patient.id);
     });
 
     $scope.detail = new DetailService();
-
-    DialysisTypeService.getDialysisTypes().then(function(dialysisTypes) {
-      $scope.dialysisTypes = dialysisTypes;
-    });
 
     $scope.create = create;
     $scope.modified = modified;
@@ -34,7 +30,7 @@
     create();
 
     function create() {
-      var item = DialysisService.create({patientId: $scope.patient.id});
+      var item = RenalImagingService.create({patientId: $scope.patient.id});
       console.log(item);
       $scope.detail.edit(item);
     }
@@ -62,3 +58,4 @@
     }
   });
 })();
+

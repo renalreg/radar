@@ -10,6 +10,7 @@
     'radar.units',
     'radar.demographics',
     'radar.dialysis',
+    'radar.renalImaging',
     'radar.form',
     'ui.router',
     'ngResource'

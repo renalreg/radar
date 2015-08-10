@@ -9,7 +9,8 @@
       templateUrl: 'app/core/pagination.html',
       scope: {
         page: '=',
-        total: '='
+        total: '=',
+        perPage: '='
       },
       link: function(scope) {
         scope.hasPrevious = hasPrevious;
@@ -62,8 +63,7 @@
         }
 
         function getTotalPages() {
-          // TODO make items per page configurable
-          return Math.ceil(scope.total / 3);
+          return Math.ceil(scope.total / scope.perPage);
         }
       }
     };

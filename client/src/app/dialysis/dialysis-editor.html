@@ -1,5 +1,3 @@
-<pre>page: {{list.page}}</pre>
-
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title" ng-if="!item.id">New <span class="glyphicon glyphicon-asterisk modified" ng-if="modified()" title="Unsaved Changes"></span></h3>
@@ -10,34 +8,34 @@
     <form class="form-horizontal" ng-submit="save()" name="form">
       <div rr-facility-field
            patient="patient"
-           model="item.facility"
+           model="detail.item.facility"
            required="true"></div>
 
       <div rr-select-field
            label="Dialysis Type"
-           model="item.dialysisType"
+           model="detail.item.dialysisType"
            errors="errors.dialysisType"
            required="true"
            options="dialysisTypes"></div>
 
       <div rr-date-field
            label="From Date"
-           model="item.fromDate"
+           model="detail.item.fromDate"
            errors="errors.fromDate"
            required="true"></div>
 
       <div rr-date-field
            label="To Date"
-           model="item.toDate"
-           errors="errors.toDate"
-           min-date="item.fromDate"
-           default-date="item.fromDate"
+           model="detail.item.toDate"
+           errors="detail.errors.toDate"
+           min-date="detail.item.fromDate"
+           default-date="detail.item.fromDate"
            min-date-message="Must be after from date."></div>
 
       <div class="form-group">
         <div class="col-md-offset-4 col-md-8">
           <div rr-save-button></div>
-          <div rr-cancel-button modified="modified()" action="cancel()"></div>
+          <div rr-cancel-button modified="modified()" action="detail.cancel()"></div>
         </div>
       </div>
     </form>
@@ -64,8 +62,8 @@
       <td colspan="7">No results.</td>
     </tr>
 
-    <tr ng-repeat="item in list.items">
-      <td><a class="btn btn-default btn-xs" href>View</a> <a ng-click="edit(item)" class="btn btn-primary btn-xs" href>Edit</a></td>
+    <tr ng-repeat="item in list.displayItems">
+      <td><a class="btn btn-default btn-xs" href>View</a> <a ng-click="detail.edit(item)" class="btn btn-primary btn-xs" href>Edit</a></td>
       <td>{{item.id}}</td>
       <td>{{item.fromDate | rrDate}}</td>
       <td>{{item.toDate | rrDate}}</td>
