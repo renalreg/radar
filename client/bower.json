@@ -10,15 +10,12 @@
     "angular": "1.2",
     "bootstrap-sass": "~3.3.5",
     "jquery": "1",
-    "restangular": "~1.5.1",
     "ui-router": "~0.2.15",
-    "humps": "~0.6.0",
-    "angular-ui-grid": "~3.0.1",
-    "angular-resource": "1.2",
     "jquery-ui": "~1.11.4",
     "moment": "~2.10.6",
     "respond": "~1.4.2",
     "es5-shim": "~4.1.10",
-    "html5shiv": "~3.7.3"
+    "html5shiv": "~3.7.3",
+    "lodash": "~3.10.1"
   }
 }

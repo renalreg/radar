@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.facilities');
 
-  app.directive('rrFacilityField', function(FacilityService) {
+  app.directive('facilityField', function(store) {
     return {
       restrict: 'A',
       scope: {
@@ -13,11 +13,13 @@
       },
       templateUrl: 'app/facilities/facility-field.html',
       link: function(scope) {
-        scope.facilities = FacilityService.getAvailableFacilities(scope.patient.id);
+        store.query('facilities').then(function(facilities) {
+          scope.facilities = facilities;
 
-        if (!scope.model) {
-          scope.model = scope.facilities[0];
-        }
+          if (!scope.model) {
+            scope.model = scope.facilities[0];
+          }
+        });
       }
     };
   });

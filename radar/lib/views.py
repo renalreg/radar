@@ -215,13 +215,13 @@ class PatientDataMixin(object):
     def filter_query(self, query):
         query = super(PatientDataMixin, self).filter_query(query)
 
-        patient_id = request.args.get('patientId')
+        patient_id = request.args.get('patient_id')
 
         if patient_id is not None:
             try:
                 patient_id = int(patient_id)
             except ValueError:
-                raise BadRequest('patientId must be an integer.')
+                raise BadRequest('patient_id must be an integer.')
 
             # TODO permissions
             query = query.filter_by(patient_id=patient_id)
@@ -241,13 +241,13 @@ class FacilityDataMixin(object):
     def filter_query(self, query):
         query = super(FacilityDataMixin, self).filter_query(query)
 
-        facility_id = request.args.get('facilityId')
+        facility_id = request.args.get('facility_id')
 
         if facility_id is not None:
             try:
                 facility_id = int(facility_id)
             except ValueError:
-                raise BadRequest('facilityId must be an integer.')
+                raise BadRequest('facility_id must be an integer.')
 
             # TODO permissions
             query = query.filter_by(facility_id=facility_id)

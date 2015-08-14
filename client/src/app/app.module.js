@@ -2,17 +2,24 @@
   'use strict';
 
   angular.module('radar', [
+    'ui.router',
+
+    'radar.controllers',
     'radar.core',
+    'radar.filters',
+    'radar.forms',
+    'radar.store',
+    'radar.utils',
+
+    'radar.patients',
     'radar.posts',
     'radar.users',
-    'radar.patients',
-    'radar.diseaseGroups',
-    'radar.units',
+
     'radar.demographics',
     'radar.dialysis',
-    'radar.renalImaging',
-    'radar.form',
-    'ui.router',
-    'ngResource'
+    'radar.diseaseGroups',
+    'radar.units',
+
+    'radar.hello'
   ]);
 })();

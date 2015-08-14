@@ -3,9 +3,9 @@
 (function() {
   'use strict';
 
-  var app = angular.module('lodash', []);
+  var app = angular.module('_', []);
 
-  app.factory('lodash', function() {
+  app.factory('_', function() {
     return _;
   });
 })();

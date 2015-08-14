@@ -7,11 +7,8 @@
     $stateProvider.state('patients', {
       url: '/patients',
       templateUrl: 'app/patients/patient-list.html',
-      controller: 'PatientListController',
-      resolve: {
-        patients: function(PatientService) {
-          return PatientService.getPatients();
-        }
+      controller: function($scope, $controller, PatientListController) {
+        $controller(PatientListController, {$scope: $scope});
       }
     });
 
@@ -21,8 +18,8 @@
       templateUrl: 'app/patients/patient-detail.html',
       controller: 'PatientDetailController',
       resolve: {
-        patient: function($stateParams, PatientService) {
-          return PatientService.getPatient($stateParams.patientId);
+        patient: function($stateParams, store) {
+          return store.get('patients', $stateParams.patientId);
         }
       }
     });

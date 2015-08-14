@@ -34,17 +34,12 @@ var paths = {
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/jquery-ui.js',
     'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-    'bower_components/angular/angular.js',
     'bower_components/lodash/lodash.js',
-    'bower_components/restangular/src/restangular.js',
-    'bower_components/ui-router/release/angular-ui-router.js',
-    'bower_components/humps/humps.js',
-    'bower_components/angular-ui-grid/ui-grid.js',
-    'bower_components/angular-resource/angular-resource.js',
-    'bower_components/moment/moment.js'
+    'bower_components/moment/moment.js',
+    'bower_components/angular/angular.js',
+    'bower_components/ui-router/release/angular-ui-router.js'
   ],
   vendorCss: [
-    'bower_components/angular-ui-grid/ui-grid.css',
     'bower_components/jquery-ui/themes/smoothness/jquery-ui.css'
   ],
   ieJs: [

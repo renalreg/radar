@@ -3,7 +3,15 @@
 
   var app = angular.module('radar.patients');
 
-  app.controller('PatientListController', function($scope, patients) {
-    $scope.patients = patients;
+  app.factory('PatientListController', function(ListController, $injector) {
+    function PatientListController($scope, store) {
+      $injector.invoke(ListController, this, {$scope: $scope});
+
+      this.load(store.query('patients'));
+    }
+
+    PatientListController.prototype = Object.create(ListController.prototype);
+
+    return PatientListController;
   });
 })();

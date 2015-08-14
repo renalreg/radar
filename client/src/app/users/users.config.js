@@ -6,8 +6,7 @@
   app.config(function($stateProvider) {
     $stateProvider.state('users', {
       url: '/users',
-      templateUrl: 'app/users/user-list.html',
-      controller: 'UserListController'
+      templateUrl: 'app/users/user-list.html'
     });
   });
 })();

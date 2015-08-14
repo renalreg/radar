@@ -6,8 +6,7 @@
   app.config(function($stateProvider) {
     $stateProvider.state('patient.units', {
       url: '/units',
-      templateUrl: 'app/units/unit-list.html',
-      controller: 'UnitListController'
+      templateUrl: 'app/units/unit-list.html'
     });
   });
 })();

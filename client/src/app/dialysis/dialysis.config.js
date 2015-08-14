@@ -6,8 +6,7 @@
   app.config(function($stateProvider) {
     $stateProvider.state('patient.dialysis', {
       url: '/dialysis',
-      templateUrl: 'app/dialysis/dialysis.html',
-      controller: 'DialysisController'
+      templateUrl: 'app/dialysis/dialysis.html'
     });
   });
 })();
