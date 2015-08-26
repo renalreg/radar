@@ -58,7 +58,15 @@
   </div>
 
   <div class="content">
-    <div class="ui-view"></div>
+    <div ng-if="init">
+      <div class="ui-view"></div>
+    </div>
+
+    <div ng-if="!init">
+      <div class="block">
+        <p>Loading...</p>
+      </div>
+    </div>
   </div>
 
   <div class="footer">

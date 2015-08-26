@@ -54,7 +54,7 @@
 
   <div filter-helper></div>
 
-  <div ng-show="!page.items">
+  <div ng-show="!page.paginatedItems">
     <p>No results.</p>
   </div>
 
@@ -82,12 +82,6 @@
           <button ng-click="edit(item)" ng-show="editPermission(item) && editEnabled(item)" type="button" class="btn btn-xs btn-primary">Edit</button>
           <button ng-click="remove(item)" ng-show="removePermission(item) && removeEnabled(item)" type="button" class="btn btn-xs btn-danger">Delete</button>
         </td>
-      </tr>
-    </tbody>
-
-    <tbody ng-if="!page.paginatedItems.length">
-      <tr>
-        <td colspan="5">No results.</td>
       </tr>
     </tbody>
   </table>

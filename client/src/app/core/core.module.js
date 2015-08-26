@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.core', ['ui.router', '_']);
+  angular.module('radar.core', []);
 })();

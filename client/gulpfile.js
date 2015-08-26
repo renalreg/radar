@@ -37,6 +37,7 @@ var paths = {
     'bower_components/lodash/lodash.js',
     'bower_components/moment/moment.js',
     'bower_components/angular/angular.js',
+    'bower_components/angular-cookies/angular-cookies.js',
     'bower_components/ui-router/release/angular-ui-router.js'
   ],
   vendorCss: [
