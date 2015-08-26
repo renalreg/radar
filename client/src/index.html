@@ -22,7 +22,7 @@
 </head>
 
 <body>
-  <div class="navbar navbar-static-top radar-navbar">
+  <div class="navbar navbar-static-top navbar-radar">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -48,11 +48,37 @@
           <li ui-sref-active="active">
             <a ui-sref="posts">News</a>
           </li>
-
-          <li ui-sref-active="active">
-            <a ui-sref="login">Login</a>
-          </li>
         </ul>
+
+        <div class="navbar-right">
+          <ul ng-if="isAuthenticated" class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged in as {{user.username}} <span class="caret"></span></a>
+
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="{{ url_for('auth.account') }}">Account</a>
+                </li>
+
+                <li>
+                  <a href="#">Change Email</a>
+                </li>
+
+                <li>
+                  <a href="#">Change Password</a>
+                </li>
+
+                <li><a href="#">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <ul ng-if="!isAuthenticated" class="nav navbar-nav">
+            <li ui-sref-active="active">
+              <a ui-sref="login">Login</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
