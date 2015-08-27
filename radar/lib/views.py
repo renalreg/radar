@@ -6,7 +6,7 @@ from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.permissions import PatientDataPermission, FacilityDataPermission
 
-from radar.lib.serializers import ListField, ValidationError
+from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField
 
 
 class ApiView(MethodView):
@@ -49,6 +49,11 @@ class ApiView(MethodView):
             return jsonify(errors=e.detail), 422
 
 
+class PaginationRequestSerializer(Serializer):
+    page = IntegerField()
+    per_page = IntegerField()
+
+
 class GenericApiView(ApiView):
     serializer_class = None
     validator_class = None
@@ -59,13 +64,45 @@ class GenericApiView(ApiView):
     def filter_query(self, query):
         return query
 
+    def sort_query(self, query):
+        return query
+
+    def paginate_query(self, query):
+        pagination_serializer = PaginationRequestSerializer()
+        pagination = pagination_serializer.to_value(request.args)
+
+        page = pagination.get('page', 1)
+        per_page = pagination.get('per_page')
+
+        if per_page is not None:
+            if page < 1:
+                page = 1
+
+            if per_page < 1:
+                per_page = 1
+
+            count = query.count()
+            query = query.limit(per_page).offset((page - 1) * per_page)
+
+            pagination = {
+                'page': page,
+                'per_page': per_page,
+                'count': count
+            }
+        else:
+            pagination = None
+
+        return query, pagination
+
     def get_object_list(self):
         query = self.get_query()
         query = self.filter_query(query)
+        query = self.sort_query(query)
+        query, meta = self.paginate_query(query)
 
         obj_list = query.all()
 
-        return obj_list
+        return obj_list, meta
 
     def get_object(self):
         query = self.get_query()
@@ -128,11 +165,41 @@ class CreateModelMixin(object):
         return jsonify(data), 201
 
 
+class PaginationResponseSerializer(Serializer):
+    page = IntegerField()
+    per_page = IntegerField()
+    count = IntegerField()
+
+
+class ListSerializer(Serializer):
+    pagination = PaginationResponseSerializer()
+
+    def __init__(self, serializer, *args, **kwargs):
+        super(ListSerializer, self).__init__(*args, **kwargs)
+        self.serializer = serializer
+
+    def get_fields(self):
+        fields = super(ListSerializer, self).get_fields()
+
+        data_field = ListField(self.serializer)
+        data_field.bind('data')
+        fields['data'] = data_field
+
+        return fields
+
+
 class ListModelMixin(object):
     def list(self, *args, **kwargs):
-        obj_list = self.get_object_list()
-        serializer = ListField(self.get_serializer())
-        data = serializer.to_data(obj_list)
+        obj_list, pagination = self.get_object_list()
+
+        serializer = self.get_serializer()
+        list_serializer = ListSerializer(serializer)
+
+        data = list_serializer.to_data({
+            'data': obj_list,
+            'pagination': pagination
+        })
+
         return jsonify(data=data)
 
 

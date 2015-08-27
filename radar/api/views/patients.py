@@ -31,7 +31,6 @@ class PatientList(ListCreateApiView):
     serializer_class = PatientSerializer
 
     def get_query(self):
-        print current_user
         return Patient.query
 
 
