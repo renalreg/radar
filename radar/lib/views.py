@@ -1,12 +1,14 @@
 from flask import request, jsonify
 from flask.views import MethodView
+from sqlalchemy import desc
 from sqlalchemy.orm.exc import NoResultFound
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.permissions import PatientDataPermission, FacilityDataPermission
 
-from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField
+from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField, StringField
+from radar.models import Patient
 
 
 class ApiView(MethodView):
@@ -49,14 +51,10 @@ class ApiView(MethodView):
             return jsonify(errors=e.detail), 422
 
 
-class PaginationRequestSerializer(Serializer):
-    page = IntegerField()
-    per_page = IntegerField()
-
-
 class GenericApiView(ApiView):
     serializer_class = None
     validator_class = None
+    sort_fields = {}
 
     def get_query(self):
         raise NotImplementedError()
@@ -65,16 +63,37 @@ class GenericApiView(ApiView):
         return query
 
     def sort_query(self, query):
+        sort_serializer = SortRequestSerializer()
+        sort_args = sort_serializer.to_value(request.args)
+
+        sort = sort_args.get('sort')
+
+        if sort:
+            if sort[0] == '-':
+                sort_field = sort[1:]
+                sort_direction = lambda x: desc(x)
+            else:
+                sort_field = sort
+                sort_direction = lambda x: x
+
+            sort_fields = self.sort_fields
+
+            expression = sort_fields.get(sort_field)
+
+            if expression is not None:
+                query = query.order_by(sort_direction(expression))
+
         return query
 
     def paginate_query(self, query):
         pagination_serializer = PaginationRequestSerializer()
-        pagination = pagination_serializer.to_value(request.args)
+        pagination_args = pagination_serializer.to_value(request.args)
 
-        page = pagination.get('page', 1)
-        per_page = pagination.get('per_page')
+        per_page = pagination_args.get('per_page')
 
         if per_page is not None:
+            page = pagination_args.get('page', 1)
+
             if page < 1:
                 page = 1
 
@@ -137,6 +156,8 @@ class GenericApiView(ApiView):
         else:
             return validator_class()
 
+    def get_sort_fields(self):
+        return self.sort_fields
 
 class CreateModelMixin(object):
     def create(self, *args, **kwargs):
@@ -163,6 +184,15 @@ class CreateModelMixin(object):
         db.session.commit()
         data = serializer.to_data(obj)
         return jsonify(data), 201
+
+
+class SortRequestSerializer(Serializer):
+    sort = StringField()
+
+
+class PaginationRequestSerializer(Serializer):
+    page = IntegerField()
+    per_page = IntegerField()
 
 
 class PaginationResponseSerializer(Serializer):
