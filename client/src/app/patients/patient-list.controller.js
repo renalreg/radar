@@ -7,7 +7,7 @@
     function PatientListController($scope, store) {
       $injector.invoke(ListController, this, {$scope: $scope});
 
-      this.load(store.query('patients'));
+      this.load(store.findMany('patients'));
     }
 
     PatientListController.prototype = Object.create(ListController.prototype);

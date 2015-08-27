@@ -17,11 +17,15 @@
         this.config = config;
       }
 
-      Adapter.prototype.getUrl = function(name, id) {
+      Adapter.prototype.getUrl = function(url) {
+        return this.config.baseUrl + url;
+      };
+
+      Adapter.prototype.getModelUrl = function(name, id) {
         if (id === undefined) {
-          return this.config.baseUrl + '/' + name;
+          return '/' + name;
         } else {
-          return this.config.baseUrl + '/' + name + '/' + id;
+          return '/' + name + '/' + id;
         }
       };
 
@@ -39,19 +43,16 @@
         return camelCaseKeys(data);
       };
 
-      Adapter.prototype.transformErrors = function(data) {
-        return camelCaseKeys(data);
-      };
-
-      Adapter.prototype.get = function(name, id) {
+      Adapter.prototype.findOne = function(name, id) {
         var self = this;
-        var url = self.getUrl(name, id);
 
-        self.logRequest(name, 'GET', url);
+        var url = self.getModelUrl(name, id);
 
-        return $http.get(url)
+        self.logModelRequest(name, 'GET', url);
+
+        return self.get(url)
           .then(function(response) {
-            return self.transformResponse(response.data);
+            return response.data;
           })
           .catch(function(response) {
             var data = {status: response.status};
@@ -59,17 +60,16 @@
           });
       };
 
-      Adapter.prototype.query = function(name, params) {
+      Adapter.prototype.findMany = function(name, params) {
         var self = this;
-        var url = self.getUrl(name);
 
-        params = self.transformParams(params);
+        var url = self.getModelUrl(name);
 
-        self.logRequest(name, 'GET', url);
+        self.logModelRequest(name, 'GET', url);
 
-        return $http.get(url, {params: params})
+        return self.get(url, params)
           .then(function(response) {
-            return self.transformResponse(response.data.data);
+            return response.data.data;
           })
           .catch(function(response) {
             var data = {status: response.status};
@@ -79,21 +79,20 @@
 
       Adapter.prototype.create = function(name, data) {
         var self = this;
-        var url = self.getUrl(name);
 
-        data = self.transformRequest(data);
+        var url = self.getModelUrl(name);
 
-        self.logRequest(name, 'POST', url);
+        self.logModelRequest(name, 'POST', url);
 
-        return $http.post(url, data)
+        return self.post(url, {}, data)
           .then(function(response) {
-            return self.transformResponse(response.data);
+            return response.data;
           })
           .catch(function(response) {
             var data = {status: response.status};
 
             if (response.status === 422) {
-              data.errors = self.transformErrors(response.data.errors);
+              data.errors = self.transformResponse(response.data.errors);
             }
 
             return $q.reject(data);
@@ -102,21 +101,20 @@
 
       Adapter.prototype.update = function(name, id, data) {
         var self = this;
-        var url = self.getUrl(name, id);
 
-        data = self.transformRequest(data);
+        var url = self.getModelUrl(name, id);
 
-        self.logRequest(name, 'PUT', url);
+        self.logModelRequest(name, 'PUT', url);
 
-        return $http.put(url, data)
+        return self.put(url, {}, data)
           .then(function(response) {
-            return self.transformResponse(response.data);
+            return response.data;
           })
           .catch(function(response) {
             var data = {status: response.status};
 
             if (response.status === 422) {
-              data.errors = self.transformErrors(response.data.errors);
+              data.errors = response.data.errors;
             }
 
             return $q.reject(data);
@@ -125,11 +123,12 @@
 
       Adapter.prototype.remove = function(name, id) {
         var self = this;
-        var url = self.getUrl(name, id);
 
-        self.logRequest(name, 'DELETE', url);
+        var url = self.getModelUrl(name, id);
 
-        return $http.delete(url)
+        self.logModelRequest(name, 'DELETE', url);
+
+        return self.delete(url)
           .then(function() {
             return undefined;
           })
@@ -139,7 +138,56 @@
           });
       };
 
-      Adapter.prototype.logRequest = function(name, method, url) {
+      Adapter.prototype.get = function(url, params) {
+        return this.request('GET', url, params);
+      };
+
+      Adapter.prototype.post = function(url, params, data) {
+        return this.request('POST', url, params, data);
+      };
+
+      Adapter.prototype.put = function(url, params, data) {
+        return this.request('PUT', url, params, data);
+      };
+
+      Adapter.prototype.delete = function(url, params) {
+        return this.request('DELETE', url, params);
+      };
+
+      Adapter.prototype.request = function(method, url, params, data) {
+        var self = this;
+
+        var config = {};
+
+        config.method = method;
+        config.url = self.getUrl(url);
+
+        if (params) {
+          config.params = self.transformParams(params);
+        }
+
+        if (data) {
+          config.data = self.transformRequest(data);
+        }
+
+        return $http(config)
+          .then(function(response) {
+            if (angular.isObject(response.data)) {
+              response.data = self.transformResponse(response.data);
+            }
+
+            return response;
+          })
+          .catch(function(response) {
+            if (angular.isObject(response.data)) {
+              response.data = self.transformResponse(response.data);
+            }
+
+            return $q.reject(response);
+          });
+      };
+
+      Adapter.prototype.logModelRequest = function(name, method, url) {
         console.log('[' + name + '] ' + method + ' ' + url);
       };
 

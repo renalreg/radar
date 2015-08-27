@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, abort
 from flask_cors import CORS
+from flask_login import LoginManager
+from itsdangerous import TimestampSigner, BadSignature
 
 from radar.api.views.demographics import DemographicsList, DemographicsDetail
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
@@ -10,8 +12,10 @@ from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesList, \
     SaltWastingClinicalFeaturesDetail
 from radar.api.views.users import UserDetail, UserList
+from radar.api.views.login import Login
 
 from radar.lib.database import db
+from radar.models import User
 
 
 app = Flask(__name__)
@@ -21,7 +25,24 @@ app.config.from_envvar('RADAR_SETTINGS')
 
 cors = CORS(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.header_loader
+def load_user_from_header(header):
+    # TODO
+    s = TimestampSigner('SECRET')
+
+    try:
+        user_id = int(s.unsign(header, max_age=3600))
+    except BadSignature:
+        abort(401)
+
+    return User.query.filter(User.id == user_id).first()
+
 db.init_app(app)
+
+app.add_url_rule('/login', view_func=Login.as_view('login'))
 
 app.add_url_rule('/patients', view_func=PatientList.as_view('patient_list'))
 app.add_url_rule('/patients/<int:id>', view_func=PatientDetail.as_view('patient_detail'))

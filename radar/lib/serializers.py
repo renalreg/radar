@@ -62,7 +62,10 @@ class Field(object):
         return self.default
 
     def get_value(self, value):
-        return getattr(value, self.source)
+        if isinstance(value, dict):
+            return value.get(self.source)
+        else:
+            return getattr(value, self.source)
 
     def get_data(self, data):
         return data.get(self.field_name, Empty)

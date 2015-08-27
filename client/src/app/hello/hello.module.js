@@ -9,7 +9,7 @@
 
       $injector.invoke(DetailController, self, {$scope: $scope});
 
-      self.load(store.get('dialysis', 1296)).then(function() {
+      self.load(store.findOne('dialysis', 1296)).then(function() {
         self.view();
       });
     }
@@ -17,13 +17,6 @@
     FooController.prototype = Object.create(DetailController.prototype);
 
     return FooController;
-  });
-
-  app.config(function($stateProvider) {
-    $stateProvider.state('hello', {
-      url: '/hello',
-      templateUrl: 'app/hello/hello.html'
-    });
   });
 
   app.directive('fooComponent', function(FooController) {

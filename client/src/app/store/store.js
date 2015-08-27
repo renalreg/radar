@@ -59,7 +59,7 @@
         }
       };
 
-      Store.prototype.get = function(name, id) {
+      Store.prototype.findOne = function(name, id) {
         var self = this;
         var Model = self.getModel(name);
 
@@ -69,7 +69,7 @@
           existingItem.isLoading = true;
         }
 
-        var promise = adapter.get(name, id).then(function(data) {
+        var promise = adapter.findOne(name, id).then(function(data) {
           return self.pushToStore(new Model(name, data));
         });
 
@@ -82,13 +82,13 @@
         return promise;
       };
 
-      Store.prototype.query = function(name, params) {
+      Store.prototype.findMany = function(name, params) {
         var self = this;
         var Model = self.getModel(name);
 
         params = params || {};
 
-        return adapter.query(name, params).then(function(data) {
+        return adapter.findMany(name, params).then(function(data) {
           var items = [];
 
           for (var i = 0; i < data.length; i++) {

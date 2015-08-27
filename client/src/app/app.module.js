@@ -4,6 +4,7 @@
   angular.module('radar', [
     'ngCookies',
     'ui.router',
+    'radar.auth',
     'radar.controllers',
     'radar.core',
     'radar.demographics',
@@ -11,7 +12,6 @@
     'radar.diseaseGroups',
     'radar.filters',
     'radar.forms',
-    'radar.login',
     'radar.patients',
     'radar.posts',
     'radar.store',

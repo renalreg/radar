@@ -64,7 +64,7 @@
       var id = this.getId();
 
       if (id !== null) {
-        store.get(this.name, id);
+        store.findOne(this.name, id);
       }
     };
 

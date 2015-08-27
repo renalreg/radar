@@ -1,12 +1,12 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.login');
+  var app = angular.module('radar.auth');
 
   app.config(function($stateProvider) {
     $stateProvider.state('login', {
       url: '/login',
-      templateUrl: 'app/login/login.html',
+      templateUrl: 'app/auth/login.html',
       controller: 'LoginController'
     });
   });

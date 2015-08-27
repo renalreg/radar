@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.login');
+  var app = angular.module('radar.auth');
 
   app.factory('loginService', function(session, authService) {
     return {

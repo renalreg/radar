@@ -12,10 +12,10 @@
       var items = [];
 
       $q.all([
-        store.query('dialysis', {patientId: $scope.patient.id}).then(function(serverItems) {
+        store.findMany('dialysis', {patientId: $scope.patient.id}).then(function(serverItems) {
           items = serverItems;
         }),
-        store.query('dialysis-types').then(function(items) {
+        store.findMany('dialysis-types').then(function(items) {
           $scope.dialysisTypes = items;
         })
       ]).then(function() {

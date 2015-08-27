@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.core');
+  var app = angular.module('radar.auth');
 
   function AuthStore($cookies) {
     this.cookies = $cookies;

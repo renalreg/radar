@@ -1,3 +1,4 @@
+from flask_login import current_user
 from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
 from radar.models import Patient, UnitPatient, Unit
@@ -30,6 +31,7 @@ class PatientList(ListCreateApiView):
     serializer_class = PatientSerializer
 
     def get_query(self):
+        print current_user
         return Patient.query
 
 

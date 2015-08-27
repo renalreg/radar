@@ -19,7 +19,7 @@
       controller: 'PatientDetailController',
       resolve: {
         patient: function($stateParams, store) {
-          return store.get('patients', $stateParams.patientId);
+          return store.findOne('patients', $stateParams.patientId);
         }
       }
     });

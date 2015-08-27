@@ -1,6 +1,6 @@
 (function() {
   'use strict';
 
-  angular.module('radar.login', []);
+  angular.module('radar.auth', []);
 })();
 

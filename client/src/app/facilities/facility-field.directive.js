@@ -13,7 +13,7 @@
       },
       templateUrl: 'app/facilities/facility-field.html',
       link: function(scope) {
-        store.query('facilities').then(function(facilities) {
+        store.findMany('facilities').then(function(facilities) {
           scope.facilities = facilities;
 
           if (!scope.model) {

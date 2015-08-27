@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.login');
+  var app = angular.module('radar.auth');
 
   app.controller('LoginController', function($scope, session, loginService, $state) {
     $scope.username = '';
