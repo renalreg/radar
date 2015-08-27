@@ -11,25 +11,29 @@
     function login(username, password) {
       var deferred = $q.defer();
 
-      adapter.post('/login', {}, {username: username, password: password}).then(function(response) {
-        var userId = response.data.userId;
-        var token = response.data.token;
+      adapter.post('/login', {}, {username: username, password: password})
+        .then(function(response) {
+          var userId = response.data.userId;
+          var token = response.data.token;
 
-        return store.findOne('users', userId)
-          .then(function(user) {
-            deferred.resolve({
-              user: user,
-              token: token
-            });
-          })
-          .catch(function(response) {
-            if (response.status === 422) {
-              deferred.reject(response.data.errors);
-            } else {
+          return store.findOne('users', userId)
+            .then(function(user) {
+              deferred.resolve({
+                user: user,
+                token: token
+              });
+            })
+            .catch(function() {
               deferred.reject('Error logging in, please try again.');
-            }
-          });
-      });
+            });
+        })
+        .catch(function(response) {
+          if (response.status === 422) {
+            deferred.reject(response.data.errors);
+          } else {
+            deferred.reject('Error logging in, please try again.');
+          }
+        });
 
       return deferred.promise;
     }
