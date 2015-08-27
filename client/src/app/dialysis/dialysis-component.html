@@ -54,11 +54,11 @@
 
   <div filter-helper></div>
 
-  <div ng-show="!page.paginatedItems">
+  <div ng-show="!page.getCount()">
     <p>No results.</p>
   </div>
 
-  <table class="table">
+  <table class="table" ng-if="page.getCount()">
     <thead>
       <tr>
         <th sort-helper="id">ID</th>
@@ -69,8 +69,8 @@
       </tr>
     </thead>
 
-    <tbody ng-if="page.paginatedItems.length">
-      <tr ng-repeat="item in page.paginatedItems">
+    <tbody>
+      <tr ng-repeat="item in page.getItems()">
         <td>{{item.id}}</td>
         <td>{{item.fromDate | dateFormat}}</td>
         <td>{{item.toDate | dateFormat}}</td>

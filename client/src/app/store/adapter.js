@@ -36,7 +36,17 @@
       };
 
       Adapter.prototype.transformParams = function(data) {
-        return snakeCaseKeys(data);
+        data = snakeCaseKeys(data);
+
+        if (data.sort) {
+          if (data.sort.startsWith('-')) {
+            data.sort = '-' + _.snakeCase(data.sort);
+          } else {
+            data.sort = _.snakeCase(data.sort);
+          }
+        }
+
+        return data;
       };
 
       Adapter.prototype.transformResponse = function(data) {
@@ -60,7 +70,7 @@
           });
       };
 
-      Adapter.prototype.findMany = function(name, params) {
+      Adapter.prototype.findMany = function(name, params, meta) {
         var self = this;
 
         var url = self.getModelUrl(name);
@@ -69,7 +79,11 @@
 
         return self.get(url, params)
           .then(function(response) {
-            return response.data.data;
+            if (meta) {
+              return response.data;
+            } else {
+              return response.data.data;
+            }
           })
           .catch(function(response) {
             var data = {status: response.status};

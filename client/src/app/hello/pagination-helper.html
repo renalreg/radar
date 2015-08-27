@@ -1,11 +1,11 @@
 <nav>
   <ul class="pagination">
     <li ng-class="{disabled: !hasPrevious()}">
-      <a href="" ng-click="setPage(1)" ng-disabled="!hasPrevious()">First</a>
+      <a href="" ng-click="firstPage()" ng-disabled="!hasPrevious()">First</a>
     </li>
 
     <li ng-class="{disabled: !hasPrevious()}">
-      <a href="" ng-click="setPage(page - 1)" ng-disabled="!hasPrevious()">Previous</a>
+      <a href="" ng-click="previousPage()" ng-disabled="!hasPrevious()">Previous</a>
     </li>
 
     <li ng-class="{active: page.active}" ng-repeat="page in pages">
@@ -13,11 +13,11 @@
     </li>
 
     <li ng-class="{disabled: !hasNext()}">
-      <a href="" ng-click="setPage(page + 1)" ng-disabled="!hasNext()">Next</a>
+      <a href="" ng-click="nextPage()" ng-disabled="!hasNext()">Next</a>
     </li>
 
     <li ng-class="{disabled: !hasNext()}">
-      <a href="" ng-click="setPage(totalPages)" ng-disabled="!hasNext()">Last</a>
+      <a href="" ng-click="lastPage()" ng-disabled="!hasNext()">Last</a>
     </li>
   </ul>
 </nav>

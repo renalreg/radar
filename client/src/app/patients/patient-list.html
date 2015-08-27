@@ -5,13 +5,13 @@
     Loading...
   </div>
 
-  <div ng-show="!loading">
+  <div ng-show="!loading" list-helper="proxy">
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="firstName">First Name</th>
+          <th sort-helper="lastName">Last Name</th>
         </tr>
       </thead>
 
@@ -23,5 +23,7 @@
         </tr>
       </tbody>
     </table>
+
+    <div pagination-helper></div>
   </div>
 </div>

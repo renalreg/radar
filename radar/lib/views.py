@@ -6,9 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.permissions import PatientDataPermission, FacilityDataPermission
-
 from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField, StringField
-from radar.models import Patient
 
 
 class ApiView(MethodView):
@@ -230,7 +228,7 @@ class ListModelMixin(object):
             'pagination': pagination
         })
 
-        return jsonify(data=data)
+        return jsonify(data)
 
 
 class RetrieveModelMixin(object):

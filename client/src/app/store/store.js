@@ -82,21 +82,34 @@
         return promise;
       };
 
-      Store.prototype.findMany = function(name, params) {
+      Store.prototype.findMany = function(name, params, meta) {
         var self = this;
         var Model = self.getModel(name);
 
         params = params || {};
 
-        return adapter.findMany(name, params).then(function(data) {
+        return adapter.findMany(name, params, meta).then(function(data) {
           var items = [];
+          var r;
+          var rawItems;
 
-          for (var i = 0; i < data.length; i++) {
-            var item = self.pushToStore(new Model(name, data[i]));
+          if (meta) {
+            rawItems = data.data;
+            r = {
+              data: items,
+              pagination: data.pagination
+            };
+          } else {
+            rawItems = data;
+            r = items;
+          }
+
+          for (var i = 0; i < rawItems.length; i++) {
+            var item = self.pushToStore(new Model(name, rawItems[i]));
             items.push(item);
           }
 
-          return items;
+          return r;
         });
       };
 
