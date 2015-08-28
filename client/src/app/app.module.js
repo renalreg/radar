@@ -15,6 +15,7 @@
     'radar.patients',
     'radar.posts',
     'radar.store',
+    'radar.ui',
     'radar.units',
     'radar.users',
     'radar.utils',

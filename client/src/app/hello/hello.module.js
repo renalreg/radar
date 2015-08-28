@@ -125,27 +125,50 @@
   });
 
   app.directive('sortHelper', function() {
-    // TODO show direction icon
-
     return {
       require: '^listHelper',
       scope: {},
       transclude: true,
       templateUrl: 'app/hello/sort-helper.html',
       link: function(scope, element, attrs, listHelperCtrl) {
+
+
         scope.sort = function() {
-          var sortBy = attrs.sortHelper;
-          var reverse = attrs.reverse === 'true';
+          var sortBy = getSortBy();
+          var reverse = getReverse();
 
-          var currentSortBy = listHelperCtrl.getSortBy();
-          var currentReverse = listHelperCtrl.getReverse();
-
-          if (currentSortBy === sortBy) {
+          if (isSorted()) {
+            var currentReverse = listHelperCtrl.getReverse();
             listHelperCtrl.sort(sortBy, !currentReverse);
           } else {
             listHelperCtrl.sort(sortBy, reverse);
           }
         };
+
+        scope.isAscending = isAscending;
+        scope.isDescending = isDescending;
+
+        function isAscending() {
+          return isSorted() && !listHelperCtrl.getReverse();
+        }
+
+        function isDescending() {
+          return isSorted() && listHelperCtrl.getReverse();
+        }
+
+        function isSorted() {
+          var sortBy = getSortBy();
+          var currentSortBy = listHelperCtrl.getSortBy();
+          return sortBy === currentSortBy;
+        }
+
+        function getSortBy() {
+          return attrs.sortHelper;
+        }
+
+        function getReverse() {
+          return attrs.reverse === 'true';
+        }
       }
     };
   });
@@ -159,11 +182,11 @@
         scope.search = '';
 
         scope.$watch('search', function(value) {
-          console.log(value);
           listHelperCtrl.filter(value);
         });
 
         scope.clear = function() {
+          scope.search = '';
           listHelperCtrl.filter('');
         };
       }
@@ -479,5 +502,5 @@
     };
 
     return ListHelperProxy;
-  })
+  });
 })();

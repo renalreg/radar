@@ -33,4 +33,3 @@
 
   app.service('authStore', AuthStore);
 })();
-

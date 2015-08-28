@@ -1,0 +1,60 @@
+<div loading="loading">
+  <div ng-if="viewing">
+    <p ng-show="listEnabled()"><button ng-click="list()" type="button" class="btn btn-default">List</button></p>
+    <p ng-show="editEnabled(item)"><button ng-click="edit(item)" type="button" class="btn btn-primary">Edit</button></p>
+    <pre>{{item.getData() | json}}</pre>
+  </div>
+
+  <div ng-if="editing">
+    <p ng-show="listEnabled()"><button ng-click="list()" type="button" class="btn btn-default">List</button></p>
+
+    <p ng-show="viewEnabled(originalItem)"><button ng-click="view(originalItem)" class="btn btn-default">View</button></p>
+
+    <form class="form-horizontal" ng-submit="form.$valid && saveEnabled() && saveAndView()" name="form" novalidate>
+      <div disease-group-field model="item.diseaseGroup.diseaseGroup"></div>
+
+      <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+          <button ng-class="{disabled: form.$invalid || !saveEnabled()}" ng-disabled="form.$invalid || !saveEnabled()" type="submit" class="btn btn-success">Save</button>
+          <button ng-click="list()" ng-show="listEnabled()" type="button" class="btn btn-link">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10">
+    <p><button ng-click="create()" ng-show="createEnabled()" type="button" class="btn btn-primary">Add to Disease Group</button></p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th sort-helper="diseaseGroup.name">Disease Group</th>
+          <th>Added</th>
+          <th>Active</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+      <tr ng-repeat="item in page.getItems()">
+        <td>{{item.diseaseGroup.name}}</td>
+        <td>{{item.createdDate | dateFormat}}</td>
+        <td><span tick="item.isActive"></span></td>
+        <td>
+          <button ng-click="view(item)" ng-show="viewEnabled(item)" type="button" class="btn btn-xs btn-default">View</button>
+          <button ng-click="edit(item)" ng-show="editEnabled(item)" type="button" class="btn btn-xs btn-primary">Edit</button>
+          <button ng-click="remove(item)" ng-show="removeEnabled(item)" type="button" class="btn btn-xs btn-danger">Delete</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

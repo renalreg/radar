@@ -1,0 +1,147 @@
+@import "variables";
+
+$navbar-radar-color: #FFF;
+$navbar-radar-bg: $radar-primary;
+$navbar-radar-border: none;
+$navbar-radar-brand-color: #FFF;
+$navbar-radar-brand-hover-color: #FFF;
+$navbar-radar-brand-hover-bg: $radar-primary-selected;
+$navbar-radar-link-color: #FFF;
+$navbar-radar-link-hover-color: #FFF;
+$navbar-radar-link-hover-bg: $radar-primary-selected;
+$navbar-radar-link-active-color: #FFF;
+$navbar-radar-link-active-bg: $radar-primary-selected;
+$navbar-radar-link-disabled-color: #FFF;
+$navbar-radar-link-disabled-bg: $radar-primary-selected;
+$navbar-radar-toggle-border-color: #FFF;
+$navbar-radar-toggle-hover-bg: $radar-primary-selected;
+$navbar-radar-toggle-icon-bar-bg: #FFF;
+
+.navbar-radar {
+  background-color: $navbar-radar-bg;
+  border-color: $navbar-radar-border;
+  margin-bottom: 0;
+
+  .navbar-brand {
+    color: $navbar-radar-brand-color;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover, &:focus {
+      color: $navbar-radar-brand-hover-color;
+      background-color: $navbar-radar-brand-hover-bg;
+    }
+  }
+
+  .navbar-text {
+    color: $navbar-radar-color;
+  }
+
+  .navbar-nav {
+    > li > a {
+      color: $navbar-radar-link-color;
+
+      &:hover, &:focus {
+        color: $navbar-radar-link-hover-color;
+        background-color: $navbar-radar-link-hover-bg;
+      }
+    }
+
+    > .active > a {
+      &, &:hover, &:focus {
+        color: $navbar-radar-link-active-color;
+        background-color: $navbar-radar-link-active-bg;
+      }
+    }
+
+    > .disabled > a {
+      &, &:hover, &:focus {
+        color: $navbar-radar-link-disabled-color;
+        background-color: $navbar-radar-link-disabled-bg;
+      }
+    }
+  }
+
+  .navbar-toggle {
+    border-color: $navbar-radar-toggle-border-color;
+
+    &:hover, &:focus {
+      background-color: $navbar-radar-toggle-hover-bg;
+    }
+
+    .icon-bar {
+      background-color: $navbar-radar-toggle-icon-bar-bg;
+    }
+  }
+
+  .navbar-collapse,
+  .navbar-form {
+    border-color: darken($navbar-radar-bg, 7%);
+  }
+
+  .navbar-nav {
+    > .open > a {
+      &, &:hover, &:focus {
+        background-color: $navbar-radar-link-active-bg;
+        color: $navbar-radar-link-active-color;
+      }
+    }
+
+    @media (max-width: $grid-float-breakpoint-max) {
+      .open .dropdown-menu {
+        > .dropdown-header {
+          border-color: $navbar-radar-border;
+        }
+
+        .divider {
+          background-color: $navbar-radar-border;
+        }
+
+        > li > a {
+          color: $navbar-radar-link-color;
+
+          &:hover, &:focus {
+            color: $navbar-radar-link-hover-color;
+            background-color: $navbar-radar-link-hover-bg;
+          }
+        }
+
+        > .active > a {
+          &, &:hover, &:focus {
+            color: $navbar-radar-link-active-color;
+            background-color: $navbar-radar-link-active-bg;
+          }
+        }
+
+        > .disabled > a {
+          &, &:hover, &:focus {
+            color: $navbar-radar-link-disabled-color;
+            background-color: $navbar-radar-link-disabled-bg;
+          }
+        }
+      }
+    }
+  }
+
+  .navbar-link {
+    color: $navbar-radar-link-color;
+
+    &:hover {
+      color: $navbar-radar-link-hover-color;
+    }
+  }
+
+  .btn-link {
+    color: $navbar-radar-link-color;
+
+    &:hover, &:focus {
+      color: $navbar-radar-link-hover-color;
+    }
+
+    &[disabled], fieldset[disabled] & {
+      &:hover, &:focus {
+        color: $navbar-radar-link-disabled-color;
+      }
+    }
+  }
+}

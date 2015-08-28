@@ -41,7 +41,12 @@ var paths = {
     'bower_components/ui-router/release/angular-ui-router.js'
   ],
   vendorCss: [
-    'bower_components/jquery-ui/themes/smoothness/jquery-ui.css'
+    'bower_components/jquery-ui/themes/smoothness/jquery-ui.css',
+    'bower_components/font-awesome/css/font-awesome.css'
+  ],
+  vendorFonts: [
+    'bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}',
+    'bower_components/font-awesome/font/*.{otf,eot,svg,ttf,woff,woff2}'
   ],
   ieJs: [
     'bower_components/html5shiv/dist/html5shiv.js',
@@ -157,7 +162,7 @@ gulp.task('templates', function() {
 });
 
 gulp.task('fonts', function() {
-  return gulp.src('bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}')
+  return gulp.src(paths.vendorFonts)
     .pipe(flatten())
     .pipe(gulp.dest('dist/fonts'));
 });

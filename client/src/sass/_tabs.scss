@@ -1,0 +1,36 @@
+@import "variables";
+
+$radar-tabs-text: $radar-secondary-text;
+$radar-tabs-hover-bg: #d9e6f3;
+$radar-tabs-active-text: #fff;
+$radar-tabs-active-bg: $radar-secondary;
+
+ul.tabs-radar {
+  border-bottom: 1px solid $radar-tabs-active-bg;
+  margin-bottom: $line-height-computed / 2;
+
+  > li {
+    float: left;
+
+    > a {
+      color: $radar-tabs-text;
+      margin-right: 2px;
+      border-top-left-radius: $border-radius-base;
+      border-top-right-radius: $border-radius-base;
+
+      &:hover,
+      &:focus {
+        background-color: $radar-tabs-hover-bg;
+      }
+    }
+
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        background-color: $radar-tabs-active-bg;
+        color: $radar-tabs-active-text;
+      }
+    }
+  }
+}

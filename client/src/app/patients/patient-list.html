@@ -1,29 +1,33 @@
-<div class="block">
+<div class="content">
   <h1 class="page-header">Patients</h1>
 
-  <div ng-show="loading">
-    Loading...
-  </div>
+  <div class="row">
+    <div class="col-md-9">
+      <div loading="loading" list-helper="proxy">
+        <table class="table">
+          <thead>
+            <tr>
+              <th sort-helper="id">ID</th>
+              <th sort-helper="firstName">First Name</th>
+              <th sort-helper="lastName">Last Name</th>
+            </tr>
+          </thead>
 
-  <div ng-show="!loading" list-helper="proxy">
-    <table class="table">
-      <thead>
-        <tr>
-          <th sort-helper="id">ID</th>
-          <th sort-helper="firstName">First Name</th>
-          <th sort-helper="lastName">Last Name</th>
-        </tr>
-      </thead>
+          <tbody>
+            <tr ng-repeat="patient in items">
+              <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
+              <td>{{patient.firstName}}</td>
+              <td>{{patient.lastName}}</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <tbody>
-        <tr ng-repeat="patient in items">
-          <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
-          <td>{{patient.firstName}}</td>
-          <td>{{patient.lastName}}</td>
-        </tr>
-      </tbody>
-    </table>
+        <div pagination-helper></div>
+      </div>
+    </div>
 
-    <div pagination-helper></div>
+    <div class="col-md-3">
+      <h3>Search</h3>
+    </div>
   </div>
 </div>

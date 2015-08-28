@@ -83,16 +83,12 @@
     </div>
   </div>
 
-  <div class="content">
-    <div ng-if="init">
-      <div class="ui-view"></div>
-    </div>
+  <div ng-if="init">
+    <div class="ui-view"></div>
+  </div>
 
-    <div ng-if="!init">
-      <div class="block">
-        <p>Loading...</p>
-      </div>
-    </div>
+  <div ng-if="!init" class="content">
+    <div class="well"><strong>Loading <i class="fa fa-spinner"></i></strong></div>
   </div>
 
   <div class="footer">

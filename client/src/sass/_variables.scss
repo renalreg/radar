@@ -1,0 +1,70 @@
+// RaDaR
+
+$radar-primary: #0fb153;
+$radar-primary-text: #07672a;
+$radar-primary-selected: #3abe68;
+
+$radar-secondary: #4c90d6;
+$radar-secondary-text: #2a5366;
+$radar-secondary-bg: #c0d7ee;
+
+$radar-success: #75cf34;
+$radar-success-text: #07672a;
+$radar-success-bg: #ade2b2;
+
+$radar-info: #4c90d6;
+$radar-info-text: #2a5366;
+$radar-info-bg: #c0d7ee;
+
+$radar-warning: #fac533;
+$radar-warning-text: #99741a;
+$radar-warning-bg: #fce8a3;
+
+$radar-danger: #ff0006;
+$radar-danger-text: #9d0002;
+$radar-danger-bg: #ffab89;
+
+$radar-footer-height: 45px;
+$radar-padding: 15px;
+
+// Bootstrap
+
+// Fonts
+$font-size-base: 13px;
+$icon-font-path: '/bower_components/bootstrap-sass/assets/fonts/bootstrap/';
+
+// Links
+$link-color: $radar-primary-text;
+
+// Headings
+$headings-color: #033a16;
+$font-size-h1: floor(($font-size-base * 1.8));
+$font-size-h2: floor(($font-size-base * 1.6));
+$font-size-h3: ceil(($font-size-base * 1.4));
+$font-size-h4: ceil(($font-size-base * 1.2));
+$font-size-h5: $font-size-base;
+$font-size-h6: ceil(($font-size-base * 0.8));
+
+$brand-primary: $radar-primary;
+$brand-success: $radar-success;
+$brand-info: $radar-info;
+$brand-warning: $radar-warning;
+$brand-danger: $radar-danger;
+
+// Success
+$state-success-text: $radar-success-text;
+$state-success-bg: $radar-success-bg;
+
+// Info
+$state-info-text: $radar-info-text;
+$state-info-bg: $radar-info-bg;
+
+// Warning
+$state-warning-text: $radar-warning-text;
+$state-warning-bg: $radar-warning-bg;
+
+// Danger
+$state-danger-text: $radar-danger-text;
+$state-danger-bg: $radar-danger-bg;
+
+@import "bootstrap/variables";

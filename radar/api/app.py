@@ -5,6 +5,7 @@ from itsdangerous import TimestampSigner, BadSignature
 
 from radar.api.views.demographics import DemographicsList, DemographicsDetail
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
+from radar.api.views.disease_groups import DiseaseGroupList
 from radar.api.views.facilities import FacilityList, FacilityDetail
 from radar.api.views.patients import PatientList, PatientDetail
 from radar.api.views.posts import PostList, PostDetail
@@ -62,6 +63,8 @@ app.add_url_rule('/users/<int:id>', view_func=UserDetail.as_view('user_detail'))
 
 app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
 app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
+
+app.add_url_rule('/disease-groups', view_func=DiseaseGroupList.as_view('disease_group_list'))
 
 app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
 app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))

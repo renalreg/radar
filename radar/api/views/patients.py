@@ -1,6 +1,6 @@
-from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField
+from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField, DateField, IntegerField
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
-from radar.models import Patient, UnitPatient, Unit
+from radar.models import Patient, UnitPatient, Unit, DiseaseGroup, DiseaseGroupPatient
 
 
 class UnitSerializer(MetaSerializerMixin, ModelSerializer):
@@ -16,10 +16,26 @@ class UnitPatientSerializer(MetaSerializerMixin, ModelSerializer):
         exclude = ['patient_id', 'unit_id']
 
 
+class DiseaseGroupSerializer(MetaSerializerMixin, ModelSerializer):
+    class Meta:
+        model_class = DiseaseGroup
+
+
+class DiseaseGroupPatientSerializer(MetaSerializerMixin, ModelSerializer):
+    disease_group = DiseaseGroupSerializer()
+
+    class Meta:
+        model_class = DiseaseGroupPatient
+        exclude = ['patient_id', 'disease_group_id']
+
+
 class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     first_name = StringField()
     last_name = StringField()
+    date_of_birth = DateField()
+    gender = StringField()
     units = ListField(field=UnitPatientSerializer(), source='unit_patients')
+    disease_groups = ListField(field=DiseaseGroupPatientSerializer(), source='disease_group_patients')
 
     class Meta:
         model_class = Patient

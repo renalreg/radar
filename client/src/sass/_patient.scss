@@ -1,0 +1,91 @@
+@import "variables";
+
+.patient {
+  background-color: #EEE;
+  border-bottom: 1px solid #CCC;
+
+  ul {
+    list-style-type: none;
+    overflow: hidden;
+    padding: 5px $radar-padding 0 $radar-padding;
+    margin: 0;
+
+    li {
+      float: left;
+      margin-right: 20px;
+      margin-bottom: 5px;
+    }
+
+    li.info {
+      // Padding to match patient name height
+      padding: 4px 0;
+    }
+
+    li.info > span {
+      overflow: hidden;
+      display: block;
+      border: 1px solid #333;
+      border-radius: 2px;
+    }
+
+    li.info {
+      .key, .value {
+        display: block;
+        float: left;
+        padding: 3px 5px;
+      }
+    }
+
+    li.info .key {
+      color: #FFF;
+      background-color: #333;
+    }
+
+    li.name {
+      a {
+        font-weight: bold;
+        font-size: 24px;
+        text-decoration: none;
+        color: #333;
+      }
+    }
+  }
+}
+
+.patient-nav {
+  ul {
+    background-color: #EEE;
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #CCC;
+    list-style-type: none;
+    overflow: hidden;
+    padding: 5px $radar-padding 0 $radar-padding;
+    margin: 0;
+
+    li {
+      float: left;
+      margin-right: 5px;
+      margin-bottom: 5px;
+
+      a {
+        display: block;
+        padding: 3px 5px;
+        border-radius: 2px;
+        color: #333;
+        text-decoration: underline;
+      }
+    }
+
+    li.active a, li a:hover, li a:focus {
+      color: #FFF;
+      background-color: #333;
+    }
+
+    li.group {
+      display: block;
+      padding: 3px 5px 3px 0;
+      font-weight: bold;
+      background-color: transparent;
+    }
+  }
+}
