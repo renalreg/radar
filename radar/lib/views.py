@@ -60,26 +60,31 @@ class GenericApiView(ApiView):
     def filter_query(self, query):
         return query
 
-    def sort_query(self, query):
+    def get_sort_args(self):
         sort_serializer = SortRequestSerializer()
         sort_args = sort_serializer.to_value(request.args)
-
         sort = sort_args.get('sort')
 
         if sort:
             if sort[0] == '-':
-                sort_field = sort[1:]
-                sort_direction = lambda x: desc(x)
+                return sort[1:], True
             else:
-                sort_field = sort
-                sort_direction = lambda x: x
+                return sort, False
+        else:
+            return None, False
 
-            sort_fields = self.sort_fields
+    def sort_query(self, query):
+        sort, reverse = self.get_sort_args()
 
-            expression = sort_fields.get(sort_field)
+        if sort is not None:
+            sort_fields = self.get_sort_fields()
+            expression = sort_fields.get(sort)
 
             if expression is not None:
-                query = query.order_by(sort_direction(expression))
+                if reverse:
+                    expression = desc(expression)
+
+                query = query.order_by(expression)
 
         return query
 

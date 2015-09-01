@@ -99,8 +99,8 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(Patient.is_active == is_active)
         return self
 
-    def order_by(self, column, direction):
-        self.query = self.query.order_by(*order_patients(self.user, column, direction))
+    def sort(self, column, reverse=False):
+        self.query = self.query.order_by(*sort_patients(self.user, column, reverse))
 
     def build(self, permissions=True):
         query = self.query
@@ -266,71 +266,71 @@ def filter_by_demographics_permissions(user):
     )
 
 
-def order_by_demographics_field(user, field, direction, else_=None):
+def sort_by_demographics_field(user, field, reverse, else_=None):
     if user.is_admin:
         expression = field
     else:
         demographics_permission_sub_query = filter_by_demographics_permissions(user)
         expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
-    if direction == DESCENDING:
+    if reverse:
         expression = desc(expression)
 
     return expression
 
 
-def order_by_field(field, direction):
-    if direction == DESCENDING:
+def sort_by_field(field, reverse):
+    if reverse:
         field = desc(field)
 
     return field
 
 
-def order_by_radar_id(direction):
-    return order_by_field(Patient.id, direction)
+def sort_by_radar_id(reverse):
+    return sort_by_field(Patient.id, reverse)
 
 
-def order_by_first_name(user, direction):
-    return order_by_demographics_field(user, Patient.first_name, direction)
+def sort_by_first_name(user, reverse):
+    return sort_by_demographics_field(user, Patient.first_name, reverse)
 
 
-def order_by_last_name(user, direction):
-    return order_by_demographics_field(user, Patient.last_name, direction)
+def sort_by_last_name(user, reverse):
+    return sort_by_demographics_field(user, Patient.last_name, reverse)
 
 
-def order_by_gender(direction):
-    return order_by_field(Patient.gender, direction)
+def sort_by_gender(reverse):
+    return sort_by_field(Patient.gender, reverse)
 
 
-def order_by_date_of_birth(user, direction):
-    date_of_birth_order = order_by_demographics_field(user, Patient.date_of_birth, direction)
+def sort_by_date_of_birth(user, reverse):
+    date_of_birth_order = sort_by_demographics_field(user, Patient.date_of_birth, reverse)
 
     if user.is_admin:
         return [date_of_birth_order]
     else:
         # Users without demographics permissions can only see the year
-        year_order = order_by_field(extract('year', Patient.date_of_birth), direction)
+        year_order = sort_by_field(extract('year', Patient.date_of_birth), reverse)
 
         # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
-        anonymised_order = order_by_demographics_field(user, 1, direction, else_=0)
+        anonymised_order = sort_by_demographics_field(user, 1, reverse, else_=0)
 
         return [year_order, anonymised_order, date_of_birth_order]
 
 
-def order_patients(user, order_by, direction):
-    if order_by == 'first_name':
-        clauses = [order_by_first_name(user, direction)]
-    elif order_by == 'last_name':
-        clauses = [order_by_last_name(user, direction)]
-    elif order_by == 'gender':
-        clauses = [order_by_gender(direction)]
-    elif order_by == 'date_of_birth':
-        clauses = order_by_date_of_birth(user, direction)
+def sort_patients(user, sort_by, reverse):
+    if sort_by == 'first_name':
+        clauses = [sort_by_first_name(user, reverse)]
+    elif sort_by == 'last_name':
+        clauses = [sort_by_last_name(user, reverse)]
+    elif sort_by == 'gender':
+        clauses = [sort_by_gender(reverse)]
+    elif sort_by == 'date_of_birth':
+        clauses = sort_by_date_of_birth(user, reverse)
     else:
-        return [order_by_radar_id(direction)]
+        return [sort_by_radar_id(reverse)]
 
     # Decide ties using RaDaR ID
-    clauses.append(order_by_radar_id(True))
+    clauses.append(sort_by_radar_id(False))
 
     return clauses
 
