@@ -63,9 +63,9 @@ class Field(object):
 
     def get_value(self, value):
         if isinstance(value, dict):
-            return value.get(self.source)
+            return value.get(self.source, Empty)
         else:
-            return getattr(value, self.source)
+            return getattr(value, self.source, Empty)
 
     def get_data(self, data):
         return data.get(self.field_name, Empty)
@@ -420,6 +420,9 @@ class Serializer(Field):
             # Get the instance data
             field_value = field.get_value(value)
 
+            if field_value is Empty:
+                continue
+
             # This saves fields having to handle None themselves
             if field_value is None:
                 field_data = None
@@ -430,12 +433,6 @@ class Serializer(Field):
             data[field.field_name] = field_data
 
         return data
-
-    def create(self, validated_data):
-        raise NotImplementedError()
-
-    def update(self, obj, validated_data):
-        raise NotImplementedError()
 
     def transform_errors(self, errors):
         transformed_errors = {}

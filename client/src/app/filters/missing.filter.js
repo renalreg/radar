@@ -3,13 +3,14 @@
 
   var app = angular.module('radar.filters');
 
-  app.filter('dateFormat', function(moment) {
+  app.filter('missing', function() {
     return function(input) {
-      if (input) {
-        return moment(input, 'YYYY-MM-DD').format('DD/MM/YYYY');
-      } else {
+      if (input === '' || input === null || input === undefined) {
         return '-';
+      } else {
+        return input;
       }
     };
   });
 })();
+

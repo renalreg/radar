@@ -27,6 +27,16 @@
 
     PatientModel.prototype = Object.create(Model.prototype);
 
+    PatientModel.prototype.getName = function() {
+      if (this.firstName !== undefined && this.lastName !== undefined) {
+        return this.firstName + ' ' + this.lastName;
+      } else if (this.getId() !== null) {
+        return 'Patient #' + this.getId();
+      } else {
+        return 'New Patient';
+      }
+    };
+
     return PatientModel;
   });
 

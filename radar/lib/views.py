@@ -1,11 +1,13 @@
 from flask import request, jsonify
 from flask.views import MethodView
-from sqlalchemy import desc
+from flask_login import current_user
+from sqlalchemy import desc, inspect
 from sqlalchemy.orm.exc import NoResultFound
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.lib.permissions import PatientDataPermission, FacilityDataPermission
+from radar.lib.patient_search import PatientQueryBuilder
+from radar.lib.permissions import PatientDataPermission, FacilityDataPermission, IsAuthenticated
 from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField, StringField
 
 
@@ -14,18 +16,21 @@ class ApiView(MethodView):
 
     def check_permissions(self):
         for permission in self.get_permissions():
-            if not permission.has_permission():
+            if not permission.has_permission(request, current_user):
                 message = getattr(permission, 'message', None)
                 raise PermissionDenied(message)
 
-    def check_object_permission(self, obj):
+    def check_object_permissions(self, obj):
         for permission in self.get_permissions():
-            if not permission.has_object_permission(obj):
+            if not permission.has_object_permission(request, current_user, obj):
                 message = getattr(permission, 'message', None)
                 raise PermissionDenied(message)
+
+    def get_permission_classes(self):
+        return self.permission_classes
 
     def get_permissions(self):
-        return [permission() for permission in self.permission_classes]
+        return [permission() for permission in self.get_permission_classes()]
 
     @classmethod
     def error_response(cls, code, detail=None):
@@ -37,6 +42,8 @@ class ApiView(MethodView):
         return json, code
 
     def dispatch_request(self, *args, **kwargs):
+        self.check_permissions()
+
         try:
             return super(ApiView, self).dispatch_request(*args, **kwargs)
         except BadRequest as e:
@@ -53,9 +60,7 @@ class GenericApiView(ApiView):
     serializer_class = None
     validator_class = None
     sort_fields = {}
-
-    def get_query(self):
-        raise NotImplementedError()
+    model_class = None
 
     def filter_query(self, query):
         return query
@@ -120,25 +125,26 @@ class GenericApiView(ApiView):
         query = self.get_query()
         query = self.filter_query(query)
         query = self.sort_query(query)
-        query, meta = self.paginate_query(query)
+        query, pagination = self.paginate_query(query)
 
         obj_list = query.all()
 
-        return obj_list, meta
+        return obj_list, pagination
 
     def get_object(self):
         query = self.get_query()
         query = self.filter_query(query)
 
         id = request.view_args['id']
-        query = query.filter_by(id=id)
+        model_class = self.get_model_class()
+        query = query.filter(model_class.id == id)
 
         try:
             obj = query.one()
         except NoResultFound:
             raise NotFound()
 
-        self.check_object_permission(obj)
+        self.check_object_permissions(obj)
 
         return obj
 
@@ -162,6 +168,13 @@ class GenericApiView(ApiView):
     def get_sort_fields(self):
         return self.sort_fields
 
+    def get_model_class(self):
+        return self.model_class
+
+    def get_query(self):
+        return self.get_model_class().query
+
+
 class CreateModelMixin(object):
     def create(self, *args, **kwargs):
         serializer = self.get_serializer()
@@ -177,8 +190,10 @@ class CreateModelMixin(object):
         validator = self.get_validator()
 
         if validator is not None:
+            ctx = {'user': current_user}
+
             try:
-                validator.run_validation(obj)
+                validator.run_validation(obj, ctx)
             except ValidationError as e:
                 errors = serializer.transform_errors(e.detail)
                 raise ValidationError(detail=errors)
@@ -228,10 +243,12 @@ class ListModelMixin(object):
         serializer = self.get_serializer()
         list_serializer = ListSerializer(serializer)
 
-        data = list_serializer.to_data({
-            'data': obj_list,
-            'pagination': pagination
-        })
+        response = {'data': obj_list}
+
+        if pagination:
+            response['pagination'] = pagination
+
+        data = list_serializer.to_data(response)
 
         return jsonify(data)
 
@@ -260,8 +277,10 @@ class UpdateModelMixin(object):
         validator = self.get_validator()
 
         if validator is not None:
+            ctx = {'user': current_user}
+
             try:
-                validator.run_validation(obj)
+                validator.run_validation(obj, ctx)
             except ValidationError as e:
                 errors = serializer.transform_errors(e.detail)
                 raise ValidationError(detail=errors)
@@ -306,54 +325,61 @@ class RetrieveUpdateDestroyAPIView(RetrieveModelMixin, UpdateModelMixin, Destroy
         return self.destroy(*args, **kwargs)
 
 
+class PatientRequestSerializer(Serializer):
+    patient_id = IntegerField()
+
+
 class PatientDataMixin(object):
     def get_permission_classes(self):
         permission_classes = super(PatientDataMixin, self).get_permission_classes()
+
+        if IsAuthenticated not in permission_classes:
+            permission_classes.insert(0, IsAuthenticated)
+
         permission_classes += [PatientDataPermission]
+
         return permission_classes
 
     def filter_query(self, query):
         query = super(PatientDataMixin, self).filter_query(query)
 
-        patient_id = request.args.get('patient_id')
+        patients_query = PatientQueryBuilder(current_user).build().subquery()
+        query = query.join(patients_query)
 
-        if patient_id is not None:
-            try:
-                patient_id = int(patient_id)
-            except ValueError:
-                raise BadRequest('patient_id must be an integer.')
+        serializer = PatientRequestSerializer()
+        args = serializer.to_value(request.args)
 
-            # TODO permissions
-            query = query.filter_by(patient_id=patient_id)
-        else:
-            # TODO filter
-            pass
+        if 'patient_id' in args:
+            model_class = self.get_model_class()
+            query = query.filter(model_class.patient_id == args['patient_id'])
 
         return query
+
+
+class FacilityRequestSerializer(Serializer):
+    facility_id = IntegerField()
 
 
 class FacilityDataMixin(object):
     def get_permission_classes(self):
         permission_classes = super(FacilityDataMixin, self).get_permission_classes()
+
+        if IsAuthenticated not in permission_classes:
+            permission_classes.insert(0, IsAuthenticated)
+
         permission_classes += [FacilityDataPermission]
+
         return permission_classes
 
     def filter_query(self, query):
         query = super(FacilityDataMixin, self).filter_query(query)
 
-        facility_id = request.args.get('facility_id')
+        serializer = FacilityRequestSerializer()
+        args = serializer.to_value(request.args)
 
-        if facility_id is not None:
-            try:
-                facility_id = int(facility_id)
-            except ValueError:
-                raise BadRequest('facility_id must be an integer.')
-
-            # TODO permissions
-            query = query.filter_by(facility_id=facility_id)
-        else:
-            # TODO filter
-            pass
+        if 'facility_id' in args:
+            model_class = self.get_model_class()
+            query = query.filter(model_class.facility_id == args['facility_id'])
 
         return query
 

@@ -1,7 +1,7 @@
 <div class="patient-header">
   <div class="patient">
     <ul>
-      <li class="name"><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.firstName}} {{patient.lastName}}</a></li>
+      <li class="name"><a ui-sref="patient.demographics({patientId: patient.id})" ng-bind="patient.getName()"></a></li>
       <li class="info">
         <span>
           <span class="key">ID</span>
@@ -12,7 +12,8 @@
       <li class="info">
         <span>
           <span class="key">DOB</span>
-          <span class="value">{{patient.dateOfBirth | dateFormat}}</span>
+          <span class="value" ng-if="patient.dateOfBirth">{{patient.dateOfBirth | dateFormat}}</span>
+          <span class="value" ng-if="!patient.dateOfBirth">{{patient.yearOfBirth | missing}}</span>
         </span>
       </li>
 

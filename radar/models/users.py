@@ -218,3 +218,15 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
             return '%s %s (%s)' % (self.first_name, self.last_name, self.email)
         else:
             return '%s (%s)' % (self.username, self.email)
+
+    # -----
+
+    def get_unit_membership(self, unit):
+        for unit_user in self.unit_users:
+            if unit_user.unit == unit:
+                return unit_user
+
+        return None
+
+    def in_unit(self, unit):
+        return self.get_unit_membership(unit) is not None

@@ -10,6 +10,4 @@ class DiseaseGroupSerializer(MetaSerializerMixin, ModelSerializer):
 
 class DiseaseGroupList(ListCreateApiView):
     serializer_class = DiseaseGroupSerializer
-
-    def get_query(self):
-        return DiseaseGroup.query
+    model_class = DiseaseGroup

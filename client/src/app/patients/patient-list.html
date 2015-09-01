@@ -24,17 +24,22 @@
           <tbody>
             <tr ng-repeat="patient in items">
               <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
-              <td>{{patient.firstName}}</td>
-              <td>{{patient.lastName}}</td>
-              <td>{{patient.dateOfBirth | dateFormat}}</td>
+              <td>{{patient.firstName | missing}}</td>
+              <td>{{patient.lastName | missing}}</td>
+              <td>
+                <span ng-if="patient.dateOfBirth">{{patient.dateOfBirth | dateFormat}}</span>
+                <span ng-if="!patient.dateOfBirth">{{patient.yearOfBirth | missing}}</span>
+              </td>
               <td>{{patient.gender | genderFormat}}</td>
               <td>
+                <span ng-if="!patient.diseaseGroups.length">-</span>
                 <span ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.name'">
                   {{diseaseGroup.diseaseGroup.name}}
                   <br ng-if="!$last" />
                 </span>
               </td>
               <td>
+                <span ng-if="!patient.units.length">-</span>
                 <span ng-repeat="unit in patient.units | orderBy: 'unit.name'">
                   {{unit.unit.name}}
                   <br ng-if="!$last" />

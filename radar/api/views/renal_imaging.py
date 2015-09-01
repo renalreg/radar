@@ -10,13 +10,9 @@ class RenalImagingSerializer(MetaSerializerMixin, FacilitySerializerMixin, Model
 
 class RenalImagingList(FacilityDataMixin, PatientDataList):
     serializer_class = RenalImagingSerializer
-
-    def get_query(self):
-        return RenalImaging.query
+    model_class = RenalImaging
 
 
 class RenalImagingDetail(FacilityDataMixin, PatientDataDetail):
     serializer_class = RenalImagingSerializer
-
-    def get_query(self):
-        return RenalImaging.query
+    model_class = RenalImaging

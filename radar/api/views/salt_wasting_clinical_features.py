@@ -10,13 +10,9 @@ class SaltWastingClinicalFeaturesSerializer(MetaSerializerMixin, ModelSerializer
 
 class SaltWastingClinicalFeaturesList(PatientDataList):
     serializer_class = SaltWastingClinicalFeaturesSerializer
-
-    def get_query(self):
-        return SaltWastingClinicalFeatures.query
+    model_class = SaltWastingClinicalFeatures
 
 
 class SaltWastingClinicalFeaturesDetail(PatientDataDetail):
     serializer_class = SaltWastingClinicalFeaturesSerializer
-
-    def get_query(self):
-        return SaltWastingClinicalFeatures.query
+    model_class = SaltWastingClinicalFeatures

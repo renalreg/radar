@@ -10,16 +10,9 @@ class DemographicsSerializer(MetaSerializerMixin, FacilitySerializerMixin, Model
 
 class DemographicsList(FacilityDataMixin, PatientDataList):
     serializer_class = DemographicsSerializer
-
-    def get_query(self):
-        return PatientDemographics.query
+    model_class = PatientDemographics
 
 
 class DemographicsDetail(FacilityDataMixin, PatientDataDetail):
     serializer_class = DemographicsSerializer
-
-    def get_query(self):
-        return PatientDemographics.query
-
-
-
+    model_class = PatientDemographics

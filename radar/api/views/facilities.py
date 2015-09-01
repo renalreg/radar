@@ -10,13 +10,9 @@ class FacilitySerializer(MetaSerializerMixin, ModelSerializer):
 
 class FacilityList(ListCreateApiView):
     serializer_class = FacilitySerializer
-
-    def get_query(self):
-        return Facility.query
+    model_class = Facility
 
 
 class FacilityDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = FacilitySerializer
-
-    def get_query(self):
-        return Facility.query
+    model_class = Facility
