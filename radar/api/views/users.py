@@ -18,13 +18,9 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
 
 class UserList(ListCreateApiView):
     serializer_class = UserSerializer
-
-    def get_query(self):
-        return User.query
+    model_class = User
 
 
 class UserDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
-
-    def get_query(self):
-        return User.query
+    model_class = User

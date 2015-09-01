@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import copy
 import six
+from radar.lib.permissions import intersect_units
 from radar.lib.serializers import ValidationError
 from radar.models import Dialysis
 
@@ -51,7 +52,7 @@ class Field(object):
     def get_validators(self):
         return self.chain
 
-    def validate(self, obj):
+    def validate(self, ctx, obj):
         return obj
 
     def run_validators(self, value, context):
@@ -60,23 +61,20 @@ class Field(object):
         for validator in validators:
             validator(value)
 
-    def get_context(self, obj, context):
+    def get_context(self, obj, ctx):
         return {}
 
-    def run_validation(self, value, context=None):
-        new_context = {}
+    def run_validation(self, value, ctx=None):
+        new_ctx = {}
 
-        if context is not None:
-            new_context.update(context)
+        if ctx is not None:
+            new_ctx.update(ctx)
 
-        new_context.update(self.get_context(value, new_context))
+        new_ctx.update(self.get_context(value, new_ctx))
 
-        self.run_validators(value, new_context)
+        self.run_validators(value, new_ctx)
 
-        if getattr(self.validate, 'with_context', False):
-            value = self.validate(new_context, value)
-        else:
-            value = self.validate(value)
+        value = self.validate(new_ctx, value)
 
         return value
 
@@ -146,29 +144,26 @@ class Validator(Field):
 
         return fields
 
-    def run_validation(self, value, context=None):
+    def run_validation(self, value, ctx=None):
         errors = {}
 
-        new_context = {}
+        new_ctx = {}
 
-        if context is not None:
-            new_context.update(context)
+        if ctx is not None:
+            new_ctx.update(ctx)
 
-        new_context.update(self.get_context(value, new_context))
+        new_ctx.update(self.get_context(value, new_ctx))
 
         for field_name, field in self.fields.items():
             field_value = getattr(value, field_name)
 
             try:
-                field_value = field.run_validation(field_value, new_context)
+                field_value = field.run_validation(field_value, new_ctx)
 
                 validate_method = getattr(self, 'validate_' + field.field_name, None)
 
                 if validate_method is not None:
-                    if getattr(validate_method, 'with_context', False):
-                        field_value = validate_method(new_context, field_value)
-                    else:
-                        field_value = validate_method(field_value)
+                    field_value = validate_method(new_ctx, field_value)
             except ValidationError as e:
                 errors[field.field_name] = e.detail
             except SkipField:
@@ -179,12 +174,9 @@ class Validator(Field):
         if errors:
             raise ValidationError(errors)
 
-        self.run_validators(value, context)
+        self.run_validators(value, ctx)
 
-        if getattr(self.validate, 'with_context', False):
-            value = self.validate(new_context, value)
-        else:
-            value = self.validate(value)
+        value = self.validate(new_ctx, value)
 
         return value
 
@@ -192,14 +184,46 @@ class Validator(Field):
 class PatientMixin(object):
     patient = Field(chain=[required])
 
-    def get_context(self, obj, context):
-        context = super(PatientMixin, self).get_context(obj, context)
+    def get_context(self, obj, ctx):
+        ctx = super(PatientMixin, self).get_context(obj, ctx)
 
         if obj.patient is not None:
-            context['patient'] = obj.patient
+            ctx['patient'] = obj.patient
 
-        return context
+        return ctx
+
+    def validate(self, ctx, obj):
+        user = ctx['user']
+
+        if user.is_admin:
+            return
+
+        patient = obj.patient
+
+        unit_users = intersect_units(patient, user, user_membership=True)
+
+        if not any(x.has_edit_patient_permission for x in unit_users):
+            raise ValidationError({'patient': 'Permission denied.'})
 
 
 class FacilityMixin(object):
     facility = Field(chain=[required])
+
+    def validate(self, ctx, obj):
+        user = ctx['user']
+
+        if user.is_admin:
+            return
+
+        facility = obj.facility
+
+        if not facility.is_internal:
+            raise ValidationError({'facility': 'Permission denied.'})
+
+        unit = facility.unit
+
+        if unit is not None:
+            unit_membership = user.get_unit_membership(unit)
+
+            if unit_membership.has_edit_patient_permission:
+                raise ValidationError({'facility': 'Permission denied.'})

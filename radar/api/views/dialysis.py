@@ -1,7 +1,11 @@
 from collections import defaultdict
+from flask_login import current_user
+from sqlalchemy.orm import aliased
 from radar.lib.foo import PatientMixin, Validator, Field, required, FacilityMixin, optional
+from radar.lib.patient_search import PatientQueryBuilder
+from radar.lib.permissions import PatientFacilityDataPermission
 from radar.lib.serializers import MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer, PatientSerializerMixin, LookupField, \
-    ValidationError
+    ValidationError, FacilityLookupField
 from radar.lib.views import FacilityDataMixin, PatientDataList, PatientDataDetail, ListView
 from radar.models import Dialysis, DialysisType
 
@@ -20,7 +24,9 @@ class DialysisValidator(PatientMixin, FacilityMixin, Validator):
     to_date = Field(chain=[optional])
     dialysis_type = Field(chain=[required])
 
-    def validate(self, obj):
+    def validate(self, ctx, obj):
+        super(DialysisValidator, self).validate(ctx, obj)
+
         errors = defaultdict(list)
 
         if obj.to_date and obj.to_date < obj.from_date:
@@ -35,6 +41,7 @@ class DialysisValidator(PatientMixin, FacilityMixin, Validator):
 class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySerializerMixin, ModelSerializer):
     dialysis_type = DialysisTypeSerializer(read_only=True)
     dialysis_type_id = DialysisTypeLookupField(write_only=True)
+    facility_id = FacilityLookupField(write_only=True)
 
     class Meta:
         model_class = Dialysis
@@ -43,21 +50,15 @@ class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySe
 class DialysisList(FacilityDataMixin, PatientDataList):
     serializer_class = DialysisSerializer
     validator_class = DialysisValidator
-
-    def get_query(self):
-        return Dialysis.query
+    model_class = Dialysis
 
 
 class DialysisDetail(FacilityDataMixin, PatientDataDetail):
     serializer_class = DialysisSerializer
     validator_class = DialysisValidator
-
-    def get_query(self):
-        return Dialysis.query
+    model_class = Dialysis
 
 
 class DialysisTypeList(ListView):
     serializer_class = DialysisTypeSerializer
-
-    def get_query(self):
-        return DialysisType.query
+    model_class = DialysisType
