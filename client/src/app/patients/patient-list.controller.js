@@ -9,16 +9,30 @@
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      var proxy = new ListHelperProxy(function(ctrl, params) {
-        self.load(store.findMany('patients', params, true).then(function(data) {
-          ctrl.setItems(data.data);
-          ctrl.setCount(data.pagination.count);
-          return data.data;
-        }));
-      });
+      $scope.filters = {};
+
+      var proxy = new ListHelperProxy(search, {perPage: 50});
       proxy.load();
 
       $scope.proxy = proxy;
+      $scope.search = search;
+      $scope.clear = clear;
+
+      function search() {
+        var proxyParams = proxy.getParams();
+        var params = angular.extend({}, proxyParams, $scope.filters);
+
+        self.load(store.findMany('patients', params, true).then(function(data) {
+          proxy.setItems(data.data);
+          proxy.setCount(data.pagination.count);
+          return data.data;
+        }));
+      }
+
+      function clear() {
+        $scope.filters = {};
+        search();
+      }
     }
 
     PatientListController.prototype = Object.create(ListController.prototype);

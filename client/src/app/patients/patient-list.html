@@ -4,12 +4,20 @@
   <div class="row">
     <div class="col-md-9">
       <div loading="loading" list-helper="proxy">
-        <table class="table">
+        <div ng-show="!items.length">
+          <p>No results.</p>
+        </div>
+
+        <table class="table" ng-if="items.length">
           <thead>
             <tr>
               <th sort-helper="id">ID</th>
               <th sort-helper="firstName">First Name</th>
               <th sort-helper="lastName">Last Name</th>
+              <th sort-helper="dateOfBirth">DOB</th>
+              <th sort-helper="gender">Gender</th>
+              <th>Disease Groups</th>
+              <th>Units</th>
             </tr>
           </thead>
 
@@ -18,6 +26,20 @@
               <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
               <td>{{patient.firstName}}</td>
               <td>{{patient.lastName}}</td>
+              <td>{{patient.dateOfBirth | dateFormat}}</td>
+              <td>{{patient.gender | genderFormat}}</td>
+              <td>
+                <span ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.name'">
+                  {{diseaseGroup.diseaseGroup.name}}
+                  <br ng-if="!$last" />
+                </span>
+              </td>
+              <td>
+                <span ng-repeat="unit in patient.units | orderBy: 'unit.name'">
+                  {{unit.unit.name}}
+                  <br ng-if="!$last" />
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -28,6 +50,11 @@
 
     <div class="col-md-3">
       <h3>Search</h3>
+
+      <input ng-model="filters.firstName" />
+
+      <button ng-click="search()">Search</button>
+      <button ng-click="clear()">Clear</button>
     </div>
   </div>
 </div>

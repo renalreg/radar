@@ -371,43 +371,49 @@
           self.getItems = getItems;
 
           function sort(sortBy, reverse) {
-            api.sort(sortBy, reverse);
+            if (api) {
+              api.sort(sortBy, reverse);
+            }
           }
 
           function getSortBy() {
-            return api.getSortBy();
+            return api ? api.getSortBy() : 'id';
           }
 
           function getReverse() {
-            return api.getReverse();
+            return api ? api.getReverse() : false;
           }
 
           function getPage() {
-            return api.getPage();
+            return api ? api.getPage() : 1;
           }
 
           function setPage(page) {
-            api.setPage(page);
+            if (api) {
+              api.setPage(page);
+            }
           }
 
           function getPerPage() {
-            return api.getPerPage();
+            return api ? api.getPerPage() : 10;
           }
 
           function setPerPage(perPage) {
-            api.setPerPage(perPage);
+            if (api) {
+              api.setPerPage(perPage);
+            }
           }
 
           function getTotalPages() {
-            return api.getTotalPages();
+            return api ? api.getTotalPages() : 0;
           }
 
           function getCount() {
-            return api.getCount();
+            return api ? api.getCount() : 0;
           }
 
           function getItems() {
-            return api.getItems();
+            return api ? api.getItems() : [];
           }
         }
       }
@@ -415,7 +421,7 @@
   });
 
   app.factory('ListHelperProxy', function() {
-    function ListHelperProxy(callback) {
+    function ListHelperProxy(callback, params) {
       this.items = [];
       this.count = 0;
 
@@ -426,6 +432,12 @@
       this.reverse = false;
 
       this.callback = callback;
+
+      if (params) {
+        if (params.perPage) {
+          this.perPage = params.perPage;
+        }
+      }
     }
 
     ListHelperProxy.prototype.sort = function(sortBy, reverse) {

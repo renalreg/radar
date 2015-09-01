@@ -38,7 +38,7 @@ def build_patient_search_query(user, form):
         include_inactive = form.include_inactive.data
 
         if form.first_name.data:
-                builder.first_name(form.first_name.data)
+            builder.first_name(form.first_name.data)
 
         if form.last_name.data:
             builder.last_name(form.last_name.data)
