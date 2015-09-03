@@ -1,0 +1,8 @@
+<div ng-transclude></div>
+
+<div frm-error key="required" is-default="true">This field is required.</div>
+<div frm-error key="date" is-default="true">Invalid date.</div>
+<div frm-error key="minDate" is-default="true">Date too early.</div>
+<div frm-error key="maxDate" is-default="true">Date too late.</div>
+
+<div frm-error ng-repeat="error in errors">{{error}}</div>

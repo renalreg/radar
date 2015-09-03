@@ -1,18 +1,23 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.facilities');
+  var app = angular.module('radar.fields');
 
-  app.directive('facilityField', function(store, session, _) {
+  app.directive('frmFacilityField', function(store, session, _) {
     return {
+      require: '^frmField',
       restrict: 'A',
       scope: {
         patient: '=',
         model: '=',
         required: '='
       },
-      templateUrl: 'app/facilities/facility-field.html',
-      link: function(scope) {
+      templateUrl: 'app/fields/facility-field.html',
+      link: function(scope, element, attrs, fieldCtrl) {
+        scope.$watch('required', function(value) {
+          fieldCtrl.setRequired(value);
+        });
+
         var user = session.user;
         var isAdmin = user.isAdmin;
 

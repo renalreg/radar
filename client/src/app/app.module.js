@@ -10,6 +10,7 @@
     'radar.demographics',
     'radar.dialysis',
     'radar.diseaseGroups',
+    'radar.fields',
     'radar.filters',
     'radar.forms',
     'radar.patients',

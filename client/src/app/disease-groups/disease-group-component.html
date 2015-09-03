@@ -14,14 +14,19 @@
       <span crud-view-button item="originalItem"></span>
     </p>
 
-    <form class="form-horizontal" ng-submit="form.$valid && saveEnabled() && saveAndView()" name="form" novalidate>
-      <div disease-group-field model="item.diseaseGroup"></div>
+    <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Disease Group</div>
 
-      <div class="form-group">
-        <div class="col-md-offset-4 col-md-8">
-          <span crud-save-button></span>
-          <span crud-cancel-list-button></span>
+        <div frm-control>
+          <div frm-disease-group-field model="item.diseaseGroup"></div>
+          <div frm-errors errors="item.diseaseGroupId"></div>
         </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
       </div>
     </form>
   </div>

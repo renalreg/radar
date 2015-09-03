@@ -10,8 +10,6 @@
       transclude: true,
       templateUrl: 'app/ui/sort-helper.html',
       link: function(scope, element, attrs, listHelperCtrl) {
-
-
         scope.sort = function() {
           var sortBy = getSortBy();
           var reverse = getReverse();

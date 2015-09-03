@@ -41,38 +41,46 @@
       <span crud-view-button item="originalItem"></span>
     </p>
 
-    <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
-      <div facility-field
-           patient="patient"
-           model="item.facility"
-           required="true"></div>
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Data Source</div>
 
-      <div select-field
-           label="Dialysis Type"
-           model="item.dialysisType"
-           errors="item.errors.dialysisType"
-           required="true"
-           options="dialysisTypes"></div>
-
-      <div date-field
-           label="From Date"
-           model="item.fromDate"
-           errors="item.errors.fromDate"
-           required="true"></div>
-
-      <div date-field
-           label="To Date"
-           model="item.toDate"
-           errors="item.errors.toDate"
-           min-date="item.fromDate"
-           default-date="item.fromDate"
-           min-date-message="Must be after from date."></div>
-
-      <div class="form-group">
-        <div class="col-md-offset-4 col-md-8">
-          <span crud-save-button></span>
-          <span crud-cancel-list-button></span>
+        <div frm-control>
+          <div frm-facility-field patient="patient" model="item.facility" required="true"></div>
+          <div frm-errors errors="item.errors.facilityId"></div>
         </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Dialysis Type</div>
+
+        <div frm-control>
+          <div frm-select-field patient="patient" model="item.dialysisType" required="true" options="dialysisTypes"></div>
+          <div frm-errors errors="item.errors.dialysisTypeId"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>From Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.fromDate" required="true"></div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate" min-date="item.fromDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
       </div>
     </form>
   </div>
@@ -96,7 +104,7 @@
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="dialysisType.name">Dialysis Type</th>
-          <th sort-helper="facility.name">Date Source</th>
+          <th sort-helper="facility.name">Data Source</th>
           <th></th>
         </tr>
       </thead>

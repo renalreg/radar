@@ -1,11 +1,9 @@
-/* global moment */
-
 (function() {
   'use strict';
 
   var app = angular.module('radar.forms');
 
-  app.directive('validDate', function() {
+  app.directive('frmDate', function(moment) {
     return {
       restrict: 'A',
       require: 'ngModel',

@@ -3,9 +3,8 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('datePicker', function() {
+  app.directive('frmDatePicker', function() {
     return {
-      restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs, ngModelCtrl) {
         var options = {
@@ -14,22 +13,22 @@
           dateFormat: 'dd/mm/yy',
           minDate: getDate(attrs.datePickerMinDate),
           maxDate: getDate(attrs.datePickerMaxDate),
-          defaultDate: getDate(attrs.datePickerDefaultDate),
+          defaultDate: getDate(attrs.defaultDate),
           yearRange: '1900:+10'
         };
 
         element.datepicker(options);
 
-        attrs.$observe('datePickerMinDate', function() {
-          setOption('minDate', getDate(attrs.datePickerMinDate));
+        attrs.$observe('datePickerMinDate', function(value) {
+          setOption('minDate', getDate(value));
         });
 
-        attrs.$observe('datePickerMaxDate', function() {
-          setOption('maxDate', getDate(attrs.datePickerMaxDate));
+        attrs.$observe('datePickerMaxDate', function(value) {
+          setOption('maxDate', getDate(value));
         });
 
-        attrs.$observe('datePickerDefaultDate', function() {
-          setOption('defaultDate', getDate(attrs.datePickerDefaultDate));
+        attrs.$observe('datePickerDefaultDate', function(value) {
+          setOption('defaultDate', getDate(value));
         });
 
         function getDate(value) {
