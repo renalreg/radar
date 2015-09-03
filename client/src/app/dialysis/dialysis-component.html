@@ -1,6 +1,6 @@
 <div loading="loading">
   <div ng-if="viewing">
-    <p class="btn-group">
+    <p>
       <span crud-list-button></span>
       <span crud-edit-button item="item"></span>
     </p>
@@ -65,8 +65,8 @@
 
       <div class="form-group">
         <div class="col-md-offset-4 col-md-8">
-          <button ng-class="{disabled: form.$invalid || !saveEnabled()}" ng-disabled="form.$invalid || !saveEnabled()" type="submit" class="btn btn-success">Save</button>
-          <button ng-click="list()" ng-show="listEnabled()" type="button" class="btn btn-link">Cancel</button>
+          <span crud-save-button></span>
+          <span crud-cancel-list-button></span>
         </div>
       </div>
     </form>

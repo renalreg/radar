@@ -193,7 +193,7 @@
     };
   });
 
-  app.directive('listHelper', function($parse, _, $filter) {
+  app.directive('listHelper', function($parse, _, escapeRegExp, searchToDateRegExp) {
     return {
       scope: false,
       controller: function($scope, $attrs) {
@@ -319,11 +319,53 @@
             filteredItems = items;
 
             if (search) {
-              // TODO handle searching for dates better
-              filteredItems = $filter('filter')(filteredItems, search);
+              var patterns = [escapeRegExp(search.trim())];
+
+              var datePattern = searchToDateRegExp(search);
+
+              if (datePattern !== null) {
+                patterns.push(datePattern);
+              }
+
+              var re = new RegExp(patterns.join('|'), 'i');
+
+              filteredItems = _.filter(filteredItems, function(x) {
+                return valueMatches(x.getData(), function(value) {
+                  return re.exec(value);
+                });
+              });
             }
 
             _sort();
+          }
+
+          function valueMatches(x, callback) {
+            var found;
+            var value;
+
+            if (_.isArray(x)) {
+              for (var i = 0; i < x.length; i++) {
+                value = x[i];
+                found = valueMatches(value, callback);
+
+                if (found) {
+                  return true;
+                }
+              }
+            } else if (_.isObject(x)) {
+              for (var key in x) {
+                if (x.hasOwnProperty(key)) {
+                  value = x[key];
+                  found = valueMatches(value, callback);
+
+                  if (found) {
+                    return true;
+                  }
+                }
+              }
+            } else {
+              return callback(x);
+            }
           }
 
           function _sort() {

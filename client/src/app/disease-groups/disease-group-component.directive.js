@@ -7,7 +7,7 @@
     function DiseaseGroupController($scope, $injector, store) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {$scope: $scope});
+      $injector.invoke(ListDetailController, self, {$scope: $scope, params: {}});
 
       self.load($scope.patient.diseaseGroups);
 

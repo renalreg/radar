@@ -1,11 +1,11 @@
 <span ng-if="permission">
   <span ng-show="!item.isDeleted">
     <span ng-show="!clicked">
-      <button ng-click="delete()" ng-disabled="!enabled" type="button" class="btn btn-xs btn-link"><i class="fa fa-trash-o"></i> Delete</button>
+      <button ng-click="remove()" ng-disabled="!removeEnabled" type="button" class="btn btn-xs btn-link"><i class="fa fa-trash-o"></i> Delete</button>
     </span>
 
     <span ng-show="clicked">
-      <button ng-click="confirm()" ng-disabled="!enabled" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
+      <button ng-click="confirm()" ng-disabled="!confirmEnabled" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
       <button ng-click="cancel()" type="button" class="btn btn-xs btn-link">Cancel</button>
     </span>
   </span>
