@@ -6,8 +6,47 @@
   app.factory('ListDetailController', function(_, $window, $q) {
     // TODO set form.$pristine
 
-    function ListDetailController($scope) {
+    var defaultPermission = {
+      hasPermission: function() {
+        return true;
+      },
+      hasObjectPermission: function() {
+        return true;
+      }
+    };
+
+    function ListDetailController($scope, params) {
       this.scope = $scope;
+
+      if (params.permission) {
+        this._createPermission = params.permission;
+        this._editPermission = params.permission;
+        this._removePermission = params.permission;
+      }
+
+      if (params.createPermission) {
+        this._createPermission = params.createPermission;
+      } else if (params.permission) {
+        this._createPermission = params.permission;
+      } else {
+        this._createPermission = defaultPermission;
+      }
+
+      if (params.editPermission) {
+        this._editPermission = params.editPermission;
+      } else if (params.permission) {
+        this._editPermission = params.permission;
+      } else {
+        this._editPermission = defaultPermission;
+      }
+
+      if (params.removePermission) {
+        this._removePermission = params.removePermission;
+      } else if (params.permission) {
+        this._removePermission = params.permission;
+      } else {
+        this._removePermission = defaultPermission;
+      }
 
       this.scope.loading = true;
       this.scope.saving = false;
@@ -21,15 +60,21 @@
       this.scope.view = angular.bind(this, this.view);
       this.scope.edit = angular.bind(this, this.edit);
       this.scope.remove = angular.bind(this, this.remove);
+
       this.scope.save = angular.bind(this, this.save);
       this.scope.saveAndList = angular.bind(this, this.saveAndList);
       this.scope.saveAndView = angular.bind(this, this.saveAndView);
+
       this.scope.listEnabled = angular.bind(this, this.listEnabled);
       this.scope.createEnabled = angular.bind(this, this.createEnabled);
       this.scope.viewEnabled = angular.bind(this, this.viewEnabled);
       this.scope.editEnabled = angular.bind(this, this.editEnabled);
       this.scope.removeEnabled = angular.bind(this, this.removeEnabled);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
+
+      this.scope.createPermission = angular.bind(this, this.createPermission);
+      this.scope.editPermission = angular.bind(this, this.editPermission);
+      this.scope.removePermission = angular.bind(this, this.removePermission);
     }
 
     ListDetailController.prototype.load = function(promise) {
@@ -114,6 +159,8 @@
 
       self.scope.saving = true;
 
+      console.log(self.scope.item);
+
       return self.scope.item.save()
         .then(function(item) {
           var x = self.scope.items.indexOf(item);
@@ -141,7 +188,6 @@
       var self = this;
 
       return self.save().then(function(item) {
-        console.log('view ' + item.isDirty());
         self.view(item);
       });
     };
@@ -177,6 +223,18 @@
 
     ListDetailController.prototype.saveEnabled = function() {
       return !this.scope.saving;
+    };
+
+    ListDetailController.prototype.createPermission = function(item) {
+      return this._createPermission.hasPermission();
+    };
+
+    ListDetailController.prototype.editPermission = function(item) {
+      return this._editPermission.hasObjectPermission(item);
+    };
+
+    ListDetailController.prototype.removePermission = function(item) {
+      return this._removePermission.hasObjectPermission(item);
     };
 
     return ListDetailController;

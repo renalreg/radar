@@ -6,7 +6,13 @@
   app.filter('dateFormat', function(moment) {
     return function(input) {
       if (input) {
-        return moment(input, 'YYYY-MM-DD').format('DD/MM/YYYY');
+        var date = moment(input, 'YYYY-MM-DD');
+
+        if (date.isValid()) {
+          return date.format('DD/MM/YYYY');
+        } else {
+          return '-';
+        }
       } else {
         return '-';
       }

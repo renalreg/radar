@@ -13,6 +13,7 @@
     'radar.filters',
     'radar.forms',
     'radar.patients',
+    'radar.permissions',
     'radar.posts',
     'radar.store',
     'radar.ui',

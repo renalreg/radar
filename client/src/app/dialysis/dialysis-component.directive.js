@@ -3,11 +3,20 @@
 
   var app = angular.module('radar.dialysis');
 
-  app.factory('DialysisController', function(ListDetailController) {
+  app.factory('DialysisPermission', function(PatientFacilityDataPermission) {
+    return PatientFacilityDataPermission;
+  });
+
+  app.factory('DialysisController', function(ListDetailController, DialysisPermission) {
     function DialysisController($scope, $injector, $q, store) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {$scope: $scope});
+      $injector.invoke(ListDetailController, self, {
+        $scope: $scope,
+        params: {
+          permission: $injector.instantiate(DialysisPermission, {patient: $scope.patient})
+        }
+      });
 
       var items = [];
 
@@ -23,20 +32,8 @@
       });
 
       $scope.create = function() {
-        var item = store.create('dialysis', {patientId: $scope.patient.id, dialysisTypeId: 1, facilityId: 1});
+        var item = store.create('dialysis', {patientId: $scope.patient.id});
         self.edit(item);
-      };
-
-      $scope.createPermission = function() {
-        return true;
-      };
-
-      $scope.editPermission = function(item) {
-        return true;
-      };
-
-      $scope.removePermission = function(item) {
-        return true;
       };
     }
 

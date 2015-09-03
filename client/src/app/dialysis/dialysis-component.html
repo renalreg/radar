@@ -1,14 +1,40 @@
 <div loading="loading">
   <div ng-if="viewing">
-    <p ng-show="listEnabled()"><button ng-click="list()" type="button" class="btn btn-default">List</button></p>
-    <p ng-show="editEnabled(item)"><button ng-click="edit(item)" type="button" class="btn btn-primary">Edit</button></p>
-    <pre>{{item.getData() | json}}</pre>
+    <p class="btn-group">
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <td>{{item.id}}</td>
+        </tr>
+
+        <tr>
+          <th>Dialysis Type</th>
+          <td>{{item.dialysisType.label}}</td>
+        </tr>
+
+        <tr>
+          <th>From Date</th>
+          <td>{{item.fromDate | dateFormat}}</td>
+        </tr>
+
+        <tr>
+          <th>To Date</th>
+          <td>{{item.toDate | dateFormat}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <div ng-if="editing">
-    <p ng-show="listEnabled()"><button ng-click="list()" type="button" class="btn btn-default">List</button></p>
-
-    <p ng-show="viewEnabled(originalItem)"><button ng-click="view(originalItem)" class="btn btn-default">View</button></p>
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
 
     <form class="form-horizontal" ng-submit="form.$valid && saveEnabled() && saveAndView()" name="form" novalidate>
       <div facility-field
@@ -47,7 +73,9 @@
   </div>
 
   <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10">
-    <p><button ng-click="create()" ng-show="createEnabled()" type="button" class="btn btn-primary">New</button></p>
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
 
     <div filter-helper></div>
 
@@ -58,22 +86,29 @@
     <table class="table" ng-if="page.getCount()">
       <thead>
         <tr>
+          <th></th>
           <th sort-helper="id">ID</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
+          <th sort-helper="dialysisType.name">Dialysis Type</th>
           <th></th>
         </tr>
       </thead>
 
       <tbody>
         <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
           <td>{{item.id}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
+          <td>{{item.dialysisType.label}}</td>
+
           <td>
-            <button ng-click="view(item)" ng-show="viewEnabled(item)" type="button" class="btn btn-xs btn-default">View</button>
-            <button ng-click="edit(item)" ng-show="editPermission(item) && editEnabled(item)" type="button" class="btn btn-xs btn-primary">Edit</button>
-            <button ng-click="remove(item)" ng-show="removePermission(item) && removeEnabled(item)" type="button" class="btn btn-xs btn-danger">Delete</button>
+            <span crud-list-remove-button item="item"></span>
           </td>
         </tr>
       </tbody>

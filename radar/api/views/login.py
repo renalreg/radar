@@ -45,4 +45,4 @@ class Login(ApiView):
         token_serializer = TokenSerializer()
         data = token_serializer.to_data({'user_id': user_id, 'token': token})
 
-        return jsonify(data), 201
+        return jsonify(data), 200
