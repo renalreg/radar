@@ -95,11 +95,12 @@ input, select {
   color: #ccc;
 }
 
-table.kv {
-  th {
-    white-space: nowrap;
-    text-align: right;
-  }
+.table {
+  width: auto;
+}
+
+th.right {
+  text-align: right;
 }
 
 .latest-news-body {
@@ -116,8 +117,4 @@ table.kv {
   img {
     max-height: 100px;
   }
-}
-
-.table {
-  width: auto;
 }

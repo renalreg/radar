@@ -1,9 +1,16 @@
 from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, ListField, BooleanField
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
-from radar.models import User, UnitUser, Unit
+from radar.models import User, UnitUser, Unit, Facility
+
+
+class FacilitySerializer(ModelSerializer):
+    class Meta:
+        model_class = Facility
 
 
 class UnitSerializer(ModelSerializer):
+    facilities = ListField(field=FacilitySerializer())
+
     class Meta:
         model_class = Unit
 
@@ -19,6 +26,7 @@ class UnitUserSerializer(MetaSerializerMixin, ModelSerializer):
 
     class Meta:
         model_class = UnitUser
+        exclude = ('unit_id',)
 
 
 class UserSerializer(MetaSerializerMixin, ModelSerializer):

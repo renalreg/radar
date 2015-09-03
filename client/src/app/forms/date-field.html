@@ -19,8 +19,9 @@
     <div field-help ng-if="help">{{help}}</div>
     <div field-error ng-repeat="error in errors">{{error}}</div>
 
+    <div field-error ng-show="form.field.$dirty && form.field.$error.date">Invalid date.</div>
     <div field-error ng-show="form.field.$dirty && form.field.$error.required">{{requiredMessage || 'Date is required.'}}</div>
-    <div field-error ng-show="form.field.$dirty && form.field.$error.minDate">Date is too early.</div>
+    <div field-error ng-show="form.field.$dirty && form.field.$error.minDate">{{minDateMessage || 'Date is too early.'}}</div>
     <div field-error ng-show="form.field.$dirty && form.field.$error.maxDate">{{maxDateMessage || 'Date is too late.'}}</div>
   </div>
 </div>

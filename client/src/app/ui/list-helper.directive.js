@@ -1,199 +1,9 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.hello', ['ui.router']);
+  var app = angular.module('radar.ui');
 
-  app.factory('FooController', function(DetailController) {
-    function FooController($scope, $injector, store) {
-      var self = this;
-
-      $injector.invoke(DetailController, self, {$scope: $scope});
-
-      self.load(store.findOne('dialysis', 1296)).then(function() {
-        self.view();
-      });
-    }
-
-    FooController.prototype = Object.create(DetailController.prototype);
-
-    return FooController;
-  });
-
-  app.directive('fooComponent', function(FooController) {
-    return {
-      scope: {
-        patient: '='
-      },
-      controller: FooController,
-      templateUrl: 'app/hello/foo-component.html'
-    };
-  });
-
-  app.directive('paginationHelper', function() {
-    // TODO allow updating page and perPage from template
-
-    return {
-      require: '^listHelper',
-      scope: {},
-      templateUrl: 'app/hello/pagination-helper.html',
-      link: function(scope, element, attrs, listHelperCtrl) {
-        scope.getPage = getPage;
-        scope.setPage = setPage;
-        scope.getPerPage = getPerPage;
-        scope.setPerPage = setPerPage;
-        scope.getTotalPages = getTotalPages;
-        scope.hasPrevious = hasPrevious;
-        scope.hasNext = hasNext;
-        scope.previousPage = previousPage;
-        scope.nextPage = nextPage;
-        scope.firstPage = firstPage;
-        scope.lastPage = lastPage;
-
-        function getPage() {
-          return listHelperCtrl.getPage();
-        }
-
-        function setPage(page) {
-          listHelperCtrl.setPage(page);
-        }
-
-        function getPerPage() {
-          return listHelperCtrl.getPerPage();
-        }
-
-        function setPerPage(perPage) {
-          listHelperCtrl.setPerPage(perPage);
-        }
-
-        function getTotalPages() {
-          return listHelperCtrl.getTotalPages();
-        }
-
-        function hasPrevious() {
-          return getPage() > 1;
-        }
-
-        function hasNext() {
-          return getPage() < getTotalPages();
-        }
-
-        function previousPage() {
-          setPage(getPage() - 1);
-        }
-
-        function nextPage() {
-          setPage(getPage() + 1);
-        }
-
-        function firstPage() {
-          setPage(1);
-        }
-
-        function lastPage() {
-          setPage(getTotalPages());
-        }
-
-        function getPages() {
-          var page = getPage();
-          var totalPages = getTotalPages();
-
-          var pages = [];
-
-          for (var i = 1; i <= totalPages; i++) {
-            pages.push({
-              number: i,
-              active: i === page
-            });
-          }
-
-          return pages;
-        }
-
-        scope.$watch(function() {
-          return getPage();
-        }, function() {
-          scope.pages = getPages();
-        });
-
-        scope.$watch(function() {
-          return getTotalPages();
-        }, function() {
-          scope.pages = getPages();
-        });
-      }
-    };
-  });
-
-  app.directive('sortHelper', function() {
-    return {
-      require: '^listHelper',
-      scope: {},
-      transclude: true,
-      templateUrl: 'app/hello/sort-helper.html',
-      link: function(scope, element, attrs, listHelperCtrl) {
-
-
-        scope.sort = function() {
-          var sortBy = getSortBy();
-          var reverse = getReverse();
-
-          if (isSorted()) {
-            var currentReverse = listHelperCtrl.getReverse();
-            listHelperCtrl.sort(sortBy, !currentReverse);
-          } else {
-            listHelperCtrl.sort(sortBy, reverse);
-          }
-        };
-
-        scope.isAscending = isAscending;
-        scope.isDescending = isDescending;
-
-        function isAscending() {
-          return isSorted() && !listHelperCtrl.getReverse();
-        }
-
-        function isDescending() {
-          return isSorted() && listHelperCtrl.getReverse();
-        }
-
-        function isSorted() {
-          var sortBy = getSortBy();
-          var currentSortBy = listHelperCtrl.getSortBy();
-          return sortBy === currentSortBy;
-        }
-
-        function getSortBy() {
-          return attrs.sortHelper;
-        }
-
-        function getReverse() {
-          return attrs.reverse === 'true';
-        }
-      }
-    };
-  });
-
-  app.directive('filterHelper', function() {
-    return {
-      require: '^listHelper',
-      scope: {},
-      templateUrl: 'app/hello/filter-helper.html',
-      link: function(scope, element, attrs, listHelperCtrl) {
-        scope.search = '';
-
-        scope.$watch('search', function(value) {
-          listHelperCtrl.filter(value);
-        });
-
-        scope.clear = function() {
-          scope.search = '';
-          listHelperCtrl.filter('');
-        };
-      }
-    };
-  });
-
-  app.directive('listHelper', function($parse, _, escapeRegExp, searchToDateRegExp) {
+  app.directive('listHelper', function($parse, _, escapeRegExp, searchToDateRegExp, anyValue) {
     return {
       scope: false,
       controller: function($scope, $attrs) {
@@ -242,6 +52,20 @@
             if (value) {
               perPage = parseInt(value);
               _paginate();
+            }
+          });
+
+          $attrs.$observe('sortBy', function(value) {
+            if (value) {
+              sortBy = value;
+              _sort();
+            }
+          });
+
+          $attrs.$observe('reverse', function(value) {
+            if (value) {
+              reverse = value === 'true';
+              _sort();
             }
           });
 
@@ -330,42 +154,13 @@
               var re = new RegExp(patterns.join('|'), 'i');
 
               filteredItems = _.filter(filteredItems, function(x) {
-                return valueMatches(x.getData(), function(value) {
+                return anyValue(x.getData(), function(value) {
                   return re.exec(value);
                 });
               });
             }
 
             _sort();
-          }
-
-          function valueMatches(x, callback) {
-            var found;
-            var value;
-
-            if (_.isArray(x)) {
-              for (var i = 0; i < x.length; i++) {
-                value = x[i];
-                found = valueMatches(value, callback);
-
-                if (found) {
-                  return true;
-                }
-              }
-            } else if (_.isObject(x)) {
-              for (var key in x) {
-                if (x.hasOwnProperty(key)) {
-                  value = x[key];
-                  found = valueMatches(value, callback);
-
-                  if (found) {
-                    return true;
-                  }
-                }
-              }
-            } else {
-              return callback(x);
-            }
           }
 
           function _sort() {
@@ -558,3 +353,4 @@
     return ListHelperProxy;
   });
 })();
+

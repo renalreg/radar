@@ -13,6 +13,11 @@
         </tr>
 
         <tr>
+          <th>Data Source</th>
+          <td>{{item.facility.name}}</td>
+        </tr>
+
+        <tr>
           <th>Dialysis Type</th>
           <td>{{item.dialysisType.label}}</td>
         </tr>
@@ -36,7 +41,7 @@
       <span crud-view-button item="originalItem"></span>
     </p>
 
-    <form class="form-horizontal" ng-submit="form.$valid && saveEnabled() && saveAndView()" name="form" novalidate>
+    <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
       <div facility-field
            patient="patient"
            model="item.facility"
@@ -72,7 +77,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10">
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -91,6 +96,7 @@
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="dialysisType.name">Dialysis Type</th>
+          <th sort-helper="facility.name">Date Source</th>
           <th></th>
         </tr>
       </thead>
@@ -106,6 +112,7 @@
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
           <td>{{item.dialysisType.label}}</td>
+          <td>{{item.facility.name}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

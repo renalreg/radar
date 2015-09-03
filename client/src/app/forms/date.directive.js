@@ -18,7 +18,7 @@
           var valid;
           var modelValue;
 
-          if (viewValue === '') {
+          if (viewValue === '' || viewValue === undefined) {
             valid = true;
             modelValue = null;
           } else if (viewValue && viewValue.length === 10) {
