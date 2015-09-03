@@ -7,7 +7,7 @@ import six
 from sqlalchemy import inspect
 from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
-from radar.models import User, Facility, Patient
+from radar.models import User, Facility, Patient, Unit
 
 
 class Empty(object):
@@ -568,9 +568,17 @@ class EmbeddedUserSerializer(ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'username']
 
 
+class UnitSerializer(ModelSerializer):
+    class Meta:
+        model_class = Unit
+
+
 class EmbeddedFacilitySerializer(ModelSerializer):
+    unit = UnitSerializer()
+
     class Meta:
         model_class = Facility
+        exclude = ['unit_id']
 
 
 class CreatedUserMixin(object):

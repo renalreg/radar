@@ -203,7 +203,7 @@ class PatientMixin(object):
         unit_users = intersect_units(patient, user, user_membership=True)
 
         if not any(x.has_edit_patient_permission for x in unit_users):
-            raise ValidationError({'patient': 'Permission denied.'})
+            raise ValidationError({'patient': "You don't have permission for this patient."})
 
 
 class FacilityMixin(object):
@@ -218,7 +218,7 @@ class FacilityMixin(object):
         facility = obj.facility
 
         if not facility.is_internal:
-            raise ValidationError({'facility': 'Permission denied.'})
+            raise ValidationError({'facility': "You don't have permission for this facility."})
 
         unit = facility.unit
 

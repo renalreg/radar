@@ -27,7 +27,7 @@ class ApiView(MethodView):
                 raise PermissionDenied(message)
 
     def get_permission_classes(self):
-        return self.permission_classes
+        return list(self.permission_classes)
 
     def get_permissions(self):
         return [permission() for permission in self.get_permission_classes()]

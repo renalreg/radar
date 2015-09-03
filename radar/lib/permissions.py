@@ -109,7 +109,7 @@ class FacilityDataPermission(Permission):
 
             # Data doesn't belong to a unit
             if unit is None:
-                return True
+                return False
 
             unit_membership = user.get_unit_membership(unit)
 
