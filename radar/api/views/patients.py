@@ -4,7 +4,7 @@ from flask_login import current_user
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.lib.permissions import IsAuthenticated, PatientPermission, intersect_units, intersect_disease_groups
 from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField, DateField, IntegerField, \
-    Serializer, LookupField, Empty
+    Serializer, LookupField, Empty, BooleanField
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
 from radar.models import Patient, UnitPatient, Unit, DiseaseGroup, DiseaseGroupPatient, Facility
 
@@ -71,10 +71,12 @@ class PatientListRequestSerializer(Serializer):
     date_of_birth = DateField()
     year_of_birth = IntegerField()
     date_of_death = DateField()
+    year_of_death = IntegerField()
     gender = StringField()
     patient_number = StringField()
     unit_id = UnitLookupField(write_only=True)
     disease_group_id = DiseaseGroupLookupField(write_only=True)
+    is_active = BooleanField()
 
 
 class PatientProxy(object):
@@ -82,8 +84,11 @@ class PatientProxy(object):
         self.patient = patient
         self.user = user
 
-        unit_users = intersect_units(patient, user, user_membership=True)
-        self.demographics = any(x.has_view_demographics_permission for x in unit_users)
+        if user.is_admin:
+            self.demographics = True
+        else:
+            unit_users = intersect_units(patient, user, user_membership=True)
+            self.demographics = any(x.has_view_demographics_permission for x in unit_users)
 
     @property
     def first_name(self):
@@ -140,7 +145,7 @@ class PatientList(ListCreateApiView):
 
     def get_query(self):
         serializer = PatientListRequestSerializer()
-        args = serializer.to_value(request.args)
+        args = serializer.args_to_value(request.args)
 
         builder = PatientQueryBuilder(current_user)
 
@@ -156,9 +161,6 @@ class PatientList(ListCreateApiView):
         if 'disease_group' in args:
             builder.disease_group(args['disease_group'])
 
-        if 'date_of_birth' in args:
-            builder.date_of_birth(args['date_of_birth'])
-
         if 'patient_number' in args:
             builder.patient_number(args['patient_number'])
 
@@ -168,8 +170,11 @@ class PatientList(ListCreateApiView):
         if 'id' in args:
             builder.radar_id(args['id'])
 
+        if 'date_of_birth' in args:
+            builder.date_of_birth(args['date_of_birth'])
+
         if 'year_of_birth' in args:
-            builder.year_of_death(args['year_of_birth'])
+            builder.year_of_birth(args['year_of_birth'])
 
         if 'date_of_death' in args:
             builder.date_of_death(args['date_of_death'])
