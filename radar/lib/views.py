@@ -83,7 +83,14 @@ class GenericApiView(ApiView):
 
         if sort is not None:
             sort_fields = self.get_sort_fields()
-            expression = sort_fields.get(sort)
+
+            if isinstance(sort_fields, dict):
+                expression = sort_fields.get(sort)
+            elif sort in sort_fields:
+                model_class = self.get_model_class()
+                expression = getattr(model_class, sort)
+            else:
+                expression = None
 
             if expression is not None:
                 if reverse:

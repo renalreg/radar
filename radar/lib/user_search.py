@@ -14,11 +14,14 @@ class UserQueryBuilder(object):
         self.query = User.query
         self.user = user
 
+    def user_id(self, user_id):
+        self.query = self.query.filter(User.id == user_id)
+
     def username(self, username):
-        self.query = self.query.filter(User.username.ilike(username + '%'))
+        self.query = self.query.filter(User.username.ilike('%' + username + '%'))
 
     def email(self, email):
-        self.query = self.query.filter(User.email.ilike(email + '%'))
+        self.query = self.query.filter(User.email.ilike('%' + email + '%'))
 
     def first_name(self, first_name):
         self.query = self.query.filter(User.first_name.ilike(first_name + '%'))
@@ -26,15 +29,15 @@ class UserQueryBuilder(object):
     def last_name(self, last_name):
         self.query = self.query.filter(User.last_name.ilike(last_name + '%'))
 
-    def unit(self, unit_id):
+    def unit(self, unit):
         self.query = self.query\
             .outerjoin(User.unit_users)\
-            .filter(or_(User.is_admin, UnitUser.unit_id == unit_id))
+            .filter(or_(User.is_admin, UnitUser.unit == unit))
 
-    def disease_group(self, disease_group_id):
+    def disease_group(self, disease_group):
         self.query = self.query\
             .outerjoin(User.disease_group_users)\
-            .filter(or_(User.is_admin, DiseaseGroupUser.disease_group_id == disease_group_id))
+            .filter(or_(User.is_admin, DiseaseGroupUser.disease_group == disease_group))
 
     def build(self):
         query = self.query
