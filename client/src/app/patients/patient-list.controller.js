@@ -9,7 +9,11 @@
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      $scope.filters = {};
+      var defaultFilters = {
+        isActive: true
+      };
+
+      $scope.filters = angular.copy(defaultFilters);
 
       var proxy = new ListHelperProxy(search, {perPage: 50});
       proxy.load();
@@ -17,6 +21,7 @@
       $scope.proxy = proxy;
       $scope.search = search;
       $scope.clear = clear;
+      $scope.count = 0;
 
       function search() {
         var proxyParams = proxy.getParams();
@@ -25,12 +30,13 @@
         self.load(store.findMany('patients', params, true).then(function(data) {
           proxy.setItems(data.data);
           proxy.setCount(data.pagination.count);
+          $scope.count = data.pagination.count;
           return data.data;
         }));
       }
 
       function clear() {
-        $scope.filters = {};
+        $scope.filters = angular.copy(defaultFilters);
         search();
       }
     }

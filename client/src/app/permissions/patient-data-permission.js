@@ -15,14 +15,14 @@
 
       var user = session.user;
 
-      if (user.isAdmin) {
-        return true;
-      }
-
       var patient = this.patient;
       var patientUnitIds = _.map(patient.units, function(unit) {
         return unit.unit.id;
       });
+
+      if (user.isAdmin && patientUnitIds.length > 0) {
+        return true;
+      }
 
       var userUnits = user.units;
 

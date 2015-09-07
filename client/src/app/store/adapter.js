@@ -36,6 +36,7 @@
       };
 
       Adapter.prototype.transformParams = function(data) {
+        data = flattenRelationships(data);
         data = snakeCaseKeys(data);
 
         if (data.sort) {

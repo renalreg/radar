@@ -12,6 +12,7 @@ from radar.api.views.posts import PostList, PostDetail
 from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesList, \
     SaltWastingClinicalFeaturesDetail
+from radar.api.views.units import UnitList
 from radar.api.views.users import UserDetail, UserList
 from radar.api.views.login import Login
 
@@ -65,6 +66,8 @@ app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
 app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
 
 app.add_url_rule('/disease-groups', view_func=DiseaseGroupList.as_view('disease_group_list'))
+
+app.add_url_rule('/units', view_func=UnitList.as_view('unit_list'))
 
 app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
 app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))

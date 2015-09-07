@@ -28,7 +28,7 @@
     PatientModel.prototype = Object.create(Model.prototype);
 
     PatientModel.prototype.getName = function() {
-      if (this.firstName !== undefined && this.lastName !== undefined) {
+      if (this.firstName && this.lastName) {
         return this.firstName + ' ' + this.lastName;
       } else if (this.getId() !== null) {
         return 'Patient #' + this.getId();

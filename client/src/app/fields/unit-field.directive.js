@@ -3,9 +3,9 @@
 
   var app = angular.module('radar.diseaseGroups');
 
-  app.directive('frmDiseaseGroupField', function(_, session, store) {
-    function sortDiseaseGroups(diseaseGroups) {
-      return _.sortBy(diseaseGroups, function(x) {
+  app.directive('frmUnitField', function(_, session, store) {
+    function sortUnits(units) {
+      return _.sortBy(units, function(x) {
         return x.name.toUpperCase();
       });
     }
@@ -17,7 +17,7 @@
         model: '=',
         required: '='
       },
-      templateUrl: 'app/fields/disease-group-field.html',
+      templateUrl: 'app/fields/unit-field.html',
       link: function(scope, element, attrs, fieldCtrl) {
         scope.$watch('required', function(value) {
           fieldCtrl.setRequired(value);
@@ -26,15 +26,16 @@
         var user = session.user;
 
         if (user.isAdmin) {
-          store.findMany('disease-groups').then(function(diseaseGroups) {
-            scope.diseaseGroups = sortDiseaseGroups(diseaseGroups);
+          store.findMany('units').then(function(units) {
+            scope.units = sortUnits(units);
           });
         } else {
-          var diseaseGroups = session.user.diseaseGroups;
-          scope.diseaseGroups = sortDiseaseGroups(diseaseGroups);
+          var units = session.user.units;
+          scope.units = sortUnits(units);
         }
       }
     };
   });
 })();
+
 

@@ -381,6 +381,10 @@ class Serializer(Field):
 
         return fields
 
+    def args_to_value(self, args):
+        data = {k: v for k, v in args.items() if len(v.strip()) > 0}
+        return self.to_value(data)
+
     def to_value(self, data):
         errors = {}
         validated_data = OrderedDict()
@@ -406,6 +410,12 @@ class Serializer(Field):
                     errors[field.field_name] = e.detail
                     continue
 
+                if value is Empty:
+                    value = field.get_default()
+
+                    if value is Empty:
+                        continue
+
             validated_data[field.source] = value
 
         if errors:
@@ -413,7 +423,7 @@ class Serializer(Field):
 
         return validated_data
 
-    def to_data(self, value):
+    def to_data(self, value, **kwargs):
         data = OrderedDict()
 
         for field in self.readable_fields:

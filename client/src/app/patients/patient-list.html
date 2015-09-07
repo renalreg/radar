@@ -1,14 +1,14 @@
 <div class="content">
-  <h1 class="page-header">Patients</h1>
+  <h1 class="page-header">Patients <small>{{count}} patients</small></h1>
 
   <div class="row">
-    <div class="col-md-9">
+    <div class="col-sm-8">
       <div loading="loading" list-helper="proxy">
         <div ng-show="!items.length">
           <p>No results.</p>
         </div>
 
-        <table class="table" ng-if="items.length">
+        <table class="table table-condensed table-striped" ng-if="items.length">
           <thead>
             <tr>
               <th sort-helper="id">ID</th>
@@ -24,13 +24,28 @@
           <tbody>
             <tr ng-repeat="patient in items">
               <td><a ui-sref="patient.demographics({patientId: patient.id})">{{patient.id}}</a></td>
-              <td>{{patient.firstName | missing}}</td>
-              <td>{{patient.lastName | missing}}</td>
+
+              <td>
+                <a ui-sref="patient.demographics({patientId: patient.id})">
+                  <span ng-if="patient.firstName">{{patient.firstName}}</span>
+                  <i ng-if="!patient.firstName">None</i>
+                </a>
+              </td>
+
+              <td>
+                <a ui-sref="patient.demographics({patientId: patient.id})">
+                  <span ng-if="patient.lastName">{{patient.lastName}}</span>
+                  <i ng-if="!patient.lastName">None</i>
+                </a>
+              </td>
+
               <td>
                 <span ng-if="patient.dateOfBirth">{{patient.dateOfBirth | dateFormat}}</span>
                 <span ng-if="!patient.dateOfBirth">{{patient.yearOfBirth | missing}}</span>
               </td>
+
               <td>{{patient.gender | genderFormat}}</td>
+
               <td>
                 <span ng-if="!patient.diseaseGroups.length">-</span>
                 <span ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.name'">
@@ -38,6 +53,7 @@
                   <br ng-if="!$last" />
                 </span>
               </td>
+
               <td>
                 <span ng-if="!patient.units.length">-</span>
                 <span ng-repeat="unit in patient.units | orderBy: 'unit.name'">
@@ -53,13 +69,128 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-sm-4">
       <h3>Search</h3>
 
-      <input ng-model="filters.firstName" />
+      <form class="form-horizontal form-container" submit-if-valid="search()" novalidate>
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
 
-      <button ng-click="search()">Search</button>
-      <button ng-click="clear()">Clear</button>
+        <div frm-field frm-group>
+          <div frm-label>RaDaR ID</div>
+
+          <div frm-control>
+            <div frm-integer-field model="filters.id"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>First Name</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.firstName"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Last Name</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.lastName"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Date of Birth</div>
+
+          <div frm-control>
+            <div frm-date-field model="filters.dateOfBirth"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Year of Birth</div>
+
+          <div frm-control>
+            <div frm-integer-field model="filters.yearOfBirth"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Date of Death</div>
+
+          <div frm-control>
+            <div frm-date-field model="filters.dateOfDeath"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Year of Death</div>
+
+          <div frm-control>
+            <div frm-integer-field model="filters.yearOfDeath"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Gender</div>
+
+          <div frm-control>
+            <div frm-gender-field model="filters.gender"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Patient Number</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.patientNumber"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Disease Group</div>
+
+          <div frm-control>
+            <div frm-disease-group-field model="filters.diseaseGroup"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Unit</div>
+
+          <div frm-control>
+            <div frm-unit-field model="filters.unit"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Is Active?</div>
+
+          <div frm-control>
+            <div frm-boolean-field model="filters.isActive"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
