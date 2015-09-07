@@ -23,6 +23,6 @@
     'radar.ui',
     'radar.users',
     'radar.utils',
-    'radar.validation'
+    'radar.validators'
   ]);
 })();

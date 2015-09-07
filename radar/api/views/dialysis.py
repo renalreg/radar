@@ -1,22 +1,10 @@
 from collections import defaultdict
-from flask_login import current_user
-from sqlalchemy.orm import aliased
+
+from radar.api.serializers.dialysis import DialysisSerializer, DialysisTypeSerializer
 from radar.lib.foo import PatientMixin, Validator, Field, required, FacilityMixin, optional
-from radar.lib.patient_search import PatientQueryBuilder
-from radar.lib.permissions import PatientFacilityDataPermission
-from radar.lib.serializers import MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer, PatientSerializerMixin, LookupField, \
-    ValidationError, FacilityLookupField
+from radar.lib.serializers import ValidationError
 from radar.lib.views import FacilityDataMixin, PatientDataList, PatientDataDetail, ListView
 from radar.models import Dialysis, DialysisType
-
-
-class DialysisTypeLookupField(LookupField):
-    model_class = DialysisType
-
-
-class DialysisTypeSerializer(ModelSerializer):
-    class Meta:
-        model_class = DialysisType
 
 
 class DialysisValidator(PatientMixin, FacilityMixin, Validator):
@@ -36,15 +24,6 @@ class DialysisValidator(PatientMixin, FacilityMixin, Validator):
             raise ValidationError(errors)
 
         return obj
-
-
-class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    dialysis_type = DialysisTypeSerializer(read_only=True)
-    dialysis_type_id = DialysisTypeLookupField(write_only=True)
-    facility_id = FacilityLookupField(write_only=True)
-
-    class Meta:
-        model_class = Dialysis
 
 
 class DialysisList(FacilityDataMixin, PatientDataList):

@@ -11,7 +11,6 @@
     }
 
     return {
-      require: '^frmField',
       restrict: 'A',
       scope: {
         model: '=',
@@ -19,10 +18,6 @@
       },
       templateUrl: 'app/fields/unit-field.html',
       link: function(scope, element, attrs, fieldCtrl) {
-        scope.$watch('required', function(value) {
-          fieldCtrl.setRequired(value);
-        });
-
         var user = session.user;
 
         if (user.isAdmin) {

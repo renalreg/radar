@@ -1,12 +1,13 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.validation');
+  var app = angular.module('radar.validators');
 
-  app.directive('dateType', function(moment) {
+  app.directive('dateValidator', function(moment) {
     return {
       restrict: 'A',
       require: 'ngModel',
+      // TODO don't use scope
       scope: {
         minDate: '=',
         maxDate: '='

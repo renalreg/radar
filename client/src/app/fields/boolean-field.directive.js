@@ -12,7 +12,7 @@
         model: '='
       },
       templateUrl: 'app/fields/boolean-field.html',
-      link: function(scope, element, attrs, fieldCtrl) {
+      link: function(scope) {
         scope.options = [
           {
             value: undefined,
@@ -27,10 +27,6 @@
             label: 'No'
           }
         ];
-
-        scope.$watch('required', function(value) {
-          fieldCtrl.setRequired(value);
-        });
       }
     };
   });

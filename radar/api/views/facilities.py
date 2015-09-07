@@ -1,11 +1,6 @@
-from radar.lib.serializers import MetaSerializerMixin, ModelSerializer
+from radar.api.serializers.patients import FacilitySerializer
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
 from radar.models import Facility
-
-
-class FacilitySerializer(MetaSerializerMixin, ModelSerializer):
-    class Meta:
-        model_class = Facility
 
 
 class FacilityList(ListCreateApiView):

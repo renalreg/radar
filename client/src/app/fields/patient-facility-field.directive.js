@@ -5,7 +5,6 @@
 
   app.directive('frmPatientFacilityField', function(store, session, _) {
     return {
-      require: '^frmField',
       restrict: 'A',
       scope: {
         patient: '=',
@@ -13,11 +12,7 @@
         required: '='
       },
       templateUrl: 'app/fields/patient-facility-field.html',
-      link: function(scope, element, attrs, fieldCtrl) {
-        scope.$watch('required', function(value) {
-          fieldCtrl.setRequired(value);
-        });
-
+      link: function(scope) {
         var user = session.user;
         var isAdmin = user.isAdmin;
 
