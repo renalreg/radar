@@ -1,11 +1,6 @@
-from radar.lib.serializers import MetaSerializerMixin, ModelSerializer
+from radar.api.serializers.posts import PostSerializer
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
 from radar.models import Post
-
-
-class PostSerializer(MetaSerializerMixin, ModelSerializer):
-    class Meta:
-        model_class = Post
 
 
 class PostList(ListCreateApiView):

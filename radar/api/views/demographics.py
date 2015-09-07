@@ -1,11 +1,6 @@
-from radar.lib.serializers import MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer
+from radar.api.serializers.demographics import DemographicsSerializer
 from radar.lib.views import FacilityDataMixin, PatientDataList, PatientDataDetail
 from radar.models import PatientDemographics
-
-
-class DemographicsSerializer(MetaSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    class Meta:
-        model_class = PatientDemographics
 
 
 class DemographicsList(FacilityDataMixin, PatientDataList):

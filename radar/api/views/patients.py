@@ -1,89 +1,12 @@
 from flask import request
 from flask_login import current_user
+from radar.api.serializers.patients import PatientSerializer, PatientListRequestSerializer
 
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.lib.permissions import IsAuthenticated, PatientPermission, intersect_units, intersect_disease_groups
-from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField, DateField, IntegerField, \
-    Serializer, LookupField, Empty, BooleanField
+from radar.lib.serializers import Empty
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
-from radar.models import Patient, UnitPatient, Unit, DiseaseGroup, DiseaseGroupPatient, Facility, DiseaseGroupFeature
-
-
-class FacilitySerializer(ModelSerializer):
-    class Meta:
-        model_class = Facility
-
-
-class UnitSerializer(ModelSerializer):
-    facilities = ListField(field=FacilitySerializer())
-
-    class Meta:
-        model_class = Unit
-
-
-class UnitPatientSerializer(MetaSerializerMixin, ModelSerializer):
-    unit = UnitSerializer()
-
-    class Meta:
-        model_class = UnitPatient
-        exclude = ['patient_id', 'unit_id']
-
-
-class DiseaseGroupFeatureSerializer(ModelSerializer):
-    class Meta:
-        model_class = DiseaseGroupFeature
-
-
-class DiseaseGroupSerializer(MetaSerializerMixin, ModelSerializer):
-    features = ListField(field=DiseaseGroupFeatureSerializer(), source='disease_group_features')
-
-    class Meta:
-        model_class = DiseaseGroup
-
-
-class DiseaseGroupPatientSerializer(MetaSerializerMixin, ModelSerializer):
-    disease_group = DiseaseGroupSerializer()
-
-    class Meta:
-        model_class = DiseaseGroupPatient
-        exclude = ['patient_id', 'disease_group_id']
-
-
-class PatientSerializer(MetaSerializerMixin, ModelSerializer):
-    first_name = StringField()
-    last_name = StringField()
-    date_of_birth = DateField()
-    year_of_birth = IntegerField()
-    gender = StringField()
-    units = ListField(field=UnitPatientSerializer(), source='unit_patients')
-    disease_groups = ListField(field=DiseaseGroupPatientSerializer(), source='disease_group_patients')
-
-    class Meta:
-        model_class = Patient
-        fields = ['id']
-
-
-class DiseaseGroupLookupField(LookupField):
-    model_class = DiseaseGroup
-
-
-class UnitLookupField(LookupField):
-    model_class = Unit
-
-
-class PatientListRequestSerializer(Serializer):
-    id = IntegerField()
-    first_name = StringField()
-    last_name = StringField()
-    date_of_birth = DateField()
-    year_of_birth = IntegerField()
-    date_of_death = DateField()
-    year_of_death = IntegerField()
-    gender = StringField()
-    patient_number = StringField()
-    unit_id = UnitLookupField(write_only=True)
-    disease_group_id = DiseaseGroupLookupField(write_only=True)
-    is_active = BooleanField()
+from radar.models import Patient
 
 
 class PatientProxy(object):
