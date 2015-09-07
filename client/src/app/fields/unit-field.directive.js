@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.diseaseGroups');
+  var app = angular.module('radar.fields');
 
   app.directive('frmUnitField', function(_, session, store) {
     function sortUnits(units) {

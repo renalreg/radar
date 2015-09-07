@@ -40,41 +40,13 @@
     </ul>
   </div>
 
-  <div class="patient-nav">
-    <ul>
-      <li class="group">
-        SRNS
-      </li>
+  <div radar-navigation patient="patient"></div>
 
-      <li ui-sref-active="active">
-        <a ui-sref="patient.demographics({patientId: patient.id})">Demographics</a>
-      </li>
-
-      <li ui-sref-active="active">
-        <a ui-sref="patient.dialysis({patientId: patient.id})">Dialysis</a>
-      </li>
-    </ul>
-  </div>
-
-  <div class="patient-nav">
-    <ul>
-      <li class="group">
-        RaDaR
-      </li>
-
-      <li ui-sref-active="active">
-        <a ui-sref="patient.demographics({patientId: patient.id})">Demographics</a>
-      </li>
-
-      <li ui-sref-active="active">
-        <a ui-sref="patient.diseaseGroups({patientId: patient.id})">Disease Groups</a>
-      </li>
-
-      <li ui-sref-active="active">
-        <a ui-sref="patient.units({patientId: patient.id})">Units</a>
-      </li>
-    </ul>
-  </div>
+  <div
+    ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.diseaseGroup.name'"
+    disease-group-navigation
+    patient="patient"
+    disease-group="diseaseGroup.diseaseGroup"></div>
 </div>
 
 <div class="content" ui-view></div>

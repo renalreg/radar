@@ -13,7 +13,7 @@
 
       for (i = 0; i < this.diseaseGroups.length; i++) {
         var rawDiseaseGroup = this.diseaseGroups[i];
-        diseaseGroups.push(store.pushToStore(new Model('patient-disease-groups', rawDiseaseGroup)));
+        diseaseGroups.push(store.pushToStore(new Model('patient-patient-disease-groups', rawDiseaseGroup)));
       }
 
       for (i = 0; i < this.units.length; i++) {

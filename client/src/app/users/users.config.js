@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.diseaseGroups');
+  var app = angular.module('radar.users');
 
   app.config(function($stateProvider) {
     $stateProvider.state('users', {

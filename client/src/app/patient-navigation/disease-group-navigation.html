@@ -1,0 +1,11 @@
+<div class="patient-nav">
+  <ul>
+    <li class="group">
+      {{ diseaseGroup.name }}
+    </li>
+
+    <li ui-sref-active="active" ng-repeat="link in links">
+      <a ui-sref="{{link.url}}">{{ link.text }}</a>
+    </li>
+  </ul>
+</div>

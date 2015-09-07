@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.diseaseGroups');
+  var app = angular.module('radar.fields');
 
   app.directive('frmDiseaseGroupField', function(_, session, store) {
     function sortDiseaseGroups(diseaseGroups) {
@@ -26,7 +26,7 @@
         var user = session.user;
 
         if (user.isAdmin) {
-          store.findMany('disease-groups').then(function(diseaseGroups) {
+          store.findMany('patient-disease-groups').then(function(diseaseGroups) {
             scope.diseaseGroups = sortDiseaseGroups(diseaseGroups);
           });
         } else {

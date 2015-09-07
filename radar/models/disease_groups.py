@@ -16,7 +16,7 @@ class DiseaseGroup(db.Model):
 
     disease_group_patients = relationship('DiseaseGroupPatient')
     disease_group_users = relationship('DiseaseGroupUser')
-    features = relationship('DiseaseGroupFeature')
+    disease_group_features = relationship('DiseaseGroupFeature')
     disease_group_result_group_definitions = relationship('DiseaseGroupResultGroupDefinition')
 
     @property
@@ -32,7 +32,7 @@ class DiseaseGroup(db.Model):
         return [x.result_group_definition for x in self.disease_group_result_group_definitions]
 
     def has_feature(self, name):
-        return any(x.name == name for x in self.features)
+        return any(x.name == name for x in self.disease_group_features)
 
     def can_view_patient(self, user):
         if user.is_admin:

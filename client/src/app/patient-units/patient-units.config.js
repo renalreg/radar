@@ -1,12 +1,12 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.units');
+  var app = angular.module('radar.patientUnits');
 
   app.config(function($stateProvider) {
     $stateProvider.state('patient.units', {
       url: '/units',
-      templateUrl: 'app/units/unit-list.html'
+      templateUrl: 'app/patient-units/unit-list.html'
     });
   });
 })();
