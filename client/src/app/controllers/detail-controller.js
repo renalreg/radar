@@ -4,8 +4,23 @@
   var app = angular.module('radar.controllers');
 
   app.factory('DetailController', function($q, $window) {
-    function DetailController($scope) {
+    var defaultPermission = {
+      hasPermission: function() {
+        return true;
+      },
+      hasObjectPermission: function() {
+        return true;
+      }
+    };
+
+    function DetailController($scope, params) {
       this.scope = $scope;
+
+      if (params.editPermission) {
+        this._editPermission = params.editPermission;
+      } else {
+        this._editPermission = defaultPermission;
+      }
 
       this.scope.loading = true;
       this.scope.viewing = false;
@@ -19,10 +34,13 @@
       this.scope.save = angular.bind(this, this.save);
       this.scope.saveAndView = angular.bind(this, this.saveAndView);
       this.scope.remove = angular.bind(this, this.remove);
+
       this.scope.viewEnabled = angular.bind(this, this.viewEnabled);
       this.scope.editEnabled = angular.bind(this, this.editEnabled);
       this.scope.removeEnabled = angular.bind(this, this.removeEnabled);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
+
+      this.scope.editPermission = angular.bind(this, this.editPermission);
     }
 
     DetailController.prototype.load = function(promise) {
@@ -127,6 +145,10 @@
 
     DetailController.prototype.saveEnabled = function() {
       return this.scope.item !== null && !this.scope.saving;
+    };
+
+    DetailController.prototype.editPermission = function() {
+      return this._editPermission.hasObjectPermission(this.scope.item);
     };
 
     return DetailController;

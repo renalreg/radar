@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.fields');
 
-  app.directive('frmFacilityField', function(store, session, _) {
+  app.directive('frmPatientFacilityField', function(store, session, _) {
     return {
       require: '^frmField',
       restrict: 'A',
@@ -12,7 +12,7 @@
         model: '=',
         required: '='
       },
-      templateUrl: 'app/fields/facility-field.html',
+      templateUrl: 'app/fields/patient-facility-field.html',
       link: function(scope, element, attrs, fieldCtrl) {
         scope.$watch('required', function(value) {
           fieldCtrl.setRequired(value);

@@ -5,7 +5,7 @@
       <span crud-edit-button item="item"></span>
     </p>
 
-    <table class="table">
+    <table class="table properties">
       <tbody>
         <tr>
           <th>ID</th>
@@ -46,7 +46,7 @@
         <div frm-label>Data Source</div>
 
         <div frm-control>
-          <div frm-facility-field patient="patient" model="item.facility" required="true"></div>
+          <div frm-patient-facility-field patient="patient" model="item.facility" required="true"></div>
           <div frm-errors errors="item.errors.facilityId"></div>
         </div>
       </div>

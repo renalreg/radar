@@ -1,0 +1,104 @@
+<div loading="loading">
+  <div ng-if="viewing">
+    <p>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tbody>
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Username</th>
+        <td>{{item.username}}</td>
+      </tr>
+
+      <tr>
+        <th>Email</th>
+        <td>{{item.email}}</td>
+      </tr>
+
+      <tr>
+        <th>First Name</th>
+        <td>{{item.firstName | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Last Name</th>
+        <td>{{item.lastName | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Is Admin?</th>
+        <td><span tick="item.isAdmin"></span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Username</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.username" required="true"></div>
+          <div frm-errors errors="item.errors.username"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Email</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.email" required="true"></div>
+          <div frm-errors errors="item.errors.email"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>First Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.firstName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Last Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.lastName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Password</div>
+
+        <div frm-control>
+          <div frm-password-field model="item.password"></div>
+          <div frm-errors errors="item.errors.password"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Is Admin?</div>
+
+        <div frm-control>
+          <div frm-checkbox-field model="item.isAdmin"></div>
+          <div frm-errors errors="item.errors.isAdmin"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-view-button></span>
+      </div>
+    </form>
+  </div>
+</div>

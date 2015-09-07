@@ -21,6 +21,7 @@
     'radar.ui',
     'radar.units',
     'radar.users',
-    'radar.utils'
+    'radar.utils',
+    'radar.validation'
   ]);
 })();

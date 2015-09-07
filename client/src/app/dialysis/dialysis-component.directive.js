@@ -43,8 +43,6 @@
   });
 
   app.directive('dialysisComponent', function(DialysisController) {
-    // TODO disable save button when $invalid
-
     return {
       scope: {
         patient: '='

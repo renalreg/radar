@@ -1,9 +1,9 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.forms');
+  var app = angular.module('radar.validation');
 
-  app.directive('frmDate', function(moment) {
+  app.directive('dateType', function(moment) {
     return {
       restrict: 'A',
       require: 'ngModel',

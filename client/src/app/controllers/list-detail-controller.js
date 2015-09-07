@@ -4,8 +4,6 @@
   var app = angular.module('radar.controllers');
 
   app.factory('ListDetailController', function(_, $window, $q) {
-    // TODO set form.$pristine
-
     var defaultPermission = {
       hasPermission: function() {
         return true;
