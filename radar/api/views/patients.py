@@ -6,7 +6,7 @@ from radar.lib.permissions import IsAuthenticated, PatientPermission, intersect_
 from radar.lib.serializers import MetaSerializerMixin, ModelSerializer, StringField, ListField, DateField, IntegerField, \
     Serializer, LookupField, Empty, BooleanField
 from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
-from radar.models import Patient, UnitPatient, Unit, DiseaseGroup, DiseaseGroupPatient, Facility
+from radar.models import Patient, UnitPatient, Unit, DiseaseGroup, DiseaseGroupPatient, Facility, DiseaseGroupFeature
 
 
 class FacilitySerializer(ModelSerializer):
@@ -29,7 +29,14 @@ class UnitPatientSerializer(MetaSerializerMixin, ModelSerializer):
         exclude = ['patient_id', 'unit_id']
 
 
+class DiseaseGroupFeatureSerializer(ModelSerializer):
+    class Meta:
+        model_class = DiseaseGroupFeature
+
+
 class DiseaseGroupSerializer(MetaSerializerMixin, ModelSerializer):
+    features = ListField(field=DiseaseGroupFeatureSerializer(), source='disease_group_features')
+
     class Meta:
         model_class = DiseaseGroup
 
