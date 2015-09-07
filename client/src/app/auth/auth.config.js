@@ -9,6 +9,16 @@
       templateUrl: 'app/auth/login.html',
       controller: 'LoginController'
     });
+
+    $stateProvider.state('forgotUsername', {
+      url: '/forgot-username',
+      templateUrl: 'app/auth/forgot-username.html'
+    });
+
+    $stateProvider.state('forgotPassword', {
+      url: '/forgot-password',
+      templateUrl: 'app/auth/forgot-password.html'
+    });
   });
 })();
 

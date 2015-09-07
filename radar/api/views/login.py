@@ -31,10 +31,10 @@ class Login(ApiView):
         user = User.query.filter(User.username == credentials['username']).first()
 
         if user is None:
-            raise ValidationError({'username': 'User not found.'})
+            raise ValidationError({'username': ['User not found.']})
 
         if not user.check_password(credentials['password']):
-            raise ValidationError({'password': 'Incorrect password.'})
+            raise ValidationError({'password': ['Incorrect password.']})
 
         user_id = user.id
 

@@ -4,6 +4,7 @@
   angular.module('radar', [
     'ngCookies',
     'ui.router',
+    'radar.account',
     'radar.auth',
     'radar.controllers',
     'radar.core',

@@ -1,3 +1,133 @@
 <div class="content">
-  <h1 class="page-header">Users</h1>
+  <h1 class="page-header">Users <small>{{count}} users</small></h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <p>
+        <a href="" class="btn btn-primary">Add User</a>
+      </p>
+
+      <div loading="loading" list-helper="proxy">
+        <div ng-show="!items.length">
+          <p>No users found.</p>
+        </div>
+
+        <table class="table table-condensed table-striped" ng-if="items.length">
+          <thead>
+            <tr>
+              <th sort-helper="id">ID</th>
+              <th sort-helper="username">Username</th>
+              <th sort-helper="email">Email</th>
+              <th sort-helper="firstName">First Name</th>
+              <th sort-helper="lastName">Last Name</th>
+              <th>Disease Groups</th>
+              <th>Units</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-repeat="user in items">
+              <td>{{user.id}}</td>
+
+              <td>{{user.username}}</td>
+
+              <td>{{user.email}}</td>
+
+              <td>{{user.firstName | missing}}</td>
+
+              <td>{{user.lastName | missing}}</td>
+
+              <td>
+                <span ng-if="!user.diseaseGroups.length">-</span>
+                <span ng-repeat="diseaseGroup in user.diseaseGroups | orderBy: 'diseaseGroup.name'">
+                  {{diseaseGroup.diseaseGroup.name}}
+                  <br ng-if="!$last" />
+                </span>
+              </td>
+
+              <td>
+                <span ng-if="!user.units.length">-</span>
+                <span ng-repeat="unit in user.units | orderBy: 'unit.name'">
+                  {{unit.unit.name}}
+                  <br ng-if="!$last" />
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div pagination-helper></div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <h3>Search</h3>
+
+      <form class="form-horizontal form-container" submit-if-valid="search()" novalidate>
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Username</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.username"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Email</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.email"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>First Name</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.firstName"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Last Name</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.lastName"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Disease Group</div>
+
+          <div frm-control>
+            <div frm-disease-group-field model="filters.diseaseGroup"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Unit</div>
+
+          <div frm-control>
+            <div frm-unit-field model="filters.unit"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

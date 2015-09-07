@@ -24,14 +24,14 @@
               });
             })
             .catch(function() {
-              deferred.reject('Error logging in, please try again.');
+              deferred.reject();
             });
         })
         .catch(function(response) {
           if (response.status === 422) {
             deferred.reject(response.data.errors);
           } else {
-            deferred.reject('Error logging in, please try again.');
+            deferred.reject();
           }
         });
 

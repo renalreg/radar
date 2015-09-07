@@ -15,9 +15,9 @@
         var errorsCtrl = ctrls[0];
         var fieldCtrl = ctrls[1];
 
-        scope.$watch(function() {
+        scope.$watch(function () {
           return fieldCtrl.modelCtrl;
-        }, function(value) {
+        }, function (value) {
           if (value) {
             errorsCtrl.modelCtrl = value;
           } else {
