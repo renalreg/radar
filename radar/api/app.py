@@ -11,6 +11,7 @@ from radar.api.views.hospitalisations import HospitalisationDetail, Hospitalisat
 from radar.api.views.medications import MedicationDetail, MedicationList, MedicationDoseUnitList, \
     MedicationFrequencyList, MedicationRouteList
 from radar.api.views.patients import PatientList, PatientDetail
+from radar.api.views.plasmapheresis import PlasmapheresisList, PlasmapheresisDetail, PlasmapheresisResponseList
 from radar.api.views.posts import PostList, PostDetail
 from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesList, \
@@ -65,6 +66,10 @@ app.add_url_rule('/medication-routes', view_func=MedicationRouteList.as_view('me
 
 app.add_url_rule('/hospitalisations', view_func=HospitalisationList.as_view('hospitalisation_list'))
 app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetail.as_view('hospitalisation_detail'))
+
+app.add_url_rule('/plasmapheresis', view_func=PlasmapheresisList.as_view('plasmapheresis_list'))
+app.add_url_rule('/plasmapheresis/<int:id>', view_func=PlasmapheresisDetail.as_view('plasmapheresis_detail'))
+app.add_url_rule('/plasmapheresis-responses', view_func=PlasmapheresisResponseList.as_view('plasmapheresis_response_list'))
 
 app.add_url_rule('/dialysis-types', view_func=DialysisTypeList.as_view('dialysis_type_list'))
 app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetail.as_view('dialysis_detail'))
