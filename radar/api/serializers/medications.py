@@ -1,5 +1,5 @@
 from radar.lib.serializers import LookupField, ModelSerializer, MetaSerializerMixin, PatientSerializerMixin, \
-    FacilitySerializerMixin, DateField, StringField, FloatField
+    FacilitySerializerMixin
 from radar.models import MedicationFrequency, MedicationRoute, MedicationDoseUnit, Medication
 
 
@@ -31,10 +31,6 @@ class MedicationRouteSerializer(ModelSerializer):
 
 
 class MedicationSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    from_date = DateField()
-    to_date = DateField()
-    name = StringField()
-    dose_quantity = FloatField()
     dose_unit = MedicationDoseUnitSerializer(read_only=True)
     dose_unit_id = MedicationDoseUnitLookupField(write_only=True)
     frequency = MedicationFrequencySerializer(read_only=True)

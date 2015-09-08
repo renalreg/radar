@@ -46,6 +46,10 @@
       text: 'Medications',
       url: 'patient.medications({patientId: patient.id})'
     },
+    PLASMAPHERESIS: {
+      text: 'Plasmapheresis',
+      url: 'patient.plasmapheresis({patientId: patient.id})'
+    },
     UNITS: {
       text: 'Units',
       url: 'patient.units({patientId: patient.id})'
@@ -57,6 +61,7 @@
     'MEDICATIONS',
     'HOSPITALISATIONS',
     'DIALYSIS',
+    'PLASMAPHERESIS',
     'DISEASE_GROUPS',
     'UNITS'
   ]);

@@ -10,6 +10,7 @@
     'radar.patients.hospitalisations',
     'radar.patients.medications',
     'radar.patients.navigation',
+    'radar.patients.plasmapheresis',
     'radar.patients.units'
   ]);
 })();
