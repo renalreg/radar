@@ -22,35 +22,4 @@
       templateUrl: 'app/core/index.html'
     });
   });
-
-  app.constant('patientFeatures', {
-    DEMOGRAPHICS: {
-      text: 'Demographics',
-      url: 'patient.demographics({patientId: patient.id})'
-    },
-    DIALYSIS: {
-      text: 'Dialysis',
-      url: 'patient.dialysis({patientId: patient.id})'
-    },
-    DISEASE_GROUPS: {
-      text: 'Disease Groups',
-      url: 'patient.diseaseGroups({patientId: patient.id})'
-    },
-    MEDICATIONS: {
-      text: 'Medications',
-      url: 'patient.medications({patientId: patient.id})'
-    },
-    UNITS: {
-      text: 'Units',
-      url: 'patient.units({patientId: patient.id})'
-    }
-  });
-
-  app.constant('radarPatientFeatures', [
-    'DEMOGRAPHICS',
-    'MEDICATIONS',
-    'DIALYSIS',
-    'DISEASE_GROUPS',
-    'UNITS'
-  ]);
 })();
