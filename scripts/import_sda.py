@@ -92,6 +92,7 @@ def create_app(config_filename):
     return app
 
 
+# TODO use click
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()

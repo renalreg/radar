@@ -189,7 +189,7 @@ class CreateModelMixin(object):
         json = request.get_json()
 
         if json is None:
-            raise BadRequest('Expected JSON.')
+            raise BadRequest()
 
         validated_data = serializer.to_value(json)
         obj = serializer.create(validated_data)
@@ -276,7 +276,7 @@ class UpdateModelMixin(object):
         json = request.get_json()
 
         if json is None:
-            raise BadRequest('Expected JSON.')
+            raise BadRequest()
 
         validated_data = serializer.to_value(json)
         obj = serializer.update(obj, validated_data)

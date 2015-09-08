@@ -6,20 +6,18 @@ from radar.lib.serializers import ValidationError
 from radar.models import Dialysis
 
 
-def with_context(f):
-    f.with_context = True
-    return f
-
-
-@with_context
-def required(value):
+def required(ctx, value):
     if value is None:
         raise ValidationError('This field is required.')
 
+    return value
 
-def optional(value):
+
+def optional(ctx, value):
     if value is None:
         raise SkipField()
+
+    return value
 
 
 class SkipField(Exception):
@@ -52,37 +50,38 @@ class Field(object):
     def get_validators(self):
         return self.chain
 
-    def validate(self, ctx, obj):
-        return obj
+    def validate(self, ctx, value):
+        return value
 
-    def run_validators(self, value, context):
+    def run_validators(self, ctx, value):
         validators = self.get_validators()
 
         for validator in validators:
-            validator(value)
+            value = validator(value)
 
-    def get_context(self, obj, ctx):
+        return value
+
+    def get_context(self, ctx, value):
         return {}
 
-    def run_validation(self, value, ctx=None):
+    def run_validation(self, ctx, value):
         new_ctx = {}
+        new_ctx.update(ctx)
+        new_ctx.update(self.get_context(new_ctx, value))
 
-        if ctx is not None:
-            new_ctx.update(ctx)
-
-        new_ctx.update(self.get_context(value, new_ctx))
-
-        self.run_validators(value, new_ctx)
-
-        value = self.validate(new_ctx, value)
+        try:
+            value = self.run_validators(new_ctx, value)
+            value = self.validate(new_ctx, value)
+        except SkipField:
+            pass
 
         return value
 
 
-class ValidatorMetaclass(type):
+class ValidationMetaclass(type):
     def __new__(cls, name, bases, attrs):
         attrs['_declared_fields'] = cls.get_fields(bases, attrs)
-        return super(ValidatorMetaclass, cls).__new__(cls, name, bases, attrs)
+        return super(ValidationMetaclass, cls).__new__(cls, name, bases, attrs)
 
     @classmethod
     def get_fields(cls, bases, attrs):
@@ -122,10 +121,10 @@ class ValidatorMetaclass(type):
         return OrderedDict(fields)
 
 
-@six.add_metaclass(ValidatorMetaclass)
-class Validator(Field):
+@six.add_metaclass(ValidationMetaclass)
+class Validation(Field):
     def __init__(self, *args, **kwargs):
-        super(Validator, self).__init__(*args, **kwargs)
+        super(Validation, self).__init__(*args, **kwargs)
         self._fields = None
 
     @property
@@ -163,7 +162,7 @@ class Validator(Field):
                 validate_method = getattr(self, 'validate_' + field.field_name, None)
 
                 if validate_method is not None:
-                    field_value = validate_method(new_ctx, field_value)
+                    field_value = validate_method(new_ctx, value, field_value)
             except ValidationError as e:
                 errors[field.field_name] = e.detail
             except SkipField:
@@ -174,9 +173,11 @@ class Validator(Field):
         if errors:
             raise ValidationError(errors)
 
-        self.run_validators(value, ctx)
-
-        value = self.validate(new_ctx, value)
+        try:
+            self.run_validators(value, new_ctx)
+            value = self.validate(new_ctx, value)
+        except SkipField:
+            pass
 
         return value
 
@@ -203,7 +204,7 @@ class PatientMixin(object):
         unit_users = intersect_units(patient, user, user_membership=True)
 
         if not any(x.has_edit_patient_permission for x in unit_users):
-            raise ValidationError({'patient': "You don't have permission for this patient."})
+            raise ValidationError({'patient': 'Permission denied.'})
 
 
 class FacilityMixin(object):
@@ -218,12 +219,14 @@ class FacilityMixin(object):
         facility = obj.facility
 
         if not facility.is_internal:
-            raise ValidationError({'facility': "You don't have permission for this facility."})
+            raise ValidationError({'facility': 'Permission denied.'})
 
         unit = facility.unit
 
-        if unit is not None:
+        if unit is None:
+            raise ValidationError({'facility': 'Permission denied.'})
+        else:
             unit_membership = user.get_unit_membership(unit)
 
-            if unit_membership.has_edit_patient_permission:
+            if unit_membership is None or not unit_membership.has_edit_patient_permission:
                 raise ValidationError({'facility': 'Permission denied.'})
