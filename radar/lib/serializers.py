@@ -211,12 +211,17 @@ class DateTimeField(Field):
 
 
 class LookupField(Field):
+    type_map = {
+        sqltypes.String: StringField,
+        sqltypes.Integer: IntegerField,
+    }
+
     default_error_messages = {
         'not_found': 'Object not found.'
     }
 
-    field_class = IntegerField
     model_class = None
+    model_id = 'id'
 
     def __init__(self, **kwargs):
         kwargs.setdefault('write_only', True)
@@ -230,16 +235,35 @@ class LookupField(Field):
         super(LookupField, self).bind(field_name)
         self.field.bind(field_name)
 
+    def get_model_class(self):
+        return self.model_class
+
+    def get_model_id(self):
+        return self.model_id
+
+    def get_field_class(self):
+        prop = getattr(inspect(self.get_model_class()).attrs, self.get_model_id())
+        col = prop.columns[0]
+        col_type = col.type
+
+        for sql_type, field_type in self.type_map.items():
+            if isinstance(col_type, sql_type):
+                return field_type
+
+        # TODO raise exception
+
     def get_field(self, **kwargs):
         field_kwargs = {}
 
         if 'source' in kwargs:
             field_kwargs['source'] = kwargs['source']
 
-        return self.field_class(**field_kwargs)
+        field_class = self.get_field_class()
+
+        return field_class(**field_kwargs)
 
     def get_object(self, id):
-        obj = self.model_class.query.get(id)
+        obj = self.get_model_class().query.get(id)
 
         if obj is None:
             self.fail('not_found')

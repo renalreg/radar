@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patientDiseaseGroups');
+  var app = angular.module('radar.patients.diseaseGroups');
 
   app.factory('DiseaseGroupController', function(ListDetailController) {
     function DiseaseGroupController($scope, $injector, store) {
@@ -12,7 +12,7 @@
       self.load($scope.patient.diseaseGroups);
 
       $scope.create = function() {
-        self.edit(store.create('patient-patient-disease-groups', {
+        self.edit(store.create('patient-disease-groups', {
           patientId: $scope.patient.id
         }));
       };
@@ -29,7 +29,7 @@
         patient: '='
       },
       controller: DiseaseGroupController,
-      templateUrl: 'app/patient-disease-groups/patient-disease-group-component.html'
+      templateUrl: 'app/patients/disease-groups/patient-disease-group-component.html'
     };
   });
 })();

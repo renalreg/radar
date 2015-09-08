@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.dialysis');
+  var app = angular.module('radar.patients.dialysis');
 
   app.factory('DialysisPermission', function(PatientFacilityDataPermission) {
     return PatientFacilityDataPermission;
@@ -21,11 +21,11 @@
       var items = [];
 
       $q.all([
-        store.findMany('dialysis', {patientId: $scope.patient.id}).then(function(serverItems) {
-          items = serverItems;
+        store.findMany('dialysis', {patientId: $scope.patient.id}).then(function(dialysisList) {
+          items = dialysisList;
         }),
-        store.findMany('dialysis-types').then(function(items) {
-          $scope.dialysisTypes = items;
+        store.findMany('dialysis-types').then(function(dialysisTypes) {
+          $scope.dialysisTypes = dialysisTypes;
         })
       ]).then(function() {
         self.load(items);
@@ -48,7 +48,7 @@
         patient: '='
       },
       controller: DialysisController,
-      templateUrl: 'app/dialysis/dialysis-component.html'
+      templateUrl: 'app/patients/dialysis/dialysis-component.html'
     };
   });
 })();

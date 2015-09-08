@@ -8,8 +8,8 @@
       models: {}
     };
 
-    this.registerModel = function(name, modelName) {
-      config.models[name] = modelName;
+    this.registerModel = function(modelName, modelType) {
+      config.models[modelName] = modelType;
     };
 
     this.$get = function(_, $injector, adapter, $q) {
@@ -20,37 +20,37 @@
         this.modelEventListeners = {};
       }
 
-      Store.prototype.getModel = function(name) {
-        var modelName = this.config.models[name] || 'Model';
-        return $injector.get(modelName);
+      Store.prototype.getModel = function(modelName) {
+        var modelType = this.config.models[modelName] || 'Model';
+        return $injector.get(modelType);
       };
 
-      Store.prototype.create = function(name, data) {
-        var Model = this.getModel(name);
-        return new Model(name, data);
+      Store.prototype.create = function(modelName, data) {
+        var Model = this.getModel(modelName);
+        return new Model(modelName, data);
       };
 
-      Store.prototype.getStore = function(name) {
-        if (this.store[name] === undefined) {
-          this.store[name] = {};
+      Store.prototype.getStore = function(modelName) {
+        if (this.store[modelName] === undefined) {
+          this.store[modelName] = {};
         }
 
-        return this.store[name];
+        return this.store[modelName];
       };
 
-      Store.prototype.getFromStore = function(name, id) {
-        var store = this.getStore(name);
+      Store.prototype.getFromStore = function(modelName, id) {
+        var store = this.getStore(modelName);
         return store[id] || null;
       };
 
       Store.prototype.pushToStore = function(item) {
-        var name = item.name;
+        var modelName = item.modelName;
         var id = item.getId();
 
-        var existingItem = this.getFromStore(name, id);
+        var existingItem = this.getFromStore(modelName, id);
 
         if (existingItem === null) {
-          var store = this.getStore(name);
+          var store = this.getStore(modelName);
           store[id] = item;
           return item;
         } else {
@@ -59,18 +59,18 @@
         }
       };
 
-      Store.prototype.findOne = function(name, id) {
+      Store.prototype.findOne = function(modelName, id) {
         var self = this;
-        var Model = self.getModel(name);
+        var Model = self.getModel(modelName);
 
-        var existingItem = self.getFromStore(name, id);
+        var existingItem = self.getFromStore(modelName, id);
 
         if (existingItem !== null) {
           existingItem.isLoading = true;
         }
 
-        var promise = adapter.findOne(name, id).then(function(data) {
-          return self.pushToStore(new Model(name, data));
+        var promise = adapter.findOne(modelName, id).then(function(data) {
+          return self.pushToStore(new Model(modelName, data));
         });
 
         if (existingItem !== null) {
@@ -82,13 +82,13 @@
         return promise;
       };
 
-      Store.prototype.findMany = function(name, params, meta) {
+      Store.prototype.findMany = function(modelName, params, meta) {
         var self = this;
-        var Model = self.getModel(name);
+        var Model = self.getModel(modelName);
 
         params = params || {};
 
-        return adapter.findMany(name, params, meta).then(function(data) {
+        return adapter.findMany(modelName, params, meta).then(function(data) {
           var items = [];
           var r;
           var rawItems;
@@ -105,7 +105,7 @@
           }
 
           for (var i = 0; i < rawItems.length; i++) {
-            var item = self.pushToStore(new Model(name, rawItems[i]));
+            var item = self.pushToStore(new Model(modelName, rawItems[i]));
             items.push(item);
           }
 
@@ -116,25 +116,25 @@
       Store.prototype.save = function(item) {
         var self = this;
         var id = item.getId();
-        var name = item.name;
+        var modelName = item.modelName;
         var data = item.getData();
-        var Model = self.getModel(name);
+        var Model = self.getModel(modelName);
         var promise;
         var create = id === null;
 
         item.isSaving = true;
 
         if (create) {
-          promise = adapter.create(name, data);
+          promise = adapter.create(modelName, data);
         } else {
-          var existingItem = self.getFromStore(name, id);
+          var existingItem = self.getFromStore(modelName, id);
           var copy = existingItem !== null && existingItem !== item;
 
           if (copy) {
             existingItem.isSaving = true;
           }
 
-          promise = adapter.update(name, id, data);
+          promise = adapter.update(modelName, id, data);
 
           if (copy) {
             promise = promise.finally(function() {
@@ -147,7 +147,7 @@
           item.isValid = true;
           item.isError = false;
           item.errors = {};
-          var savedItem = new Model(name, data).getData();
+          var savedItem = new Model(modelName, data).getData();
           item.update(savedItem);
           return self.pushToStore(item);
         });
@@ -172,12 +172,12 @@
 
       Store.prototype.remove = function(obj) {
         var id = obj.getId();
-        var name = obj.name;
+        var modelName = obj.modelName;
 
         obj.isSaving = true;
         obj.isDeleted = true;
 
-        return adapter.remove(name, id)
+        return adapter.remove(modelName, id)
           .catch(function() {
             obj.isDeleted = false;
           })
@@ -198,51 +198,51 @@
         return this.eventListeners[event] || [];
       };
 
-      Store.prototype.addModelEventListener = function(name, event, callback) {
-        if (this.modelEventListeners[name] === undefined) {
-          this.modelEventListeners[name] = {};
+      Store.prototype.addModelEventListener = function(modelName, event, callback) {
+        if (this.modelEventListeners[modelName] === undefined) {
+          this.modelEventListeners[modelName] = {};
         }
 
-        if (this.modelEventListeners[name][event] === undefined) {
-          this.modelEventListeners[name][event] = [];
+        if (this.modelEventListeners[modelName][event] === undefined) {
+          this.modelEventListeners[modelName][event] = [];
         }
 
-        this.modelEventListeners[name][event].push(callback);
+        this.modelEventListeners[modelName][event].push(callback);
       };
 
-      Store.prototype.getModelEventListeners = function(name, event, callback) {
-        if (this.modelEventListeners[name] === undefined) {
+      Store.prototype.getModelEventListeners = function(modelName, event) {
+        if (this.modelEventListeners[modelName] === undefined) {
           return [];
         }
 
-        return this.modelEventListeners[name][event] || [];
+        return this.modelEventListeners[modelName][event] || [];
       };
 
-      Store.prototype.getListeners = function(name, event) {
+      Store.prototype.getListeners = function(modelName, event) {
         var listeners = this.getEventListeners(event);
-        return listeners.concat(this.getModelEventListeners(name, event));
+        return listeners.concat(this.getModelEventListeners(modelName, event));
       };
 
-      Store.prototype.broadcast = function(name, event) {
+      Store.prototype.broadcast = function(modelName, event) {
         var args = Array.prototype.slice.call(1, arguments);
-        var listeners = this.getListeners(name, event);
+        var listeners = this.getListeners(modelName, event);
 
         _.forEach(listeners, function(listener) {
           listener(args);
         });
       };
 
-      Store.prototype.on = function(name, event, callback) {
+      Store.prototype.on = function(modelName, event, callback) {
         if (callback === undefined) {
           callback = event;
-          event = name;
-          name = null;
+          event = modelName;
+          modelName = null;
         }
 
-        if (name === null) {
+        if (modelName === null) {
           this.addEventListener(event, callback);
         } else {
-          this.addModelEventListener(name, event, callback);
+          this.addModelEventListener(modelName, event, callback);
         }
       };
 

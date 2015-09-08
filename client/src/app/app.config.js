@@ -36,6 +36,10 @@
       text: 'Disease Groups',
       url: 'patient.diseaseGroups({patientId: patient.id})'
     },
+    MEDICATIONS: {
+      text: 'Medications',
+      url: 'patient.medications({patientId: patient.id})'
+    },
     UNITS: {
       text: 'Units',
       url: 'patient.units({patientId: patient.id})'
@@ -44,6 +48,7 @@
 
   app.constant('radarPatientFeatures', [
     'DEMOGRAPHICS',
+    'MEDICATIONS',
     'DIALYSIS',
     'DISEASE_GROUPS',
     'UNITS'

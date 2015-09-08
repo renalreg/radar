@@ -4,8 +4,8 @@
   var app = angular.module('radar.patients');
 
   app.factory('PatientModel', function(Model, store) {
-    function PatientModel(name, data) {
-      Model.call(this, name, data);
+    function PatientModel(modelName, data) {
+      Model.call(this, modelName, data);
 
       var i;
       var diseaseGroups = [];
@@ -13,7 +13,7 @@
 
       for (i = 0; i < this.diseaseGroups.length; i++) {
         var rawDiseaseGroup = this.diseaseGroups[i];
-        diseaseGroups.push(store.pushToStore(new Model('patient-patient-disease-groups', rawDiseaseGroup)));
+        diseaseGroups.push(store.pushToStore(new Model('patient-disease-groups', rawDiseaseGroup)));
       }
 
       for (i = 0; i < this.units.length; i++) {

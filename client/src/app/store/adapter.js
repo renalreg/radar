@@ -21,11 +21,11 @@
         return this.config.baseUrl + url;
       };
 
-      Adapter.prototype.getModelUrl = function(name, id) {
+      Adapter.prototype.getModelUrl = function(modelName, id) {
         if (id === undefined) {
-          return '/' + name;
+          return '/' + modelName;
         } else {
-          return '/' + name + '/' + id;
+          return '/' + modelName + '/' + id;
         }
       };
 
@@ -54,12 +54,12 @@
         return camelCaseKeys(data);
       };
 
-      Adapter.prototype.findOne = function(name, id) {
+      Adapter.prototype.findOne = function(modelName, id) {
         var self = this;
 
-        var url = self.getModelUrl(name, id);
+        var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(name, 'GET', url);
+        self.logModelRequest(modelName, 'GET', url);
 
         return self.get(url)
           .then(function(response) {
@@ -71,12 +71,12 @@
           });
       };
 
-      Adapter.prototype.findMany = function(name, params, meta) {
+      Adapter.prototype.findMany = function(modelName, params, meta) {
         var self = this;
 
-        var url = self.getModelUrl(name);
+        var url = self.getModelUrl(modelName);
 
-        self.logModelRequest(name, 'GET', url);
+        self.logModelRequest(modelName, 'GET', url);
 
         return self.get(url, params)
           .then(function(response) {
@@ -92,12 +92,12 @@
           });
       };
 
-      Adapter.prototype.create = function(name, data) {
+      Adapter.prototype.create = function(modelName, data) {
         var self = this;
 
-        var url = self.getModelUrl(name);
+        var url = self.getModelUrl(modelName);
 
-        self.logModelRequest(name, 'POST', url);
+        self.logModelRequest(modelName, 'POST', url);
 
         return self.post(url, {}, data)
           .then(function(response) {
@@ -114,12 +114,12 @@
           });
       };
 
-      Adapter.prototype.update = function(name, id, data) {
+      Adapter.prototype.update = function(modelName, id, data) {
         var self = this;
 
-        var url = self.getModelUrl(name, id);
+        var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(name, 'PUT', url);
+        self.logModelRequest(modelName, 'PUT', url);
 
         return self.put(url, {}, data)
           .then(function(response) {
@@ -136,12 +136,12 @@
           });
       };
 
-      Adapter.prototype.remove = function(name, id) {
+      Adapter.prototype.remove = function(modelName, id) {
         var self = this;
 
-        var url = self.getModelUrl(name, id);
+        var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(name, 'DELETE', url);
+        self.logModelRequest(modelName, 'DELETE', url);
 
         return self.delete(url)
           .then(function() {
@@ -202,8 +202,8 @@
           });
       };
 
-      Adapter.prototype.logModelRequest = function(name, method, url) {
-        console.log('[' + name + '] ' + method + ' ' + url);
+      Adapter.prototype.logModelRequest = function(modelName, method, url) {
+        console.log('[' + modelName + '] ' + method + ' ' + url);
       };
 
       return new Adapter(config);

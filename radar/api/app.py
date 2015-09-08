@@ -7,6 +7,8 @@ from radar.api.views.demographics import DemographicsList, DemographicsDetail
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
 from radar.api.views.disease_groups import DiseaseGroupList
 from radar.api.views.facilities import FacilityList, FacilityDetail
+from radar.api.views.medications import MedicationDetail, MedicationList, MedicationDoseUnitList, \
+    MedicationFrequencyList, MedicationRouteList
 from radar.api.views.patients import PatientList, PatientDetail
 from radar.api.views.posts import PostList, PostDetail
 from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
@@ -51,11 +53,21 @@ app.add_url_rule('/patients/<int:id>', view_func=PatientDetail.as_view('patient_
 
 app.add_url_rule('/demographics', view_func=DemographicsList.as_view('demographics_list'))
 app.add_url_rule('/demographics/<int:id>', view_func=DemographicsDetail.as_view('demographics_detail'))
+
 app.add_url_rule('/dialysis', view_func=DialysisList.as_view('dialysis_list'))
+
+app.add_url_rule('/medications/<int:id>', view_func=MedicationDetail.as_view('medication_detail'))
+app.add_url_rule('/medications', view_func=MedicationList.as_view('medication_list'))
+app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitList.as_view('medication_dose_unit_list'))
+app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyList.as_view('medication_frequency_list'))
+app.add_url_rule('/medication-routes', view_func=MedicationRouteList.as_view('medication_route_list'))
+
 app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetail.as_view('dialysis_detail'))
 app.add_url_rule('/dialysis-types', view_func=DialysisTypeList.as_view('dialysis_type_list'))
+
 app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesList.as_view('salt_wasting_clinical_features_list'))
 app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetail.as_view('salt_wasting_clinical_features_detail'))
+
 app.add_url_rule('/renal-imaging', view_func=RenalImagingList.as_view('renal_imaging_list'))
 app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetail.as_view('renal_imaging_detail'))
 

@@ -4,10 +4,10 @@
   var app = angular.module('radar.store');
 
   app.factory('Model', function(_, store) {
-    function Model(name, data) {
+    function Model(modelName, data) {
       var self = this;
 
-      self.name = name;
+      self.modelName = modelName;
       self.isSaving = false;
       self.isDeleted = false;
       self.isValid = true;
@@ -64,7 +64,7 @@
       var id = this.getId();
 
       if (id !== null) {
-        store.findOne(this.name, id);
+        store.findOne(this.modelName, id);
       }
     };
 
@@ -73,7 +73,7 @@
     };
 
     Model.prototype.clone = function() {
-      return new this.constructor(this.name, this.getData());
+      return new this.constructor(this.modelName, this.getData());
     };
 
     return Model;

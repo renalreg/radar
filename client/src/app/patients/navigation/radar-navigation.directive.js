@@ -1,14 +1,14 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patientNavigation');
+  var app = angular.module('radar.patients.navigation');
 
   app.directive('radarNavigation', function(radarPatientFeatures, patientFeatures, _) {
     return {
       scope: {
         patient: '='
       },
-      templateUrl: 'app/patient-navigation/radar-navigation.html',
+      templateUrl: 'app/patients/navigation/radar-navigation.html',
       link: function(scope) {
         scope.links = [];
 

@@ -21,7 +21,7 @@
         var user = session.user;
 
         if (user.isAdmin) {
-          store.findMany('patient-disease-groups').then(function(diseaseGroups) {
+          store.findMany('disease-groups').then(function(diseaseGroups) {
             scope.diseaseGroups = sortDiseaseGroups(diseaseGroups);
           });
         } else {

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patientNavigation');
+  var app = angular.module('radar.patients.navigation');
 
   app.directive('diseaseGroupNavigation', function(patientFeatures, _) {
     return {
@@ -9,7 +9,7 @@
         patient: '=',
         diseaseGroup: '='
       },
-      templateUrl: 'app/patient-navigation/disease-group-navigation.html',
+      templateUrl: 'app/patients/navigation/disease-group-navigation.html',
       link: function(scope) {
         scope.links = [];
 

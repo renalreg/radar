@@ -1,3 +1,5 @@
+from functools import wraps
+
 from flask import request, jsonify
 from itsdangerous import TimestampSigner
 
@@ -17,16 +19,48 @@ class TokenSerializer(Serializer):
     token = StringField()
 
 
+def request_json(serializer_class):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            json = request.get_json()
+
+            if json is None:
+                raise BadRequest()
+
+            serializer = serializer_class()
+            data = serializer.to_value(json)
+
+            args = list(args)
+            args.append(data)
+
+            return f(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def response_json(serializer_class):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            response = f(*args, **kwargs)
+            serializer = serializer_class()
+            data = serializer.to_data(response)
+            return jsonify(data), 200
+
+        return wrapper
+
+    return decorator
+
+
 class Login(ApiView):
-    def post(self):
-        login_serializer = LoginSerializer()
-
-        json = request.get_json()
-
-        if json is None:
-            raise BadRequest('Expected JSON.')
-
-        credentials = login_serializer.to_value(json)
+    @request_json(LoginSerializer)
+    @response_json(TokenSerializer)
+    def post(self, credentials):
+        print self
+        print credentials
 
         user = User.query.filter(User.username == credentials['username']).first()
 
@@ -42,7 +76,4 @@ class Login(ApiView):
         s = TimestampSigner('SECRET')
         token = s.sign(str(user_id))
 
-        token_serializer = TokenSerializer()
-        data = token_serializer.to_data({'user_id': user_id, 'token': token})
-
-        return jsonify(data), 200
+        return {'user_id': user_id, 'token': token}
