@@ -7,7 +7,7 @@ import six
 from sqlalchemy import inspect
 from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
-from radar.models import User, Facility, Patient, Unit
+from radar.models import User, Facility, Patient, Unit, DiseaseGroup
 
 
 class Empty(object):
@@ -291,6 +291,10 @@ class PatientLookupField(LookupField):
 
 class FacilityLookupField(LookupField):
     model_class = Facility
+
+
+class DiseaseGroupLookupField(LookupField):
+    model_class = DiseaseGroup
 
 
 class ListField(Field):
@@ -615,6 +619,11 @@ class EmbeddedFacilitySerializer(ModelSerializer):
         exclude = ['unit_id']
 
 
+class EmbeddedDiseaseGroupSerializer(ModelSerializer):
+    class Meta:
+        model_class = DiseaseGroup
+
+
 class CreatedUserMixin(object):
     created_user = EmbeddedUserSerializer(read_only=True)
 
@@ -642,5 +651,10 @@ class FacilitySerializerMixin(object):
     facility_id = FacilityLookupField()
 
 
+class DiseaseGroupSerializerMixin(object):
+    disease_group = EmbeddedFacilitySerializer(read_only=True)
+    disease_group_id = FacilityLookupField()
+
+
 class PatientSerializerMixin(object):
-    patient_id = PatientLookupField(write_only=False)
+    patient_id = PatientLookupField()

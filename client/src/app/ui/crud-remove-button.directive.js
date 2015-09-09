@@ -3,21 +3,44 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('crudRemoveButton', function() {
+  app.directive('crudRemoveButton', function($timeout) {
     return {
       scope: {
         item: '='
       },
-      template: '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled" type="button" class="btn btn-link"><i class="fa fa-trash-o"></i> Delete</button>',
+      templateUrl: 'app/ui/crud-remove-button.html',
       link: function(scope) {
-        scope.action = function() {
+        scope.clicked = false;
+        scope.confirmEnabled = false;
+
+        var confirmTimeout = null;
+
+        scope.remove = function() {
+          scope.clicked = true;
+          scope.confirmEnabled = false;
+          confirmTimeout = $timeout(function() {
+            scope.confirmEnabled = true;
+          }, 1000);
+        };
+
+        scope.confirm = function() {
+          scope.clicked = false;
+          scope.confirmEnabled = false;
+          $timeout.cancel(confirmTimeout);
+
           scope.$parent.remove(scope.item);
+        };
+
+        scope.cancel = function() {
+          scope.clicked = false;
+          scope.confirmEnabled = false;
+          $timeout.cancel(confirmTimeout);
         };
 
         scope.$watch(function() {
           return scope.$parent.removeEnabled(scope.item);
         }, function(value) {
-          scope.enabled = value;
+          scope.removeEnabled = value;
         });
 
         scope.$watch(function() {

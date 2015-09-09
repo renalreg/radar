@@ -1,0 +1,102 @@
+<div loading="loading">
+  <div ng-if="viewing">
+    <p>
+      <span crud-create-button action="create()"></span>
+      <span crud-edit-button item="item"></span>
+      <span crud-remove-button item="item"></span>
+    </p>
+
+    <div ng-if="item">
+      <h2>For Childhood Onset</h2>
+
+      <table class="table properties">
+        <tr>
+          <th>Normal Pregnency</th>
+          <td><span tick="item.normalPregnancy"></span></td>
+        </tr>
+
+        <tr ng-show="item.normalPregnancy">
+          <th>Abnormal Pregnancy Text</th>
+          <td class="newlines">{{ item.abnormalPregnancyText }}</td>
+        </tr>
+      </table>
+
+      <h2>Neurological Problems</h2>
+
+      <table class="table properties">
+        <tr>
+          <th>Neurological Problems</th>
+          <td><span tick="item.neurologicalProblems"></span></td>
+        </tr>
+
+        <tr ng-show="item.neurologicalProblems">
+          <th>Seizures</th>
+          <td><span tick="item.seizures"></span></td>
+        </tr>
+
+        <tr ng-show="item.neurologicalProblems">
+          <th>Seizures</th>
+          <td><span tick="item.seizures"></span></td>
+        </tr>
+
+        <tr ng-show="item.neurologicalProblems">
+          <th>Abnormal Gait</th>
+          <td><span tick="item.abnormalGait"></span></td>
+        </tr>
+
+        <tr ng-show="item.neurologicalProblems">
+          <th>Deafness</th>
+          <td><span tick="item.deafness"></span></td>
+        </tr>
+
+        <tr ng-show="item.neurologicalProblems && otherNeurologicalProblem">
+          <th>Other</th>
+          <td class="newlines">{{item.otherNeurologicalProblemText}}</td>
+        </tr>
+      </table>
+
+      <h2>Joint Problems</h2>
+
+      <table class="table properties">
+        <tr>
+          <th>Joint Problems</th>
+          <td><span tick="item.jointProblems"></span></td>
+        </tr>
+
+        <tr ng-show="item.jointProblems">
+          <th>Age First Noticed</th>
+          <td><span tick="item.jointProblemsAge"></span></td>
+        </tr>
+
+        <tr ng-show="item.jointProblems">
+          <th>X-ray Abnormalities</th>
+          <td><span tick="item.xRayAbnormalities"></span></td>
+        </tr>
+
+        <tr ng-show="item.jointProblems && item.xRayAbnormalities">
+          <th>Chondrocalcinosis</th>
+          <td><span tick="item.chondrocalcinosis"></span></td>
+        </tr>
+
+        <tr ng-show="item.jointProblems && item.xRayAbnormalities && item.otherXRayAbnormality">
+          <th>Other</th>
+          <td class="newlines">{{item.otherXRayAbnormalityText}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-view-button item="originalItem"></span>
+      <span crud-remove-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-button action="view()"></span>
+      </div>
+    </form>
+  </div>
+</div>

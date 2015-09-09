@@ -1,14 +1,19 @@
 from flask import request, jsonify
 from flask.views import MethodView
 from flask_login import current_user
-from sqlalchemy import desc, inspect
+from sqlalchemy import desc, inspect, or_
+from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import NoResultFound
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.patient_search import PatientQueryBuilder
-from radar.lib.permissions import PatientDataPermission, FacilityDataPermission, IsAuthenticated
+from radar.lib.permissions import PatientDataPermission, FacilityDataPermission, IsAuthenticated, \
+    DiseaseGroupDataPermission
+from radar.lib.roles import DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_PATIENT_ROLES
 from radar.lib.serializers import ListField, ValidationError, Serializer, IntegerField, StringField
+from radar.models import Patient, DiseaseGroupPatient, DiseaseGroup, DiseaseGroupUser, UnitPatient, UnitUser, Unit, \
+    Genetics
 
 
 class ApiView(MethodView):
@@ -305,6 +310,11 @@ class DestroyModelMixin(object):
         return '', 204
 
 
+class RetrieveView(RetrieveModelMixin, GenericApiView):
+    def get(self, *args, **kwargs):
+        return self.retrieve(*args, **kwargs)
+
+
 class ListView(ListModelMixin, GenericApiView):
     def get(self, *args, **kwargs):
         return self.list(*args, **kwargs)
@@ -381,12 +391,84 @@ class FacilityDataMixin(object):
     def filter_query(self, query):
         query = super(FacilityDataMixin, self).filter_query(query)
 
+        # Note: if a user can view the patient (see PatientDataMixin.filter_query) they can *view* the patient's data
+        # from any facility.
+
         serializer = FacilityRequestSerializer()
         args = serializer.to_value(request.args)
 
+        # Filter by facility
         if 'facility_id' in args:
             model_class = self.get_model_class()
             query = query.filter(model_class.facility_id == args['facility_id'])
+
+        return query
+
+
+class DiseaseGroupRequestSerializer(Serializer):
+    disease_group_id = IntegerField()
+
+
+class DiseaseGroupDataMixin(object):
+    def get_permission_classes(self):
+        permission_classes = super(DiseaseGroupDataMixin, self).get_permission_classes()
+
+        if IsAuthenticated not in permission_classes:
+            permission_classes.insert(0, IsAuthenticated)
+
+        permission_classes += [DiseaseGroupDataPermission]
+
+        return permission_classes
+
+    def filter_query(self, query):
+        query = super(DiseaseGroupDataMixin, self).filter_query(query)
+
+        # Filter the query based on the user's unit and disease group membership
+        # Admins can view all data so don't filter their queries
+        if not current_user.is_admin:
+            model_class = self.get_model_class()
+
+            # Check if the user has permission through their disease group membership (requires the view patient
+            # permission).
+            disease_group_sub_query = db.session.query(DiseaseGroupPatient)\
+                .join(DiseaseGroupPatient.disease_group)\
+                .join(DiseaseGroup.disease_group_users)\
+                .filter(
+                    DiseaseGroupPatient.patient_id == model_class.patient_id,
+                    DiseaseGroupPatient.disease_group_id == model_class.disease_group_id,
+                    DiseaseGroupUser.user == current_user,
+                    DiseaseGroupUser.role.in_(DISEASE_GROUP_VIEW_PATIENT_ROLES)
+                )\
+                .exists()
+
+            # Check if the user has permission through their unit membership. If the user has the view patient
+            # permission on one of the patient's units they can view all disease group data.
+            unit_sub_query = db.session.query(UnitPatient)\
+                .join(UnitPatient.unit)\
+                .join(Unit.unit_users)\
+                .filter(
+                    UnitPatient.patient_id == model_class.patient_id,
+                    UnitUser.user == current_user,
+                    UnitUser.role.in_(UNIT_VIEW_PATIENT_ROLES)
+                )\
+                .exists()
+
+            # Filter the query to only include rows the user has permission to see
+            # Permission is granted through the user's disease group membership and/or unit membership
+            query = query.filter(or_(
+                disease_group_sub_query,
+                unit_sub_query
+            ))
+
+        serializer = DiseaseGroupRequestSerializer()
+        args = serializer.to_value(request.args)
+
+        # Filter by disease group
+        # Note: we don't check permissions here as the query has already been filtered. If the user doesn't belong to
+        # the disease group no results will be returned.
+        if 'disease_group_id' in args:
+            model_class = self.get_model_class()
+            query = query.filter(model_class.disease_group_id == args['disease_group_id'])
 
         return query
 

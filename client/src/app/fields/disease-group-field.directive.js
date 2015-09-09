@@ -14,7 +14,7 @@
       restrict: 'A',
       scope: {
         model: '=',
-        required: '='
+        required: '&'
       },
       templateUrl: 'app/fields/disease-group-field.html',
       link: function(scope) {

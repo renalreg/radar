@@ -26,11 +26,11 @@
 
       var userUnits = user.units;
 
-      for (var i = 0; i < user.units; i++) {
+      for (var i = 0; i < userUnits.length; i++) {
         var userUnit = userUnits[i];
 
-        if (_.indexOf(patientUnitIds, userUnit.unit.id) >= 0) {
-          return userUnit.hasEditPatientPermission;
+        if (_.indexOf(patientUnitIds, userUnit.unit.id) >= 0 && userUnit.hasEditPatientPermission) {
+          return true;
         }
       }
 

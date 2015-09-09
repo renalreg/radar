@@ -8,7 +8,6 @@
       scope: {
         action: '&'
       },
-      replace: true,
       template: '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled" type="button" class="btn btn-primary">New</button>',
       link: function(scope) {
         scope.$watch(function() {

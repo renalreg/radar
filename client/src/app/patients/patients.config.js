@@ -38,6 +38,10 @@
       text: 'Disease Groups',
       url: 'patient.diseaseGroups({patientId: patient.id})'
     },
+    GENETICS: {
+      text: 'Genetics',
+      url: 'patient.genetics({patientId: patient.id, diseaseGroupId: diseaseGroup.id})'
+    },
     HOSPITALISATIONS: {
       text: 'Hospitalisations',
       url: 'patient.hospitalisations({patientId: patient.id})'
@@ -49,6 +53,14 @@
     PLASMAPHERESIS: {
       text: 'Plasmapheresis',
       url: 'patient.plasmapheresis({patientId: patient.id})'
+    },
+    RENAL_IMAGING: {
+      text: 'Renal Imaging',
+      url: 'patient.renalImaging({patientId: patient.id})'
+    },
+    SALT_WASTING_CLINICAL_FEATURES: {
+      text: 'Clinical Features',
+      url: 'patient.saltWastingClinicalFeatures({patientId: patient.id})'
     },
     UNITS: {
       text: 'Units',

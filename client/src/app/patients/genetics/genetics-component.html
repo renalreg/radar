@@ -1,0 +1,102 @@
+<div loading="loading">
+  <div ng-if="viewing">
+    <p>
+      <span crud-create-button action="create()"></span>
+      <span crud-edit-button item="item"></span>
+      <span crud-remove-button item="item"></span>
+    </p>
+
+    <table class="table properties" ng-if="item">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Sample Sent</th>
+        <td><span tick="item.sampleSent"></span></td>
+      </tr>
+
+      <tr ng-show="item.sampleSent">
+        <th>Sample Sent Date</th>
+        <td>{{item.sampleSentDate | dateFormat}}</td>
+      </tr>
+
+      <tr ng-show="item.sampleSent">
+        <th>Laboratory</th>
+        <td>{{item.laboratory | missing}}</td>
+      </tr>
+
+      <tr ng-show="item.sampleSent">
+        <th>Laboratory Reference Number</th>
+        <td>{{item.laboratoryReferenceNumber | missing}}</td>
+      </tr>
+
+      <tr ng-show="item.sampleSent">
+        <th>Results</th>
+        <td class="newlines">{{item.results | missing}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-view-button item="originalItem"></span>
+      <span crud-remove-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Has a sample been sent for Genetic analysis?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.sampleSent" required="true"></div>
+          <div frm-errors errors="item.errors.sampleSent"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.sampleSent">
+        <div frm-field frm-group>
+          <div frm-label>Date Sent</div>
+
+          <div frm-control>
+            <div frm-date-field model="item.sampleSentDate" required="item.sampleSent"></div>
+            <div frm-errors errors="item.errors.sampleSentDate"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Laboratory where test sent / done</div>
+
+          <div frm-control>
+            <div frm-text-field model="item.laboratory"></div>
+            <div frm-errors errors="item.errors.laboratory"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Laboratory Reference Number</div>
+
+          <div frm-control>
+            <div frm-text-field model="item.laboratoryReferenceNumber"></div>
+            <div frm-errors errors="item.errors.laboratoryReferenceNumber"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Results</div>
+
+          <div frm-control>
+            <div frm-textarea-field model="item.results"></div>
+            <div frm-errors errors="item.errors.results"></div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-button action="view()"></span>
+      </div>
+    </form>
+  </div>
+</div>

@@ -6,37 +6,35 @@
     </p>
 
     <table class="table properties">
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <td>{{item.id}}</td>
-        </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
 
-        <tr>
-          <th>Data Source</th>
-          <td>{{item.facility.name}}</td>
-        </tr>
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.facility.name}}</td>
+      </tr>
 
-        <tr>
-          <th>Date of Admission</th>
-          <td>{{item.dateOfAdmission | dateFormat}}</td>
-        </tr>
+      <tr>
+        <th>Date of Admission</th>
+        <td>{{item.dateOfAdmission | dateFormat}}</td>
+      </tr>
 
-        <tr>
-          <th>Date of Discharge</th>
-          <td>{{item.dateOfDischarge | dateFormat}}</td>
-        </tr>
+      <tr>
+        <th>Date of Discharge</th>
+        <td>{{item.dateOfDischarge | dateFormat}}</td>
+      </tr>
 
-        <tr>
-          <th>Reason for Admission</th>
-          <td>{{item.reasonForAdmission}}</td>
-        </tr>
+      <tr>
+        <th>Reason for Admission</th>
+        <td>{{item.reasonForAdmission}}</td>
+      </tr>
 
-        <tr>
-          <th>Comments</th>
-          <td>{{item.comments | missing}}</td>
-        </tr>
-      </tbody>
+      <tr>
+        <th>Comments</th>
+        <td>{{item.comments | missing}}</td>
+      </tr>
     </table>
   </div>
 

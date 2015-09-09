@@ -8,7 +8,7 @@
       restrict: 'A',
       scope: {
         model: '=',
-        required: '=',
+        required: '&',
         minDate: '=',
         maxDate: '=',
         defaultDate: '='

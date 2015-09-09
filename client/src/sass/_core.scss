@@ -62,16 +62,8 @@ a.btn, .nav a {
   text-decoration: none;
 }
 
-input, select {
-  max-width: 400px;
-}
-
 .input-group {
-  max-width: 400px;
-
-  input, select {
-    max-width: none;
-  }
+  max-width: 200px;
 }
 
 .form-group.required .control-label:after {
@@ -127,6 +119,14 @@ th.right {
   width: auto;
 }
 
+textarea.form-control {
+  width: 100%;
+}
+
 .properties th {
   text-align: right;
+}
+
+.newlines {
+  white-space: pre-line;
 }

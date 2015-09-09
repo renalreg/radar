@@ -1,0 +1,388 @@
+<div loading="loading">
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.facility.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Date</th>
+        <td>{{item.date | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Imaging Type</th>
+        <td>{{item.imagingType}}</td>
+      </tr>
+    </table>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Right Kidney</h3>
+          </div>
+
+          <div class="panel-body">
+            <table class="table properties">
+              <tr>
+                <th>Right Kidney</th>
+                <td><span tick="item.rightPresent"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Kidney Type</th>
+                <td>{{item.rightType}}</td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Renal Length</th>
+                <td>{{item.rightLength}}</td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Renal Cysts</th>
+                <td><span tick="item.rightCysts"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Calcification Present</th>
+                <td><span tick="item.rightCalcification"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent && item.rightCalcification">
+                <th>Nephrocalcinosis</th>
+                <td><span tick="item.rightNephrocalcinosis"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent && item.rightCalcification">
+                <th>Nephrolithiasis</th>
+                <td><span tick="item.rightNephrolithiasis"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Other Malformation Details</th>
+                <td class="newlines">{{item.rightOtherMalformation | missing}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Left Kidney</h3>
+          </div>
+
+          <div class="panel-body">
+            <table class="table properties">
+              <tr>
+                <th>Left Kidney</th>
+                <td><span tick="item.leftPresent"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Kidney Type</th>
+                <td>{{item.leftType}}</td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Renal Length</th>
+                <td>{{item.leftLength}}</td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Renal Cysts</th>
+                <td><span tick="item.leftCysts"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Calcification Present</th>
+                <td><span tick="item.leftCalcification"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent && item.leftCalcification">
+                <th>Nephrocalcinosis</th>
+                <td><span tick="item.leftNephrocalcinosis"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent && item.leftCalcification">
+                <th>Nephrolithiasis</th>
+                <td><span tick="item.leftNephrolithiasis"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Other Malformation Details</th>
+                <td class="newlines">{{item.leftOtherMalformation | missing}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Data Source</div>
+
+        <div frm-control>
+          <div frm-patient-facility-field patient="patient" model="item.facility" required="true"></div>
+          <div frm-errors errors="item.errors.facilityId"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.date" required="true"></div>
+          <div frm-errors errors="item.errors.date"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Imaging Type</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.imagingType" options="imagingTypes" required="true"></div>
+          <div frm-errors errors="item.errors.imagingType"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Right Kidney</h3>
+            </div>
+
+            <div class="panel-body">
+              <div frm-field frm-group>
+                <div frm-label>Right Kidney</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightPresent" required="true"></div>
+                  <div frm-errors errors="item.errors.rightPresent"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Kidney Type</div>
+
+                <div frm-control>
+                  <div frm-radio-field model="item.rightType" options="kidneyTypes" required="item.rightPresent"></div>
+                  <div frm-errors errors="item.errors.rightType"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Renal Length</div>
+
+                <div frm-control>
+                  <div frm-number-field model="item.rightLength" required="item.rightPresent" units="cm"></div>
+                  <div frm-errors errors="item.errors.rightLength"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Renal Cysts</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightCysts" required="item.rightPresent"></div>
+                  <div frm-errors errors="item.errors.rightCysts"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Calcification Present</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightCalcification" required="item.rightPresent"></div>
+                  <div frm-errors errors="item.errors.rightCalcification"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent && item.rightCalcification" frm-field frm-group>
+                <div frm-label>Nephrocalcinosis</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightNephrocalcinosis" required="item.rightPresent && item.rightCalcification"></div>
+                  <div frm-errors errors="item.errors.rightNephrocalcinosis"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent && item.rightCalcification" frm-field frm-group>
+                <div frm-label>Nephrolithiasis</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightNephrolithiasis" required="item.rightPresent && item.rightCalcification"></div>
+                  <div frm-errors errors="item.errors.rightNephrolithiasis"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Other Renal Malformation Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.rightOtherMalformation"></div>
+                  <div frm-errors errors="item.errors.rightOtherMalformation"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Left Kidney</h3>
+            </div>
+
+            <div class="panel-body">
+              <div frm-field frm-group>
+                <div frm-label>Left Kidney</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftPresent" required="true"></div>
+                  <div frm-errors errors="item.errors.leftPresent"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Kidney Type</div>
+
+                <div frm-control>
+                  <div frm-radio-field model="item.leftType" options="kidneyTypes" required="item.leftPresent"></div>
+                  <div frm-errors errors="item.errors.leftType"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Renal Length</div>
+
+                <div frm-control>
+                  <div frm-number-field model="item.leftLength" required="item.leftPresent" units="cm"></div>
+                  <div frm-errors errors="item.errors.leftLength"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Renal Cysts</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftCysts" required="item.leftPresent"></div>
+                  <div frm-errors errors="item.errors.leftCysts"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Calcification Present</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftCalcification" required="item.leftPresent"></div>
+                  <div frm-errors errors="item.errors.leftCalcification"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent && item.leftCalcification" frm-field frm-group>
+                <div frm-label>Nephrocalcinosis</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftNephrocalcinosis" required="item.leftPresent && item.leftCalcification"></div>
+                  <div frm-errors errors="item.errors.leftNephrocalcinosis"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent && item.leftCalcification" frm-field frm-group>
+                <div frm-label>Nephrolithiasis</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftNephrolithiasis" required="item.leftPresent && item.leftCalcification"></div>
+                  <div frm-errors errors="item.errors.leftNephrolithiasis"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Other Renal Malformation Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.leftOtherMalformation"></div>
+                  <div frm-errors errors="item.errors.leftOtherMalformation"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </p>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="date" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="date">Date</th>
+          <th sort-helper="imagingType">Imaging Type</th>
+          <th sort-helper="facility.name">Data Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.id}}</td>
+          <td>{{item.date | dateFormat}}</td>
+          <td>{{item.imagingType}}</td>
+          <td>{{item.facility.name}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

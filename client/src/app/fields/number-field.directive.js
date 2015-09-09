@@ -9,8 +9,9 @@
     return {
       restrict: 'A',
       scope: {
-        required: '=',
-        model: '='
+        required: '&',
+        model: '=',
+        units: '@'
       },
       templateUrl: 'app/fields/number-field.html'
     };

@@ -14,7 +14,7 @@
       restrict: 'A',
       scope: {
         model: '=',
-        required: '='
+        required: '&'
       },
       templateUrl: 'app/fields/unit-field.html',
       link: function(scope, element, attrs, fieldCtrl) {

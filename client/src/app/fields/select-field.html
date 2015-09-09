@@ -1,9 +1,9 @@
 <select
   frm-model
   frm-required
-  ng-model="model"
-  ng-options="x as x.label for x in options track by x.id"
-  ng-required="required"
+  ng-model="data.model"
+  ng-options="x as x.label for x in data.options track by x.value"
+  ng-required="required()"
   class="form-control">
   <option ng-if="!required" value=""></option>
 </select>

@@ -1,7 +1,11 @@
-<input
-  frm-model
-  frm-required
-  ng-required="required"
-  ng-model="model"
-  type="text"
-  class="form-control"/>
+<div class="input-group">
+  <input
+    frm-model
+    frm-required
+    ng-required="required()"
+    ng-model="model"
+    type="text"
+    class="form-control"/>
+
+  <span ng-if="units" class="input-group-addon">{{units}}</span></div>
+</div>

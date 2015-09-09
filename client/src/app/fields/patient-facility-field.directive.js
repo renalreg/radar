@@ -9,7 +9,7 @@
       scope: {
         patient: '=',
         model: '=',
-        required: '='
+        required: '&'
       },
       templateUrl: 'app/fields/patient-facility-field.html',
       link: function(scope) {
@@ -20,7 +20,7 @@
 
         if (!isAdmin) {
           _.forEach(user.units, function(unit) {
-            if (unit.hasEditPermission) {
+            if (unit.hasEditPatientPermission) {
               unitIds.push(unit.unit.id);
             }
           });

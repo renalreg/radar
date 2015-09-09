@@ -59,9 +59,6 @@ class Login(ApiView):
     @request_json(LoginSerializer)
     @response_json(TokenSerializer)
     def post(self, credentials):
-        print self
-        print credentials
-
         user = User.query.filter(User.username == credentials['username']).first()
 
         if user is None:

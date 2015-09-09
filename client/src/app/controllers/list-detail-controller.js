@@ -16,12 +16,6 @@
     function ListDetailController($scope, params) {
       this.scope = $scope;
 
-      if (params.permission) {
-        this._createPermission = params.permission;
-        this._editPermission = params.permission;
-        this._removePermission = params.permission;
-      }
-
       if (params.createPermission) {
         this._createPermission = params.createPermission;
       } else if (params.permission) {
@@ -156,8 +150,6 @@
       var self = this;
 
       self.scope.saving = true;
-
-      console.log(self.scope.item);
 
       return self.scope.item.save()
         .then(function(item) {

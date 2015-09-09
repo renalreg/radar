@@ -7,9 +7,16 @@
     return {
       require: '^frmField',
       link: function(scope, element, attrs, fieldCtrl) {
+        var requiredGetter = null;
+
         attrs.$observe('ngRequired', function(value) {
-          var required = $parse(value)(scope) === true;
-          fieldCtrl.setRequired(required);
+          requiredGetter = $parse(value);
+        });
+
+        scope.$watch(function() {
+          return requiredGetter !== null && requiredGetter(scope) === true;
+        }, function(value) {
+          fieldCtrl.setRequired(value);
         });
       }
     };

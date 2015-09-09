@@ -28,6 +28,10 @@
         return false;
       }
 
+      if (session.user.isAdmin) {
+        return true;
+      }
+
       var userUnits = session.user.units;
 
       for (var i = 0; i < userUnits.length; i++) {

@@ -16,10 +16,28 @@
     function DetailController($scope, params) {
       this.scope = $scope;
 
+      if (params.createPermission) {
+        this._createPermission = params.createPermission;
+      } else if (params.permission) {
+        this._createPermission = params.permission;
+      } else {
+        this._createPermission = defaultPermission;
+      }
+
       if (params.editPermission) {
         this._editPermission = params.editPermission;
+      } else if (params.permission) {
+        this._editPermission = params.permission;
       } else {
         this._editPermission = defaultPermission;
+      }
+
+      if (params.removePermission) {
+        this._removePermission = params.removePermission;
+      } else if (params.permission) {
+        this._removePermission = params.permission;
+      } else {
+        this._removePermission = defaultPermission;
       }
 
       this.scope.loading = true;
@@ -36,11 +54,15 @@
       this.scope.remove = angular.bind(this, this.remove);
 
       this.scope.viewEnabled = angular.bind(this, this.viewEnabled);
+      this.scope.createEnabled = angular.bind(this, this.createEnabled);
       this.scope.editEnabled = angular.bind(this, this.editEnabled);
       this.scope.removeEnabled = angular.bind(this, this.removeEnabled);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
+      this.scope.cancelEnabled = angular.bind(this, this.cancelEnabled);
 
+      this.scope.createPermission = angular.bind(this, this.createPermission);
       this.scope.editPermission = angular.bind(this, this.editPermission);
+      this.scope.removePermission = angular.bind(this, this.removePermission);
     }
 
     DetailController.prototype.load = function(promise) {
@@ -58,7 +80,11 @@
       return $window.confirm('Discard unsaved changes?');
     };
 
-    DetailController.prototype.view = function() {
+    DetailController.prototype.view = function(item) {
+      if (item === undefined) {
+        item = this.scope.item;
+      }
+
       var ok = !this.scope.editing ||
         this.scope.item === null ||
         !this.scope.item.isDirty() ||
@@ -68,21 +94,13 @@
         return;
       }
 
-      if (this.scope.editing) {
-        if (this.scope.originalItem === null || this.scope.originalItem.getId() === null) {
-          this.scope.item = null;
-        } else {
-          this.scope.item = this.scope.originalItem;
-        }
-
-        this.scope.originalItem = null;
-      }
-
       this.scope.viewing = true;
       this.scope.editing = false;
+      this.scope.originalItem = null;
+      this.scope.item = item;
     };
 
-    DetailController.prototype.edit = function() {
+    DetailController.prototype.edit = function(item) {
       var ok = !this.scope.editing ||
         !this.scope.item.isDirty() ||
         this.discardChanges();
@@ -93,8 +111,8 @@
 
       this.scope.viewing = false;
       this.scope.editing = true;
-      this.scope.originalItem = this.scope.item;
-      this.scope.item = this.scope.item.clone();
+      this.scope.originalItem = item;
+      this.scope.item = item.clone();
     };
 
     DetailController.prototype.save = function() {
@@ -110,8 +128,8 @@
     DetailController.prototype.saveAndView = function() {
       var self = this;
 
-      return self.save().then(function() {
-        self.view();
+      return self.save().then(function(item) {
+        self.view(item);
       });
     };
 
@@ -124,7 +142,7 @@
         .then(function() {
           self.scope.originalItem = null;
           self.scope.item = null;
-          self.view();
+          self.view(null);
         })
         .finally(function() {
           self.scope.saving = false;
@@ -132,23 +150,45 @@
     };
 
     DetailController.prototype.viewEnabled = function() {
-      return this.scope.item !== null && !this.scope.saving;
+      return this.scope.item !== null &&
+        this.scope.item.getId() !== null &&
+        !this.scope.saving;
+    };
+
+    DetailController.prototype.createEnabled = function() {
+      return this.scope.item === null && !this.scope.saving;
     };
 
     DetailController.prototype.editEnabled = function() {
-      return this.scope.item !== null && !this.scope.saving;
+      return this.scope.item !== null &&
+        this.scope.item.getId() !== null &&
+        !this.scope.saving;
     };
 
     DetailController.prototype.removeEnabled = function() {
-      return this.scope.item !== null && !this.scope.saving;
+      return this.scope.item !== null &&
+        this.scope.item.getId() !== null &&
+        !this.scope.saving;
     };
 
     DetailController.prototype.saveEnabled = function() {
       return this.scope.item !== null && !this.scope.saving;
     };
 
+    DetailController.prototype.cancelEnabled = function() {
+      return !this.scope.saving;
+    };
+
+    DetailController.prototype.createPermission = function() {
+      return this._createPermission.hasPermission();
+    };
+
     DetailController.prototype.editPermission = function() {
       return this._editPermission.hasObjectPermission(this.scope.item);
+    };
+
+    DetailController.prototype.removePermission = function() {
+      return this._removePermission.hasObjectPermission(this.scope.item);
     };
 
     return DetailController;

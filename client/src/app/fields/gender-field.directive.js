@@ -8,7 +8,7 @@
       require: '^frmField',
       restrict: 'A',
       scope: {
-        required: '=',
+        required: '&',
         model: '='
       },
       templateUrl: 'app/fields/gender-field.html',

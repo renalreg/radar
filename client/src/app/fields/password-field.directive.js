@@ -7,7 +7,7 @@
     return {
       restrict: 'A',
       scope: {
-        required: '=',
+        required: '&',
         model: '='
       },
       templateUrl: 'app/fields/password-field.html'
