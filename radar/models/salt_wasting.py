@@ -22,7 +22,7 @@ class SaltWastingClinicalFeatures(db.Model, MetadataMixin):
     other_neurological_problem = Column(Boolean)
     other_neurological_problem_text = Column(String)
     joint_problems = Column(Boolean)
-    join_problems_age = Column(Integer)
+    joint_problems_age = Column(Integer)
     x_ray_abnormalities = Column(Boolean)
     chondrocalcinosis = Column(Boolean)
     other_x_ray_abnormality = Column(Boolean)

@@ -5,8 +5,9 @@ from itsdangerous import TimestampSigner, BadSignature
 
 from radar.api.views.demographics import DemographicsList, DemographicsDetail
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
-from radar.api.views.disease_groups import DiseaseGroupList
+from radar.api.views.disease_groups import DiseaseGroupList, DiseaseGroupDetail
 from radar.api.views.facilities import FacilityList, FacilityDetail
+from radar.api.views.genetics import GeneticsDetail, GeneticsList
 from radar.api.views.hospitalisations import HospitalisationDetail, HospitalisationList
 from radar.api.views.medications import MedicationDetail, MedicationList, MedicationDoseUnitList, \
     MedicationFrequencyList, MedicationRouteList
@@ -23,7 +24,6 @@ from radar.api.views.login import Login
 from radar.lib.database import db
 from radar.models import User
 
-
 app = Flask(__name__)
 app.config.from_object('radar.default_settings')
 app.config.from_object('radar.api.default_settings')
@@ -33,6 +33,7 @@ cors = CORS(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 @login_manager.header_loader
 def load_user_from_header(header):
@@ -46,52 +47,70 @@ def load_user_from_header(header):
 
     return User.query.filter(User.id == user_id).first()
 
+
 db.init_app(app)
 
 app.add_url_rule('/login', view_func=Login.as_view('login'))
 
-app.add_url_rule('/patients', view_func=PatientList.as_view('patient_list'))
-app.add_url_rule('/patients/<int:id>', view_func=PatientDetail.as_view('patient_detail'))
-
+# Demographics
 app.add_url_rule('/demographics', view_func=DemographicsList.as_view('demographics_list'))
 app.add_url_rule('/demographics/<int:id>', view_func=DemographicsDetail.as_view('demographics_detail'))
 
+# Dialysis
 app.add_url_rule('/dialysis', view_func=DialysisList.as_view('dialysis_list'))
+app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetail.as_view('dialysis_detail'))
+app.add_url_rule('/dialysis-types', view_func=DialysisTypeList.as_view('dialysis_type_list'))
 
+# Disease Groups
+app.add_url_rule('/disease-groups', view_func=DiseaseGroupList.as_view('disease_group_list'))
+app.add_url_rule('/disease-groups/<int:id>', view_func=DiseaseGroupDetail.as_view('disease_group_detail'))
+
+# Genetics
+app.add_url_rule('/genetics', view_func=GeneticsList.as_view('genetics_list'))
+app.add_url_rule('/genetics/<int:id>', view_func=GeneticsDetail.as_view('genetics_detail'))
+
+# Hospitalisations
+app.add_url_rule('/hospitalisations', view_func=HospitalisationList.as_view('hospitalisation_list'))
+app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetail.as_view('hospitalisation_detail'))
+
+# Facilities
+app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
+app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
+
+# Medications
 app.add_url_rule('/medications', view_func=MedicationList.as_view('medication_list'))
 app.add_url_rule('/medications/<int:id>', view_func=MedicationDetail.as_view('medication_detail'))
 app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitList.as_view('medication_dose_unit_list'))
 app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyList.as_view('medication_frequency_list'))
 app.add_url_rule('/medication-routes', view_func=MedicationRouteList.as_view('medication_route_list'))
 
-app.add_url_rule('/hospitalisations', view_func=HospitalisationList.as_view('hospitalisation_list'))
-app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetail.as_view('hospitalisation_detail'))
+# Patients
+app.add_url_rule('/patients', view_func=PatientList.as_view('patient_list'))
+app.add_url_rule('/patients/<int:id>', view_func=PatientDetail.as_view('patient_detail'))
 
+# Plasmapheresis
 app.add_url_rule('/plasmapheresis', view_func=PlasmapheresisList.as_view('plasmapheresis_list'))
 app.add_url_rule('/plasmapheresis/<int:id>', view_func=PlasmapheresisDetail.as_view('plasmapheresis_detail'))
 app.add_url_rule('/plasmapheresis-responses', view_func=PlasmapheresisResponseList.as_view('plasmapheresis_response_list'))
 
-app.add_url_rule('/dialysis-types', view_func=DialysisTypeList.as_view('dialysis_type_list'))
-app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetail.as_view('dialysis_detail'))
+# Posts
+app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
+app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))
 
-app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesList.as_view('salt_wasting_clinical_features_list'))
-app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetail.as_view('salt_wasting_clinical_features_detail'))
-
+# Renal Imaging
 app.add_url_rule('/renal-imaging', view_func=RenalImagingList.as_view('renal_imaging_list'))
 app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetail.as_view('renal_imaging_detail'))
 
-app.add_url_rule('/users', view_func=UserList.as_view('user_list'))
-app.add_url_rule('/users/<int:id>', view_func=UserDetail.as_view('user_detail'))
+# Salt Wasting Clinical Features
+app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesList.as_view('salt_wasting_clinical_features_list'))
+app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetail.as_view('salt_wasting_clinical_features_detail'))
 
-app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
-app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
-
-app.add_url_rule('/disease-groups', view_func=DiseaseGroupList.as_view('disease_group_list'))
-
+# Units
 app.add_url_rule('/units', view_func=UnitList.as_view('unit_list'))
 
-app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
-app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))
+# Users
+app.add_url_rule('/users', view_func=UserList.as_view('user_list'))
+app.add_url_rule('/users/<int:id>', view_func=UserDetail.as_view('user_detail'))
 
 if __name__ == '__main__':
     app.run()
