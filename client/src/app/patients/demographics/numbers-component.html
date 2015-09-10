@@ -1,0 +1,143 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.facility.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Organisation</th>
+        <td>{{item.numberFacility.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Number</th>
+        <td>{{item.number}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndList()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>From Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.fromDate"></div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Address Line 1</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.addressLine1" required="true"></div>
+          <div frm-errors errors="item.errors.addressLine1"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Address Line 2</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.addressLine2"></div>
+          <div frm-errors errors="item.errors.addressLine2"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Organisation</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.addressLine3"></div>
+          <div frm-errors errors="item.errors.addressLine3"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.number" required="true"></div>
+          <div frm-errors errors="item.errors.number"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="numberFacility.name">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="numberFacility.name">Organisation</th>
+          <th sort-helper="number">Number</th>
+          <th sort-helper="facility.name">Data Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.id}}</td>
+          <td>{{item.numberFacility.name}}</td>
+          <td>{{item.number}}</td>
+          <td>{{item.facility.name}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

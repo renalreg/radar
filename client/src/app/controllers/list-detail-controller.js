@@ -3,16 +3,7 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListDetailController', function(_, $window, $q) {
-    var defaultPermission = {
-      hasPermission: function() {
-        return true;
-      },
-      hasObjectPermission: function() {
-        return true;
-      }
-    };
-
+  app.factory('ListDetailController', function(_, $window, $q, noopPermission) {
     function ListDetailController($scope, params) {
       this.scope = $scope;
 
@@ -21,7 +12,7 @@
       } else if (params.permission) {
         this._createPermission = params.permission;
       } else {
-        this._createPermission = defaultPermission;
+        this._createPermission = noopPermission;
       }
 
       if (params.editPermission) {
@@ -29,7 +20,7 @@
       } else if (params.permission) {
         this._editPermission = params.permission;
       } else {
-        this._editPermission = defaultPermission;
+        this._editPermission = noopPermission;
       }
 
       if (params.removePermission) {
@@ -37,7 +28,7 @@
       } else if (params.permission) {
         this._removePermission = params.permission;
       } else {
-        this._removePermission = defaultPermission;
+        this._removePermission = noopPermission;
       }
 
       this.scope.loading = true;

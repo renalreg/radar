@@ -33,14 +33,14 @@
 
       <li ng-repeat="diseaseGroup in patient.diseaseGroups" class="info">
         <span>
-          <span class="key">Disease Group</span>
+          <span class="key">Cohort</span>
           <span class="value">{{diseaseGroup.diseaseGroup.name}}</span>
         </span>
       </li>
     </ul>
   </div>
 
-  <div radar-navigation patient="patient"></div>
+  <div patient-navigation patient="patient"></div>
 
   <div
     ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.diseaseGroup.name'"

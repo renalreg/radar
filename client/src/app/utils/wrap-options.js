@@ -4,7 +4,7 @@
   var app = angular.module('radar.utils');
 
   app.factory('wrapRadioOptions', function(_) {
-    return function wrapSelectOptions(options) {
+    return function wrapRadioOptions(options) {
       if (options && options.length) {
         // Convert array of primitives (e.g. ['Foo', 'Bar']) into option objects
         // (e.g. [{label: 'Foo', id: 'Foo'}, ...])
@@ -36,11 +36,13 @@
     return function wrapOption(option) {
       if (angular.isObject(option)) {
         option = {
+          id: option.id,
           label: option.label,
           value: option
         };
       } else {
         option = {
+          id: option,
           label: option,
           value: option
         };
@@ -50,26 +52,12 @@
     };
   });
 
-  app.factory('wrapSelectOptions', function(_) {
+  app.factory('wrapSelectOptions', function(_, wrapSelectOption) {
     return function wrapSelectOptions(options) {
-      if (options && options.length) {
-        // Convert array of primitives (e.g. ['Foo', 'Bar']) into option objects
-        // (e.g. [{label: 'Foo', value: 'Foo'}, ...])
-        if (angular.isObject(options[0])) {
-          options = _.map(options, function(x) {
-            return {
-              label: x.label,
-              value: x
-            };
-          });
-        } else {
-          options = _.map(options, function(x) {
-            return {
-              label: x,
-              value: x
-            };
-          });
-        }
+      if (options) {
+        // Convert array (e.g. ['Foo', 'Bar']) into option objects
+        // (e.g. [{id: 'Foo', label: 'Foo', value: 'Foo'}, ...])
+        options = _.map(options, wrapSelectOption);
       }
 
       return options;

@@ -8,25 +8,17 @@
   });
 
   app.factory('HospitalisationsController', function(ListDetailController, HospitalisationPermission) {
-    function HospitalisationsController($scope, $injector, $q, store) {
+    function HospitalisationsController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(HospitalisationPermission, {patient: $scope.patient})
+          permission: new HospitalisationPermission($scope.patient)
         }
       });
 
-      var items = [];
-
-      $q.all([
-        store.findMany('hospitalisations', {patientId: $scope.patient.id}).then(function(hospitalisations) {
-          items = hospitalisations;
-        })
-      ]).then(function() {
-        self.load(items);
-      });
+      self.load(store.findMany('hospitalisations', {patientId: $scope.patient.id}));
 
       $scope.create = function() {
         var item = store.create('hospitalisations', {patientId: $scope.patient.id});

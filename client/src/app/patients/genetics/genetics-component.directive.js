@@ -14,7 +14,7 @@
       $injector.invoke(DetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(GeneticsPermission, {patient: $scope.patient})
+          permission: new GeneticsPermission($scope.patient)
         }
       });
 

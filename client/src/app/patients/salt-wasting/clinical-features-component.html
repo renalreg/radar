@@ -49,7 +49,7 @@
           <td><span tick="item.deafness"></span></td>
         </tr>
 
-        <tr ng-show="item.neurologicalProblems && otherNeurologicalProblem">
+        <tr ng-show="item.neurologicalProblems && item.otherNeurologicalProblem">
           <th>Other</th>
           <td class="newlines">{{item.otherNeurologicalProblemText}}</td>
         </tr>
@@ -93,6 +93,136 @@
     </p>
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <h2>For Childhood Onset</h2>
+
+      <div frm-field frm-group>
+        <div frm-label>Was mother's pregnancy normal?</div>
+
+        <div frm-control>
+          <div frm-yes-no-field model="item.normalPregnancy" required="true"></div>
+          <div frm-errors errors="item.errors.normalPregnancy"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group ng-show="item.normalPregnancy === false">
+        <div frm-label>If abnormal describe:</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.abnormalPregnancyText" required="item.normalPregnancy === false"></div>
+          <div frm-errors errors="item.errors.abnormalPregnancyText"></div>
+        </div>
+      </div>
+
+      <h2>Neurological Problems</h2>
+
+      <div frm-field frm-group>
+        <div frm-label>Neurological Problems?</div>
+
+        <div frm-control>
+          <div frm-yes-no-field model="item.neurologicalProblems" required="true"></div>
+          <div frm-errors errors="item.errors.neurologicalProblems"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.neurologicalProblems">
+        <div frm-field frm-group>
+          <div frm-label>Seizures</div>
+
+          <div frm-control>
+            <div frm-yes-no-field model="item.seizures" required="item.neurologicalProblems"></div>
+            <div frm-errors errors="item.errors.seizures"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Abnormal Gait</div>
+
+          <div frm-control>
+            <div frm-yes-no-field model="item.abnormalGait" required="item.neurologicalProblems"></div>
+            <div frm-errors errors="item.errors.abnormalGait"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Deafness</div>
+
+          <div frm-control>
+            <div frm-yes-no-field model="item.deafness" required="item.neurologicalProblems"></div>
+            <div frm-errors errors="item.errors.deafness"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Other</div>
+
+          <div frm-control>
+            <div frm-yes-no-field model="item.otherNeurologicalProblem" required="item.neurologicalProblems"></div>
+            <div frm-errors errors="item.errors.otherNeurologicalProblem"></div>
+
+            <div frm-field ng-show="item.otherNeurologicalProblem">
+              <div frm-textarea-field model="item.otherNeurologicalProblemText" required="item.neurologicalProblems && item.otherNeurologicalProblem"></div>
+              <div frm-errors errors="item.errors.otherNeurologicalProblemText"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Joint Problems</h2>
+
+      <div frm-field frm-group>
+        <div frm-label>Joint Problems?</div>
+
+        <div frm-control>
+          <div frm-yes-no-field model="item.jointProblems" required="true"></div>
+          <div frm-errors errors="item.errors.jointProblems"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.jointProblems">
+        <div frm-field frm-group>
+          <div frm-label>Age First Noticied</div>
+
+          <div frm-control>
+            <div frm-integer-field model="item.ageFirstNoticed" required="item.jointProblems"></div>
+            <div frm-errors errors="item.errors.ageFirstNoticed"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>X-ray Abnormalities</div>
+
+          <div frm-control>
+            <div frm-yes-no-field model="item.xRayAbnormalities" required="item.jointProblems"></div>
+            <div frm-errors errors="item.errors.xRayAbnormalities"></div>
+          </div>
+        </div>
+
+        <div ng-show="item.xRayAbnormalities">
+          <div frm-field frm-group>
+            <div frm-label>Chondrocalcinosis</div>
+
+            <div frm-control>
+              <div frm-yes-no-field model="item.chondrocalcinosis" required="item.jointProblems && item.xRayAbnormalities"></div>
+              <div frm-errors errors="item.errors.chondrocalcinosis"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Other X-ray Abnormality</div>
+
+            <div frm-control>
+              <div frm-yes-no-field model="item.otherXRayAbnormality" required="item.jointProblems && item.xRayAbnormalities"></div>
+              <div frm-errors errors="item.errors.otherXRayAbnormality"></div>
+
+              <div frm-field ng-show="item.otherXRayAbnormality">
+                <div frm-textarea-field model="item.otherXRayAbnormalityText" required="item.jointProblems && item.otherXRayAbnormality"></div>
+                <div frm-errors errors="item.errors.otherXRayAbnormalityText"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div frm-buttons>
         <span crud-save-button></span>
         <span crud-cancel-button action="view()"></span>

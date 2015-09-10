@@ -1,0 +1,11 @@
+<div class="patient-nav">
+  <ul>
+    <li class="group">
+      RaDaR
+    </li>
+
+    <li ui-sref-active="active" ng-repeat="item in items">
+      <a ui-sref="{{item.state}}">{{item.text}}</a>
+    </li>
+  </ul>
+</div>

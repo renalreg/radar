@@ -14,7 +14,7 @@
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(RenalImagingPermission, {patient: $scope.patient})
+          permission: new RenalImagingPermission($scope.patient)
         }
       });
 

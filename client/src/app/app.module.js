@@ -1,7 +1,6 @@
 (function() {
   'use strict';
 
-  // TODO move dependencies to modules
   angular.module('radar', [
     'ngCookies',
     'ui.router',
@@ -22,4 +21,6 @@
     'radar.utils',
     'radar.validators'
   ]);
+
+
 })();

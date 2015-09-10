@@ -1,0 +1,233 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.facility.name}}</td>
+      </tr>
+
+      <tr>
+        <th>First Name</th>
+        <td>{{item.firstName | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Last Name</th>
+        <td>{{item.lastName | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Birth</th>
+        <td>{{item.dateOfBirth | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Death</th>
+        <td>{{item.dateOfDeath | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Gender</th>
+        <td>{{item.gender | genderFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Ethnicity</th>
+        <td>{{item.ethnicityCode.label | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Home Number</th>
+        <td>{{item.homeNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Work Number</th>
+        <td>{{item.workNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Mobile Number</th>
+        <td>{{item.mobileNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Email Address</th>
+        <td>{{item.emailAddress | missing}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal" crud-submit="saveAndList()" novalidate>
+      <div class="row">
+        <div class="col-md-6">
+          <div frm-field frm-group>
+            <div frm-label>First Name</div>
+
+            <div frm-control>
+              <div frm-text-field model="item.firstName" required="true"></div>
+              <div frm-errors errors="item.errors.firstName"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Last Name</div>
+
+            <div frm-control>
+              <div frm-text-field model="item.lastName" required="true"></div>
+              <div frm-errors errors="item.errors.lastName"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Date of Birth</div>
+
+            <div frm-control>
+              <div frm-date-field model="item.dateOfBirth" required="true"></div>
+              <div frm-errors errors="item.errors.dateOfBirth"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Date of Death</div>
+
+            <div frm-control>
+              <div frm-date-field model="item.dateOfDeath"></div>
+              <div frm-errors errors="item.errors.dateOfDeath"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Gender</div>
+
+            <div frm-control>
+              <div frm-gender-field model="item.gender"></div>
+              <div frm-errors errors="item.errors.gender"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Ethnicity</div>
+
+            <div frm-control>
+              <div frm-select-field model="item.ethnicityCode" required="required" options="ethnicityCodes"></div>
+              <div frm-errors errors="item.errors.ethnicityCodeId"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div frm-field frm-group>
+            <div frm-label>Home Number</div>
+
+            <div frm-control>
+              <div frm-text-field model="item.homeNumber"></div>
+              <div frm-errors errors="item.errors.homeNumber"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Work Number</div>
+
+            <div frm-control>
+              <div frm-text-field model="item.workNumber"></div>
+              <div frm-errors errors="item.errors.workNumber"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Mobile Number</div>
+
+            <div frm-control>
+              <div frm-text-field model="item.mobileNumber"></div>
+              <div frm-errors errors="item.errors.mobileNumber"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Email Address</div>
+
+            <div frm-control>
+              <div frm-email-field model="item.emailAddress"></div>
+              <div frm-errors errors="item.errors.emailAddress"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </p>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="firstName">First Name</th>
+          <th sort-helper="lastName">Last Name</th>
+          <th sort-helper="dateOfBirth">DOB</th>
+          <th sort-helper="dateOfDeath">DOD</th>
+          <th sort-helper="gender">Gender</th>
+          <th sort-helper="ethnicityCode.label">Ethnicity</th>
+          <th sort-helper="facility.name">Data Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+      <tr ng-repeat="item in page.getItems()">
+        <td>
+          <span crud-list-view-button item="item"></span>
+          <span crud-list-edit-button item="item"></span>
+        </td>
+
+        <td>{{item.id}}</td>
+        <td>{{item.firstName | missing}}</td>
+        <td>{{item.lastName | missing}}</td>
+        <td>{{item.dateOfBirth | dateFormat}}</td>
+        <td>{{item.dateOfDeath | dateFormat}}</td>
+        <td>{{item.gender | genderFormat}}</td>
+        <td>{{item.ethnicityCode.label | missing}}</td>
+        <td>{{item.facility.name}}</td>
+
+        <td>
+          <span crud-list-remove-button item="item"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

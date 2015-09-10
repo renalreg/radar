@@ -1,4 +1,4 @@
-<nav>
+<nav ng-show="getTotalPages() > 1">
   <ul class="pagination">
     <li ng-class="{disabled: !hasPrevious()}">
       <a href="" ng-click="firstPage()" ng-disabled="!hasPrevious()">First</a>

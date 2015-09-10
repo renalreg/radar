@@ -7,23 +7,19 @@
     return PatientFacilityDataPermission;
   });
 
-  app.factory('MedicationsController', function(ListDetailController, MedicationPermission) {
+  app.factory('MedicationsController', function(ListDetailController, MedicationPermission, firstPromise) {
     function MedicationsController($scope, $injector, $q, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(MedicationPermission, {patient: $scope.patient})
+          permission: new MedicationPermission($scope.patient)
         }
       });
 
-      var items = [];
-
-      $q.all([
-        store.findMany('medications', {patientId: $scope.patient.id}).then(function(medications) {
-          items = medications;
-        }),
+      self.load(firstPromise([
+        store.findMany('medications', {patientId: $scope.patient.id}),
         store.findMany('medication-dose-units').then(function(doseUnits) {
           $scope.doseUnits = doseUnits;
         }),
@@ -33,9 +29,7 @@
         store.findMany('medication-routes').then(function(routes) {
           $scope.routes = routes;
         })
-      ]).then(function() {
-        self.load(items);
-      });
+      ]));
 
       $scope.create = function() {
         var item = store.create('medications', {patientId: $scope.patient.id});

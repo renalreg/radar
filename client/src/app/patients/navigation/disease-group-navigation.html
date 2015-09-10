@@ -4,8 +4,8 @@
       {{ diseaseGroup.name }}
     </li>
 
-    <li ui-sref-active="active" ng-repeat="link in links">
-      <a ui-sref="{{link.url}}">{{ link.text }}</a>
+    <li ui-sref-active="active" ng-repeat="item in items">
+      <a ui-sref="{{item.state}}">{{item.text}}</a>
     </li>
   </ul>
 </div>

@@ -14,7 +14,7 @@
       $injector.invoke(DetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(SaltWastingClinicalFeaturesPermission, {patient: $scope.patient})
+          permission: new SaltWastingClinicalFeaturesPermission($scope.patient)
         }
       });
 

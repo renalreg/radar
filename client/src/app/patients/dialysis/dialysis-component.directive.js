@@ -7,29 +7,23 @@
     return PatientFacilityDataPermission;
   });
 
-  app.factory('DialysisController', function(ListDetailController, DialysisPermission) {
-    function DialysisController($scope, $injector, $q, store) {
+  app.factory('DialysisController', function(ListDetailController, DialysisPermission, firstPromise) {
+    function DialysisController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(DialysisPermission, {patient: $scope.patient})
+          permission: new DialysisPermission($scope.patient)
         }
       });
 
-      var items = [];
-
-      $q.all([
-        store.findMany('dialysis', {patientId: $scope.patient.id}).then(function(dialysisList) {
-          items = dialysisList;
-        }),
+      self.load(firstPromise([
+        store.findMany('dialysis', {patientId: $scope.patient.id}),
         store.findMany('dialysis-types').then(function(dialysisTypes) {
           $scope.dialysisTypes = dialysisTypes;
         })
-      ]).then(function() {
-        self.load(items);
-      });
+      ]));
 
       $scope.create = function() {
         var item = store.create('dialysis', {patientId: $scope.patient.id});

@@ -11,16 +11,16 @@
       },
       templateUrl: 'app/patients/navigation/disease-group-navigation.html',
       link: function(scope) {
-        scope.links = [];
+        scope.items = [];
 
         var features = scope.diseaseGroup.features;
         _.sortBy(features, 'weight');
 
         _.forEach(features, function(x) {
-          var link = patientFeatures[x.name];
+          var item = patientFeatures[x.name];
 
-          if (link !== undefined) {
-            scope.links.push(link);
+          if (item !== undefined) {
+            scope.items.push(item);
           }
         });
       }

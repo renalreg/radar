@@ -22,66 +22,7 @@
 </head>
 
 <body>
-  <div class="navbar navbar-static-top navbar-radar">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-
-        <a class="navbar-brand" ui-sref="index">RaDaR</a>
-      </div>
-
-      <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li ui-sref-active="active">
-            <a ui-sref="patients">Patients</a>
-          </li>
-
-          <li ui-sref-active="active">
-            <a ui-sref="users">Users</a>
-          </li>
-
-          <li ui-sref-active="active">
-            <a ui-sref="posts">News</a>
-          </li>
-        </ul>
-
-        <div class="navbar-right">
-          <ul ng-if="isAuthenticated" class="nav navbar-nav">
-            <li class="dropdown">
-              <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged in as <b>{{user.username}}</b> <span class="caret"></span></a>
-
-              <ul class="dropdown-menu" role="menu">
-                <li ui-sref-active="active">
-                  <a ui-sref="account">Account</a>
-                </li>
-
-                <li ui-sref-active="active">
-                  <a ui-sref="changeEmail">Change Email</a>
-                </li>
-
-                <li ui-sref-active="active">
-                  <a ui-sref="changePassword">Change Password</a>
-                </li>
-
-                <li><a href="" logout>Logout</a></li>
-              </ul>
-            </li>
-          </ul>
-
-          <ul ng-if="!isAuthenticated" class="nav navbar-nav">
-            <li ui-sref-active="active">
-              <a ui-sref="login">Login</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div navbar></div>
 
   <div ng-if="init">
     <div class="ui-view"></div>

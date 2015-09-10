@@ -1,0 +1,10 @@
+<select
+  frm-model
+  frm-required
+  ng-model="model"
+  ng-options="x as x.name for x in facilities track by x.id"
+  ng-required="required()"
+  class="form-control">
+  <option value=""></option>
+</select>
+

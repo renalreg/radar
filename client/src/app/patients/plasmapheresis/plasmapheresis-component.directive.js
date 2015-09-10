@@ -7,29 +7,23 @@
     return PatientFacilityDataPermission;
   });
 
-  app.factory('PlasmapheresisController', function(ListDetailController, PlasmapheresisPermission) {
-    function PlasmapheresisController($scope, $injector, $q, store) {
+  app.factory('PlasmapheresisController', function(ListDetailController, PlasmapheresisPermission, firstPromise) {
+    function PlasmapheresisController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: $injector.instantiate(PlasmapheresisPermission, {patient: $scope.patient})
+          permission: new PlasmapheresisPermission($scope.patient)
         }
       });
 
-      var items = [];
-
-      $q.all([
-        store.findMany('plasmapheresis', {patientId: $scope.patient.id}).then(function(plasmapheresisList) {
-          items = plasmapheresisList;
-        }),
+      self.load(firstPromise([
+        store.findMany('plasmapheresis', {patientId: $scope.patient.id}),
         store.findMany('plasmapheresis-responses').then(function(responses) {
           $scope.responses = responses;
         })
-      ]).then(function() {
-        self.load(items);
-      });
+      ]));
 
       $scope.create = function() {
         var item = store.create('plasmapheresis', {patientId: $scope.patient.id});

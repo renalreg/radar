@@ -4,16 +4,19 @@
   angular.module('radar.patients', [
     'ui.router',
     'radar.store',
+    'radar.patients.cohorts',
     'radar.patients.demographics',
+    'radar.patients.diagnosis',
     'radar.patients.dialysis',
-    'radar.patients.diseaseGroups',
     'radar.patients.genetics',
     'radar.patients.hospitalisations',
     'radar.patients.medications',
     'radar.patients.navigation',
+    'radar.patients.pathology',
+    'radar.patients.plasmapheresis',
     'radar.patients.renalImaging',
     'radar.patients.saltWasting',
-    'radar.patients.plasmapheresis',
+    'radar.patients.transplants',
     'radar.patients.units'
   ]);
 })();
