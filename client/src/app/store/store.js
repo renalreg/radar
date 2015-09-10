@@ -59,11 +59,22 @@
         }
       };
 
-      Store.prototype.findOne = function(modelName, id) {
+      Store.prototype.findOne = function(modelName, id, useCache) {
+        if (useCache === undefined) {
+          useCache = false;
+        }
+
         var self = this;
         var Model = self.getModel(modelName);
 
         var existingItem = self.getFromStore(modelName, id);
+
+        // Return cached value
+        if (useCache && existingItem !== null) {
+          var deferred = $q.defer();
+          deferred.resolve(existingItem);
+          return deferred.promise;
+        }
 
         if (existingItem !== null) {
           existingItem.isLoading = true;

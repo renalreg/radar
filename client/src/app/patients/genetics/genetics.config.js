@@ -12,7 +12,7 @@
       },
       resolve: {
         diseaseGroup: function($stateParams, store) {
-          return store.findOne('disease-groups', $stateParams.diseaseGroupId);
+          return store.findOne('disease-groups', $stateParams.diseaseGroupId, true);
         }
       }
     });
