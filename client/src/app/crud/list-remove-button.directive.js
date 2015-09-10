@@ -1,15 +1,16 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.crud');
 
   app.directive('crudListRemoveButton', function($timeout) {
     return {
+      require: '^crud',
       scope: {
         item: '='
       },
-      templateUrl: 'app/ui/crud-list-remove-button.html',
-      link: function(scope) {
+      templateUrl: 'app/crud/list-remove-button.html',
+      link: function(scope, element, attrs, crudCtrl) {
         scope.clicked = false;
         scope.confirmEnabled = false;
 
@@ -27,8 +28,7 @@
           scope.clicked = false;
           scope.confirmEnabled = false;
           $timeout.cancel(confirmTimeout);
-
-          scope.$parent.remove(scope.item);
+          crudCtrl.remove(scope.item);
         };
 
         scope.cancel = function() {
@@ -38,13 +38,13 @@
         };
 
         scope.$watch(function() {
-          return scope.$parent.removeEnabled(scope.item);
+          return crudCtrl.removeEnabled(scope.item);
         }, function(value) {
           scope.removeEnabled = value;
         });
 
         scope.$watch(function() {
-          return scope.$parent.removePermission(scope.item);
+          return crudCtrl.removePermission(scope.item);
         }, function(value) {
           scope.permission = value;
         });

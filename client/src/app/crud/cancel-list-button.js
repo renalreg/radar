@@ -1,21 +1,24 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.crud');
 
   app.directive('crudCancelListButton', function() {
     return {
-      require: '^form',
+      require: ['^crud', '^form'],
       scope: {},
       template: '<button ng-click="action()" ng-show="enabled" type="button" class="btn btn-link">Cancel</button>',
-      link: function(scope, element, attrs, formCtrl) {
+      link: function(scope, element, attrs, ctrls) {
+        var crudCtrl = ctrls[0];
+        var formCtrl = ctrls[1];
+
         scope.action = function() {
           formCtrl.$setPristine(true);
-          scope.$parent.list();
+          crudCtrl.list();
         };
 
         scope.$watch(function() {
-          return scope.$parent.listEnabled();
+          return crudCtrl.listEnabled();
         }, function(value) {
           scope.enabled = value;
         });

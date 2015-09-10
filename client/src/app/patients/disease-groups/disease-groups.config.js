@@ -6,7 +6,7 @@
   app.config(function($stateProvider) {
     $stateProvider.state('patient.diseaseGroups', {
       url: '/disease-groups',
-      templateUrl: 'app/patients/disease-groups/patient-disease-group-list.html'
+      templateUrl: 'app/patients/disease-groups/disease-group-list.html'
     });
   });
 })();

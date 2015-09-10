@@ -1,23 +1,24 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.crud');
 
   app.directive('crudCreateButton', function() {
     return {
+      require: '^crud',
       scope: {
         action: '&'
       },
       template: '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled" type="button" class="btn btn-primary">New</button>',
-      link: function(scope) {
+      link: function(scope, element, attrs, crudCtrl) {
         scope.$watch(function() {
-          return scope.$parent.createEnabled(scope.item);
+          return crudCtrl.createEnabled(scope.item);
         }, function(value) {
           scope.enabled = value;
         });
 
         scope.$watch(function() {
-          return scope.$parent.createPermission(scope.item);
+          return crudCtrl.createPermission(scope.item);
         }, function(value) {
           scope.permission = value;
         });

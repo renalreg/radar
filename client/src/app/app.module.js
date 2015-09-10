@@ -9,6 +9,7 @@
     'radar.auth',
     'radar.controllers',
     'radar.core',
+    'radar.crud',
     'radar.fields',
     'radar.filters',
     'radar.forms',

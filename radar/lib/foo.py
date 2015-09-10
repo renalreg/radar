@@ -57,7 +57,7 @@ class Field(object):
         validators = self.get_validators()
 
         for validator in validators:
-            value = validator(value)
+            value = validator(ctx, value)
 
         return value
 
@@ -157,7 +157,7 @@ class Validation(Field):
             field_value = getattr(value, field_name)
 
             try:
-                field_value = field.run_validation(field_value, new_ctx)
+                field_value = field.run_validation(new_ctx, field_value)
 
                 validate_method = getattr(self, 'validate_' + field.field_name, None)
 
@@ -174,7 +174,7 @@ class Validation(Field):
             raise ValidationError(errors)
 
         try:
-            self.run_validators(value, new_ctx)
+            self.run_validators(new_ctx, value)
             value = self.validate(new_ctx, value)
         except SkipField:
             pass

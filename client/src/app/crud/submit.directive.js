@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.crud');
 
   app.directive('crudSubmit', function($parse) {
     return {

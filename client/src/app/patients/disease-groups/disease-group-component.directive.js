@@ -29,7 +29,7 @@
         patient: '='
       },
       controller: DiseaseGroupController,
-      templateUrl: 'app/patients/disease-groups/patient-disease-group-component.html'
+      templateUrl: 'app/patients/disease-groups/disease-group-component.html'
     };
   });
 })();

@@ -1,19 +1,20 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.crud');
 
   app.directive('crudListButton', function() {
     return {
+      require: '^crud',
       scope: {},
       template: '<button ng-click="action()" ng-disabled="!enabled" type="button" class="btn btn-default">List</button>',
-      link: function(scope) {
+      link: function(scope, element, attrs, crudCtrl) {
         scope.action = function() {
-          scope.$parent.list();
+          crudCtrl.list();
         };
 
         scope.$watch(function() {
-          return scope.$parent.listEnabled();
+          return crudCtrl.listEnabled();
         }, function(value) {
           scope.enabled = value;
         });
