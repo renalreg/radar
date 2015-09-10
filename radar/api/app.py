@@ -2,8 +2,10 @@ from flask import Flask, abort
 from flask_cors import CORS
 from flask_login import LoginManager
 from itsdangerous import TimestampSigner, BadSignature
+from radar.api.views.patient_addresses import PatientAddressList, PatientAddressDetail
+from radar.api.views.patient_aliases import PatientAliasList, PatientAliasDetail
 
-from radar.api.views.demographics import DemographicsList, DemographicsDetail
+from radar.api.views.patient_demographics import PatientDemographicsList, PatientDemographicsDetail, EthnicityCodeList
 from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
 from radar.api.views.disease_groups import DiseaseGroupList, DiseaseGroupDetail
 from radar.api.views.facilities import FacilityList, FacilityDetail
@@ -11,6 +13,7 @@ from radar.api.views.genetics import GeneticsDetail, GeneticsList
 from radar.api.views.hospitalisations import HospitalisationDetail, HospitalisationList
 from radar.api.views.medications import MedicationDetail, MedicationList, MedicationDoseUnitList, \
     MedicationFrequencyList, MedicationRouteList
+from radar.api.views.patient_numbers import PatientNumberList, PatientNumberDetail
 from radar.api.views.patients import PatientList, PatientDetail
 from radar.api.views.plasmapheresis import PlasmapheresisList, PlasmapheresisDetail, PlasmapheresisResponseList
 from radar.api.views.posts import PostList, PostDetail
@@ -41,7 +44,7 @@ def load_user_from_header(header):
     s = TimestampSigner('SECRET')
 
     try:
-        user_id = int(s.unsign(header, max_age=3600))
+        user_id = int(s.unsign(header, max_age=86400))
     except BadSignature:
         abort(401)
 
@@ -51,10 +54,6 @@ def load_user_from_header(header):
 db.init_app(app)
 
 app.add_url_rule('/login', view_func=Login.as_view('login'))
-
-# Demographics
-app.add_url_rule('/demographics', view_func=DemographicsList.as_view('demographics_list'))
-app.add_url_rule('/demographics/<int:id>', view_func=DemographicsDetail.as_view('demographics_detail'))
 
 # Dialysis
 app.add_url_rule('/dialysis', view_func=DialysisList.as_view('dialysis_list'))
@@ -83,6 +82,23 @@ app.add_url_rule('/medications/<int:id>', view_func=MedicationDetail.as_view('me
 app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitList.as_view('medication_dose_unit_list'))
 app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyList.as_view('medication_frequency_list'))
 app.add_url_rule('/medication-routes', view_func=MedicationRouteList.as_view('medication_route_list'))
+
+# Patient Addresses
+app.add_url_rule('/patient-addresses', view_func=PatientAddressList.as_view('patient_address_list'))
+app.add_url_rule('/patient-addresses/<int:id>', view_func=PatientAddressDetail.as_view('patient_address_detail'))
+
+# Patient Aliases
+app.add_url_rule('/patient-aliases', view_func=PatientAliasList.as_view('patient_alias_list'))
+app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetail.as_view('patient_alias_detail'))
+
+# Patient Demographics
+app.add_url_rule('/patient-demographics', view_func=PatientDemographicsList.as_view('patient_demographics_list'))
+app.add_url_rule('/patient-demographics/<int:id>', view_func=PatientDemographicsDetail.as_view('patient_demographics_detail'))
+app.add_url_rule('/ethnicity-codes', view_func=EthnicityCodeList.as_view('ethnicity_code_list'))
+
+# Patient Numbers
+app.add_url_rule('/patient-numbers', view_func=PatientNumberList.as_view('patient_number_list'))
+app.add_url_rule('/patient-numbers/<int:id>', view_func=PatientNumberDetail.as_view('patient_number_detail'))
 
 # Patients
 app.add_url_rule('/patients', view_func=PatientList.as_view('patient_list'))
