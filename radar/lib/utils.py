@@ -1,6 +1,8 @@
+from datetime import datetime, date, timedelta
+
 import dateutil.parser
-from flask import request
-from datetime import datetime, date
+import pytz
+from sqlalchemy import and_
 
 
 def get_path(data, keys):
@@ -48,15 +50,31 @@ def set_path(data, keys, value):
     data[keys[-1]] = value
 
 
-def get_request_args():
-    args = request.args.to_dict(flat=False)
-    args.update(request.view_args)
-    return args
-
-
 def date_to_datetime(d):
-    return datetime(d.year, d.month, d.day)
+    return datetime(year=d.year, month=d.month, day=d.day, tzinfo=pytz.utc)
 
 
 def is_date(x):
     return isinstance(x, date) and not isinstance(x, datetime)
+
+
+def is_datetime(x):
+    return isinstance(x, datetime)
+
+
+def datetime_to_date(dt):
+    return date(dt.year, dt.month, dt.day)
+
+
+def sql_date_filter(column, date):
+    return and_(
+        column >= date,
+        column < date + timedelta(days=1)
+    )
+
+
+def sql_year_filter(column, year):
+    return and_(
+        column >= datetime(year, 1, 1),
+        column < datetime(year + 1, 1, 1)
+    )

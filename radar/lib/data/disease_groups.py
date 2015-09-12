@@ -1,8 +1,8 @@
 from radar.lib.database import db
-from radar.models import DiseaseGroup, DiseaseGroupFeature, ResultGroupDefinition, DiseaseGroupResultGroupDefinition
+from radar.lib.models import Cohort, CohortFeature, ResultGroupDefinition, CohortResultGroupDefinition
 
 # TODO
-DISEASE_GROUPS = [
+COHORTS = [
     {
         'name': 'SRNS',
         'features': [
@@ -42,25 +42,25 @@ DISEASE_GROUPS = [
 ]
 
 
-def create_disease_groups():
-    for x in DISEASE_GROUPS:
-        disease_group = DiseaseGroup(name=x['name'])
-        db.session.add(disease_group)
+def create_cohorts():
+    for x in COHORTS:
+        cohort = Cohort(name=x['name'])
+        db.session.add(cohort)
 
         for name, weight in x['features']:
-            disease_group_feature = DiseaseGroupFeature(
-                disease_group=disease_group,
+            cohort_feature = CohortFeature(
+                cohort=cohort,
                 name=name,
                 weight=weight
             )
-            db.session.add(disease_group_feature)
+            db.session.add(cohort_feature)
 
         for code, weight in x['result_group_definitions']:
             result_group_definition = ResultGroupDefinition.query.filter(ResultGroupDefinition.code == code).one()
 
-            disease_group_result_group_definition = DiseaseGroupResultGroupDefinition(
-                disease_group=disease_group,
+            cohort_result_group_definition = CohortResultGroupDefinition(
+                cohort=cohort,
                 result_group_definition=result_group_definition,
                 weight=weight,
             )
-            db.session.add(disease_group_result_group_definition)
+            db.session.add(cohort_result_group_definition)

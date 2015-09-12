@@ -5,14 +5,14 @@
 
   app.config(function($stateProvider) {
     $stateProvider.state('patient.genetics', {
-      url: '/genetics/:diseaseGroupId',
+      url: '/genetics/:cohortId',
       templateUrl: 'app/patients/genetics/genetics.html',
-      controller: function($scope, diseaseGroup) {
-        $scope.diseaseGroup = diseaseGroup;
+      controller: function($scope, cohort) {
+        $scope.cohort = cohort;
       },
       resolve: {
-        diseaseGroup: function($stateParams, store) {
-          return store.findOne('disease-groups', $stateParams.diseaseGroupId, true);
+        cohort: function($stateParams, store) {
+          return store.findOne('cohorts', $stateParams.cohortId, true);
         }
       }
     });

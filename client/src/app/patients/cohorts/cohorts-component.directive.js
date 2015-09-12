@@ -9,12 +9,10 @@
 
       $injector.invoke(ListDetailController, self, {$scope: $scope, params: {}});
 
-      self.load($scope.patient.diseaseGroups);
+      self.load($scope.patient.cohorts);
 
       $scope.create = function() {
-        self.edit(store.create('patient-disease-groups', {
-          patientId: $scope.patient.id
-        }));
+        self.edit(store.create('patient-cohorts', {patient: $scope.patient.id}));
       };
     }
 

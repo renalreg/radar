@@ -17,11 +17,12 @@
         required: '&'
       },
       templateUrl: 'app/fields/unit-field.html',
-      link: function(scope, element, attrs, fieldCtrl) {
+      link: function(scope) {
         var user = session.user;
 
         if (user.isAdmin) {
-          store.findMany('units').then(function(units) {
+          // TODO
+          store.findMany('organisations', {type: 'UNIT'}).then(function(units) {
             scope.units = sortUnits(units);
           });
         } else {
@@ -32,5 +33,3 @@
     };
   });
 })();
-
-

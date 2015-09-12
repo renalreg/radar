@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.patients.hospitalisations');
 
-  app.factory('HospitalisationPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('HospitalisationPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
-  app.factory('HospitalisationsController', function(ListDetailController, HospitalisationPermission) {
+  app.factory('HospitalisationsController', function(ListDetailController, HospitalisationPermission, _) {
     function HospitalisationsController($scope, $injector, store) {
       var self = this;
 
@@ -18,10 +18,10 @@
         }
       });
 
-      self.load(store.findMany('hospitalisations', {patientId: $scope.patient.id}));
+      self.load(store.findMany('hospitalisations', {patient: $scope.patient.id}));
 
       $scope.create = function() {
-        var item = store.create('hospitalisations', {patientId: $scope.patient.id});
+        var item = store.create('hospitalisations', {patient: $scope.patient.id});
         self.edit(item);
       };
     }

@@ -14,7 +14,7 @@
 
         <tr>
           <th>Data Source</th>
-          <td>{{item.facility.name}}</td>
+          <td>{{item.dataSource.getName()}}</td>
         </tr>
 
         <tr>
@@ -61,8 +61,8 @@
         <div frm-label>Data Source</div>
 
         <div frm-control>
-          <div frm-patient-facility-field patient="patient" model="item.facility" required="true"></div>
-          <div frm-errors errors="item.errors.facilityId"></div>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSourceId"></div>
         </div>
       </div>
 
@@ -88,7 +88,7 @@
         <div frm-label>Name</div>
 
         <div frm-control>
-          <div frm-text-field model="item.name"></div>
+          <div frm-text-field model="item.name" required="true"></div>
           <div frm-errors errors="item.errors.name"></div>
         </div>
       </div>
@@ -97,7 +97,7 @@
         <div frm-label>Dose Quantity</div>
 
         <div frm-control>
-          <div frm-number-field model="item.doseQuantity"></div>
+          <div frm-number-field model="item.doseQuantity" required="true"></div>
           <div frm-errors errors="item.errors.doseQuantity"></div>
         </div>
       </div>
@@ -152,13 +152,13 @@
         <tr>
           <th></th>
           <th sort-helper="id">ID</th>
+          <th sort-helper="name">Name</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="name">Name</th>
           <th sort-helper="doseQuantity">Dose</th>
           <th sort-helper="frequency.label">Frequency</th>
           <th sort-helper="route.label">Route</th>
-          <th sort-helper="facility.name">Data Source</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
       </thead>
@@ -171,13 +171,13 @@
           </td>
 
           <td>{{item.id}}</td>
+          <td>{{item.name}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.name}}</td>
           <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
           <td>{{item.frequency.label}}</td>
           <td>{{item.route.label}}</td>
-          <td>{{item.facility.name}}</td>
+          <td>{{item.dataSource.getName()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

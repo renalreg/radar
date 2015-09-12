@@ -1,5 +1,6 @@
-from radar.lib.serializers import ModelSerializer, MetaSerializerMixin
-from radar.models import SaltWastingClinicalFeatures
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.lib.serializers import ModelSerializer
+from radar.lib.models import SaltWastingClinicalFeatures
 
 
 class SaltWastingClinicalFeaturesSerializer(MetaSerializerMixin, ModelSerializer):

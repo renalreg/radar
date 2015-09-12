@@ -15,7 +15,9 @@
     $stateProvider.state('user', {
       url: '/users/:userId',
       templateUrl: 'app/users/user-detail.html',
-      controller: 'UserDetailController',
+      controller: function($scope, user) {
+        $scope.user = user;
+      },
       resolve: {
         user: function($stateParams, store) {
           return store.findOne('users', $stateParams.userId);

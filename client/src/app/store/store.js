@@ -5,11 +5,16 @@
 
   app.provider('store', function() {
     var config = {
-      models: {}
+      models: {},
+      childModels: {}
     };
 
-    this.registerModel = function(modelName, modelType) {
-      config.models[modelName] = modelType;
+    this.registerModel = function(name, constructorName) {
+      config.models[name] = constructorName;
+    };
+
+    this.registerChildModel = function(key, name) {
+      config.childModels[key] = name;
     };
 
     this.$get = function(_, $injector, adapter, $q) {
@@ -20,13 +25,14 @@
         this.modelEventListeners = {};
       }
 
-      Store.prototype.getModel = function(modelName) {
-        var modelType = this.config.models[modelName] || 'Model';
-        return $injector.get(modelType);
+      Store.prototype.getModelConstructor = function(modelName) {
+        var modelConstructorName = this.config.models[modelName] || 'Model';
+        return $injector.get(modelConstructorName);
       };
 
       Store.prototype.create = function(modelName, data) {
-        var Model = this.getModel(modelName);
+        var Model = this.getModelConstructor(modelName);
+        data = this.inflate(data);
         return new Model(modelName, data);
       };
 
@@ -65,7 +71,7 @@
         }
 
         var self = this;
-        var Model = self.getModel(modelName);
+        var Model = self.getModelConstructor(modelName);
 
         var existingItem = self.getFromStore(modelName, id);
 
@@ -81,6 +87,7 @@
         }
 
         var promise = adapter.findOne(modelName, id).then(function(data) {
+          data = self.inflate(data);
           return self.pushToStore(new Model(modelName, data));
         });
 
@@ -95,7 +102,7 @@
 
       Store.prototype.findMany = function(modelName, params, meta) {
         var self = this;
-        var Model = self.getModel(modelName);
+        var Model = self.getModelConstructor(modelName);
 
         params = params || {};
 
@@ -116,7 +123,9 @@
           }
 
           for (var i = 0; i < rawItems.length; i++) {
-            var item = self.pushToStore(new Model(modelName, rawItems[i]));
+            var rawItem = rawItems[i];
+            var inflatedItem = self.inflate(rawItem);
+            var item = self.pushToStore(new Model(modelName, inflatedItem));
             items.push(item);
           }
 
@@ -129,7 +138,7 @@
         var id = item.getId();
         var modelName = item.modelName;
         var data = item.getData();
-        var Model = self.getModel(modelName);
+        var Model = self.getModelConstructor(modelName);
         var promise;
         var create = id === null;
 
@@ -158,6 +167,7 @@
           item.isValid = true;
           item.isError = false;
           item.errors = {};
+          data = self.inflate(data);
           var savedItem = new Model(modelName, data).getData();
           item.update(savedItem);
           return self.pushToStore(item);
@@ -254,6 +264,38 @@
           this.addEventListener(event, callback);
         } else {
           this.addModelEventListener(modelName, event, callback);
+        }
+      };
+
+      Store.prototype.inflate = function(data) {
+        var self = this;
+
+        if (angular.isArray(data)) {
+          return _.map(data, function(value) {
+            return self.inflate(value);
+          });
+        } else if (angular.isObject(data)) {
+          return _.mapValues(data, function(value, key) {
+            value = self.inflate(value);
+
+            var modelName = self.config.childModels[key];
+
+            if (modelName !== undefined) {
+              var Model = self.getModelConstructor(modelName);
+
+              if (angular.isArray(value)) {
+                value = _.map(value, function(x) {
+                  return self.pushToStore(new Model(modelName, x));
+                });
+              } else {
+                value = self.pushToStore(new Model(modelName, value));
+              }
+            }
+
+            return value;
+          });
+        } else {
+          return data;
         }
       };
 

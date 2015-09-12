@@ -1,2 +1,1 @@
-recursive-include radar/web/templates *
-recursive-include radar/web/static *
+recursive-include radar/lib/templates *

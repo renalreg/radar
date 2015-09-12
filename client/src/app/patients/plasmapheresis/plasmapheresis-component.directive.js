@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.plasmapheresis');
 
-  app.factory('PlasmapheresisPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('PlasmapheresisPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
   app.factory('PlasmapheresisController', function(ListDetailController, PlasmapheresisPermission, firstPromise) {
@@ -19,14 +19,14 @@
       });
 
       self.load(firstPromise([
-        store.findMany('plasmapheresis', {patientId: $scope.patient.id}),
+        store.findMany('plasmapheresis', {patient: $scope.patient.id}),
         store.findMany('plasmapheresis-responses').then(function(responses) {
           $scope.responses = responses;
         })
       ]));
 
       $scope.create = function() {
-        var item = store.create('plasmapheresis', {patientId: $scope.patient.id});
+        var item = store.create('plasmapheresis', {patient: $scope.patient.id});
         self.edit(item);
       };
     }

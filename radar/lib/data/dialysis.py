@@ -1,5 +1,5 @@
 from radar.lib.database import db
-from radar.models import DialysisType
+from radar.lib.models import DialysisType
 
 DIALYSIS_TYPES = [
     'HD',

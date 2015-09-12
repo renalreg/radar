@@ -1,5 +1,5 @@
 from radar.lib.database import db
-from radar.models import EthnicityCode
+from radar.lib.models import EthnicityCode
 
 ETHNICITY_CODES = [
     ('A', 'White - British'),

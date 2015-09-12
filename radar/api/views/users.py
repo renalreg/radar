@@ -1,18 +1,16 @@
 from flask import request
-from flask_login import current_user
+
 from radar.api.serializers.users import UserSerializer, UserListRequestSerializer
-
-from radar.lib.permissions import IsAuthenticated
 from radar.lib.user_search import UserQueryBuilder
-from radar.lib.views import ListCreateApiView, RetrieveUpdateDestroyAPIView
-from radar.models import User
+from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
+from radar.lib.models import User
+from radar.lib.auth import current_user
 
 
-class UserList(ListCreateApiView):
+class UserListView(ListCreateModelView):
     serializer_class = UserSerializer
     model_class = User
     sort_fields = ('id', 'username', 'email', 'first_name', 'last_name')
-    permission_classes = [IsAuthenticated]
 
     def get_query(self):
         serializer = UserListRequestSerializer()
@@ -35,17 +33,17 @@ class UserList(ListCreateApiView):
         if 'last_name' in args:
             builder.last_name(args['last_name'])
 
-        if 'disease_group' in args:
-            builder.disease_group(args['disease_group'])
+        if 'cohort' in args:
+            builder.cohort(args['cohort'])
 
-        if 'unit' in args:
-            builder.unit(args['unit'])
+        if 'organisation' in args:
+            builder.organisation(args['organisation'])
 
         query = builder.build()
 
         return query
 
 
-class UserDetail(RetrieveUpdateDestroyAPIView):
+class UserDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = UserSerializer
     model_class = User

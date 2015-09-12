@@ -45,6 +45,7 @@
     };
 
     Model.prototype.getData = function() {
+      // TODO call getData on children too
       return _.omit(this, this.meta);
     };
 

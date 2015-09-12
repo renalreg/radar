@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.demographics');
 
-  app.factory('PatientAliasPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('PatientAliasPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
   app.factory('PatientAliasesController', function(ListDetailController, PatientAliasPermission) {
@@ -18,10 +18,10 @@
         }
       });
 
-      self.load(store.findMany('patient-aliases', {patientId: $scope.patient.id}));
+      self.load(store.findMany('patient-aliases', {patient: $scope.patient.id}));
 
       $scope.create = function() {
-        var item = store.create('patient-aliases', {patientId: $scope.patient.id});
+        var item = store.create('patient-aliases', {patient: $scope.patient.id});
         self.edit(item);
       };
     }

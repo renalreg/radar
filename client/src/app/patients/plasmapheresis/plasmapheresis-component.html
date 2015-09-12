@@ -13,7 +13,7 @@
 
       <tr>
         <th>Data Source</th>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
       </tr>
 
       <tr>
@@ -49,8 +49,8 @@
         <div frm-label>Data Source</div>
 
         <div frm-control>
-          <div frm-patient-facility-field patient="patient" model="item.facility" required="true"></div>
-          <div frm-errors errors="item.errors.facilityId"></div>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSourceId"></div>
         </div>
       </div>
 

@@ -39,5 +39,3 @@
     storeProvider.registerModel('patient-addresses', 'PatientAddressModel');
   });
 })();
-
-

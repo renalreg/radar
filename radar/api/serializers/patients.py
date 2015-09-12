@@ -1,46 +1,9 @@
-from radar.lib.serializers import ModelSerializer, ListField, MetaSerializerMixin, StringField, DateField, IntegerField, \
-    LookupField, Serializer, BooleanField
-from radar.models import Facility, Unit, UnitPatient, DiseaseGroupFeature, DiseaseGroup, DiseaseGroupPatient, Patient
-
-
-class FacilitySerializer(ModelSerializer):
-    class Meta:
-        model_class = Facility
-
-
-class UnitSerializer(ModelSerializer):
-    facilities = ListField(field=FacilitySerializer())
-
-    class Meta:
-        model_class = Unit
-
-
-class UnitPatientSerializer(MetaSerializerMixin, ModelSerializer):
-    unit = UnitSerializer()
-
-    class Meta:
-        model_class = UnitPatient
-        exclude = ['patient_id', 'unit_id']
-
-
-class DiseaseGroupFeatureSerializer(ModelSerializer):
-    class Meta:
-        model_class = DiseaseGroupFeature
-
-
-class DiseaseGroupSerializer(MetaSerializerMixin, ModelSerializer):
-    features = ListField(field=DiseaseGroupFeatureSerializer(), source='disease_group_features')
-
-    class Meta:
-        model_class = DiseaseGroup
-
-
-class DiseaseGroupPatientSerializer(MetaSerializerMixin, ModelSerializer):
-    disease_group = DiseaseGroupSerializer()
-
-    class Meta:
-        model_class = DiseaseGroupPatient
-        exclude = ['patient_id', 'disease_group_id']
+from radar.api.serializers.cohorts import CohortPatientSerializer, CohortReferenceField
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.api.serializers.organisations import OrganisationPatientSerializer, OrganisationReferenceField
+from radar.lib.serializers import ModelSerializer, ListField, StringField, DateField, IntegerField, \
+    Serializer, BooleanField, ReferenceField
+from radar.lib.models import Patient
 
 
 class PatientSerializer(MetaSerializerMixin, ModelSerializer):
@@ -49,20 +12,12 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     date_of_birth = DateField()
     year_of_birth = IntegerField()
     gender = StringField()
-    units = ListField(field=UnitPatientSerializer(), source='unit_patients')
-    disease_groups = ListField(field=DiseaseGroupPatientSerializer(), source='disease_group_patients')
+    organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients')
+    cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients')
 
     class Meta:
         model_class = Patient
         fields = ['id']
-
-
-class DiseaseGroupLookupField(LookupField):
-    model_class = DiseaseGroup
-
-
-class UnitLookupField(LookupField):
-    model_class = Unit
 
 
 class PatientListRequestSerializer(Serializer):
@@ -75,6 +30,19 @@ class PatientListRequestSerializer(Serializer):
     year_of_death = IntegerField()
     gender = StringField()
     patient_number = StringField()
-    unit_id = UnitLookupField(write_only=True)
-    disease_group_id = DiseaseGroupLookupField(write_only=True)
+    organisation_id = OrganisationReferenceField(write_only=True)
+    cohort_id = CohortReferenceField(write_only=True)
     is_active = BooleanField()
+
+
+class PatientReferenceField(ReferenceField):
+    model_class = Patient
+
+
+class PatientSerializerMixin(object):
+    patient = PatientReferenceField()
+
+    def get_model_exclude(self):
+        attrs = super(PatientSerializerMixin, self).get_model_exclude()
+        attrs.add('patient_id')
+        return attrs

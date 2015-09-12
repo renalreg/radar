@@ -1,5 +1,5 @@
 from radar.lib.database import db
-from radar.models import ResultDefinition, \
+from radar.lib.models import ResultDefinition, \
     ResultGroupDefinition, ResultGroupResultDefinition
 
 

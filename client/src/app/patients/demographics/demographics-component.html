@@ -13,7 +13,7 @@
 
       <tr>
         <th>Data Source</th>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
       </tr>
 
       <tr>
@@ -200,7 +200,7 @@
           <th sort-helper="dateOfDeath">DOD</th>
           <th sort-helper="gender">Gender</th>
           <th sort-helper="ethnicityCode.label">Ethnicity</th>
-          <th sort-helper="facility.name">Data Source</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
       </thead>
@@ -219,7 +219,7 @@
         <td>{{item.dateOfDeath | dateFormat}}</td>
         <td>{{item.gender | genderFormat}}</td>
         <td>{{item.ethnicityCode.label | missing}}</td>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
 
         <td>
           <span crud-list-remove-button item="item"></span>

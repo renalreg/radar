@@ -6,7 +6,7 @@
     'radar.store',
     'radar.patients.cohorts',
     'radar.patients.demographics',
-    'radar.patients.diagnosis',
+    'radar.patients.diagnoses',
     'radar.patients.dialysis',
     'radar.patients.genetics',
     'radar.patients.hospitalisations',

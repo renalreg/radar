@@ -1,7 +1,7 @@
 from radar.lib.serializers import ModelSerializer, MetaSerializerMixin
-from radar.models import Facility
+from radar.lib.models import DataSource
 
 
-class FacilitySerializer(MetaSerializerMixin, ModelSerializer):
+class DataSourceSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta:
-        model_class = Facility
+        model_class = DataSource

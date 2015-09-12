@@ -9,7 +9,7 @@
         var token = session.getToken();
 
         if (token !== null) {
-          config.headers['X-AUTH-TOKEN'] = token;
+          config.headers['X-Auth-Token'] = token;
         }
 
         return config;

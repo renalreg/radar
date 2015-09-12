@@ -4,31 +4,18 @@ from random import SystemRandom
 import re
 import string
 
-from flask import render_template, url_for
+from flask import abort, request, current_app, has_request_context, _request_ctx_stack
+from flask import render_template
 from flask_mail import Message
+from itsdangerous import BadSignature, TimestampSigner
+from werkzeug.local import LocalProxy
 
 from radar.lib.mail import mail
-from radar.models.users import User
+from radar.lib.models.users import User, AnonymousUser
 
+current_user = LocalProxy(lambda: get_user())
 
-# Flask endpoints that don't require login
-PUBLIC_ENDPOINTS = [
-    'radar.index',
-    'auth.login',
-    'auth.forgot_username',
-    'auth.forgot_password',
-    'auth.reset_password',
-    'static',
-    'news.view_posts',
-    'news.view_post',
-]
-
-# Flask endpoints that can be accessed while the user has the force password change flag set
-FORCE_PASSWORD_CHANGE_ENDPOINTS = [
-    'auth.change_password',
-    'auth.logout',
-    'static'
-]
+PUBLIC_ENDPOINTS = ['login']
 
 RESET_PASSWORD_MAX_AGE = 86400  # 1 day
 
@@ -42,12 +29,9 @@ PASSWORD_REGEXES = [
     '[A-Z]',  # uppercase
     '[0-9]',  # number
 ]
-PASSWORD_POLICY = 'Must be at least 8 characters and include: a lowercase letter, an uppercase letter and a digit.'
 
 
-def check_login(username, password):
-    """ Authenticate a user """
-
+def login(username, password):
     # Usernames are stored in lower case
     username = username.lower()
 
@@ -62,16 +46,8 @@ def check_login(username, password):
     if not user.check_password(password):
         return None
 
-    # Authentication was successful
-    return user
+    _request_ctx_stack.top.user = user
 
-
-def load_user(user_id):
-    """ Load a user by id, returns None if not found """
-
-    user = User.query.get(user_id)
-
-    # Get user by id
     return user
 
 
@@ -80,7 +56,8 @@ def generate_reset_password_token():
 
 
 def send_reset_password_email(user, token):
-    url = url_for('auth.reset_password', token=token, _external=True)
+    # TODO url
+    url = 'TODO'
 
     msg = Message('RaDaR Reset Password', recipients=[user.email])
     msg.html = render_template('emails/reset_password.html', user=user, url=url)
@@ -88,6 +65,7 @@ def send_reset_password_email(user, token):
 
 
 def send_username_reminder_email(email, users):
+    # TODO include RaDaR URL
     msg = Message('RaDaR Username Reminder', recipients=[email])
     msg.html = render_template('emails/username_reminder.html', email=email, users=users)
     mail.send(msg)
@@ -103,3 +81,46 @@ def check_password_policy(password):
             return False
 
     return True
+
+
+def require_login():
+    if request.method != 'OPTIONS' and request.endpoint not in PUBLIC_ENDPOINTS and not current_user.is_authenticated():
+        abort(401)
+
+
+def generate_token(user):
+    s = TimestampSigner(current_app.config['SECRET_KEY'])
+    token = s.sign(str(user.id))
+    return token
+
+
+def get_user_from_header():
+    token = request.headers.get('X-Auth-Token')
+
+    if token is None:
+        return None
+    else:
+        return get_user_from_token(token)
+
+
+def get_user_from_token(token):
+    s = TimestampSigner(current_app.config['SECRET_KEY'])
+
+    try:
+        user_id = int(s.unsign(token, max_age=86400))
+    except BadSignature:
+        return None
+
+    return User.query.filter(User.id == user_id).first()
+
+
+def get_user():
+    if has_request_context() and not hasattr(_request_ctx_stack.top, 'user'):
+        user = get_user_from_header()
+
+        if user is None:
+            user = AnonymousUser()
+
+        _request_ctx_stack.top.user = user
+
+    return getattr(_request_ctx_stack.top, 'user', None)

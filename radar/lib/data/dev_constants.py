@@ -86,7 +86,6 @@ LAST_NAMES = [
     'LEE',
 ]
 
-
 MEDICATION_NAMES = [
     'Paracetamol',
     'Ibuprofen',

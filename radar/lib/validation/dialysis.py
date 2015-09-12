@@ -1,20 +1,17 @@
-from radar.lib.validation.core import run_validators
-from radar.lib.validation.patient_validators import after_date_of_birth
-from radar.lib.validation.validators import required, not_in_future, optional
+from radar.lib.validation.core import Field, Validation, ValidationError, pass_call, pass_new_obj
+from radar.lib.validation.data_sources import DataSourceValidationMixin
+from radar.lib.validation.meta import MetaValidationMixin
+from radar.lib.validation.patients import PatientValidationMixin
+from radar.lib.validation.validators import after_date_of_birth, not_in_future, required, optional
 
 
-def validate_dialysis(errors, obj):
-    patient = obj.patient
+class DialysisValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
+    from_date = Field(chain=[required(), after_date_of_birth(), not_in_future()])
+    to_date = Field(chain=[optional(), after_date_of_birth(), not_in_future()])
+    dialysis_type = Field(chain=[required()])
+    patient = Field(chain=[required()])
 
-    run_validators(errors, 'from_date', obj.from_date, [required, after_date_of_birth(patient), not_in_future])
-    run_validators(errors, 'to_date', obj.to_date, [optional, after_date_of_birth(patient), not_in_future])
-    run_validators(errors, 'dialysis_type', obj.dialysis_type, [required])
-
-    if not errors.is_valid():
-        return
-
-    if obj.to_date is not None:
-        run_validators(errors, 'to_date', obj.to_date, [not_in_future])
-
-        if obj.from_date > obj.to_date:
-            errors.add_error('to_date', 'Must be after from date.')
+    @pass_new_obj
+    def validate_to_date(self, obj, to_date):
+        if to_date < obj.from_date:
+            raise ValidationError('Must be on or after from date.')

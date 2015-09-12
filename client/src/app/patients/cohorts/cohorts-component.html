@@ -16,11 +16,11 @@
 
     <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Disease Group</div>
+        <div frm-label>Cohort</div>
 
         <div frm-control>
-          <div frm-disease-group-field model="item.diseaseGroup"></div>
-          <div frm-errors errors="item.diseaseGroupId"></div>
+          <div frm-cohort-field model="item.cohort"></div>
+          <div frm-errors errors="item.errors.cohortId"></div>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="diseaseGroup.name">Cohort</th>
+          <th sort-helper="cohort.name">Cohort</th>
           <th sort-helper="createdDate">Added</th>
           <th sort-helper="isActive">Active</th>
           <th></th>
@@ -60,7 +60,7 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.diseaseGroup.name}}</td>
+          <td>{{item.cohort.name}}</td>
           <td>{{item.createdDate | dateFormat}}</td>
           <td><span tick="item.isActive"></span></td>
 

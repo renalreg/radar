@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from radar.web.template_filters import yn, missing, year_format, date_format, datetime_format, strftime
+from radar.lib.template_filters import yn, missing, year_format, date_format, datetime_format, strftime
 
 
 def test_yn_true():

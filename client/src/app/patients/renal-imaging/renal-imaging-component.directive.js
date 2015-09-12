@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.renalImaging');
 
-  app.factory('RenalImagingPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('RenalImagingPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
   app.factory('RenalImagingController', function(ListDetailController, RenalImagingPermission, kidneyTypes, imagingTypes) {
@@ -21,15 +21,11 @@
       $scope.kidneyTypes = kidneyTypes;
       $scope.imagingTypes = imagingTypes;
 
-      self.load(store.findMany('renal-imaging', {patientId: $scope.patient.id}));
+      self.load(store.findMany('renal-imaging', {patient: $scope.patient.id}));
 
       $scope.create = function() {
-        var item = store.create('renal-imaging', {patientId: $scope.patient.id});
+        var item = store.create('renal-imaging', {patient: $scope.patient.id});
         self.edit(item);
-      };
-
-      $scope.log = function() {
-        console.log($scope);
       };
     }
 

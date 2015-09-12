@@ -1,10 +1,8 @@
-from radar.lib.serializers import LookupField, ModelSerializer, MetaSerializerMixin, PatientSerializerMixin, \
-    FacilitySerializerMixin, FacilityLookupField
-from radar.models import DialysisType, Dialysis
-
-
-class DialysisTypeLookupField(LookupField):
-    model_class = DialysisType
+from radar.api.serializers.data_sources import DataSourceSerializerMixin
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.api.serializers.patients import PatientSerializerMixin
+from radar.lib.serializers import ReferenceField, ModelSerializer
+from radar.lib.models import DialysisType, Dialysis
 
 
 class DialysisTypeSerializer(ModelSerializer):
@@ -12,10 +10,14 @@ class DialysisTypeSerializer(ModelSerializer):
         model_class = DialysisType
 
 
-class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    dialysis_type = DialysisTypeSerializer(read_only=True)
-    dialysis_type_id = DialysisTypeLookupField(write_only=True)
-    facility_id = FacilityLookupField(write_only=True)
+class DialysisTypeReferenceField(ReferenceField):
+    model_class = DialysisType
+    serializer_class = DialysisTypeSerializer
+
+
+class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, DataSourceSerializerMixin, ModelSerializer):
+    dialysis_type = DialysisTypeReferenceField()
 
     class Meta:
         model_class = Dialysis
+        exclude = ['dialysis_type_id']

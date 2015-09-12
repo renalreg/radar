@@ -1,22 +1,20 @@
-from datetime import timedelta, datetime
-
-from sqlalchemy import or_, case, desc, func, and_, extract
+from sqlalchemy import or_, case, desc, extract
 from sqlalchemy.orm import aliased
 
-from radar.web.forms.core import add_empty_choice
-from radar.lib.roles import UNIT_VIEW_PATIENT_ROLES, DISEASE_GROUP_VIEW_PATIENT_ROLES, UNIT_VIEW_DEMOGRAPHICS_ROLES, \
-    DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES
+from radar.lib.organisations import ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI
+from radar.lib.roles import ORGANISATION_VIEW_PATIENT_ROLES, COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES, \
+    COHORT_VIEW_DEMOGRAPHICS_ROLES
 from radar.lib.database import db
-from radar.models.units import Unit, UnitPatient, UnitUser
-from radar.models.disease_groups import DiseaseGroup, DiseaseGroupPatient, DiseaseGroupUser
-from radar.models.patients import Patient, PatientDemographics, PatientAlias, PatientNumber
-from radar.lib.ordering import DESCENDING
+from radar.lib.models.organisations import OrganisationPatient, ORGANISATION_TYPE_OTHER, Organisation, OrganisationUser
+from radar.lib.models.cohorts import Cohort, CohortPatient, CohortUser
+from radar.lib.models.patients import Patient, PatientDemographics, PatientAlias, PatientNumber
+from radar.lib.utils import sql_year_filter, sql_date_filter
 
 
 class PatientQueryBuilder(object):
-    def __init__(self, user):
+    def __init__(self, current_user):
         self.query = Patient.query
-        self.user = user
+        self.current_user = current_user
 
         # True if the query is filtering on demographics
         self.filtering_by_demographics = False
@@ -40,8 +38,8 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_patient_number(patient_number))
         return self
 
-    def radar_id(self, radar_id):
-        self.query = self.query.filter(filter_by_radar_id(radar_id))
+    def patient_id(self, radar_id):
+        self.query = self.query.filter(filter_by_patient_id(radar_id))
         return self
 
     def date_of_birth(self, value):
@@ -62,36 +60,38 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def unit(self, unit, include_inactive=False):
+    def organisation(self, organisation, include_inactive=False):
         self.query = self.query\
-            .join(UnitPatient)\
-            .filter(UnitPatient.unit == unit)
+            .join(OrganisationPatient)\
+            .filter(OrganisationPatient.organisation == organisation)
 
         if not include_inactive:
-            self.query = self.query.filter(UnitPatient.is_active)
+            self.query = self.query.filter(OrganisationPatient.is_active)
 
         return self
 
-    def disease_group(self, disease_group, include_inactive=False):
-        # The disease group counts as demographics if the user can't view patients in the disease group
-        if not disease_group.can_view_patient(self.user):
+    def cohort(self, cohort, include_inactive=False):
+        # If the user doesn't have view permissions on this cohort upgrade the query to a demographics query
+        if not cohort.can_view_patient(self.user):
             self.filtering_by_demographics = True
 
-        # Filter by disease group
+        # Filter by cohort
         self.query = self.query\
-            .join(DiseaseGroupPatient)\
-            .filter(DiseaseGroupPatient.disease_group == disease_group)
+            .join(CohortPatient)\
+            .filter(CohortPatient.cohort == cohort)
 
         if not include_inactive:
-            self.query = self.query.filter(DiseaseGroupPatient.is_active)
+            self.query = self.query.filter(CohortPatient.is_active)
 
         return self
 
     def nhs_no(self, nhs_no):
+        # TODO
         self.query = self.query.filter(filter_by_nhs_no(nhs_no))
         return self
 
     def chi_no(self, chi_no):
+        # TODO
         self.query = self.query.filter(filter_by_chi_no(chi_no))
         return self
 
@@ -100,18 +100,14 @@ class PatientQueryBuilder(object):
         return self
 
     def sort(self, column, reverse=False):
-        self.query = self.query.order_by(*sort_patients(self.user, column, reverse))
+        self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
 
-    def build(self, permissions=True):
+    def build(self, apply_permissions=True):
         query = self.query
 
-        if permissions and not self.user.is_admin:
-            if self.filtering_by_demographics:
-                permission_filter = filter_by_demographics_permissions(self.user)
-            else:
-                permission_filter = filter_by_view_patient_permissions(self.user)
-
+        if apply_permissions and not self.current_user.is_admin:
             # Filter the patients based on the user's permissions and the type of query
+            permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics)
             query = query.filter(permission_filter)
 
         return query
@@ -148,129 +144,121 @@ def patient_number_sub_query(*args):
 
 
 def filter_by_first_name(first_name):
+    # Prefix search
     first_name_like = first_name + '%'
-
     patient_filter = patient_demographics_sub_query(PatientDemographics.first_name.ilike(first_name_like))
     alias_filter = patient_alias_sub_query(PatientAlias.first_name.ilike(first_name_like))
-
     return or_(patient_filter, alias_filter)
 
 
 def filter_by_last_name(last_name):
+    # Prefix search
     last_name_like = last_name + '%'
-
     patient_filter = patient_demographics_sub_query(PatientDemographics.last_name.ilike(last_name_like))
     alias_filter = patient_alias_sub_query(PatientAlias.last_name.ilike(last_name_like))
-
     return or_(patient_filter, alias_filter)
 
 
-def _date_filter(column, date):
-    return and_(
-        column >= date,
-        column < date + timedelta(days=1)
-    )
-
-
 def filter_by_date_of_birth(date_of_birth):
-    return patient_demographics_sub_query(_date_filter(PatientDemographics.date_of_birth, date_of_birth))
+    return patient_demographics_sub_query(sql_date_filter(PatientDemographics.date_of_birth, date_of_birth))
 
 
 def filter_by_date_of_death(date_of_death):
-    return patient_demographics_sub_query(_date_filter(PatientDemographics.date_of_death, date_of_death))
+    return patient_demographics_sub_query(sql_date_filter(PatientDemographics.date_of_death, date_of_death))
 
 
 def filter_by_patient_number(number):
-    # One of the patient's identifiers matches
-    number_like = number + '%'
-    number_filter = patient_number_sub_query(PatientNumber.number.like(number_like))
+    query = patient_number_sub_query(PatientNumber.number.like(number + '%'))
 
-    # RaDaR ID matches
-    radar_id_filter = filter_by_radar_id(number)
+    # Also search RaDaR IDs
+    query = or_(query, filter_by_patient_id(number))
 
-    return or_(number_filter, radar_id_filter)
+    return query
 
 
-def filter_by_radar_id(radar_id):
-    return Patient.id == radar_id
+def filter_by_patient_id(patient_id):
+    return Patient.id == patient_id
 
 
 def filter_by_gender(gender_code):
     return patient_demographics_sub_query(PatientDemographics.gender == gender_code)
 
 
-def _year_filter(column, year):
-    return and_(
-        column >= datetime(year, 1, 1),
-        column < datetime(year + 1, 1, 1)
-    )
-
-
 def filter_by_year_of_birth(year):
-    return patient_demographics_sub_query(_year_filter(PatientDemographics.date_of_birth, year))
+    return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_birth, year))
 
 
 def filter_by_year_of_death(year):
-    return patient_demographics_sub_query(_year_filter(PatientDemographics.date_of_death, year))
+    return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
 
 
 def filter_by_nhs_no(nhs_no):
-    return patient_demographics_sub_query(PatientDemographics.nhs_no == nhs_no)
+    return patient_number_sub_query(
+        Organisation.type == ORGANISATION_TYPE_OTHER,
+        Organisation.code == ORGANISATION_CODE_NHS,
+        PatientNumber.number.like(nhs_no + '%')
+    )
 
 
 def filter_by_chi_no(chi_no):
-    return patient_demographics_sub_query(PatientDemographics.chi_no == chi_no)
+    return patient_number_sub_query(
+        Organisation.type == ORGANISATION_TYPE_OTHER,
+        Organisation.code == ORGANISATION_CODE_CHI,
+        PatientNumber.number.like(chi_no + '%')
+    )
 
 
-def filter_by_unit_roles(user, roles):
+def filter_by_organisation_roles(current_user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.unit_patients)\
-        .join(UnitPatient.unit)\
-        .join(Unit.unit_users)\
+        .join(patient_alias.organisation_patients)\
+        .join(OrganisationPatient.organisation)\
+        .join(Organisation.unit_users)\
         .filter(
             patient_alias.id == Patient.id,
-            UnitUser.user_id == user.id,
-            UnitUser.role.in_(roles)
+            OrganisationUser.user_id == current_user.id,
+            OrganisationUser.role.in_(roles)
         )\
         .exists()
     return sub_query
 
 
-def filter_by_disease_group_roles(user, roles):
+def filter_by_cohort_roles(current_user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.disease_group_patients)\
-        .join(DiseaseGroupPatient.disease_group)\
-        .join(DiseaseGroup.disease_group_users)\
+        .join(patient_alias.cohort_patients)\
+        .join(CohortPatient.cohort)\
+        .join(Cohort.disease_group_users)\
         .filter(
             patient_alias.id == Patient.id,
-            DiseaseGroupUser.user_id == user.id,
-            DiseaseGroupUser.role.in_(roles)
+            CohortUser.user_id == current_user.id,
+            CohortUser.role.in_(roles)
         )\
         .exists()
     return sub_query
 
 
-def filter_by_view_patient_permissions(user):
-    return or_(
-        filter_by_unit_roles(user, UNIT_VIEW_PATIENT_ROLES),
-        filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_PATIENT_ROLES),
-    )
+def filter_by_permissions(current_user, demographics):
+    if demographics:
+        return or_(
+            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES),
+            filter_by_cohort_roles(current_user, COHORT_VIEW_DEMOGRAPHICS_ROLES),
+        )
+    else:
+        return or_(
+            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_PATIENT_ROLES),
+            filter_by_cohort_roles(current_user, COHORT_VIEW_PATIENT_ROLES),
+        )
 
 
-def filter_by_demographics_permissions(user):
-    return or_(
-        filter_by_unit_roles(user, UNIT_VIEW_DEMOGRAPHICS_ROLES),
-        filter_by_disease_group_roles(user, DISEASE_GROUP_VIEW_DEMOGRAPHICS_ROLES),
-    )
-
-
-def sort_by_demographics_field(user, field, reverse, else_=None):
-    if user.is_admin:
+def sort_by_demographics_field(current_user, field, reverse, else_=None):
+    if current_user.is_admin:
         expression = field
     else:
-        demographics_permission_sub_query = filter_by_demographics_permissions(user)
+        demographics_permission_sub_query = or_(
+            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES),
+            filter_by_cohort_roles(current_user, COHORT_VIEW_DEMOGRAPHICS_ROLES),
+        )
         expression = case([(demographics_permission_sub_query, field)], else_=else_)
 
     if reverse:
@@ -290,29 +278,29 @@ def sort_by_radar_id(reverse):
     return sort_by_field(Patient.id, reverse)
 
 
-def sort_by_first_name(user, reverse):
-    return sort_by_demographics_field(user, Patient.first_name, reverse)
+def sort_by_first_name(current_user, reverse):
+    return sort_by_demographics_field(current_user, Patient.first_name, reverse)
 
 
-def sort_by_last_name(user, reverse):
-    return sort_by_demographics_field(user, Patient.last_name, reverse)
+def sort_by_last_name(current_user, reverse):
+    return sort_by_demographics_field(current_user, Patient.last_name, reverse)
 
 
 def sort_by_gender(reverse):
     return sort_by_field(Patient.gender, reverse)
 
 
-def sort_by_date_of_birth(user, reverse):
-    date_of_birth_order = sort_by_demographics_field(user, Patient.date_of_birth, reverse)
+def sort_by_date_of_birth(current_user, reverse):
+    date_of_birth_order = sort_by_demographics_field(current_user, Patient.date_of_birth, reverse)
 
-    if user.is_admin:
+    if current_user.is_admin:
         return [date_of_birth_order]
     else:
         # Users without demographics permissions can only see the year
         year_order = sort_by_field(extract('year', Patient.date_of_birth), reverse)
 
         # Anonymised (year) values first (i.e. treat 1999 as 1999-01-01)
-        anonymised_order = sort_by_demographics_field(user, 1, reverse, else_=0)
+        anonymised_order = sort_by_demographics_field(current_user, 1, reverse, else_=0)
 
         return [year_order, anonymised_order, date_of_birth_order]
 
@@ -333,32 +321,3 @@ def sort_patients(user, sort_by, reverse):
     clauses.append(sort_by_radar_id(False))
 
     return clauses
-
-
-def get_unit_filters_for_user(user):
-    # All users can filter by all units
-    return db.session.query(Unit).order_by(Unit.name).all()
-
-
-def get_disease_group_filters_for_user(user):
-    query = db.session.query(DiseaseGroup)
-
-    # Admin users can filter by any disease group
-    # Unit users can filter patients in their unit by any disease group
-    if len(user.units) == 0 and not user.is_admin:
-        # Disease group users can only filter by disease groups they belong to with view patient permissions
-        query = query.join(DiseaseGroup.disease_group_users).filter(DiseaseGroupUser.user == user, DiseaseGroupUser.has_view_patient_permission)
-
-    return query.order_by(DiseaseGroup.name).all()
-
-
-def get_disease_group_filter_choices(user):
-    disease_group_choices = [(x.id, x.name) for x in get_disease_group_filters_for_user(user)]
-    disease_group_choices = add_empty_choice(disease_group_choices)
-    return disease_group_choices
-
-
-def get_unit_filter_choices(user):
-    unit_choices = [(x.id, x.name) for x in get_unit_filters_for_user(user)]
-    unit_choices = add_empty_choice(unit_choices)
-    return unit_choices

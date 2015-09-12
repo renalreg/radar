@@ -30,7 +30,7 @@
       };
 
       Adapter.prototype.transformRequest = function(data) {
-        data = flattenRelationships(data);
+        //data = flattenRelationships(data);
         data = snakeCaseKeys(data);
         return data;
       };

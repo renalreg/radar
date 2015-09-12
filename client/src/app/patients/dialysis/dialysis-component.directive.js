@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.dialysis');
 
-  app.factory('DialysisPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('DialysisPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
   app.factory('DialysisController', function(ListDetailController, DialysisPermission, firstPromise) {
@@ -19,14 +19,14 @@
       });
 
       self.load(firstPromise([
-        store.findMany('dialysis', {patientId: $scope.patient.id}),
+        store.findMany('dialysis', {patient: $scope.patient.id}),
         store.findMany('dialysis-types').then(function(dialysisTypes) {
           $scope.dialysisTypes = dialysisTypes;
         })
       ]));
 
       $scope.create = function() {
-        var item = store.create('dialysis', {patientId: $scope.patient.id});
+        var item = store.create('dialysis', {patient: $scope.patient.id});
         self.edit(item);
       };
     }

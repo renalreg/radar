@@ -20,7 +20,7 @@
               <th sort-helper="lastName">Last Name</th>
               <th sort-helper="dateOfBirth">DOB</th>
               <th sort-helper="gender">Gender</th>
-              <th>Disease Groups</th>
+              <th>Cohorts</th>
               <th>Units</th>
             </tr>
           </thead>
@@ -51,17 +51,17 @@
               <td>{{patient.gender | genderFormat}}</td>
 
               <td>
-                <span ng-if="!patient.diseaseGroups.length">-</span>
-                <span ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.name'">
-                  {{diseaseGroup.diseaseGroup.name}}
+                <span ng-if="!patient.cohorts.length">-</span>
+                <span ng-repeat="cohort in patient.cohorts | orderBy: 'cohort.name'">
+                  {{cohort.cohort.name}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!patient.units.length">-</span>
-                <span ng-repeat="unit in patient.units | orderBy: 'unit.name'">
-                  {{unit.unit.name}}
+                <span ng-if="!patient.getUnits().length">-</span>
+                <span ng-repeat="organisation in patient.getUnits() | orderBy: 'organisation.name'">
+                  {{organisation.organisation.name}}
                   <br ng-if="!$last" />
                 </span>
               </td>
@@ -164,10 +164,10 @@
         </div>
 
         <div frm-field frm-group>
-          <div frm-label>Disease Group</div>
+          <div frm-label>Cohort</div>
 
           <div frm-control>
-            <div frm-disease-group-field model="filters.diseaseGroup"></div>
+            <div frm-cohort-field model="filters.cohort"></div>
             <div frm-errors></div>
           </div>
         </div>
@@ -176,7 +176,7 @@
           <div frm-label>Unit</div>
 
           <div frm-control>
-            <div frm-unit-field model="filters.unit"></div>
+            <div frm-unit-field model="filters.organisation"></div>
             <div frm-errors></div>
           </div>
         </div>

@@ -7,14 +7,21 @@
     this.cookies = $cookies;
   }
 
-  AuthStore.prototype.login = function(userId, token) {
-    this.cookies.userId = userId;
-    this.cookies.token = token;
-  };
-
   AuthStore.prototype.logout = function() {
     delete this.cookies.userId;
     delete this.cookies.token;
+  };
+
+  AuthStore.prototype.setToken = function(token) {
+    this.cookies.token = token;
+  };
+
+  AuthStore.prototype.setUserId = function(userId) {
+    this.cookies.userId = userId;
+  };
+
+  AuthStore.prototype.getToken = function() {
+    return this.cookies.token || null;
   };
 
   AuthStore.prototype.getUserId = function() {
@@ -25,10 +32,6 @@
     } else {
       return parseInt(userId);
     }
-  };
-
-  AuthStore.prototype.getToken = function() {
-    return this.cookies.token || null;
   };
 
   app.service('authStore', AuthStore);

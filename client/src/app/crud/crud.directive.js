@@ -5,7 +5,7 @@
 
   app.directive('crud', function() {
     return {
-      controller: function ($scope) {
+      controller: function($scope) {
         this.list = function() {
           return $scope.list.apply(this, arguments);
         };
@@ -77,4 +77,3 @@
     };
   });
 })();
-

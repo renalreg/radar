@@ -1,21 +1,10 @@
-from radar.lib.serializers import LookupField, ModelSerializer, MetaSerializerMixin, PatientSerializerMixin, \
-    FacilitySerializerMixin, DateField, StringField, FloatField
-from radar.models import MedicationFrequency, MedicationRoute, MedicationDoseUnit, Medication, Plasmapheresis, \
-    PlasmapheresisResponse
+from radar.api.serializers.data_sources import DataSourceSerializerMixin
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.api.serializers.patients import PatientSerializerMixin
+from radar.lib.serializers import ModelSerializer
+from radar.lib.models import Plasmapheresis
 
 
-class PlasmapheresisResponseLookupField(LookupField):
-    model_class = PlasmapheresisResponse
-
-
-class PlasmapheresisResponseSerializer(ModelSerializer):
-    class Meta:
-        model_class = PlasmapheresisResponse
-
-
-class PlasmapheresisSerializer(MetaSerializerMixin, PatientSerializerMixin, FacilitySerializerMixin, ModelSerializer):
-    response = PlasmapheresisResponseSerializer(read_only=True)
-    response_id = PlasmapheresisResponseLookupField(write_only=True)
-
+class PlasmapheresisSerializer(MetaSerializerMixin, PatientSerializerMixin, DataSourceSerializerMixin, ModelSerializer):
     class Meta:
         model_class = Plasmapheresis

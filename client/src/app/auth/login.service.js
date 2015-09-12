@@ -9,10 +9,7 @@
     };
 
     function login(username, password) {
-      return authService.login(username, password).then(function(response) {
-        session.login(response.user, response.token);
-        return response.user;
-      });
+      return authService.login(username, password);
     }
   });
 })();

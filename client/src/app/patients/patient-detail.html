@@ -24,17 +24,17 @@
         </span>
       </li>
 
-      <li ng-repeat="unit in patient.units" class="info">
+      <li ng-repeat="organisation in patient.getUnits()" class="info">
         <span>
           <span class="key">Unit</span>
-          <span class="value">{{unit.unit.name}}</span>
+          <span class="value">{{organisation.organisation.name}}</span>
         </span>
       </li>
 
-      <li ng-repeat="diseaseGroup in patient.diseaseGroups" class="info">
+      <li ng-repeat="cohort in patient.cohorts" class="info">
         <span>
           <span class="key">Cohort</span>
-          <span class="value">{{diseaseGroup.diseaseGroup.name}}</span>
+          <span class="value">{{cohort.cohort.name}}</span>
         </span>
       </li>
     </ul>
@@ -43,10 +43,10 @@
   <div patient-navigation patient="patient"></div>
 
   <div
-    ng-repeat="diseaseGroup in patient.diseaseGroups | orderBy: 'diseaseGroup.diseaseGroup.name'"
-    disease-group-navigation
+    ng-repeat="cohort in patient.cohorts | orderBy: 'cohort.cohort.name'"
+    cohort-navigation
     patient="patient"
-    disease-group="diseaseGroup.diseaseGroup"></div>
+    cohort="cohort.cohort"></div>
 </div>
 
 <div class="content" ui-view></div>

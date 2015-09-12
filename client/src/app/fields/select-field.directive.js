@@ -20,6 +20,7 @@
         });
 
         scope.$watch('data.model', function(value) {
+          console.log(value);
           scope.model = unwrapSelectOption(value);
         });
 

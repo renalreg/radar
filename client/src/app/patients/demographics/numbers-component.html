@@ -13,7 +13,7 @@
 
       <tr>
         <th>Data Source</th>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
       </tr>
 
       <tr>
@@ -114,7 +114,7 @@
           <th sort-helper="id">ID</th>
           <th sort-helper="numberFacility.name">Organisation</th>
           <th sort-helper="number">Number</th>
-          <th sort-helper="facility.name">Data Source</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
       </thead>
@@ -129,7 +129,7 @@
           <td>{{item.id}}</td>
           <td>{{item.numberFacility.name}}</td>
           <td>{{item.number}}</td>
-          <td>{{item.facility.name}}</td>
+          <td>{{item.dataSource.getName()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

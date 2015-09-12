@@ -16,12 +16,12 @@
           var userId = response.data.userId;
           var token = response.data.token;
 
+          session.setToken(token);
+
           return store.findOne('users', userId)
             .then(function(user) {
-              deferred.resolve({
-                user: user,
-                token: token
-              });
+              session.setUser(user);
+              deferred.resolve(user);
             })
             .catch(function() {
               deferred.reject();

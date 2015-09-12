@@ -38,9 +38,9 @@
       text: 'Demographics',
       state: 'patient.demographics({patientId: patient.id})'
     },
-    DIAGNOSIS: {
-      text: 'Diagnosis',
-      state: 'patient.diagnosis({patientId: patient.id, diseaseGroupId: diseaseGroup.id})'
+    DIAGNOSES: {
+      text: 'Diagnoses',
+      state: 'patient.diagnoses({patientId: patient.id, cohortId: cohort.id})'
     },
     DIALYSIS: {
       text: 'Dialysis',
@@ -52,7 +52,7 @@
     },
     GENETICS: {
       text: 'Genetics',
-      state: 'patient.genetics({patientId: patient.id, diseaseGroupId: diseaseGroup.id})'
+      state: 'patient.genetics({patientId: patient.id, cohortId: cohort.id})'
     },
     HOSPITALISATIONS: {
       text: 'Hospitalisations',

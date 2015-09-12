@@ -13,7 +13,7 @@
 
       <tr>
         <th>Data Source</th>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
       </tr>
 
       <tr>
@@ -145,8 +145,8 @@
         <div frm-label>Data Source</div>
 
         <div frm-control>
-          <div frm-patient-facility-field patient="patient" model="item.facility" required="true"></div>
-          <div frm-errors errors="item.errors.facilityId"></div>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSourceId"></div>
         </div>
       </div>
 
@@ -359,7 +359,7 @@
           <th sort-helper="id">ID</th>
           <th sort-helper="date">Date</th>
           <th sort-helper="imagingType">Imaging Type</th>
-          <th sort-helper="facility.name">Data Source</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
       </thead>
@@ -374,7 +374,7 @@
           <td>{{item.id}}</td>
           <td>{{item.date | dateFormat}}</td>
           <td>{{item.imagingType}}</td>
-          <td>{{item.facility.name}}</td>
+          <td>{{item.dataSource.getName()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

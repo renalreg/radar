@@ -18,7 +18,7 @@
         }
       });
 
-      self.load(store.findMany('salt-wasting-clinical-features', {patientId: $scope.patient.id}).then(function(results) {
+      self.load(store.findMany('salt-wasting-clinical-features', {patient: $scope.patient.id}).then(function(results) {
         if (results.length) {
           return results[0];
         } else {
@@ -29,7 +29,7 @@
       });
 
       $scope.create = function() {
-        var item = store.create('salt-wasting-clinical-features', {patientId: $scope.patient.id});
+        var item = store.create('salt-wasting-clinical-features', {patient: $scope.patient.id});
         self.edit(item);
       };
     }
@@ -49,4 +49,3 @@
     };
   });
 })();
-

@@ -13,7 +13,7 @@
 
       <tr>
         <th>Data Source</th>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
       </tr>
 
       <tr>
@@ -120,7 +120,7 @@
         <th sort-helper="fromDate">From Date</th>
         <th sort-helper="toDate">To Date</th>
         <th sort-helper="address()">Address</th>
-        <th sort-helper="facility.name">Data Source</th>
+        <th sort-helper="dataSource.getName()">Data Source</th>
         <th></th>
       </tr>
       </thead>
@@ -136,7 +136,7 @@
         <td>{{item.fromDate | dateFormat}}</td>
         <td>{{item.fromDate | dateFormat}}</td>
         <td class="newlines">{{item.address()}}</td>
-        <td>{{item.facility.name}}</td>
+        <td>{{item.dataSource.getName()}}</td>
 
         <td>
           <span crud-list-remove-button item="item"></span>

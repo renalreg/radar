@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.medications');
 
-  app.factory('MedicationPermission', function(PatientFacilityDataPermission) {
-    return PatientFacilityDataPermission;
+  app.factory('MedicationPermission', function(PatientDataSourceObjectPermission) {
+    return PatientDataSourceObjectPermission;
   });
 
   app.factory('MedicationsController', function(ListDetailController, MedicationPermission, firstPromise) {
@@ -19,7 +19,7 @@
       });
 
       self.load(firstPromise([
-        store.findMany('medications', {patientId: $scope.patient.id}),
+        store.findMany('medications', {patient: $scope.patient.id}),
         store.findMany('medication-dose-units').then(function(doseUnits) {
           $scope.doseUnits = doseUnits;
         }),
@@ -32,7 +32,7 @@
       ]));
 
       $scope.create = function() {
-        var item = store.create('medications', {patientId: $scope.patient.id});
+        var item = store.create('medications', {patient: $scope.patient.id});
         self.edit(item);
       };
     }

@@ -10,18 +10,18 @@
     this.isAuthenticated = false;
   }
 
-  Session.prototype.login = function(user, token) {
-    this.authStore.login(user.id, token);
-    this.setUser(user);
-  };
-
   Session.prototype.logout = function() {
     this.authStore.logout();
-    this.setUser(null);
+    this.user = null;
+    this.isAuthenticated = false;
   };
 
   Session.prototype.getToken = function() {
     return this.authStore.getToken();
+  };
+
+  Session.prototype.setToken = function(token) {
+    this.authStore.setToken(token);
   };
 
   Session.prototype.getUserId = function() {
@@ -29,8 +29,9 @@
   };
 
   Session.prototype.setUser = function(user) {
+    this.authStore.setUserId(user.id);
     this.user = user;
-    this.isAuthenticated = user !== null;
+    this.isAuthenticated = true;
   };
 
   app.service('session', Session);
@@ -53,4 +54,3 @@
     });
   });
 })();
-

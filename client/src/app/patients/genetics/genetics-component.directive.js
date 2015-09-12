@@ -18,7 +18,7 @@
         }
       });
 
-      self.load(store.findMany('genetics', {patientId: $scope.patient.id, diseaseGroupId: $scope.diseaseGroup.id}).then(function(geneticsList) {
+      self.load(store.findMany('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}).then(function(geneticsList) {
         if (geneticsList.length) {
           return geneticsList[0];
         } else {
@@ -29,7 +29,7 @@
       });
 
       $scope.create = function() {
-        var item = store.create('genetics', {patientId: $scope.patient.id, diseaseGroup: $scope.diseaseGroup});
+        var item = store.create('genetics', {patient: $scope.patient.id, cohort: $scope.cohort});
         self.edit(item);
       };
     }
@@ -43,7 +43,7 @@
     return {
       scope: {
         patient: '=',
-        diseaseGroup: '='
+        cohort: '='
       },
       controller: GeneticsController,
       templateUrl: 'app/patients/genetics/genetics-component.html'
