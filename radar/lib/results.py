@@ -36,8 +36,8 @@ class ResultTable(object):
         for result in results:
             self.add(result)
 
-    def sort_by_facility(self, reverse=False):
-        self._sort(lambda x: (x.facility.name, x.date), reverse)
+    def sort_by_data_source(self, reverse=False):
+        self._sort(lambda x: (x.data_source.name, x.date), reverse)
 
     def sort_by_date(self, reverse=False):
         self._sort(lambda x: (x.date, x.facility.name), reverse)

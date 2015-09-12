@@ -1,97 +1,61 @@
-from collections import defaultdict
-from radar.models.facilities import Facility
-from radar.models.sync import PatientLatestImport
-from radar.models.patients import PatientDemographics, PatientNumber, PatientAlias, PatientAddress
+from radar.lib.permissions import intersect_patient_and_user_organisations, intersect_patient_and_user_cohorts
+from radar.lib.serializers import Empty
 
 
-class FacilityPatient(object):
-    def __init__(self, facility, patient, demographics=None, numbers=None, aliases=None, addresses=None, latest_import=None):
-        if numbers is None:
-            numbers = []
-
-        if aliases is None:
-            aliases = []
-
-        if addresses is None:
-            addresses = []
-
-        self.facility = facility
+class PatientProxy(object):
+    def __init__(self, patient, user):
         self.patient = patient
-        self.demographics = demographics
-        self.numbers = numbers
-        self.aliases = aliases
-        self.addresses = addresses
-        self.latest_import = latest_import
+        self.user = user
 
-    def can_edit(self, user):
-        return self.facility.is_radar and self.patient.can_edit(user)
+        if user.is_admin:
+            self.demographics = True
+        else:
+            organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
+            self.demographics = any(x.has_view_demographics_permission for x in organisation_users)
 
+    @property
+    def first_name(self):
+        if self.demographics:
+            return self.patient.first_name
+        else:
+            return Empty
 
-def get_facility_patients(patient):
-    facility_patient_map = defaultdict(FacilityPatient)
-    facility_patients = []
+    @property
+    def last_name(self):
+        if self.demographics:
+            return self.patient.last_name
+        else:
+            return Empty
 
-    radar_facility = Facility.query.filter(Facility.code == 'RADAR').one()
-    radar_facility_patient = FacilityPatient(radar_facility, patient)
-    facility_patient_map[radar_facility] = radar_facility_patient
-    facility_patients.append(radar_facility_patient)
+    @property
+    def date_of_birth(self):
+        if self.demographics:
+            return self.patient.date_of_birth
+        else:
+            return Empty
 
-    def get_facility_patient(facility):
-        facility_patient = facility_patient_map.get(facility)
+    @property
+    def cohorts(self):
+        return [x.cohort for x in self.cohort_patients]
 
-        if facility_patient is None:
-            facility_patient = FacilityPatient(facility, patient)
-            facility_patient_map[facility] = facility_patient
-            facility_patients.append(facility_patient)
+    @property
+    def cohort_patients(self):
+        if self.user.is_admin:
+            return self.patient.cohort_patients
 
-        return facility_patient
+        organisations = intersect_patient_and_user_organisations(self.patient, self.user)
 
-    patient_demographics_list = PatientDemographics.query\
-        .filter(PatientDemographics.patient == patient)\
-        .all()
-    patient_numbers = PatientNumber.query\
-        .filter(PatientNumber.patient == patient)\
-        .all()
-    patient_aliases = PatientAlias.query\
-        .filter(PatientAlias.patient == patient)\
-        .all()
-    patient_addresses = PatientAddress.query\
-        .filter(PatientAddress.patient == patient)\
-        .all()
-    patient_latest_imports = PatientLatestImport.query\
-        .filter(PatientLatestImport.patient == patient)\
-        .all()
+        if organisations:
+            return self.patient.cohort_patients
+        else:
+            return intersect_patient_and_user_cohorts(self.patient, self.user, patient_membership=True)
 
-    # Demographics
-    for patient_demographics in patient_demographics_list:
-        facility = patient_demographics.facility
-        facility_patient = get_facility_patient(facility)
-        facility_patient.demographics = patient_demographics
+    @property
+    def year_of_birth(self):
+        if self.patient.date_of_birth is not None:
+            return self.patient.date_of_birth.year
+        else:
+            return None
 
-    # Patient numbers
-    for patient_number in patient_numbers:
-        facility = patient_number.facility
-        facility_patient = get_facility_patient(facility)
-        facility_patient.numbers.append(patient_number)
-
-    # Aliases
-    for patient_alias in patient_aliases:
-        facility = patient_alias.facility
-        facility_patient = get_facility_patient(facility)
-        facility_patient.aliases.append(patient_alias)
-
-    # Addresses
-    for patient_address in patient_addresses:
-        facility = patient_address.facility
-        facility_patient = get_facility_patient(facility)
-        facility_patient.addresses.append(patient_address)
-
-    for patient_latest_import in patient_latest_imports:
-        facility = patient_latest_import.facility
-        facility_patient = get_facility_patient(facility)
-        facility_patient.latest_import = patient_latest_import
-
-    # Show RaDaR first then the other facilities in alphabetical order
-    facility_patients = [facility_patients[0]] + sorted(facility_patients[1:], key=lambda x: x.facility.name)
-
-    return facility_patients
+    def __getattr__(self, item):
+        return getattr(self.patient, item)

@@ -1,25 +1,18 @@
 from collections import OrderedDict
 import copy
 from datetime import datetime, date
+
 import delorean
 import six
-
 from sqlalchemy import inspect
 from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
-from radar.models import User, Facility, Patient, Unit, DiseaseGroup
+
+from radar.lib.validation.core import ValidationError
 
 
 class Empty(object):
     pass
-
-
-class ValidationError(Exception):
-    def __init__(self, detail):
-        if not isinstance(detail, dict) and not isinstance(detail, list):
-            detail = [detail]
-
-        self.detail = detail
 
 
 class Field(object):
@@ -210,7 +203,7 @@ class DateTimeField(Field):
         return value.isoformat()
 
 
-class LookupField(Field):
+class ReferenceField(Field):
     type_map = {
         sqltypes.String: StringField,
         sqltypes.Integer: IntegerField,
@@ -222,18 +215,33 @@ class LookupField(Field):
 
     model_class = None
     model_id = 'id'
+    serializer_class = None
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('write_only', True)
-        super(LookupField, self).__init__(**kwargs)
+        super(ReferenceField, self).__init__(**kwargs)
         self.field = self.get_field(**kwargs)
+        self._serializer = None
 
     def bind(self, field_name):
-        if self.source is None and field_name.endswith('_id'):
-            self.source = field_name[:-3]
-
-        super(LookupField, self).bind(field_name)
+        super(ReferenceField, self).bind(field_name)
         self.field.bind(field_name)
+
+        serializer = self.get_serializer()
+
+        if serializer is not None:
+            serializer.bind(field_name)
+
+    def get_serializer_class(self):
+        return self.serializer_class
+
+    def get_serializer(self):
+        if self._serializer is None:
+            serializer_class = self.serializer_class
+
+            if serializer_class is not None:
+                self._serializer = serializer_class()
+
+        return self._serializer
 
     def get_model_class(self):
         return self.model_class
@@ -250,7 +258,7 @@ class LookupField(Field):
             if isinstance(col_type, sql_type):
                 return field_type
 
-        # TODO raise exception
+        return StringField
 
     def get_field(self, **kwargs):
         field_kwargs = {}
@@ -271,30 +279,32 @@ class LookupField(Field):
         return obj
 
     def get_value(self, value):
-        return self.field.get_value(value)
+        serializer = self.get_serializer()
 
-    def get_data(self, data):
-        return self.field.get_data(data)
+        if serializer is not None:
+            return serializer.get_value(value)
+        else:
+            value = super(ReferenceField, self).get_value(value)
+            return self.field.get_value(value)
 
     def to_value(self, data):
-        id = self.field.to_value(data)
-        obj = self.get_object(id)
+        if isinstance(data, dict):
+            model_id = self.get_model_id()
+            obj_id = self.field.to_value(data.get(model_id))
+        else:
+            obj_id = self.field.to_value(data)
+
+        obj = self.get_object(obj_id)
+
         return obj
 
-    def to_data(self, data):
-        return self.field.to_data(data)
+    def to_data(self, value):
+        serializer = self.get_serializer()
 
-
-class PatientLookupField(LookupField):
-    model_class = Patient
-
-
-class FacilityLookupField(LookupField):
-    model_class = Facility
-
-
-class DiseaseGroupLookupField(LookupField):
-    model_class = DiseaseGroup
+        if serializer is not None:
+            return serializer.to_data(value)
+        else:
+            return self.field.to_data(value)
 
 
 class ListField(Field):
@@ -317,7 +327,7 @@ class ListField(Field):
             try:
                 value = self.field.to_value(x)
             except ValidationError as e:
-                errors.append(e.detail)
+                errors.append(e.errors)
             else:
                 values.append(value)
                 errors.append({})
@@ -341,11 +351,11 @@ class ListField(Field):
 
 class SerializerMetaclass(type):
     def __new__(cls, name, bases, attrs):
-        attrs['_declared_fields'] = cls.get_fields(bases, attrs)
+        attrs['_declared_fields'] = SerializerMetaclass.get_fields(bases, attrs)
         return super(SerializerMetaclass, cls).__new__(cls, name, bases, attrs)
 
-    @classmethod
-    def get_fields(cls, bases, attrs):
+    @staticmethod
+    def get_fields(bases, attrs):
         fields = []
 
         # Get the fields declared on this class
@@ -357,18 +367,14 @@ class SerializerMetaclass(type):
         fields.sort(key=lambda x: x[1]._creation_counter)
 
         # Loop in reverse to maintain correct field ordering
-        for base in reversed(bases):
-            if hasattr(base, '_declared_fields'):
+        for serializer_class in reversed(bases):
+            if hasattr(serializer_class, '_declared_fields'):
                 # Copy fields from another serializer
                 # Parent serializer's fields go first
-                fields = list(base._declared_fields.items()) + fields
+                fields = list(serializer_class._declared_fields.items()) + fields
             else:
                 # Copy fields from mixins
-                mixin_fields = []
-
-                for field_name, obj in base.__dict__.items():
-                    if isinstance(obj, Field):
-                        mixin_fields.append((field_name, obj))
+                mixin_fields = SerializerMetaclass.get_mixin_fields(serializer_class).items()
 
                 # Sort the mixin fields in the order they were declared
                 mixin_fields.sort(key=lambda x: x[1]._creation_counter)
@@ -377,6 +383,19 @@ class SerializerMetaclass(type):
                 fields = mixin_fields + fields
 
         return OrderedDict(fields)
+
+    @staticmethod
+    def get_mixin_fields(field_class):
+        fields = {}
+
+        for field_mixin_klass in reversed(field_class.__bases__):
+            fields.update(SerializerMetaclass.get_mixin_fields(field_mixin_klass))
+
+        for field_name, obj in field_class.__dict__.items():
+            if isinstance(obj, Field):
+                fields[field_name] = obj
+
+        return fields
 
 
 @six.add_metaclass(SerializerMetaclass)
@@ -417,6 +436,9 @@ class Serializer(Field):
         errors = {}
         validated_data = OrderedDict()
 
+        if not isinstance(data, dict):
+            return Empty
+
         for field in self.writeable_fields:
             # Get the input data
             field_data = field.get_data(data)
@@ -435,7 +457,7 @@ class Serializer(Field):
                 try:
                     value = field.to_value(field_data)
                 except ValidationError as e:
-                    errors[field.field_name] = e.detail
+                    errors[field.field_name] = e.errors
                     continue
 
                 if value is Empty:
@@ -584,77 +606,64 @@ class ModelSerializer(Serializer):
 
         return fields
 
-    def create(self, validated_data):
-        # TODO raise error if data is nested
-
+    def create(self):
         model_class = self.get_model_class()
-        obj = model_class(**validated_data)
+        obj = model_class()
         return obj
 
     def update(self, obj, validated_data):
-        # TODO raise error if data is nested
-
         for attr, value in validated_data.items():
             setattr(obj, attr, value)
 
         return obj
 
 
-class EmbeddedUserSerializer(ModelSerializer):
-    class Meta:
-        model_class = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username']
+class CodedValueSerializer(Serializer):
+    def __init__(self, field, items, **kwargs):
+        super(CodedValueSerializer, self).__init__(**kwargs)
+        self.field = field
+        self.items = items
+
+    def transform_errors(self, errors):
+        return errors
+
+    def get_fields(self):
+        fields = {
+            'id': self.field(),
+            'value': self.field(read_only=True),
+            'label': StringField(read_only=True)
+        }
+
+        for field_name, field in fields.items():
+            field.bind(field_name)
+
+        return fields
+
+    def to_data(self, value, **kwargs):
+        label = self.items[value]
+        return super(CodedValueSerializer, self).to_data({
+            'id': value,
+            'label': label,
+        })
+
+    def to_value(self, data):
+        if isinstance(data, dict):
+            try:
+                value = super(CodedValueSerializer, self).to_value(data)
+                value = value.get('id')
+            except ValidationError as e:
+                raise ValidationError(e.errors['id'])
+        else:
+            value = self.fields['id'].to_value(data)
+
+        return value
 
 
-class UnitSerializer(ModelSerializer):
-    class Meta:
-        model_class = Unit
+class CodedStringSerializer(CodedValueSerializer):
+    def __init__(self, items, **kwargs):
+        super(CodedStringSerializer, self).__init__(StringField, items, **kwargs)
 
 
-class EmbeddedFacilitySerializer(ModelSerializer):
-    unit = UnitSerializer()
-
-    class Meta:
-        model_class = Facility
-        exclude = ['unit_id']
-
-
-class EmbeddedDiseaseGroupSerializer(ModelSerializer):
-    class Meta:
-        model_class = DiseaseGroup
-
-
-class CreatedUserMixin(object):
-    created_user = EmbeddedUserSerializer(read_only=True)
-
-    def get_model_exclude(self):
-        model_exclude = super(CreatedUserMixin, self).get_model_exclude()
-        model_exclude.add('created_user_id')
-        return model_exclude
-
-
-class ModifiedUserMixin(object):
-    modified_user = EmbeddedUserSerializer(read_only=True)
-
-    def get_model_exclude(self):
-        model_exclude = super(ModifiedUserMixin, self).get_model_exclude()
-        model_exclude.add('modified_user_id')
-        return model_exclude
-
-
-class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin):
-    pass
-
-
-class FacilitySerializerMixin(object):
-    facility = EmbeddedFacilitySerializer(read_only=True)
-    facility_id = FacilityLookupField()
-
-
-class DiseaseGroupSerializerMixin(object):
-    disease_group = EmbeddedFacilitySerializer(read_only=True)
-    disease_group_id = FacilityLookupField()
-
-
-class PatientSerializerMixin(object):
-    patient_id = PatientLookupField()
+class CodedIntegerSerializer(CodedValueSerializer):
+    def __init__(self, items, **kwargs):
+        super(CodedIntegerSerializer, self).__init__(IntegerField, items, **kwargs)

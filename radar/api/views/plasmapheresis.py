@@ -1,18 +1,17 @@
-from radar.api.serializers.plasmapheresis import PlasmapheresisSerializer, PlasmapheresisResponseSerializer
-from radar.lib.views import FacilityDataMixin, PatientDataList, PatientDataDetail, ListView
-from radar.models import Plasmapheresis, PlasmapheresisResponse
+from radar.api.serializers.plasmapheresis import PlasmapheresisSerializer
+from radar.lib.models import Plasmapheresis
+from radar.lib.validation.plasmapheresis import PlasmapheresisValidation
+from radar.lib.views.data_sources import DataSourceObjectViewMixin
+from radar.lib.views.patients import PatientObjectListView, PatientObjectDetailView
 
 
-class PlasmapheresisList(FacilityDataMixin, PatientDataList):
+class PlasmapheresisListView(DataSourceObjectViewMixin, PatientObjectListView):
     serializer_class = PlasmapheresisSerializer
     model_class = Plasmapheresis
+    validation_class = PlasmapheresisValidation
 
 
-class PlasmapheresisDetail(FacilityDataMixin, PatientDataDetail):
+class PlasmapheresisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = PlasmapheresisSerializer
     model_class = Plasmapheresis
-
-
-class PlasmapheresisResponseList(ListView):
-    serializer_class = PlasmapheresisResponseSerializer
-    model_class = PlasmapheresisResponse
+    validation_class = PlasmapheresisValidation

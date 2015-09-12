@@ -5,7 +5,7 @@ from flask import Flask
 from radar.lib.database import db
 from radar.models.facilities import Facility
 from radar.models.patients import Patient
-from radar.models.common import DataImport
+from radar.lib.models.common import DataImport
 from radar.lib.sda.parser import parse_container
 
 

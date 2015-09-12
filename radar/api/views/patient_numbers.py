@@ -1,13 +1,17 @@
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
-from radar.lib.views import PatientDataList, FacilityDataMixin, PatientDataDetail
-from radar.models import PatientNumber
+from radar.lib.models import PatientNumber
+from radar.lib.validation.patient_numbers import PatientNumberValidation
+from radar.lib.views.data_sources import DataSourceObjectViewMixin
+from radar.lib.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class PatientNumberList(FacilityDataMixin, PatientDataList):
+class PatientNumberListView(DataSourceObjectViewMixin, PatientObjectListView):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
+    validation_class = PatientNumberValidation
 
 
-class PatientNumberDetail(FacilityDataMixin, PatientDataDetail):
+class PatientNumberDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
+    validation_class = PatientNumberValidation

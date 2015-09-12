@@ -1,0 +1,51 @@
+from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, func
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
+
+from radar.lib.database import db
+
+
+class CreatedMixin(object):
+    @declared_attr
+    def created_user_id(cls):
+        return Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    @declared_attr
+    def created_user(cls):
+        return relationship('User', primaryjoin="User.id == %s.created_user_id" % cls.__name__)
+
+    @declared_attr
+    def created_date(cls):
+        return Column(DateTime(timezone=True), nullable=False)
+
+
+class ModifiedMixin(object):
+    @declared_attr
+    def modified_user_id(cls):
+        return Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    @declared_attr
+    def modified_user(cls):
+        return relationship('User', primaryjoin="User.id == %s.modified_user_id" % cls.__name__)
+
+    @declared_attr
+    def modified_date(cls):
+        return Column(DateTime(timezone=True), nullable=False)
+
+
+class MetaModelMixin(CreatedMixin, ModifiedMixin):
+    pass
+
+
+class IntegerLookupTable(db.Model):
+    __abstract__ = True
+
+    id = Column(Integer, primary_key=True)
+    label = Column(String, nullable=False)
+
+
+class StringLookupTable(db.Model):
+    __abstract__ = True
+
+    id = Column(String, primary_key=True)
+    label = Column(String, nullable=False)

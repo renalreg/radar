@@ -1,8 +1,9 @@
 from flask_script import Manager
 
-from radar.web.app import create_app
+from radar.api.app import create_app
 from radar.lib.database import db
 from radar.lib.data import dev, create_initial_data
+
 
 app = create_app()
 

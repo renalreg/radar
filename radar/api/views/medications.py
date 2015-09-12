@@ -1,29 +1,30 @@
-from radar.api.serializers.medications import MedicationSerializer, MedicationDoseUnitSerializer, \
-    MedicationFrequencySerializer, MedicationRouteSerializer
-from radar.lib.views import PatientDataList, FacilityDataMixin, PatientDataDetail, ListView
-from radar.models import Medication, MedicationDoseUnit, MedicationFrequency, MedicationRoute
+from radar.api.serializers.medications import MedicationSerializer
+from radar.lib.models import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, MEDICATION_FREQUENCIES
+from radar.lib.validation.medications import MedicationValidation
+from radar.lib.views.core import CodedStringListView
+from radar.lib.views.data_sources import DataSourceObjectViewMixin
+from radar.lib.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class MedicationList(FacilityDataMixin, PatientDataList):
+class MedicationListView(DataSourceObjectViewMixin, PatientObjectListView):
     serializer_class = MedicationSerializer
     model_class = Medication
+    validation_class = MedicationValidation
 
 
-class MedicationDetail(FacilityDataMixin, PatientDataDetail):
+class MedicationDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = MedicationSerializer
     model_class = Medication
+    validation_class = MedicationValidation
 
 
-class MedicationDoseUnitList(ListView):
-    serializer_class = MedicationDoseUnitSerializer
-    model_class = MedicationDoseUnit
+class MedicationDoseUnitListView(CodedStringListView):
+    items = MEDICATION_DOSE_UNITS
 
 
-class MedicationFrequencyList(ListView):
-    serializer_class = MedicationFrequencySerializer
-    model_class = MedicationFrequency
+class MedicationFrequencyListView(CodedStringListView):
+    items = MEDICATION_FREQUENCIES
 
 
-class MedicationRouteList(ListView):
-    serializer_class = MedicationRouteSerializer
-    model_class = MedicationRoute
+class MedicationRouteListView(CodedStringListView):
+    items = MEDICATION_ROUTES

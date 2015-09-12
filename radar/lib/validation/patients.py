@@ -1,21 +1,34 @@
-from radar.lib.validation.core import run_validators
-from radar.lib.validation.validators import required, not_empty, not_in_future, optional, in_, email_address, nhs_no, \
-    chi_no, max_length
+from radar.lib.permissions import intersect_patient_and_user_organisations
+from radar.lib.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj
+from radar.lib.validation.validators import required
 
 
-def validate_patient_demographics(errors, obj):
-    run_validators(errors, 'first_name', obj.first_name, [not_empty, max_length(30)])
-    run_validators(errors, 'last_name', obj.last_name, [not_empty, max_length(30)])
-    run_validators(errors, 'date_of_birth', obj.date_of_birth, [required, not_in_future])
-    run_validators(errors, 'date_of_death', obj.date_of_death, [optional, not_in_future])
-    run_validators(errors, 'gender', obj.gender, [required, in_(['M', 'F'])])
-    run_validators(errors, 'ethnicity_code', obj.ethnicity_code, [required])
-    run_validators(errors, 'email_address', obj.email_address, [optional, email_address])
-    run_validators(errors, 'nhs_no', obj.nhs_no, [optional, nhs_no])
-    run_validators(errors, 'chi_no', obj.chi_no, [optional, chi_no])
+class PatientField(Field):
+    @pass_context
+    def validate(self, ctx, patient):
+        user = ctx['user']
 
-    if not errors.is_valid():
-        return
+        if not user.is_admin:
+            organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
 
-    if obj.date_of_death is not None and obj.date_of_death < obj.date_of_birth:
-        errors.add_error('date_of_death', "Can't be before the patient's date of birth.")
+            if not any(x.has_edit_patient_permission for x in organisation_users):
+                raise ValidationError('Permission denied!')
+
+        return patient
+
+
+class PatientValidationMixin(object):
+    patient = PatientField(chain=[required()])
+    created_date = Field()
+
+    @pass_new_obj
+    @pass_call
+    def get_context(self, ctx, call, obj):
+        ctx = call(super(PatientValidationMixin, self).get_context, ctx)
+
+        if obj.patient is not None:
+            ctx['patient'] = obj.patient
+        else:
+            raise ValidationError({'patient': 'This field is required.'})
+
+        return ctx

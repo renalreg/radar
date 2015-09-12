@@ -1,37 +1,12 @@
-from radar.api.serializers.patients import UnitLookupField, DiseaseGroupLookupField
-from radar.lib.serializers import Serializer, IntegerField, StringField, MetaSerializerMixin, ModelSerializer, ListField, \
-    BooleanField
-from radar.models import UnitUser, Unit, Facility, User
-
-
-class FacilitySerializer(ModelSerializer):
-    class Meta:
-        model_class = Facility
-
-
-class UnitSerializer(ModelSerializer):
-    facilities = ListField(field=FacilitySerializer())
-
-    class Meta:
-        model_class = Unit
-
-
-class UnitUserSerializer(MetaSerializerMixin, ModelSerializer):
-    has_view_demographics_permission = BooleanField()
-    has_view_patient_permission = BooleanField()
-    has_edit_patient_permission = BooleanField()
-    has_view_user_permission = BooleanField()
-    has_edit_user_membership_permission = BooleanField()
-    has_recruit_patient_permission = BooleanField()
-    unit = UnitSerializer()
-
-    class Meta:
-        model_class = UnitUser
-        exclude = ('unit_id',)
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.api.serializers.organisations import OrganisationUserSerializer
+from radar.api.serializers.patients import OrganisationReferenceField, CohortReferenceField
+from radar.lib.serializers import Serializer, IntegerField, StringField, ModelSerializer, ListField
+from radar.lib.models import User
 
 
 class UserSerializer(MetaSerializerMixin, ModelSerializer):
-    units = ListField(field=UnitUserSerializer(), source='unit_users')
+    organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users')
 
     class Meta:
         model_class = User
@@ -44,5 +19,5 @@ class UserListRequestSerializer(Serializer):
     email = StringField()
     first_name = StringField()
     last_name = StringField()
-    unit_id = UnitLookupField(write_only=True)
-    disease_group_id = DiseaseGroupLookupField(write_only=True)
+    organisation_id = OrganisationReferenceField(write_only=True)
+    cohort_id = CohortReferenceField(write_only=True)

@@ -1,8 +1,10 @@
-from radar.lib.serializers import ModelSerializer, MetaSerializerMixin, PatientSerializerMixin, \
-    DiseaseGroupSerializerMixin
-from radar.models import Genetics
+from radar.api.serializers.cohorts import CohortSerializerMixin
+from radar.api.serializers.meta import MetaSerializerMixin
+from radar.api.serializers.patients import PatientSerializerMixin
+from radar.lib.serializers import ModelSerializer
+from radar.lib.models import Genetics
 
 
-class GeneticsSerializer(PatientSerializerMixin, DiseaseGroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
+class GeneticsSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSerializerMixin, ModelSerializer):
     class Meta:
         model_class = Genetics

@@ -1,132 +1,117 @@
-from flask import Flask, abort
+from flask import Flask
 from flask_cors import CORS
-from flask_login import LoginManager
-from itsdangerous import TimestampSigner, BadSignature
-from radar.api.views.patient_addresses import PatientAddressList, PatientAddressDetail
-from radar.api.views.patient_aliases import PatientAliasList, PatientAliasDetail
 
-from radar.api.views.patient_demographics import PatientDemographicsList, PatientDemographicsDetail, EthnicityCodeList
-from radar.api.views.dialysis import DialysisList, DialysisDetail, DialysisTypeList
-from radar.api.views.disease_groups import DiseaseGroupList, DiseaseGroupDetail
-from radar.api.views.facilities import FacilityList, FacilityDetail
-from radar.api.views.genetics import GeneticsDetail, GeneticsList
-from radar.api.views.hospitalisations import HospitalisationDetail, HospitalisationList
-from radar.api.views.medications import MedicationDetail, MedicationList, MedicationDoseUnitList, \
-    MedicationFrequencyList, MedicationRouteList
-from radar.api.views.patient_numbers import PatientNumberList, PatientNumberDetail
-from radar.api.views.patients import PatientList, PatientDetail
-from radar.api.views.plasmapheresis import PlasmapheresisList, PlasmapheresisDetail, PlasmapheresisResponseList
-from radar.api.views.posts import PostList, PostDetail
-from radar.api.views.renal_imaging import RenalImagingList, RenalImagingDetail
-from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesList, \
-    SaltWastingClinicalFeaturesDetail
-from radar.api.views.units import UnitList
-from radar.api.views.users import UserDetail, UserList
-from radar.api.views.login import Login
-
+from radar.api.views.patient_addresses import PatientAddressListView, PatientAddressDetailView
+from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDetailView
+from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, EthnicityCodeListView
+from radar.api.views.dialysis import DialysisListView, DialysisDetailView, DialysisTypeListView
+from radar.api.views.cohorts import CohortListView, CohortDetailView
+from radar.api.views.data_sources import DataSourceListView, DataSourceDetailView
+from radar.api.views.genetics import GeneticsDetailView, GeneticsListView
+from radar.api.views.hospitalisations import HospitalisationDetailView, HospitalisationListView
+from radar.api.views.medications import MedicationDetailView, MedicationListView, MedicationDoseUnitListView, \
+    MedicationRouteListView, MedicationFrequencyListView
+from radar.api.views.patient_numbers import PatientNumberListView, PatientNumberDetailView
+from radar.api.views.patients import PatientListView, PatientDetailView
+from radar.api.views.plasmapheresis import PlasmapheresisListView, PlasmapheresisDetailView
+from radar.api.views.posts import PostListView, PostDetailView
+from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDetailView
+from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
+    SaltWastingClinicalFeaturesDetailView
+from radar.api.views.organisations import OrganisationListView
+from radar.api.views.users import UserDetailView, UserListView
+from radar.api.views.login import LoginView
+from radar.lib.auth import require_login
 from radar.lib.database import db
-from radar.models import User
-
-app = Flask(__name__)
-app.config.from_object('radar.default_settings')
-app.config.from_object('radar.api.default_settings')
-app.config.from_envvar('RADAR_SETTINGS')
-
-cors = CORS(app)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
+from radar.lib.template_filters import register_template_filters
 
 
-@login_manager.header_loader
-def load_user_from_header(header):
-    # TODO
-    s = TimestampSigner('SECRET')
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('radar.default_settings')
+    app.config.from_object('radar.api.default_settings')
+    app.config.from_envvar('RADAR_SETTINGS')
 
-    try:
-        user_id = int(s.unsign(header, max_age=86400))
-    except BadSignature:
-        abort(401)
+    db.init_app(app)
 
-    return User.query.filter(User.id == user_id).first()
+    CORS(app)
 
+    app.before_request(require_login)
 
-db.init_app(app)
+    register_template_filters(app)
 
-app.add_url_rule('/login', view_func=Login.as_view('login'))
+    app.add_url_rule('/login', view_func=LoginView.as_view('login'))
 
-# Dialysis
-app.add_url_rule('/dialysis', view_func=DialysisList.as_view('dialysis_list'))
-app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetail.as_view('dialysis_detail'))
-app.add_url_rule('/dialysis-types', view_func=DialysisTypeList.as_view('dialysis_type_list'))
+    # Cohorts
+    app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
+    app.add_url_rule('/cohorts/<int:id>', view_func=CohortDetailView.as_view('cohort_detail'))
 
-# Disease Groups
-app.add_url_rule('/disease-groups', view_func=DiseaseGroupList.as_view('disease_group_list'))
-app.add_url_rule('/disease-groups/<int:id>', view_func=DiseaseGroupDetail.as_view('disease_group_detail'))
+    # Dialysis
+    app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
+    app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetailView.as_view('dialysis_detail'))
+    app.add_url_rule('/dialysis-types', view_func=DialysisTypeListView.as_view('dialysis_type_list'))
 
-# Genetics
-app.add_url_rule('/genetics', view_func=GeneticsList.as_view('genetics_list'))
-app.add_url_rule('/genetics/<int:id>', view_func=GeneticsDetail.as_view('genetics_detail'))
+    # Genetics
+    app.add_url_rule('/genetics', view_func=GeneticsListView.as_view('genetics_list'))
+    app.add_url_rule('/genetics/<int:id>', view_func=GeneticsDetailView.as_view('genetics_detail'))
 
-# Hospitalisations
-app.add_url_rule('/hospitalisations', view_func=HospitalisationList.as_view('hospitalisation_list'))
-app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetail.as_view('hospitalisation_detail'))
+    # Hospitalisations
+    app.add_url_rule('/hospitalisations', view_func=HospitalisationListView.as_view('hospitalisation_list'))
+    app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetailView.as_view('hospitalisation_detail'))
 
-# Facilities
-app.add_url_rule('/facilities', view_func=FacilityList.as_view('facility_list'))
-app.add_url_rule('/facilities/<int:id>', view_func=FacilityDetail.as_view('facility_detail'))
+    # Data Sources
+    app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
+    app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))
 
-# Medications
-app.add_url_rule('/medications', view_func=MedicationList.as_view('medication_list'))
-app.add_url_rule('/medications/<int:id>', view_func=MedicationDetail.as_view('medication_detail'))
-app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitList.as_view('medication_dose_unit_list'))
-app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyList.as_view('medication_frequency_list'))
-app.add_url_rule('/medication-routes', view_func=MedicationRouteList.as_view('medication_route_list'))
+    # Medications
+    app.add_url_rule('/medications', view_func=MedicationListView.as_view('medication_list'))
+    app.add_url_rule('/medications/<int:id>', view_func=MedicationDetailView.as_view('medication_detail'))
+    app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitListView.as_view('medication_dose_unit_list'))
+    app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyListView.as_view('medication_frequency_list'))
+    app.add_url_rule('/medication-routes', view_func=MedicationRouteListView.as_view('medication_route_list'))
 
-# Patient Addresses
-app.add_url_rule('/patient-addresses', view_func=PatientAddressList.as_view('patient_address_list'))
-app.add_url_rule('/patient-addresses/<int:id>', view_func=PatientAddressDetail.as_view('patient_address_detail'))
+    # Organisations
+    app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
 
-# Patient Aliases
-app.add_url_rule('/patient-aliases', view_func=PatientAliasList.as_view('patient_alias_list'))
-app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetail.as_view('patient_alias_detail'))
+    # Patient Addresses
+    app.add_url_rule('/patient-addresses', view_func=PatientAddressListView.as_view('patient_address_list'))
+    app.add_url_rule('/patient-addresses/<int:id>', view_func=PatientAddressDetailView.as_view('patient_address_detail'))
 
-# Patient Demographics
-app.add_url_rule('/patient-demographics', view_func=PatientDemographicsList.as_view('patient_demographics_list'))
-app.add_url_rule('/patient-demographics/<int:id>', view_func=PatientDemographicsDetail.as_view('patient_demographics_detail'))
-app.add_url_rule('/ethnicity-codes', view_func=EthnicityCodeList.as_view('ethnicity_code_list'))
+    # Patient Aliases
+    app.add_url_rule('/patient-aliases', view_func=PatientAliasListView.as_view('patient_alias_list'))
+    app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetailView.as_view('patient_alias_detail'))
 
-# Patient Numbers
-app.add_url_rule('/patient-numbers', view_func=PatientNumberList.as_view('patient_number_list'))
-app.add_url_rule('/patient-numbers/<int:id>', view_func=PatientNumberDetail.as_view('patient_number_detail'))
+    # Patient Demographics
+    app.add_url_rule('/patient-demographics', view_func=PatientDemographicsListView.as_view('patient_demographics_list'))
+    app.add_url_rule('/patient-demographics/<int:id>', view_func=PatientDemographicsDetailView.as_view('patient_demographics_detail'))
+    app.add_url_rule('/ethnicity-codes', view_func=EthnicityCodeListView.as_view('ethnicity_code_list'))
 
-# Patients
-app.add_url_rule('/patients', view_func=PatientList.as_view('patient_list'))
-app.add_url_rule('/patients/<int:id>', view_func=PatientDetail.as_view('patient_detail'))
+    # Patient Numbers
+    app.add_url_rule('/patient-numbers', view_func=PatientNumberListView.as_view('patient_number_list'))
+    app.add_url_rule('/patient-numbers/<int:id>', view_func=PatientNumberDetailView.as_view('patient_number_detail'))
 
-# Plasmapheresis
-app.add_url_rule('/plasmapheresis', view_func=PlasmapheresisList.as_view('plasmapheresis_list'))
-app.add_url_rule('/plasmapheresis/<int:id>', view_func=PlasmapheresisDetail.as_view('plasmapheresis_detail'))
-app.add_url_rule('/plasmapheresis-responses', view_func=PlasmapheresisResponseList.as_view('plasmapheresis_response_list'))
+    # Patients
+    app.add_url_rule('/patients', view_func=PatientListView.as_view('patient_list'))
+    app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
 
-# Posts
-app.add_url_rule('/posts', view_func=PostList.as_view('post_list'))
-app.add_url_rule('/posts/<int:id>', view_func=PostDetail.as_view('post_detail'))
+    # Plasmapheresis
+    app.add_url_rule('/plasmapheresis', view_func=PlasmapheresisListView.as_view('plasmapheresis_list'))
+    app.add_url_rule('/plasmapheresis/<int:id>', view_func=PlasmapheresisDetailView.as_view('plasmapheresis_detail'))
 
-# Renal Imaging
-app.add_url_rule('/renal-imaging', view_func=RenalImagingList.as_view('renal_imaging_list'))
-app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetail.as_view('renal_imaging_detail'))
+    # Posts
+    app.add_url_rule('/posts', view_func=PostListView.as_view('post_list'))
+    app.add_url_rule('/posts/<int:id>', view_func=PostDetailView.as_view('post_detail'))
 
-# Salt Wasting Clinical Features
-app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesList.as_view('salt_wasting_clinical_features_list'))
-app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetail.as_view('salt_wasting_clinical_features_detail'))
+    # Renal Imaging
+    app.add_url_rule('/renal-imaging', view_func=RenalImagingListView.as_view('renal_imaging_list'))
+    app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetailView.as_view('renal_imaging_detail'))
 
-# Units
-app.add_url_rule('/units', view_func=UnitList.as_view('unit_list'))
+    # Salt Wasting Clinical Features
+    app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list'))
+    app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetailView.as_view('salt_wasting_clinical_features_detail'))
 
-# Users
-app.add_url_rule('/users', view_func=UserList.as_view('user_list'))
-app.add_url_rule('/users/<int:id>', view_func=UserDetail.as_view('user_detail'))
+    # Users
+    app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))
+    app.add_url_rule('/users/<int:id>', view_func=UserDetailView.as_view('user_detail'))
 
-if __name__ == '__main__':
-    app.run()
+    return app
