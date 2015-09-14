@@ -6,11 +6,13 @@ from radar.lib.validation.validators import after
 
 
 def test_date_datetime():
-    after(date(2015, 1, 1))(datetime(2015, 1, 1, 0, 0, 0, tzinfo=pytz.utc))
+    value = after(date(2015, 1, 1))(datetime(2015, 1, 1, 0, 0, 0, tzinfo=pytz.utc))
+    assert value == datetime(2015, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
 
 
 def test_datetime_date():
-    after(datetime(2015, 1, 1, 0, 0, 0, tzinfo=pytz.utc))(date(2015, 1, 1))
+    value = after(datetime(2015, 1, 1, 0, 0, 0, tzinfo=pytz.utc))(date(2015, 1, 1))
+    assert value == date(2015, 1, 1)
 
 
 def test_less_than():

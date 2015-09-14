@@ -4,11 +4,13 @@ from radar.lib.validation.validators import not_empty
 
 
 def test_str():
-    not_empty()('hello')
+    value = not_empty()('hello')
+    assert value == 'hello'
 
 
 def test_list():
-    not_empty()(['hello', 'world'])
+    value = not_empty()(['hello', 'world'])
+    assert value == ['hello', 'world']
 
 
 def test_empty_str():

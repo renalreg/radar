@@ -4,15 +4,18 @@ from radar.lib.validation.validators import required
 
 
 def test_str():
-    required()('hello')
+    value = required()('hello')
+    assert value == 'hello'
 
 
 def test_int():
-    required()(123)
+    value = required()(123)
+    assert value == 123
 
 
 def test_empty():
-    required()('')
+    value = required()('')
+    assert value == ''
 
 
 def test_none():

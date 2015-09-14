@@ -16,7 +16,9 @@ def test_too_short():
 
 
 def valid(value):
-    return password()(value)
+    new_value = password()(value)
+    assert new_value == value
+    return new_value
 
 
 def invalid(value):

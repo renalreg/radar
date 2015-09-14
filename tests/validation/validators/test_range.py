@@ -3,6 +3,12 @@ from radar.lib.validation.core import ValidatorCall, ValidationError
 from radar.lib.validation.validators import range_
 
 
+def test_valid():
+    call = ValidatorCall({}, 0)
+    value = call(range_(min_value=3, max_value=5), 4)
+    assert value == 4
+
+
 def test_min_less_than():
     call = ValidatorCall({}, 0)
 

@@ -16,28 +16,28 @@ EMAIL_REGEX = re.compile(r'^.+@[^.@][^@]*\.[^.@]+$')
 
 
 def required():
-    def f(value):
+    def required_f(value):
         if value is None:
             raise ValidationError('This field is required.')
 
         return value
 
-    return f
+    return required_f
 
 
 def optional():
-    def f(value):
+    def optional_f(value):
         if value is None:
             raise SkipField()
 
         return value
 
-    return f
+    return optional_f
 
 
 def after_date_of_birth():
     @pass_context
-    def f(ctx, value):
+    def after_date_of_birth_f(ctx, value):
         if is_datetime(value):
             value_date = datetime_to_date(value)
         else:
@@ -52,62 +52,62 @@ def after_date_of_birth():
 
         return value
 
-    return f
+    return after_date_of_birth_f
 
 
 def none_if_blank():
-    def f(value):
+    def none_if_blank_f(value):
         if value is not None and len(value) == 0:
             value = None
 
         return value
 
-    return f
+    return none_if_blank_f
 
 
 def valid_date_for_patient():
     @pass_call
-    def f(call, value):
+    def valid_date_for_patient_f(call, value):
         value = call(after_date_of_birth(), value)
         value = call(not_in_future(), value)
         return value
 
-    return f
+    return valid_date_for_patient_f
 
 
 def not_empty():
-    def f(value):
+    def not_empty_f(value):
         if value is None or len(value) == 0:
             raise ValidationError('This field is required.')
 
         return value
 
-    return f
+    return not_empty_f
 
 
 def min_(min_value):
-    def f(value):
+    def min_f(value):
         if value < min_value:
             raise ValidationError('Must be greater than or equal to %s.' % min_value)
 
         return value
 
-    return f
+    return min_f
 
 
 def max_(max_value):
-    def f(value):
+    def max_f(value):
         if value > max_value:
             raise ValidationError('Must be less than or equal to %s.' % max_value)
 
         return value
 
-    return f
+    return max_f
 
 
 def range_(min_value=None, max_value=None):
     @pass_call
-    def f(call, value):
+    def range_f(call, value):
         if min_value is not None:
             value = call(min_(min_value), value)
 
@@ -116,83 +116,93 @@ def range_(min_value=None, max_value=None):
 
         return value
 
-    return f
+    return range_f
 
 
 def in_(values):
-    def f(value):
+    def in_f(value):
         if value not in values:
             raise ValidationError('Not a valid value.')
 
         return value
 
-    return f
+    return in_f
 
 
 def not_in_future():
-    def f(value):
+    def not_in_future_f(value):
         # Convert date to datetime
         if is_date(value):
-            value = date_to_datetime(value)
+            value_dt = date_to_datetime(value)
+        else:
+            value_dt = value
 
-        if value > datetime.now(pytz.utc):
+        if value_dt > datetime.now(pytz.utc):
             raise ValidationError("Can't be in the future.")
 
         return value
 
-    return f
+    return not_in_future_f
 
 
 def after(min_dt, dt_format='%d/%m/%Y'):
     if is_date(min_dt):
         min_dt = date_to_datetime(min_dt)
 
-    def f(value):
+    def after_f(value):
         if is_date(value):
-            value = date_to_datetime(value)
+            value_dt = date_to_datetime(value)
+        else:
+            value_dt = value
 
-        if value < min_dt:
+        if value_dt < min_dt:
             raise ValidationError('Value is before %s.' % min_dt.strftime(dt_format))
 
-    return f
+        return value
+
+    return after_f
 
 
 def before(max_dt, dt_format='%d/%m/%Y'):
     if is_date(max_dt):
         max_dt = date_to_datetime(max_dt)
 
-    def f(value):
+    def before_f(value):
         if is_date(value):
-            value = date_to_datetime(value)
+            value_dt = date_to_datetime(value)
+        else:
+            value_dt = value
 
-        if value > max_dt:
+        if value_dt > max_dt:
             raise ValidationError('Value is after %s.' % max_dt.strftime(dt_format))
 
-    return f
+        return value
+
+    return before_f
 
 
 def max_length(max_value):
-    def f(value):
+    def max_length_f(value):
         if len(value) > max_value:
             raise ValidationError('Value is too long (max length is %d characters).' % max_value)
 
         return value
 
-    return f
+    return max_length_f
 
 
 def min_length(min_value):
-    def f(value):
+    def min_length_f(value):
         if len(value) < min_value:
             raise ValidationError('Value is too short (min length is %d characters).' % min_value)
 
         return value
 
-    return f
+    return min_length_f
 
 
 def email_address():
-    def f(value):
+    def email_address_f(value):
         value = value.lower()
 
         if not EMAIL_REGEX.match(value):
@@ -200,7 +210,7 @@ def email_address():
 
         return value
 
-    return f
+    return email_address_f
 
 
 def _nhs_no(value, number_type):
@@ -211,21 +221,21 @@ def _nhs_no(value, number_type):
 
 
 def chi_no():
-    def f(value):
+    def chi_no_f(value):
         return _nhs_no(value, 'CHI')
 
-    return f
+    return chi_no_f
 
 
 def nhs_no():
-    def f(value):
+    def nhs_no_f(value):
         return _nhs_no(value, 'NHS')
 
-    return f
+    return nhs_no_f
 
 
 def username():
-    def f(value):
+    def username_f(value):
         value = value.lower()
 
         message = None
@@ -243,15 +253,15 @@ def username():
 
         return value
 
-    return f
+    return username_f
 
 
 # TODO
 def password():
-    def f(value):
+    def password_f(value):
         if len(value) < PASSWORD_MIN_LENGTH:
             raise ValidationError('Password too short (must be at least %d characters).' % PASSWORD_MIN_LENGTH)
 
         return value
 
-    return f
+    return password_f

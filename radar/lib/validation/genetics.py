@@ -1,11 +1,11 @@
+from radar.lib.validation.cohorts import CohortValidationMixin
 from radar.lib.validation.core import Field, Validation, pass_call
-from radar.lib.validation.data_sources import DataSourceValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
 from radar.lib.validation.validators import required, optional, max_length, \
     none_if_blank, valid_date_for_patient
 
 
-class GeneticsValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
+class GeneticsValidation(PatientValidationMixin, CohortValidationMixin, Validation):
     sample_sent = Field(chain=[required()])
     sample_sent_date = Field(chain=[optional(), valid_date_for_patient()])
     laboratory = Field(chain=[none_if_blank(), optional(), max_length(100)])
@@ -21,5 +21,13 @@ class GeneticsValidation(PatientValidationMixin, DataSourceValidationMixin, Vali
             obj.laboratory = None
             obj.laboratory_reference_number = None
             obj.results = None
+
+        return obj
+
+    @pass_call
+    def validate(self, call, obj):
+        # If a sample was sent a date is required
+        if obj.sample_sent:
+            call.validators_for_field([required()], obj, self.sample_sent_date)
 
         return obj

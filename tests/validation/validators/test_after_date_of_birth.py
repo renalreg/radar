@@ -6,16 +6,9 @@ from radar.lib.validation.core import ValidationError, ValidatorCall
 from radar.lib.validation.validators import after_date_of_birth
 
 
-def call_after_date_of_birth(date_of_birth, value):
-    patient = Patient()
-    patient_demographics = PatientDemographics()
-    patient_demographics.date_of_birth = date_of_birth
-    patient.patient_demographics.append(patient_demographics)
-
-    ctx = {'patient': patient}
-    call = ValidatorCall(ctx, None)
-
-    return call(after_date_of_birth(), value)
+def test_valid():
+    value = call_after_date_of_birth(date(1999, 1, 1), date(2000, 1, 1))
+    assert value == date(2000, 1, 1)
 
 
 def test_no_date_of_birth():
@@ -37,3 +30,15 @@ def test_greater_than():
 
 def test_datetime():
     call_after_date_of_birth(date(2000, 1, 1), datetime(2000, 1, 2, tzinfo=pytz.utc))
+
+
+def call_after_date_of_birth(date_of_birth, value):
+    patient = Patient()
+    patient_demographics = PatientDemographics()
+    patient_demographics.date_of_birth = date_of_birth
+    patient.patient_demographics.append(patient_demographics)
+
+    ctx = {'patient': patient}
+    call = ValidatorCall(ctx, None)
+
+    return call(after_date_of_birth(), value)

@@ -28,7 +28,10 @@ def dialysis(patient):
 
 
 def test_dialysis_valid(dialysis):
-    valid(dialysis)
+    obj = valid(dialysis)
+    assert obj.from_date == date(2015, 1, 1)
+    assert obj.to_date == date(2015, 1, 2)
+    assert obj.dialysis_type.id == 1
 
 
 def test_dialysis_from_date_missing(dialysis):
@@ -72,12 +75,14 @@ def test_dialysis_dialysis_type_missing(dialysis):
 
 
 def valid(dialysis):
-    validate(dialysis)
+    return validate(dialysis)
 
 
 def invalid(dialysis):
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValidationError) as e:
         validate(dialysis)
+
+    return e
 
 
 def validate(dialysis):
@@ -85,4 +90,5 @@ def validate(dialysis):
     ctx = {'user': User(is_admin=True)}
     validation.before_update(ctx, Dialysis())
     old_obj = validation.clone(dialysis)
-    validation.after_update(ctx, old_obj, dialysis)
+    obj = validation.after_update(ctx, old_obj, dialysis)
+    return obj

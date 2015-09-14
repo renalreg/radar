@@ -3,6 +3,11 @@ from radar.lib.validation.core import ValidationError
 from radar.lib.validation.validators import max_length
 
 
+def test_valid():
+    value = max_length(3)('abc')
+    assert value == 'abc'
+
+
 def test_empty():
     max_length(3)('')
 

@@ -3,6 +3,11 @@ from radar.lib.validation.core import ValidationError
 from radar.lib.validation.validators import max_
 
 
+def test_valid():
+    value = max_(10)(5)
+    assert value == 5
+
+
 def test_less_than():
     max_(10)(9)
 
