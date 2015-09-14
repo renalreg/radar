@@ -357,7 +357,7 @@ class ReferenceField(Field):
 
 class ListField(Field):
     default_error_messages = {
-        'not_a_list': 'Expected a list of items.'
+        'not_a_list': 'Expected a list.'
     }
 
     def __init__(self, field, **kwargs):
@@ -453,6 +453,10 @@ class SerializerMetaclass(type):
 
 @six.add_metaclass(SerializerMetaclass)
 class Serializer(Field):
+    default_error_messages = {
+        'not_a_dict': 'Expected an object.'
+    }
+
     def __init__(self, *args, **kwargs):
         super(Serializer, self).__init__(*args, **kwargs)
         self._fields = None
@@ -486,11 +490,14 @@ class Serializer(Field):
         return self.to_value(data)
 
     def to_value(self, data):
+        if data is None:
+            return None
+
         errors = {}
         validated_data = OrderedDict()
 
         if not isinstance(data, dict):
-            return Empty
+            self.fail('not_a_dict')
 
         for field in self.writeable_fields:
             # Get the input data
@@ -527,6 +534,9 @@ class Serializer(Field):
         return validated_data
 
     def to_data(self, value, **kwargs):
+        if value is None:
+            return None
+
         data = OrderedDict()
 
         for field in self.readable_fields:

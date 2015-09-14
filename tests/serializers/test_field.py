@@ -1,7 +1,7 @@
 from radar.lib.serializers import Field, Empty
 
 
-class ExampleModel(object):
+class FooModel(object):
     def __init__(self, test=None):
         if test is not Empty:
             self.test = test
@@ -20,15 +20,15 @@ def test_get_value_dict_none():
 
 
 def test_get_value_obj():
-    assert get_value(ExampleModel('foo')) == 'foo'
+    assert get_value(FooModel('foo')) == 'foo'
 
 
 def test_get_value_obj_missing():
-    assert get_value(ExampleModel(Empty)) is Empty
+    assert get_value(FooModel(Empty)) is Empty
 
 
 def test_get_value_obj_none():
-    assert get_value(ExampleModel()) is None
+    assert get_value(FooModel()) is None
 
 
 def get_value(value):
