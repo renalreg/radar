@@ -27,49 +27,49 @@ def dialysis(patient):
     return dialysis
 
 
-def test_dialysis_valid(dialysis):
+def test_valid(dialysis):
     obj = valid(dialysis)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
     assert obj.dialysis_type.id == 1
 
 
-def test_dialysis_from_date_missing(dialysis):
+def test_from_date_missing(dialysis):
     dialysis.from_date = None
     invalid(dialysis)
 
 
-def test_dialysis_from_date_before_dob(dialysis):
+def test_from_date_before_dob(dialysis):
     dialysis.from_date = date(1999, 1, 1)
     invalid(dialysis)
 
 
-def test_dialysis_from_date_future(dialysis):
+def test_from_date_future(dialysis):
     dialysis.from_date = date.today() + timedelta(days=1)
     invalid(dialysis)
 
 
-def test_dialysis_to_date_missing(dialysis):
+def test_to_date_missing(dialysis):
     dialysis.to_date = None
     valid(dialysis)
 
 
-def test_dialysis_to_date_before_dob(dialysis):
+def test_to_date_before_dob(dialysis):
     dialysis.to_date = date(1999, 1, 1)
     invalid(dialysis)
 
 
-def test_dialysis_to_date_future(dialysis):
+def test_to_date_future(dialysis):
     dialysis.to_date = date.today() + timedelta(days=1)
     invalid(dialysis)
 
 
-def test_dialysis_to_date_before_from_date(dialysis):
+def test_to_date_before_from_date(dialysis):
     dialysis.to_date = dialysis.from_date - timedelta(days=1)
     invalid(dialysis)
 
 
-def test_dialysis_dialysis_type_missing(dialysis):
+def test_dialysis_type_missing(dialysis):
     dialysis.dialysis_type = None
     invalid(dialysis)
 
