@@ -3,15 +3,15 @@ from radar.lib.serializers import DateField
 
 
 def test_date():
-    to_data(date(2001, 2, 3)) == '2001-02-03'
+    assert to_data(date(2001, 2, 3)) == '2001-02-03'
 
 
 def test_old_date():
-    to_data(date(999, 1, 1)) == '0999-01-01'
+    assert to_data(date(999, 1, 1)) == '0999-01-01'
 
 
 def test_none():
-    to_data(None) is None
+    assert to_data(None) is None
 
 
 def to_data(value):

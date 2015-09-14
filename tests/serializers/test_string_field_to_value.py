@@ -24,6 +24,10 @@ def test_null():
     assert to_value(None) is None
 
 
+def test_strip():
+    assert to_value(' foo ') == 'foo'
+
+
 def test_true():
     to_value_invalid(True)
 
@@ -38,10 +42,6 @@ def test_object():
 
 def test_list():
     to_value_invalid(['foo', 'bar', 'baz'])
-
-
-def test_strip():
-    assert to_value(' foo ') == 'foo'
 
 
 def to_value_invalid(data):

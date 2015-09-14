@@ -365,20 +365,22 @@ class ListField(Field):
         self.field = field
 
     def to_value(self, data):
+        if data is None:
+            return None
+
         if not isinstance(data, list):
             self.fail('not_a_list')
 
         values = []
-        errors = []
+        errors = {}
 
-        for x in data:
+        for i, x in enumerate(data):
             try:
                 value = self.field.to_value(x)
             except ValidationError as e:
-                errors.append(e.errors)
+                errors[i] = e.errors
             else:
                 values.append(value)
-                errors.append({})
 
         if any(errors):
             raise ValidationError(errors)
@@ -386,6 +388,9 @@ class ListField(Field):
         return values
 
     def to_data(self, values):
+        if values is None:
+            return None
+
         data = []
 
         for value in values:
