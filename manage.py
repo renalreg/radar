@@ -1,33 +1,33 @@
-from flask_script import Manager
+import click
 
 from radar.api.app import create_app
 from radar.lib.database import db
 from radar.lib.data import dev, create_initial_data
 
 
-app = create_app()
+@click.group()
+def cli():
+    pass
 
-manager = Manager(app)
 
-
-@manager.command
+@cli.command('create-tables')
 def create_tables():
     db.drop_all()
     db.create_all()
 
 
-@manager.command
+@cli.command('drop-tables')
 def drop_tables():
     db.drop_all()
 
 
-@manager.command
+@cli.command('initdb')
 def initdb():
     db.create_all()
     create_initial_data()
 
 
-@manager.command
+@cli.command('devdb')
 def devdb(quick=False):
     db.drop_all()
     db.create_all()
@@ -42,5 +42,13 @@ def devdb(quick=False):
     db.session.commit()
 
 
+@cli.command('runserver')
+def run_server():
+    app.run()
+
+
 if __name__ == '__main__':
-    manager.run()
+    app = create_app()
+
+    with app.app_context():
+        cli()
