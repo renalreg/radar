@@ -23,8 +23,8 @@ def plasmapheresis(patient):
     plasmapheresis.patient = patient
     plasmapheresis.from_date = date(2015, 1, 1)
     plasmapheresis.to_date = date(2015, 1, 2)
-    plasmapheresis.no_of_exchanges = 3
-    plasmapheresis.response = 'HELLO'  # TODO
+    plasmapheresis.no_of_exchanges = '1/1D'
+    plasmapheresis.response = 'COMPLETE'
     return plasmapheresis
 
 
@@ -32,8 +32,8 @@ def test_valid(plasmapheresis):
     obj = valid(plasmapheresis)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.no_of_exchanges == 3
-    assert obj.response == 'HELLO'
+    assert obj.no_of_exchanges == '1/1D'
+    assert obj.response == 'COMPLETE'
 
 
 def test_from_date_missing(plasmapheresis):
@@ -73,16 +73,21 @@ def test_to_date_before_from_date(plasmapheresis):
 
 def test_no_of_exchanges_missing(plasmapheresis):
     plasmapheresis.no_of_exchanges = None
-    invalid(plasmapheresis)
-
-
-def test_no_of_exchanges_zero(plasmapheresis):
-    plasmapheresis.no_of_exchanges = 0
     valid(plasmapheresis)
+
+
+def test_no_of_exchanges_invalid(plasmapheresis):
+    plasmapheresis.no_of_exchanges = 'FOO'
+    invalid(plasmapheresis)
 
 
 def test_response_missing(plasmapheresis):
     plasmapheresis.response = None
+    valid(plasmapheresis)
+
+
+def test_response_invalid(plasmapheresis):
+    plasmapheresis.response = 'FOO'
     invalid(plasmapheresis)
 
 

@@ -22,6 +22,9 @@
         store.findMany('plasmapheresis', {patient: $scope.patient.id}),
         store.findMany('plasmapheresis-responses').then(function(responses) {
           $scope.responses = responses;
+        }),
+        store.findMany('plasmapheresis-no-of-exchanges').then(function(noOfExchanges) {
+          $scope.noOfExchanges = noOfExchanges;
         })
       ]));
 

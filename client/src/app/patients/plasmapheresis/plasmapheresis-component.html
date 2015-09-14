@@ -50,7 +50,7 @@
 
         <div frm-control>
           <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSourceId"></div>
+          <div frm-errors errors="item.errors.dataSource"></div>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
         <div frm-label>No. of Exchanges</div>
 
         <div frm-control>
-          <div frm-text-field model="item.noOfExchanges"></div>
+          <div frm-select-field model="item.noOfExchanges" options="noOfExchanges"></div>
           <div frm-errors errors="item.errors.noOfExchanges"></div>
         </div>
       </div>
@@ -86,7 +86,7 @@
 
         <div frm-control>
           <div frm-select-field model="item.response" options="responses"></div>
-          <div frm-errors errors="item.errors.responseId"></div>
+          <div frm-errors errors="item.errors.response"></div>
         </div>
       </div>
 

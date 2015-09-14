@@ -1,10 +1,15 @@
+from collections import OrderedDict
 from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin
 
-TRANSPLANT_TYPES = ['DBD', 'DCD', 'LIVE']
+TRANSPLANT_TYPES = OrderedDict([
+    ('DBD', 'DBD'),
+    ('DCD', 'DCD'),
+    ('LIVE', 'Live'),
+])
 
 
 class Transplant(db.Model, MetaModelMixin):
@@ -20,6 +25,8 @@ class Transplant(db.Model, MetaModelMixin):
 
     transplant_date = Column(Date, nullable=False)
     transplant_type = Column(String, nullable=False)
-    recurrence = Column(Boolean)
-    date_recurred = Column(Date)
     date_failed = Column(Date)
+
+    # TODO
+    # recurrence = Column(Boolean)
+    # date_recurred = Column(Date)
