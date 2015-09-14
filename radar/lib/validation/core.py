@@ -4,6 +4,11 @@ import copy
 import six
 
 
+class Result(object):
+    def __init__(self):
+        self.skipped = False
+
+
 class ValidationError(Exception):
     def __init__(self, errors):
         self.errors = ValidationError.normalise(errors)
@@ -140,8 +145,8 @@ class ValidatorCall(object):
 
         return f(*args)
 
-    def validators(self, validators, new_value):
-        return run_validators(validators, self, new_value)
+    def validators(self, validators, new_value, result=None):
+        return run_validators(validators, self, new_value, result)
 
 
 class PreValidateCall(object):
@@ -184,9 +189,9 @@ class ValidateBeforeUpdateCall(object):
 
         f(*args)
 
-    def run_validators(self, validators, old_value, new_value):
+    def run_validators(self, validators, old_value, new_value, result=None):
         call = ValidatorCall(self.ctx, old_value)
-        return run_validators(validators, call, new_value)
+        return run_validators(validators, call, new_value, result)
 
 
 class ValidateCall(object):
@@ -210,15 +215,15 @@ class ValidateCall(object):
 
         return f(*args)
 
-    def validators(self, validators, obj):
+    def validators(self, validators, obj, result=None):
         call = ValidatorCall(self.ctx, self.old_obj)
-        return run_validators(validators, call, obj)
+        return run_validators(validators, call, obj, result)
 
-    def validators_for_field(self, validators, obj, field):
+    def validators_for_field(self, validators, obj, field, result=None):
         old_value = getattr(self.old_obj, field.field_name)
         new_value = field.get_value(obj)
         call = ValidatorCall(self.ctx, old_value)
-        new_value = run_validators(validators, call, new_value)
+        new_value = run_validators(validators, call, new_value, result)
         field.set_value(obj, new_value)
         return new_value
 
@@ -275,14 +280,20 @@ class ValidateFieldCall(object):
 
         return f(*args)
 
-    def validators(self, validators, new_value):
+    def validators(self, validators, new_value, result=None):
         call = ValidatorCall(self.ctx, self.old_value)
-        return run_validators(validators, call, new_value)
+        return run_validators(validators, call, new_value, result)
 
 
-def run_validators(validators, call, new_value):
+def run_validators(validators, call, new_value, result=None):
     for validator in validators:
-        new_value = call(validator, new_value)
+        try:
+            new_value = call(validator, new_value)
+        except SkipField:
+            if result is not None:
+                result.skipped = True
+
+            return new_value
 
     return new_value
 
@@ -346,7 +357,7 @@ class Field(object):
         validate_before_update_call = ValidateBeforeUpdateCall(ctx, old_obj)
         validate_before_update_call(self.validate_before_update)
 
-    def after_update(self, ctx, old_obj, new_obj, raise_skip=False):
+    def after_update(self, ctx, old_obj, new_obj, result=None):
         ctx = copy.copy(ctx)
 
         context_call = ContextCall(old_obj, new_obj)
@@ -355,22 +366,16 @@ class Field(object):
         pre_validate_call = PreValidateCall(ctx, old_obj)
         new_obj = pre_validate_call(self.pre_validate, new_obj)
 
-        try:
-            validator_call = ValidatorCall(ctx, old_obj)
-            new_obj = validator_call.validators(self.get_validators(), new_obj)
-
-            validate_call = ValidateCall(ctx, old_obj)
-            new_obj = validate_call(self.validate, new_obj)
-        except SkipField as e:
-            if raise_skip:
-                raise e
+        validator_call = ValidatorCall(ctx, old_obj)
+        new_obj = validator_call.validators(self.get_validators(), new_obj, result)
 
         return new_obj
 
 
 class ValidationMetaclass(type):
     def __new__(cls, name, bases, attrs):
-        attrs['_declared_fields'] = ValidationMetaclass.get_fields(bases, attrs)
+        fields = ValidationMetaclass.get_fields(bases, attrs)
+        attrs['_declared_fields'] = fields
         return super(ValidationMetaclass, cls).__new__(cls, name, bases, attrs)
 
     @staticmethod
@@ -439,6 +444,7 @@ class Validation(Field):
 
         for field_name, field in fields.items():
             field.bind(field_name)
+            setattr(self, field_name, field)
 
         return fields
 
@@ -479,7 +485,10 @@ class Validation(Field):
         validate_before_update_call = ValidateBeforeUpdateCall(ctx, old_obj)
         validate_before_update_call(self.validate_before_update)
 
-    def after_update(self, ctx, old_obj, new_obj, raise_skip=False):
+    def after_update(self, ctx, old_obj, new_obj, result=None):
+        if result is None:
+            result = Result()
+
         errors = {}
 
         context_call = ContextCall(old_obj, new_obj)
@@ -488,14 +497,11 @@ class Validation(Field):
         pre_validate_call = PreValidateCall(ctx, old_obj)
         new_obj = pre_validate_call(self.pre_validate, new_obj)
 
-        try:
-            validator_call = ValidatorCall(ctx, old_obj)
-            new_obj = validator_call.validators(self.get_validators(), new_obj)
-        except SkipField as e:
-            if raise_skip:
-                raise e
-            else:
-                return new_obj
+        validator_call = ValidatorCall(ctx, old_obj)
+        new_obj = validator_call.validators(self.get_validators(), new_obj, result)
+
+        if result.skipped:
+           return new_obj
 
         skipped_fields = set()
 
@@ -504,13 +510,14 @@ class Validation(Field):
             new_value = field.get_value(new_obj)
 
             try:
-                new_value = field.after_update(ctx, old_value, new_value, raise_skip=True)
+                result = Result()
+                new_value = field.after_update(ctx, old_value, new_value, result=result)
+                field.set_value(new_obj, new_value)
+
+                if result.skipped:
+                    skipped_fields.add(field_name)
             except ValidationError as e:
                 errors[field.field_name] = e.errors
-            except SkipField:
-                skipped_fields.add(field_name)
-            else:
-                field.set_value(new_obj, new_value)
 
         if errors:
             raise ValidationError(errors)
@@ -528,10 +535,10 @@ class Validation(Field):
                 if validate_method is not None:
                     validate_field_call = ValidateFieldCall(ctx, old_obj, new_obj, old_value)
                     new_value = validate_field_call(validate_method, new_value)
+
+                field.set_value(new_obj, new_value)
             except ValidationError as e:
                 errors[field.field_name] = e.errors
-            else:
-                field.set_value(new_obj, new_value)
 
         if errors:
             raise ValidationError(errors)
@@ -539,11 +546,10 @@ class Validation(Field):
         try:
             validate_call = ValidateCall(ctx, old_obj)
             new_obj = validate_call(self.validate, new_obj)
-        except SkipField as e:
-            if raise_skip:
-                raise e
-            else:
-                return new_obj
+        except SkipField:
+            if result is not None:
+                result.skipped = True
 
+            return new_obj
 
         return new_obj

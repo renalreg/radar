@@ -3,6 +3,11 @@ from radar.lib.validation.core import ValidationError
 from radar.lib.validation.validators import min_
 
 
+def test_valid():
+    value = min_(1)(2)
+    assert value == 2
+
+
 def test_less_than():
     with pytest.raises(ValidationError):
         min_(10)(9)
