@@ -185,7 +185,7 @@ def min_length(min_value):
 
 def email_address():
     def f(value):
-        if not re.match(r'^.+@([^.@][^@]+)$', value):
+        if not re.match(r'^.+@[^.@][^@]*\.[^.@]+$', value):
             raise ValidationError('Not a valid email address.')
 
         return value
