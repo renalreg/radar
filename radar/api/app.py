@@ -13,12 +13,14 @@ from radar.api.views.medications import MedicationDetailView, MedicationListView
     MedicationRouteListView, MedicationFrequencyListView
 from radar.api.views.patient_numbers import PatientNumberListView, PatientNumberDetailView
 from radar.api.views.patients import PatientListView, PatientDetailView
-from radar.api.views.plasmapheresis import PlasmapheresisListView, PlasmapheresisDetailView
+from radar.api.views.plasmapheresis import PlasmapheresisListView, PlasmapheresisDetailView, \
+    PlasmapheresisResponseListView, PlasmapheresisNoOfExchangesListView
 from radar.api.views.posts import PostListView, PostDetailView
 from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDetailView
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
 from radar.api.views.organisations import OrganisationListView
+from radar.api.views.transplants import TransplantListView, TransplantDetailView, TransplantTypeListView
 from radar.api.views.users import UserDetailView, UserListView
 from radar.api.views.login import LoginView
 from radar.lib.auth import require_login
@@ -97,6 +99,8 @@ def create_app():
     # Plasmapheresis
     app.add_url_rule('/plasmapheresis', view_func=PlasmapheresisListView.as_view('plasmapheresis_list'))
     app.add_url_rule('/plasmapheresis/<int:id>', view_func=PlasmapheresisDetailView.as_view('plasmapheresis_detail'))
+    app.add_url_rule('/plasmapheresis-responses', view_func=PlasmapheresisResponseListView.as_view('plasmapheresis_response_list'))
+    app.add_url_rule('/plasmapheresis-no-of-exchanges', view_func=PlasmapheresisNoOfExchangesListView.as_view('plasmapheresis_no_of_exchanges_list'))
 
     # Posts
     app.add_url_rule('/posts', view_func=PostListView.as_view('post_list'))
@@ -109,6 +113,11 @@ def create_app():
     # Salt Wasting Clinical Features
     app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list'))
     app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetailView.as_view('salt_wasting_clinical_features_detail'))
+
+    # Transplants
+    app.add_url_rule('/transplants', view_func=TransplantListView.as_view('transplant_list'))
+    app.add_url_rule('/transplants/<int:id>', view_func=TransplantDetailView.as_view('transplant_detail'))
+    app.add_url_rule('/transplant-types', view_func=TransplantTypeListView.as_view('transplant_type_list'))
 
     # Users
     app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))

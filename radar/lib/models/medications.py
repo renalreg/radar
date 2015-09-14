@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin
 
-
 MEDICATION_ROUTES = OrderedDict([
     ('ORAL', 'Oral'),
     ('RECTAL', 'Rectal'),
