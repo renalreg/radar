@@ -6,6 +6,14 @@ from radar.lib.utils import is_date, date_to_datetime, datetime_to_date, is_date
 from radar.lib.validation.core import SkipField, ValidationError, pass_context, pass_call
 from radar.lib.validation.utils import validate_nhs_no
 
+USERNAME_REGEX = re.compile('^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
+USERNAME_MIN_LENGTH = 4
+USERNAME_MAX_LENGTH = 32
+
+PASSWORD_MIN_LENGTH = 8
+
+EMAIL_REGEX = re.compile(r'^.+@[^.@][^@]*\.[^.@]+$')
+
 
 def required():
     def f(value):
@@ -185,7 +193,9 @@ def min_length(min_value):
 
 def email_address():
     def f(value):
-        if not re.match(r'^.+@[^.@][^@]*\.[^.@]+$', value):
+        value = value.lower()
+
+        if not EMAIL_REGEX.match(value):
             raise ValidationError('Not a valid email address.')
 
         return value
@@ -210,5 +220,38 @@ def chi_no():
 def nhs_no():
     def f(value):
         return _nhs_no(value, 'NHS')
+
+    return f
+
+
+def username():
+    def f(value):
+        value = value.lower()
+
+        message = None
+
+        if not USERNAME_REGEX.match(value):
+            message = 'Not a valid username.'
+        elif len(value) < USERNAME_MIN_LENGTH:
+            message = 'Username too short.'
+        elif len(value) > USERNAME_MAX_LENGTH:
+            message = 'Username too long.'
+
+        # Old usernames are email addresses
+        if message is not None and not EMAIL_REGEX.match(value):
+            raise ValidationError(message)
+
+        return value
+
+    return f
+
+
+# TODO
+def password():
+    def f(value):
+        if len(value) < PASSWORD_MIN_LENGTH:
+            raise ValidationError('Password too short (must be at least %d characters).' % PASSWORD_MIN_LENGTH)
+
+        return value
 
     return f
