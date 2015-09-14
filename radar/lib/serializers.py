@@ -102,7 +102,11 @@ class StringField(Field):
         return value
 
     def to_data(self, value):
+        if value is None:
+            return None
+
         data = six.text_type(value)
+
         return data
 
 
@@ -133,12 +137,10 @@ class BooleanField(Field):
             self.fail('invalid')
 
     def to_data(self, value):
-        if value in self.TRUE_VALUES:
-            return True
-        elif value in self.FALSE_VALUES:
-            return False
-        else:
-            return bool(value)
+        if value is None:
+            return None
+
+        return bool(value)
 
 
 class IntegerField(Field):
@@ -163,6 +165,9 @@ class IntegerField(Field):
         return value
 
     def to_data(self, value):
+        if value is None:
+            return None
+
         return int(value)
 
 
@@ -183,6 +188,9 @@ class FloatField(Field):
         return value
 
     def to_data(self, value):
+        if value is None:
+            return None
+
         return float(value)
 
 
@@ -210,6 +218,9 @@ class DateField(Field):
         return value
 
     def to_data(self, value):
+        if value is None:
+            return None
+
         return value.isoformat()
 
 
@@ -220,6 +231,9 @@ class DateTimeField(Field):
     }
 
     def to_value(self, data):
+        if data is None:
+            return None
+
         if isinstance(data, date) and not isinstance(data, datetime):
             self.fail('date')
 
