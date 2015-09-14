@@ -4,7 +4,12 @@ from radar.lib.validation.validators import email_address
 
 
 def test_valid():
-    valid('foo@example.org')
+    assert valid('foo@example.org') == 'foo@example.org'
+
+
+def test_upper():
+    # Email addresses should be treated as case-insensitive (despite RFC 5321)
+    assert valid('FOO@EXAMPLE.ORG') == 'foo@example.org'
 
 
 def test_no_dot():
@@ -32,7 +37,7 @@ def test_no_user():
 
 
 def valid(value):
-    email_address()(value)
+    return email_address()(value)
 
 
 def invalid(value):
