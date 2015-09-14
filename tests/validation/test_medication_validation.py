@@ -32,82 +32,104 @@ def medication(patient):
     return medication
 
 
-def test_medication_valid(medication):
-    valid(medication)
+def test_valid(medication):
+    obj = valid(medication)
+    assert obj.from_date == date(2015, 1, 1)
+    assert obj.to_date == date(2015, 1, 2)
+    assert obj.name == 'Paracetamol'
+    assert obj.dose_quantity == 100
+    assert obj.dose_unit == 'MG'
+    assert obj.frequency == 'DAILY'
+    assert obj.route == 'ORAL'
 
 
-def test_medication_from_date_missing(medication):
+def test_from_date_missing(medication):
     medication.from_date = None
     invalid(medication)
 
 
-def test_medication_from_date_before_dob(medication):
+def test_from_date_before_dob(medication):
     medication.from_date = date(1999, 1, 1)
     invalid(medication)
 
 
-def test_medication_from_date_future(medication):
+def test_from_date_future(medication):
     medication.from_date = date.today() + timedelta(days=1)
     invalid(medication)
 
 
-def test_medication_to_date_missing(medication):
+def test_to_date_missing(medication):
     medication.to_date = None
     valid(medication)
 
 
-def test_medication_to_date_before_dob(medication):
+def test_to_date_before_dob(medication):
     medication.to_date = date(1999, 1, 1)
     invalid(medication)
 
 
-def test_medication_to_date_future(medication):
+def test_to_date_future(medication):
     medication.to_date = date.today() + timedelta(days=1)
     invalid(medication)
 
 
-def test_medication_to_date_before_from_date(medication):
+def test_to_date_before_from_date(medication):
     medication.to_date = medication.from_date - timedelta(days=1)
     invalid(medication)
 
 
-def test_medication_name_missing(medication):
+def test_name_missing(medication):
     medication.name = None
     invalid(medication)
 
 
-def test_medication_name_empty(medication):
+def test_name_empty(medication):
     medication.name = ''
     invalid(medication)
 
 
-def test_medication_dose_quantity_missing(medication):
+def test_dose_quantity_missing(medication):
     medication.dose_quantity = None
     invalid(medication)
 
 
-def test_medication_dose_quantity_negative(medication):
+def test_dose_quantity_negative(medication):
     medication.dose_quantity = -1
     invalid(medication)
 
 
-def test_medication_dose_unit_missing(medication):
+def test_dose_unit_missing(medication):
     medication.dose_quantity = None
     invalid(medication)
 
 
-def test_medication_frequency_missing(medication):
+def test_dose_unit_invalid(medication):
+    medication.dose_unit = 'FOO'
+    invalid(medication)
+
+
+def test_frequency_missing(medication):
     medication.frequency = None
     invalid(medication)
 
 
-def test_medication_route_missing(medication):
+def test_frequency_invalid(medication):
+    medication.frequency = 'FOO'
+    invalid(medication)
+
+
+def test_route_missing(medication):
     medication.route = None
     invalid(medication)
 
 
+def test_route_invalid(medication):
+    medication.route = 'FOO'
+    invalid(medication)
+
+
 def valid(medication):
-    validate(medication)
+    return validate(medication)
 
 
 def invalid(medication):
@@ -120,4 +142,5 @@ def validate(medication):
     ctx = {'user': User(is_admin=True)}
     validation.before_update(ctx, Medication())
     old_obj = validation.clone(medication)
-    validation.after_update(ctx, old_obj, medication)
+    obj = validation.after_update(ctx, old_obj, medication)
+    return obj

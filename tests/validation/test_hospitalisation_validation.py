@@ -23,55 +23,85 @@ def hospitalisation(patient):
     hospitalisation.patient = patient
     hospitalisation.date_of_admission = date(2015, 1, 1)
     hospitalisation.date_of_discharge = date(2015, 1, 2)
+    hospitalisation.reason_for_admission = 'Foo'
+    hospitalisation.comments = 'Bar'
     return hospitalisation
 
 
-def test_hospitalisation_valid(hospitalisation):
+def test_valid(hospitalisation):
     valid(hospitalisation)
+    assert hospitalisation.date_of_admission == date(2015, 1, 1)
+    assert hospitalisation.date_of_discharge == date(2015, 1, 2)
+    assert hospitalisation.reason_for_admission == 'Foo'
+    assert hospitalisation.comments == 'Bar'
 
 
-def test_hospitalisation_date_of_admission_missing(hospitalisation):
+def test_date_of_admission_missing(hospitalisation):
     hospitalisation.date_of_admission = None
     invalid(hospitalisation)
 
 
-def test_hospitalisation_date_of_admission_before_dob(hospitalisation):
+def test_date_of_admission_before_dob(hospitalisation):
     hospitalisation.date_of_admission = date(1999, 1, 1)
     invalid(hospitalisation)
 
 
-def test_hospitalisation_date_of_admission_future(hospitalisation):
+def test_date_of_admission_future(hospitalisation):
     hospitalisation.date_of_admission = date.today() + timedelta(days=1)
     invalid(hospitalisation)
 
 
-def test_hospitalisation_date_of_discharge_missing(hospitalisation):
+def test_date_of_discharge_missing(hospitalisation):
     hospitalisation.date_of_discharge = None
     valid(hospitalisation)
 
 
-def test_hospitalisation_date_of_discharge_before_dob(hospitalisation):
+def test_date_of_discharge_before_dob(hospitalisation):
     hospitalisation.date_of_discharge = date(1999, 1, 1)
     invalid(hospitalisation)
 
 
-def test_hospitalisation_date_of_discharge_future(hospitalisation):
+def test_date_of_discharge_future(hospitalisation):
     hospitalisation.date_of_discharge = date.today() + timedelta(days=1)
     invalid(hospitalisation)
 
 
-def test_hospitalisation_date_of_discharge_before_date_of_admission(hospitalisation):
+def test_date_of_discharge_before_date_of_admission(hospitalisation):
     hospitalisation.date_of_discharge = hospitalisation.date_of_admission - timedelta(days=1)
     invalid(hospitalisation)
 
 
+def test_reason_for_admission_missing(hospitalisation):
+    hospitalisation.reason_for_admission = None
+    valid(hospitalisation)
+
+
+def test_reason_for_admission_blank(hospitalisation):
+    hospitalisation.reason_for_admission = ''
+    obj = valid(hospitalisation)
+    assert obj.reason_for_admission is None
+
+
+def test_comments_missing(hospitalisation):
+    hospitalisation.comments = None
+    valid(hospitalisation)
+
+
+def test_comments_blank(hospitalisation):
+    hospitalisation.comments = ''
+    obj = valid(hospitalisation)
+    assert obj.comments is None
+
+
 def valid(hospitalisation):
-    validate(hospitalisation)
+    return validate(hospitalisation)
 
 
 def invalid(hospitalisation):
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValidationError) as e:
         validate(hospitalisation)
+
+    return e
 
 
 def validate(hospitalisation):
@@ -79,4 +109,5 @@ def validate(hospitalisation):
     ctx = {'user': User(is_admin=True)}
     validation.before_update(ctx, Hospitalisation())
     old_obj = validation.clone(hospitalisation)
-    validation.after_update(ctx, old_obj, hospitalisation)
+    obj = validation.after_update(ctx, old_obj, hospitalisation)
+    return obj

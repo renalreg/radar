@@ -26,26 +26,26 @@ def transplant(patient):
     return transplant
 
 
-def test_transplant_valid(transplant):
+def test_valid(transplant):
     valid(transplant)
 
 
-def test_transplant_transplant_date_missing(transplant):
+def test_transplant_date_missing(transplant):
     transplant.transplant_date = None
     invalid(transplant)
 
 
-def test_transplant_transplant_date_before_dob(transplant):
+def test_transplant_date_before_dob(transplant):
     transplant.transplant_date = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_transplant_transplant_date_future(transplant):
+def test_transplant_date_future(transplant):
     transplant.transplant_date = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_transplant_transplant_type_missing(transplant):
+def test_transplant_type_missing(transplant):
     transplant.transplant_type = None
     invalid(transplant)
 
