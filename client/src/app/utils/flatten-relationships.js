@@ -25,7 +25,7 @@
             newData[key] = flattenRelationships(value);
           } else if (angular.isObject(value)) {
             if (value.id !== undefined) {
-              newData[key + 'Id'] = value.id;
+              newData[key] = value.id;
             } else {
               newData[key] = flattenRelationships(value);
             }
