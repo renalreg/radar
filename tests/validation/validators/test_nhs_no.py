@@ -4,15 +4,35 @@ from radar.lib.validation.core import ValidationError
 from radar.lib.validation.validators import nhs_no
 
 
-def test_valid():
+def test_valid_int():
     # https://en.wikipedia.org/wiki/NHS_number
     assert valid(9434765919) == 9434765919
     assert valid(9434765870) == 9434765870
 
 
+def test_valid_string():
+    assert valid('9434765919') == '9434765919'
+    assert valid('9434765870') == '9434765870'
+
+
 def test_invalid():
     invalid(9434765918)
     invalid(9434765871)
+
+
+def test_invalid_string():
+    invalid('9434765918')
+    invalid('9434765871')
+
+
+def test_remove_spaces():
+    value = valid('943 476 5919')
+    assert value == '9434765919'
+
+
+def test_remove_leading_zeros():
+    value = valid('0009434765919')
+    assert value == '9434765919'
 
 
 def valid(value):
