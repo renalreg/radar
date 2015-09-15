@@ -579,7 +579,7 @@ class ModelSerializer(Serializer):
         sqltypes.Numeric: FloatField,
     }
 
-    class Meta:
+    class Meta(object):
         model_class = None
 
     def get_model_class(self):
@@ -704,6 +704,9 @@ class CodedValueSerializer(Serializer):
         return fields
 
     def to_data(self, value, **kwargs):
+        if value is None:
+            return None
+
         label = self.items[value]
         return super(CodedValueSerializer, self).to_data({
             'id': value,
@@ -718,7 +721,7 @@ class CodedValueSerializer(Serializer):
             except ValidationError as e:
                 raise ValidationError(e.errors['id'])
         else:
-            value = self.id.to_value(data)
+            value = self.fields['id'].to_value(data)
 
         return value
 

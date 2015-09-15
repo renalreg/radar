@@ -1,11 +1,12 @@
 from radar.lib.validation.cohorts import CohortValidationMixin
 from radar.lib.validation.core import Field, Validation, pass_call
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
 from radar.lib.validation.validators import required, optional, max_length, \
     none_if_blank, valid_date_for_patient
 
 
-class GeneticsValidation(PatientValidationMixin, CohortValidationMixin, Validation):
+class GeneticsValidation(PatientValidationMixin, CohortValidationMixin, MetaValidationMixin, Validation):
     sample_sent = Field([required()])
     sample_sent_date = Field([optional(), valid_date_for_patient()])
     laboratory = Field([none_if_blank(), optional(), max_length(100)])

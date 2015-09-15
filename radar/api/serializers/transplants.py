@@ -8,5 +8,5 @@ from radar.lib.serializers import ModelSerializer, CodedStringSerializer
 class TransplantSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
     transplant_type = CodedStringSerializer(TRANSPLANT_TYPES)
 
-    class Meta:
+    class Meta(object):
         model_class = Transplant

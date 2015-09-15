@@ -1,4 +1,6 @@
 from radar.lib.models.cohorts import *
+from radar.lib.models.common import *
+from radar.lib.models.comorbidities import *
 from radar.lib.models.diagnosis import *
 from radar.lib.models.dialysis import *
 from radar.lib.models.data_sources import *

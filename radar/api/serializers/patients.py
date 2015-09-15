@@ -1,6 +1,7 @@
 from radar.api.serializers.cohorts import CohortPatientSerializer, CohortReferenceField
 from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.organisations import OrganisationPatientSerializer, OrganisationReferenceField
+from radar.api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar.lib.serializers import ModelSerializer, ListField, StringField, DateField, IntegerField, \
     Serializer, BooleanField, ReferenceField
 from radar.lib.models import Patient
@@ -12,10 +13,11 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     date_of_birth = DateField()
     year_of_birth = IntegerField()
     gender = StringField()
+    ethnicity_code = EthnicityCodeReferenceField()
     organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients')
     cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients')
 
-    class Meta:
+    class Meta(object):
         model_class = Patient
         fields = ['id']
 

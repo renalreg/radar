@@ -30,6 +30,19 @@ def genetics(patient):
     return obj
 
 
+def test_valid(genetics):
+    obj = valid(genetics)
+    assert obj.sample_sent is True
+    assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
+    assert obj.laboratory == 'Test'
+    assert obj.laboratory_reference_number == '12345'
+    assert obj.results == 'foo\nbar\nbaz'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
+
+
 def test_patient_missing(genetics):
     genetics.patient = None
     invalid(genetics)
@@ -38,15 +51,6 @@ def test_patient_missing(genetics):
 def test_cohort_missing(genetics):
     genetics.cohort = None
     invalid(genetics)
-
-
-def test_sample_sent(genetics):
-    obj = valid(genetics)
-    assert obj.sample_sent is True
-    assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
-    assert obj.laboratory == 'Test'
-    assert obj.laboratory_reference_number == '12345'
-    assert obj.results == 'foo\nbar\nbaz'
 
 
 def test_sample_not_sent(genetics):

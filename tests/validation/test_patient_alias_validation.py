@@ -30,6 +30,10 @@ def test_valid(alias):
     obj = valid(alias)
     assert obj.first_name == 'JOHN'
     assert obj.last_name == 'SMITH'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(alias):

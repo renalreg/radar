@@ -4,5 +4,5 @@ from radar.lib.models import Post
 
 
 class PostSerializer(MetaSerializerMixin, ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = Post

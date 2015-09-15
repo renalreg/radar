@@ -8,7 +8,7 @@ class OrganisationReferenceField(ReferenceField):
 
 
 class BasicOrganisationSerializer(ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = Organisation
         exclude = ['organisation_id']
 
@@ -16,14 +16,14 @@ class BasicOrganisationSerializer(ModelSerializer):
 class DataSourceSerializer(ModelSerializer):
     organisation = BasicOrganisationSerializer()
 
-    class Meta:
+    class Meta(object):
         model_class = DataSource
 
 
 class OrganisationSerializer(ModelSerializer):
     data_sources = ListField(field=DataSourceSerializer())
 
-    class Meta:
+    class Meta(object):
         model_class = Organisation
 
 
@@ -36,7 +36,7 @@ class OrganisationUserSerializer(MetaSerializerMixin, ModelSerializer):
     has_recruit_patient_permission = BooleanField()
     organisation = OrganisationSerializer()
 
-    class Meta:
+    class Meta(object):
         model_class = OrganisationUser
         exclude = ['user_id', 'organisation_id']
 
@@ -44,6 +44,6 @@ class OrganisationUserSerializer(MetaSerializerMixin, ModelSerializer):
 class OrganisationPatientSerializer(MetaSerializerMixin, ModelSerializer):
     organisation = OrganisationSerializer()
 
-    class Meta:
+    class Meta(object):
         model_class = OrganisationPatient
         exclude = ['patient_id', 'organisation_id']

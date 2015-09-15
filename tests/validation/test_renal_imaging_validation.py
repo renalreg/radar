@@ -60,6 +60,10 @@ def test_valid(renal_imaging):
     assert obj.left_nephrocalcinosis is True
     assert obj.left_nephrolithiasis is True
     assert obj.left_other_malformation == 'bar'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(renal_imaging):

@@ -6,7 +6,7 @@ from radar.lib.models import DialysisType, Dialysis
 
 
 class DialysisTypeSerializer(ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = DialysisType
 
 
@@ -18,6 +18,6 @@ class DialysisTypeReferenceField(ReferenceField):
 class DialysisSerializer(MetaSerializerMixin, PatientSerializerMixin, DataSourceSerializerMixin, ModelSerializer):
     dialysis_type = DialysisTypeReferenceField()
 
-    class Meta:
+    class Meta(object):
         model_class = Dialysis
         exclude = ['dialysis_type_id']

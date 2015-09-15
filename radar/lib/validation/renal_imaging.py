@@ -1,12 +1,13 @@
 from radar.lib.models import RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
 from radar.lib.validation.core import Validation, Field, pass_call
 from radar.lib.validation.data_sources import DataSourceValidationMixin
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
 from radar.lib.validation.validators import required, valid_date_for_patient, range_, optional, in_, none_if_blank, \
     max_length
 
 
-class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
+class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date = Field([required(), valid_date_for_patient()])
     imaging_type = Field([required(), in_(RENAL_IMAGING_TYPES.keys())])
 

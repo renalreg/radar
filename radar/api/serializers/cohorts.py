@@ -3,35 +3,40 @@ from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
 from radar.lib.models import CohortFeature, Cohort, CohortPatient
 
 
+class BasicCohortSerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Cohort
+
+
 class CohortReferenceField(ReferenceField):
     model_class = Cohort
+    serializer_class = BasicCohortSerializer
 
 
 class CohortFeatureSerializer(ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = CohortFeature
 
 
 class CohortSerializer(MetaSerializerMixin, ModelSerializer):
     features = ListField(field=CohortFeatureSerializer(), source='cohort_features')
 
-    class Meta:
+    class Meta(object):
         model_class = Cohort
 
 
 class CohortPatientSerializer(MetaSerializerMixin, ModelSerializer):
     cohort = CohortSerializer()
 
-    class Meta:
+    class Meta(object):
         model_class = CohortPatient
         exclude = ['patient_id', 'cohort_id']
 
 
-class BasicCohortSerializer(ModelSerializer):
-    class Meta:
-        model_class = Cohort
-
-
 class CohortSerializerMixin(object):
-    cohort = BasicCohortSerializer(read_only=True)
-    cohort_id = CohortReferenceField()
+    cohort = CohortReferenceField()
+
+    def get_model_exclude(self):
+        attrs = super(CohortSerializerMixin, self).get_model_exclude()
+        attrs.add('cohort_id')
+        return attrs

@@ -10,5 +10,5 @@ class MedicationSerializer(MetaSerializerMixin, PatientSerializerMixin, DataSour
     frequency = CodedStringSerializer(MEDICATION_FREQUENCIES)
     route = CodedStringSerializer(MEDICATION_ROUTES)
 
-    class Meta:
+    class Meta(object):
         model_class = Medication

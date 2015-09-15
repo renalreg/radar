@@ -1,25 +1,36 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from radar.lib.models.common import ModifiedMixin, CreatedMixin
 from radar.lib.database import db
+from radar.lib.models import OrganisationUser, CohortUser
+from radar.lib.models.common import ModifiedDateMixin, CreatedDateMixin
 
 
-class UserCreatedMixin(CreatedMixin):
+class UserCreatedUserMixin(object):
+    @declared_attr
+    def created_user_id(cls):
+        # Nullable as it is a self-reference
+        return Column(Integer, ForeignKey('users.id'), nullable=True)
+
     @declared_attr
     def created_user(cls):
         return relationship('User', primaryjoin="User.id == %s.created_user_id" % cls.__name__, remote_side='User.id', post_update=True)
 
 
-class UserModifiedMixin(ModifiedMixin):
+class UserModifiedUserMixin(object):
+    @declared_attr
+    def modified_user_id(cls):
+        # Nullable as it is a self-reference
+        return Column(Integer, ForeignKey('users.id'), nullable=True)
+
     @declared_attr
     def modified_user(cls):
         return relationship('User', primaryjoin="User.id == %s.modified_user_id" % cls.__name__, remote_side='User.id', post_update=True)
 
 
-class User(db.Model, UserCreatedMixin, UserModifiedMixin):
+class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMixin, ModifiedDateMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -35,8 +46,12 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
 
     force_password_change = Column(Boolean, default=False, nullable=False, server_default='0')
 
-    organisation_users = relationship('OrganisationUser', back_populates='user')
-    cohort_users = relationship('CohortUser', back_populates='user')
+    organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
+    cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self._password = None
 
     @property
     def organisations(self):
@@ -46,13 +61,19 @@ class User(db.Model, UserCreatedMixin, UserModifiedMixin):
     def cohorts(self):
         return [x.cohort for x in self.cohort_users]
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        self._password = value
+        self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
         self.force_password_change = False
 
-    def set_initial_password(self, password):
-        self.set_password(password)
+    def set_initial_password(self, value):
+        self.password = value
         self.force_password_change = True
 
     def check_password(self, password):

@@ -2,12 +2,13 @@ from radar.lib.organisations import is_chi_organisation, is_nhs_organisation, is
     is_handc_organisation, is_radar_organisation
 from radar.lib.validation.core import Validation, pass_call, ValidationError, Field
 from radar.lib.validation.data_sources import DataSourceValidationMixin
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
 from radar.lib.validation.validators import required, max_length, not_empty, nhs_no, chi_no, ukrr_no, \
     normalise_whitespace, handc_no
 
 
-class PatientNumberValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
+class PatientNumberValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     organisation = Field([required()])
     number = Field([not_empty(), normalise_whitespace(), max_length(50)])
 

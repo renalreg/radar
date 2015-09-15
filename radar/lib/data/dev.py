@@ -2,17 +2,22 @@ import random
 from datetime import date, datetime
 
 from jinja2.utils import generate_lorem_ipsum
+from sqlalchemy import func
 
 from radar.lib.data import create_initial_data
 from radar.lib.data.dev_constants import MEDICATION_NAMES
 from radar.lib.data.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
+from radar.lib.data.validation import validate_user, validate_post, validate_patient_demographics, validate_dialysis, \
+    validate_medication, validate_transplant, validate_hospitalisation, validate_plasmapheresis, validate_renal_imaging, \
+    validate_patient, validate_organisation_patient, validate_cohort_patient, validate_result_group
 from radar.lib.data_sources import get_radar_data_source
 from radar.lib.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, Result, ResultGroup, ResultGroupDefinition, EthnicityCode, MEDICATION_DOSE_UNITS, \
     MEDICATION_FREQUENCIES, MEDICATION_ROUTES, TRANSPLANT_TYPES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
-    RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, DataSource, OrganisationPatient, CohortPatient
+    RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, DataSource, OrganisationPatient, CohortPatient, \
+    PLASMAPHERESIS_NO_OF_EXCHANGES
 from radar.lib.database import db
 from radar.lib.models.cohorts import Cohort
 from radar.lib.models.posts import Post
@@ -31,13 +36,21 @@ def create_users(n):
             x + 1
         )
         user.email = '%s@example.org' % user.username
-        user.set_password('password')
+        user.password = 'password'
+        user = validate_user(user)
         db.session.add(user)
 
 
 def create_admin_user():
-    admin = User(username='admin', email='admin@example.org', is_admin=True)
-    admin.set_password('password')
+    admin = User()
+    admin.username = 'admin'
+    admin.email = 'admin@example.org'
+    admin.is_admin = True
+    admin.password = 'password'
+    admin.created_user = admin
+    admin.modified_user = admin
+    admin.created_date = func.now()
+    admin.modified_date = func.now()
     db.session.add(admin)
 
 
@@ -49,6 +62,7 @@ def create_posts(n):
         post.title = '%s Newsletter' % d.strftime('%b %Y')
         post.body = generate_lorem_ipsum(n=3, html=False)
         post.published_date = d
+        post = validate_post(post)
         db.session.add(post)
 
 
@@ -58,15 +72,16 @@ def create_result_groups_f():
     def f(patient, data_source, n):
         for result_group_definition in result_group_definitions:
             for _ in range(n):
-                result_group = ResultGroup(
-                    patient=patient,
-                    data_source=data_source,
-                    result_group_definition=result_group_definition,
-                    date=random_datetime(datetime(2000, 1, 1), datetime.now()),
-                )
+                result_group = ResultGroup()
+                result_group.patient = patient
+                result_group.data_source = data_source
+                result_group.result_group_definition = result_group_definition
+                result_group.date = random_datetime(datetime(2000, 1, 1), datetime.now())
 
                 if result_group_definition.pre_post:
                     result_group.pre_post = 'pre'  # TODO random
+
+                result_group = validate_result_group(result_group)
 
                 db.session.add(result_group)
 
@@ -113,6 +128,8 @@ def create_demographics_f():
         elif r > 0.1:
             d.nhs_no = generate_nhs_no()
 
+        d = validate_patient_demographics(d)
+
         db.session.add(d)
 
     return f
@@ -132,6 +149,9 @@ def create_dialysis_f():
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
 
             dialysis.dialysis_type = random.choice(dialysis_types)
+
+            dialysis = validate_dialysis(dialysis)
+
             db.session.add(dialysis)
 
     return f
@@ -150,9 +170,12 @@ def create_medications_f():
 
             medication.name = random.choice(MEDICATION_NAMES)
             medication.dose_quantity = random.randint(1, 10)
-            medication.dose_unit = random.choice(MEDICATION_DOSE_UNITS)
-            medication.frequency = random.choice(MEDICATION_FREQUENCIES)
-            medication.route = random.choice(MEDICATION_ROUTES)
+            medication.dose_unit = random.choice(MEDICATION_DOSE_UNITS.keys())
+            medication.frequency = random.choice(MEDICATION_FREQUENCIES.keys())
+            medication.route = random.choice(MEDICATION_ROUTES.keys())
+
+            medication = validate_medication(medication)
+
             db.session.add(medication)
 
     return f
@@ -165,7 +188,7 @@ def create_transplants_f():
             transplant.patient = patient
             transplant.data_source = data_source
             transplant.transplant_date = random_date(date(2000, 1, 1), date.today())
-            transplant.transplant_type = random.choice(TRANSPLANT_TYPES)
+            transplant.transplant_type = random.choice(TRANSPLANT_TYPES.keys())
             transplant.recurred = random_bool()
 
             if transplant.recurred:
@@ -173,6 +196,8 @@ def create_transplants_f():
 
             if random.random() > 0.75:
                 transplant.date_failed = random_date(transplant.transplant_date, date.today())
+
+            transplant = validate_transplant(transplant)
 
             db.session.add(transplant)
 
@@ -188,6 +213,9 @@ def create_hospitalisations_f():
             hospitalisation.date_of_admission = random_date(date(2000, 1, 1), date.today())
             hospitalisation.date_of_discharge = random_date(hospitalisation.date_of_admission, date.today())
             hospitalisation.reason_for_admission = 'Test'
+
+            hospitalisation = validate_hospitalisation(hospitalisation)
+
             db.session.add(hospitalisation)
 
     return f
@@ -204,8 +232,11 @@ def create_plasmapheresis_f():
             if random.random() > 0.5:
                 plasmapheresis.to_date = random_date(plasmapheresis.from_date, date.today())
 
-            plasmapheresis.no_of_exchanges = random.randint(1, 10)
-            plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES)
+            plasmapheresis.no_of_exchanges = random.choice(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())
+            plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES.keys())
+
+            plasmapheresis = validate_plasmapheresis(plasmapheresis)
+
             db.session.add(plasmapheresis)
 
     return f
@@ -218,12 +249,12 @@ def create_renal_imaging_f():
             renal_imaging.patient = patient
             renal_imaging.data_source = data_source
             renal_imaging.date = random_date(date(2000, 1, 1), date.today())
-            renal_imaging.imaging_type = random.choice(RENAL_IMAGING_TYPES)
+            renal_imaging.imaging_type = random.choice(RENAL_IMAGING_TYPES.keys())
             renal_imaging.right_present = random_bool()
             renal_imaging.left_present = random_bool()
 
             if renal_imaging.right_present:
-                renal_imaging.right_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES)
+                renal_imaging.right_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES.keys())
                 renal_imaging.right_length = random.randint(11, 14)
                 renal_imaging.right_cysts = random_bool()
                 renal_imaging.right_calcification = random_bool()
@@ -233,7 +264,7 @@ def create_renal_imaging_f():
                     renal_imaging.right_nephrolithiasis = random_bool()
 
             if renal_imaging.left_present:
-                renal_imaging.left_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES)
+                renal_imaging.left_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES.keys())
                 renal_imaging.left_length = random.randint(11, 14)
                 renal_imaging.left_cysts = random_bool()
                 renal_imaging.left_calcification = random_bool()
@@ -241,6 +272,8 @@ def create_renal_imaging_f():
                 if renal_imaging.left_calcification:
                     renal_imaging.left_nephrocalcinosis = random_bool()
                     renal_imaging.left_nephrolithiasis = random_bool()
+
+            renal_imaging = validate_renal_imaging(renal_imaging)
 
             db.session.add(renal_imaging)
 
@@ -267,6 +300,9 @@ def create_patients(n):
     for _ in range(n):
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
+
+        patient = validate_patient(patient)
+
         db.session.add(patient)
 
         gender = generate_gender()
@@ -278,6 +314,7 @@ def create_patients(n):
             organisation_patient.organisation = data_source.organisation
             organisation_patient.patient = patient
             organisation_patient.created_date = random_date(patient.recruited_date, date.today())
+            organisation_patient = validate_organisation_patient(organisation_patient)
             db.session.add(organisation_patient)
 
             create_demographics(patient, data_source, gender)
@@ -293,6 +330,7 @@ def create_patients(n):
         cohort_patient.cohort = random.choice(cohorts)
         cohort_patient.patient = patient
         cohort_patient.created_date = random_date(patient.recruited_date, date.today())
+        cohort_patient = validate_cohort_patient(cohort_patient)
         db.session.add(cohort_patient)
 
 
@@ -300,10 +338,10 @@ def create_data(patients_n):
     # Always generate the same "random" data
     random.seed(0)
 
+    create_admin_user()
+
     create_initial_data()
 
-    create_admin_user()
     create_users(10)
     create_posts(10)
-
     create_patients(patients_n)

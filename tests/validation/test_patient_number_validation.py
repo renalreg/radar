@@ -27,6 +27,10 @@ def test_valid(number):
     obj = valid(number)
     assert obj.organisation == organisation
     assert obj.number == '123'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(number):

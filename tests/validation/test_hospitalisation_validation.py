@@ -29,11 +29,15 @@ def hospitalisation(patient):
 
 
 def test_valid(hospitalisation):
-    valid(hospitalisation)
-    assert hospitalisation.date_of_admission == date(2015, 1, 1)
-    assert hospitalisation.date_of_discharge == date(2015, 1, 2)
-    assert hospitalisation.reason_for_admission == 'Foo'
-    assert hospitalisation.comments == 'Bar'
+    obj = valid(hospitalisation)
+    assert obj.date_of_admission == date(2015, 1, 1)
+    assert obj.date_of_discharge == date(2015, 1, 2)
+    assert obj.reason_for_admission == 'Foo'
+    assert obj.comments == 'Bar'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(hospitalisation):

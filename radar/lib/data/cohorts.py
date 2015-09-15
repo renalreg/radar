@@ -1,3 +1,4 @@
+from radar.lib.data.validation import validate_cohort
 from radar.lib.database import db
 from radar.lib.models import Cohort, CohortFeature, ResultGroupDefinition, CohortResultGroupDefinition
 
@@ -45,6 +46,7 @@ COHORTS = [
 def create_cohorts():
     for x in COHORTS:
         cohort = Cohort(name=x['name'])
+        cohort = validate_cohort(cohort)
         db.session.add(cohort)
 
         for name, weight in x['features']:

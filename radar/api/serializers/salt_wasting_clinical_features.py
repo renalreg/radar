@@ -4,5 +4,5 @@ from radar.lib.models import SaltWastingClinicalFeatures
 
 
 class SaltWastingClinicalFeaturesSerializer(MetaSerializerMixin, ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = SaltWastingClinicalFeatures
