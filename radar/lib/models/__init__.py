@@ -10,6 +10,10 @@ from radar.lib.models.organisations import *
 from radar.lib.models.posts import *
 from radar.lib.models.pathology import *
 from radar.lib.models.patients import *
+from radar.lib.models.patient_addresses import *
+from radar.lib.models.patient_aliases import *
+from radar.lib.models.patient_demographics import *
+from radar.lib.models.patient_numbers import *
 from radar.lib.models.plasmapheresis import *
 from radar.lib.models.renal_imaging import *
 from radar.lib.models.salt_wasting import *

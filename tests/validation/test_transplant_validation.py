@@ -18,13 +18,13 @@ def patient():
 
 @pytest.fixture
 def transplant(patient):
-    transplant = Transplant()
-    transplant.data_source = DataSource()
-    transplant.patient = patient
-    transplant.transplant_date = date(2015, 1, 1)
-    transplant.transplant_type = 'LIVE'
-    transplant.date_failed = date(2015, 1, 2)
-    return transplant
+    obj = Transplant()
+    obj.data_source = DataSource()
+    obj.patient = patient
+    obj.transplant_date = date(2015, 1, 1)
+    obj.transplant_type = 'LIVE'
+    obj.date_failed = date(2015, 1, 2)
+    return obj
 
 
 def test_valid(transplant):
@@ -32,6 +32,16 @@ def test_valid(transplant):
     assert obj.transplant_date == date(2015, 1, 1)
     assert obj.transplant_type == 'LIVE'
     assert obj.date_failed == date(2015, 1, 2)
+
+
+def test_patient_missing(transplant):
+    transplant.patient = None
+    invalid(transplant)
+
+
+def test_data_source_missing(transplant):
+    transplant.data_source = None
+    invalid(transplant)
 
 
 def test_transplant_date_missing(transplant):

@@ -37,13 +37,13 @@ class ModifiedDateField(Field):
 
 
 class CreatedValidationMixin(object):
-    created_user = CreatedUserField(chain=[required()])
-    created_date = CreatedDateField(chain=[required()])
+    created_user = CreatedUserField([required()])
+    created_date = CreatedDateField([required()])
 
 
 class ModifiedValidationMixin(object):
-    modified_user = ModifiedUserField(chain=[required()])
-    modified_date = ModifiedDateField(chain=[required()])
+    modified_user = ModifiedUserField([required()])
+    modified_date = ModifiedDateField([required()])
 
 
 class MetaValidationMixin(CreatedValidationMixin, ModifiedValidationMixin):

@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, func
+from sqlalchemy import Integer, Column, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 

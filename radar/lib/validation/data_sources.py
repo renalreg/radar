@@ -32,4 +32,4 @@ class DataSourceField(Field):
 
 
 class DataSourceValidationMixin(object):
-    data_source = DataSourceField(chain=[required()])
+    data_source = DataSourceField([required()])

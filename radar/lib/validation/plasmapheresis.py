@@ -6,10 +6,10 @@ from radar.lib.validation.validators import valid_date_for_patient, required, op
 
 
 class PlasmapheresisValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
-    from_date = Field(chain=[required(), valid_date_for_patient()])
-    to_date = Field(chain=[optional(), valid_date_for_patient()])
-    no_of_exchanges = Field(chain=[optional(), in_(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())])
-    response = Field(chain=[optional(), in_(PLASMAPHERESIS_RESPONSES.keys())])
+    from_date = Field([required(), valid_date_for_patient()])
+    to_date = Field([optional(), valid_date_for_patient()])
+    no_of_exchanges = Field([optional(), in_(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())])
+    response = Field([optional(), in_(PLASMAPHERESIS_RESPONSES.keys())])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):
