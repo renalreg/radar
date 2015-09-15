@@ -482,6 +482,7 @@ class Serializer(Field):
 
         for field_name, field in fields.items():
             field.bind(field_name)
+            setattr(self, field_name, field)
 
         return fields
 
@@ -717,7 +718,7 @@ class CodedValueSerializer(Serializer):
             except ValidationError as e:
                 raise ValidationError(e.errors['id'])
         else:
-            value = self.fields['id'].to_value(data)
+            value = self.id.to_value(data)
 
         return value
 
