@@ -1,27 +1,28 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, String, select, Date, DateTime, Boolean, join, \
-    UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, select, DateTime, Boolean, join, Text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.lib.models.common import MetaModelMixin, StringLookupTable
+from radar.lib.models import MetaModelMixin
+from radar.lib.models.patient_demographics import PatientDemographics
 
 
-class Patient(db.Model):
+class Patient(db.Model, MetaModelMixin):
     __tablename__ = 'patients'
 
     id = Column(Integer, primary_key=True)
 
     # TODO move
-    recruited_user_id = Column(Integer, ForeignKey('users.id'))
-    recruited_user = relationship('User')
-    recruited_date = Column(DateTime(timezone=False), default=datetime.now)
-    recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'))
-    recruited_organisation = relationship('Organisation')
+    # recruited_user_id = Column(Integer, ForeignKey('users.id'))
+    # recruited_user = relationship('User')
+    # recruited_date = Column(DateTime(timezone=False), default=datetime.now)
+    # recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'))
+    # recruited_organisation = relationship('Organisation')
 
     is_active = Column(Boolean, nullable=False, default=True, server_default='1')
+    comments = Column(Text)
 
     organisation_patients = relationship('OrganisationPatient')
     cohort_patients = relationship('CohortPatient')
@@ -35,8 +36,8 @@ class Patient(db.Model):
         return [x.organisation for x in self.organisation_patients]
 
     @property
-    def disease_groups(self):
-        return [x.cohort for x in self.disease_group_patients]
+    def cohorts(self):
+        return [x.cohort for x in self.cohort_patients]
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
@@ -115,105 +116,8 @@ class Patient(db.Model):
 
         for demographics in self.patient_demographics:
             date_of_birth = demographics.date_of_birth
+
             if date_of_birth is not None and (earliest_date_of_birth is None or date_of_birth < earliest_date_of_birth):
                 earliest_date_of_birth = date_of_birth
 
         return earliest_date_of_birth
-
-
-class PatientDemographics(db.Model, MetaModelMixin):
-    __tablename__ = 'patient_demographics'
-
-    id = Column(Integer, primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
-
-    first_name = Column(String)
-    last_name = Column(String)
-    date_of_birth = Column(Date)
-    date_of_death = Column(Date)
-    gender = Column(String)
-
-    ethnicity_code_id = Column(String, ForeignKey('ethnicity_codes.id'))
-    ethnicity_code = relationship('EthnicityCode')
-
-    home_number = Column(String)
-    work_number = Column(String)
-    mobile_number = Column(String)
-    email_address = Column(String)
-
-    __table_args__ = (
-        UniqueConstraint('patient_id', 'data_source_id'),
-    )
-
-
-class EthnicityCode(StringLookupTable):
-    __tablename__ = 'ethnicity_codes'
-
-
-class PatientAlias(db.Model, MetaModelMixin):
-    __tablename__ = 'patient_aliases'
-
-    id = Column(Integer, primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
-
-    first_name = Column(String)
-    last_name = Column(String)
-
-
-class PatientAddress(db.Model, MetaModelMixin):
-    __tablename__ = 'patient_addresses'
-
-    id = Column(Integer, primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
-
-    from_date = Column(Date)
-    to_date = Column(Date)
-    address_line_1 = Column(String)
-    address_line_2 = Column(String)
-    address_line_3 = Column(String)
-    postcode = Column(String)
-
-    @property
-    def full_address(self):
-        parts = []
-
-        parts.extend([
-            self.address_line_1,
-            self.address_line_2,
-            self.address_line_3,
-            self.postcode,
-        ])
-
-        return "\n".join(x for x in parts if x)
-
-
-class PatientNumber(db.Model, MetaModelMixin):
-    __tablename__ = 'patient_numbers'
-
-    id = Column(Integer, primary_key=True)
-
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
-
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
-
-    organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
-    organisation = relationship('Organisation')
-
-    number = Column(String, nullable=False)

@@ -6,11 +6,11 @@ from radar.lib.validation.validators import required, optional, max_length, \
 
 
 class GeneticsValidation(PatientValidationMixin, CohortValidationMixin, Validation):
-    sample_sent = Field(chain=[required()])
-    sample_sent_date = Field(chain=[optional(), valid_date_for_patient()])
-    laboratory = Field(chain=[none_if_blank(), optional(), max_length(100)])
-    laboratory_reference_number = Field(chain=[none_if_blank(), optional(), max_length(100)])
-    results = Field(chain=[none_if_blank(), optional(), max_length(10000)])
+    sample_sent = Field([required()])
+    sample_sent_date = Field([optional(), valid_date_for_patient()])
+    laboratory = Field([none_if_blank(), optional(), max_length(100)])
+    laboratory_reference_number = Field([none_if_blank(), optional(), max_length(100)])
+    results = Field([none_if_blank(), optional(), max_length(10000)])
 
     @pass_call
     def pre_validate(self, call, obj):

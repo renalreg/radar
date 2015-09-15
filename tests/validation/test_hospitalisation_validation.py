@@ -18,14 +18,14 @@ def patient():
 
 @pytest.fixture
 def hospitalisation(patient):
-    hospitalisation = Hospitalisation()
-    hospitalisation.data_source = DataSource()
-    hospitalisation.patient = patient
-    hospitalisation.date_of_admission = date(2015, 1, 1)
-    hospitalisation.date_of_discharge = date(2015, 1, 2)
-    hospitalisation.reason_for_admission = 'Foo'
-    hospitalisation.comments = 'Bar'
-    return hospitalisation
+    obj = Hospitalisation()
+    obj.data_source = DataSource()
+    obj.patient = patient
+    obj.date_of_admission = date(2015, 1, 1)
+    obj.date_of_discharge = date(2015, 1, 2)
+    obj.reason_for_admission = 'Foo'
+    obj.comments = 'Bar'
+    return obj
 
 
 def test_valid(hospitalisation):
@@ -34,6 +34,16 @@ def test_valid(hospitalisation):
     assert hospitalisation.date_of_discharge == date(2015, 1, 2)
     assert hospitalisation.reason_for_admission == 'Foo'
     assert hospitalisation.comments == 'Bar'
+
+
+def test_patient_missing(hospitalisation):
+    hospitalisation.patient = None
+    invalid(hospitalisation)
+
+
+def test_data_source_missing(hospitalisation):
+    hospitalisation.data_source = None
+    invalid(hospitalisation)
 
 
 def test_date_of_admission_missing(hospitalisation):

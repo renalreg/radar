@@ -5,24 +5,24 @@ from radar.lib.validation.validators import required, valid_date_for_patient, ra
 
 
 class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
-    data = Field(chain=[required(), valid_date_for_patient()])
-    imaging_type = Field(chain=[required()])
+    data = Field([required(), valid_date_for_patient()])
+    imaging_type = Field([required()])
 
-    right_present = Field(chain=[required()])
-    right_type = Field(chain=[required()])  # TODO in_
-    right_length = Field(chain=[optional(), range_(0, 100)])  # TODO range
-    right_cysts = Field(chain=[optional()])
-    right_calcification = Field(chain=[optional()])
-    right_nephrocalcinosis = Field(chain=[optional()])
-    right_nephrolithiasis = Field(chain=[optional()])
+    right_present = Field([required()])
+    right_type = Field([required()])  # TODO in_
+    right_length = Field([optional(), range_(0, 100)])  # TODO range
+    right_cysts = Field([optional()])
+    right_calcification = Field([optional()])
+    right_nephrocalcinosis = Field([optional()])
+    right_nephrolithiasis = Field([optional()])
 
-    left_present = Field(chain=[required()])
-    left_type = Field(chain=[required()])  # TODO in_
-    left_length = Field(chain=[optional(), range_(0, 100)])  # TODO range
-    left_cysts = Field(chain=[optional()])
-    left_calcification = Field(chain=[optional()])
-    left_nephrocalcinosis = Field(chain=[optional()])
-    left_nephrolithiasis = Field(chain=[optional()])
+    left_present = Field([required()])
+    left_type = Field([required()])  # TODO in_
+    left_length = Field([optional(), range_(0, 100)])  # TODO range
+    left_cysts = Field([optional()])
+    left_calcification = Field([optional()])
+    left_nephrocalcinosis = Field([optional()])
+    left_nephrolithiasis = Field([optional()])
 
     def pre_validate(self, obj):
         if not obj.right_present:

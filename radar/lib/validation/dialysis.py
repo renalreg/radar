@@ -7,9 +7,9 @@ from radar.lib.validation.validators import required, optional, \
 
 
 class DialysisValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
-    from_date = Field(chain=[required(), valid_date_for_patient()])
-    to_date = Field(chain=[optional(), valid_date_for_patient()])
-    dialysis_type = Field(chain=[required()])
+    from_date = Field([required(), valid_date_for_patient()])
+    to_date = Field([optional(), valid_date_for_patient()])
+    dialysis_type = Field([required()])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):

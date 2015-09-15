@@ -30,5 +30,3 @@ setup(
         'manage.py',
     ],
 )
-
-

@@ -6,9 +6,9 @@ from radar.lib.validation.validators import required, valid_date_for_patient, op
 
 
 class TransplantValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
-    transplant_date = Field(chain=[required(), valid_date_for_patient()])
-    transplant_type = Field(chain=[required(), in_(TRANSPLANT_TYPES.keys())])
-    date_failed = Field(chain=[optional(), valid_date_for_patient()])
+    transplant_date = Field([required(), valid_date_for_patient()])
+    transplant_type = Field([required(), in_(TRANSPLANT_TYPES.keys())])
+    date_failed = Field([optional(), valid_date_for_patient()])
 
     @pass_new_obj
     def validate_date_failed(self, obj, date_failed):

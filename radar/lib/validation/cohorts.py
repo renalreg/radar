@@ -3,4 +3,4 @@ from radar.lib.validation.validators import required
 
 
 class CohortValidationMixin(object):
-    cohort = Field(chain=[required()])
+    cohort = Field([required()])

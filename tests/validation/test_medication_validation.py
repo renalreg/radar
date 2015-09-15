@@ -19,17 +19,17 @@ def patient():
 
 @pytest.fixture
 def medication(patient):
-    medication = Medication()
-    medication.data_source = DataSource()
-    medication.patient = patient
-    medication.from_date = date(2015, 1, 1)
-    medication.to_date = date(2015, 1, 2)
-    medication.name = 'Paracetamol'
-    medication.dose_quantity = 100
-    medication.dose_unit = 'MG'
-    medication.frequency = 'DAILY'
-    medication.route = 'ORAL'
-    return medication
+    obj = Medication()
+    obj.data_source = DataSource()
+    obj.patient = patient
+    obj.from_date = date(2015, 1, 1)
+    obj.to_date = date(2015, 1, 2)
+    obj.name = 'Paracetamol'
+    obj.dose_quantity = 100
+    obj.dose_unit = 'MG'
+    obj.frequency = 'DAILY'
+    obj.route = 'ORAL'
+    return obj
 
 
 def test_valid(medication):
@@ -41,6 +41,16 @@ def test_valid(medication):
     assert obj.dose_unit == 'MG'
     assert obj.frequency == 'DAILY'
     assert obj.route == 'ORAL'
+
+
+def test_patient_missing(medication):
+    medication.patient = None
+    invalid(medication)
+
+
+def test_data_source_missing(medication):
+    medication.data_source = None
+    invalid(medication)
 
 
 def test_from_date_missing(medication):

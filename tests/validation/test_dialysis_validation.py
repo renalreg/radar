@@ -18,13 +18,13 @@ def patient():
 
 @pytest.fixture
 def dialysis(patient):
-    dialysis = Dialysis()
-    dialysis.data_source = DataSource()
-    dialysis.patient = patient
-    dialysis.from_date = date(2015, 1, 1)
-    dialysis.to_date = date(2015, 1, 2)
-    dialysis.dialysis_type = DialysisType(id=1)
-    return dialysis
+    obj = Dialysis()
+    obj.data_source = DataSource()
+    obj.patient = patient
+    obj.from_date = date(2015, 1, 1)
+    obj.to_date = date(2015, 1, 2)
+    obj.dialysis_type = DialysisType(id=1)
+    return obj
 
 
 def test_valid(dialysis):
@@ -32,6 +32,16 @@ def test_valid(dialysis):
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
     assert obj.dialysis_type.id == 1
+
+
+def test_patient_missing(dialysis):
+    dialysis.patient = None
+    invalid(dialysis)
+
+
+def test_data_source_missing(dialysis):
+    dialysis.data_source = None
+    invalid(dialysis)
 
 
 def test_from_date_missing(dialysis):

@@ -18,7 +18,7 @@ class PatientField(Field):
 
 
 class PatientValidationMixin(object):
-    patient = PatientField(chain=[required()])
+    patient = PatientField([required()])
     created_date = Field()
 
     @pass_new_obj

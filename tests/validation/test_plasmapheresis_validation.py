@@ -18,14 +18,14 @@ def patient():
 
 @pytest.fixture
 def plasmapheresis(patient):
-    plasmapheresis = Plasmapheresis()
-    plasmapheresis.data_source = DataSource()
-    plasmapheresis.patient = patient
-    plasmapheresis.from_date = date(2015, 1, 1)
-    plasmapheresis.to_date = date(2015, 1, 2)
-    plasmapheresis.no_of_exchanges = '1/1D'
-    plasmapheresis.response = 'COMPLETE'
-    return plasmapheresis
+    obj = Plasmapheresis()
+    obj.data_source = DataSource()
+    obj.patient = patient
+    obj.from_date = date(2015, 1, 1)
+    obj.to_date = date(2015, 1, 2)
+    obj.no_of_exchanges = '1/1D'
+    obj.response = 'COMPLETE'
+    return obj
 
 
 def test_valid(plasmapheresis):
@@ -34,6 +34,16 @@ def test_valid(plasmapheresis):
     assert obj.to_date == date(2015, 1, 2)
     assert obj.no_of_exchanges == '1/1D'
     assert obj.response == 'COMPLETE'
+
+
+def test_patient_missing(plasmapheresis):
+    plasmapheresis.patient = None
+    invalid(plasmapheresis)
+
+
+def test_data_source_missing(plasmapheresis):
+    plasmapheresis.data_source = None
+    invalid(plasmapheresis)
 
 
 def test_from_date_missing(plasmapheresis):

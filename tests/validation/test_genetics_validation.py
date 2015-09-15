@@ -30,6 +30,16 @@ def genetics(patient):
     return obj
 
 
+def test_patient_missing(genetics):
+    genetics.patient = None
+    invalid(genetics)
+
+
+def test_cohort_missing(genetics):
+    genetics.cohort = None
+    invalid(genetics)
+
+
 def test_sample_sent(genetics):
     obj = valid(genetics)
     assert obj.sample_sent is True
@@ -59,7 +69,7 @@ def test_sample_sent_date_future(genetics):
 
 
 def test_sample_sent_date_before_dob(genetics):
-    genetics.sample_sent_date = datetime(1999, 12, 31, 23, 59, 59)
+    genetics.sample_sent_date = datetime(1999, 12, 31, 23, 59, 59, tzinfo=pytz.UTC)
     invalid(genetics)
 
 
