@@ -43,6 +43,10 @@ def test_valid(demographics):
     assert obj.work_number == '222222'
     assert obj.mobile_number == '333333'
     assert obj.email_address == 'foo@example.org'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(demographics):

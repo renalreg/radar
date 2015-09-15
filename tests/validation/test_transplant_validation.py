@@ -32,6 +32,10 @@ def test_valid(transplant):
     assert obj.transplant_date == date(2015, 1, 1)
     assert obj.transplant_type == 'LIVE'
     assert obj.date_failed == date(2015, 1, 2)
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(transplant):

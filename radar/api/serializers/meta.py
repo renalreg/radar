@@ -3,7 +3,7 @@ from radar.lib.serializers import ModelSerializer
 
 
 class BasicUserSerializer(ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = User
         fields = ['id', 'first_name', 'last_name', 'email', 'username']
 

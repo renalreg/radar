@@ -6,5 +6,5 @@ from radar.lib.models import Genetics
 
 
 class GeneticsSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = Genetics

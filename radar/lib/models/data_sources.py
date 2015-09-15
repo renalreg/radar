@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
+from radar.lib.models import MetaModelMixin
 
 DATA_SOURCE_TYPE_RADAR = 'RADAR'
 DATA_SOURCE_TYPE_PV = 'PV'
@@ -12,7 +13,7 @@ DATA_SOURCE_TYPES = [
 ]
 
 
-class DataSource(db.Model):
+class DataSource(db.Model, MetaModelMixin):
     __tablename__ = 'data_sources'
 
     id = Column(Integer, primary_key=True)

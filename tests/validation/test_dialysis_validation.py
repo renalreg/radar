@@ -32,6 +32,10 @@ def test_valid(dialysis):
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
     assert obj.dialysis_type.id == 1
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(dialysis):

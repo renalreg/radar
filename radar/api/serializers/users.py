@@ -8,7 +8,7 @@ from radar.lib.models import User
 class UserSerializer(MetaSerializerMixin, ModelSerializer):
     organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users')
 
-    class Meta:
+    class Meta(object):
         model_class = User
         fields = ('id', 'is_admin', 'username', 'email')
 

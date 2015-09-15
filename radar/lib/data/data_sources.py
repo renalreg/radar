@@ -1,3 +1,4 @@
+from radar.lib.data.validation import validate_data_source
 from radar.lib.data_sources import DATA_SOURCE_TYPE_RADAR
 from radar.lib.database import db
 from radar.lib.models import DataSource, ORGANISATION_TYPE_UNIT, Organisation, DATA_SOURCE_TYPE_PV
@@ -13,6 +14,7 @@ def create_radar_data_source():
     data_source = DataSource()
     data_source.organisation = get_radar_organisation()
     data_source.type = DATA_SOURCE_TYPE_RADAR
+    data_source = validate_data_source(data_source)
     db.session.add(data_source)
 
 
@@ -24,4 +26,5 @@ def create_unit_data_sources():
             data_source = DataSource()
             data_source.organisation = unit
             data_source.type = data_source_type
+            data_source = validate_data_source(data_source)
             db.session.add(data_source)

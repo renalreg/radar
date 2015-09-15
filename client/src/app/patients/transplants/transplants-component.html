@@ -1,0 +1,116 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.dataSource.getName()}}</td>
+      </tr>
+
+      <tr>
+        <th>Transplant Date</th>
+        <td>{{item.transplantDate | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Transplant Type</th>
+        <td>{{item.transplantType.label}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Data Source</div>
+
+        <div frm-control>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSource"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Transplant Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.transplantDate" required="true"></div>
+          <div frm-errors errors="item.errors.transplantDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Transplant Type</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.transplantType" required="true" options="transplantTypes"></div>
+          <div frm-errors errors="item.errors.transplantType"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+      <tr>
+        <th></th>
+        <th sort-helper="id">ID</th>
+        <th sort-helper="transplantDate">Date</th>
+        <th sort-helper="transplantType.label">Type</th>
+        <th sort-helper="dataSource.getName()">Data Source</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr ng-repeat="item in page.getItems()">
+        <td>
+          <span crud-list-view-button item="item"></span>
+          <span crud-list-edit-button item="item"></span>
+        </td>
+
+        <td>{{item.id}}</td>
+        <td>{{item.transplantDate | dateFormat}}</td>
+        <td>{{item.transplantType.label}}</td>
+        <td>{{item.dataSource.getName()}}</td>
+
+        <td>
+          <span crud-list-remove-button item="item"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

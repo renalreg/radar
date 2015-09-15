@@ -7,7 +7,7 @@
     return PatientDataSourceObjectPermission;
   });
 
-  app.factory('RenalImagingController', function(ListDetailController, RenalImagingPermission, kidneyTypes, imagingTypes) {
+  app.factory('RenalImagingController', function(ListDetailController, RenalImagingPermission, firstPromise) {
     function RenalImagingController($scope, $injector, store) {
       var self = this;
 
@@ -18,10 +18,15 @@
         }
       });
 
-      $scope.kidneyTypes = kidneyTypes;
-      $scope.imagingTypes = imagingTypes;
-
-      self.load(store.findMany('renal-imaging', {patient: $scope.patient.id}));
+      self.load(firstPromise([
+        store.findMany('renal-imaging', {patient: $scope.patient.id}),
+        store.findMany('renal-imaging-types').then(function(imagingTypes) {
+          $scope.imagingTypes = imagingTypes;
+        }),
+        store.findMany('renal-imaging-kidney-types').then(function(kidneyTypes) {
+          $scope.kidneyTypes = kidneyTypes;
+        })
+      ]));
 
       $scope.create = function() {
         var item = store.create('renal-imaging', {patient: $scope.patient.id});

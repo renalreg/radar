@@ -6,5 +6,5 @@ from radar.lib.models import PatientAlias
 
 
 class PatientAliasSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = PatientAlias

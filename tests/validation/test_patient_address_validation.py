@@ -37,6 +37,10 @@ def test_valid(address):
     assert obj.address_line_2 == 'Southmead Hospital'
     assert obj.address_line_3 == 'Bristol'
     assert obj.postcode == 'BS10 5NB'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(address):

@@ -83,6 +83,15 @@ class Patient(db.Model, MetaModelMixin):
         return self.latest_demographics_attr('date_of_birth')
 
     @hybrid_property
+    def date_of_death(self):
+        return self.latest_demographics_attr('date_of_death')
+
+    # TODO test this
+    @hybrid_property
+    def ethnicity_code(self):
+        return self.latest_demographics_attr('ethnicity_code')
+
+    @hybrid_property
     def gender(self):
         return self.latest_demographics_attr('gender')
 
@@ -105,6 +114,15 @@ class Patient(db.Model, MetaModelMixin):
     @date_of_birth.expression
     def date_of_birth(cls):
         return cls.latest_demographics_query(PatientDemographics.date_of_birth)
+
+    @date_of_death.expression
+    def date_of_death(cls):
+        return cls.latest_demographics_query(PatientDemographics.date_of_death)
+
+    # TODO test this
+    @date_of_birth.expression
+    def ethnicity_code(cls):
+        return cls.latest_demographics_query(PatientDemographics.ethnicity_code)
 
     @gender.expression
     def gender(cls):

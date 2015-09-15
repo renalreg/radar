@@ -22,23 +22,6 @@ ORGANISATION_TYPES = [
 ]
 
 
-class Organisation(db.Model):
-    __tablename__ = 'organisations'
-
-    id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False)
-    type = Column(String, nullable=False)
-    name = Column(String, nullable=False)
-
-    data_sources = relationship('DataSource')
-    organisation_patients = relationship('OrganisationPatient')
-    organisation_users = relationship('OrganisationUser')
-
-    __table_args__ = (
-        UniqueConstraint('type', 'code'),
-    )
-
-
 class OrganisationPatient(db.Model, MetaModelMixin):
     __tablename__ = 'organisation_patients'
 
@@ -57,7 +40,7 @@ class OrganisationPatient(db.Model, MetaModelMixin):
     )
 
 
-class OrganisationUser(db.Model):
+class OrganisationUser(db.Model, MetaModelMixin):
     __tablename__ = 'organisation_users'
 
     id = Column(Integer, primary_key=True)
@@ -66,7 +49,7 @@ class OrganisationUser(db.Model):
     organisation = relationship('Organisation')
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship('User')
+    user = relationship('User', foreign_keys=[user_id])
 
     role = Column(String, nullable=False)
 
@@ -98,3 +81,20 @@ class OrganisationUser(db.Model):
     @hybrid_property
     def has_recruit_patient_permission(self):
         return self.role in ORGANISATION_RECRUIT_PATIENT_ROLES
+
+
+class Organisation(db.Model, MetaModelMixin):
+    __tablename__ = 'organisations'
+
+    id = Column(Integer, primary_key=True)
+    code = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+
+    data_sources = relationship('DataSource')
+    organisation_patients = relationship('OrganisationPatient')
+    organisation_users = relationship('OrganisationUser', foreign_keys=[OrganisationUser.organisation_id])
+
+    __table_args__ = (
+        UniqueConstraint('type', 'code'),
+    )

@@ -1,12 +1,13 @@
 from radar.lib.models.patient_demographics import GENDERS
 from radar.lib.validation.core import Validation, Field, pass_new_obj, ValidationError
 from radar.lib.validation.data_sources import DataSourceValidationMixin
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
 from radar.lib.validation.validators import required, not_empty, optional, not_in_future, max_length, in_, \
     none_if_blank, email_address, normalise_whitespace, upper, after_day_zero
 
 
-class PatientDemographicsValidation(PatientValidationMixin, DataSourceValidationMixin, Validation):
+class PatientDemographicsValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     first_name = Field([not_empty(), upper(), normalise_whitespace(), max_length(100)])
     last_name = Field([not_empty(), upper(), normalise_whitespace(), max_length(100)])
     date_of_birth = Field([required(), after_day_zero(), not_in_future()])

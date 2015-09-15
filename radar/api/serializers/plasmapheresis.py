@@ -9,5 +9,5 @@ class PlasmapheresisSerializer(MetaSerializerMixin, PatientSerializerMixin, Data
     no_of_exchanges = CodedStringSerializer(PLASMAPHERESIS_NO_OF_EXCHANGES)
     response = CodedStringSerializer(PLASMAPHERESIS_RESPONSES)
 
-    class Meta:
+    class Meta(object):
         model_class = Plasmapheresis

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.demographics');
+  var app = angular.module('radar.patients.addresses');
 
   app.factory('PatientAddressPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
@@ -37,7 +37,7 @@
         patient: '='
       },
       controller: PatientAddressesController,
-      templateUrl: 'app/patients/demographics/addresses-component.html'
+      templateUrl: 'app/patients/addresses/addresses-component.html'
     };
   });
 })();

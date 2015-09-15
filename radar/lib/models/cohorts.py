@@ -8,7 +8,7 @@ from radar.lib.roles import COHORT_VIEW_DEMOGRAPHICS_ROLES, COHORT_VIEW_PATIENT_
 from radar.lib.models.common import MetaModelMixin
 
 
-class Cohort(db.Model):
+class Cohort(db.Model, MetaModelMixin):
     __tablename__ = 'cohorts'
 
     id = Column(Integer, primary_key=True)
@@ -58,7 +58,7 @@ class CohortPatient(db.Model, MetaModelMixin):
     )
 
 
-class CohortUser(db.Model):
+class CohortUser(db.Model, MetaModelMixin):
     __tablename__ = 'cohort_users'
 
     id = Column(Integer, primary_key=True)
@@ -67,7 +67,7 @@ class CohortUser(db.Model):
     cohort = relationship('Cohort')
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship('User')
+    user = relationship('User', foreign_keys=[user_id])
 
     role = Column(String, nullable=False)
 

@@ -6,47 +6,45 @@
     </p>
 
     <table class="table properties">
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <td>{{item.id}}</td>
-        </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
 
-        <tr>
-          <th>Data Source</th>
-          <td>{{item.dataSource.getName()}}</td>
-        </tr>
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.dataSource.getName()}}</td>
+      </tr>
 
-        <tr>
-          <th>Name</th>
-          <td>{{item.name}}</td>
-        </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{item.name}}</td>
+      </tr>
 
-        <tr>
-          <th>From Date</th>
-          <td>{{item.fromDate | dateFormat}}</td>
-        </tr>
+      <tr>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}}</td>
+      </tr>
 
-        <tr>
-          <th>To Date</th>
-          <td>{{item.toDate | dateFormat}}</td>
-        </tr>
+      <tr>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}}</td>
+      </tr>
 
-        <tr>
-          <th>Dose</th>
-          <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
-        </tr>
+      <tr>
+        <th>Dose</th>
+        <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
+      </tr>
 
-        <tr>
-          <th>Frequency</th>
-          <td>{{item.frequency.label}}</td>
-        </tr>
+      <tr>
+        <th>Frequency</th>
+        <td>{{item.frequency.label}}</td>
+      </tr>
 
-        <tr>
-          <th>Route</th>
-          <td>{{item.route.label}}</td>
-        </tr>
-      </tbody>
+      <tr>
+        <th>Route</th>
+        <td>{{item.route.label}}</td>
+      </tr>
     </table>
   </div>
 

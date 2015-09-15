@@ -37,8 +37,7 @@
         patient: '='
       },
       controller: PatientNumbersController,
-      templateUrl: 'app/patients/demographics/numbers-component.html'
+      templateUrl: 'app/patients/numbers/numbers-component.html'
     };
   });
 })();
-

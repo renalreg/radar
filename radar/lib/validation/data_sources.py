@@ -1,7 +1,13 @@
 from radar.lib.data_sources import DATA_SOURCE_TYPE_RADAR
-from radar.lib.validation.core import ValidationError, pass_context
+from radar.lib.validation.core import ValidationError, pass_context, Validation
 from radar.lib.validation.core import Field
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.validators import required
+
+
+# TODO
+class DataSourceValidation(MetaValidationMixin, Validation):
+    pass
 
 
 class DataSourceField(Field):

@@ -41,6 +41,10 @@ def test_valid(medication):
     assert obj.dose_unit == 'MG'
     assert obj.frequency == 'DAILY'
     assert obj.route == 'ORAL'
+    assert obj.created_date is not None
+    assert obj.modified_date is not None
+    assert obj.created_user is not None
+    assert obj.modified_user is not None
 
 
 def test_patient_missing(medication):

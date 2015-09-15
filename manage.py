@@ -28,17 +28,11 @@ def initdb():
 
 
 @cli.command('devdb')
-def devdb(quick=False):
+@click.option('--patients', default=5)
+def devdb(patients):
     db.drop_all()
     db.create_all()
-
-    if quick:
-        patients_n = 5
-    else:
-        patients_n = 100
-
-    dev.create_data(patients_n)
-
+    dev.create_data(patients)
     db.session.commit()
 
 

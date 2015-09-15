@@ -23,7 +23,7 @@
 
       <tr>
         <th>Imaging Type</th>
-        <td>{{item.imagingType}}</td>
+        <td>{{item.imagingType.label}}</td>
       </tr>
     </table>
 
@@ -43,7 +43,7 @@
 
               <tr ng-show="item.rightPresent">
                 <th>Kidney Type</th>
-                <td>{{item.rightType}}</td>
+                <td>{{item.rightType.label}}</td>
               </tr>
 
               <tr ng-show="item.rightPresent">
@@ -95,7 +95,7 @@
 
               <tr ng-show="item.leftPresent">
                 <th>Kidney Type</th>
-                <td>{{item.leftType}}</td>
+                <td>{{item.leftType.label}}</td>
               </tr>
 
               <tr ng-show="item.leftPresent">
@@ -358,7 +358,7 @@
           <th></th>
           <th sort-helper="id">ID</th>
           <th sort-helper="date">Date</th>
-          <th sort-helper="imagingType">Imaging Type</th>
+          <th sort-helper="imagingType.label">Imaging Type</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
@@ -373,7 +373,7 @@
 
           <td>{{item.id}}</td>
           <td>{{item.date | dateFormat}}</td>
-          <td>{{item.imagingType}}</td>
+          <td>{{item.imagingType.label}}</td>
           <td>{{item.dataSource.getName()}}</td>
 
           <td>

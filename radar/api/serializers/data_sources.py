@@ -3,14 +3,14 @@ from radar.lib.serializers import ModelSerializer, ReferenceField
 
 
 class OrganisationSerializer(ModelSerializer):
-    class Meta:
+    class Meta(object):
         model_class = Organisation
 
 
 class DataSourceSerializer(ModelSerializer):
     organisation = OrganisationSerializer()
 
-    class Meta:
+    class Meta(object):
         model_class = DataSource
         exclude = ['organisation_id']
 

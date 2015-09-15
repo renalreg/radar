@@ -1,6 +1,11 @@
 from radar.lib.permissions import intersect_patient_and_user_organisations
-from radar.lib.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj
+from radar.lib.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj, Validation
+from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.validators import required
+
+
+class PatientValidation(MetaValidationMixin, Validation):
+    pass
 
 
 class PatientField(Field):

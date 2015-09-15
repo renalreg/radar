@@ -7,7 +7,7 @@
     return PatientDataSourceObjectPermission;
   });
 
-  app.factory('TransplantsController', function(ListDetailController, TransplantPermission) {
+  app.factory('TransplantsController', function(ListDetailController, TransplantPermission, firstPromise) {
     function TransplantsController($scope, $injector, store) {
       var self = this;
 
@@ -18,7 +18,12 @@
         }
       });
 
-      self.load(store.findMany('transplants', {patient: $scope.patient.id}));
+      self.load(firstPromise([
+        store.findMany('transplants', {patient: $scope.patient.id}),
+        store.findMany('transplant-types').then(function(transplantTypes) {
+          $scope.transplantTypes = transplantTypes;
+        })
+      ]));
 
       $scope.create = function() {
         var item = store.create('transplants', {patient: $scope.patient.id});

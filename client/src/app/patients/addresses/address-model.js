@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.demographics');
+  var app = angular.module('radar.patients.addresses');
 
   app.factory('PatientAddressModel', function(Model) {
     function PatientAddressModel(modelName, data) {

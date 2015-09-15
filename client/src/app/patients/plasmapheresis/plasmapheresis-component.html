@@ -28,7 +28,7 @@
 
       <tr>
         <th>No. of Exchanges</th>
-        <td>{{item.noOfExchanges}}</td>
+        <td>{{item.noOfExchanges.label}}</td>
       </tr>
 
       <tr>
@@ -115,7 +115,7 @@
         <th sort-helper="id">ID</th>
         <th sort-helper="fromDate">From Date</th>
         <th sort-helper="toDate">To Date</th>
-        <th sort-helper="noOfExchanges">No. of Exchanges</th>
+        <th sort-helper="noOfExchanges.label">No. of Exchanges</th>
         <th sort-helper="response.label">Response</th>
         <th></th>
       </tr>
@@ -131,7 +131,7 @@
         <td>{{item.id}}</td>
         <td>{{item.fromDate | dateFormat}}</td>
         <td>{{item.toDate | dateFormat}}</td>
-        <td>{{item.noOfExchanges}}</td>
+        <td>{{item.noOfExchanges.label}}</td>
         <td>{{item.response.label | missing}}</td>
 
         <td>
