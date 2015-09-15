@@ -15,6 +15,14 @@ def test_valid_string():
     assert valid('9434765870') == '9434765870'
 
 
+def test_short_string():
+    assert valid('437631966') == '437631966'
+
+
+def test_short_int():
+    assert valid(437631966) == 437631966
+
+
 def test_invalid():
     invalid(9434765918)
     invalid(9434765871)
