@@ -1,12 +1,20 @@
+from collections import OrderedDict
 from sqlalchemy import Column, Integer, ForeignKey, String, Numeric, Boolean, DateTime
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin
 
+RENAL_IMAGING_TYPES = OrderedDict([
+    ('USS', 'USS'),
+    ('CT', 'CT'),
+    ('MRI', 'MRI'),
+])
 
-RENAL_IMAGING_TYPES = ['USS', 'CT', 'MRI']
-RENAL_IMAGING_KIDNEY_TYPES = ['TRANSPLANT', 'NATURAL']
+RENAL_IMAGING_KIDNEY_TYPES = OrderedDict([
+    ('TRANSPLANT', 'Transplant'),
+    ('NATURAL', 'Natural'),
+])
 
 
 class RenalImaging(db.Model, MetaModelMixin):
