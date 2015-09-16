@@ -1,10 +1,13 @@
 from datetime import date, datetime, timedelta
+
 import pytest
 import pytz
-from radar.lib.models import PatientDemographics, Patient, DataSource, User, EthnicityCode
+
+from radar.lib.models import PatientDemographics, Patient, DataSource, EthnicityCode, GENDER_MALE, GENDER_FEMALE
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.patient_demographics import PatientDemographicsValidation
 from radar.lib.validation.validators import DAY_ZERO
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -22,7 +25,7 @@ def demographics(patient):
     obj.last_name = 'SMITH'
     obj.date_of_birth = date(1900, 1, 1)
     obj.date_of_death = date(2000, 1, 1)
-    obj.gender = 'M'
+    obj.gender = GENDER_MALE
     obj.ethnicity_code = EthnicityCode(id=1)
     obj.home_number = '111111'
     obj.work_number = '222222'
@@ -37,7 +40,7 @@ def test_valid(demographics):
     assert obj.last_name == 'SMITH'
     assert obj.date_of_birth == date(1900, 1, 1)
     assert obj.date_of_death == date(2000, 1, 1)
-    assert obj.gender == 'M'
+    assert obj.gender == GENDER_MALE
     assert obj.ethnicity_code == demographics.ethnicity_code
     assert obj.home_number == '111111'
     assert obj.work_number == '222222'
@@ -141,28 +144,16 @@ def test_date_of_death_on_date_of_birth(demographics):
     valid(demographics)
 
 
-def test_gender_m_lower(demographics):
-    demographics.gender = 'm'
+def test_gender_male(demographics):
+    demographics.gender = GENDER_MALE
     obj = valid(demographics)
-    assert obj.gender == 'M'
+    assert obj.gender == GENDER_MALE
 
 
-def test_gender_f_lower(demographics):
-    demographics.gender = 'f'
+def test_gender_female(demographics):
+    demographics.gender = GENDER_FEMALE
     obj = valid(demographics)
-    assert obj.gender == 'F'
-
-
-def test_gender_m_upper(demographics):
-    demographics.gender = 'M'
-    obj = valid(demographics)
-    assert obj.gender == 'M'
-
-
-def test_gender_f_upper(demographics):
-    demographics.gender = 'F'
-    obj = valid(demographics)
-    assert obj.gender == 'F'
+    assert obj.gender == GENDER_FEMALE
 
 
 def test_gender_blank(demographics):
@@ -182,7 +173,8 @@ def test_gender_invalid(demographics):
 
 def test_ethnicity_missing(demographics):
     demographics.ethnicity_code = None
-    invalid(demographics)
+    obj = valid(demographics)
+    obj.ethnicity_code = None
 
 
 def test_home_number_blank(demographics):
@@ -256,21 +248,16 @@ def test_email_address_invalid(demographics):
     invalid(demographics)
 
 
-def valid(obj):
-    return validate(obj)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(obj):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(obj):
-    validation = PatientDemographicsValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, PatientDemographics())
-    old_obj = validation.clone(obj)
-    obj = validation.after_update(ctx, old_obj, obj)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(PatientDemographics, PatientDemographicsValidation, obj, **kwargs)

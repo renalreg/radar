@@ -1,9 +1,12 @@
 from datetime import date, timedelta
+
 import pytest
-from radar.lib.models import User, Patient, PatientDemographics, Medication, DataSource
+
+from radar.lib.models import Patient, PatientDemographics, DataSource
 from radar.lib.models.patient_addresses import PatientAddress
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.patient_addresses import PatientAddressValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -161,21 +164,16 @@ def test_postcode_invalid(address):
     invalid(address)
 
 
-def valid(address):
-    return validate(address)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(address):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(address)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(address):
-    validation = PatientAddressValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, PatientAddress())
-    old_obj = validation.clone(address)
-    obj = validation.after_update(ctx, old_obj, address)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(PatientAddress, PatientAddressValidation, obj, **kwargs)

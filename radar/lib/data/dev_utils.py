@@ -1,20 +1,30 @@
+import difflib
 import random
 from datetime import date, timedelta
 
-from radar.lib.data.dev_constants import FIRST_NAMES, FEMALE, MALE, LAST_NAMES
+from radar.lib.data.dev_constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS_LINE_1, \
+    ADDRESS_LINE_3, ADDRESS_LINE_2, POSTCODES
+from radar.lib.utils import is_date, date_to_datetime
+
+
+def generate_first_name_alias(gender, first_name):
+    def f(x):
+        if first_name == x:
+            return 0
+        else:
+            return difflib.SequenceMatcher(None, first_name, x).ratio()
+
+    return max(FIRST_NAMES[gender], key=f)
 
 
 def generate_gender():
     if random.random() > 0.5:
-        return MALE
+        return GENDER_MALE
     else:
-        return FEMALE
+        return GENDER_FEMALE
 
 
-def generate_first_name(gender=None):
-    if gender is None:
-        gender = generate_gender()
-
+def generate_first_name(gender):
     return random.choice(FIRST_NAMES[gender])
 
 
@@ -26,8 +36,8 @@ def generate_date_of_birth():
     return random_date(date(1920, 1, 1), date(2000, 12, 31))
 
 
-def generate_date_of_death():
-    return random_date(date(1980, 1, 1), date(2014, 12, 31))
+def generate_date_of_death(date_of_birth):
+    return random_date(date_of_birth, date(2014, 12, 31))
 
 
 def random_date(start_date, end_date):
@@ -43,7 +53,17 @@ def random_bool():
     return random.randint(0, 1) == 1
 
 
-def random_datetime(start_dt, end_dt):
+def random_datetime(start, end):
+    if is_date(start):
+        start_dt = date_to_datetime(start)
+    else:
+        start_dt = start
+
+    if is_date(end):
+        end_dt = date_to_datetime(end)
+    else:
+        end_dt = end
+
     seconds = int((end_dt - start_dt).total_seconds())
     return start_dt + timedelta(seconds=random.randrange(seconds))
 
@@ -82,8 +102,32 @@ def generate_nhs_no():
 
         number += str(check_digit)
 
-        return int(number)
+        return number
 
 
 def generate_chi_no():
     return generate_nhs_no()
+
+
+def generate_ukrr_no():
+    return str(random.randint(199900001, 201599999))
+
+
+def generate_nhsbt_no():
+    return str(random.randint(1, 200000))
+
+
+def generate_address_line_1():
+    return random.choice(ADDRESS_LINE_1)
+
+
+def generate_address_line_2():
+    return random.choice(ADDRESS_LINE_2)
+
+
+def generate_address_line_3():
+    return random.choice(ADDRESS_LINE_3)
+
+
+def generate_postcode():
+    return random.choice(POSTCODES)

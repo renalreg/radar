@@ -1,3 +1,6 @@
+import re
+
+
 def validate_nhs_no(value):
     if not isinstance(value, basestring):
         value = str(value)

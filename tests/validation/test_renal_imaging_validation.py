@@ -1,8 +1,11 @@
 from datetime import date, timedelta
+
 import pytest
-from radar.lib.models import RenalImaging, DataSource, Patient, PatientDemographics, User
+
+from radar.lib.models import RenalImaging, DataSource, Patient, PatientDemographics
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.renal_imaging import RenalImagingValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -306,21 +309,16 @@ def test_left_other_malformation_blank(renal_imaging):
     assert obj.left_other_malformation is None
 
 
-def valid(obj):
-    return validate(obj)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(obj):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(obj):
-    validation = RenalImagingValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, RenalImaging())
-    old_obj = validation.clone(obj)
-    obj = validation.after_update(ctx, old_obj, obj)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(RenalImaging, RenalImagingValidation, obj, **kwargs)

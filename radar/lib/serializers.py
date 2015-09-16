@@ -352,6 +352,7 @@ class ReferenceField(Field):
         if serializer is not None:
             return serializer.to_data(value)
         else:
+            # TODO broken
             return self.field.to_data(value)
 
 

@@ -2,10 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Medication, Patient, \
-    PatientDemographics, User, DataSource
+from radar.lib.models import Medication, Patient, PatientDemographics, DataSource
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.medications import MedicationValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -142,19 +142,16 @@ def test_route_invalid(medication):
     invalid(medication)
 
 
-def valid(medication):
-    return validate(medication)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(medication):
-    with pytest.raises(ValidationError):
-        validate(medication)
+def invalid(obj, **kwargs):
+    with pytest.raises(ValidationError) as e:
+        validate(obj, **kwargs)
+
+    return e
 
 
-def validate(medication):
-    validation = MedicationValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Medication())
-    old_obj = validation.clone(medication)
-    obj = validation.after_update(ctx, old_obj, medication)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Medication, MedicationValidation, obj, **kwargs)

@@ -2,9 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, Hospitalisation, DataSource, User
+from radar.lib.models import Patient, PatientDemographics, Hospitalisation, DataSource
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.hospitalisations import HospitalisationValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -107,21 +108,16 @@ def test_comments_blank(hospitalisation):
     assert obj.comments is None
 
 
-def valid(hospitalisation):
-    return validate(hospitalisation)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(hospitalisation):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(hospitalisation)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(hospitalisation):
-    validation = HospitalisationValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Hospitalisation())
-    old_obj = validation.clone(hospitalisation)
-    obj = validation.after_update(ctx, old_obj, hospitalisation)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Hospitalisation, HospitalisationValidation, obj, **kwargs)

@@ -13,6 +13,10 @@ class PatientProxy(object):
             organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
             self.demographics = any(x.has_view_demographics_permission for x in organisation_users)
 
+            if not self.demographics:
+                cohort_users = intersect_patient_and_user_cohorts(patient, user, user_membership=True)
+                self.demographics = any(x.has_view_demographics_permission for x in cohort_users)
+
     @property
     def first_name(self):
         if self.demographics:
@@ -40,15 +44,17 @@ class PatientProxy(object):
 
     @property
     def cohort_patients(self):
-        if self.user.is_admin:
-            return self.patient.cohort_patients
+        # if self.user.is_admin:
+        #     return self.patient.cohort_patients
+        #
+        # organisations = intersect_patient_and_user_organisations(self.patient, self.user)
+        #
+        # if organisations:
+        #     return self.patient.cohort_patients
+        # else:
+        #     return intersect_patient_and_user_cohorts(self.patient, self.user, patient_membership=True)
 
-        organisations = intersect_patient_and_user_organisations(self.patient, self.user)
-
-        if organisations:
-            return self.patient.cohort_patients
-        else:
-            return intersect_patient_and_user_cohorts(self.patient, self.user, patient_membership=True)
+        return self.patient.cohort_patients
 
     @property
     def year_of_birth(self):

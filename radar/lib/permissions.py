@@ -1,46 +1,47 @@
+from radar.lib.data_sources import is_radar_data_source
 from radar.lib.models import DATA_SOURCE_TYPE_RADAR
 
 
 def intersect_patient_and_user_organisations(patient, user, patient_membership=False, user_membership=False):
-    unit_patients = {x.organisation.id: x for x in patient.unit_patients}
+    organisation_patients = {x.organisation.id: x for x in patient.organisation_patients}
 
     intersection = []
 
-    for unit_user in user.unit_users:
-        unit_id = unit_user.organisation.id
-        unit_patient = unit_patients.get(unit_id)
+    for organisation_user in user.organisation_users:
+        organisation_id = organisation_user.organisation.id
+        organisation_patient = organisation_patients.get(organisation_id)
 
-        if unit_patient:
+        if organisation_patient:
             if patient_membership and user_membership:
-                intersection.append((unit_patient, unit_user))
+                intersection.append((organisation_patient, organisation_user))
             elif patient_membership:
-                intersection.append(unit_patient)
+                intersection.append(organisation_patient)
             elif user_membership:
-                intersection.append(unit_user)
+                intersection.append(organisation_user)
             else:
-                intersection.append(unit_user.organisation)
+                intersection.append(organisation_user.organisation)
 
     return intersection
 
 
 def intersect_patient_and_user_cohorts(patient, user, patient_membership=False, user_membership=False):
-    disease_group_patients = {x.cohort.id: x for x in patient.cohort_patients}
+    cohort_patients = {x.cohort.id: x for x in patient.cohort_patients}
 
     intersection = []
 
-    for disease_group_user in user.disease_group_users:
-        disease_group_id = disease_group_user.cohort.id
-        disease_group_patient = disease_group_patients.get(disease_group_id)
+    for cohort_user in user.cohort_users:
+        cohort_id = cohort_user.cohort.id
+        cohort_patient = cohort_patients.get(cohort_id)
 
-        if disease_group_patient:
+        if cohort_patient:
             if patient_membership and user_membership:
-                intersection.append((disease_group_patient, disease_group_user))
+                intersection.append((cohort_patient, cohort_user))
             elif patient_membership:
-                intersection.append(disease_group_patient)
+                intersection.append(cohort_patient)
             elif user_membership:
-                intersection.append(disease_group_user)
+                intersection.append(cohort_user)
             else:
-                intersection.append(disease_group_user.cohort)
+                intersection.append(cohort_user.cohort)
 
     return intersection
 
@@ -101,8 +102,8 @@ class DataSourceObjectPermission(Permission):
         if mutate:
             data_source = obj.data_source
 
-            # Can only modify RaDaR data
-            if not data_source.type != DATA_SOURCE_TYPE_RADAR:
+            # Can only modify RaDaR data (any organisation)
+            if data_source.type != DATA_SOURCE_TYPE_RADAR:
                 return False
 
             organisation = data_source.organisation
@@ -120,6 +121,26 @@ class DataSourceObjectPermission(Permission):
         return True
 
 
+class RadarObjectPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(RadarObjectPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        if user.is_admin:
+            return True
+
+        mutate = request.method != 'GET'
+
+        if mutate:
+            data_source = obj.data_source
+
+            # Can only modify RaDaR data
+            if not is_radar_data_source(data_source):
+                return False
+
+        return True
+
+
 class CohortObjectPermission(Permission):
     def has_object_permission(self, request, user, obj):
         if not super(CohortObjectPermission, self).has_object_permission(request, user, obj):
@@ -130,26 +151,30 @@ class CohortObjectPermission(Permission):
 
         mutate = request.method != 'GET'
 
-        user_units = intersect_patient_and_user_organisations(obj.patient, user, user_membership=True)
+        user_organisations = intersect_patient_and_user_organisations(obj.patient, user, user_membership=True)
 
         if mutate:
             # Edit permission through organisation membership
-            if any(x.has_edit_patient_permission for x in user_units):
+            if any(x.has_edit_patient_permission for x in user_organisations):
                 return True
         else:
             # View permission through organisation membership
-            if any(x.has_view_patient_permission for x in user_units):
+            if any(x.has_view_patient_permission for x in user_organisations):
                 return True
 
-            disease_group = obj.cohort
-            disease_group_membership = user.get_disease_group_membership(disease_group)
+            cohort = obj.cohort
+            cohort_membership = user.get_disease_group_membership(cohort)
 
             # View permission through organisation membership
-            if disease_group_membership is not None and disease_group_membership.has_view_patient_permission:
+            if cohort_membership is not None and cohort_membership.has_view_patient_permission:
                 return True
 
         return False
 
 
 class PatientDataSourceObjectPermission(PatientObjectPermission, DataSourceObjectPermission):
+    pass
+
+
+class PatientRadarObjectPermission(PatientObjectPermission, RadarObjectPermission):
     pass

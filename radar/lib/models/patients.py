@@ -1,12 +1,25 @@
+from collections import OrderedDict
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, ForeignKey, select, DateTime, Boolean, join, Text
+from sqlalchemy import Column, Integer, select, Boolean, join, Text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
 from radar.lib.models import MetaModelMixin
 from radar.lib.models.patient_demographics import PatientDemographics
+
+GENDER_NOT_KNOWN = 0
+GENDER_MALE = 1
+GENDER_FEMALE = 2
+GENDER_NOT_SPECIFIED = 9
+
+GENDERS = OrderedDict([
+    (GENDER_NOT_KNOWN, 'Not Known'),
+    (GENDER_MALE, 'Male'),
+    (GENDER_FEMALE, 'Female'),
+    (GENDER_NOT_SPECIFIED, 'Not Specified'),
+])
 
 
 class Patient(db.Model, MetaModelMixin):
@@ -97,11 +110,11 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def is_male(self):
-        return self.gender == 'M'
+        return self.gender == GENDER_MALE
 
     @hybrid_property
     def is_female(self):
-        return self.gender == 'F'
+        return self.gender == GENDER_FEMALE
 
     @first_name.expression
     def first_name(cls):

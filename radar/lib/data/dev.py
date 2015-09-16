@@ -1,34 +1,41 @@
 import random
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from jinja2.utils import generate_lorem_ipsum
-from sqlalchemy import func
+import pytz
+from sqlalchemy import func, desc
 
 from radar.lib.data import create_initial_data
 from radar.lib.data.dev_constants import MEDICATION_NAMES
 from radar.lib.data.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
-    generate_email_address, generate_nhs_no, generate_chi_no, random_datetime, random_bool
-from radar.lib.data.validation import validate_user, validate_post, validate_patient_demographics, validate_dialysis, \
-    validate_medication, validate_transplant, validate_hospitalisation, validate_plasmapheresis, validate_renal_imaging, \
-    validate_patient, validate_organisation_patient, validate_cohort_patient, validate_result_group
-from radar.lib.data_sources import get_radar_data_source
+    generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
+    generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \
+    generate_postcode
+from radar.lib.data.validation import validate
+from radar.lib.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.lib.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, Result, ResultGroup, ResultGroupDefinition, EthnicityCode, MEDICATION_DOSE_UNITS, \
     MEDICATION_FREQUENCIES, MEDICATION_ROUTES, TRANSPLANT_TYPES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
-    RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, DataSource, OrganisationPatient, CohortPatient, \
-    PLASMAPHERESIS_NO_OF_EXCHANGES
+    RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
+    PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser
 from radar.lib.database import db
 from radar.lib.models.cohorts import Cohort
 from radar.lib.models.posts import Post
-from radar.lib.models.patients import Patient, PatientDemographics
+from radar.lib.models.patients import Patient, PatientDemographics, GENDER_FEMALE
 from radar.lib.models.users import User
+from radar.lib.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
+    get_nhsbt_organisation
+from radar.lib.roles import ORGANISATION_SENIOR_CLINICIAN, COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER
+
+
+PASSWORD = 'password'
 
 
 def create_users(n):
     for x in range(n):
         user = User()
-        user.first_name = generate_first_name().capitalize()
+        user.first_name = generate_first_name(generate_gender()).capitalize()
         user.last_name = generate_last_name().capitalize()
         user.username = '%s.%s%d' % (
             user.first_name.lower(),
@@ -36,8 +43,8 @@ def create_users(n):
             x + 1
         )
         user.email = '%s@example.org' % user.username
-        user.password = 'password'
-        user = validate_user(user)
+        user.password = PASSWORD
+        user = validate(user)
         db.session.add(user)
 
 
@@ -46,12 +53,77 @@ def create_admin_user():
     admin.username = 'admin'
     admin.email = 'admin@example.org'
     admin.is_admin = True
-    admin.password = 'password'
-    admin.created_user = admin
-    admin.modified_user = admin
-    admin.created_date = func.now()
-    admin.modified_date = func.now()
+    admin.password = PASSWORD
+    admin = validate(admin)
     db.session.add(admin)
+
+
+def create_bot_user():
+    bot = User()
+    bot.username = 'bot'
+    bot.email = 'bot@example.org'
+    bot.is_admin = True
+    bot.is_bot = True
+    bot.password = PASSWORD
+    bot.created_user = bot
+    bot.modified_user = bot
+    bot.created_date = func.now()
+    bot.modified_date = func.now()
+    db.session.add(bot)
+
+
+def create_southmead_user():
+    user = User()
+    user.username = 'southmead_demo'
+    user.email = 'southmead_demo@example.org'
+    user.is_admin = False
+    user.password = PASSWORD
+    user = validate(user)
+    db.session.add(user)
+
+    organisation_user = OrganisationUser()
+    organisation_user.user = user
+    organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
+    organisation_user.role = ORGANISATION_SENIOR_CLINICIAN
+
+    organisation_user = validate(organisation_user)
+    db.session.add(organisation_user)
+
+
+def create_srns_user():
+    user = User()
+    user.username = 'srns_demo'
+    user.email = 'srns_demo@example.org'
+    user.is_admin = False
+    user.password = PASSWORD
+    user = validate(user)
+    db.session.add(user)
+
+    cohort_user = CohortUser()
+    cohort_user.user = user
+    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'SRNS').one()
+    cohort_user.role = COHORT_RESEARCHER
+
+    cohort_user = validate(cohort_user)
+    db.session.add(cohort_user)
+
+
+def create_srns_demograhics_user():
+    user = User()
+    user.username = 'srns_demographics_demo'
+    user.email = 'srns_demographics_demo@example.org'
+    user.is_admin = False
+    user.password = PASSWORD
+    user = validate(user)
+    db.session.add(user)
+
+    cohort_user = CohortUser()
+    cohort_user.user = user
+    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'SRNS').one()
+    cohort_user.role = COHORT_SENIOR_RESEARCHER
+
+    cohort_user = validate(cohort_user)
+    db.session.add(cohort_user)
 
 
 def create_posts(n):
@@ -62,7 +134,7 @@ def create_posts(n):
         post.title = '%s Newsletter' % d.strftime('%b %Y')
         post.body = generate_lorem_ipsum(n=3, html=False)
         post.published_date = d
-        post = validate_post(post)
+        post = validate(post)
         db.session.add(post)
 
 
@@ -76,12 +148,12 @@ def create_result_groups_f():
                 result_group.patient = patient
                 result_group.data_source = data_source
                 result_group.result_group_definition = result_group_definition
-                result_group.date = random_datetime(datetime(2000, 1, 1), datetime.now())
+                result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.UTC))
 
                 if result_group_definition.pre_post:
                     result_group.pre_post = 'pre'  # TODO random
 
-                result_group = validate_result_group(result_group)
+                result_group = validate(result_group)
 
                 db.session.add(result_group)
 
@@ -99,71 +171,187 @@ def create_result_groups_f():
 def create_demographics_f():
     ethnicity_codes = EthnicityCode.query.all()
 
-    def f(patient, data_source, gender):
-        d = PatientDemographics()
-        d.patient = patient
-        d.data_source = data_source
-        d.first_name = generate_first_name(gender)
-        d.last_name = generate_last_name()
-        d.gender = gender
-        d.date_of_birth = generate_date_of_birth()
-        d.ethnicity_code = random.choice(ethnicity_codes)
+    def create_demographics(patient, data_source, gender):
+        old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
+        new_d = PatientDemographics()
+        new_d.patient = patient
+        new_d.data_source = data_source
 
-        # 10% chance of being dead :(
-        if random.random() < 0.1:
-            d.date_of_death = generate_date_of_death()
+        if old_d is None:
+            new_d.first_name = generate_first_name(gender)
+            new_d.last_name = generate_last_name()
+            new_d.gender = gender
+            new_d.date_of_birth = generate_date_of_birth()
+            new_d.ethnicity_code = random.choice(ethnicity_codes)
 
-        d.home_number = generate_phone_number()
-        d.mobile_number = generate_mobile_number()
-        d.work_number = generate_phone_number()
-        d.email_address = generate_email_address(d.first_name, d.last_name)
+            # 10% chance of being dead :(
+            if random.random() < 0.1:
+                new_d.date_of_death = generate_date_of_death(new_d.date_of_birth)
 
-        r = random.random()
+            new_d.home_number = generate_phone_number()
+            new_d.mobile_number = generate_mobile_number()
+            new_d.work_number = generate_phone_number()
+            new_d.email_address = generate_email_address(new_d.first_name, new_d.last_name)
+        else:
+            # 50% chance of mutating the first name
+            if random.random() > 0.5:
+                new_d.first_name = generate_first_name_alias(old_d.gender, old_d.first_name)
+            else:
+                new_d.first_name = old_d.first_name
 
-        if r > 0.9:
-            d.nhs_no = generate_nhs_no()
-            d.chi_no = generate_chi_no()
-        elif r > 0.8:
-            d.chi_no = generate_chi_no()
-        elif r > 0.1:
-            d.nhs_no = generate_nhs_no()
+            # Maiden name
+            if new_d.gender == GENDER_FEMALE and random.random() > 0.5:
+                new_d.last_name = generate_last_name()
+            else:
+                new_d.last_name = old_d.last_name
 
-        d = validate_patient_demographics(d)
+            new_d.gender = old_d.gender
+            new_d.date_of_birth = old_d.date_of_birth
 
-        db.session.add(d)
+            # 50% chance of the DOB being incorrect
+            if random.random() > 0.5:
+                new_d.date_of_birth = new_d.date_of_birth + timedelta(random.randint(-100, 100))
 
-    return f
+            new_d.ethnicity_code = old_d.ethnicity_code
+            new_d.date_of_death = old_d.date_of_death
+            new_d.home_number = old_d.home_number
+            new_d.mobile_number = old_d.mobile_number
+            new_d.work_number = old_d.work_number
+            new_d.email_address = old_d.email_address
+
+        new_d = validate(new_d)
+        db.session.add(new_d)
+
+    return create_demographics
+
+
+def create_patient_aliases_f():
+    def create_patient_aliases(patient, data_source):
+        d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
+
+        alias = PatientAlias()
+        alias.patient = patient
+        alias.data_source = data_source
+
+        # 50% chance of mutating the first name
+        if random.random() > 0.5:
+            alias.first_name = generate_first_name_alias(d.gender, d.first_name)
+        else:
+            alias.first_name = d.first_name
+
+        # Maiden name
+        if d.gender == GENDER_FEMALE and random.random() > 0.5:
+            alias.last_name = generate_last_name()
+        else:
+            alias.last_name = d.last_name
+
+        alias = validate(alias)
+        db.session.add(alias)
+
+    return create_patient_aliases
+
+
+def create_patient_numbers_f():
+    nhs_organisation = get_nhs_organisation()
+    chi_organisation = get_chi_organisation()
+    ukrr_organisation = get_ukrr_organisation()
+    nhsbt_organisation = get_nhsbt_organisation()
+
+    organisations = [
+        (nhs_organisation, generate_nhs_no),
+        (chi_organisation, generate_chi_no),
+        (ukrr_organisation, generate_ukrr_no),
+        (nhsbt_organisation, generate_nhsbt_no),
+    ]
+
+    def create_patient_numbers(patient, data_source):
+        for organisation, f in organisations:
+            old_n = PatientNumber.query.filter(PatientNumber.patient == patient, PatientNumber.organisation == organisation).first()
+            new_n = PatientNumber()
+            new_n.patient = patient
+            new_n.data_source = data_source
+            new_n.organisation = organisation
+
+            if old_n is None:
+                new_n.number = f()
+            else:
+                new_n.number = old_n.number
+
+            new_n = validate(new_n)
+            db.session.add(new_n)
+
+    return create_patient_numbers
+
+
+def create_patient_addresses_f():
+    def create_patient_addresses(patient, data_source):
+        old_a = PatientAddress.query\
+            .filter(PatientAddress.patient == patient)\
+            .order_by(desc(PatientAddress.from_date), desc(PatientAddress.to_date))\
+            .first()
+
+        new_a = PatientAddress()
+        new_a.patient = patient
+        new_a.data_source = data_source
+
+        if old_a is None:
+            new_a.from_date = patient.earliest_date_of_birth
+            new_a.address_line_1 = generate_address_line_1()
+            new_a.address_line_2 = generate_address_line_2()
+            new_a.address_line_3 = generate_address_line_3()
+            new_a.postcode = generate_postcode()
+        else:
+            to_date = random_date(old_a.from_date, date.today())
+
+            if random.random() > 0.5 and to_date != old_a.from_date:
+                old_a.to_date = to_date
+                new_a.from_date = to_date
+                new_a.address_line_1 = generate_address_line_1()
+                new_a.address_line_2 = generate_address_line_2()
+                new_a.address_line_3 = generate_address_line_3()
+                new_a.postcode = generate_postcode()
+            else:
+                new_a.from_date = old_a.from_date
+                new_a.address_line_1 = old_a.address_line_1
+                new_a.address_line_2 = old_a.address_line_2
+                new_a.address_line_3 = old_a.address_line_3
+                new_a.postcode = old_a.postcode
+
+        new_a = validate(new_a)
+        db.session.add(new_a)
+
+    return create_patient_addresses
 
 
 def create_dialysis_f():
     dialysis_types = DialysisType.query.all()
 
-    def f(patient, data_source, n):
+    def create_dialysis(patient, data_source, n):
         for _ in range(n):
             dialysis = Dialysis()
             dialysis.patient = patient
             dialysis.data_source = data_source
-            dialysis.from_date = random_date(date(2000, 1, 1), date.today())
+            dialysis.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
 
             dialysis.dialysis_type = random.choice(dialysis_types)
 
-            dialysis = validate_dialysis(dialysis)
+            dialysis = validate(dialysis)
 
             db.session.add(dialysis)
 
-    return f
+    return create_dialysis
 
 
 def create_medications_f():
-    def f(patient, data_source, n):
+    def create_medications(patient, data_source, n):
         for _ in range(n):
             medication = Medication()
             medication.patient = patient
             medication.data_source = data_source
-            medication.from_date = random_date(date(2000, 1, 1), date.today())
+            medication.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:
                 medication.to_date = random_date(medication.from_date, date.today())
@@ -174,20 +362,20 @@ def create_medications_f():
             medication.frequency = random.choice(MEDICATION_FREQUENCIES.keys())
             medication.route = random.choice(MEDICATION_ROUTES.keys())
 
-            medication = validate_medication(medication)
+            medication = validate(medication)
 
             db.session.add(medication)
 
-    return f
+    return create_medications
 
 
 def create_transplants_f():
-    def f(patient, data_source, n):
+    def create_transplants(patient, data_source, n):
         for _ in range(n):
             transplant = Transplant()
             transplant.patient = patient
             transplant.data_source = data_source
-            transplant.transplant_date = random_date(date(2000, 1, 1), date.today())
+            transplant.transplant_date = random_date(patient.earliest_date_of_birth, date.today())
             transplant.transplant_type = random.choice(TRANSPLANT_TYPES.keys())
             transplant.recurred = random_bool()
 
@@ -197,37 +385,37 @@ def create_transplants_f():
             if random.random() > 0.75:
                 transplant.date_failed = random_date(transplant.transplant_date, date.today())
 
-            transplant = validate_transplant(transplant)
+            transplant = validate(transplant)
 
             db.session.add(transplant)
 
-    return f
+    return create_transplants
 
 
 def create_hospitalisations_f():
-    def f(patient, data_source, n):
+    def create_hospitalisations(patient, data_source, n):
         for _ in range(n):
             hospitalisation = Hospitalisation()
             hospitalisation.patient = patient
             hospitalisation.data_source = data_source
-            hospitalisation.date_of_admission = random_date(date(2000, 1, 1), date.today())
+            hospitalisation.date_of_admission = random_date(patient.earliest_date_of_birth, date.today())
             hospitalisation.date_of_discharge = random_date(hospitalisation.date_of_admission, date.today())
             hospitalisation.reason_for_admission = 'Test'
 
-            hospitalisation = validate_hospitalisation(hospitalisation)
+            hospitalisation = validate(hospitalisation)
 
             db.session.add(hospitalisation)
 
-    return f
+    return create_hospitalisations
 
 
 def create_plasmapheresis_f():
-    def f(patient, data_source, n):
+    def create_plasmapheresis(patient, data_source, n):
         for _ in range(n):
             plasmapheresis = Plasmapheresis()
             plasmapheresis.patient = patient
             plasmapheresis.data_source = data_source
-            plasmapheresis.from_date = random_date(date(2000, 1, 1), date.today())
+            plasmapheresis.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:
                 plasmapheresis.to_date = random_date(plasmapheresis.from_date, date.today())
@@ -235,20 +423,20 @@ def create_plasmapheresis_f():
             plasmapheresis.no_of_exchanges = random.choice(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())
             plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES.keys())
 
-            plasmapheresis = validate_plasmapheresis(plasmapheresis)
+            plasmapheresis = validate(plasmapheresis)
 
             db.session.add(plasmapheresis)
 
-    return f
+    return create_plasmapheresis
 
 
 def create_renal_imaging_f():
-    def f(patient, data_source, n):
+    def create_renal_imaging(patient, data_source, n):
         for _ in range(n):
             renal_imaging = RenalImaging()
             renal_imaging.patient = patient
             renal_imaging.data_source = data_source
-            renal_imaging.date = random_date(date(2000, 1, 1), date.today())
+            renal_imaging.date = random_date(patient.earliest_date_of_birth, date.today())
             renal_imaging.imaging_type = random.choice(RENAL_IMAGING_TYPES.keys())
             renal_imaging.right_present = random_bool()
             renal_imaging.left_present = random_bool()
@@ -273,17 +461,16 @@ def create_renal_imaging_f():
                     renal_imaging.left_nephrocalcinosis = random_bool()
                     renal_imaging.left_nephrolithiasis = random_bool()
 
-            renal_imaging = validate_renal_imaging(renal_imaging)
+            renal_imaging = validate(renal_imaging)
 
             db.session.add(renal_imaging)
 
-    return f
+    return create_renal_imaging
 
 
 def create_patients(n):
     radar_data_source = get_radar_data_source()
-    data_sources = DataSource.query\
-        .join(DataSource.organisation)\
+    organisations = Organisation.query\
         .filter(Organisation.type == ORGANISATION_TYPE_UNIT)\
         .all()
     cohorts = Cohort.query.all()
@@ -296,41 +483,55 @@ def create_patients(n):
     create_hospitalisations = create_hospitalisations_f()
     create_renal_imaging = create_renal_imaging_f()
     create_result_groups = create_result_groups_f()
+    create_patient_aliases = create_patient_aliases_f()
+    create_patient_numbers = create_patient_numbers_f()
+    create_patient_addresses = create_patient_addresses_f()
 
-    for _ in range(n):
+    for i in range(n):
+        print 'patient #%d' % (i + 1)
+
         patient = Patient()
         patient.recruited_date = random_date(date(2008, 1, 1), date.today())
 
-        patient = validate_patient(patient)
+        patient = validate(patient)
 
         db.session.add(patient)
 
         gender = generate_gender()
 
         create_demographics(patient, radar_data_source, gender)
+        create_patient_aliases(patient, radar_data_source)
+        create_patient_numbers(patient, radar_data_source)
+        create_patient_addresses(patient, radar_data_source)
 
-        for data_source in random.sample(data_sources, random.randint(1, 3)):
+        for organisation in random.sample(organisations, random.randint(1, 3)):
             organisation_patient = OrganisationPatient()
-            organisation_patient.organisation = data_source.organisation
+            organisation_patient.organisation = organisation
             organisation_patient.patient = patient
             organisation_patient.created_date = random_date(patient.recruited_date, date.today())
-            organisation_patient = validate_organisation_patient(organisation_patient)
+            organisation_patient = validate(organisation_patient)
             db.session.add(organisation_patient)
 
-            create_demographics(patient, data_source, gender)
-            create_result_groups(patient, data_source, 10)
-            create_dialysis(patient, data_source, 5)
-            create_medications(patient, data_source, 5)
-            create_transplants(patient, data_source, 3)
-            create_hospitalisations(patient, data_source, 3)
-            create_plasmapheresis(patient, data_source, 3)
-            create_renal_imaging(patient, data_source, 3)
+            for data_source in organisation.data_sources:
+                if data_source.type != DATA_SOURCE_TYPE_RADAR:
+                    create_demographics(patient, data_source, gender)
+                    create_patient_aliases(patient, data_source)
+                    create_patient_numbers(patient, data_source)
+                    create_patient_addresses(patient, data_source)
+
+                create_result_groups(patient, data_source, 10)
+                create_dialysis(patient, data_source, 5)
+                create_medications(patient, data_source, 5)
+                create_transplants(patient, data_source, 3)
+                create_hospitalisations(patient, data_source, 3)
+                create_plasmapheresis(patient, data_source, 3)
+                create_renal_imaging(patient, data_source, 3)
 
         cohort_patient = CohortPatient()
         cohort_patient.cohort = random.choice(cohorts)
         cohort_patient.patient = patient
         cohort_patient.created_date = random_date(patient.recruited_date, date.today())
-        cohort_patient = validate_cohort_patient(cohort_patient)
+        cohort_patient = validate(cohort_patient)
         db.session.add(cohort_patient)
 
 
@@ -338,9 +539,14 @@ def create_data(patients_n):
     # Always generate the same "random" data
     random.seed(0)
 
+    create_bot_user()
     create_admin_user()
 
     create_initial_data()
+
+    create_southmead_user()
+    create_srns_user()
+    create_srns_demograhics_user()
 
     create_users(10)
     create_posts(10)

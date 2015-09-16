@@ -3,9 +3,10 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.lib.models import Patient, PatientDemographics, Cohort, User, Genetics
+from radar.lib.models import Patient, PatientDemographics, Cohort, Genetics
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.genetics import GeneticsValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -95,21 +96,16 @@ def test_results_blank(genetics):
     assert obj.results is None
 
 
-def valid(obj):
-    return validate(obj)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(obj):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(obj):
-    validation = GeneticsValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Genetics())
-    old_obj = validation.clone(obj)
-    obj = validation.after_update(ctx, old_obj, obj)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Genetics, GeneticsValidation, obj, **kwargs)

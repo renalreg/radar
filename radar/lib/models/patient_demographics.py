@@ -4,14 +4,6 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin, StringLookupTable
 
-GENDER_MALE = 'M'
-GENDER_FEMALE = 'F'
-
-GENDERS = OrderedDict([
-    (GENDER_MALE, 'Male'),
-    (GENDER_FEMALE, 'Female'),
-])
-
 
 class PatientDemographics(db.Model, MetaModelMixin):
     __tablename__ = 'patient_demographics'
@@ -28,7 +20,7 @@ class PatientDemographics(db.Model, MetaModelMixin):
     last_name = Column(String)
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
-    gender = Column(String)
+    gender = Column(Integer)
 
     ethnicity_code_id = Column(String, ForeignKey('ethnicity_codes.id'))
     ethnicity_code = relationship('EthnicityCode')

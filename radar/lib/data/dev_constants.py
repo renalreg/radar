@@ -1,8 +1,7 @@
-FEMALE = 'F'
-MALE = 'M'
+from radar.lib.models import GENDER_MALE, GENDER_FEMALE
 
 FIRST_NAMES = {
-    MALE: [
+    GENDER_MALE: [
         'JACK',
         'JOSHUA',
         'THOMAS',
@@ -29,7 +28,7 @@ FIRST_NAMES = {
         'DYLAN',
         'RYAN',
     ],
-    FEMALE: [
+    GENDER_FEMALE: [
         'JESSICA',
         'EMILY',
         'SOPHIE',
@@ -90,4 +89,34 @@ MEDICATION_NAMES = [
     'Paracetamol',
     'Ibuprofen',
     'Aspirin',
+]
+
+
+ADDRESS_LINE_1 = [
+    '1 Church Road',
+    '2 Station Road',
+    '3 Bath Road',
+    '5 Fox Lane',
+    '8 Concorde Lane'
+]
+
+
+ADDRESS_LINE_2 = [
+    'Redland',
+    'Southmead',
+    'Horfield',
+    'Clifton',
+    'Bedminster',
+]
+
+ADDRESS_LINE_3 = [
+    'Bristol'
+]
+
+POSTCODES = [
+    'BS1 5AB',
+    'BS2 4BD',
+    'BS3 3DE',
+    'BS4 2EF',
+    'BS5 1FG',
 ]

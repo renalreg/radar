@@ -214,7 +214,7 @@ def filter_by_organisation_roles(current_user, roles):
     sub_query = db.session.query(patient_alias)\
         .join(patient_alias.organisation_patients)\
         .join(OrganisationPatient.organisation)\
-        .join(Organisation.unit_users)\
+        .join(Organisation.organisation_users)\
         .filter(
             patient_alias.id == Patient.id,
             OrganisationUser.user_id == current_user.id,
@@ -229,7 +229,7 @@ def filter_by_cohort_roles(current_user, roles):
     sub_query = db.session.query(patient_alias)\
         .join(patient_alias.cohort_patients)\
         .join(CohortPatient.cohort)\
-        .join(Cohort.disease_group_users)\
+        .join(Cohort.cohort_users)\
         .filter(
             patient_alias.id == Patient.id,
             CohortUser.user_id == current_user.id,

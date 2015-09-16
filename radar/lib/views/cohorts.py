@@ -3,7 +3,7 @@ from operator import or_
 from flask import request
 
 from radar.lib.database import db
-from radar.lib.models import CohortPatient, Cohort, CohortUser, OrganisationPatient, Organisation
+from radar.lib.models import CohortPatient, Cohort, CohortUser, OrganisationPatient, Organisation, OrganisationUser
 from radar.lib.permissions import CohortObjectPermission
 from radar.lib.roles import COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_PATIENT_ROLES
 from radar.lib.serializers import Serializer, IntegerField
@@ -47,8 +47,8 @@ class CohortObjectViewMixin(object):
                 .join(Organisation.organisation_users)\
                 .filter(
                     OrganisationPatient.patient_id == model_class.patient_id,
-                    Organisation.user == current_user,
-                    Organisation.role.in_(ORGANISATION_VIEW_PATIENT_ROLES)
+                    OrganisationUser.user == current_user,
+                    OrganisationUser.role.in_(ORGANISATION_VIEW_PATIENT_ROLES)
                 )\
                 .exists()
 
