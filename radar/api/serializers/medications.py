@@ -5,7 +5,7 @@ from radar.lib.serializers import ModelSerializer, CodedStringSerializer
 from radar.lib.models import Medication, MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES
 
 
-class MedicationSerializer(MetaSerializerMixin, PatientSerializerMixin, DataSourceSerializerMixin, ModelSerializer):
+class MedicationSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
     dose_unit = CodedStringSerializer(MEDICATION_DOSE_UNITS)
     frequency = CodedStringSerializer(MEDICATION_FREQUENCIES)
     route = CodedStringSerializer(MEDICATION_ROUTES)

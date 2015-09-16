@@ -1,8 +1,19 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from collections import OrderedDict
+from sqlalchemy import Column, Integer, ForeignKey, Date, String
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin
+
+PATHOLOGY_KIDNEY_TYPES = OrderedDict([
+    ('TRANSPLANT', 'Transplant'),
+    ('NATURAL', 'Natural'),
+])
+
+PATHOLOGY_KIDNEY_SIDES = OrderedDict([
+    ('RIGHT', 'Right'),
+    ('LEFT', 'Left'),
+])
 
 
 class Pathology(db.Model, MetaModelMixin):
@@ -15,3 +26,9 @@ class Pathology(db.Model, MetaModelMixin):
 
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')
+
+    date = Column(Date, nullable=False)
+    kidney_type = Column(String, nullable=False)
+    kidney_side = Column(String, nullable=False)
+    laboratory_reference_number = Column(String, nullable=False)
+    histological_summary = Column(String)

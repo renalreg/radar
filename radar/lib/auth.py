@@ -122,8 +122,9 @@ def get_user():
     if has_request_context() and not hasattr(_request_ctx_stack.top, 'user'):
         user = get_user_from_header()
 
-        if not user.is_enabled:
-            user = None
+        if user is not None:
+            if not user.is_enabled:
+                user = None
 
         if user is None:
             user = AnonymousUser()
