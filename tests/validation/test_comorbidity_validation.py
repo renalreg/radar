@@ -90,16 +90,12 @@ def test_disorder_missing(comorbidity):
     invalid(comorbidity)
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(Comorbidity, ComorbidityValidation, obj, **kwargs)

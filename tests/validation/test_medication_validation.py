@@ -142,16 +142,12 @@ def test_route_invalid(medication):
     invalid(medication)
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(Medication, MedicationValidation, obj, **kwargs)

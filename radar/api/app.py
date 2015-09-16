@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
+from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
 from radar.api.views.patient_addresses import PatientAddressListView, PatientAddressDetailView
 from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDetailView
 from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, \
@@ -65,6 +66,10 @@ def create_app():
     app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
     app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetailView.as_view('dialysis_detail'))
     app.add_url_rule('/dialysis-types', view_func=DialysisTypeListView.as_view('dialysis_type_list'))
+
+    # Family History
+    app.add_url_rule('/family-history', view_func=FamilyHistoryListView.as_view('family_history_list'))
+    app.add_url_rule('/family-history/<int:id>', view_func=FamilyHistoryDetailView.as_view('family_history_detail'))
 
     # Genetics
     app.add_url_rule('/genetics', view_func=GeneticsListView.as_view('genetics_list'))

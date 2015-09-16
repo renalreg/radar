@@ -119,16 +119,12 @@ def test_ukrr_no_invalid(number):
     invalid(number)
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(PatientNumber, PatientNumberValidation, obj, **kwargs)

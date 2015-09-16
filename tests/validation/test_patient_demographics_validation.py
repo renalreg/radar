@@ -248,16 +248,12 @@ def test_email_address_invalid(demographics):
     invalid(demographics)
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(PatientDemographics, PatientDemographicsValidation, obj, **kwargs)
