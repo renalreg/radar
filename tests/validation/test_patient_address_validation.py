@@ -164,16 +164,12 @@ def test_postcode_invalid(address):
     invalid(address)
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(PatientAddress, PatientAddressValidation, obj, **kwargs)

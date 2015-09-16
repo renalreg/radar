@@ -309,16 +309,12 @@ def test_left_other_malformation_blank(renal_imaging):
     assert obj.left_other_malformation is None
 
 
-def valid(obj, **kwargs):
-    return validate(obj, **kwargs)
-
-
 def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj, **kwargs)
+        valid(obj, **kwargs)
 
     return e
 
 
-def validate(obj, **kwargs):
+def valid(obj, **kwargs):
     return validation_runner(RenalImaging, RenalImagingValidation, obj, **kwargs)
