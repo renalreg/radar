@@ -3,6 +3,36 @@
 
   var app = angular.module('radar.utils');
 
+  app.factory('toRadioView', function(_) {
+    return function toRadioView(modelValue) {
+      if (angular.isObject(modelValue)) {
+        return modelValue.id;
+      } else {
+        return modelValue;
+      }
+    };
+  });
+
+  app.factory('toRadioModel', function(_) {
+    return function toRadioView(options, viewValue) {
+      for (var i = 0; i < options.length; i++) {
+        var option = options[i];
+
+        if (angular.isObject(option)) {
+          if (option.id === viewValue) {
+             return option;
+          }
+        } else {
+          if (option === viewValue) {
+            return option;
+          }
+        }
+      }
+
+      return null;
+    };
+  });
+
   app.factory('wrapRadioOptions', function(_) {
     return function wrapRadioOptions(options) {
       if (options && options.length) {
@@ -33,7 +63,7 @@
   });
 
   app.factory('wrapSelectOption', function() {
-    return function wrapOption(option) {
+    return function wrapSelectOption(option) {
       if (angular.isObject(option)) {
         option = {
           id: option.id,

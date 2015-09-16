@@ -11,6 +11,7 @@
     'radar.patients.demographics',
     'radar.patients.diagnoses',
     'radar.patients.dialysis',
+    'radar.patients.familyHistory',
     'radar.patients.genetics',
     'radar.patients.hospitalisations',
     'radar.patients.medications',

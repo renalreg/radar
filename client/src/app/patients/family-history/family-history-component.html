@@ -1,0 +1,60 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-create-button action="create()"></span>
+      <span crud-edit-button item="item"></span>
+      <span crud-remove-button item="item"></span>
+    </p>
+
+    <table class="table properties" ng-if="item">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Parental Consanguinity</th>
+        <td><span tick="item.parentalConsanguinity"></span></td>
+      </tr>
+
+      <tr>
+        <th>Family History</th>
+        <td><span tick="item.familyHistory"></span></td>
+      </tr>
+    </table>
+
+    <p ng-if="!item">Not entered.</p>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-view-button item="originalItem"></span>
+      <span crud-remove-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Parental Consanguinity</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.parentalConsanguinity" required="true"></div>
+          <div frm-errors errors="item.errors.parentalConsanguinity"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Family History</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.familyHistory" required="true"></div>
+          <div frm-errors errors="item.errors.familyHistory"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-button action="view()"></span>
+      </div>
+    </form>
+  </div>
+</div>

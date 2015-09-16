@@ -4,6 +4,7 @@ from radar.lib.models.comorbidities import *
 from radar.lib.models.diagnosis import *
 from radar.lib.models.dialysis import *
 from radar.lib.models.data_sources import *
+from radar.lib.models.family_history import *
 from radar.lib.models.genetics import *
 from radar.lib.models.hospitalisations import *
 from radar.lib.models.results import *

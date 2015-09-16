@@ -7,7 +7,7 @@
     return PatientDataSourceObjectPermission;
   });
 
-  app.factory('PathologyController', function(ListDetailController, PathologyPermission) {
+  app.factory('PathologyController', function(ListDetailController, PathologyPermission, firstPromise) {
     function PathologyController($scope, $injector, store) {
       var self = this;
 
@@ -18,7 +18,15 @@
         }
       });
 
-      self.load(store.findMany('pathology', {patient: $scope.patient.id}));
+      self.load(firstPromise([
+        store.findMany('pathology', {patient: $scope.patient.id}),
+        store.findMany('pathology-kidney-types').then(function(kidneyTypes) {
+          $scope.kidneyTypes = kidneyTypes;
+        }),
+        store.findMany('pathology-kidney-sides').then(function(kidneySides) {
+          $scope.kidneySides = kidneySides;
+        })
+      ]));
 
       $scope.create = function() {
         var item = store.create('pathology', {patient: $scope.patient.id});

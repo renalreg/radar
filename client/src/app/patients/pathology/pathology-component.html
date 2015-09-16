@@ -1,0 +1,160 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.dataSource.getName()}}</td>
+      </tr>
+
+      <tr>
+        <th>Date</th>
+        <td>{{item.date | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Kidney Type</th>
+        <td>{{item.kidneyType.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Kidney Side</th>
+        <td>{{item.kidneySide.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Laboratory Reference Number</th>
+        <td>{{item.laboratoryReferenceNumber}}</td>
+      </tr>
+
+      <tr>
+        <th>Histological Summary</th>
+        <td class="newlines">{{item.histologicalSummary | missing}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Data Source</div>
+
+        <div frm-control>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSource"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.date" required="true"></div>
+          <div frm-errors errors="item.errors.date"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Kidney Type</div>
+
+        <div frm-control>
+          <div frm-radio-field model="item.kidneyType" options="kidneyTypes" required="true"></div>
+          <div frm-errors errors="item.errors.kidneyType"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Kidney Side</div>
+
+        <div frm-control>
+          <div frm-radio-field model="item.kidneySide" options="kidneySides" required="true"></div>
+          <div frm-errors errors="item.errors.kidneySide"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Laboratory Reference Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.laboratoryReferenceNumber" required="true"></div>
+          <div frm-errors errors="item.errors.laboratoryReferenceNumber"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Histological Summary</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.histologicalSummary"></div>
+          <div frm-errors errors="item.errors.histologicalSummary"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="date" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="date">Date</th>
+          <th sort-helper="kidneyType.label">Type</th>
+          <th sort-helper="kidneySide.label">Side</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.id}}</td>
+          <td>{{item.date | dateFormat}}</td>
+          <td>{{item.kidneyType.label}}</td>
+          <td>{{item.kidneySide.label}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

@@ -23,6 +23,11 @@
         }
       }
     });
+
+    $stateProvider.state('patient.all', {
+      url: '/all',
+      templateUrl: 'app/patients/all.html'
+    });
   });
 
   app.constant('patientFeatures', {
@@ -53,6 +58,10 @@
     COMORBIDITIES: {
       text: 'Comorbidities',
       state: 'patient.comorbidities({patientId: patient.id})'
+    },
+    FAMILY_HISTORY: {
+      text: 'Family History',
+      state: 'patient.familyHistory({patientId: patient.id})'
     },
     GENETICS: {
       text: 'Genetics',
@@ -105,6 +114,7 @@
     'DIALYSIS',
     'PLASMAPHERESIS',
     'COMORBIDITIES',
+    'FAMILY_HISTORY',
     'COHORTS',
     'UNITS'
   ]);
