@@ -7,7 +7,7 @@ from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDe
 from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, \
     EthnicityCodeListView, GenderListView
 from radar.api.views.dialysis import DialysisListView, DialysisDetailView, DialysisTypeListView
-from radar.api.views.cohorts import CohortListView, CohortDetailView
+from radar.api.views.cohorts import CohortListView, CohortDetailView, CohortRoleListView
 from radar.api.views.data_sources import DataSourceListView, DataSourceDetailView
 from radar.api.views.genetics import GeneticsDetailView, GeneticsListView
 from radar.api.views.hospitalisations import HospitalisationDetailView, HospitalisationListView
@@ -22,7 +22,7 @@ from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDeta
     RenalImagingKidneyTypeListView
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
-from radar.api.views.organisations import OrganisationListView
+from radar.api.views.organisations import OrganisationListView, OrganisationRoleListView
 from radar.api.views.transplants import TransplantListView, TransplantDetailView, TransplantTypeListView
 from radar.api.views.users import UserDetailView, UserListView
 from radar.api.views.login import LoginView
@@ -50,6 +50,7 @@ def create_app():
     # Cohorts
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
     app.add_url_rule('/cohorts/<int:id>', view_func=CohortDetailView.as_view('cohort_detail'))
+    app.add_url_rule('/cohort-roles', view_func=CohortRoleListView.as_view('cohort_role_list'))
 
     # Comorbidities
     app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
@@ -82,6 +83,7 @@ def create_app():
 
     # Organisations
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
+    app.add_url_rule('/organisation-roles', view_func=OrganisationRoleListView.as_view('organisation_role_list'))
 
     # Patient Addresses
     app.add_url_rule('/patient-addresses', view_func=PatientAddressListView.as_view('patient_address_list'))

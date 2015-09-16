@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 # =====
 # Roles
 # =====
@@ -22,17 +24,17 @@ DISEASE_GROUP_ROLE_NAMES = {
     COHORT_RESEARCHER: 'Researcher',
 }
 
-ORGANISATION_ROLES = [
-    ORGANISATION_CLINICIAN,
-    ORGANISATION_SENIOR_CLINICIAN,
-    ORGANISATION_ADMIN,
-    ORGANISATION_IT,
-]
+ORGANISATION_ROLES = OrderedDict([
+    (ORGANISATION_SENIOR_CLINICIAN, 'Senior Clinician'),
+    (ORGANISATION_CLINICIAN, 'Clinician'),
+    (ORGANISATION_ADMIN, 'Admin'),
+    (ORGANISATION_IT, 'IT'),
+])
 
-COHORT_ROLES = [
-    COHORT_RESEARCHER,
-    COHORT_SENIOR_RESEARCHER,
-]
+COHORT_ROLES = OrderedDict([
+    (COHORT_RESEARCHER, 'Researcher'),
+    (COHORT_SENIOR_RESEARCHER, 'Senior Researcher'),
+])
 
 # Special roles
 
