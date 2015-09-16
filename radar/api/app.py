@@ -3,6 +3,8 @@ from flask_cors import CORS
 
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
+from radar.api.views.pathology import PathologyDetailView, PathologyListView, PathologyKidneyTypeListView, \
+    PathologyKidneySideListView
 from radar.api.views.patient_addresses import PatientAddressListView, PatientAddressDetailView
 from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDetailView
 from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, \
@@ -89,6 +91,12 @@ def create_app():
     # Organisations
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
     app.add_url_rule('/organisation-roles', view_func=OrganisationRoleListView.as_view('organisation_role_list'))
+
+    # Pathology
+    app.add_url_rule('/pathology', view_func=PathologyListView.as_view('pathology_list'))
+    app.add_url_rule('/pathology/<int:id>', view_func=PathologyDetailView.as_view('pathology_detail'))
+    app.add_url_rule('/pathology-kidney-types', view_func=PathologyKidneyTypeListView.as_view('pathology_kidney_type_list'))
+    app.add_url_rule('/pathology-kidney-sides', view_func=PathologyKidneySideListView.as_view('pathology_kidney_side_list'))
 
     # Patient Addresses
     app.add_url_rule('/patient-addresses', view_func=PatientAddressListView.as_view('patient_address_list'))
