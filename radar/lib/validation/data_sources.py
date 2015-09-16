@@ -1,5 +1,5 @@
-from radar.lib.data_sources import DATA_SOURCE_TYPE_RADAR
-from radar.lib.validation.core import ValidationError, pass_context, Validation
+from radar.lib.data_sources import DATA_SOURCE_TYPE_RADAR, is_radar_data_source
+from radar.lib.validation.core import ValidationError, pass_context, Validation, pass_call
 from radar.lib.validation.core import Field
 from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.validators import required
@@ -37,5 +37,20 @@ class DataSourceField(Field):
         return data_source
 
 
+class RadarDataSourceField(Field):
+    @pass_context
+    def validate(self, ctx, data_source):
+        user = ctx['user']
+
+        if not user.is_admin and not is_radar_data_source(data_source.data_source):
+            raise ValidationError('Permission denied!')
+
+        return data_source
+
+
 class DataSourceValidationMixin(object):
     data_source = DataSourceField([required()])
+
+
+class RadarDataSourceValidationMixin(object):
+    data_source = RadarDataSourceField([required()])

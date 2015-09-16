@@ -46,6 +46,10 @@ def login(username, password):
     if not user.check_password(password):
         return None
 
+    # Bots can't login
+    if user.is_bot:
+        return None
+
     _request_ctx_stack.top.user = user
 
     return user
@@ -117,6 +121,9 @@ def get_user_from_token(token):
 def get_user():
     if has_request_context() and not hasattr(_request_ctx_stack.top, 'user'):
         user = get_user_from_header()
+
+        if not user.is_enabled:
+            user = None
 
         if user is None:
             user = AnonymousUser()

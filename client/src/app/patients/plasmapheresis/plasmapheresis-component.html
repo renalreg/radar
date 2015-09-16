@@ -110,15 +110,16 @@
 
     <table class="table table-condensed table-striped" ng-if="page.getCount()">
       <thead>
-      <tr>
-        <th></th>
-        <th sort-helper="id">ID</th>
-        <th sort-helper="fromDate">From Date</th>
-        <th sort-helper="toDate">To Date</th>
-        <th sort-helper="noOfExchanges.label">No. of Exchanges</th>
-        <th sort-helper="response.label">Response</th>
-        <th></th>
-      </tr>
+        <tr>
+          <th></th>
+          <th sort-helper="id">ID</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
+          <th sort-helper="noOfExchanges.label">No. of Exchanges</th>
+          <th sort-helper="response.label">Response</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th></th>
+        </tr>
       </thead>
 
       <tbody>
@@ -133,6 +134,7 @@
         <td>{{item.toDate | dateFormat}}</td>
         <td>{{item.noOfExchanges.label}}</td>
         <td>{{item.response.label | missing}}</td>
+        <td class="data-source">{{item.dataSource.getName()}}</td>
 
         <td>
           <span crud-list-remove-button item="item"></span>

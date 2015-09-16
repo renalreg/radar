@@ -3,14 +3,15 @@ from radar.lib.serializers import ModelSerializer, ListField, BooleanField, Refe
 from radar.lib.models import DataSource, Organisation, OrganisationUser, OrganisationPatient
 
 
-class OrganisationReferenceField(ReferenceField):
-    model_class = Organisation
-
-
 class BasicOrganisationSerializer(ModelSerializer):
     class Meta(object):
         model_class = Organisation
         exclude = ['organisation_id']
+
+
+class OrganisationReferenceField(ReferenceField):
+    model_class = Organisation
+    serializer_class = BasicOrganisationSerializer
 
 
 class DataSourceSerializer(ModelSerializer):

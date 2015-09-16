@@ -19,9 +19,11 @@
         var organisationIds = [];
 
         if (!isAdmin) {
-          _.forEach(user.organisations, function(organistion) {
-            if (organistion.hasEditPatientPermission) {
-              organisationIds.push(organistion.organistion.id);
+          var userOrganisations = user.organisations;
+
+          _.forEach(userOrganisations, function(organisation) {
+            if (organisation.hasEditPatientPermission) {
+              organisationIds.push(organisation.organisation.id);
             }
           });
         }

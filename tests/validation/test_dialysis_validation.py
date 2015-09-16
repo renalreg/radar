@@ -2,9 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Dialysis, DialysisType, Patient, PatientDemographics, User, DataSource
+from radar.lib.models import Dialysis, DialysisType, Patient, PatientDemographics, DataSource
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.dialysis import DialysisValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -88,21 +89,16 @@ def test_dialysis_type_missing(dialysis):
     invalid(dialysis)
 
 
-def valid(dialysis):
-    return validate(dialysis)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(dialysis):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(dialysis)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(dialysis):
-    validation = DialysisValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Dialysis())
-    old_obj = validation.clone(dialysis)
-    obj = validation.after_update(ctx, old_obj, dialysis)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Dialysis, DialysisValidation, obj, **kwargs)

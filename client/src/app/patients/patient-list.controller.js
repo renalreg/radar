@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('PatientListController', function(ListController, $injector, ListHelperProxy) {
+  app.factory('PatientListController', function(ListController, $injector, ListHelperProxy, firstPromise) {
     function PatientListController($scope, store) {
       var self = this;
 
@@ -26,12 +26,17 @@
         var proxyParams = proxy.getParams();
         var params = angular.extend({}, proxyParams, $scope.filters);
 
-        self.load(store.findMany('patients', params, true).then(function(data) {
-          proxy.setItems(data.data);
-          proxy.setCount(data.pagination.count);
-          $scope.count = data.pagination.count;
-          return data.data;
-        }));
+        self.load(firstPromise([
+          store.findMany('patients', params, true).then(function(data) {
+            proxy.setItems(data.data);
+            proxy.setCount(data.pagination.count);
+            $scope.count = data.pagination.count;
+            return data.data;
+          }),
+          store.findMany('genders').then(function(genders) {
+            $scope.genders = genders;
+          })
+        ]));
       }
 
       function clear() {

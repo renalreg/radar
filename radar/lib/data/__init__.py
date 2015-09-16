@@ -1,3 +1,4 @@
+from radar.lib.data.comorbidities import create_disorders
 from radar.lib.data.data_sources import create_data_sources
 from radar.lib.data.dialysis import create_dialysis_types
 from radar.lib.data.cohorts import create_cohorts
@@ -17,3 +18,4 @@ def create_initial_data():
 
     create_ethnicity_codes()
     create_dialysis_types()
+    create_disorders()

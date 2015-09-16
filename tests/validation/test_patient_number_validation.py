@@ -1,9 +1,11 @@
 import pytest
-from radar.lib.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Patient, User, \
-    Organisation, ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, ORGANISATION_CODE_RADAR, \
+
+from radar.lib.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Patient, Organisation, \
+    ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, ORGANISATION_CODE_RADAR, \
     ORGANISATION_CODE_UKRR
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.patient_numbers import PatientNumberValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -117,21 +119,16 @@ def test_ukrr_no_invalid(number):
     invalid(number)
 
 
-def valid(obj):
-    return validate(obj)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(obj):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(obj)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(obj):
-    validation = PatientNumberValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, PatientNumber())
-    old_obj = validation.clone(obj)
-    obj = validation.after_update(ctx, old_obj, obj)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(PatientNumber, PatientNumberValidation, obj, **kwargs)

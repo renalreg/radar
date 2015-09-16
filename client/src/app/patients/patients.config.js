@@ -50,6 +50,10 @@
       text: 'Cohorts',
       state: 'patient.cohorts({patientId: patient.id})'
     },
+    COMORBIDITIES: {
+      text: 'Comorbidities',
+      state: 'patient.comorbidities({patientId: patient.id})'
+    },
     GENETICS: {
       text: 'Genetics',
       state: 'patient.genetics({patientId: patient.id, cohortId: cohort.id})'
@@ -100,6 +104,7 @@
     'TRANSPLANTS',
     'DIALYSIS',
     'PLASMAPHERESIS',
+    'COMORBIDITIES',
     'COHORTS',
     'UNITS'
   ]);

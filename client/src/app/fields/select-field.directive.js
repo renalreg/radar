@@ -16,12 +16,19 @@
         scope.data = {};
 
         scope.$watch('model', function(value) {
-          scope.data.model = wrapSelectOption(value);
+          if (value === null) {
+            scope.data.model = null;
+          } else {
+            scope.data.model = wrapSelectOption(value);
+          }
         });
 
         scope.$watch('data.model', function(value) {
-          console.log(value);
-          scope.model = unwrapSelectOption(value);
+          if (value === undefined) {
+            scope.model = null;
+          } else {
+            scope.model = unwrapSelectOption(value);
+          }
         });
 
         scope.$watchCollection('options', function(options) {

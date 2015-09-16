@@ -2,9 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, Transplant, DataSource, User
+from radar.lib.models import Patient, PatientDemographics, Transplant, DataSource
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.transplants import TransplantValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -93,21 +94,16 @@ def test_date_failed_before_transplant_date(transplant):
     invalid(transplant)
 
 
-def valid(transplant):
-    return validate(transplant)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(transplant):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(transplant)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(transplant):
-    validation = TransplantValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Transplant())
-    old_obj = validation.clone(transplant)
-    obj = validation.after_update(ctx, old_obj, transplant)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Transplant, TransplantValidation, obj, **kwargs)

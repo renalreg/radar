@@ -2,9 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, Plasmapheresis, DataSource, User
+from radar.lib.models import Patient, PatientDemographics, Plasmapheresis, DataSource
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.plasmapheresis import PlasmapheresisValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -105,19 +106,16 @@ def test_response_invalid(plasmapheresis):
     invalid(plasmapheresis)
 
 
-def valid(plasmapheresis):
-    return validate(plasmapheresis)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(plasmapheresis):
-    with pytest.raises(ValidationError):
-        validate(plasmapheresis)
+def invalid(obj, **kwargs):
+    with pytest.raises(ValidationError) as e:
+        validate(obj, **kwargs)
+
+    return e
 
 
-def validate(plasmapheresis):
-    validation = PlasmapheresisValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, Plasmapheresis())
-    old_obj = validation.clone(plasmapheresis)
-    obj = validation.after_update(ctx, old_obj, plasmapheresis)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(Plasmapheresis, PlasmapheresisValidation, obj, **kwargs)

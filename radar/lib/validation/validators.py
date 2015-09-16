@@ -1,12 +1,13 @@
 import re
 from datetime import datetime
+
 import pytz
+
 from radar.lib.constants import HUMAN_DATE_FORMAT
 from radar.lib.safe_strftime import safe_strftime
-
 from radar.lib.utils import is_date, date_to_datetime, datetime_to_date, is_datetime
 from radar.lib.validation.core import SkipField, ValidationError, pass_context, pass_call
-from radar.lib.validation.utils import validate_nhs_no
+
 
 USERNAME_REGEX = re.compile('^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
 USERNAME_MIN_LENGTH = 4
@@ -25,9 +26,6 @@ TAB_TO_SPACE_REGEX = re.compile('\t')
 NORMALISE_WHITESPACE_REGEX = re.compile('\s{2,}')
 
 DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
-
-MIN_UKRR_NO = 199600001
-MAX_UKRR_NO = 999999999
 
 
 def required():
@@ -229,44 +227,6 @@ def email_address():
     return email_address_f
 
 
-def _nhs_no(value, number_type):
-    if isinstance(value, basestring):
-        # Remove non-digits
-        value = re.sub('[^0-9]', '', value)
-
-        # Remove leading zeros
-        value = re.sub('^0+', '', value)
-
-    if not validate_nhs_no(value):
-        raise ValidationError('Not a valid %s number.' % number_type)
-
-    return value
-
-
-# TODO range
-def nhs_no():
-    def nhs_no_f(value):
-        return _nhs_no(value, 'NHS')
-
-    return nhs_no_f
-
-
-# TODO range
-def chi_no():
-    def chi_no_f(value):
-        return _nhs_no(value, 'CHI')
-
-    return chi_no_f
-
-
-# TODO range
-def handc_no():
-    def handc_no_f(value):
-        return _nhs_no(value, 'H&C')
-
-    return handc_no_f
-
-
 def username():
     def username_f(value):
         value = value.lower()
@@ -362,25 +322,3 @@ def after_day_zero(dt_format=HUMAN_DATE_FORMAT):
         return after_f(value)
 
     return after_day_zero_f
-
-
-def ukrr_no():
-    def ukrr_no_f(value):
-        if isinstance(value, basestring):
-            # Remove non-digits
-            value = re.sub('[^0-9]', '', value)
-
-            # Remove leading zeros
-            value = re.sub('^0+', '', value)
-
-        try:
-            x = int(value)
-        except ValueError:
-            raise ValidationError('Not a valid UK Renal Registry number.')
-
-        if x < MIN_UKRR_NO or x > MAX_UKRR_NO:
-            raise ValidationError('Not a valid UK Renal Registry number.')
-
-        return value
-
-    return ukrr_no_f

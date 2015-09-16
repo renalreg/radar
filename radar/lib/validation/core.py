@@ -223,7 +223,12 @@ class ValidateCall(object):
         old_value = getattr(self.old_obj, field.field_name)
         new_value = field.get_value(obj)
         call = ValidatorCall(self.ctx, old_value)
-        new_value = run_validators(validators, call, new_value, result)
+
+        try:
+            new_value = run_validators(validators, call, new_value, result)
+        except ValidationError as e:
+            raise ValidationError({field.field_name: e.errors})
+
         field.set_value(obj, new_value)
         return new_value
 

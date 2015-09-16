@@ -75,7 +75,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="firstName">First Name</th>
           <th sort-helper="lastName">Last Name</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
@@ -90,10 +89,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
           <td>{{item.firstName}}</td>
           <td>{{item.lastName}}</td>
-          <td>{{item.dataSource.getName()}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

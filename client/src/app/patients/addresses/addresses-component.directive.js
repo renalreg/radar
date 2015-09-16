@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.patients.addresses');
 
-  app.factory('PatientAddressPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('PatientAddressPermission', function(PatientRadarObjectPermission) {
+    return PatientRadarObjectPermission;
   });
 
-  app.factory('PatientAddressesController', function(ListDetailController, PatientAddressPermission) {
+  app.factory('PatientAddressesController', function(ListDetailController, PatientAddressPermission, firstPromise, getRadarDataSource) {
     function PatientAddressesController($scope, $injector, store) {
       var self = this;
 
@@ -18,10 +18,20 @@
         }
       });
 
-      self.load(store.findMany('patient-addresses', {patient: $scope.patient.id}));
+      $scope.dataSource = null;
+
+      self.load(firstPromise([
+        store.findMany('patient-addresses', {patient: $scope.patient.id}),
+        getRadarDataSource().then(function(dataSource) {
+          $scope.dataSource = dataSource;
+        })
+      ]));
 
       $scope.create = function() {
-        var item = store.create('patient-addresses', {patient: $scope.patient.id});
+        var item = store.create('patient-addresses', {
+          patient: $scope.patient.id,
+          dataSource: $scope.dataSource
+        });
         self.edit(item);
       };
     }

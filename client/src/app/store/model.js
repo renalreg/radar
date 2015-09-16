@@ -74,7 +74,8 @@
     };
 
     Model.prototype.clone = function() {
-      return new this.constructor(this.modelName, this.getData());
+      var Model = store.getModelConstructor(this.modelName);
+      return new Model(this.modelName, this.getData());
     };
 
     return Model;

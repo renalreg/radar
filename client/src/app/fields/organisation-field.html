@@ -1,0 +1,7 @@
+<select
+  frm-model
+  frm-required
+  ng-model="model"
+  ng-options="x as x.name for x in organisations track by x.id"
+  ng-required="required()"
+  class="form-control"></select>

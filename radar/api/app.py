@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
 
+from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
 from radar.api.views.patient_addresses import PatientAddressListView, PatientAddressDetailView
 from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDetailView
-from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, EthnicityCodeListView
+from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, \
+    EthnicityCodeListView, GenderListView
 from radar.api.views.dialysis import DialysisListView, DialysisDetailView, DialysisTypeListView
 from radar.api.views.cohorts import CohortListView, CohortDetailView
 from radar.api.views.data_sources import DataSourceListView, DataSourceDetailView
@@ -49,6 +51,15 @@ def create_app():
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
     app.add_url_rule('/cohorts/<int:id>', view_func=CohortDetailView.as_view('cohort_detail'))
 
+    # Comorbidities
+    app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
+    app.add_url_rule('/comorbidities/<int:id>', view_func=ComorbidityDetailView.as_view('comorbidity_detail'))
+    app.add_url_rule('/comorbidity-disorders', view_func=DisorderListView.as_view('disorder_list'))
+
+    # Data Sources
+    app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
+    app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))
+
     # Dialysis
     app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
     app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetailView.as_view('dialysis_detail'))
@@ -61,10 +72,6 @@ def create_app():
     # Hospitalisations
     app.add_url_rule('/hospitalisations', view_func=HospitalisationListView.as_view('hospitalisation_list'))
     app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetailView.as_view('hospitalisation_detail'))
-
-    # Data Sources
-    app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
-    app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))
 
     # Medications
     app.add_url_rule('/medications', view_func=MedicationListView.as_view('medication_list'))
@@ -88,6 +95,7 @@ def create_app():
     app.add_url_rule('/patient-demographics', view_func=PatientDemographicsListView.as_view('patient_demographics_list'))
     app.add_url_rule('/patient-demographics/<int:id>', view_func=PatientDemographicsDetailView.as_view('patient_demographics_detail'))
     app.add_url_rule('/ethnicity-codes', view_func=EthnicityCodeListView.as_view('ethnicity_code_list'))
+    app.add_url_rule('/genders', view_func=GenderListView.as_view('gender_list'))
 
     # Patient Numbers
     app.add_url_rule('/patient-numbers', view_func=PatientNumberListView.as_view('patient_number_list'))

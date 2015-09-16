@@ -4,7 +4,10 @@
   angular.module('radar.patients', [
     'ui.router',
     'radar.store',
+    'radar.patients.addresses',
+    'radar.patients.aliases',
     'radar.patients.cohorts',
+    'radar.patients.comorbidities',
     'radar.patients.demographics',
     'radar.patients.diagnoses',
     'radar.patients.dialysis',
@@ -12,6 +15,7 @@
     'radar.patients.hospitalisations',
     'radar.patients.medications',
     'radar.patients.navigation',
+    'radar.patients.numbers',
     'radar.patients.pathology',
     'radar.patients.plasmapheresis',
     'radar.patients.renalImaging',

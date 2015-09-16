@@ -52,7 +52,12 @@ class UserQueryBuilder(object):
         query = self.query
 
         # Show all users if the user is an admin or if the user can manage group membership
-        if not self.current_user.is_admin and not self.current_user.has_edit_user_membership_permission:
+        all_users = (
+            self.current_user.is_admin or
+            any(x.has_edit_user_membership_permission for x in self.current_user.organisation_users)
+        )
+
+        if not all_users:
             query = query.filter(filter_by_permissions(self.current_user))
 
         return query

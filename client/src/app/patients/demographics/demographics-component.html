@@ -38,7 +38,7 @@
 
       <tr>
         <th>Gender</th>
-        <td>{{item.gender | genderFormat}}</td>
+        <td>{{item.gender.label}}</td>
       </tr>
 
       <tr>
@@ -117,7 +117,7 @@
             <div frm-label>Gender</div>
 
             <div frm-control>
-              <div frm-gender-field model="item.gender"></div>
+              <div frm-select-field model="item.gender" required="true" options="genders"></div>
               <div frm-errors errors="item.errors.gender"></div>
             </div>
           </div>
@@ -126,7 +126,7 @@
             <div frm-label>Ethnicity</div>
 
             <div frm-control>
-              <div frm-select-field model="item.ethnicityCode" required="required" options="ethnicityCodes"></div>
+              <div frm-select-field model="item.ethnicityCode" options="ethnicityCodes"></div>
               <div frm-errors errors="item.errors.ethnicityCode"></div>
             </div>
           </div>
@@ -179,10 +179,6 @@
   </div>
 
   <div ng-if="!viewing && !editing" list-helper="items as page">
-    <p>
-      <span crud-create-button action="create()"></span>
-    </p>
-
     <div filter-helper></div>
 
     <div ng-show="!page.getCount()">
@@ -193,7 +189,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="firstName">First Name</th>
           <th sort-helper="lastName">Last Name</th>
           <th sort-helper="dateOfBirth">DOB</th>
@@ -201,30 +196,24 @@
           <th sort-helper="gender">Gender</th>
           <th sort-helper="ethnicityCode.label">Ethnicity</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
-          <th></th>
         </tr>
       </thead>
 
       <tbody>
-      <tr ng-repeat="item in page.getItems()">
-        <td>
-          <span crud-list-view-button item="item"></span>
-          <span crud-list-edit-button item="item"></span>
-        </td>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
 
-        <td>{{item.id}}</td>
-        <td>{{item.firstName | missing}}</td>
-        <td>{{item.lastName | missing}}</td>
-        <td>{{item.dateOfBirth | dateFormat}}</td>
-        <td>{{item.dateOfDeath | dateFormat}}</td>
-        <td>{{item.gender | genderFormat}}</td>
-        <td>{{item.ethnicityCode.label | missing}}</td>
-        <td>{{item.dataSource.getName()}}</td>
-
-        <td>
-          <span crud-list-remove-button item="item"></span>
-        </td>
-      </tr>
+          <td>{{item.firstName | missing}}</td>
+          <td>{{item.lastName | missing}}</td>
+          <td>{{item.dateOfBirth | dateFormat}}</td>
+          <td>{{item.dateOfDeath | dateFormat}}</td>
+          <td>{{item.gender.label}}</td>
+          <td>{{item.ethnicityCode.label | missing}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
+        </tr>
       </tbody>
     </table>
 

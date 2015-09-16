@@ -28,7 +28,7 @@
 
       <tr>
         <th>Address</th>
-        <td class="newlines">{{item.address()}}</td>
+        <td class="newlines">{{item.getAddress()}}</td>
       </tr>
     </table>
   </div>
@@ -114,34 +114,32 @@
 
     <table class="table table-condensed table-striped" ng-if="page.getCount()">
       <thead>
-      <tr>
-        <th></th>
-        <th sort-helper="id">ID</th>
-        <th sort-helper="fromDate">From Date</th>
-        <th sort-helper="toDate">To Date</th>
-        <th sort-helper="address()">Address</th>
-        <th sort-helper="dataSource.getName()">Data Source</th>
-        <th></th>
-      </tr>
+        <tr>
+          <th></th>
+          <th sort-helper="address()">Address</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th></th>
+        </tr>
       </thead>
 
       <tbody>
-      <tr ng-repeat="item in page.getItems()">
-        <td>
-          <span crud-list-view-button item="item"></span>
-          <span crud-list-edit-button item="item"></span>
-        </td>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
 
-        <td>{{item.id}}</td>
-        <td>{{item.fromDate | dateFormat}}</td>
-        <td>{{item.fromDate | dateFormat}}</td>
-        <td class="newlines">{{item.address()}}</td>
-        <td>{{item.dataSource.getName()}}</td>
+          <td class="newlines">{{item.getAddress()}}</td>
+          <td>{{item.fromDate | dateFormat}}</td>
+          <td>{{item.toDate | dateFormat}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
 
-        <td>
-          <span crud-list-remove-button item="item"></span>
-        </td>
-      </tr>
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
       </tbody>
     </table>
 

@@ -14,13 +14,13 @@ PLASMAPHERESIS_RESPONSES = OrderedDict([
 
 PLASMAPHERESIS_NO_OF_EXCHANGES = OrderedDict([
     ('1/1D', 'Daily'),
-    ('5/1W', '5x / week'),
-    ('4/1W', '4x / week'),
-    ('3/1W', '3x / week'),
-    ('2/1W', '2x / week'),
-    ('1/1W', '1x / week'),
-    ('1/2W', '1x / 2 weeks'),
-    ('1/4W', '1x / 4 weeks'),
+    ('5/1W', 'x5 / week'),
+    ('4/1W', 'x4 / week'),
+    ('3/1W', 'x3 / week'),
+    ('2/1W', 'x2 / week'),
+    ('1/1W', 'x1 / week'),
+    ('1/2W', 'x1 / 2 weeks'),
+    ('1/4W', 'x1 / 4 weeks'),
 ])
 
 

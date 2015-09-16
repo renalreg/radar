@@ -2,9 +2,10 @@ from datetime import date
 
 import pytest
 
-from radar.lib.models import User, Patient, PatientDemographics, DataSource, PatientAlias
+from radar.lib.models import Patient, PatientDemographics, DataSource, PatientAlias
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.patient_aliases import PatientAliasValidation
+from utils import validation_runner
 
 
 @pytest.fixture
@@ -90,21 +91,16 @@ def test_last_name_to_upper(alias):
     assert obj.last_name == 'FOO BAR'
 
 
-def valid(alias):
-    return validate(alias)
+def valid(obj, **kwargs):
+    return validate(obj, **kwargs)
 
 
-def invalid(alias):
+def invalid(obj, **kwargs):
     with pytest.raises(ValidationError) as e:
-        validate(alias)
+        validate(obj, **kwargs)
 
     return e
 
 
-def validate(alias):
-    validation = PatientAliasValidation()
-    ctx = {'user': User(is_admin=True)}
-    validation.before_update(ctx, PatientAlias())
-    old_obj = validation.clone(alias)
-    obj = validation.after_update(ctx, old_obj, alias)
-    return obj
+def validate(obj, **kwargs):
+    return validation_runner(PatientAlias, PatientAliasValidation, obj, **kwargs)

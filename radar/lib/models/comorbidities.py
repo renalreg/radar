@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Date
+from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
+
 from radar.lib.database import db
 from radar.lib.models import MetaModelMixin, IntegerLookupTable
 

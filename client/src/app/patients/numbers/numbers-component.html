@@ -18,7 +18,7 @@
 
       <tr>
         <th>Organisation</th>
-        <td>{{item.numberFacility.name}}</td>
+        <td>{{item.organisation.name}}</td>
       </tr>
 
       <tr>
@@ -36,47 +36,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndList()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>From Date</div>
-
-        <div frm-control>
-          <div frm-date-field model="item.fromDate"></div>
-          <div frm-errors errors="item.errors.fromDate"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>To Date</div>
-
-        <div frm-control>
-          <div frm-date-field model="item.toDate"></div>
-          <div frm-errors errors="item.errors.toDate"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Address Line 1</div>
-
-        <div frm-control>
-          <div frm-text-field model="item.addressLine1" required="true"></div>
-          <div frm-errors errors="item.errors.addressLine1"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Address Line 2</div>
-
-        <div frm-control>
-          <div frm-text-field model="item.addressLine2"></div>
-          <div frm-errors errors="item.errors.addressLine2"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
         <div frm-label>Organisation</div>
 
         <div frm-control>
-          <div frm-text-field model="item.addressLine3"></div>
-          <div frm-errors errors="item.errors.addressLine3"></div>
+          <div frm-organisation-field model="item.organisation" required="true"></div>
+          <div frm-errors errors="item.errors.organisation"></div>
         </div>
       </div>
 
@@ -96,7 +60,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="numberFacility.name">
+  <div ng-if="!viewing && !editing" list-helper="items as page">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -111,8 +75,7 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
-          <th sort-helper="numberFacility.name">Organisation</th>
+          <th sort-helper="organisation.name">Organisation</th>
           <th sort-helper="number">Number</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
@@ -126,10 +89,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
-          <td>{{item.numberFacility.name}}</td>
+          <td>{{item.organisation.name}}</td>
           <td>{{item.number}}</td>
-          <td>{{item.dataSource.getName()}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

@@ -39,12 +39,14 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     email = Column(String, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False, server_default='0')
+    is_admin = Column(Boolean, default=False, nullable=False)
+    is_bot = Column(Boolean, default=False, nullable=False)
+    is_enabled = Column(Boolean, default=True, nullable=False)
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False, server_default='0')
+    force_password_change = Column(Boolean, default=False, nullable=False)
 
     organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
     cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])

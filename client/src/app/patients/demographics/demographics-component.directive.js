@@ -3,32 +3,32 @@
 
   var app = angular.module('radar.patients.demographics');
 
-  app.factory('PatientDemographicsPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('PatientDemographicsPermission', function(PatientRadarObjectPermission) {
+    return PatientRadarObjectPermission;
   });
 
-  app.factory('PatientDemographicsController', function(ListDetailController, PatientDemographicsPermission, firstPromise) {
+  app.factory('PatientDemographicsController', function(ListDetailController, PatientDemographicsPermission, firstPromise, DenyPermission) {
     function PatientDemographicsController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: new PatientDemographicsPermission($scope.patient)
+          createPermission: new DenyPermission(),
+          editPermission: new PatientDemographicsPermission($scope.patient),
+          removePermission: new DenyPermission()
         }
       });
 
       self.load(firstPromise([
         store.findMany('patient-demographics', {patient: $scope.patient.id}),
+        store.findMany('genders').then(function(genders) {
+          $scope.genders = genders;
+        }),
         store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
           $scope.ethnicityCodes = ethnicityCodes;
         })
       ]));
-
-      $scope.create = function() {
-        var item = store.create('patient-demographics', {patient: $scope.patient.id});
-        self.edit(item);
-      };
     }
 
     PatientDemographicsController.prototype = Object.create(ListDetailController.prototype);

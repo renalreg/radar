@@ -37,6 +37,8 @@
         <td class="newlines">{{item.results | missing}}</td>
       </tr>
     </table>
+
+    <p ng-if="!item">Not entered.</p>
   </div>
 
   <div ng-if="editing">

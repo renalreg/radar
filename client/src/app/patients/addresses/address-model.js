@@ -10,7 +10,7 @@
 
     PatientAddressModel.prototype = Object.create(Model.prototype);
 
-    PatientAddressModel.prototype.address = function() {
+    PatientAddressModel.prototype.getAddress = function() {
       var lines = [];
 
       if (this.addressLine1) {
@@ -29,7 +29,7 @@
         lines.push(this.postcode);
       }
 
-      return lines.join('\n');
+      return lines.join(',\n');
     };
 
     return PatientAddressModel;

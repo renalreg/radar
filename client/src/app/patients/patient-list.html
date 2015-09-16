@@ -48,7 +48,7 @@
                 <span ng-if="!patient.dateOfBirth">{{patient.yearOfBirth | missing}}</span>
               </td>
 
-              <td>{{patient.gender | genderFormat}}</td>
+              <td>{{patient.gender.label}}</td>
 
               <td>
                 <span ng-if="!patient.cohorts.length">-</span>
@@ -149,7 +149,7 @@
           <div frm-label>Gender</div>
 
           <div frm-control>
-            <div frm-gender-field model="filters.gender"></div>
+            <div frm-select-field model="filters.gender" options="genders"></div>
             <div frm-errors></div>
           </div>
         </div>

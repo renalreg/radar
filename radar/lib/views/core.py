@@ -7,7 +7,8 @@ from flask import abort
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.lib.serializers import ListField, Serializer, IntegerField, StringField, CodedStringSerializer
+from radar.lib.serializers import ListField, Serializer, IntegerField, StringField, CodedStringSerializer, \
+    CodedIntegerSerializer
 from radar.lib.validation.core import ValidationError
 from radar.lib.auth import current_user
 
@@ -32,14 +33,13 @@ class PermissionViewMixin(object):
     def check_permissions(self):
         for permission in self.get_permissions():
             if not permission.has_permission(request, current_user):
-                message = getattr(permission, 'message', None)
-                raise PermissionDenied(message)
+                raise PermissionDenied()
 
     def check_object_permissions(self, obj):
         for permission in self.get_permissions():
             if not permission.has_object_permission(request, current_user, obj):
-                message = getattr(permission, 'message', None)
-                raise PermissionDenied(message)
+                print 'Denied by', permission
+                raise PermissionDenied()
 
     def get_permission_classes(self):
         return list(self.permission_classes)
@@ -214,6 +214,7 @@ class CreateModelViewMixin(object):
                 obj = serializer.update(obj, validated_data)
                 validation.after_update(ctx, old_obj, obj)
             except ValidationError as e:
+                print e.errors
                 errors = serializer.transform_errors(e.errors)
                 raise ValidationError(errors)
 
@@ -316,6 +317,7 @@ class UpdateModelViewMixin(object):
                 obj = serializer.update(obj, validated_data)
                 validation.after_update(ctx, old_obj, obj)
             except ValidationError as e:
+                print e.errors
                 errors = serializer.transform_errors(e.errors)
                 raise ValidationError(errors)
 
@@ -413,6 +415,19 @@ class CodedStringListView(ListView):
 
     def get_serializer(self):
         return CodedStringSerializer(self.get_items())
+
+    def get_object_list(self):
+        return self.get_items().keys()
+
+
+class CodedIntegerListView(ListView):
+    items = {}
+
+    def get_items(self):
+        return self.items
+
+    def get_serializer(self):
+        return CodedIntegerSerializer(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()
