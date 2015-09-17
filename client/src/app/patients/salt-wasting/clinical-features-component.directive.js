@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.genetics');
 
-  app.factory('SaltWastingClinicalFeaturesPermission', function(PatientDataPermission) {
-    return PatientDataPermission;
+  app.factory('SaltWastingClinicalFeaturesPermission', function(PatientObjectPermission) {
+    return PatientObjectPermission;
   });
 
   app.factory('SaltWastingClinicalFeaturesController', function(DetailController, SaltWastingClinicalFeaturesPermission) {

@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.genetics');
 
-  app.factory('FamilyHistoryPermission', function(PatientDataPermission) {
-    return PatientDataPermission;
+  app.factory('FamilyHistoryPermission', function(PatientObjectPermission) {
+    return PatientObjectPermission;
   });
 
   app.factory('FamilyHistoryController', function(DetailController, FamilyHistoryPermission) {

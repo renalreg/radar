@@ -30,6 +30,7 @@
     });
   });
 
+  // TODO refactor into state and cohort flag
   app.constant('patientFeatures', {
     ADDRESSES: {
       text: 'Addresses',

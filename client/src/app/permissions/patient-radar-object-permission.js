@@ -3,10 +3,10 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientRadarObjectPermission', function(PermissionChain, PatientDataPermission, RadarObjectPermission) {
+  app.factory('PatientRadarObjectPermission', function(PermissionChain, PatientObjectPermission, RadarObjectPermission) {
     function PatientRadarObjectPermission(patient) {
       PermissionChain.call(this, [
-        new PatientDataPermission(patient),
+        new PatientObjectPermission(patient),
         new RadarObjectPermission()
       ]);
     }

@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientDataPermission', function(session, _) {
-    function PatientDataPermission(patient) {
+  app.factory('PatientObjectPermission', function(session, _) {
+    function PatientObjectPermission(patient) {
       this.patient = patient;
     }
 
-    PatientDataPermission.prototype.hasPermission = function() {
+    PatientObjectPermission.prototype.hasPermission = function() {
       if (!session.isAuthenticated) {
         return false;
       }
@@ -37,10 +37,10 @@
       return false;
     };
 
-    PatientDataPermission.prototype.hasObjectPermission = function() {
+    PatientObjectPermission.prototype.hasObjectPermission = function() {
       return this.hasPermission();
     };
 
-    return PatientDataPermission;
+    return PatientObjectPermission;
   });
 })();

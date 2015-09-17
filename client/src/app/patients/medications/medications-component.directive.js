@@ -8,7 +8,7 @@
   });
 
   app.factory('MedicationsController', function(ListDetailController, MedicationPermission, firstPromise) {
-    function MedicationsController($scope, $injector, $q, store) {
+    function MedicationsController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
