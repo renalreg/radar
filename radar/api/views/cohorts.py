@@ -13,7 +13,3 @@ class CohortListView(ListModelView):
 class CohortDetailView(RetrieveModelView):
     serializer_class = CohortSerializer
     model_class = Cohort
-
-
-class CohortRoleListView(CodedStringListView):
-    items = COHORT_ROLES

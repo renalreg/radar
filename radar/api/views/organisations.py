@@ -8,7 +8,3 @@ from radar.lib.models import Organisation
 class OrganisationListView(ListModelView):
     serializer_class = OrganisationSerializer
     model_class = Organisation
-
-
-class OrganisationRoleListView(CodedStringListView):
-    items = ORGANISATION_ROLES

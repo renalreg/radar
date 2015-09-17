@@ -1,5 +1,6 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ListField, BooleanField, ReferenceField
+from radar.lib.roles import ORGANISATION_ROLES
+from radar.lib.serializers import ModelSerializer, ListField, BooleanField, ReferenceField, CodedStringSerializer
 from radar.lib.models import DataSource, Organisation, OrganisationUser, OrganisationPatient
 
 
@@ -36,6 +37,7 @@ class OrganisationUserSerializer(MetaSerializerMixin, ModelSerializer):
     has_edit_user_membership_permission = BooleanField()
     has_recruit_patient_permission = BooleanField()
     organisation = OrganisationSerializer()
+    role = CodedStringSerializer(ORGANISATION_ROLES)
 
     class Meta(object):
         model_class = OrganisationUser

@@ -1,5 +1,6 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ListField, ReferenceField, BooleanField
+from radar.lib.roles import COHORT_ROLES
+from radar.lib.serializers import ModelSerializer, ListField, ReferenceField, BooleanField, CodedStringSerializer
 from radar.lib.models import CohortFeature, Cohort, CohortPatient, CohortUser
 
 
@@ -40,6 +41,7 @@ class CohortUserSerializer(MetaSerializerMixin, ModelSerializer):
     has_view_user_permission = BooleanField()
     has_edit_user_membership_permission = BooleanField()
     cohort = CohortSerializer()
+    role = CodedStringSerializer(COHORT_ROLES)
 
     class Meta(object):
         model_class = CohortUser
