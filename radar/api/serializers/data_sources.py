@@ -1,5 +1,5 @@
 from radar.lib.models import Organisation, DataSource
-from radar.lib.serializers import ModelSerializer, ReferenceField
+from radar.lib.serializers import ModelSerializer, ReferenceField, Serializer, StringField
 
 
 class OrganisationSerializer(ModelSerializer):
@@ -27,3 +27,9 @@ class DataSourceSerializerMixin(object):
         attrs = super(DataSourceSerializerMixin, self).get_model_exclude()
         attrs.add('data_source_id')
         return attrs
+
+
+class DataSourceRequestSerializer(Serializer):
+    type = StringField()
+    organisation_code = StringField()
+    organisation_type = StringField()
