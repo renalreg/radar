@@ -2,6 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
+from radar.api.views.diagnoses import DiagnosisListView, DiagnosisDetailView, CohortDiagnosisListView, \
+    DiagnosisBiopsyDiagnosesListView, DiagnosisKaryotypeListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
 from radar.api.views.pathology import PathologyDetailView, PathologyListView, PathologyKidneyTypeListView, \
     PathologyKidneySideListView
@@ -63,6 +65,13 @@ def create_app():
     # Data Sources
     app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
     app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))
+
+    # Diagnoses
+    app.add_url_rule('/diagnoses', view_func=DiagnosisListView.as_view('diagnosis_list'))
+    app.add_url_rule('/diagnoses/<int:id>', view_func=DiagnosisDetailView.as_view('diagnosis_detail'))
+    app.add_url_rule('/cohort-diagnoses', view_func=CohortDiagnosisListView.as_view('cohort_diagnosis_list'))
+    app.add_url_rule('/diagnosis-biopsy-diagnoses', view_func=DiagnosisBiopsyDiagnosesListView.as_view('diagnosis_biopsy_diagnosis_list'))
+    app.add_url_rule('/diagnosis-karyotypes', view_func=DiagnosisKaryotypeListView.as_view('diagnosis_karyotype_list'))
 
     # Dialysis
     app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))

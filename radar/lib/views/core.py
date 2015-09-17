@@ -405,29 +405,3 @@ def response_json(serializer_class):
         return wrapper
 
     return decorator
-
-
-class CodedStringListView(ListView):
-    items = {}
-
-    def get_items(self):
-        return self.items
-
-    def get_serializer(self):
-        return CodedStringSerializer(self.get_items())
-
-    def get_object_list(self):
-        return self.get_items().keys()
-
-
-class CodedIntegerListView(ListView):
-    items = {}
-
-    def get_items(self):
-        return self.items
-
-    def get_serializer(self):
-        return CodedIntegerSerializer(self.get_items())
-
-    def get_object_list(self):
-        return self.get_items().keys()

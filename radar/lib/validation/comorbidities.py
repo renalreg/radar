@@ -2,7 +2,7 @@ from radar.lib.validation.core import Field, Validation, ValidationError, pass_n
 from radar.lib.validation.data_sources import DataSourceValidationMixin
 from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.patients import PatientValidationMixin
-from radar.lib.validation.validators import valid_date_for_patient, required, optional
+from radar.lib.validation.validators import valid_date_for_patient, required, optional, not_empty
 
 
 class ComorbidityValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
@@ -16,3 +16,7 @@ class ComorbidityValidation(PatientValidationMixin, DataSourceValidationMixin, M
             raise ValidationError('Must be on or after from date.')
 
         return to_date
+
+
+class DisorderValidation(Validation):
+    label = Field([not_empty()])

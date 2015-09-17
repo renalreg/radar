@@ -1,7 +1,7 @@
 from radar.api.serializers.pathology import PathologySerializer
 from radar.lib.models import PATHOLOGY_KIDNEY_TYPES, PATHOLOGY_KIDNEY_SIDES, Pathology
 from radar.lib.validation.pathology_validation import PathologyValidation
-from radar.lib.views.core import CodedStringListView
+from radar.lib.views.codes import CodedStringListView
 from radar.lib.views.data_sources import DataSourceObjectViewMixin
 from radar.lib.views.patients import PatientObjectDetailView, PatientObjectListView
 
