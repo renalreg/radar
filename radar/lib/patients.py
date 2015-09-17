@@ -8,32 +8,32 @@ class PatientProxy(object):
         self.user = user
 
         if user.is_admin:
-            self.demographics = True
+            self.demographics_permission = True
         else:
             organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
-            self.demographics = any(x.has_view_demographics_permission for x in organisation_users)
+            self.demographics_permission = any(x.has_view_demographics_permission for x in organisation_users)
 
-            if not self.demographics:
+            if not self.demographics_permission:
                 cohort_users = intersect_patient_and_user_cohorts(patient, user, user_membership=True)
-                self.demographics = any(x.has_view_demographics_permission for x in cohort_users)
+                self.demographics_permission = any(x.has_view_demographics_permission for x in cohort_users)
 
     @property
     def first_name(self):
-        if self.demographics:
+        if self.demographics_permission:
             return self.patient.first_name
         else:
             return Empty
 
     @property
     def last_name(self):
-        if self.demographics:
+        if self.demographics_permission:
             return self.patient.last_name
         else:
             return Empty
 
     @property
     def date_of_birth(self):
-        if self.demographics:
+        if self.demographics_permission:
             return self.patient.date_of_birth
         else:
             return Empty
@@ -60,6 +60,13 @@ class PatientProxy(object):
     def year_of_birth(self):
         if self.patient.date_of_birth is not None:
             return self.patient.date_of_birth.year
+        else:
+            return None
+
+    @property
+    def year_of_death(self):
+        if self.patient.date_of_death is not None:
+            return self.patient.date_of_death.year
         else:
             return None
 

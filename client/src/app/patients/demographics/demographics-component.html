@@ -16,24 +16,34 @@
         <td>{{item.dataSource.getName()}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.firstName">
         <th>First Name</th>
         <td>{{item.firstName | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.lastName">
         <th>Last Name</th>
         <td>{{item.lastName | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.dateOfBirth">
         <th>Date of Birth</th>
         <td>{{item.dateOfBirth | dateFormat}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="!item.dateOfBirth">
+        <th>Year of Birth</th>
+        <td>{{item.yearOfBirth | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.dateOfDeath !== undefined">
         <th>Date of Death</th>
         <td>{{item.dateOfDeath | dateFormat}}</td>
+      </tr>
+
+      <tr ng-if="item.dateOfDeath === undefined">
+        <th>Year of Death</th>
+        <td>{{item.yearOfDeath | missing}}</td>
       </tr>
 
       <tr>
@@ -46,22 +56,22 @@
         <td>{{item.ethnicityCode.label | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.homeNumber !== undefined">
         <th>Home Number</th>
         <td>{{item.homeNumber | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.workNumber !== undefined">
         <th>Work Number</th>
         <td>{{item.workNumber | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.mobileNumber !== undefined">
         <th>Mobile Number</th>
         <td>{{item.mobileNumber | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="item.emailAddress !== undefined">
         <th>Email Address</th>
         <td>{{item.emailAddress | missing}}</td>
       </tr>
@@ -191,8 +201,8 @@
           <th></th>
           <th sort-helper="firstName">First Name</th>
           <th sort-helper="lastName">Last Name</th>
-          <th sort-helper="dateOfBirth">DOB</th>
-          <th sort-helper="dateOfDeath">DOD</th>
+          <th sort-helper="dateOfBirth || yearOfBirth">DOB</th>
+          <th sort-helper="dateOfDeath || yearOfDeath">DOD</th>
           <th sort-helper="gender">Gender</th>
           <th sort-helper="ethnicityCode.label">Ethnicity</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
@@ -206,10 +216,26 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.firstName | missing}}</td>
-          <td>{{item.lastName | missing}}</td>
-          <td>{{item.dateOfBirth | dateFormat}}</td>
-          <td>{{item.dateOfDeath | dateFormat}}</td>
+          <td>
+            <span ng-if="patient.firstName !== undefined">{{patient.firstName}}</span>
+            <i ng-if="patient.firstName === undefined">None</i>
+          </td>
+
+          <td>
+            <span ng-if="patient.lastName !== undefined">{{patient.lastName}}</span>
+            <i ng-if="patient.lastName === undefined">None</i>
+          </td>
+
+          <td>
+            <span ng-if="patient.dateOfBirth !== undefined">{{patient.dateOfBirth | dateFormat}}</span>
+            <span ng-if="patient.dateOfBirth === undefined">{{patient.yearOfBirth}}</span>
+          </td>
+
+          <td>
+            <span ng-if="patient.dateOfDeath !== undefined">{{patient.dateOfDeath | dateFormat}}</span>
+            <span ng-if="patient.dateOfDeath === undefined">{{patient.yearOfDeath}}</span>
+          </td>
+
           <td>{{item.gender.label}}</td>
           <td>{{item.ethnicityCode.label | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
