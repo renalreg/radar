@@ -46,7 +46,7 @@ var paths = {
   ],
   vendorFonts: [
     'bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}',
-    'bower_components/font-awesome/font/*.{otf,eot,svg,ttf,woff,woff2}'
+    'bower_components/font-awesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}'
   ],
   ieJs: [
     'bower_components/html5shiv/dist/html5shiv.js',
