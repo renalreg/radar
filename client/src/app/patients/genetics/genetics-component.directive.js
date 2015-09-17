@@ -18,13 +18,7 @@
         }
       });
 
-      self.load(store.findMany('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}).then(function(geneticsList) {
-        if (geneticsList.length) {
-          return geneticsList[0];
-        } else {
-          return null;
-        }
-      })).then(function() {
+      self.load(store.findFirst('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id})).then(function() {
         self.view();
       });
 

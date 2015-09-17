@@ -133,6 +133,16 @@
         });
       };
 
+      Store.prototype.findFirst = function(modelName, params) {
+        return this.findMany(modelName, params).then(function(items) {
+          if (items.length) {
+            return items[0];
+          } else {
+            return null;
+          }
+        });
+      };
+
       Store.prototype.save = function(item) {
         var self = this;
         var id = item.getId();

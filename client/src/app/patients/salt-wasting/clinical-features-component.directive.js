@@ -18,13 +18,7 @@
         }
       });
 
-      self.load(store.findMany('salt-wasting-clinical-features', {patient: $scope.patient.id}).then(function(results) {
-        if (results.length) {
-          return results[0];
-        } else {
-          return null;
-        }
-      })).then(function() {
+      self.load(store.findFirst('salt-wasting-clinical-features', {patient: $scope.patient.id})).then(function() {
         self.view();
       });
 

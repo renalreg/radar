@@ -16,7 +16,6 @@
           type: 'RADAR'
         };
 
-        // TODO
         store.findMany('data-sources', params)
           .then(function(dataSources) {
             deferred.resolve(dataSources[0]);

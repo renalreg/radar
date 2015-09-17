@@ -18,18 +18,12 @@
         }
       });
 
-      self.load(store.findMany('family-history', {patient: $scope.patient.id}).then(function(familyHistoryList) {
-        if (familyHistoryList.length) {
-          return familyHistoryList[0];
-        } else {
-          return null;
-        }
-      })).then(function() {
+      self.load(store.findFirst('family-history', {patient: $scope.patient.id, cohort: $scope.cohort.id})).then(function() {
         self.view();
       });
 
       $scope.create = function() {
-        var item = store.create('family-history', {patient: $scope.patient.id});
+        var item = store.create('family-history', {patient: $scope.patient.id, cohort: $scope.cohort});
         self.edit(item);
       };
     }
@@ -42,7 +36,8 @@
   app.directive('familyHistoryComponent', function(FamilyHistoryController) {
     return {
       scope: {
-        patient: '='
+        patient: '=',
+        cohort: '='
       },
       controller: FamilyHistoryController,
       templateUrl: 'app/patients/family-history/family-history-component.html'

@@ -114,7 +114,6 @@
     'DIALYSIS',
     'PLASMAPHERESIS',
     'COMORBIDITIES',
-    'FAMILY_HISTORY',
     'COHORTS',
     'UNITS'
   ]);

@@ -1,6 +1,6 @@
 import pytest
 
-from radar.lib.models import Patient
+from radar.lib.models import Patient, Cohort
 from radar.lib.models.family_history import FamilyHistory
 from radar.lib.validation.core import ValidationError
 from radar.lib.validation.family_history import FamilyHistoryValidation
@@ -11,8 +11,10 @@ from utils import validation_runner
 def family_history():
     obj = FamilyHistory()
     obj.patient = Patient()
+    obj.cohort = Cohort()
     obj.parental_consanguinity = True
     obj.family_history = True
+    obj.other_family_history = 'Hello World!'
     return obj
 
 
@@ -20,10 +22,16 @@ def test_valid(family_history):
     obj = valid(family_history)
     assert obj.parental_consanguinity is True
     assert obj.family_history is True
+    assert obj.other_family_history == 'Hello World!'
 
 
 def test_patient_missing(family_history):
     family_history.patient = None
+    invalid(family_history)
+
+
+def test_cohort_missing(family_history):
+    family_history.cohort = None
     invalid(family_history)
 
 
@@ -59,6 +67,18 @@ def test_family_history_false(family_history):
     family_history.family_history = False
     obj = valid(family_history)
     assert obj.family_history is False
+
+
+def test_other_family_history_missing(family_history):
+    family_history.other_family_history = None
+    obj = valid(family_history)
+    obj.other_family_history = None
+
+
+def test_other_family_history_blank(family_history):
+    family_history.other_family_history = ''
+    obj = valid(family_history)
+    obj.other_family_history = None
 
 
 def invalid(obj, **kwargs):
