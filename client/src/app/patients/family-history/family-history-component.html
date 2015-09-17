@@ -21,6 +21,11 @@
         <th>Family History</th>
         <td><span tick="item.familyHistory"></span></td>
       </tr>
+
+      <tr>
+        <th>Other Family History</th>
+        <td class="newlines">{{item.otherFamilyHistory | missing}}</td>
+      </tr>
     </table>
 
     <p ng-if="!item">Not entered.</p>
@@ -48,6 +53,15 @@
         <div frm-control>
           <div frm-boolean-field model="item.familyHistory" required="true"></div>
           <div frm-errors errors="item.errors.familyHistory"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Other Family History</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.otherFamilyHistory"></div>
+          <div frm-errors errors="item.errors.otherFamilyHistory"></div>
         </div>
       </div>
 
