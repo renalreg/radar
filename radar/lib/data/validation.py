@@ -1,10 +1,12 @@
 from radar.lib.models import User, Post, PatientDemographics, Dialysis, Medication, Patient, Transplant, Hospitalisation, \
     Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
-    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress
+    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis
 from radar.lib.validation.cohort_patients import CohortPatientValidation
 from radar.lib.validation.cohort_users import CohortUserValidation
 from radar.lib.validation.cohorts import CohortValidation
+from radar.lib.validation.comorbidities import DisorderValidation
 from radar.lib.validation.data_sources import DataSourceValidation
+from radar.lib.validation.diagnoses import CohortDiagnosisValidation
 from radar.lib.validation.dialysis import DialysisValidation
 from radar.lib.validation.hospitalisations import HospitalisationValidation
 from radar.lib.validation.medications import MedicationValidation
@@ -45,6 +47,8 @@ VALIDATIONS = {
     PatientAlias: PatientAliasValidation,
     PatientNumber: PatientNumberValidation,
     PatientAddress: PatientAddressValidation,
+    Disorder: DisorderValidation,
+    CohortDiagnosis: CohortDiagnosisValidation,
 }
 
 

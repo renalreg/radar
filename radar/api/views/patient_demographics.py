@@ -1,6 +1,7 @@
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer, EthnicityCodeSerializer
 from radar.lib.validation.patient_demographics import PatientDemographicsValidation
-from radar.lib.views.core import ListModelView, CodedIntegerListView
+from radar.lib.views.codes import CodedIntegerListView
+from radar.lib.views.core import ListModelView
 from radar.lib.models import PatientDemographics, EthnicityCode, GENDERS
 from radar.lib.views.data_sources import RadarObjectViewMixin
 from radar.lib.views.patients import PatientObjectListView, PatientObjectDetailView

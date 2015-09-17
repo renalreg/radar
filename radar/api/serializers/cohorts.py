@@ -3,7 +3,7 @@ from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
 from radar.lib.models import CohortFeature, Cohort, CohortPatient
 
 
-class BasicCohortSerializer(ModelSerializer):
+class BasicCohortSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta(object):
         model_class = Cohort
 
