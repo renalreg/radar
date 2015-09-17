@@ -18,16 +18,9 @@
       },
       templateUrl: 'app/fields/cohort-field.html',
       link: function(scope) {
-        var user = session.user;
-
-        if (user.isAdmin) {
-          store.findMany('cohorts').then(function(cohorts) {
-            scope.cohorts = sortCohorts(cohorts);
-          });
-        } else {
-          var cohorts = session.user.cohorts;
+        store.findMany('cohorts').then(function(cohorts) {
           scope.cohorts = sortCohorts(cohorts);
-        }
+        });
       }
     };
   });

@@ -44,16 +44,16 @@ class OrganisationUserValidation(MetaValidationMixin, Validation):
         if not OrganisationUserValidation.has_permission(current_user, new_organisation, new_role):
             raise ValidationError({'role': 'Permission denied!'})
 
-        # New
-        if old_obj.id is None:
-            # Check that the user doesn't already belong to this organisation
-            new_organisation = new_obj.organisation
-            duplicate = any(x.organisation == new_organisation for x in new_obj.user.organisation_users)
+        # Check that the user doesn't already belong to this organisation
+        new_organisation = new_obj.organisation
+        duplicate = any(x != new_obj and x.organisation == new_organisation for x in new_obj.user.organisation_users)
 
-            # TODO add a test to make sure this happens after we check new permissions (membership enumeration)
-            if duplicate:
-                raise ValidationError({'organisation': 'User already belongs to this organisation.'})
-        else:
+        # Note: it's important this check happens after the above permission check to prevent membership enumeration
+        if duplicate:
+            raise ValidationError({'organisation': 'User already belongs to this organisation.'})
+
+        # Updating an existing record
+        if old_obj.id is not None:
             old_user = old_obj.user
 
             # Can't change your own role

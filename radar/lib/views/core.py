@@ -1,4 +1,5 @@
 from functools import wraps
+
 from flask import request, jsonify
 from flask.views import MethodView
 from sqlalchemy import desc
@@ -7,8 +8,7 @@ from flask import abort
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.lib.serializers import ListField, Serializer, IntegerField, StringField, CodedStringSerializer, \
-    CodedIntegerSerializer
+from radar.lib.serializers import ListField, Serializer, IntegerField, StringField
 from radar.lib.validation.core import ValidationError
 from radar.lib.auth import current_user
 
@@ -207,16 +207,17 @@ class CreateModelViewMixin(object):
         else:
             ctx = {'user': current_user}
 
-            try:
-                obj = serializer.create()
-                validation.before_update(ctx, obj)
-                old_obj = validation.clone(obj)
-                obj = serializer.update(obj, validated_data)
-                validation.after_update(ctx, old_obj, obj)
-            except ValidationError as e:
-                print e.errors
-                errors = serializer.transform_errors(e.errors)
-                raise ValidationError(errors)
+            with db.session.no_autoflush:
+                try:
+                    obj = serializer.create()
+                    validation.before_update(ctx, obj)
+                    old_obj = validation.clone(obj)
+                    obj = serializer.update(obj, validated_data)
+                    validation.after_update(ctx, old_obj, obj)
+                except ValidationError as e:
+                    print e.errors
+                    errors = serializer.transform_errors(e.errors)
+                    raise ValidationError(errors)
 
         db.session.add(obj)
         db.session.commit()
@@ -311,15 +312,16 @@ class UpdateModelViewMixin(object):
         else:
             ctx = {'user': current_user}
 
-            try:
-                validation.before_update(ctx, obj)
-                old_obj = validation.clone(obj)
-                obj = serializer.update(obj, validated_data)
-                validation.after_update(ctx, old_obj, obj)
-            except ValidationError as e:
-                print e.errors
-                errors = serializer.transform_errors(e.errors)
-                raise ValidationError(errors)
+            with db.session.no_autoflush:
+                try:
+                    validation.before_update(ctx, obj)
+                    old_obj = validation.clone(obj)
+                    obj = serializer.update(obj, validated_data)
+                    validation.after_update(ctx, old_obj, obj)
+                except ValidationError as e:
+                    print e.errors
+                    errors = serializer.transform_errors(e.errors)
+                    raise ValidationError(errors)
 
         db.session.commit()
         data = serializer.to_data(obj)

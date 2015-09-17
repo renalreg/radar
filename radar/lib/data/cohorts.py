@@ -5,7 +5,7 @@ from radar.lib.models import Cohort, CohortFeature, ResultGroupDefinition, Cohor
 # TODO
 COHORTS = [
     {
-        'name': 'SRNS',
+        'name': 'INS',
         'features': [
             ('DEMOGRAPHICS', 0),
             ('GENETICS', 1),
@@ -29,7 +29,7 @@ COHORTS = [
         ],
     },
     {
-        'name': 'Salt Wasting',
+        'name': 'Hypokalaemic Alkalosis',
         'features': [
             ('DEMOGRAPHICS', 0),
             ('GENETICS', 1),

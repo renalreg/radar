@@ -13,12 +13,12 @@
 
       for (i = 0; i < this.cohorts.length; i++) {
         var rawCohort = this.cohorts[i];
-        cohorts.push(store.pushToStore(new Model('patient-cohorts', rawCohort)));
+        cohorts.push(store.pushToStore(new Model('cohort-patients', rawCohort)));
       }
 
       for (i = 0; i < this.organisations.length; i++) {
         var rawOrganisation = this.organisations[i];
-        organisations.push(store.pushToStore(new Model('patient-organisations', rawOrganisation)));
+        organisations.push(store.pushToStore(new Model('organisation-patients', rawOrganisation)));
       }
 
       this.cohorts = cohorts;

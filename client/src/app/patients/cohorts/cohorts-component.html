@@ -5,7 +5,27 @@
       <span crud-edit-button item="item"></span>
     </p>
 
-    <pre>{{item.getData() | json}}</pre>
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Cohort</th>
+        <td>{{item.cohort.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Added</th>
+        <td>{{item.createdDate | dateTimeFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Active</th>
+        <td><span tick="item.isActive"></span></td>
+      </tr>
+    </table>
   </div>
 
   <div ng-if="editing">
@@ -14,13 +34,22 @@
       <span crud-view-button item="originalItem"></span>
     </p>
 
-    <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
         <div frm-label>Cohort</div>
 
         <div frm-control>
-          <div frm-cohort-field model="item.cohort"></div>
+          <div frm-cohort-field model="item.cohort" required="true"></div>
           <div frm-errors errors="item.errors.cohort"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Active</div>
+
+        <div frm-control>
+          <div frm-checkbox-field model="item.isActive"></div>
+          <div frm-errors errors="item.errors.isActive"></div>
         </div>
       </div>
 

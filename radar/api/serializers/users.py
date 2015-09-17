@@ -1,6 +1,6 @@
-from radar.api.serializers.cohorts import CohortUserSerializer
+from radar.api.serializers.cohort_users import CohortUserSerializer
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.api.serializers.organisations import OrganisationUserSerializer
+from radar.api.serializers.organisation_users import OrganisationUserSerializer
 from radar.api.serializers.patients import OrganisationReferenceField, CohortReferenceField
 from radar.lib.serializers import Serializer, IntegerField, StringField, ModelSerializer, ListField
 from radar.lib.models import User

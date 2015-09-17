@@ -1,6 +1,8 @@
-from radar.api.serializers.cohorts import CohortPatientSerializer, CohortReferenceField
+from radar.api.serializers.cohort_patients import CohortPatientSerializer
+from radar.api.serializers.cohorts import CohortReferenceField
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.api.serializers.organisations import OrganisationPatientSerializer, OrganisationReferenceField
+from radar.api.serializers.organisation_patients import OrganisationPatientSerializer
+from radar.api.serializers.organisations import OrganisationReferenceField
 from radar.api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar.lib.serializers import ModelSerializer, ListField, StringField, DateField, IntegerField, \
     Serializer, BooleanField, ReferenceField, CodedStringSerializer
@@ -37,16 +39,3 @@ class PatientListRequestSerializer(Serializer):
     organisation_id = OrganisationReferenceField(write_only=True)
     cohort_id = CohortReferenceField(write_only=True)
     is_active = BooleanField()
-
-
-class PatientReferenceField(ReferenceField):
-    model_class = Patient
-
-
-class PatientSerializerMixin(object):
-    patient = PatientReferenceField()
-
-    def get_model_exclude(self):
-        attrs = super(PatientSerializerMixin, self).get_model_exclude()
-        attrs.add('patient_id')
-        return attrs

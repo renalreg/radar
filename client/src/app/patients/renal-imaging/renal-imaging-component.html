@@ -37,7 +37,7 @@
           <div class="panel-body">
             <table class="table properties">
               <tr>
-                <th>Right Kidney</th>
+                <th>Right Kidney Present</th>
                 <td><span tick="item.rightPresent"></span></td>
               </tr>
 
@@ -47,8 +47,13 @@
               </tr>
 
               <tr ng-show="item.rightPresent">
-                <th>Renal Length</th>
-                <td>{{item.rightLength}}</td>
+                <th>Renal Length (cm)</th>
+                <td>{{item.rightLength | missing}}</td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Renal Volume (ml)</th>
+                <td>{{item.rightVolume | missing}}</td>
               </tr>
 
               <tr ng-show="item.rightPresent">
@@ -89,7 +94,7 @@
           <div class="panel-body">
             <table class="table properties">
               <tr>
-                <th>Left Kidney</th>
+                <th>Left Kidney Present</th>
                 <td><span tick="item.leftPresent"></span></td>
               </tr>
 
@@ -99,8 +104,13 @@
               </tr>
 
               <tr ng-show="item.leftPresent">
-                <th>Renal Length</th>
-                <td>{{item.leftLength}}</td>
+                <th>Renal Length (cm)</th>
+                <td>{{item.leftLength | missing}}</td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Renal Volume (ml)</th>
+                <td>{{item.leftVolume | missing}}</td>
               </tr>
 
               <tr ng-show="item.leftPresent">
@@ -177,7 +187,7 @@
 
             <div class="panel-body">
               <div frm-field frm-group>
-                <div frm-label>Right Kidney</div>
+                <div frm-label>Right Kidney Present</div>
 
                 <div frm-control>
                   <div frm-yes-no-field model="item.rightPresent" required="true"></div>
@@ -198,8 +208,17 @@
                 <div frm-label>Renal Length</div>
 
                 <div frm-control>
-                  <div frm-number-field model="item.rightLength" required="item.rightPresent" units="cm"></div>
+                  <div frm-number-field model="item.rightLength" units="cm"></div>
                   <div frm-errors errors="item.errors.rightLength"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Renal Volume</div>
+
+                <div frm-control>
+                  <div frm-number-field model="item.rightVolume" units="ml"></div>
+                  <div frm-errors errors="item.errors.rightVolume"></div>
                 </div>
               </div>
 
@@ -259,7 +278,7 @@
 
             <div class="panel-body">
               <div frm-field frm-group>
-                <div frm-label>Left Kidney</div>
+                <div frm-label>Left Kidney Present</div>
 
                 <div frm-control>
                   <div frm-yes-no-field model="item.leftPresent" required="true"></div>
@@ -280,8 +299,17 @@
                 <div frm-label>Renal Length</div>
 
                 <div frm-control>
-                  <div frm-number-field model="item.leftLength" required="item.leftPresent" units="cm"></div>
+                  <div frm-number-field model="item.leftLength" units="cm"></div>
                   <div frm-errors errors="item.errors.leftLength"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Renal Volume</div>
+
+                <div frm-control>
+                  <div frm-number-field model="item.leftVolume"></div>
+                  <div frm-errors errors="item.errors.leftVolume"></div>
                 </div>
               </div>
 

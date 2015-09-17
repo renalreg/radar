@@ -45,16 +45,16 @@ class CohortUserValidation(MetaValidationMixin, Validation):
         if not CohortUserValidation.has_permission(current_user, new_cohort, new_role):
             raise ValidationError({'role': 'Permission denied!'})
 
-        # New
-        if old_obj.id is None:
-            # Check that the user doesn't already belong to this cohort
-            new_cohort = new_obj.cohort
-            duplicate = any(x.cohort == new_cohort for x in new_obj.user.cohort_users)
+        # Check that the user doesn't already belong to this cohort
+        new_cohort = new_obj.cohort
+        duplicate = any(x != new_obj and x.cohort == new_cohort for x in new_obj.user.cohort_users)
 
-            # TODO add a test to make sure this happens after we check new permissions (membership enumeration)
-            if duplicate:
-                raise ValidationError({'cohort': 'User already belongs to this cohort.'})
-        else:
+        # Note: it's important this check happens after the above permission check to prevent membership enumeration
+        if duplicate:
+            raise ValidationError({'cohort': 'User already belongs to this cohort.'})
+
+        # Updating existing record
+        if old_obj.id is not None:
             old_user = old_obj.user
 
             # Can't change your own role

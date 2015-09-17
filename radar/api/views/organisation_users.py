@@ -1,4 +1,4 @@
-from radar.api.serializers.organisations import OrganisationUserSerializer
+from radar.api.serializers.organisation_users import OrganisationUserSerializer
 from radar.lib.models import OrganisationUser
 from radar.lib.roles import ORGANISATION_ROLES
 from radar.lib.validation.organisation_users import OrganisationUserValidation

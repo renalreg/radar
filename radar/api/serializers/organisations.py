@@ -1,10 +1,9 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.roles import ORGANISATION_ROLES
-from radar.lib.serializers import ModelSerializer, ListField, BooleanField, ReferenceField, CodedStringSerializer
-from radar.lib.models import DataSource, Organisation, OrganisationUser, OrganisationPatient
+from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
+from radar.lib.models import DataSource, Organisation
 
 
-class BasicOrganisationSerializer(ModelSerializer):
+class BasicOrganisationSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta(object):
         model_class = Organisation
         exclude = ['organisation_id']
@@ -27,26 +26,3 @@ class OrganisationSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Organisation
-
-
-class OrganisationUserSerializer(MetaSerializerMixin, ModelSerializer):
-    has_view_demographics_permission = BooleanField()
-    has_view_patient_permission = BooleanField()
-    has_edit_patient_permission = BooleanField()
-    has_view_user_permission = BooleanField()
-    has_edit_user_membership_permission = BooleanField()
-    has_recruit_patient_permission = BooleanField()
-    organisation = OrganisationSerializer()
-    role = CodedStringSerializer(ORGANISATION_ROLES)
-
-    class Meta(object):
-        model_class = OrganisationUser
-        exclude = ['user_id', 'organisation_id']
-
-
-class OrganisationPatientSerializer(MetaSerializerMixin, ModelSerializer):
-    organisation = OrganisationSerializer()
-
-    class Meta(object):
-        model_class = OrganisationPatient
-        exclude = ['patient_id', 'organisation_id']

@@ -108,13 +108,13 @@
 
   app.constant('standardPatientFeatures', [
     'DEMOGRAPHICS',
-    'MEDICATIONS',
-    'HOSPITALISATIONS',
+    'COMORBIDITIES',
     'PATHOLOGY',
-    'TRANSPLANTS',
+    'MEDICATIONS',
     'DIALYSIS',
     'PLASMAPHERESIS',
-    'COMORBIDITIES',
+    'TRANSPLANTS',
+    'HOSPITALISATIONS',
     'COHORTS',
     'UNITS'
   ]);

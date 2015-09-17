@@ -61,17 +61,17 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def organisation(self, organisation, include_inactive=False):
+    def organisation(self, organisation, is_active=None):
         self.query = self.query\
             .join(OrganisationPatient)\
             .filter(OrganisationPatient.organisation == organisation)
 
-        if not include_inactive:
-            self.query = self.query.filter(OrganisationPatient.is_active)
+        if is_active is not None:
+            self.query = self.query.filter(CohortPatient.is_active == is_active)
 
         return self
 
-    def cohort(self, cohort, include_inactive=False):
+    def cohort(self, cohort, is_active=None):
         # If the user doesn't have view permissions on this cohort upgrade the query to a demographics query
         if not cohort.can_view_patient(self.user):
             self.filtering_by_demographics = True
@@ -81,19 +81,9 @@ class PatientQueryBuilder(object):
             .join(CohortPatient)\
             .filter(CohortPatient.cohort == cohort)
 
-        if not include_inactive:
-            self.query = self.query.filter(CohortPatient.is_active)
+        if is_active is not None:
+            self.query = self.query.filter(CohortPatient.is_active == is_active)
 
-        return self
-
-    def nhs_no(self, nhs_no):
-        # TODO
-        self.query = self.query.filter(filter_by_nhs_no(nhs_no))
-        return self
-
-    def chi_no(self, chi_no):
-        # TODO
-        self.query = self.query.filter(filter_by_chi_no(chi_no))
         return self
 
     def is_active(self, is_active):
@@ -105,6 +95,8 @@ class PatientQueryBuilder(object):
 
     def build(self, apply_permissions=True):
         query = self.query
+
+        # TODO check is_active here
 
         if apply_permissions and not self.current_user.is_admin:
             # Filter the patients based on the user's permissions and the type of query
@@ -191,22 +183,6 @@ def filter_by_year_of_birth(year):
 
 def filter_by_year_of_death(year):
     return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
-
-
-def filter_by_nhs_no(nhs_no):
-    return patient_number_sub_query(
-        Organisation.type == ORGANISATION_TYPE_OTHER,
-        Organisation.code == ORGANISATION_CODE_NHS,
-        PatientNumber.number.like(nhs_no + '%')
-    )
-
-
-def filter_by_chi_no(chi_no):
-    return patient_number_sub_query(
-        Organisation.type == ORGANISATION_TYPE_OTHER,
-        Organisation.code == ORGANISATION_CODE_CHI,
-        PatientNumber.number.like(chi_no + '%')
-    )
 
 
 def filter_by_organisation_roles(current_user, roles):

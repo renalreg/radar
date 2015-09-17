@@ -21,13 +21,15 @@
         var user = session.user;
 
         if (user.isAdmin) {
-          // TODO
+          // TODO filter
           store.findMany('organisations', {type: 'UNIT'}).then(function(units) {
             scope.units = sortUnits(units);
           });
         } else {
-          var units = session.user.units;
-          scope.units = sortUnits(units);
+          // TODO filter
+          scope.units = sortUnits(_.map(session.user.organisations, function(x) {
+            return x.organisation;
+          }));
         }
       }
     };

@@ -1,0 +1,105 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Organisation</th>
+        <td>{{item.organisation.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Added</th>
+        <td>{{item.createdDate | dateTimeFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Active</th>
+        <td><span tick="item.isActive"></span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Unit</div>
+
+        <div frm-control>
+          <div frm-unit-field model="item.organisation" required="true"></div>
+          <div frm-errors errors="item.errors.organisation"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Active</div>
+
+        <div frm-control>
+          <div frm-checkbox-field model="item.isActive"></div>
+          <div frm-errors errors="item.errors.isActive"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table" ng-if="page.getCount()">
+      <thead>
+      <tr>
+        <th></th>
+        <th sort-helper="organisation.name">Unit</th>
+        <th sort-helper="createdDate">Added</th>
+        <th sort-helper="isActive">Active</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr ng-repeat="item in page.getItems()">
+        <td>
+          <span crud-list-view-button item="item"></span>
+          <span crud-list-edit-button item="item"></span>
+        </td>
+
+        <td>{{item.organisation.name}}</td>
+        <td>{{item.createdDate | dateFormat}}</td>
+        <td><span tick="item.isActive"></span></td>
+
+        <td>
+          <span crud-list-remove-button item="item"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>
