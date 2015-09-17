@@ -1,10 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 
+from radar.api.views.cohort_users import CohortUserListView, CohortUserDetailView, CohortUserRoleListView
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
 from radar.api.views.diagnoses import DiagnosisListView, DiagnosisDetailView, CohortDiagnosisListView, \
     DiagnosisBiopsyDiagnosesListView, DiagnosisKaryotypeListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
+from radar.api.views.organisation_users import OrganisationUserListView, OrganisationUserDetailView, \
+    OrganisationUserRoleListView
 from radar.api.views.pathology import PathologyDetailView, PathologyListView, PathologyKidneyTypeListView, \
     PathologyKidneySideListView
 from radar.api.views.patient_addresses import PatientAddressListView, PatientAddressDetailView
@@ -12,7 +15,7 @@ from radar.api.views.patient_aliases import PatientAliasListView, PatientAliasDe
 from radar.api.views.patient_demographics import PatientDemographicsListView, PatientDemographicsDetailView, \
     EthnicityCodeListView, GenderListView
 from radar.api.views.dialysis import DialysisListView, DialysisDetailView, DialysisTypeListView
-from radar.api.views.cohorts import CohortListView, CohortDetailView, CohortRoleListView
+from radar.api.views.cohorts import CohortListView, CohortDetailView
 from radar.api.views.data_sources import DataSourceListView, DataSourceDetailView
 from radar.api.views.genetics import GeneticsDetailView, GeneticsListView
 from radar.api.views.hospitalisations import HospitalisationDetailView, HospitalisationListView
@@ -27,7 +30,7 @@ from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDeta
     RenalImagingKidneyTypeListView
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
-from radar.api.views.organisations import OrganisationListView, OrganisationRoleListView
+from radar.api.views.organisations import OrganisationListView
 from radar.api.views.transplants import TransplantListView, TransplantDetailView, TransplantTypeListView
 from radar.api.views.users import UserDetailView, UserListView
 from radar.api.views.login import LoginView
@@ -55,7 +58,11 @@ def create_app():
     # Cohorts
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
     app.add_url_rule('/cohorts/<int:id>', view_func=CohortDetailView.as_view('cohort_detail'))
-    app.add_url_rule('/cohort-roles', view_func=CohortRoleListView.as_view('cohort_role_list'))
+
+    # Cohort Users
+    app.add_url_rule('/cohort-users', view_func=CohortUserListView.as_view('cohort_user_list'))
+    app.add_url_rule('/cohort-users/<int:id>', view_func=CohortUserDetailView.as_view('cohort_user_detail'))
+    app.add_url_rule('/cohort-user-roles', view_func=CohortUserRoleListView.as_view('cohort_user_role_list'))
 
     # Comorbidities
     app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
@@ -99,7 +106,11 @@ def create_app():
 
     # Organisations
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
-    app.add_url_rule('/organisation-roles', view_func=OrganisationRoleListView.as_view('organisation_role_list'))
+
+    # Organisation Users
+    app.add_url_rule('/organisation-users', view_func=OrganisationUserListView.as_view('organisation_user_list'))
+    app.add_url_rule('/organisation-users/<int:id>', view_func=OrganisationUserDetailView.as_view('organisation_user_detail'))
+    app.add_url_rule('/organisation-user-roles', view_func=OrganisationUserRoleListView.as_view('organisation_user_role_list'))
 
     # Pathology
     app.add_url_rule('/pathology', view_func=PathologyListView.as_view('pathology_list'))
