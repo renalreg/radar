@@ -2,6 +2,22 @@ from radar.lib.data_sources import is_radar_data_source
 from radar.lib.models import DATA_SOURCE_TYPE_RADAR
 
 
+def has_demographics_permission(patient, user):
+    grant = False
+
+    if user.is_admin:
+        grant = True
+    else:
+        organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
+        grant = any(x.has_view_demographics_permission for x in organisation_users)
+
+        if not grant:
+            cohort_users = intersect_patient_and_user_cohorts(patient, user, user_membership=True)
+            grant = any(x.has_view_demographics_permission for x in cohort_users)
+
+    return grant
+
+
 def intersect_patient_and_user_organisations(patient, user, patient_membership=False, user_membership=False):
     organisation_patients = {x.organisation.id: x for x in patient.organisation_patients}
 

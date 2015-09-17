@@ -32,14 +32,14 @@
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
                   <span ng-if="patient.firstName">{{patient.firstName}}</span>
-                  <i ng-if="!patient.firstName">None</i>
+                  <i ng-if="!patient.firstName">Hidden</i>
                 </a>
               </td>
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
                   <span ng-if="patient.lastName">{{patient.lastName}}</span>
-                  <i ng-if="!patient.lastName">None</i>
+                  <i ng-if="!patient.lastName">Hidden</i>
                 </a>
               </td>
 
