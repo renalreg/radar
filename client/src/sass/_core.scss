@@ -134,3 +134,12 @@ textarea.form-control {
 td.data-source {
   color: #777;
 }
+
+a .hidden-demographics {
+  color: $link-color;
+}
+
+.hidden-demographics {
+  color: #777;
+  font-style: italic;
+}

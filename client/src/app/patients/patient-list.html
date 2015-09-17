@@ -31,21 +31,21 @@
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.firstName">{{patient.firstName}}</span>
-                  <i ng-if="!patient.firstName">Hidden</i>
+                  <span ng-if="patient.firstName !== undefined">{{patient.firstName}}</span>
+                  <span ng-if="patient.firstName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.lastName">{{patient.lastName}}</span>
-                  <i ng-if="!patient.lastName">Hidden</i>
+                  <span ng-if="patient.lastName !== undefined">{{patient.lastName}}</span>
+                  <span ng-if="patient.lastName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
 
               <td>
-                <span ng-if="patient.dateOfBirth">{{patient.dateOfBirth | dateFormat}}</span>
-                <span ng-if="!patient.dateOfBirth">{{patient.yearOfBirth | missing}}</span>
+                <span ng-if="patient.dateOfBirth === undefined">{{patient.dateOfBirth | dateFormat}}</span>
+                <span ng-if="patient.dateOfBirth !== undefined">{{patient.yearOfBirth | missing}}</span>
               </td>
 
               <td>{{patient.gender.label}}</td>
