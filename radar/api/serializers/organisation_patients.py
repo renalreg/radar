@@ -1,14 +1,13 @@
-from radar.api.serializers.data_sources import DataSourceSerializerMixin
 from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.organisations import OrganisationReferenceField
 from radar.api.serializers.patient_mixins import PatientSerializerMixin
+from radar.lib.models import OrganisationPatient
 from radar.lib.serializers import ModelSerializer
-from radar.lib.models import PatientNumber
 
 
-class PatientNumberSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
+class OrganisationPatientSerializer(PatientSerializerMixin, MetaSerializerMixin, ModelSerializer):
     organisation = OrganisationReferenceField()
 
     class Meta(object):
-        model_class = PatientNumber
+        model_class = OrganisationPatient
         exclude = ['organisation_id']

@@ -1,5 +1,5 @@
 from radar.lib.permissions import intersect_patient_and_user_organisations, intersect_patient_and_user_cohorts, \
-    has_demographics_permission
+    has_view_demographics_permission
 from radar.lib.serializers import Empty
 
 
@@ -7,7 +7,7 @@ class PatientProxy(object):
     def __init__(self, patient, user):
         self.patient = patient
         self.user = user
-        self.demographics_permission = has_demographics_permission(patient, user)
+        self.demographics_permission = has_view_demographics_permission(patient, user)
 
     @property
     def first_name(self):

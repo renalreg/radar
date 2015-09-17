@@ -4,11 +4,11 @@ from radar.lib.models import Disorder
 
 DISORDERS = [
     'Heart Disease',
-    'Cerebral Palsy'
-    'Microcoria'
-    'Polydactyly'
-    'Epilepsy'
-    'Atrial Septal Defect'
+    'Cerebral Palsy',
+    'Microcoria',
+    'Polydactyly',
+    'Epilepsy',
+    'Atrial Septal Defect',
     'Congenital CMV'
 ]
 

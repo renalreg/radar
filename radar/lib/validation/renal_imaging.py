@@ -14,6 +14,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     right_present = Field([required()])
     right_type = Field([optional(), in_(RENAL_IMAGING_KIDNEY_TYPES.keys())])
     right_length = Field([optional(), range_(1, 30)])
+    right_volume = Field([optional()])  # TODO range
     right_cysts = Field([optional()])
     right_calcification = Field([optional()])
     right_nephrocalcinosis = Field([optional()])
@@ -23,6 +24,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     left_present = Field([required()])
     left_type = Field([optional(), in_(RENAL_IMAGING_KIDNEY_TYPES.keys())])
     left_length = Field([optional(), range_(1, 30)])
+    left_volume = Field([optional()])  # TODO range
     left_cysts = Field([optional()])
     left_calcification = Field([optional()])
     left_nephrocalcinosis = Field([optional()])
@@ -33,6 +35,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
         if not obj.right_present:
             obj.right_type = None
             obj.right_length = None
+            obj.right_volume = None
             obj.right_cysts = None
             obj.right_calcification = None
             obj.right_nephrocalcinosis = None
@@ -45,6 +48,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
         if not obj.left_present:
             obj.left_type = None
             obj.left_length = None
+            obj.left_volume = None
             obj.left_cysts = None
             obj.left_calcification = None
             obj.left_nephrocalcinosis = None
@@ -60,7 +64,6 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     def validate(self, call, obj):
         if obj.right_present:
             call.validators_for_field([required()], obj, self.right_type)
-            call.validators_for_field([required()], obj, self.right_length)
             call.validators_for_field([required()], obj, self.right_cysts)
             call.validators_for_field([required()], obj, self.right_calcification)
 
@@ -70,7 +73,6 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
 
         if obj.left_present:
             call.validators_for_field([required()], obj, self.left_type)
-            call.validators_for_field([required()], obj, self.left_length)
             call.validators_for_field([required()], obj, self.left_cysts)
             call.validators_for_field([required()], obj, self.left_calcification)
 

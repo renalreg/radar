@@ -1,8 +1,9 @@
+from radar.api.serializers.meta import MetaSerializerMixin
 from radar.lib.models import Organisation, DataSource
 from radar.lib.serializers import ModelSerializer, ReferenceField, Serializer, StringField
 
 
-class OrganisationSerializer(ModelSerializer):
+class OrganisationSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta(object):
         model_class = Organisation
 

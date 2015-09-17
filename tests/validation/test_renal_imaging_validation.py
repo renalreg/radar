@@ -27,6 +27,7 @@ def renal_imaging(patient):
     obj.right_present = True
     obj.right_type = 'NATURAL'
     obj.right_length = 10
+    obj.right_volume = 50
     obj.right_cysts = True
     obj.right_calcification = True
     obj.right_nephrocalcinosis = True
@@ -34,7 +35,8 @@ def renal_imaging(patient):
     obj.right_other_malformation = 'foo'
     obj.left_present = True
     obj.left_type = 'TRANSPLANT'
-    obj.left_length = 10
+    obj.left_length = 11
+    obj.left_volume = 51
     obj.left_cysts = True
     obj.left_calcification = True
     obj.left_nephrocalcinosis = True
@@ -50,6 +52,7 @@ def test_valid(renal_imaging):
     assert obj.right_present is True
     assert obj.right_type == 'NATURAL'
     assert obj.right_length == 10
+    assert obj.right_volume == 50
     assert obj.right_cysts is True
     assert obj.right_calcification is True
     assert obj.right_nephrocalcinosis is True
@@ -57,7 +60,8 @@ def test_valid(renal_imaging):
     assert obj.right_other_malformation == 'foo'
     assert obj.left_present is True
     assert obj.left_type == 'TRANSPLANT'
-    assert obj.left_length == 10
+    assert obj.left_length == 11
+    assert obj.left_volume == 51
     assert obj.left_cysts is True
     assert obj.left_calcification is True
     assert obj.left_nephrocalcinosis is True
@@ -119,6 +123,7 @@ def test_right_present_false(renal_imaging):
     obj = valid(renal_imaging)
     assert obj.right_type is None
     assert obj.right_length is None
+    assert obj.right_volume is None
     assert obj.right_cysts is None
     assert obj.right_calcification is None
     assert obj.right_nephrocalcinosis is None
@@ -147,7 +152,19 @@ def test_right_present_false_right_length_missing(renal_imaging):
 def test_right_present_true_right_length_missing(renal_imaging):
     renal_imaging.right_present = True
     renal_imaging.right_length = None
-    invalid(renal_imaging)
+    valid(renal_imaging)
+
+
+def test_right_present_false_right_volume_missing(renal_imaging):
+    renal_imaging.right_present = False
+    renal_imaging.right_volume = None
+    valid(renal_imaging)
+
+
+def test_right_present_true_right_volume_missing(renal_imaging):
+    renal_imaging.right_present = True
+    renal_imaging.right_volume = None
+    valid(renal_imaging)
 
 
 def test_right_present_false_right_cysts_missing(renal_imaging):
@@ -219,6 +236,7 @@ def test_left_present_false(renal_imaging):
     obj = valid(renal_imaging)
     assert obj.left_type is None
     assert obj.left_length is None
+    assert obj.left_volume is None
     assert obj.left_cysts is None
     assert obj.left_calcification is None
     assert obj.left_nephrocalcinosis is None
@@ -247,7 +265,19 @@ def test_left_present_false_left_length_missing(renal_imaging):
 def test_left_present_true_left_length_missing(renal_imaging):
     renal_imaging.left_present = True
     renal_imaging.left_length = None
-    invalid(renal_imaging)
+    valid(renal_imaging)
+
+
+def test_left_present_false_left_volume_missing(renal_imaging):
+    renal_imaging.left_present = False
+    renal_imaging.left_volume = None
+    valid(renal_imaging)
+
+
+def test_left_present_true_left_volume_missing(renal_imaging):
+    renal_imaging.left_present = True
+    renal_imaging.left_volume = None
+    valid(renal_imaging)
 
 
 def test_left_present_false_left_cysts_missing(renal_imaging):

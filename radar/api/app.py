@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
+from radar.api.views.cohort_patients import CohortPatientDetailView, CohortPatientListView
 
 from radar.api.views.cohort_users import CohortUserListView, CohortUserDetailView, CohortUserRoleListView
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
 from radar.api.views.diagnoses import DiagnosisListView, DiagnosisDetailView, CohortDiagnosisListView, \
     DiagnosisBiopsyDiagnosesListView, DiagnosisKaryotypeListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
+from radar.api.views.organisation_patients import OrganisationPatientListView, OrganisationPatientDetailView
 from radar.api.views.organisation_users import OrganisationUserListView, OrganisationUserDetailView, \
     OrganisationUserRoleListView
 from radar.api.views.pathology import PathologyDetailView, PathologyListView, PathologyKidneyTypeListView, \
@@ -59,6 +61,10 @@ def create_app():
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
     app.add_url_rule('/cohorts/<int:id>', view_func=CohortDetailView.as_view('cohort_detail'))
 
+    # Cohort Patients
+    app.add_url_rule('/cohort-patients', view_func=CohortPatientListView.as_view('cohort_patient_list'))
+    app.add_url_rule('/cohort-patients/<int:id>', view_func=CohortPatientDetailView.as_view('cohort_patient_detail'))
+
     # Cohort Users
     app.add_url_rule('/cohort-users', view_func=CohortUserListView.as_view('cohort_user_list'))
     app.add_url_rule('/cohort-users/<int:id>', view_func=CohortUserDetailView.as_view('cohort_user_detail'))
@@ -106,6 +112,10 @@ def create_app():
 
     # Organisations
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
+
+    # Organisation Patients
+    app.add_url_rule('/organisation-patients', view_func=OrganisationPatientListView.as_view('organisation_patient_list'))
+    app.add_url_rule('/organisation-patients/<int:id>', view_func=OrganisationPatientDetailView.as_view('organisation_patient_detail'))
 
     # Organisation Users
     app.add_url_rule('/organisation-users', view_func=OrganisationUserListView.as_view('organisation_user_list'))

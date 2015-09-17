@@ -30,10 +30,16 @@ class PatientListView(ListCreateModelView):
             builder.last_name(args['last_name'])
 
         if 'organisation' in args:
-            builder.organisation(args['organisation'])
+            if 'is_active' in args:
+                builder.organisation(args['organisation'], args['is_active'])
+            else:
+                builder.organisation(args['organisation'])
 
         if 'cohort' in args:
-            builder.cohort(args['cohort'])
+            if 'is_active' in args:
+                builder.cohort(args['cohort'], args['is_active'])
+            else:
+                builder.cohort(args['cohort'])
 
         if 'patient_number' in args:
             builder.patient_number(args['patient_number'])

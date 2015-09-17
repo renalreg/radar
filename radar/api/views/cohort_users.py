@@ -1,4 +1,4 @@
-from radar.api.serializers.cohorts import CohortUserSerializer
+from radar.api.serializers.cohort_users import CohortUserSerializer
 from radar.lib.models import CohortUser
 from radar.lib.roles import COHORT_ROLES
 from radar.lib.validation.cohort_users import CohortUserValidation

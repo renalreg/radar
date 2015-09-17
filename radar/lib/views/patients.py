@@ -1,6 +1,6 @@
 from flask import request
 
-from radar.lib.patient_search import PatientQueryBuilder
+from radar.lib.patient_search import PatientQueryBuilder, filter_by_permissions
 from radar.lib.permissions import PatientObjectPermission
 from radar.lib.serializers import Serializer, IntegerField
 from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
@@ -39,3 +39,13 @@ class PatientObjectListView(PatientObjectViewMixin, ListCreateModelView):
 
 class PatientObjectDetailView(PatientObjectViewMixin, RetrieveUpdateDestroyModelView):
     pass
+
+
+class DemographicsViewMixin(object):
+    def filter_query(self, query):
+        query = super(DemographicsViewMixin, self).filter_query(query)
+
+        if not current_user.is_admin:
+            query = query.filter(filter_by_permissions(current_user, True))
+
+        return query
