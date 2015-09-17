@@ -1,6 +1,6 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
-from radar.lib.models import CohortFeature, Cohort, CohortPatient
+from radar.lib.serializers import ModelSerializer, ListField, ReferenceField, BooleanField
+from radar.lib.models import CohortFeature, Cohort, CohortPatient, CohortUser
 
 
 class BasicCohortSerializer(MetaSerializerMixin, ModelSerializer):
@@ -31,6 +31,19 @@ class CohortPatientSerializer(MetaSerializerMixin, ModelSerializer):
     class Meta(object):
         model_class = CohortPatient
         exclude = ['patient_id', 'cohort_id']
+
+
+class CohortUserSerializer(MetaSerializerMixin, ModelSerializer):
+    has_view_demographics_permission = BooleanField()
+    has_view_patient_permission = BooleanField()
+    has_edit_patient_permission = BooleanField()
+    has_view_user_permission = BooleanField()
+    has_edit_user_membership_permission = BooleanField()
+    cohort = CohortSerializer()
+
+    class Meta(object):
+        model_class = CohortUser
+        exclude = ['user_id', 'cohort_id']
 
 
 class CohortSerializerMixin(object):

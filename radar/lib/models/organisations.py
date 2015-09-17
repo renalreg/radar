@@ -74,6 +74,10 @@ class OrganisationUser(db.Model, MetaModelMixin):
         return self.role in ORGANISATION_EDIT_PATIENT_ROLES
 
     @hybrid_property
+    def has_recruit_patient_permission(self):
+        return self.role in ORGANISATION_RECRUIT_PATIENT_ROLES
+
+    @hybrid_property
     def has_view_user_permission(self):
         return self.role in ORGANISATION_VIEW_USER_ROLES
 
@@ -81,10 +85,6 @@ class OrganisationUser(db.Model, MetaModelMixin):
     def has_edit_user_membership_permission(self):
         managed_roles = ORGANISATION_MANAGED_ROLES.get(self.role)
         return managed_roles is not None and len(managed_roles) > 0
-
-    @hybrid_property
-    def has_recruit_patient_permission(self):
-        return self.role in ORGANISATION_RECRUIT_PATIENT_ROLES
 
 
 class Organisation(db.Model, MetaModelMixin):
