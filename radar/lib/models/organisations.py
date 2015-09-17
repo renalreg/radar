@@ -83,8 +83,11 @@ class OrganisationUser(db.Model, MetaModelMixin):
 
     @property
     def has_edit_user_membership_permission(self):
-        managed_roles = ORGANISATION_MANAGED_ROLES.get(self.role)
-        return managed_roles is not None and len(managed_roles) > 0
+        return len(self.managed_roles) > 0
+
+    @property
+    def managed_roles(self):
+        return ORGANISATION_MANAGED_ROLES.get(self.role, [])
 
 
 class Organisation(db.Model, MetaModelMixin):

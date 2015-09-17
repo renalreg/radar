@@ -17,6 +17,10 @@ def test_valid(cohort_patient):
     obj = valid(cohort_patient)
     assert obj.patient is not None
     assert obj.cohort is not None
+    assert obj.created_user is not None
+    assert obj.created_date is not None
+    assert obj.modified_user is not None
+    assert obj.modified_date is not None
 
 
 def test_patient_missing(cohort_patient):

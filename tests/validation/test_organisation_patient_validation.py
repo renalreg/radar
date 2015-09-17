@@ -18,6 +18,10 @@ def test_valid(organisation_patient):
     obj = valid(organisation_patient)
     assert obj.patient is not None
     assert obj.organisation is not None
+    assert obj.created_user is not None
+    assert obj.created_date is not None
+    assert obj.modified_user is not None
+    assert obj.modified_date is not None
 
 
 def test_patient_missing(organisation_patient):
