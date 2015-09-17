@@ -89,8 +89,11 @@ class CohortUser(db.Model, MetaModelMixin):
 
     @property
     def has_edit_user_membership_permission(self):
-        managed_roles = COHORT_MANAGED_ROLES.get(self.role)
-        return managed_roles is not None and len(managed_roles) > 0
+        return len(self.managed_roles) > 0
+
+    @property
+    def managed_roles(self):
+        return COHORT_MANAGED_ROLES.get(self.role, [])
 
 
 class CohortResultGroupDefinition(db.Model):
