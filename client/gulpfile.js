@@ -55,7 +55,9 @@ var paths = {
 };
 
 gulp.task('clean', function(cb) {
-  del(['dist', '.tmp'], cb);
+  del(['dist', '.tmp']).then(function() {
+    cb();
+  });
 });
 
 gulp.task('inject', ['sass', 'scripts'], function() {
