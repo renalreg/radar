@@ -1,4 +1,4 @@
-from radar.lib.permissions import intersect_patient_and_user_organisations, intersect_patient_and_user_cohorts
+from radar.lib.permissions import has_demographics_permission
 from radar.lib.serializers import Empty
 
 
@@ -6,16 +6,7 @@ class PatientDemographicsProxy(object):
     def __init__(self, demographics, user):
         self.demographics = demographics
         self.user = user
-
-        if user.is_admin:
-            self.demographics_permission = True
-        else:
-            organisation_users = intersect_patient_and_user_organisations(self.demographics.patient, user, user_membership=True)
-            self.demographics_permission = any(x.has_view_demographics_permission for x in organisation_users)
-
-            if not self.demographics:
-                cohort_users = intersect_patient_and_user_cohorts(self.demographics.patient, user, user_membership=True)
-                self.demographics_permission = any(x.has_view_demographics_permission for x in cohort_users)
+        self.demographics_permission = has_demographics_permission(demographics.patient, user)
 
     @property
     def first_name(self):
