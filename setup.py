@@ -27,6 +27,6 @@ setup(
         'Jinja2==2.8'
     ],
     scripts=[
-        'manage.py',
+        'scripts/manage.py',
     ],
 )
