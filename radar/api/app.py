@@ -69,7 +69,7 @@ def create_app():
     # Diagnoses
     app.add_url_rule('/diagnoses', view_func=DiagnosisListView.as_view('diagnosis_list'))
     app.add_url_rule('/diagnoses/<int:id>', view_func=DiagnosisDetailView.as_view('diagnosis_detail'))
-    app.add_url_rule('/cohort-diagnoses', view_func=CohortDiagnosisListView.as_view('cohort_diagnosis_list'))
+    app.add_url_rule('/diagnosis-cohort-diagnoses', view_func=CohortDiagnosisListView.as_view('diagnosis_cohort_diagnosis_list'))
     app.add_url_rule('/diagnosis-biopsy-diagnoses', view_func=DiagnosisBiopsyDiagnosesListView.as_view('diagnosis_biopsy_diagnosis_list'))
     app.add_url_rule('/diagnosis-karyotypes', view_func=DiagnosisKaryotypeListView.as_view('diagnosis_karyotype_list'))
 
