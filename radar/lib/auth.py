@@ -15,7 +15,7 @@ from radar.lib.models.users import User, AnonymousUser
 
 current_user = LocalProxy(lambda: get_user())
 
-PUBLIC_ENDPOINTS = ['login']
+PUBLIC_ENDPOINTS = ['login', 'post_list']
 
 RESET_PASSWORD_MAX_AGE = 86400  # 1 day
 
