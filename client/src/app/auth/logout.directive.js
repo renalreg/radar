@@ -3,13 +3,14 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('logout', function(logoutService) {
+  app.directive('logout', function(logoutService, $state) {
     return {
       restrict: 'A',
       link: function(scope, element) {
         element.on('click', function() {
           scope.$apply(function() {
             logoutService.logout();
+            $state.go('login');
           });
         });
       }

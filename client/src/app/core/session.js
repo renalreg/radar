@@ -36,9 +36,10 @@
 
   app.service('session', Session);
 
-  app.run(function($rootScope, logoutService, session) {
+  app.run(function($rootScope, logoutService, session, $state) {
     $rootScope.$on('unauthorized', function() {
-      logoutService.logout();
+      session.logout();
+      $state.go('login');
     });
 
     $rootScope.$watch(function() {

@@ -3,15 +3,15 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('logoutService', function(session, $state) {
+  app.factory('logoutService', function(session, adapter) {
     return {
       logout: logout
     };
 
     function logout() {
-      session.logout();
-      $state.go('login');
+      adapter.post('/logout').finally(function() {
+        session.logout();
+      });
     }
   });
 })();
-

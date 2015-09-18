@@ -5,7 +5,7 @@ from radar.lib.validation.validators import required
 
 
 class PatientValidation(MetaValidationMixin, Validation):
-    pass
+    recruited_organisation = Field([required()])  # TODO validate
 
 
 class PatientField(Field):

@@ -5,7 +5,7 @@ from radar.api.serializers.organisation_patients import OrganisationPatientSeria
 from radar.api.serializers.organisations import OrganisationReferenceField
 from radar.api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar.lib.serializers import ModelSerializer, ListField, StringField, DateField, IntegerField, \
-    Serializer, BooleanField, ReferenceField, CodedStringSerializer
+    Serializer, BooleanField, CodedStringSerializer
 from radar.lib.models import Patient, GENDERS
 
 

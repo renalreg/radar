@@ -4,12 +4,12 @@ from radar.api.serializers.patients import PatientSerializer, PatientListRequest
 from radar.lib.patient_search import PatientQueryBuilder
 from radar.lib.patients import PatientProxy
 from radar.lib.permissions import PatientPermission
-from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
+from radar.lib.views.core import RetrieveUpdateDestroyModelView, ListModelView
 from radar.lib.models import Patient
 from radar.lib.auth.sessions import current_user
 
 
-class PatientListView(ListCreateModelView):
+class PatientListView(ListModelView):
     serializer_class = PatientSerializer
     model_class = Patient
     permission_classes = [PatientPermission]

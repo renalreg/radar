@@ -17,6 +17,11 @@
       </tr>
 
       <tr>
+        <th>Recruiting Unit</th>
+        <td>{{item.recruitingOrganisation.name}}</td>
+      </tr>
+
+      <tr>
         <th>Added</th>
         <td>{{item.createdDate | dateTimeFormat}}</td>
       </tr>
@@ -41,6 +46,15 @@
         <div frm-control>
           <div frm-cohort-field model="item.cohort" required="true"></div>
           <div frm-errors errors="item.errors.cohort"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Recruiting Unit</div>
+
+        <div frm-control>
+          <div frm-unit-field model="item.recruitingOrganisation" required="true"></div>
+          <div frm-errors errors="item.errors.recruitingOrganisation"></div>
         </div>
       </div>
 

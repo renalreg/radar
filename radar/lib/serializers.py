@@ -666,8 +666,6 @@ class ModelSerializer(Serializer):
             # Get the field class for this column type
             field_class = self.get_field_class(col_type)
 
-            print type(col_type)
-
             # This will skip column types we can't handle
             if field_class is not None:
                 field = field_class(**field_kwargs)

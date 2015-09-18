@@ -15,6 +15,7 @@
         return config;
       },
       response: function(response) {
+        // Fresh token from the server
         var token = response.headers('X-Auth-Token');
 
         if (token !== null) {

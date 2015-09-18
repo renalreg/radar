@@ -53,7 +53,10 @@ class CohortPatient(db.Model, MetaModelMixin):
     patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
-    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
+    recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    recruited_organisation = relationship('Organisation')
+
+    is_active = Column(Boolean, nullable=False, default=True)
 
     __table_args__ = (
         UniqueConstraint('cohort_id', 'patient_id'),

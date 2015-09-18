@@ -9,6 +9,7 @@ class CohortPatientValidation(MetaValidationMixin, Validation):
     cohort = Field([required()])
     patient = Field([required()])
     is_active = Field([required()])
+    recruited_organisation = Field([required()])  # TODO validate
 
     @pass_context
     @pass_old_obj
