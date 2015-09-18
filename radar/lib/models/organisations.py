@@ -100,7 +100,7 @@ class Organisation(db.Model, MetaModelMixin):
 
     data_sources = relationship('DataSource')
     organisation_patients = relationship('OrganisationPatient')
-    organisation_users = relationship('OrganisationUser', foreign_keys=[OrganisationUser.organisation_id])
+    organisation_users = relationship('OrganisationUser')
 
     __table_args__ = (
         UniqueConstraint('type', 'code'),

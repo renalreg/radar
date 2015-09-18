@@ -25,7 +25,7 @@ from radar.lib.models.posts import Post
 from radar.lib.models.patients import Patient, PatientDemographics, GENDER_FEMALE
 from radar.lib.models.users import User
 from radar.lib.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
-    get_nhsbt_organisation
+    get_nhsbt_organisation, get_radar_organisation
 from radar.lib.roles import ORGANISATION_SENIOR_CLINICIAN, COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER
 
 
@@ -474,6 +474,7 @@ def create_patients(n):
         .filter(Organisation.type == ORGANISATION_TYPE_UNIT)\
         .all()
     cohorts = Cohort.query.all()
+    radar_organisation = get_radar_organisation()
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -491,10 +492,9 @@ def create_patients(n):
         print 'patient #%d' % (i + 1)
 
         patient = Patient()
-        patient.recruited_date = random_date(date(2008, 1, 1), date.today())
-
+        patient.recruited_organisation = radar_organisation
         patient = validate(patient)
-
+        patient.created_date = random_date(date(2008, 1, 1), date.today())
         db.session.add(patient)
 
         gender = generate_gender()
@@ -510,7 +510,7 @@ def create_patients(n):
             organisation_patient.patient = patient
             organisation_patient.is_active = True
             organisation_patient = validate(organisation_patient)
-            organisation_patient.created_date = random_date(patient.recruited_date, date.today())
+            organisation_patient.created_date = random_date(patient.created_date, date.today())
             db.session.add(organisation_patient)
 
             for data_source in organisation.data_sources:
@@ -531,9 +531,10 @@ def create_patients(n):
         cohort_patient = CohortPatient()
         cohort_patient.cohort = random.choice(cohorts)
         cohort_patient.patient = patient
+        cohort_patient.recruited_organisation = radar_organisation
         cohort_patient.is_active = True
         cohort_patient = validate(cohort_patient)
-        cohort_patient.created_date = random_date(patient.recruited_date, date.today())
+        cohort_patient.created_date = random_date(patient.created_date, date.today())
         db.session.add(cohort_patient)
 
 

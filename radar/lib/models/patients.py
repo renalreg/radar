@@ -1,13 +1,14 @@
 from collections import OrderedDict
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, select, Boolean, join, Text
+from sqlalchemy import Column, Integer, select, Boolean, join, Text, ForeignKey, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 
 from radar.lib.database import db
-from radar.lib.models import MetaModelMixin
+from radar.lib.models import MetaModelMixin, OrganisationPatient
 from radar.lib.models.patient_demographics import PatientDemographics
+
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -27,17 +28,13 @@ class Patient(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
 
-    # TODO move
-    # recruited_user_id = Column(Integer, ForeignKey('users.id'))
-    # recruited_user = relationship('User')
-    # recruited_date = Column(DateTime(timezone=False), default=datetime.now)
-    # recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'))
-    # recruited_organisation = relationship('Organisation')
+    recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    recruited_organisation = relationship('Organisation')
 
-    is_active = Column(Boolean, nullable=False, default=True, server_default='1')
+    is_active = Column(Boolean, nullable=False, default=True)
     comments = Column(Text)
 
-    organisation_patients = relationship('OrganisationPatient')
+    organisation_patients = relationship('OrganisationPatient', foreign_keys=[OrganisationPatient.patient_id])
     cohort_patients = relationship('CohortPatient')
 
     patient_demographics = relationship('PatientDemographics')
