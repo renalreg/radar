@@ -7,7 +7,12 @@
     $stateProvider.state('posts', {
       url: '/news',
       templateUrl: 'app/posts/post-list.html',
-      controller: 'PostListController'
+      controller: 'PostListController',
+      resolve: {
+        posts: function(store) {
+          return store.findMany('posts', {sort: '-publishedDate'});
+        }
+      }
     });
   });
 })();

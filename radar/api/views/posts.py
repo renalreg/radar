@@ -8,6 +8,7 @@ class PostListView(ListCreateModelView):
     serializer_class = PostSerializer
     model_class = Post
     validation_class = PostValidation
+    sort_fields = ('id', 'title', 'published_date')
 
 
 class PostDetailView(RetrieveUpdateDestroyModelView):
