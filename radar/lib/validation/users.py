@@ -3,6 +3,7 @@ from radar.lib.validation.meta import MetaValidationMixin
 
 
 # TODO
+# TODO check username not already taken
 class UserValidation(MetaValidationMixin, Validation):
     id = Field()
     username = Field()
