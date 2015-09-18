@@ -1,5 +1,5 @@
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer, EthnicityCodeSerializer
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 from radar.lib.patient_demographics import PatientDemographicsProxy
 from radar.lib.validation.patient_demographics import PatientDemographicsValidation
 from radar.lib.views.codes import CodedIntegerListView

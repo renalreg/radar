@@ -12,9 +12,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'Flask==0.10.1',
-        'Flask-Mail==0.9.1',
         'Flask-SQLAlchemy==2.0',
-        'Flask-Cors==2.1.0',
         'itsdangerous==0.24',
         'pandas==0.15.2',
         'psycopg2==2.6',

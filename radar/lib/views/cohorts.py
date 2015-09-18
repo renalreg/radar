@@ -7,7 +7,7 @@ from radar.lib.models import CohortPatient, Cohort, CohortUser, OrganisationPati
 from radar.lib.permissions import CohortObjectPermission
 from radar.lib.roles import COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_PATIENT_ROLES
 from radar.lib.serializers import Serializer, IntegerField
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 
 
 class CohortRequestSerializer(Serializer):

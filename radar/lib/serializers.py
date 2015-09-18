@@ -5,8 +5,10 @@ from datetime import datetime, date
 import delorean
 import six
 from sqlalchemy import inspect
+import sqlalchemy
 from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
+from sqlalchemy.dialects import postgresql
 
 from radar.lib.validation.core import ValidationError
 
@@ -578,6 +580,7 @@ class ModelSerializer(Serializer):
         sqltypes.DateTime: DateTimeField,
         sqltypes.Boolean: BooleanField,
         sqltypes.Numeric: FloatField,
+        postgresql.INET: StringField,
     }
 
     class Meta(object):
@@ -663,8 +666,10 @@ class ModelSerializer(Serializer):
             # Get the field class for this column type
             field_class = self.get_field_class(col_type)
 
+            print type(col_type)
+
             # This will skip column types we can't handle
-            if field_class:
+            if field_class is not None:
                 field = field_class(**field_kwargs)
                 field.bind(key)
                 fields[key] = field

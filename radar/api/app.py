@@ -1,13 +1,12 @@
 from flask import Flask
-from flask_cors import CORS
-from radar.api.views.cohort_patients import CohortPatientDetailView, CohortPatientListView
 
+from radar.api.views.cohort_patients import CohortPatientDetailView, CohortPatientListView
 from radar.api.views.cohort_users import CohortUserListView, CohortUserDetailView, CohortUserRoleListView
 from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailView, ComorbidityListView
 from radar.api.views.diagnoses import DiagnosisListView, DiagnosisDetailView, CohortDiagnosisListView, \
     DiagnosisBiopsyDiagnosesListView, DiagnosisKaryotypeListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
-from radar.api.views.logout import LogoutView
+from radar.api.views.logout import LogoutView, LogoutOtherSessionsView
 from radar.api.views.organisation_patients import OrganisationPatientListView, OrganisationPatientDetailView
 from radar.api.views.organisation_users import OrganisationUserListView, OrganisationUserDetailView, \
     OrganisationUserRoleListView
@@ -34,10 +33,12 @@ from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDeta
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
 from radar.api.views.organisations import OrganisationListView, OrganisationDetailView
+from radar.api.views.sessions import UserSessionListView
 from radar.api.views.transplants import TransplantListView, TransplantDetailView, TransplantTypeListView
 from radar.api.views.users import UserDetailView, UserListView
 from radar.api.views.login import LoginView
-from radar.lib.auth import require_login
+from radar.lib.auth.cors import set_cors_headers
+from radar.lib.auth.sessions import require_login, refresh_token
 from radar.lib.database import db
 from radar.lib.template_filters import register_template_filters
 
@@ -51,14 +52,16 @@ def create_app():
     db.init_app(app)
 
     if app.debug:
-        CORS(app)
+        app.after_request(set_cors_headers)
 
     app.before_request(require_login)
+    app.after_request(refresh_token)
 
     register_template_filters(app)
 
     app.add_url_rule('/login', view_func=LoginView.as_view('login'))
     app.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
+    app.add_url_rule('/logout-other-sessions', view_func=LogoutOtherSessionsView.as_view('logout_other_sessions'))
 
     # Cohorts
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
@@ -182,5 +185,8 @@ def create_app():
     # Users
     app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))
     app.add_url_rule('/users/<int:id>', view_func=UserDetailView.as_view('user_detail'))
+
+    # User Sessions
+    app.add_url_rule('/user-sessions', view_func=UserSessionListView.as_view('user_session_list'))
 
     return app

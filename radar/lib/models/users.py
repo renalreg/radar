@@ -81,10 +81,12 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def is_authenticated(self):
+    @classmethod
+    def is_authenticated(cls):
         return True
 
 
 class AnonymousUser(object):
-    def is_authenticated(self):
+    @classmethod
+    def is_authenticated(cls):
         return False
