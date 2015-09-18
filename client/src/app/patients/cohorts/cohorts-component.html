@@ -60,7 +60,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="cohort.name">
     <p>
       <span crud-create-button action="create()"></span>
     </p>

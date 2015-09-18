@@ -60,7 +60,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="organisation.name">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -73,30 +73,30 @@
 
     <table class="table" ng-if="page.getCount()">
       <thead>
-      <tr>
-        <th></th>
-        <th sort-helper="organisation.name">Unit</th>
-        <th sort-helper="createdDate">Added</th>
-        <th sort-helper="isActive">Active</th>
-        <th></th>
-      </tr>
+        <tr>
+          <th></th>
+          <th sort-helper="organisation.name">Unit</th>
+          <th sort-helper="createdDate">Added</th>
+          <th sort-helper="isActive">Active</th>
+          <th></th>
+        </tr>
       </thead>
 
       <tbody>
-      <tr ng-repeat="item in page.getItems()">
-        <td>
-          <span crud-list-view-button item="item"></span>
-          <span crud-list-edit-button item="item"></span>
-        </td>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
 
-        <td>{{item.organisation.name}}</td>
-        <td>{{item.createdDate | dateFormat}}</td>
-        <td><span tick="item.isActive"></span></td>
+          <td>{{item.organisation.name}}</td>
+          <td>{{item.createdDate | dateFormat}}</td>
+          <td><span tick="item.isActive"></span></td>
 
-        <td>
-          <span crud-list-remove-button item="item"></span>
-        </td>
-      </tr>
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
       </tbody>
     </table>
 
