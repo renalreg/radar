@@ -6,8 +6,7 @@
   app.config(function($stateProvider) {
     $stateProvider.state('login', {
       url: '/login',
-      templateUrl: 'app/auth/login.html',
-      controller: 'LoginController'
+      templateUrl: 'app/auth/login.html'
     });
 
     $stateProvider.state('forgotUsername', {

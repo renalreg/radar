@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.core');
 
-  app.factory('init', function(authStore, session, store, $q) {
+  app.factory('boot', function(authStore, session, store, $q) {
     var promises = [];
 
     var userId = authStore.getUserId();

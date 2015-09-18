@@ -14,6 +14,7 @@
     'radar.fields',
     'radar.filters',
     'radar.forms',
+    'radar.home',
     'radar.patients',
     'radar.permissions',
     'radar.posts',

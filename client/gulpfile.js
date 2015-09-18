@@ -72,7 +72,7 @@ gulp.task('inject', ['sass', 'scripts'], function() {
 
   var ieScripts = gulp.src(paths.ieJs, {read: false});
 
-  return gulp.src('src/index.html')
+  return gulp.src('src/home.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(vendorScripts, {name: 'vendor'}))
@@ -119,7 +119,7 @@ gulp.task('html', ['inject', 'templates'], function() {
   var cssFilter = gulpFilter('**/*.css', {restore: true});
   var htmlFilter = gulpFilter('*.html', {restore: true});
 
-  return gulp.src('.tmp/serve/index.html')
+  return gulp.src('.tmp/serve/home.html')
     .pipe(inject(templates, {name: 'templates', ignorePath: '.tmp/templates'}))
     .pipe(assets)
     .pipe(rev())
@@ -199,7 +199,7 @@ gulp.task('watch', ['inject'], function() {
     }
   });
 
-  gulp.watch('src/index.html', ['inject']);
+  gulp.watch('src/home.html', ['inject']);
 });
 
 gulp.task('serve', ['watch'], function() {

@@ -24,11 +24,11 @@
 <body>
   <div navbar></div>
 
-  <div ng-if="init">
+  <div ng-if="ready">
     <div class="ui-view"></div>
   </div>
 
-  <div ng-if="!init" class="content">
+  <div ng-if="!ready" class="content">
     <div class="well"><strong>Loading <i class="fa fa-spinner"></i></strong></div>
   </div>
 
