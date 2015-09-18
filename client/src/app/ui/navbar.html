@@ -62,6 +62,12 @@
         </li>
       </ul>
 
+      <ul class="nav navbar-nav" ng-if="!isAuthenticated">
+        <li ui-sref-active="active">
+          <a ui-sref="posts">News</a>
+        </li>
+      </ul>
+
       <div class="navbar-right">
         <ul ng-if="isAuthenticated" class="nav navbar-nav">
           <li class="dropdown">
