@@ -7,6 +7,7 @@ from radar.api.views.comorbidities import DisorderListView, ComorbidityDetailVie
 from radar.api.views.diagnoses import DiagnosisListView, DiagnosisDetailView, CohortDiagnosisListView, \
     DiagnosisBiopsyDiagnosesListView, DiagnosisKaryotypeListView
 from radar.api.views.family_history import FamilyHistoryListView, FamilyHistoryDetailView
+from radar.api.views.logout import LogoutView
 from radar.api.views.organisation_patients import OrganisationPatientListView, OrganisationPatientDetailView
 from radar.api.views.organisation_users import OrganisationUserListView, OrganisationUserDetailView, \
     OrganisationUserRoleListView
@@ -49,13 +50,15 @@ def create_app():
 
     db.init_app(app)
 
-    CORS(app)
+    if app.debug:
+        CORS(app)
 
     app.before_request(require_login)
 
     register_template_filters(app)
 
     app.add_url_rule('/login', view_func=LoginView.as_view('login'))
+    app.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
 
     # Cohorts
     app.add_url_rule('/cohorts', view_func=CohortListView.as_view('cohort_list'))
