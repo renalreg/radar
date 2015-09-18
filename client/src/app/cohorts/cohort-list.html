@@ -1,3 +1,7 @@
 <div class="content">
   <h1 class="page-header">Cohorts</h1>
+
+  <ul>
+    <li ng-repeat="cohort in cohorts"><a ui-sref="cohort({cohortId: cohort.id})">{{cohort.name}}</a></li>
+  </ul>
 </div>

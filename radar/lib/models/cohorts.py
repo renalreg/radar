@@ -19,6 +19,8 @@ class Cohort(db.Model, MetaModelMixin):
     cohort_features = relationship('CohortFeature')
     cohort_result_group_definitions = relationship('CohortResultGroupDefinition')
 
+    notes = Column(String)
+
     @property
     def patients(self):
         return [x.patient for x in self.cohort_patients]

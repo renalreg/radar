@@ -3,7 +3,7 @@ from radar.lib.database import db
 from radar.lib.models import CohortDiagnosis, Cohort
 
 COHORT_DIAGNOSES = {
-    'SRNS': [
+    'INS': [
         'SRNS - Primary Steroid Resistance',
         'SRNS - Secondary Steroid Resistance',
         'SRNS - Presumed Steroid Resistance',

@@ -81,11 +81,16 @@
       background-color: #333;
     }
 
-    li.group {
+    li.radar {
       display: block;
-      padding: 3px 5px 3px 0;
       font-weight: bold;
+      padding: 3px 5px;
+      border-radius: 2px;
       background-color: transparent;
+    }
+
+    li.group {
+      font-weight: bold;
     }
   }
 }

@@ -1,7 +1,7 @@
 <div class="patient-nav">
   <ul>
-    <li class="group">
-      {{ cohort.name }}
+    <li class="group" ui-sref-active="active">
+      <a ui-sref="patient.cohort({patientId: patient.id, cohortId: cohort.id})">{{ cohort.name }}</a>
     </li>
 
     <li ui-sref-active="active" ng-repeat="item in items">
