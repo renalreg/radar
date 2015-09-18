@@ -5,6 +5,9 @@ from radar.lib.database import db
 from radar.lib.models import MetaModelMixin
 
 
+RESULT_DEFINITION_TYPES = ['INTEGER', 'DECIMAL', 'STRING']
+
+
 class ResultGroup(db.Model, MetaModelMixin):
     __tablename__ = 'result_groups'
 
@@ -20,7 +23,7 @@ class ResultGroup(db.Model, MetaModelMixin):
     result_group_definition = relationship('ResultGroupDefinition')
 
     date = Column(DateTime(timezone=True), nullable=False)
-    pre_post = Column(String)
+    pre_post_dialysis = Column(String)
 
     results = relationship('Result', cascade='all, delete-orphan')
 
@@ -55,7 +58,7 @@ class Result(db.Model):
     result_definition_id = Column(Integer, ForeignKey('result_definitions.id'), nullable=False)
     result_definition = relationship('ResultDefinition')
 
-    value = Column(Numeric, nullable=False)
+    value = Column(String, nullable=False)
 
     __table_args__ = (
         UniqueConstraint('result_group_id', 'result_definition_id'),
@@ -69,7 +72,7 @@ class ResultGroupDefinition(db.Model):
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    pre_post = Column(Boolean, nullable=False)
+    pre_post_dialysis = Column(Boolean, nullable=False)
 
     result_group_result_definitions = relationship('ResultGroupResultDefinition')
 
@@ -85,6 +88,7 @@ class ResultDefinition(db.Model):
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
+    type = Column(String)
     units = Column(String)
     min_value = Column(Numeric)
     max_value = Column(Numeric)
