@@ -11,6 +11,7 @@ def organisation_patient():
     obj = OrganisationPatient()
     obj.patient = Patient()
     obj.organisation = Organisation()
+    obj.is_active = True
     return obj
 
 
@@ -18,6 +19,7 @@ def test_valid(organisation_patient):
     obj = valid(organisation_patient)
     assert obj.patient is not None
     assert obj.organisation is not None
+    assert obj.is_active is True
     assert obj.created_user is not None
     assert obj.created_date is not None
     assert obj.modified_user is not None

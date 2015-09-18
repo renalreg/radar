@@ -10,6 +10,7 @@ def cohort_patient():
     obj = CohortPatient()
     obj.patient = Patient()
     obj.cohort = Cohort()
+    obj.is_active = True
     return obj
 
 
@@ -17,6 +18,7 @@ def test_valid(cohort_patient):
     obj = valid(cohort_patient)
     assert obj.patient is not None
     assert obj.cohort is not None
+    assert obj.is_active is True
     assert obj.created_user is not None
     assert obj.created_date is not None
     assert obj.modified_user is not None
