@@ -28,7 +28,7 @@
       templateUrl: 'app/cohorts/cohort-detail.html',
       controller: 'CohortDetailController',
       resolve: {
-        cohort: function ($stateParams, store) {
+        cohort: function($stateParams, store) {
           return store.findOne('cohorts', $stateParams.cohortId, true);
         }
       }

@@ -40,5 +40,3 @@
     storeProvider.registerModel('users', 'UserModel');
   });
 })();
-
-

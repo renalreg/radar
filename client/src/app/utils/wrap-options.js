@@ -20,7 +20,7 @@
 
         if (angular.isObject(option)) {
           if (option.id === viewValue) {
-             return option;
+            return option;
           }
         } else {
           if (option === viewValue) {
