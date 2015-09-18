@@ -1,32 +1,13 @@
 <div class="content">
   <h1 class="page-header">Account</h1>
 
-  <p>
-    <a ui-sref="changeEmail" class="btn btn-default">Change Email</a>
-    <a ui-sref="changePassword" class="btn btn-default">Change Password</a>
-  </p>
+  <div account-component user="user"></div>
 
-  <form class="form-horizontal" crud-submit="save()" novalidate>
-    <div frm-field frm-group>
-      <div frm-label>First Name</div>
+  <h2 class="page-header">Change Email</h2>
 
-      <div frm-control>
-        <div frm-text-field model="item.firstName" required="true"></div>
-        <div frm-errors errors="item.errors.firstName"></div>
-      </div>
-    </div>
+  <div change-email-component user="user"></div>
 
-    <div frm-field frm-group>
-      <div frm-label>Last Name</div>
+  <h2 class="page-header">Change Password</h2>
 
-      <div frm-control>
-        <div frm-password-field model="item.lastName" required="true"></div>
-        <div frm-errors errors="item.errors.lastName"></div>
-      </div>
-    </div>
-
-    <div frm-buttons>
-      <span crud-save-button></span>
-    </div>
-  </form>
+  <div change-password-component user="user"></div>
 </div>

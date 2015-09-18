@@ -35,7 +35,7 @@ class OrganisationUserValidation(MetaValidationMixin, Validation):
 
         # Can't change your own role
         if new_user == current_user and not current_user.is_admin:
-            raise ValidationError({'user': 'Permission denied!'})
+            raise ValidationError({'cohort': 'Permission denied!'})
 
         new_role = new_obj.role
         new_organisation = new_obj.organisation
@@ -58,7 +58,7 @@ class OrganisationUserValidation(MetaValidationMixin, Validation):
 
             # Can't change your own role
             if old_user == current_user and not current_user.is_admin:
-                raise ValidationError({'user': 'Permission denied!'})
+                raise ValidationError({'cohort': 'Permission denied!'})
 
             old_role = old_obj.role
             old_organisation = old_obj.organisation

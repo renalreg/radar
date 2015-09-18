@@ -46,8 +46,8 @@
               </td>
 
               <td>
-                <span ng-if="!user.organisations.length">-</span>
-                <span ng-repeat="organisation in user.organisations | orderBy: 'organisation.name'">
+                <span ng-if="!user.getUnits().length">-</span>
+                <span ng-repeat="organisation in user.getUnits() | orderBy: 'organisation.name'">
                   {{organisation.organisation.name}}
                   <br ng-if="!$last" />
                 </span>

@@ -1,12 +1,10 @@
-<div class="content">
-  <h1 class="page-header">Change Email</h1>
-
-  <form class="form-container form-horizontal">
+<div crud>
+  <form class="form-container form-horizontal" crud-submit="save()" novalidate>
     <div frm-field frm-group>
       <div frm-label>Current Password</div>
 
       <div frm-control>
-        <div frm-password-field model="data.password" required="true"></div>
+        <div frm-password-field model="data.currentPassword" required="true"></div>
       </div>
     </div>
 
@@ -27,7 +25,7 @@
     </div>
 
     <div frm-buttons>
-      <span submit-button>Change Email</span>
+      <span crud-save-button></span>
     </div>
   </form>
 </div>

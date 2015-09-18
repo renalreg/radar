@@ -7,12 +7,12 @@ from radar.lib.models import User
 
 
 class UserSerializer(MetaSerializerMixin, ModelSerializer):
-    organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users')
-    cohorts = ListField(field=CohortUserSerializer(), source='cohort_users')
+    organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users', read_only=True)
+    cohorts = ListField(field=CohortUserSerializer(), source='cohort_users', read_only=True)
 
     class Meta(object):
         model_class = User
-        fields = ('id', 'is_admin', 'username', 'email')
+        fields = ('id', 'is_admin', 'username', 'email', 'first_name', 'last_name')
 
 
 class UserListRequestSerializer(Serializer):
