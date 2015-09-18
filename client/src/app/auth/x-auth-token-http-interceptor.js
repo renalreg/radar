@@ -13,6 +13,15 @@
         }
 
         return config;
+      },
+      response: function(response) {
+        var token = response.headers('X-Auth-Token');
+
+        if (token !== null) {
+          session.setToken(token);
+        }
+
+        return response;
       }
     };
   });

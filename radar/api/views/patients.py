@@ -6,7 +6,7 @@ from radar.lib.patients import PatientProxy
 from radar.lib.permissions import PatientPermission
 from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.lib.models import Patient
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 
 
 class PatientListView(ListCreateModelView):

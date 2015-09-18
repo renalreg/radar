@@ -1,4 +1,4 @@
-from radar.lib.auth import login, generate_token
+from radar.lib.auth.sessions import login
 
 from radar.lib.serializers import Serializer, StringField, IntegerField
 from radar.lib.validation.core import ValidationError
@@ -19,9 +19,11 @@ class LoginView(ApiView):
     @request_json(LoginSerializer)
     @response_json(TokenSerializer)
     def post(self, credentials):
-        user = login(credentials['username'], credentials['password'])
+        result = login(credentials['username'], credentials['password'])
 
-        if user is None:
+        if result is None:
             raise ValidationError({'username': 'Incorrect username or password.'})
 
-        return {'user_id': user.id, 'token': generate_token(user)}
+        user, token = result
+
+        return {'user_id': user.id, 'token': token}

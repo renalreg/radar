@@ -1,5 +1,5 @@
 from radar.api.serializers.patient_addresses import PatientAddressSerializer
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 from radar.lib.models import PatientAddress
 from radar.lib.patient_addresses import PatientAddressProxy
 from radar.lib.validation.patient_addresses import PatientAddressValidation

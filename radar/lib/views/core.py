@@ -10,7 +10,7 @@ from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
 from radar.lib.serializers import ListField, Serializer, IntegerField, StringField
 from radar.lib.validation.core import ValidationError
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 
 
 class ApiView(MethodView):

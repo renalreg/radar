@@ -4,7 +4,7 @@ from radar.api.serializers.users import UserSerializer, UserListRequestSerialize
 from radar.lib.user_search import UserQueryBuilder
 from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.lib.models import User
-from radar.lib.auth import current_user
+from radar.lib.auth.sessions import current_user
 
 
 class UserListView(ListCreateModelView):
