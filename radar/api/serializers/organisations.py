@@ -1,5 +1,5 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
+from radar.lib.serializers import ModelSerializer, ListField, ReferenceField, StringField, Serializer
 from radar.lib.models import DataSource, Organisation
 
 
@@ -26,3 +26,7 @@ class OrganisationSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Organisation
+
+
+class OrganisationRequestSerializer(Serializer):
+    type = StringField()

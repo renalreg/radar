@@ -32,7 +32,7 @@ from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDeta
     RenalImagingKidneyTypeListView
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
-from radar.api.views.organisations import OrganisationListView
+from radar.api.views.organisations import OrganisationListView, OrganisationDetailView
 from radar.api.views.transplants import TransplantListView, TransplantDetailView, TransplantTypeListView
 from radar.api.views.users import UserDetailView, UserListView
 from radar.api.views.login import LoginView
@@ -112,6 +112,7 @@ def create_app():
 
     # Organisations
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
+    app.add_url_rule('/organisations/<int:id>', view_func=OrganisationDetailView.as_view('organisation_detail'))
 
     # Organisation Patients
     app.add_url_rule('/organisation-patients', view_func=OrganisationPatientListView.as_view('organisation_patient_list'))

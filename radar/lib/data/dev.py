@@ -101,7 +101,7 @@ def create_srns_user():
 
     cohort_user = CohortUser()
     cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'SRNS').one()
+    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'INS').one()
     cohort_user.role = COHORT_RESEARCHER
 
     cohort_user = validate(cohort_user)
@@ -119,7 +119,7 @@ def create_srns_demograhics_user():
 
     cohort_user = CohortUser()
     cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'SRNS').one()
+    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'INS').one()
     cohort_user.role = COHORT_SENIOR_RESEARCHER
 
     cohort_user = validate(cohort_user)
@@ -508,8 +508,9 @@ def create_patients(n):
             organisation_patient = OrganisationPatient()
             organisation_patient.organisation = organisation
             organisation_patient.patient = patient
-            organisation_patient.created_date = random_date(patient.recruited_date, date.today())
+            organisation_patient.is_active = True
             organisation_patient = validate(organisation_patient)
+            organisation_patient.created_date = random_date(patient.recruited_date, date.today())
             db.session.add(organisation_patient)
 
             for data_source in organisation.data_sources:
@@ -530,8 +531,9 @@ def create_patients(n):
         cohort_patient = CohortPatient()
         cohort_patient.cohort = random.choice(cohorts)
         cohort_patient.patient = patient
-        cohort_patient.created_date = random_date(patient.recruited_date, date.today())
+        cohort_patient.is_active = True
         cohort_patient = validate(cohort_patient)
+        cohort_patient.created_date = random_date(patient.recruited_date, date.today())
         db.session.add(cohort_patient)
 
 

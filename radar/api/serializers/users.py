@@ -21,5 +21,5 @@ class UserListRequestSerializer(Serializer):
     email = StringField()
     first_name = StringField()
     last_name = StringField()
-    organisation_id = OrganisationReferenceField(write_only=True)
-    cohort_id = CohortReferenceField(write_only=True)
+    organisation = OrganisationReferenceField(write_only=True)
+    cohort = CohortReferenceField(write_only=True)

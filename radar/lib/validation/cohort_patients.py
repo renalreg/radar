@@ -23,9 +23,6 @@ class CohortPatientValidation(MetaValidationMixin, Validation):
         new_cohort = new_obj.cohort
         duplicate = any(x != new_obj and x.cohort == new_cohort for x in new_obj.patient.cohort_patients)
 
-        print 'Hello!'
-        print new_obj.patient.cohort_patients
-
         if duplicate:
             raise ValidationError({'cohort': 'Patient already belongs to this cohort.'})
 
