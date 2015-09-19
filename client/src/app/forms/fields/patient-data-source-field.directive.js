@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmPatientDataSourceField', function(store, session, _) {
     return {
@@ -11,7 +11,7 @@
         model: '=',
         required: '&'
       },
-      templateUrl: 'app/fields/patient-data-source-field.html',
+      templateUrl: 'app/forms/fields/patient-data-source-field.html',
       link: function(scope) {
         var user = session.user;
         var isAdmin = user.isAdmin;

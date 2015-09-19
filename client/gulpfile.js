@@ -4,9 +4,7 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var size = require('gulp-size');
 var imagemin = require('gulp-imagemin');
-var ngAnnotate = require('gulp-ng-annotate');
 var jshint = require('gulp-jshint');
-var gulpIf = require('gulp-if');
 var templateCache = require('gulp-angular-templatecache');
 var minifyHtml = require('gulp-minify-html');
 var minifyCss = require('gulp-minify-css');
@@ -21,6 +19,7 @@ var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
 var gutil = require('gulp-util');
 
+var express = require('express');
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
@@ -124,7 +123,6 @@ gulp.task('html', ['inject', 'templates'], function() {
     .pipe(assets)
     .pipe(rev())
     .pipe(jsFilter)
-    .pipe(ngAnnotate())
     .pipe(uglify())
     .pipe(jsFilter.restore)
     .pipe(cssFilter)
@@ -178,7 +176,7 @@ gulp.task('dist:size', function() {
     .pipe(size({title: 'dist', gzip: 'true', showFiles: true}));
 });
 
-gulp.task('watch', ['inject'], function() {
+gulp.task('watch', function() {
   gulp.watch('src/app/**/*.js', function(event) {
     if (event.type === 'changed') {
       gulp.start('scripts');
@@ -202,25 +200,46 @@ gulp.task('watch', ['inject'], function() {
   gulp.watch('src/index.html', ['inject']);
 });
 
-gulp.task('serve', ['watch'], function() {
+gulp.task('bs', function() {
   browserSync.init({
-    server: {
-      baseDir: ['.tmp/serve', 'src'],
-      routes: {
-        '/bower_components': 'bower_components'
-      }
-    },
-    open: false
+    proxy: "http://localhost:5001",
+    open: false,
+    port: 5002
   });
 });
 
-gulp.task('serve:dist', ['dist'], function() {
-  browserSync.init({
-    server: {
-      baseDir: 'dist'
-    },
-    open: false
+gulp.task('express', function (cb) {
+  var app = express();
+
+  app.use(express.static('.tmp/serve'));
+  app.use(express.static('src'));
+  app.use('/bower_components', express.static('bower_components'));
+
+  app.get('/', function(req, res) {
+    res.sendFile('.tmp/serve/index.html');
   });
+
+  app.listen(5001);
+});
+
+gulp.task('express:dist', function (cb) {
+  var app = express();
+
+  app.use(express.static('dist'));
+
+  app.get('/', function(req, res) {
+    res.sendFile('dist/index.html');
+  });
+
+  app.listen(5001);
+});
+
+gulp.task('serve', function(cb) {
+  runSequence('inject', ['watch', 'bs', 'express'], cb);
+});
+
+gulp.task('serve:dist', function(cb) {
+  runSequence('dist', 'express:dist', cb);
 });
 
 gulp.task('default', ['serve']);

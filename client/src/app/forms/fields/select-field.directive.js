@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmSelectField', function(unwrapSelectOption, wrapSelectOption, wrapSelectOptions) {
     return {
@@ -11,7 +11,7 @@
         model: '=',
         options: '='
       },
-      templateUrl: 'app/fields/select-field.html',
+      templateUrl: 'app/forms/fields/select-field.html',
       link: function(scope) {
         scope.data = {};
 

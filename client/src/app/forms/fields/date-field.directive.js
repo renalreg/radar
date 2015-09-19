@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmDateField', function() {
     return {
@@ -13,7 +13,7 @@
         maxDate: '=',
         defaultDate: '='
       },
-      templateUrl: 'app/fields/date-field.html'
+      templateUrl: 'app/forms/fields/date-field.html'
     };
   });
 })();

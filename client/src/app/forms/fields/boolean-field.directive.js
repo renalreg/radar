@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmBooleanField', function() {
     return {
@@ -11,7 +11,7 @@
         required: '&',
         model: '='
       },
-      templateUrl: 'app/fields/boolean-field.html',
+      templateUrl: 'app/forms/fields/boolean-field.html',
       link: function(scope) {
         scope.options = [
           {

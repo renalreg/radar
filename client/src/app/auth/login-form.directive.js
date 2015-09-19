@@ -11,7 +11,8 @@
       link: function(scope) {
         var credentials = {
           username: '',
-          password: ''
+          password: '',
+          logoutOtherSessions: true
         };
 
         scope.credentials = credentials;
@@ -21,7 +22,7 @@
         scope.login = function() {
           scope.errors = {};
 
-          loginService.login(credentials.username, credentials.password)
+          loginService.login(credentials)
             .then(function() {
               $state.go('patients');
             })

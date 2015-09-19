@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmRadioField', function(wrapRadioOptions, toRadioView, toRadioModel) {
     return {
@@ -11,7 +11,7 @@
         required: '&',
         options: '='
       },
-      templateUrl: 'app/fields/radio-field.html',
+      templateUrl: 'app/forms/fields/radio-field.html',
       link: function(scope) {
         // Note: ng-repeat creates a child scope which breaks ng-model="model". The model variable is a primitive type
         // (i.e. not an object) so when the value is updated in the child scope it won't be updated in the parent scope

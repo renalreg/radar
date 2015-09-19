@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   // TODO validators
 
@@ -12,7 +12,7 @@
         required: '&',
         model: '='
       },
-      templateUrl: 'app/fields/integer-field.html'
+      templateUrl: 'app/forms/fields/integer-field.html'
     };
   });
 })();

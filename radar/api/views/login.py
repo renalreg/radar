@@ -1,6 +1,6 @@
-from radar.lib.auth.sessions import login
+from radar.lib.auth.sessions import login, logout_other_sessions
 
-from radar.lib.serializers import Serializer, StringField, IntegerField
+from radar.lib.serializers import Serializer, StringField, IntegerField, BooleanField
 from radar.lib.validation.core import ValidationError
 from radar.lib.views.core import ApiView, request_json, response_json
 
@@ -8,6 +8,7 @@ from radar.lib.views.core import ApiView, request_json, response_json
 class LoginSerializer(Serializer):
     username = StringField()
     password = StringField()
+    logout_other_sessions = BooleanField()
 
 
 class TokenSerializer(Serializer):
@@ -23,6 +24,9 @@ class LoginView(ApiView):
 
         if result is None:
             raise ValidationError({'username': 'Incorrect username or password.'})
+
+        if credentials.get('logout_other_sessions', False):
+            logout_other_sessions()
 
         user, token = result
 

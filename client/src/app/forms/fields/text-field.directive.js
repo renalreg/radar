@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmTextField', function() {
     return {
@@ -10,7 +10,7 @@
         required: '&',
         model: '='
       },
-      templateUrl: 'app/fields/text-field.html'
+      templateUrl: 'app/forms/fields/text-field.html'
     };
   });
 })();

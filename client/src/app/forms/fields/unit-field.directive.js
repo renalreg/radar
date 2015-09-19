@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmUnitField', function(_, session, store) {
     function sortUnits(units) {
@@ -16,7 +16,7 @@
         model: '=',
         required: '&'
       },
-      templateUrl: 'app/fields/unit-field.html',
+      templateUrl: 'app/forms/fields/unit-field.html',
       link: function(scope) {
         var user = session.user;
 

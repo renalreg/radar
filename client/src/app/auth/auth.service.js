@@ -8,10 +8,10 @@
       login: login
     };
 
-    function login(username, password) {
+    function login(credentials) {
       var deferred = $q.defer();
 
-      adapter.post('/login', {}, {username: username, password: password})
+      adapter.post('/login', {}, credentials)
         .then(function(response) {
           var userId = response.data.userId;
           var token = response.data.token;

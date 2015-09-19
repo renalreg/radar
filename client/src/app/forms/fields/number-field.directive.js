@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   // TODO validators
 
@@ -13,7 +13,7 @@
         model: '=',
         units: '@'
       },
-      templateUrl: 'app/fields/number-field.html'
+      templateUrl: 'app/forms/fields/number-field.html'
     };
   });
 })();

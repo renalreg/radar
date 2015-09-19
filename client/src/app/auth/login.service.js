@@ -8,8 +8,8 @@
       login: login
     };
 
-    function login(username, password) {
-      return authService.login(username, password);
+    function login(credentials) {
+      return authService.login(credentials);
     }
   });
 })();

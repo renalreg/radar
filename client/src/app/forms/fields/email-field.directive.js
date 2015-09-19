@@ -1,17 +1,16 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
-  app.directive('frmPasswordField', function() {
+  app.directive('frmEmailField', function() {
     return {
       restrict: 'A',
       scope: {
         required: '&',
         model: '='
       },
-      templateUrl: 'app/fields/password-field.html'
+      templateUrl: 'app/forms/fields/email-field.html'
     };
   });
 })();
-

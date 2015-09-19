@@ -11,7 +11,6 @@
     'radar.core',
     'radar.crud',
     'radar.dataSources',
-    'radar.fields',
     'radar.filters',
     'radar.forms',
     'radar.home',

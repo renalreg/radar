@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmCheckboxField', function() {
     return {
@@ -9,7 +9,8 @@
       scope: {
         model: '='
       },
-      templateUrl: 'app/fields/checkbox-field.html'
+      transclude: true,
+      templateUrl: 'app/forms/fields/checkbox-field.html'
     };
   });
 })();

@@ -9,6 +9,7 @@
       this.attrs = $attrs;
       this.valid = true;
       this.required = false;
+      this.labels = 0;
       this.modelCtrl = null;
     }
 
@@ -24,12 +25,20 @@
       this.required = required;
     };
 
+    Field.prototype.registerLabel = function() {
+      this.labels += 1;
+    };
+
     Field.prototype.isValid = function() {
       return this.valid && (this.modelCtrl === null || this.modelCtrl.$pristine || this.modelCtrl.$valid);
     };
 
     Field.prototype.isRequired = function() {
       return this.required;
+    };
+
+    Field.prototype.hasLabel = function() {
+      return this.labels > 0;
     };
 
     return {

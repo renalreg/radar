@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.fields');
+  var app = angular.module('radar.forms.fields');
 
   app.directive('frmOrganisationField', function(_, store) {
     function sortByName(x) {
@@ -23,7 +23,7 @@
         model: '=',
         required: '&'
       },
-      templateUrl: 'app/fields/organisation-field.html',
+      templateUrl: 'app/forms/fields/organisation-field.html',
       link: function(scope) {
         store.findMany('organisations').then(function(organisations) {
           scope.organisations = sortOrganisations(organisations);
