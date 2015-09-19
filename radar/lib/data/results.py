@@ -1,6 +1,8 @@
+from collections import OrderedDict
 from radar.lib.data.validation import validate
 from radar.lib.database import db
-from radar.lib.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec
+from radar.lib.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec, RESULT_SPEC_TYPE_CODED_STRING, \
+    RESULT_SPEC_TYPE_FLOAT
 
 # TODO ranges
 RESULT_SPECS = [
@@ -9,7 +11,7 @@ RESULT_SPECS = [
         'short_name': 'ACR',
         'name': 'Albumin : Creatinine Ratio',
         'units': 'mg/mmol',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -17,7 +19,7 @@ RESULT_SPECS = [
         'short_name': 'AdjCa',
         'name': 'Adjusted Calcium',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -25,35 +27,35 @@ RESULT_SPECS = [
         'short_name': 'Alb',
         'name': 'Albumin',
         'units': 'g/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'ALP',
         'short_name': 'AlkP',
         'name': 'AlkP',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'ALT',
         'short_name': 'ALT',
         'name': 'ALT',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'AST',
         'short_name': 'AST',
         'name': 'AST',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'BILI',
         'short_name': 'Bili',
         'name': 'Bilirubin',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -61,7 +63,7 @@ RESULT_SPECS = [
         'short_name': 'BPdia',
         'name': 'Diastolic Blood Pressure',
         'units': 'mm Hg',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -69,14 +71,14 @@ RESULT_SPECS = [
         'short_name': 'BPsys',
         'name': 'Systolic Blood Pressure',
         'units': 'mm Hg',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'CALCIUM',
         'short_name': 'Ca',
         'name': 'Calcium',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -84,28 +86,28 @@ RESULT_SPECS = [
         'short_name': 'Cholest',
         'name': 'CHOLESTEROL',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'CICLOSPORIN',
         'short_name': 'Ciclo',
         'name': 'Ciclosporin (Cyclosporine)',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'CREATININE',
         'short_name': 'Creatinine',
         'name': 'Creatinine',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'CRP',
         'short_name': 'CRP',
         'name': 'C-Reactive Protein',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -113,21 +115,21 @@ RESULT_SPECS = [
         'short_name': 'eGFR',
         'name': 'Estimated GFR',
         'units': 'ml/min/1.73m2',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'FERRITIN',
         'short_name': 'Ferr',
         'name': 'Ferritin',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'GGT',
         'short_name': 'GGT',
         'name': 'GGT',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -135,7 +137,7 @@ RESULT_SPECS = [
         'short_name': 'Gluc',
         'name': 'Glucose',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -143,14 +145,14 @@ RESULT_SPECS = [
         'short_name': 'Hb',
         'name': 'HB',
         'units': 'g/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'HBA1C',
         'short_name': 'HbA1C',
         'name': 'HbA1C',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -158,7 +160,7 @@ RESULT_SPECS = [
         'short_name': 'Bicarb',
         'name': 'Bicarbonate',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -166,7 +168,7 @@ RESULT_SPECS = [
         'short_name': 'Height',
         'name': 'Height',
         'units': 'cm',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -174,42 +176,42 @@ RESULT_SPECS = [
         'short_name': 'INR',
         'name': 'INR',
         'units': 'ratio',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'IRON',
         'short_name': 'Iron',
         'name': 'Iron',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'IRONSAT',
         'short_name': 'Fe Sat',
         'name': 'Iron Saturation',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'KTV',
         'short_name': 'Kt/V',
         'name': 'Kt/V',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'LITHIUM',
         'short_name': 'Lith',
         'name': 'Lithium',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'MAGNESIUM',
         'short_name': 'Mg',
         'name': 'Magnesium',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -217,14 +219,14 @@ RESULT_SPECS = [
         'short_name': 'PCR',
         'name': 'Protein : Creatinine Ratio',
         'units': 'mg/mmol',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'PHEPKU',
         'short_name': 'Phe',
         'name': 'Phenylalanine (for PKU)',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -232,14 +234,14 @@ RESULT_SPECS = [
         'short_name': 'Phos',
         'name': 'Phosphate',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'PLATELETS',
         'short_name': 'Plats',
         'name': 'Platelets',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -247,35 +249,38 @@ RESULT_SPECS = [
         'short_name': 'Potassium',
         'name': 'Potassium',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'PRE_POST_DIALYSIS',
         'short_name': 'Pre/Post',
         'name': 'Pre/Post Dialysis',
-        'type': 'DECIMAL',  # TODO
-        'min_value': 0
+        'type': RESULT_SPEC_TYPE_CODED_STRING,  # TODO
+        'options': OrderedDict([
+            ('PRE', 'Pre'),
+            ('POST', 'Post'),
+        ])
     },
     {
         'code': 'PSA',
         'short_name': 'PSA',
         'name': 'PSA',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'PTH',
         'short_name': 'PTH',
         'name': 'Parathyroid Hormone',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'SIROLIMUS',
         'short_name': 'Siro',
         'name': 'Sirolimus',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -283,35 +288,35 @@ RESULT_SPECS = [
         'short_name': 'Sodium',
         'name': 'Sodium',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'TACROLIMUS',
         'short_name': 'Tacro',
         'name': 'Tacrolimus',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'TESTOSTERONE',
         'short_name': 'Serum Testosterone',
         'name': 'Serum Testosterone',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'TG',
         'short_name': 'TG',
         'name': 'Triglycerides',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'TRANSFERRIN',
         'short_name': 'Tferrin',
         'name': 'Transferrin',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -319,7 +324,7 @@ RESULT_SPECS = [
         'short_name': 'Urate',
         'name': 'Uric Acid',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -327,28 +332,28 @@ RESULT_SPECS = [
         'short_name': 'Urea',
         'name': 'Urea',
         'units': 'mmol/l',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'URR',
         'short_name': 'URR',
         'name': 'Urea Reduction Ratio',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'VITD',
         'short_name': 'Vit D',
         'name': 'Vitamin D',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
         'code': 'WBC',
         'short_name': 'WBC',
         'name': 'White Blood Cell Count',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
@@ -356,7 +361,7 @@ RESULT_SPECS = [
         'short_name': 'Weight',
         'name': 'Weight',
         'units': 'kg',
-        'type': 'DECIMAL',
+        'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     }
 ]
@@ -495,6 +500,12 @@ def create_result_specs():
         result_spec.units = x.get('units')
         result_spec.min_value = x.get('min_value')
         result_spec.max_value = x.get('max_value')
+
+        options = x.get('options')
+
+        if options is not None:
+            result_spec.options = [{'id': k, 'label': v} for k, v in options.items()]
+
         result_spec = validate(result_spec)
         db.session.add(result_spec)
 

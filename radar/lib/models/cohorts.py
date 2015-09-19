@@ -8,7 +8,7 @@ from radar.lib.roles import COHORT_VIEW_DEMOGRAPHICS_ROLES, COHORT_VIEW_PATIENT_
 from radar.lib.models.common import MetaModelMixin
 
 
-class Cohort(db.Model, MetaModelMixin):
+class Cohort(db.Model):
     __tablename__ = 'cohorts'
 
     id = Column(Integer, primary_key=True)

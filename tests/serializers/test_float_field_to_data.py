@@ -1,5 +1,6 @@
 from decimal import Decimal
-from radar.lib.serializers import FloatField
+
+from radar.lib.serializers.fields import FloatField
 
 
 def test_int():

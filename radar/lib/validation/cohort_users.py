@@ -1,5 +1,4 @@
 from radar.lib.roles import COHORT_ROLES
-from radar.lib.serializers import Empty
 from radar.lib.validation.core import Validation, Field, pass_old_obj, ValidationError, pass_context
 from radar.lib.validation.meta import MetaValidationMixin
 from radar.lib.validation.validators import required, in_

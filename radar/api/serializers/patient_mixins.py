@@ -1,5 +1,5 @@
 from radar.lib.models import Patient
-from radar.lib.serializers import ReferenceField
+from radar.lib.serializers.models import ReferenceField
 
 
 class PatientReferenceField(ReferenceField):

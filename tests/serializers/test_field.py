@@ -1,4 +1,4 @@
-from radar.lib.serializers import Field, Empty
+from radar.lib.serializers.core import Field, Empty
 
 
 class FooModel(object):

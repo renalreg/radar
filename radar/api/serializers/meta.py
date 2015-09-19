@@ -1,5 +1,5 @@
 from radar.lib.models import User
-from radar.lib.serializers import ModelSerializer
+from radar.lib.serializers.models import ModelSerializer
 
 
 class BasicUserSerializer(ModelSerializer):

@@ -1,6 +1,7 @@
 from radar.lib.auth.sessions import login, logout_other_sessions
 
-from radar.lib.serializers import Serializer, StringField, IntegerField, BooleanField
+from radar.lib.serializers.core import Serializer
+from radar.lib.serializers.fields import StringField, BooleanField, IntegerField
 from radar.lib.validation.core import ValidationError
 from radar.lib.views.core import ApiView, request_json, response_json
 

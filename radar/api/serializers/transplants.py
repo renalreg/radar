@@ -2,7 +2,8 @@ from radar.api.serializers.data_sources import DataSourceSerializerMixin
 from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.patient_mixins import PatientSerializerMixin
 from radar.lib.models import TRANSPLANT_TYPES, Transplant
-from radar.lib.serializers import ModelSerializer, CodedStringSerializer
+from radar.lib.serializers.models import ModelSerializer
+from radar.lib.serializers.codes import CodedStringSerializer
 
 
 class TransplantSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):

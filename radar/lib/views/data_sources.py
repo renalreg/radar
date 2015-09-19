@@ -1,6 +1,8 @@
 from flask import request
-from radar.lib.permissions import CohortObjectPermission, RadarObjectPermission, DataSourceObjectPermission
-from radar.lib.serializers import Serializer, IntegerField
+
+from radar.lib.permissions import RadarObjectPermission, DataSourceObjectPermission
+from radar.lib.serializers.core import Serializer
+from radar.lib.serializers.fields import IntegerField
 
 
 class DataSourceRequestSerializer(Serializer):

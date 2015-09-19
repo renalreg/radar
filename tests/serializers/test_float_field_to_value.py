@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 import pytest
-from radar.lib.serializers import FloatField
+
+from radar.lib.serializers.fields import FloatField
 from radar.lib.validation.core import ValidationError
 
 

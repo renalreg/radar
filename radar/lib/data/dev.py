@@ -15,11 +15,12 @@ from radar.lib.data.dev_utils import random_date, generate_gender, generate_firs
 from radar.lib.data.validation import validate
 from radar.lib.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.lib.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
-    RenalImaging, Result, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
+    RenalImaging, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
     MEDICATION_FREQUENCIES, MEDICATION_ROUTES, TRANSPLANT_TYPES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
     RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
     PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser, \
-    ResultGroupSpec
+    ResultGroupSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPE_CODED_INTEGER, \
+    RESULT_SPEC_TYPE_CODED_STRING
 from radar.lib.database import db
 from radar.lib.models.cohorts import Cohort
 from radar.lib.models.posts import Post
@@ -150,16 +151,21 @@ def create_result_groups_f():
                 result_group.data_source = data_source
                 result_group.result_group_spec = result_group_spec
                 result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.UTC))
+
+                result_group.results = results = {}
+
+                for result_spec in result_group_spec.result_specs:
+                    type = result_spec.type
+
+                    if type == RESULT_SPEC_TYPE_INTEGER or type == RESULT_SPEC_TYPE_FLOAT:
+                        min_value = result_spec.min_value or 0
+                        max_value = result_spec.max_value or 100
+                        results[result_spec.code] = random.randint(min_value, max_value)
+                    elif type == RESULT_SPEC_TYPE_CODED_STRING or type == RESULT_SPEC_TYPE_CODED_INTEGER:
+                        results[result_spec.code] = random.choice(result_spec.option_values)
+
                 result_group = validate(result_group)
                 db.session.add(result_group)
-
-                for result_spec in result_group_spec.results:
-                    result = Result()
-                    result.result_group = result_group
-                    result.result_spec = result_spec
-                    result.value = random.randint(1, 100)
-                    result = validate(result)
-                    db.session.add(result)
 
     return f
 

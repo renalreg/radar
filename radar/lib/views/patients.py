@@ -2,7 +2,8 @@ from flask import request
 
 from radar.lib.patient_search import PatientQueryBuilder, filter_by_permissions
 from radar.lib.permissions import PatientObjectPermission
-from radar.lib.serializers import Serializer, IntegerField
+from radar.lib.serializers.core import Serializer
+from radar.lib.serializers.fields import IntegerField
 from radar.lib.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.lib.auth.sessions import current_user
 

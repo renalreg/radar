@@ -1,5 +1,4 @@
-from radar.lib.models import RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_DECIMAL, RESULT_SPEC_TYPE_SELECT, \
-    RESULT_SPEC_TYPES
+from radar.lib.models import RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPES, RESULT_SPEC_TYPE_CODED_INTEGER, RESULT_SPEC_TYPE_CODED_STRING
 from radar.lib.validation.core import Validation, Field, ValidationError, pass_new_obj, pass_call
 from radar.lib.validation.validators import required, optional, none_if_blank, in_, max_length
 
@@ -12,11 +11,11 @@ class ResultSpecValidation(Validation):
     units = Field([none_if_blank(), optional(), max_length(30)])
     min_value = Field([optional()])
     max_value = Field([optional()])
-    result_select = Field([optional()])
+    options = Field([optional()])
 
     @pass_new_obj
     def validate_min_value(self, obj, min_value):
-        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_DECIMAL]:
+        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT]:
             raise ValidationError('Only INTEGER and DECIMAL can specify a min_value.')
 
         if obj.type == RESULT_SPEC_TYPE_INTEGER and int(min_value) != min_value:
@@ -26,7 +25,7 @@ class ResultSpecValidation(Validation):
 
     @pass_new_obj
     def validate_max_value(self, obj, max_value):
-        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_DECIMAL]:
+        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT]:
             raise ValidationError('Only INTEGER and DECIMAL can specify a max_value.')
 
         if obj.type == RESULT_SPEC_TYPE_INTEGER and int(max_value) != max_value:
@@ -39,14 +38,14 @@ class ResultSpecValidation(Validation):
 
     @pass_new_obj
     def validate_units(self, obj, units):
-        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_DECIMAL]:
+        if obj.type not in [RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT]:
             raise ValidationError('Only INTEGER and DECIMAL can specify units.')
 
         return units
 
     @pass_call
     def validate(self, call, obj):
-        if obj.type == RESULT_SPEC_TYPE_SELECT:
-            call.validators_for_field([required()], obj, self.result_select)
+        if obj.type == RESULT_SPEC_TYPE_CODED_STRING or obj.type == RESULT_SPEC_TYPE_CODED_INTEGER:
+            call.validators_for_field([required()], obj, self.options)
 
         return obj

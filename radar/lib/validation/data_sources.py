@@ -6,7 +6,7 @@ from radar.lib.validation.validators import required
 
 
 # TODO
-class DataSourceValidation(MetaValidationMixin, Validation):
+class DataSourceValidation(Validation):
     pass
 
 

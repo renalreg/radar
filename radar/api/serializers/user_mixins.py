@@ -1,5 +1,5 @@
 from radar.lib.models import User
-from radar.lib.serializers import ReferenceField
+from radar.lib.serializers.models import ReferenceField
 
 
 class UserReferenceField(ReferenceField):

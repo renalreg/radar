@@ -1,5 +1,5 @@
 from radar.lib.permissions import has_view_demographics_permission
-from radar.lib.serializers import Empty
+from radar.lib.serializers.core import Empty
 
 
 class PatientAddressProxy(object):

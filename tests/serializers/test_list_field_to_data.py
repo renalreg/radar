@@ -1,5 +1,6 @@
 from datetime import date
-from radar.lib.serializers import DateField, ListField
+
+from radar.lib.serializers.fields import DateField, ListField
 
 
 def test_list():

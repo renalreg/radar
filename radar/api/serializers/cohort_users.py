@@ -3,7 +3,9 @@ from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.user_mixins import UserSerializerMixin
 from radar.lib.models import CohortUser
 from radar.lib.roles import COHORT_ROLES
-from radar.lib.serializers import ModelSerializer, BooleanField, CodedStringSerializer
+from radar.lib.serializers.fields import BooleanField
+from radar.lib.serializers.models import ModelSerializer
+from radar.lib.serializers.codes import CodedStringSerializer
 
 
 class CohortUserSerializer(UserSerializerMixin, MetaSerializerMixin, ModelSerializer):
