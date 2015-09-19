@@ -150,8 +150,8 @@ def create_result_groups_f():
                 result_group.result_group_definition = result_group_definition
                 result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.UTC))
 
-                if result_group_definition.pre_post:
-                    result_group.pre_post = 'pre'  # TODO random
+                if result_group_definition.pre_post_dialysis:
+                    result_group.pre_post_dialysis = 'PRE'  # TODO random
 
                 result_group = validate(result_group)
 

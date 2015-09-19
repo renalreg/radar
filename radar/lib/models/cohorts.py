@@ -12,7 +12,8 @@ class Cohort(db.Model, MetaModelMixin):
     __tablename__ = 'cohorts'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    code = Column(String, nullable=False)
+    name = Column(String, nullable=False)
 
     cohort_patients = relationship('CohortPatient')
     cohort_users = relationship('CohortUser')

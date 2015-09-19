@@ -1,3 +1,4 @@
+from radar.lib.data.validation import validate
 from radar.lib.database import db
 from radar.lib.models import ResultDefinition, \
     ResultGroupDefinition, ResultGroupResultDefinition
@@ -7,53 +8,268 @@ from radar.lib.models import ResultDefinition, \
 # TODO short names
 # TODO names
 RESULT_DEFINITIONS = [
-    ('ACR', 'ACR', 'Albumin : Creatinine Ratio', 'mg/mmol'),
-    ('ADJUSTEDCALCIUM', 'AdjCa', 'Adjusted Calcium', 'mmol/l'),
-    ('ALBUMIN', 'Alb', 'Albumin', 'g/l'),
-    ('ALP', 'AlkP', 'AlkP', None),
-    ('ALT', 'ALT', 'ALT', None),
-    ('AST', 'AST', 'AST', None),
-    ('BILI', 'Bili', 'Bilirubin', None),
-    ('BPDIA', 'BPdia', 'Diastolic Blood Pressure', 'mm Hg'),
-    ('BPSYS', 'BPsys', 'Systolic Blood Pressure', 'mm Hg'),
-    ('CALCIUM', 'Ca', 'Calcium', 'mmol/l'),
-    ('CHOLESTEROL', 'Cholest', 'Cholesterol', 'mmol/l'),
-    ('CICLOSPORIN', 'Ciclo', 'Ciclosporin (Cyclosporine)', None),
-    ('CREATININE', 'Creatinine', 'Creatinine', 'micromol/l'),
-    ('CRP', 'CRP', 'C-Reactive Protein', None),
-    ('EGFR', 'eGFR', 'Estimated GFR', 'ml/min/1.73m2'),
-    ('FERRITIN', 'Ferr', 'Ferritin', None),
-    ('GGT', 'GGT', 'GGT', None),
-    ('GLUCOSE', 'Gluc', 'Glucose', 'mmol/l'),
-    ('HB', 'Hb', 'HB', 'g/l'),
-    ('HBA1C', 'HbA1C', 'HbA1C', None),
-    ('HCO3', 'Bicarb', 'Bicarbonate', 'mmol/l'),
-    ('HEIGHT', 'Height', 'Height', 'cm'),
-    ('INR', 'INR', 'INR', 'ratio'),
-    ('IRON', 'Iron', 'Iron', None),
-    ('IRONSAT', 'Fe Sat', 'Iron Saturation', None),
-    ('KTV', 'Kt/V', 'Kt/V', None),
-    ('LITHIUM', 'Lith', 'Lithium', None),
-    ('MAGNESIUM', 'Mg', 'Magnesium', None),
-    ('PCR', 'PCR', 'Protein : Creatinine Ratio', 'mg/mmol'),
-    ('PHEPKU', 'Phe', 'Phenylalanine (for PKU)', None),
-    ('PHOSPHATE', 'Phos', 'Phosphate', 'mmol/l'),
-    ('PLATELETS', 'Plats', 'Platelets', None),
-    ('POTASSIUM', 'Potassium', 'Potassium', 'mmol/l'),
-    ('PSA', 'PSA', 'PSA', None),
-    ('PTH', 'PTH', 'Parathyroid Hormone', None),
-    ('SIROLIMUS', 'Siro', 'Sirolimus', None),
-    ('SODIUM', 'Sodium', 'Sodium', 'mmol/l'),
-    ('TACROLIMUS', 'Tacro', 'Tacrolimus', None),
-    ('TESTOSTERONE', 'Serum Testosterone', 'Serum Testosterone', None),
-    ('TG', 'TG', 'Triglycerides', None),
-    ('TRANSFERRIN', 'Tferrin', 'Transferrin', None),
-    ('URATE', 'Urate', 'Uric Acid', 'mmol/l'),
-    ('UREA', 'Urea', 'Urea', 'mmol/l'),
-    ('URR', 'URR', 'Urea Reduction Ratio', None),
-    ('VITD', 'Vit D', 'Vitamin D', None),
-    ('WBC', 'WBC', 'White Blood Cell Count', None),
-    ('WEIGHT', 'Weight', 'Weight', 'kg'),
+    {
+        'code': 'ACR',
+        'short_name': 'ACR',
+        'name': 'Albumin : Creatinine Ratio',
+        'units': 'mg/mmol',
+        'type': 'DECIMAL',
+    },
+    {
+        'code': 'ADJUSTEDCALCIUM',
+        'short_name': 'AdjCa',
+        'name': 'Adjusted Calcium',
+        'units': 'mmol/l',
+        'type': 'DECIMAL',
+    },
+    {
+        'code': 'ALBUMIN',
+        'short_name': 'Alb',
+        'name': 'Albumin',
+        'units': 'g/l',
+        'type': 'DECIMAL',
+    },
+    {
+        'code': 'ALP',
+        'short_name': 'AlkP',
+        'name': 'AlkP',
+    },
+    {
+        'code': 'ALT',
+        'short_name': 'ALT',
+        'name': 'ALT',
+    },
+    {
+        'code': 'AST',
+        'short_name': 'AST',
+        'name': 'AST',
+    },
+    {
+        'code': 'BILI',
+        'short_name': 'Bili',
+        'name': 'Bilirubin',
+    },
+    {
+        'code': 'BPDIA',
+        'short_name': 'BPdia',
+        'name': 'Diastolic Blood Pressure',
+        'units': 'mm Hg',
+    },
+    {
+        'code': 'BPSYS',
+        'short_name': 'BPsys',
+        'name': 'Systolic Blood Pressure',
+        'units': 'mm Hg',
+    },
+    {
+        'code': 'CALCIUM',
+        'short_name': 'Ca',
+        'name': 'Calcium',
+    },
+    {
+        'code': 'CHOLESTEROL',
+        'short_name': 'Cholest',
+        'name': 'CHOLESTEROL',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'CICLOSPORIN',
+        'short_name': 'Ciclo',
+        'name': 'Ciclosporin (Cyclosporine)',
+    },
+    {
+        'code': 'CREATININE',
+        'short_name': 'Creatinine',
+        'name': 'Creatinine',
+    },
+    {
+        'code': 'CRP',
+        'short_name': 'CRP',
+        'name': 'C-Reactive Protein',
+    },
+    {
+        'code': 'EGFR',
+        'short_name': 'eGFR',
+        'name': 'Estimated GFR',
+        'units': 'ml/min/1.73m2',
+    },
+    {
+        'code': 'FERRITIN',
+        'short_name': 'Ferr',
+        'name': 'Ferritin',
+    },
+    {
+        'code': 'FERRITIN',
+        'short_name': 'Ferr',
+        'name': 'Ferritin',
+    },
+    {
+        'code': 'GGT',
+        'short_name': 'GGT',
+        'name': 'GGT',
+    },
+    {
+        'code': 'GLUCOSE',
+        'short_name': 'Gluc',
+        'name': 'Glucose',
+        'units': 'mmol/l'
+    },
+    {
+        'code': 'HB',
+        'short_name': 'Hb',
+        'name': 'HB',
+        'units': 'g/l',
+    },
+    {
+        'code': 'HBA1C',
+        'short_name': 'HbA1C',
+        'name': 'HbA1C',
+    },
+    {
+        'code': 'HC03',
+        'short_name': 'Bicarb',
+        'name': 'Bicarbonate',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'HEIGHT',
+        'short_name': 'Height',
+        'name': 'Height',
+        'units': 'cm',
+    },
+    {
+        'code': 'INR',
+        'short_name': 'INR',
+        'name': 'INR',
+        'units': 'ratio',
+    },
+    {
+        'code': 'IRON',
+        'short_name': 'Iron',
+        'name': 'Iron',
+    },
+    {
+        'code': 'IRONSAT',
+        'short_name': 'Fe Sat',
+        'name': 'Iron Saturation',
+    },
+    {
+        'code': 'KTV',
+        'short_name': 'Kt/V',
+        'name': 'Kt/V',
+    },
+    {
+        'code': 'LITHIUM',
+        'short_name': 'Lith',
+        'name': 'Lithium',
+    },
+    {
+        'code': 'MAGNESIUM',
+        'short_name': 'Mg',
+        'name': 'Magnesium',
+    },
+    {
+        'code': 'PCR',
+        'short_name': 'PCR',
+        'name': 'Protein : Creatinine Ratio',
+        'units': 'mg/mmol',
+    },
+    {
+        'code': 'PHEPKU',
+        'short_name': 'Phe',
+        'name': 'Phenylalanine (for PKU)',
+    },
+    {
+        'code': 'PHOSPHATE',
+        'short_name': 'Phos',
+        'name': 'Phosphate',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'PLATELETS',
+        'short_name': 'Plats',
+        'name': 'Platelets',
+    },
+    {
+        'code': 'POTASSIUM',
+        'short_name': 'Potassium',
+        'name': 'Potassium',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'PSA',
+        'short_name': 'PSA',
+        'name': 'PSA',
+    },
+    {
+        'code': 'PTH',
+        'short_name': 'PTH',
+        'name': 'Parathyroid Hormone',
+    },
+    {
+        'code': 'SIROLIMUS',
+        'short_name': 'Siro',
+        'name': 'Sirolimus',
+    },
+    {
+        'code': 'SODIUM',
+        'short_name': 'Sodium',
+        'name': 'Sodium',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'TACROLIMUS',
+        'short_name': 'Tacro',
+        'name': 'Tacrolimus',
+    },
+    {
+        'code': 'TESTOSTERONE',
+        'short_name': 'Serum Testosterone',
+        'name': 'Serum Testosterone',
+    },
+    {
+        'code': 'TG',
+        'short_name': 'TG',
+        'name': 'Triglycerides',
+    },
+    {
+        'code': 'TRANSFERRIN',
+        'short_name': 'Tferrin',
+        'name': 'Transferrin',
+    },
+    {
+        'code': 'URATE',
+        'short_name': 'Urate',
+        'name': 'Uric Acid',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'UREA',
+        'short_name': 'Urea',
+        'name': 'Urea',
+        'units': 'mmol/l',
+    },
+    {
+        'code': 'URR',
+        'short_name': 'URR',
+        'name': 'Urea Reduction Ratio',
+    },
+    {
+        'code': 'VITD',
+        'short_name': 'Vit D',
+        'name': 'Vitamin D',
+    },
+    {
+        'code': 'WBC',
+        'short_name': 'WBC',
+        'name': 'White Blood Cell Count',
+    },
+    {
+        'code': 'WEIGHT',
+        'short_name': 'Weight',
+        'name': 'Weight',
+        'units': 'kg',
+    }
 ]
 
 
@@ -62,7 +278,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'URINE',
         'name': 'Urine',
-        'pre_post': False,
         'result_codes': [
             'ACR',
             'PCR',
@@ -71,7 +286,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'LFT',
         'name': 'Liver Function Test',
-        'pre_post': False,
         'result_codes': [
             'ADJUSTEDCALCIUM',
             'ALBUMIN',
@@ -85,7 +299,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'FATS',
         'name': 'Fats',
-        'pre_post': False,
         'result_codes': [
             'CHOLESTEROL',
             'TG',
@@ -94,7 +307,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'DRUGS',
         'name': 'Drugs',
-        'pre_post': False,
         'result_codes': [  # TODO order
             'CICLOSPORIN',
             'SIROLIMUS',
@@ -105,8 +317,8 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'UE',
         'name': 'Urea & Electrolytes',
-        'pre_post': True,
         'result_codes': [
+            'PRE_POST_DIALYSIS',
             'SODIUM',
             'POTASSIUM',
             'HCO3',
@@ -122,7 +334,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'HEAM',
         'name': 'Haematinics',
-        'pre_post': False,
         'result_codes': [
             'FERRITIN',
             'IRON',
@@ -133,7 +344,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'DM',
         'name': 'Diabetes Monitoring',
-        'pre_post': False,
         'result_codes': [
             'GLUCOSE',
             'HBA1C',
@@ -142,7 +352,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'FBC',
         'name': 'Full Blood Count',
-        'pre_post': False,
         'result_codes': [
             'HB',
             'WBC',
@@ -152,7 +361,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'COAG',
         'name': 'Coagulation',
-        'pre_post': False,
         'result_codes': [
             'INR',
         ],
@@ -160,7 +368,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'OBV',
         'name': 'Observations',
-        'pre_post': True,
         'result_codes': [  # TODO order
             'WEIGHT',
             'HEIGHT',
@@ -171,7 +378,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'BBC',
         'name': 'Bone Biochemistry',
-        'pre_post': False,
         'result_codes': [  # TODO order
             'CALCIUM',
             'MAGNESIUM',
@@ -183,7 +389,6 @@ RESULT_GROUP_DEFINITIONS = [
     {
         'code': 'HAM',
         'name': 'Hormones and Markers',
-        'pre_post': False,
         'result_codes': [  # TODO order
             'PHEPKU',
             'PSA',
@@ -196,6 +401,7 @@ RESULT_GROUP_DEFINITIONS = [
 def create_result_definitions():
     for code, short_name, name, units in RESULT_DEFINITIONS:
         result_definition = ResultDefinition(code=code, name=name, short_name=short_name, units=units)
+        result_definition = validate(result_definition)
         db.session.add(result_definition)
 
 
@@ -204,9 +410,9 @@ def create_result_group_definitions():
         result_group_definition = ResultGroupDefinition(
             code=x['code'],
             name=x['name'],
-            short_name=x['name'],
-            pre_post=x['pre_post'],
+            short_name=x['name']
         )
+        result_group_definition = validate(result_group_definition)
         db.session.add(result_group_definition)
 
         for i, result_code in enumerate(x['result_codes']):
