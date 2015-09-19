@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-from werkzeug.security import generate_password_hash, check_password_hash
+from radar.lib.auth.passwords import check_password_hash, generate_password_hash
 
 from radar.lib.database import db
 from radar.lib.models import OrganisationUser, CohortUser
