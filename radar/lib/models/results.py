@@ -4,8 +4,17 @@ from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.models import MetaModelMixin
 
+RESULT_SPEC_TYPE_INTEGER = 'INTEGER'
+RESULT_SPEC_TYPE_DECIMAL = 'DECIMAL'
+RESULT_SPEC_TYPE_STRING = 'STRING'
+RESULT_SPEC_TYPE_SELECT = 'SELECT'
 
-RESULT_DEFINITION_TYPES = ['INTEGER', 'DECIMAL', 'STRING']
+RESULT_SPEC_TYPES = [
+    RESULT_SPEC_TYPE_INTEGER,
+    RESULT_SPEC_TYPE_DECIMAL,
+    RESULT_SPEC_TYPE_STRING,
+    RESULT_SPEC_TYPE_SELECT
+]
 
 
 class ResultGroup(db.Model, MetaModelMixin):
@@ -19,32 +28,12 @@ class ResultGroup(db.Model, MetaModelMixin):
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')
 
-    result_group_definition_id = Column(Integer, ForeignKey('result_group_definitions.id'), nullable=False)
-    result_group_definition = relationship('ResultGroupDefinition')
+    result_group_spec_id = Column(Integer, ForeignKey('result_group_specs.id'), nullable=False)
+    result_group_spec = relationship('ResultGroupSpec')
 
     date = Column(DateTime(timezone=True), nullable=False)
-    pre_post_dialysis = Column(String)
 
-    results = relationship('Result', cascade='all, delete-orphan')
-
-    @property
-    def sorted_results(self):
-        """ Return lab results in the correct order (by weight) """
-
-        results_dict = {}
-
-        for result in self.results:
-            results_dict[result.result_definition.id] = result
-
-        output = []
-
-        for result_definition in self.result_group_definition.result_definitions:
-            result = results_dict.get(result_definition.id)
-
-            if result is not None:
-                output.append(result)
-
-        return output
+    results = relationship('Result')
 
 
 class Result(db.Model):
@@ -55,60 +44,89 @@ class Result(db.Model):
     result_group_id = Column(Integer, ForeignKey('result_groups.id'), nullable=False)
     result_group = relationship('ResultGroup')
 
-    result_definition_id = Column(Integer, ForeignKey('result_definitions.id'), nullable=False)
-    result_definition = relationship('ResultDefinition')
+    result_spec_id = Column(Integer, ForeignKey('result_specs.id'), nullable=False)
+    result_spec = relationship('ResultSpec')
 
     value = Column(String, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('result_group_id', 'result_definition_id'),
+        UniqueConstraint('result_group_id', 'result_spec_id'),
     )
 
 
-class ResultGroupDefinition(db.Model):
-    __tablename__ = 'result_group_definitions'
+class ResultGroupSpec(db.Model):
+    __tablename__ = 'result_group_specs'
 
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    pre_post_dialysis = Column(Boolean, nullable=False)
 
-    result_group_result_definitions = relationship('ResultGroupResultDefinition')
+    result_group_result_specs = relationship('ResultGroupResultSpec')
 
     @property
-    def result_definitions(self):
-        return [x.result_definition for x in sorted(self.result_group_result_definitions, key=lambda y: y.weight)]
+    def sorted_results(self):
+        return [x.result_spec for x in sorted(self.result_group_result_specs, key=lambda y: y.weight)]
 
 
-class ResultDefinition(db.Model):
-    __tablename__ = 'result_definitions'
+class ResultSpec(db.Model):
+    __tablename__ = 'result_specs'
 
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    type = Column(String)
-    units = Column(String)
+    type = Column(String, nullable=False)
+
+    # For INTEGER and DECIMAL types
     min_value = Column(Numeric)
     max_value = Column(Numeric)
+    units = Column(String)
 
-    result_group_result_definitions = relationship('ResultGroupResultDefinition')
+    # For SELECT type
+    result_select_id = Column(Integer, ForeignKey('result_selects.id'), nullable=True)
+    result_select = relationship('ResultSelect')
 
 
-class ResultGroupResultDefinition(db.Model):
-    __tablename__ = 'result_group_result_definitions'
+class ResultGroupResultSpec(db.Model):
+    __tablename__ = 'result_group_result_specs'
 
     id = Column(Integer, primary_key=True)
 
-    result_group_definition_id = Column(Integer, ForeignKey('result_group_definitions.id'), nullable=False)
-    result_group_definition = relationship('ResultGroupDefinition')
+    result_group_spec_id = Column(Integer, ForeignKey('result_group_specs.id'), nullable=False)
+    result_group_spec = relationship('ResultGroupSpec')
 
-    result_definition_id = Column(Integer, ForeignKey('result_definitions.id'), nullable=False)
-    result_definition = relationship('ResultDefinition')
+    result_spec_id = Column(Integer, ForeignKey('result_specs.id'), nullable=False)
+    result_spec = relationship('ResultSpec')
 
     weight = Column(Integer, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('result_group_definition_id', 'result_definition_id'),
+        UniqueConstraint('result_group_spec_id', 'result_spec_id'),
     )
+
+
+class ResultSelect(db.Model):
+    __tablename__ = 'result_selects'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+
+    result_options = relationship('ResultOption')
+
+    @property
+    def sorted_options(self):
+        return sorted(self.result_options, key=lambda x: x.weight)
+
+
+class ResultOption(db.Model):
+    __tablename__ = 'result_options'
+
+    id = Column(Integer, primary_key=True)
+
+    result_select_id = Column(String, ForeignKey('result_selects.id'), nullable=False)
+    result_select = relationship('ResultSelect')
+
+    value = Column(String, nullable=False)
+    label = Column(String, nullable=False)
+    weight = Column(Integer, nullable=False)
