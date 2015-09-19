@@ -90,7 +90,7 @@ class OrganisationUser(db.Model, MetaModelMixin):
         return ORGANISATION_MANAGED_ROLES.get(self.role, [])
 
 
-class Organisation(db.Model, MetaModelMixin):
+class Organisation(db.Model):
     __tablename__ = 'organisations'
 
     id = Column(Integer, primary_key=True)

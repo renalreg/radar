@@ -1,7 +1,9 @@
 from datetime import datetime, date
+
 import pytest
 import pytz
-from radar.lib.serializers import DateTimeField
+
+from radar.lib.serializers.fields import DateTimeField
 from radar.lib.validation.core import ValidationError
 
 

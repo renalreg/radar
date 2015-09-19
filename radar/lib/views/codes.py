@@ -1,4 +1,4 @@
-from radar.lib.serializers import CodedStringSerializer, CodedIntegerSerializer
+from radar.lib.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
 from radar.lib.views.core import ListView
 
 

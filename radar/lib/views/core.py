@@ -8,7 +8,8 @@ from flask import abort
 
 from radar.lib.database import db
 from radar.lib.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.lib.serializers import ListField, Serializer, IntegerField, StringField
+from radar.lib.serializers.core import Serializer
+from radar.lib.serializers.fields import StringField, IntegerField, ListField
 from radar.lib.validation.core import ValidationError
 from radar.lib.auth.sessions import current_user
 

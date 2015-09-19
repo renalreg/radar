@@ -4,7 +4,7 @@ from radar.lib.validation.validators import required
 
 
 # TODO
-class CohortValidation(MetaValidationMixin, Validation):
+class CohortValidation(Validation):
     pass
 
 

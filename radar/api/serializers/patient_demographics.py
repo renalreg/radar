@@ -1,7 +1,8 @@
 from radar.api.serializers.data_sources import DataSourceSerializerMixin
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ReferenceField, CodedStringSerializer, CodedIntegerSerializer, \
-    IntegerField
+from radar.lib.serializers.fields import IntegerField
+from radar.lib.serializers.models import ModelSerializer, ReferenceField
+from radar.lib.serializers.codes import CodedIntegerSerializer
 from radar.lib.models import PatientDemographics, EthnicityCode, GENDERS
 
 

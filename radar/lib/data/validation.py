@@ -1,7 +1,7 @@
 from radar.lib.models import User, Post, PatientDemographics, Dialysis, Medication, Patient, Transplant, Hospitalisation, \
     Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
     DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultSpec, \
-    ResultGroupSpec, Result, ResultGroupResultSpec, CohortFeature, CohortResultGroupSpec
+    ResultGroupSpec, ResultGroupResultSpec, CohortFeature, CohortResultGroupSpec
 from radar.lib.validation.cohort_features import CohortFeatureValidation
 from radar.lib.validation.cohort_patients import CohortPatientValidation
 from radar.lib.validation.cohort_result_group_specs import CohortResultGroupSpecValidation
@@ -28,7 +28,6 @@ from radar.lib.validation.result_group_result_specs import ResultGroupResultSpec
 from radar.lib.validation.result_group_specs import ResultGroupSpecValidation
 from radar.lib.validation.result_specs import ResultSpecValidation
 from radar.lib.validation.result_groups import ResultGroupValidation
-from radar.lib.validation.results import ResultValidation
 from radar.lib.validation.transplants import TransplantValidation
 from radar.lib.validation.users import UserValidation
 
@@ -58,7 +57,6 @@ VALIDATIONS = {
     CohortDiagnosis: CohortDiagnosisValidation,
     ResultSpec: ResultSpecValidation,
     ResultGroupSpec: ResultGroupSpecValidation,
-    Result: ResultValidation,
     ResultGroupResultSpec: ResultGroupResultSpecValidation,
     CohortFeature: CohortFeatureValidation,
     CohortResultGroupSpec: CohortResultGroupSpecValidation,

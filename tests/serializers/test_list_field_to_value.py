@@ -1,5 +1,6 @@
 import pytest
-from radar.lib.serializers import ListField, IntegerField
+
+from radar.lib.serializers.fields import IntegerField, ListField
 from radar.lib.validation.core import ValidationError
 
 

@@ -3,7 +3,9 @@ from radar.api.serializers.organisations import OrganisationReferenceField
 from radar.api.serializers.user_mixins import UserSerializerMixin
 from radar.lib.models import OrganisationUser
 from radar.lib.roles import ORGANISATION_ROLES
-from radar.lib.serializers import ModelSerializer, BooleanField, CodedStringSerializer
+from radar.lib.serializers.fields import BooleanField
+from radar.lib.serializers.models import ModelSerializer
+from radar.lib.serializers.codes import CodedStringSerializer
 
 
 class OrganisationUserSerializer(UserSerializerMixin, MetaSerializerMixin, ModelSerializer):

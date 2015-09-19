@@ -1,5 +1,6 @@
 import pytest
-from radar.lib.serializers import BooleanField
+
+from radar.lib.serializers.fields import BooleanField
 from radar.lib.validation.core import ValidationError
 
 

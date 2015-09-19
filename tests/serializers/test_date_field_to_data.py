@@ -1,5 +1,6 @@
 from datetime import date
-from radar.lib.serializers import DateField
+
+from radar.lib.serializers.fields import DateField
 
 
 def test_date():

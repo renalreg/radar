@@ -3,5 +3,5 @@ from radar.lib.validation.meta import MetaValidationMixin
 
 
 # TODO
-class OrganisationValidation(MetaValidationMixin, Validation):
+class OrganisationValidation(Validation):
     pass

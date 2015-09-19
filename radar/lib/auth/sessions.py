@@ -8,7 +8,7 @@ from radar.lib.models.user_sessions import AnonymousSession, UserSession
 from radar.lib.models.users import User
 
 PUBLIC_ENDPOINTS = ['login', 'post_list']
-SESSION_TIMEOUT = 1800
+SESSION_TIMEOUT = 999999999
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())

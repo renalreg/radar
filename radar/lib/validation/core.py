@@ -327,10 +327,16 @@ class Field(object):
         self.field_name = field_name
 
     def set_value(self, obj, value):
-        return setattr(obj, self.field_name, value)
+        if isinstance(obj, dict):
+            obj[self.field_name] = value
+        else:
+            setattr(obj, self.field_name, value)
 
     def get_value(self, obj):
-        return getattr(obj, self.field_name)
+        if isinstance(obj, dict):
+            return obj.get(self.field_name)
+        else:
+            return getattr(obj, self.field_name)
 
     def get_validators(self):
         return self.chain

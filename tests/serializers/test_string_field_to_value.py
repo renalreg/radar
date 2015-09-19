@@ -1,5 +1,6 @@
 import pytest
-from radar.lib.serializers import StringField
+
+from radar.lib.serializers.fields import StringField
 from radar.lib.validation.core import ValidationError
 
 

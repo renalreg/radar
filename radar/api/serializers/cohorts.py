@@ -1,5 +1,6 @@
 from radar.api.serializers.meta import MetaSerializerMixin
-from radar.lib.serializers import ModelSerializer, ListField, ReferenceField
+from radar.lib.serializers.fields import ListField
+from radar.lib.serializers.models import ModelSerializer, ReferenceField
 from radar.lib.models import CohortFeature, Cohort
 
 

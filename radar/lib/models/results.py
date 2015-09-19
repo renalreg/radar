@@ -1,19 +1,22 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, UniqueConstraint, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.models import MetaModelMixin
 
 RESULT_SPEC_TYPE_INTEGER = 'INTEGER'
-RESULT_SPEC_TYPE_DECIMAL = 'DECIMAL'
+RESULT_SPEC_TYPE_FLOAT = 'FLOAT'
 RESULT_SPEC_TYPE_STRING = 'STRING'
-RESULT_SPEC_TYPE_SELECT = 'SELECT'
+RESULT_SPEC_TYPE_CODED_STRING = 'CODED_STRING'
+RESULT_SPEC_TYPE_CODED_INTEGER = 'CODED_INTEGER'
 
 RESULT_SPEC_TYPES = [
     RESULT_SPEC_TYPE_INTEGER,
-    RESULT_SPEC_TYPE_DECIMAL,
+    RESULT_SPEC_TYPE_FLOAT,
     RESULT_SPEC_TYPE_STRING,
-    RESULT_SPEC_TYPE_SELECT
+    RESULT_SPEC_TYPE_CODED_STRING,
+    RESULT_SPEC_TYPE_CODED_INTEGER
 ]
 
 
@@ -32,26 +35,7 @@ class ResultGroup(db.Model, MetaModelMixin):
     result_group_spec = relationship('ResultGroupSpec')
 
     date = Column(DateTime(timezone=True), nullable=False)
-
-    results = relationship('Result')
-
-
-class Result(db.Model):
-    __tablename__ = 'results'
-
-    id = Column(Integer, primary_key=True)
-
-    result_group_id = Column(Integer, ForeignKey('result_groups.id'), nullable=False)
-    result_group = relationship('ResultGroup')
-
-    result_spec_id = Column(Integer, ForeignKey('result_specs.id'), nullable=False)
-    result_spec = relationship('ResultSpec')
-
-    value = Column(String, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('result_group_id', 'result_spec_id'),
-    )
+    results = Column(JSONB, nullable=False)
 
 
 class ResultGroupSpec(db.Model):
@@ -64,11 +48,11 @@ class ResultGroupSpec(db.Model):
     result_group_result_specs = relationship('ResultGroupResultSpec')
 
     @property
-    def results(self):
+    def result_specs(self):
         return [x.result_spec for x in self.result_group_result_specs]
 
     @property
-    def sorted_results(self):
+    def sorted_result_specs(self):
         return [x.result_spec for x in sorted(self.result_group_result_specs, key=lambda y: y.weight)]
 
 
@@ -82,13 +66,24 @@ class ResultSpec(db.Model):
     type = Column(String, nullable=False)
 
     # For INTEGER and DECIMAL types
-    min_value = Column(Numeric)
-    max_value = Column(Numeric)
-    units = Column(String)
+    min_value = Column(Numeric, nullable=True)
+    max_value = Column(Numeric, nullable=True)
+    units = Column(String, nullable=True)
+
+    # For STRING type
+    min_length = Column(Integer, nullable=True)
+    max_length = Column(Integer, nullable=True)
 
     # For SELECT type
-    result_select_id = Column(Integer, ForeignKey('result_selects.id'), nullable=True)
-    result_select = relationship('ResultSelect')
+    options = Column(JSONB, nullable=True)
+
+    @property
+    def options_as_dict(self):
+        return {x['id']: x['label'] for x in self.options}
+
+    @property
+    def option_values(self):
+        return [x['id'] for x in self.options]
 
 
 class ResultGroupResultSpec(db.Model):
@@ -107,29 +102,3 @@ class ResultGroupResultSpec(db.Model):
     __table_args__ = (
         UniqueConstraint('result_group_spec_id', 'result_spec_id'),
     )
-
-
-class ResultSelect(db.Model):
-    __tablename__ = 'result_selects'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-
-    result_options = relationship('ResultOption')
-
-    @property
-    def sorted_options(self):
-        return sorted(self.result_options, key=lambda x: x.weight)
-
-
-class ResultOption(db.Model):
-    __tablename__ = 'result_options'
-
-    id = Column(Integer, primary_key=True)
-
-    result_select_id = Column(Integer, ForeignKey('result_selects.id'), nullable=False)
-    result_select = relationship('ResultSelect')
-
-    value = Column(String, nullable=False)
-    label = Column(String, nullable=False)
-    weight = Column(Integer, nullable=False)

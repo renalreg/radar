@@ -1,6 +1,5 @@
-from radar.lib.permissions import intersect_patient_and_user_organisations, intersect_patient_and_user_cohorts, \
-    has_view_demographics_permission
-from radar.lib.serializers import Empty
+from radar.lib.permissions import has_view_demographics_permission
+from radar.lib.serializers.core import Empty
 
 
 class PatientProxy(object):
