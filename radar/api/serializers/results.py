@@ -5,10 +5,11 @@ from radar.lib.serializers import ModelSerializer, ListField
 class ResultSpecSerializer(ModelSerializer):
     class Meta(object):
         model_class = ResultSpec
+        exclude = ['result_select_id']
 
 
 class ResultGroupSpecSerializer(ModelSerializer):
-    result_specs = ListField(ResultSpecSerializer())
+    results = ListField(ResultSpecSerializer(), source='sorted_results')
 
     class Meta(object):
         model_class = ResultGroupSpec

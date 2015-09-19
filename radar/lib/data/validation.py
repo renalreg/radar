@@ -1,7 +1,10 @@
 from radar.lib.models import User, Post, PatientDemographics, Dialysis, Medication, Patient, Transplant, Hospitalisation, \
     Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
-    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultDefinition
+    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultSpec, \
+    ResultGroupSpec, Result, ResultGroupResultSpec, CohortFeature, CohortResultGroupSpec
+from radar.lib.validation.cohort_features import CohortFeatureValidation
 from radar.lib.validation.cohort_patients import CohortPatientValidation
+from radar.lib.validation.cohort_result_group_specs import CohortResultGroupSpecValidation
 from radar.lib.validation.cohort_users import CohortUserValidation
 from radar.lib.validation.cohorts import CohortValidation
 from radar.lib.validation.comorbidities import DisorderValidation
@@ -21,8 +24,11 @@ from radar.lib.validation.patients import PatientValidation
 from radar.lib.validation.plasmapheresis import PlasmapheresisValidation
 from radar.lib.validation.posts import PostValidation
 from radar.lib.validation.renal_imaging import RenalImagingValidation
-from radar.lib.validation.result_specs import ResultDefinitionValidation
+from radar.lib.validation.result_group_result_specs import ResultGroupResultSpecValidation
+from radar.lib.validation.result_group_specs import ResultGroupSpecValidation
+from radar.lib.validation.result_specs import ResultSpecValidation
 from radar.lib.validation.result_groups import ResultGroupValidation
+from radar.lib.validation.results import ResultValidation
 from radar.lib.validation.transplants import TransplantValidation
 from radar.lib.validation.users import UserValidation
 
@@ -50,7 +56,12 @@ VALIDATIONS = {
     PatientAddress: PatientAddressValidation,
     Disorder: DisorderValidation,
     CohortDiagnosis: CohortDiagnosisValidation,
-    ResultDefinition: ResultDefinitionValidation,
+    ResultSpec: ResultSpecValidation,
+    ResultGroupSpec: ResultGroupSpecValidation,
+    Result: ResultValidation,
+    ResultGroupResultSpec: ResultGroupResultSpecValidation,
+    CohortFeature: CohortFeatureValidation,
+    CohortResultGroupSpec: CohortResultGroupSpecValidation,
 }
 
 

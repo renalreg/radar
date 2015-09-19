@@ -18,7 +18,7 @@ class Cohort(db.Model, MetaModelMixin):
     cohort_patients = relationship('CohortPatient')
     cohort_users = relationship('CohortUser')
     cohort_features = relationship('CohortFeature')
-    cohort_result_group_definitions = relationship('CohortResultGroupDefinition')
+    cohort_result_group_specs = relationship('CohortResultGroupSpec')
 
     notes = Column(String)
 
@@ -29,6 +29,10 @@ class Cohort(db.Model, MetaModelMixin):
     @property
     def users(self):
         return [x.user for x in self.cohort_users]
+
+    @property
+    def sorted_result_groups(self):
+        return [x.result_group_spec for x in sorted(self.cohort_result_group_specs, key=lambda y: y.weight)]
 
 
 class CohortFeature(db.Model):
@@ -102,19 +106,19 @@ class CohortUser(db.Model, MetaModelMixin):
         return COHORT_MANAGED_ROLES.get(self.role, [])
 
 
-class CohortResultGroupDefinition(db.Model):
-    __tablename__ = 'cohort_result_group_definitions'
+class CohortResultGroupSpec(db.Model):
+    __tablename__ = 'cohort_result_group_specs'
 
     id = Column(Integer, primary_key=True)
 
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')
 
-    result_group_definition_id = Column(Integer, ForeignKey('result_group_definitions.id'), nullable=False)
-    result_group_definition = relationship('ResultGroupDefinition')
+    result_group_spec_id = Column(Integer, ForeignKey('result_group_specs.id'), nullable=False)
+    result_group_spec = relationship('ResultGroupSpec')
 
     weight = Column(Integer, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('cohort_id', 'result_group_definition_id'),
+        UniqueConstraint('cohort_id', 'result_group_spec_id'),
     )

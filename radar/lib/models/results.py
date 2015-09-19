@@ -60,9 +60,12 @@ class ResultGroupSpec(db.Model):
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
-    short_name = Column(String, nullable=False)
 
     result_group_result_specs = relationship('ResultGroupResultSpec')
+
+    @property
+    def results(self):
+        return [x.result_spec for x in self.result_group_result_specs]
 
     @property
     def sorted_results(self):
@@ -124,7 +127,7 @@ class ResultOption(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    result_select_id = Column(String, ForeignKey('result_selects.id'), nullable=False)
+    result_select_id = Column(Integer, ForeignKey('result_selects.id'), nullable=False)
     result_select = relationship('ResultSelect')
 
     value = Column(String, nullable=False)
