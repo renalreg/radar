@@ -16,8 +16,8 @@ COHORT_DIAGNOSES = {
 
 
 def create_cohort_diagnoses():
-    for cohort_name, cohort_diagnosis_labels in COHORT_DIAGNOSES.items():
-        cohort = Cohort.query.filter(Cohort.name == cohort_name).one()
+    for cohort_code, cohort_diagnosis_labels in COHORT_DIAGNOSES.items():
+        cohort = Cohort.query.filter(Cohort.code == cohort_code).one()
 
         for cohort_diagnosis_label in cohort_diagnosis_labels:
             cohort_diagnosis = CohortDiagnosis()

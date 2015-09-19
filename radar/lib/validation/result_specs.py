@@ -48,3 +48,5 @@ class ResultSpecValidation(Validation):
     def validate(self, call, obj):
         if obj.type == RESULT_SPEC_TYPE_SELECT:
             call.validators_for_field([required()], obj, self.result_select)
+
+        return obj
