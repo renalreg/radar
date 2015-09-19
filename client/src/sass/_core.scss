@@ -147,3 +147,15 @@ a .hidden-demographics {
 .about {
   font-size: 16px;
 }
+
+.alert-danger a {
+  color: $radar-danger-text;
+}
+
+.alert-warning a {
+  color: $radar-warning-text;
+}
+
+.alert-success a {
+  color: $radar-success-text;
+}
