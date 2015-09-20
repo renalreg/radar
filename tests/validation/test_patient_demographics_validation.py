@@ -112,7 +112,7 @@ def test_date_of_birth_missing(demographics):
 
 
 def test_date_of_birth_in_future(demographics):
-    tomorrow = datetime.now(pytz.UTC) + timedelta(days=1)
+    tomorrow = datetime.now(pytz.utc) + timedelta(days=1)
     demographics.date_of_birth = tomorrow
     demographics.date_of_death = tomorrow
     invalid(demographics)
@@ -129,7 +129,7 @@ def test_date_of_death_missing(demographics):
 
 
 def test_date_of_death_in_future(demographics):
-    tomorrow = datetime.now(pytz.UTC) + timedelta(days=1)
+    tomorrow = datetime.now(pytz.utc) + timedelta(days=1)
     demographics.date_of_death = tomorrow
     invalid(demographics)
 

@@ -317,7 +317,6 @@ class UpdateModelViewMixin(object):
                 try:
                     validation.before_update(ctx, obj)
                     old_obj = validation.clone(obj)
-                    print deserialized_data
                     obj = serializer.update(obj, deserialized_data)
                     validation.after_update(ctx, old_obj, obj)
                 except ValidationError as e:

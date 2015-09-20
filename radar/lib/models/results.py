@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, UniqueConstraint, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, UniqueConstraint, DateTime, Index, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -36,6 +36,8 @@ class ResultGroup(db.Model, MetaModelMixin):
 
     date = Column(DateTime(timezone=True), nullable=False)
     results = Column(JSONB, nullable=False)
+
+Index('result_groups_results_gin', ResultGroup.results, postgresql_using='gin')
 
 
 class ResultGroupSpec(db.Model):
@@ -76,6 +78,10 @@ class ResultSpec(db.Model):
 
     # For SELECT type
     options = Column(JSONB, nullable=True)
+
+    # Controls whether this value will be grouped with values from other result groups
+    # True if this value gives context to the other data in this result group (e.g. pre/post dialysis)
+    meta = Column(Boolean, nullable=False)
 
     @property
     def options_as_dict(self):

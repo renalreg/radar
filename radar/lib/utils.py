@@ -52,7 +52,9 @@ def set_path(data, keys, value):
 
 
 def date_to_datetime(d):
-    return datetime(year=d.year, month=d.month, day=d.day, tzinfo=pytz.utc)
+    dt = datetime(year=d.year, month=d.month, day=d.day)
+    dt = pytz.timezone('Europe/London').localize(dt)
+    return dt
 
 
 def is_date(x):

@@ -4,7 +4,7 @@ from radar.lib.validation.validators import required, optional, none_if_blank, i
 
 
 class ResultSpecValidation(Validation):
-    code = Field([required(), max_length(30)])
+    code = Field([required(), max_length(30)])  # TODO validate hco_3
     name = Field([required(), max_length(50)])
     short_name = Field([required(), max_length(30)])
     type = Field([required(), in_(RESULT_SPEC_TYPES)])

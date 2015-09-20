@@ -56,6 +56,10 @@ def test_string():
     to_value_invalid('hello')
 
 
+def test_empty_string():
+    assert to_value('') is None
+
+
 def test_dict():
     to_value_invalid({'foo': 1, 'bar': 2})
 

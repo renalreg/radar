@@ -25,7 +25,7 @@ TRAILING_COMMA_REGEX = re.compile('\s*,$')
 TAB_TO_SPACE_REGEX = re.compile('\t')
 NORMALISE_WHITESPACE_REGEX = re.compile('\s{2,}')
 
-DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
+DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
 
 
 def required():

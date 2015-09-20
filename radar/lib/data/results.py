@@ -7,7 +7,7 @@ from radar.lib.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec,
 # TODO ranges
 RESULT_SPECS = [
     {
-        'code': 'ACR',
+        'code': 'acr',
         'short_name': 'ACR',
         'name': 'Albumin : Creatinine Ratio',
         'units': 'mg/mmol',
@@ -15,7 +15,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'ADJUSTEDCALCIUM',
+        'code': 'adjustedcalcium',
         'short_name': 'AdjCa',
         'name': 'Adjusted Calcium',
         'units': 'mmol/l',
@@ -23,7 +23,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'ALBUMIN',
+        'code': 'albumin',
         'short_name': 'Alb',
         'name': 'Albumin',
         'units': 'g/l',
@@ -31,35 +31,35 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'ALP',
+        'code': 'alp',
         'short_name': 'AlkP',
         'name': 'AlkP',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'ALT',
+        'code': 'alt',
         'short_name': 'ALT',
         'name': 'ALT',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'AST',
+        'code': 'ast',
         'short_name': 'AST',
         'name': 'AST',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'BILI',
+        'code': 'bili',
         'short_name': 'Bili',
         'name': 'Bilirubin',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'BPDIA',
+        'code': 'bpdia',
         'short_name': 'BPdia',
         'name': 'Diastolic Blood Pressure',
         'units': 'mm Hg',
@@ -67,7 +67,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'BPSYS',
+        'code': 'bpsys',
         'short_name': 'BPsys',
         'name': 'Systolic Blood Pressure',
         'units': 'mm Hg',
@@ -75,43 +75,43 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'CALCIUM',
+        'code': 'calcium',
         'short_name': 'Ca',
         'name': 'Calcium',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'CHOLESTEROL',
+        'code': 'cholesterol',
         'short_name': 'Cholest',
-        'name': 'CHOLESTEROL',
+        'name': 'Cholesterol',
         'units': 'mmol/l',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'CICLOSPORIN',
+        'code': 'ciclosporin',
         'short_name': 'Ciclo',
         'name': 'Ciclosporin (Cyclosporine)',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'CREATININE',
+        'code': 'creatinine',
         'short_name': 'Creatinine',
         'name': 'Creatinine',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'CRP',
+        'code': 'crp',
         'short_name': 'CRP',
         'name': 'C-Reactive Protein',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'EGFR',
+        'code': 'egfr',
         'short_name': 'eGFR',
         'name': 'Estimated GFR',
         'units': 'ml/min/1.73m2',
@@ -119,21 +119,21 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'FERRITIN',
+        'code': 'ferritin',
         'short_name': 'Ferr',
         'name': 'Ferritin',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'GGT',
+        'code': 'ggt',
         'short_name': 'GGT',
         'name': 'GGT',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'GLUCOSE',
+        'code': 'glucose',
         'short_name': 'Gluc',
         'name': 'Glucose',
         'units': 'mmol/l',
@@ -141,7 +141,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'HB',
+        'code': 'hb',
         'short_name': 'Hb',
         'name': 'HB',
         'units': 'g/l',
@@ -149,14 +149,14 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'HBA1C',
+        'code': 'hba1c',
         'short_name': 'HbA1C',
         'name': 'HbA1C',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'HCO3',
+        'code': 'hco_3',
         'short_name': 'Bicarb',
         'name': 'Bicarbonate',
         'units': 'mmol/l',
@@ -164,7 +164,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'HEIGHT',
+        'code': 'height',
         'short_name': 'Height',
         'name': 'Height',
         'units': 'cm',
@@ -172,7 +172,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'INR',
+        'code': 'inr',
         'short_name': 'INR',
         'name': 'INR',
         'units': 'ratio',
@@ -180,42 +180,42 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'IRON',
+        'code': 'iron',
         'short_name': 'Iron',
         'name': 'Iron',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'IRONSAT',
+        'code': 'ironsat',
         'short_name': 'Fe Sat',
         'name': 'Iron Saturation',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'KTV',
+        'code': 'ktv',
         'short_name': 'Kt/V',
         'name': 'Kt/V',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'LITHIUM',
+        'code': 'lithium',
         'short_name': 'Lith',
         'name': 'Lithium',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'MAGNESIUM',
+        'code': 'magnesium',
         'short_name': 'Mg',
         'name': 'Magnesium',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'PCR',
+        'code': 'pcr',
         'short_name': 'PCR',
         'name': 'Protein : Creatinine Ratio',
         'units': 'mg/mmol',
@@ -223,14 +223,14 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'PHEPKU',
+        'code': 'phepku',
         'short_name': 'Phe',
         'name': 'Phenylalanine (for PKU)',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'PHOSPHATE',
+        'code': 'phosphate',
         'short_name': 'Phos',
         'name': 'Phosphate',
         'units': 'mmol/l',
@@ -238,14 +238,14 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'PLATELETS',
+        'code': 'platelets',
         'short_name': 'Plats',
         'name': 'Platelets',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'POTASSIUM',
+        'code': 'potassium',
         'short_name': 'Potassium',
         'name': 'Potassium',
         'units': 'mmol/l',
@@ -253,38 +253,39 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'PRE_POST_DIALYSIS',
+        'code': 'pre_post_dialysis',
         'short_name': 'Pre/Post',
         'name': 'Pre/Post Dialysis',
         'type': RESULT_SPEC_TYPE_CODED_STRING,  # TODO
+        'meta': True,
         'options': OrderedDict([
             ('PRE', 'Pre'),
             ('POST', 'Post'),
         ])
     },
     {
-        'code': 'PSA',
+        'code': 'psa',
         'short_name': 'PSA',
         'name': 'PSA',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'PTH',
+        'code': 'pth',
         'short_name': 'PTH',
         'name': 'Parathyroid Hormone',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'SIROLIMUS',
+        'code': 'sirolimus',
         'short_name': 'Siro',
         'name': 'Sirolimus',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'SODIUM',
+        'code': 'sodium',
         'short_name': 'Sodium',
         'name': 'Sodium',
         'units': 'mmol/l',
@@ -292,35 +293,35 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'TACROLIMUS',
+        'code': 'tacrolimus',
         'short_name': 'Tacro',
         'name': 'Tacrolimus',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'TESTOSTERONE',
+        'code': 'testosterone',
         'short_name': 'Serum Testosterone',
         'name': 'Serum Testosterone',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'TG',
+        'code': 'tg',
         'short_name': 'TG',
         'name': 'Triglycerides',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'TRANSFERRIN',
+        'code': 'transferrin',
         'short_name': 'Tferrin',
         'name': 'Transferrin',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'URATE',
+        'code': 'urate',
         'short_name': 'Urate',
         'name': 'Uric Acid',
         'units': 'mmol/l',
@@ -328,7 +329,7 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'UREA',
+        'code': 'urea',
         'short_name': 'Urea',
         'name': 'Urea',
         'units': 'mmol/l',
@@ -336,28 +337,28 @@ RESULT_SPECS = [
         'min_value': 0
     },
     {
-        'code': 'URR',
+        'code': 'urr',
         'short_name': 'URR',
         'name': 'Urea Reduction Ratio',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'VITD',
+        'code': 'vitd',
         'short_name': 'Vit D',
         'name': 'Vitamin D',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'WBC',
+        'code': 'wbc',
         'short_name': 'WBC',
         'name': 'White Blood Cell Count',
         'type': RESULT_SPEC_TYPE_FLOAT,
         'min_value': 0
     },
     {
-        'code': 'WEIGHT',
+        'code': 'weight',
         'short_name': 'Weight',
         'name': 'Weight',
         'units': 'kg',
@@ -368,123 +369,123 @@ RESULT_SPECS = [
 
 RESULT_GROUP_SPECS = [
     {
-        'code': 'URINE',
+        'code': 'urine',
         'name': 'Urine',
         'result_codes': [
-            'ACR',
-            'PCR',
+            'acr',
+            'pcr',
         ],
     },
     {
-        'code': 'LFT',
+        'code': 'lft',
         'name': 'Liver Function Test',
         'result_codes': [
-            'ADJUSTEDCALCIUM',
-            'ALBUMIN',
-            'ALP',
-            'ALT',
-            'BILI',
-            'GGT',
-            'AST'
+            'adjustedcalcium',
+            'albumin',
+            'alp',
+            'alt',
+            'bili',
+            'ggt',
+            'ast'
         ],
     },
     {
-        'code': 'FATS',
+        'code': 'fats',
         'name': 'Fats',
         'result_codes': [
-            'CHOLESTEROL',
-            'TG',
+            'cholesterol',
+            'tg',
         ],
     },
     {
-        'code': 'DRUGS',
+        'code': 'drugs',
         'name': 'Drugs',
         'result_codes': [  # TODO order
-            'CICLOSPORIN',
-            'SIROLIMUS',
-            'TACROLIMUS',
-            'LITHIUM',
+            'ciclosporin',
+            'sirolimus',
+            'tacrolimus',
+            'lithium',
         ],
     },
     {
-        'code': 'UE',
+        'code': 'ue',
         'name': 'Urea & Electrolytes',
         'result_codes': [
-            'PRE_POST_DIALYSIS',
-            'SODIUM',
-            'POTASSIUM',
-            'HCO3',
-            'UREA',
-            'CREATININE',
-            'EGFR',
-            'URATE',
-            'CRP',
-            'URR',
-            'KTV',
+            'pre_post_dialysis',
+            'sodium',
+            'potassium',
+            'hco_3',
+            'urea',
+            'creatinine',
+            'egfr',
+            'urate',
+            'crp',
+            'urr',
+            'ktv',
         ],
     },
     {
-        'code': 'HEAM',
+        'code': 'heam',
         'name': 'Haematinics',
         'result_codes': [
-            'FERRITIN',
-            'IRON',
-            'IRONSAT',
-            'TRANSFERRIN',
+            'ferritin',
+            'iron',
+            'ironsat',
+            'transferrin',
         ],
     },
     {
-        'code': 'DM',
+        'code': 'dm',
         'name': 'Diabetes Monitoring',
         'result_codes': [
-            'GLUCOSE',
-            'HBA1C',
+            'glucose',
+            'hba1c',
         ],
     },
     {
-        'code': 'FBC',
+        'code': 'fbc',
         'name': 'Full Blood Count',
         'result_codes': [
-            'HB',
-            'WBC',
-            'PLATELETS',
+            'hb',
+            'wbc',
+            'platelets',
         ],
     },
     {
-        'code': 'COAG',
+        'code': 'coag',
         'name': 'Coagulation',
         'result_codes': [
-            'INR',
+            'inr',
         ],
     },
     {
-        'code': 'OBV',
+        'code': 'obv',
         'name': 'Observations',
         'result_codes': [  # TODO order
-            'WEIGHT',
-            'HEIGHT',
-            'BPDIA',
-            'BPSYS',
+            'weight',
+            'height',
+            'bpdia',
+            'bpsys',
         ]
     },
     {
-        'code': 'BBC',
+        'code': 'bbc',
         'name': 'Bone Biochemistry',
         'result_codes': [  # TODO order
-            'CALCIUM',
-            'MAGNESIUM',
-            'PHOSPHATE',
-            'VITD',
-            'PTH',
+            'calcium',
+            'magnesium',
+            'phosphate',
+            'vitd',
+            'pth',
         ]
     },
     {
-        'code': 'HAM',
+        'code': 'ham',
         'name': 'Hormones and Markers',
         'result_codes': [  # TODO order
-            'PHEPKU',
-            'PSA',
-            'TESTOSTERONE',
+            'phepku',
+            'psa',
+            'testosterone',
         ]
     },
 ]
@@ -500,6 +501,7 @@ def create_result_specs():
         result_spec.units = x.get('units')
         result_spec.min_value = x.get('min_value')
         result_spec.max_value = x.get('max_value')
+        result_spec.meta = x.get('meta', False)
 
         options = x.get('options')
 

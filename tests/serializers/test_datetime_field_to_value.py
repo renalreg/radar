@@ -8,23 +8,23 @@ from radar.lib.validation.core import ValidationError
 
 
 def test_string():
-    assert to_value('2001-02-03 12:34:56') == datetime(2001, 2, 3, 12, 34, 56, tzinfo=pytz.UTC)
+    assert to_value('2001-02-03 12:34:56') == datetime(2001, 2, 3, 12, 34, 56, tzinfo=pytz.utc)
 
 
 def test_t_string():
-    assert to_value('2001-02-03T12:34:56') == datetime(2001, 2, 3, 12, 34, 56, tzinfo=pytz.UTC)
+    assert to_value('2001-02-03T12:34:56') == datetime(2001, 2, 3, 12, 34, 56, tzinfo=pytz.utc)
 
 
 def test_negative_offset_string():
-    assert to_value('2001-02-03T12:34:56-01:00') == datetime(2001, 2, 3, 13, 34, 56, tzinfo=pytz.UTC)
+    assert to_value('2001-02-03T12:34:56-01:00') == datetime(2001, 2, 3, 13, 34, 56, tzinfo=pytz.utc)
 
 
 def test_positive_offset_string():
-    assert to_value('2001-02-03T12:34:56+01:00') == datetime(2001, 2, 3, 11, 34, 56, tzinfo=pytz.UTC)
+    assert to_value('2001-02-03T12:34:56+01:00') == datetime(2001, 2, 3, 11, 34, 56, tzinfo=pytz.utc)
 
 
 def test_date_string():
-    assert to_value('2001-02-03') == datetime(2001, 2, 3, 0, 0, 0, tzinfo=pytz.UTC)
+    assert to_value('2001-02-03') == datetime(2001, 2, 3, 0, 0, 0, tzinfo=pytz.utc)
 
 
 def test_none():
