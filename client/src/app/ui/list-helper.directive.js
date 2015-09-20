@@ -36,7 +36,6 @@
           var sortBy = 'id';
           var sortScope = $scope;
           var sortId = null;
-          var sortIdSet = false;
           var reverse = false;
 
           var page = 1;

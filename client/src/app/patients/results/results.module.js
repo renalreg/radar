@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.patients.results', ['ui.router']);
+  angular.module('radar.patients.results', ['ui.router', 'highcharts']);
 })();

@@ -1,36 +1,46 @@
 @import "variables";
 
-$radar-tabs-text: $radar-secondary-text;
-$radar-tabs-hover-bg: #d9e6f3;
-$radar-tabs-active-text: #fff;
+$radar-tabs-link-color: $radar-secondary-text;
+$radar-tabs-border-color: $radar-secondary;
+$radar-tabs-active-link-color: #fff;
 $radar-tabs-active-bg: $radar-secondary;
+$radar-tabs-active-border-color: $radar-secondary;
+$radar-tabs-link-padding: 10px 15px;
 
-ul.tabs-radar {
-  border-bottom: 1px solid $radar-tabs-active-bg;
-  margin-bottom: $line-height-computed / 2;
+.tabs-radar {
+  margin-bottom: 9px;
+  padding-left: 0;
+  list-style: none;
+  border-bottom: 1px solid $radar-tabs-border-color;
+  @include clearfix;
 
   > li {
     float: left;
+    margin-bottom: -1px;
+    position: relative;
+    display: block;
 
     > a {
-      color: $radar-tabs-text;
+      position: relative;
+      display: block;
+      padding: $radar-tabs-link-padding;
       margin-right: 2px;
-      border-top-left-radius: $border-radius-base;
-      border-top-right-radius: $border-radius-base;
+      line-height: $line-height-base;
+      border: 1px solid transparent;
+      border-radius: $border-radius-base $border-radius-base 0 0;
+      color: $radar-tabs-link-color;
+      text-decoration: underline;
 
-      &:hover,
-      &:focus {
-        background-color: $radar-tabs-hover-bg;
+      > img {
+        max-width: none;
       }
     }
 
     &.active > a {
-      &,
-      &:hover,
-      &:focus {
-        background-color: $radar-tabs-active-bg;
-        color: $radar-tabs-active-text;
-      }
+      color: $radar-tabs-active-link-color;
+      background-color: $radar-tabs-active-bg;
+      border: 1px solid $radar-tabs-active-border-color;
+      text-decoration: none;
     }
   }
 }

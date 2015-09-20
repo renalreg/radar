@@ -20,17 +20,29 @@
   });
 
   app.factory('camelCaseKeys', function(transformKeys, _) {
+    var re = new RegExp('^[A-Z0-9_]+$');
+
     return function camelCaseObject(x) {
       return transformKeys(x, function(key) {
-        return _.camelCase(key);
+        if (re.exec(key)) {
+          return key;
+        } else {
+          return _.camelCase(key);
+        }
       });
     };
   });
 
   app.factory('snakeCaseKeys', function(transformKeys, _) {
+    var re = new RegExp('^[A-Z0-9_]+$');
+
     return function snakeCaseObject(x) {
       return transformKeys(x, function(key) {
-        return _.snakeCase(key);
+        if (re.exec(key)) {
+          return key;
+        } else {
+          return _.snakeCase(key);
+        }
       });
     };
   });

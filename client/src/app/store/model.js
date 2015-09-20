@@ -28,7 +28,7 @@
     function hash(data) {
       data = flattenRelationships(data);
       var values = _hash(data);
-      return values.join('');
+      return md5(values.join(''));
     }
 
     function Model(modelName, data) {

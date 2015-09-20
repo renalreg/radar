@@ -38,7 +38,8 @@ var paths = {
     'bower_components/angular/angular.js',
     'bower_components/angular-cookies/angular-cookies.js',
     'bower_components/ui-router/release/angular-ui-router.js',
-    'bower_components/blueimp-md5/js/md5.js'
+    'bower_components/blueimp-md5/js/md5.js',
+    'bower_components/highcharts/highcharts.js'
   ],
   vendorCss: [
     'bower_components/jquery-ui/themes/smoothness/jquery-ui.css',

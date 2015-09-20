@@ -7,8 +7,8 @@
     return PatientDataSourceObjectPermission;
   });
 
-  app.factory('ResultsController', function(ListDetailController, ResultPermission, firstPromise) {
-    function ResultsController($scope, $injector, store) {
+  app.factory('ResultListController', function(ListDetailController, ResultPermission, firstPromise) {
+    function ResultListController($scope, $injector, store) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -66,9 +66,9 @@
       }
     }
 
-    ResultsController.prototype = Object.create(ListDetailController.prototype);
+    ResultListController.prototype = Object.create(ListDetailController.prototype);
 
-    ResultsController.prototype.groupItems = function() {
+    ResultListController.prototype.groupItems = function() {
       var self = this;
 
       var items = self.scope.items;
@@ -123,7 +123,7 @@
       this.scope.groupedItems = groupedItems;
     };
 
-    ResultsController.prototype.load = function(promise) {
+    ResultListController.prototype.load = function(promise) {
       var self = this;
 
       return ListDetailController.prototype.load.call(this, promise).then(function(items) {
@@ -132,7 +132,7 @@
       });
     };
 
-    ResultsController.prototype.save = function() {
+    ResultListController.prototype.save = function() {
       var self = this;
 
       return ListDetailController.prototype.save.call(this).then(function(item) {
@@ -141,7 +141,7 @@
       });
     };
 
-    ResultsController.prototype.remove = function(item) {
+    ResultListController.prototype.remove = function(item) {
       var self = this;
 
       return ListDetailController.prototype.remove.call(this, item).then(function(item) {
@@ -150,16 +150,16 @@
       });
     };
 
-    return ResultsController;
+    return ResultListController;
   });
 
-  app.directive('resultsComponent', function(ResultsController) {
+  app.directive('resultListComponent', function(ResultListController) {
     return {
       scope: {
         patient: '='
       },
-      controller: ResultsController,
-      templateUrl: 'app/patients/results/results-component.html'
+      controller: ResultListController,
+      templateUrl: 'app/patients/results/result-list-component.html'
     };
   });
 })();

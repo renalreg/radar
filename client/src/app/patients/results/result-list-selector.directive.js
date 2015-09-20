@@ -3,14 +3,14 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('resultColumns', function (store) {
-    var INITIAL_RESULT_CODES = ['creatinine'];
+  app.directive('resultListSelector', function (store) {
+    var INITIAL_RESULT_CODES = ['CREATININE'];
 
     return {
       scope: {
         selectedResultSpecs: '=resultSpecs'
       },
-      templateUrl: 'app/patients/results/result-columns.html',
+      templateUrl: 'app/patients/results/result-list-selector.html',
       link: function(scope) {
         scope.add = add;
         scope.remove = remove;

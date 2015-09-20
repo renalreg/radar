@@ -6,9 +6,9 @@
 
   ul {
     list-style-type: none;
-    overflow: hidden;
     padding: 5px $radar-padding 0 $radar-padding;
     margin: 0;
+    @include clearfix;
 
     li {
       float: left;
@@ -22,10 +22,10 @@
     }
 
     li.info > span {
-      overflow: hidden;
       display: block;
       border: 1px solid #333;
       border-radius: 2px;
+      @include clearfix;
     }
 
     li.info {
@@ -58,9 +58,9 @@
     border-top: 1px solid #FFF;
     border-bottom: 1px solid #CCC;
     list-style-type: none;
-    overflow: hidden;
     padding: 5px $radar-padding 0 $radar-padding;
     margin: 0;
+    @include clearfix;
 
     li {
       float: left;
