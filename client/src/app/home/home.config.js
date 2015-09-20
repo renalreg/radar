@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.home');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('index', {
       url: '/',
       templateUrl: 'app/home/home.html'
     });
-  });
+  }]);
 })();
 

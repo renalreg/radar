@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.hospitalisations');
 
-  app.factory('HospitalisationPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('HospitalisationPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('HospitalisationsController', function(ListDetailController, HospitalisationPermission, _) {
-    function HospitalisationsController($scope, $injector, store) {
+  app.factory('HospitalisationsController', ['ListDetailController', 'HospitalisationPermission', '$injector', 'store', function(ListDetailController, HospitalisationPermission, $injector, store) {
+    function HospitalisationsController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -26,12 +26,13 @@
       };
     }
 
+    HospitalisationsController.$inject = ['$scope'];
     HospitalisationsController.prototype = Object.create(ListDetailController.prototype);
 
     return HospitalisationsController;
-  });
+  }]);
 
-  app.directive('hospitalisationsComponent', function(HospitalisationsController) {
+  app.directive('hospitalisationsComponent', ['HospitalisationsController', function(HospitalisationsController) {
     return {
       scope: {
         patient: '='
@@ -39,5 +40,5 @@
       controller: HospitalisationsController,
       templateUrl: 'app/patients/hospitalisations/hospitalisations-component.html'
     };
-  });
+  }]);
 })();

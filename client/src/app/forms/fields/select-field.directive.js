@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmSelectField', function(unwrapSelectOption, wrapSelectOption, wrapSelectOptions) {
+  app.directive('frmSelectField', ['unwrapSelectOption', 'wrapSelectOption', 'wrapSelectOptions', function(unwrapSelectOption, wrapSelectOption, wrapSelectOptions) {
     return {
       restrict: 'A',
       scope: {
@@ -36,5 +36,5 @@
         });
       }
     };
-  });
+  }]);
 })();

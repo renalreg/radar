@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.dialysis');
 
-  app.factory('DialysisPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('DialysisPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('DialysisController', function(ListDetailController, DialysisPermission, firstPromise) {
-    function DialysisController($scope, $injector, store) {
+  app.factory('DialysisController', ['ListDetailController', 'DialysisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, DialysisPermission, firstPromise, $injector, store) {
+    function DialysisController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -31,12 +31,13 @@
       };
     }
 
+    DialysisController.$inject = ['$scope'];
     DialysisController.prototype = Object.create(ListDetailController.prototype);
 
     return DialysisController;
-  });
+  }]);
 
-  app.directive('dialysisComponent', function(DialysisController) {
+  app.directive('dialysisComponent', ['DialysisController', function(DialysisController) {
     return {
       scope: {
         patient: '='
@@ -44,5 +45,5 @@
       controller: DialysisController,
       templateUrl: 'app/patients/dialysis/dialysis-component.html'
     };
-  });
+  }]);
 })();

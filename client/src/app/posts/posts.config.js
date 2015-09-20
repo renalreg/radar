@@ -3,16 +3,16 @@
 
   var app = angular.module('radar.posts');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('posts', {
       url: '/news',
       templateUrl: 'app/posts/post-list.html',
       controller: 'PostListController',
       resolve: {
-        posts: function(store) {
+        posts: ['store', function(store) {
           return store.findMany('posts', {sort: '-publishedDate'});
-        }
+        }]
       }
     });
-  });
+  }]);
 })();

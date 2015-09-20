@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('toRadioView', function(_) {
+  app.factory('toRadioView', function() {
     return function toRadioView(modelValue) {
       if (angular.isObject(modelValue)) {
         return modelValue.id;
@@ -13,7 +13,7 @@
     };
   });
 
-  app.factory('toRadioModel', function(_) {
+  app.factory('toRadioModel', function() {
     return function toRadioView(options, viewValue) {
       for (var i = 0; i < options.length; i++) {
         var option = options[i];
@@ -33,7 +33,7 @@
     };
   });
 
-  app.factory('wrapRadioOptions', function(_) {
+  app.factory('wrapRadioOptions', ['_', function(_) {
     return function wrapRadioOptions(options) {
       if (options && options.length) {
         // Convert array of primitives (e.g. ['Foo', 'Bar']) into option objects
@@ -50,9 +50,9 @@
 
       return options;
     };
-  });
+  }]);
 
-  app.factory('unwrapSelectOption', function(_) {
+  app.factory('unwrapSelectOption', function() {
     return function unwrapOption(option) {
       if (option) {
         return option.value;
@@ -82,7 +82,7 @@
     };
   });
 
-  app.factory('wrapSelectOptions', function(_, wrapSelectOption) {
+  app.factory('wrapSelectOptions', ['_', 'wrapSelectOption', function(_, wrapSelectOption) {
     return function wrapSelectOptions(options) {
       if (options) {
         // Convert array (e.g. ['Foo', 'Bar']) into option objects
@@ -92,6 +92,6 @@
 
       return options;
     };
-  });
+  }]);
 })();
 

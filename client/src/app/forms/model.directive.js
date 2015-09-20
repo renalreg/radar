@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmModel', function(_) {
+  app.directive('frmModel', function() {
     return {
       require: ['^frmField', 'ngModel'],
       link: function(scope, element, attrs, ctrls) {

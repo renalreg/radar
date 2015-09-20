@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.users');
 
-  app.factory('UserModel', function(Model, store, _) {
+  app.factory('UserModel', ['Model', 'store', '_', function(Model, store, _) {
     function UserModel(modelName, data) {
       var i;
 
@@ -41,9 +41,9 @@
     };
 
     return UserModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('users', 'UserModel');
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.addresses');
 
-  app.factory('PatientAddressModel', function(Model) {
+  app.factory('PatientAddressModel', ['Model', function(Model) {
     function PatientAddressModel(modelName, data) {
       Model.call(this, modelName, data);
     }
@@ -33,9 +33,9 @@
     };
 
     return PatientAddressModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('patient-addresses', 'PatientAddressModel');
-  });
+  }]);
 })();

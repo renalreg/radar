@@ -3,13 +3,13 @@
 
   var app = angular.module('radar.units');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('units', {
       url: '/units',
       templateUrl: 'app/units/unit-list.html',
       controller: 'UnitListController',
       resolve: {
-        units: function(store, session, _) {
+        units: ['store', 'session', '_', function(store, session, _) {
           var user = session.user;
 
           if (user.isAdmin) {
@@ -19,7 +19,7 @@
               return x.organisation;
             });
           }
-        }
+        }]
       }
     });
 
@@ -28,10 +28,10 @@
       templateUrl: 'app/units/unit-detail.html',
       controller: 'UnitDetailController',
       resolve: {
-        unit: function($stateParams, store) {
+        unit: ['$stateParams', 'store', function($stateParams, store) {
           return store.findOne('organisations', $stateParams.unitId, true);
-        }
+        }]
       }
     });
-  });
+  }]);
 })();

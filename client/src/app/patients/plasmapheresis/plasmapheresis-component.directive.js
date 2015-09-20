@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.plasmapheresis');
 
-  app.factory('PlasmapheresisPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('PlasmapheresisPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('PlasmapheresisController', function(ListDetailController, PlasmapheresisPermission, firstPromise) {
-    function PlasmapheresisController($scope, $injector, store) {
+  app.factory('PlasmapheresisController', ['ListDetailController', 'PlasmapheresisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, PlasmapheresisPermission, firstPromise, $injector, store) {
+    function PlasmapheresisController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -34,12 +34,13 @@
       };
     }
 
+    PlasmapheresisController.$inject = ['$scope'];
     PlasmapheresisController.prototype = Object.create(ListDetailController.prototype);
 
     return PlasmapheresisController;
-  });
+  }]);
 
-  app.directive('plasmapheresisComponent', function(PlasmapheresisController) {
+  app.directive('plasmapheresisComponent', ['PlasmapheresisController', function(PlasmapheresisController) {
     return {
       scope: {
         patient: '='
@@ -47,5 +48,5 @@
       controller: PlasmapheresisController,
       templateUrl: 'app/patients/plasmapheresis/plasmapheresis-component.html'
     };
-  });
+  }]);
 })();

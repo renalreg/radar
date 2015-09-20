@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('patient.results', {
       url: '/results',
       abstract: true,
@@ -19,5 +19,5 @@
       url: '/graphs',
       templateUrl: 'app/patients/results/result-graphs.html'
     });
-  });
+  }]);
 })();

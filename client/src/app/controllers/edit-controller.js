@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('EditController', function($q) {
+  app.factory('EditController', ['$q', function($q) {
     function EditController($scope) {
       this.scope = $scope;
 
@@ -13,6 +13,8 @@
       this.scope.save = angular.bind(this, this.save);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
     }
+
+    EditController.$inject = ['$scope'];
 
     EditController.prototype.load = function(promise) {
       var self = this;
@@ -40,5 +42,5 @@
     };
 
     return EditController;
-  });
+  }]);
 })();

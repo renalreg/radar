@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.crud');
 
-  app.directive('crudSubmit', function($parse) {
+  app.directive('crudSubmit', ['$parse', function($parse) {
     return {
       require: 'form',
       link: function(scope, element, attrs, formCtrl) {
@@ -20,6 +20,6 @@
         });
       }
     };
-  });
+  }]);
 })();
 

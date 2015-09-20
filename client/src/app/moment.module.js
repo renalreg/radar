@@ -5,7 +5,5 @@
 
   var app = angular.module('moment', []);
 
-  app.factory('moment', function() {
-    return moment;
-  });
+  app.constant('moment', moment);
 })();

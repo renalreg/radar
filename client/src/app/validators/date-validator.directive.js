@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.validators');
 
-  app.directive('dateValidator', function(moment) {
+  app.directive('dateValidator', ['moment', function(moment) {
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -63,5 +63,5 @@
         });
       }
     };
-  });
+  }]);
 })();

@@ -3,34 +3,7 @@
 
   var app = angular.module('radar.store');
 
-  app.factory('Model', function(_, store, md5, flattenRelationships) {
-    function _hash(data) {
-      var keys = _.sortBy(_.keys(data));
-      var values = [];
-
-      _.forEach(keys, function(key) {
-        var value = data[key];
-
-        if (angular.isArray(value)) {
-          _.forEach(value, function(x) {
-            values = values.concat(_hash(x));
-          })
-        } else if (angular.isObject(value)) {
-          values = values.concat(_hash(value));
-        } else {
-          values.push(value);
-        }
-      });
-
-      return values;
-    }
-
-    function hash(data) {
-      data = flattenRelationships(data);
-      var values = _hash(data);
-      return md5(values.join(''));
-    }
-
+  app.factory('Model', ['_', 'store', 'hashModel', function(_, store, hashModel) {
     function Model(modelName, data) {
       var self = this;
 
@@ -42,7 +15,7 @@
       self.isLoading = false;
       self.errors = {};
 
-      self.hash = "";
+      self.hash = '';
 
       self.meta = [];
       self.meta = _.keysIn(self);
@@ -51,7 +24,7 @@
     }
 
     Model.prototype.isDirty = function() {
-      return this.hash != hash(this.getData());
+      return this.hash !== hashModel(this.getData());
     };
 
     Model.prototype.update = function(data) {
@@ -65,7 +38,7 @@
         delete this[key];
       }
 
-      self.hash = hash(data);
+      self.hash = hashModel(data);
 
       _.forEach(data, function(value, key) {
         self[key] = value;
@@ -107,5 +80,5 @@
     };
 
     return Model;
-  });
+  }]);
 })();

@@ -3,13 +3,13 @@
 
   var app = angular.module('radar.cohorts');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('cohorts', {
       url: '/cohorts',
       templateUrl: 'app/cohorts/cohort-list.html',
       controller: 'CohortListController',
       resolve: {
-        cohorts: function(store, session, _) {
+        cohorts: ['store', 'session', '_', function(store, session, _) {
           var user = session.user;
 
           if (user.isAdmin) {
@@ -19,7 +19,7 @@
               return x.cohort;
             });
           }
-        }
+        }]
       }
     });
 
@@ -28,10 +28,10 @@
       templateUrl: 'app/cohorts/cohort-detail.html',
       controller: 'CohortDetailController',
       resolve: {
-        cohort: function($stateParams, store) {
+        cohort: ['$stateParams', 'store', function($stateParams, store) {
           return store.findOne('cohorts', $stateParams.cohortId, true);
-        }
+        }]
       }
     });
-  });
+  }]);
 })();

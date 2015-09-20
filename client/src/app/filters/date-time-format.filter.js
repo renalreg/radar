@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.filters');
 
-  app.filter('dateTimeFormat', function(moment) {
+  app.filter('dateTimeFormat', ['moment', function(moment) {
     return function(input) {
       if (input) {
         var dt = moment(input);
@@ -17,5 +17,5 @@
         return '-';
       }
     };
-  });
+  }]);
 })();

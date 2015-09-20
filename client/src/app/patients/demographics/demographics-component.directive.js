@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.demographics');
 
-  app.factory('PatientDemographicsPermission', function(PatientRadarObjectPermission) {
+  app.factory('PatientDemographicsPermission', ['PatientRadarObjectPermission', function(PatientRadarObjectPermission) {
     return PatientRadarObjectPermission;
-  });
+  }]);
 
-  app.factory('PatientDemographicsController', function(ListDetailController, PatientDemographicsPermission, firstPromise, DenyPermission) {
-    function PatientDemographicsController($scope, $injector, store) {
+  app.factory('PatientDemographicsController', ['ListDetailController', 'PatientDemographicsPermission', 'firstPromise', 'DenyPermission', '$injector', 'store', function(ListDetailController, PatientDemographicsPermission, firstPromise, DenyPermission, $injector, store) {
+    function PatientDemographicsController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -31,12 +31,13 @@
       ]));
     }
 
+    PatientDemographicsController.$inject = ['$scope'];
     PatientDemographicsController.prototype = Object.create(ListDetailController.prototype);
 
     return PatientDemographicsController;
-  });
+  }]);
 
-  app.directive('patientDemographicsComponent', function(PatientDemographicsController) {
+  app.directive('patientDemographicsComponent', ['PatientDemographicsController', function(PatientDemographicsController) {
     return {
       scope: {
         patient: '='
@@ -44,5 +45,5 @@
       controller: PatientDemographicsController,
       templateUrl: 'app/patients/demographics/demographics-component.html'
     };
-  });
+  }]);
 })();

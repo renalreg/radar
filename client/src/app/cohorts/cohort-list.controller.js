@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.cohorts');
 
-  app.controller('CohortListController', function($scope, cohorts, _) {
+  app.controller('CohortListController', ['$scope', 'cohorts', '_', function($scope, cohorts, _) {
     $scope.cohorts = _.sortBy(cohorts, 'name');
-  });
+  }]);
 })();

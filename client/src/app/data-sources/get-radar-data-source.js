@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('getRadarDataSource', function(store, $q) {
+  app.factory('getRadarDataSource', ['store', '$q', function(store, $q) {
     var deferred = null;
 
     function getRadarDataSource() {
@@ -29,5 +29,5 @@
     }
 
     return getRadarDataSource;
-  });
+  }]);
 })();

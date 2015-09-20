@@ -17,7 +17,7 @@
       config.childModels[key] = name;
     };
 
-    this.$get = function(_, $injector, adapter, $q) {
+    this.$get = ['_', '$injector', 'adapter', '$q', function(_, $injector, adapter, $q) {
       function Store(config) {
         this.config = config;
         this.store = {};
@@ -310,6 +310,6 @@
       };
 
       return new Store(config);
-    };
+    }];
   });
 })();

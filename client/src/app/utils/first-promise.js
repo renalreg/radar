@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('firstPromise', function($q) {
+  app.factory('firstPromise', ['$q', function($q) {
     return function firstPromise(promises) {
       if (promises.length) {
         var promise = promises[0];
@@ -17,5 +17,5 @@
         return deferred.promise;
       }
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('resultGraph', function(Highcharts) {
+  app.directive('resultGraph', ['Highcharts', '_', function(Highcharts, _) {
     return {
       scope: {
         resultSpec: '=',
@@ -69,5 +69,5 @@
         }
       }
     };
-  });
+  }]);
 })();

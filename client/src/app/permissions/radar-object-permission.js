@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('RadarObjectPermission', function(session, _) {
+  app.factory('RadarObjectPermission', ['session', function(session) {
     function RadarObjectPermission() {
     }
 
@@ -23,5 +23,5 @@
     };
 
     return RadarObjectPermission;
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.units');
 
-  app.controller('UnitDetailController', function($scope, unit) {
+  app.controller('UnitDetailController', ['$scope', 'unit', function($scope, unit) {
     $scope.unit = unit;
-  });
+  }]);
 })();

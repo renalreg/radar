@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('resultGraphsComponent', function(store) {
+  app.directive('resultGraphsComponent', ['store', function(store) {
     return {
       scope: {
         patient: '='
@@ -26,5 +26,5 @@
         });
       }
     };
-  });
+  }]);
 })();

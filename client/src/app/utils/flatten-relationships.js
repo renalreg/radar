@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('flattenRelationships', function(_) {
+  app.factory('flattenRelationships', ['_', function(_) {
     return function flattenRelationships(data) {
       var newData;
 
@@ -39,5 +39,5 @@
 
       return newData;
     };
-  });
+  }]);
 })();

@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.aliases');
 
-  app.factory('PatientAliasPermission', function(PatientRadarObjectPermission) {
+  app.factory('PatientAliasPermission', ['PatientRadarObjectPermission', function(PatientRadarObjectPermission) {
     return PatientRadarObjectPermission;
-  });
+  }]);
 
-  app.factory('PatientAliasesController', function(ListDetailController, PatientAliasPermission, firstPromise, getRadarDataSource) {
-    function PatientAliasesController($scope, $injector, store) {
+  app.factory('PatientAliasesController', ['ListDetailController', 'PatientAliasPermission', 'firstPromise','getRadarDataSource', '$injector', 'store', function(ListDetailController, PatientAliasPermission, firstPromise, getRadarDataSource, $injector, store) {
+    function PatientAliasesController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -34,12 +34,13 @@
       };
     }
 
+    PatientAliasesController.$inject = ['$scope'];
     PatientAliasesController.prototype = Object.create(ListDetailController.prototype);
 
     return PatientAliasesController;
-  });
+  }]);
 
-  app.directive('patientAliasesComponent', function(PatientAliasesController) {
+  app.directive('patientAliasesComponent', ['PatientAliasesController', function(PatientAliasesController) {
     return {
       scope: {
         patient: '='
@@ -47,5 +48,5 @@
       controller: PatientAliasesController,
       templateUrl: 'app/patients/aliases/aliases-component.html'
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientObjectPermission', function(session, _) {
+  app.factory('PatientObjectPermission', ['session', '_', function(session, _) {
     function PatientObjectPermission(patient) {
       this.patient = patient;
     }
@@ -42,5 +42,5 @@
     };
 
     return PatientObjectPermission;
-  });
+  }]);
 })();

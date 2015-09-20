@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.renalImaging');
 
-  app.factory('RenalImagingPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('RenalImagingPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('RenalImagingController', function(ListDetailController, RenalImagingPermission, firstPromise) {
-    function RenalImagingController($scope, $injector, store) {
+  app.factory('RenalImagingController', ['ListDetailController', 'RenalImagingPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, RenalImagingPermission, firstPromise, $injector, store) {
+    function RenalImagingController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -34,12 +34,13 @@
       };
     }
 
+    RenalImagingController.$inject = ['$scope'];
     RenalImagingController.prototype = Object.create(ListDetailController.prototype);
 
     return RenalImagingController;
-  });
+  }]);
 
-  app.directive('renalImagingComponent', function(RenalImagingController) {
+  app.directive('renalImagingComponent', ['RenalImagingController', function(RenalImagingController) {
     return {
       scope: {
         patient: '='
@@ -47,5 +48,5 @@
       controller: RenalImagingController,
       templateUrl: 'app/patients/renal-imaging/renal-imaging-component.html'
     };
-  });
+  }]);
 })();

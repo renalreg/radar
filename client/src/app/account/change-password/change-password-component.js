@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.account.changePassword');
 
-  app.factory('ChangePasswordController', function(EditController) {
-    function ChangePasswordController($scope, $injector) {
+  app.factory('ChangePasswordController', ['EditController', '$injector', function(EditController, $injector) {
+    function ChangePasswordController($scope) {
       var self = this;
 
       $injector.invoke(EditController, self, {
@@ -15,12 +15,13 @@
       self.load($scope.user);
     }
 
+    ChangePasswordController.$inject = ['$scope'];
     ChangePasswordController.prototype = Object.create(EditController.prototype);
 
     return ChangePasswordController;
-  });
+  }]);
 
-  app.directive('changePasswordComponent', function(ChangePasswordController) {
+  app.directive('changePasswordComponent', ['ChangePasswordController', function(ChangePasswordController) {
     return {
       scope: {
         user: '='
@@ -28,5 +29,5 @@
       controller: ChangePasswordController,
       templateUrl: 'app/account/change-password/change-password-component.html'
     };
-  });
+  }]);
 })();

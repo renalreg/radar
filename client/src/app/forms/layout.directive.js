@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmLayout', function(_) {
+  app.directive('frmLayout', function() {
     return {
-      controller: function($attrs) {
+      controller: ['$attrs', function($attrs) {
         this.layout = $attrs.frmLayout;
-      }
+      }]
     };
   });
 })();

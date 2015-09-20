@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('resultListSelector', function (store) {
+  app.directive('resultListSelector', ['store', '_', function(store, _) {
     var INITIAL_RESULT_CODES = ['CREATININE'];
 
     return {
@@ -40,8 +40,8 @@
         }
 
         function add(resultSpec) {
-          var duplicate = _.any(scope.selectedResultSpecs, function (x) {
-            return x.code == resultSpec.code;
+          var duplicate = _.any(scope.selectedResultSpecs, function(x) {
+            return x.code === resultSpec.code;
           });
 
           if (!duplicate) {
@@ -54,5 +54,5 @@
         }
       }
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('unauthorizedHttpInterceptor', function($rootScope, $q) {
+  app.factory('unauthorizedHttpInterceptor', ['$rootScope', '$q', function($rootScope, $q) {
     return {
       responseError: function(rejection) {
         if (rejection.status === 401) {
@@ -13,5 +13,5 @@
         return $q.reject(rejection);
       }
     };
-  });
+  }]);
 })();

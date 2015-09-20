@@ -3,13 +3,15 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListController', function($q) {
+  app.factory('ListController', ['$q', function($q) {
     function ListController($scope) {
       this.scope = $scope;
 
       this.scope.loading = true;
       this.scope.items = [];
     }
+
+    ListController.$inject = ['$scope'];
 
     ListController.prototype.load = function(promise) {
       var self = this;
@@ -23,5 +25,5 @@
     };
 
     return ListController;
-  });
+  }]);
 })();

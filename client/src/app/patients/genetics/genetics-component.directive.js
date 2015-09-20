@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.genetics');
 
-  app.factory('GeneticsPermission', function(PatientObjectPermission) {
+  app.factory('GeneticsPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
-  });
+  }]);
 
-  app.factory('GeneticsController', function(DetailController, GeneticsPermission) {
-    function GeneticsController($scope, $injector, store) {
+  app.factory('GeneticsController', ['DetailController', 'GeneticsPermission', '$injector', 'store', function(DetailController, GeneticsPermission, $injector, store) {
+    function GeneticsController($scope) {
       var self = this;
 
       $injector.invoke(DetailController, self, {
@@ -28,12 +28,13 @@
       };
     }
 
+    GeneticsController.$inject = ['$scope'];
     GeneticsController.prototype = Object.create(DetailController.prototype);
 
     return GeneticsController;
-  });
+  }]);
 
-  app.directive('geneticsComponent', function(GeneticsController) {
+  app.directive('geneticsComponent', ['GeneticsController', function(GeneticsController) {
     return {
       scope: {
         patient: '=',
@@ -42,6 +43,6 @@
       controller: GeneticsController,
       templateUrl: 'app/patients/genetics/genetics-component.html'
     };
-  });
+  }]);
 })();
 

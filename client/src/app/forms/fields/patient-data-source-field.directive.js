@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmPatientDataSourceField', function(store, session, _) {
+  app.directive('frmPatientDataSourceField', ['sortDataSources', 'store', 'session', '_', function(sortDataSources, store, session, _) {
     return {
       restrict: 'A',
       scope: {
@@ -41,9 +41,7 @@
           }
         });
 
-        dataSources = _.sortBy(dataSources, function(x) {
-          return x.getName();
-        });
+        dataSources = sortDataSources(dataSources);
 
         if (!scope.model) {
           scope.model = dataSources[0];
@@ -52,5 +50,5 @@
         scope.dataSources = dataSources;
       }
     };
-  });
+  }]);
 })();

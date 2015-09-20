@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('login', {
       url: '/login',
       templateUrl: 'app/auth/login.html'
@@ -18,6 +18,6 @@
       url: '/forgot-password',
       templateUrl: 'app/auth/forgot-password.html'
     });
-  });
+  }]);
 })();
 

@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.diagnoses');
 
-  app.factory('DiagnosisPermission', function(PatientObjectPermission) {
+  app.factory('DiagnosisPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
-  });
+  }]);
 
-  app.factory('DiagnosesController', function(ListDetailController, DiagnosisPermission, firstPromise) {
-    function DiagnosesController($scope, $injector, store) {
+  app.factory('DiagnosesController', ['ListDetailController', 'DiagnosisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, DiagnosisPermission, firstPromise, $injector, store) {
+    function DiagnosesController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -40,12 +40,13 @@
       };
     }
 
+    DiagnosesController.$inject = ['$scope'];
     DiagnosesController.prototype = Object.create(ListDetailController.prototype);
 
     return DiagnosesController;
-  });
+  }]);
 
-  app.directive('diagnosesComponent', function(DiagnosesController) {
+  app.directive('diagnosesComponent', ['DiagnosesController', function(DiagnosesController) {
     return {
       scope: {
         patient: '=',
@@ -54,5 +55,5 @@
       controller: DiagnosesController,
       templateUrl: 'app/patients/diagnoses/diagnoses-component.html'
     };
-  });
+  }]);
 })();

@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.genetics');
 
-  app.factory('SaltWastingClinicalFeaturesPermission', function(PatientObjectPermission) {
+  app.factory('SaltWastingClinicalFeaturesPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
-  });
+  }]);
 
-  app.factory('SaltWastingClinicalFeaturesController', function(DetailController, SaltWastingClinicalFeaturesPermission) {
-    function SaltWastingClinicalFeaturesController($scope, $injector, store) {
+  app.factory('SaltWastingClinicalFeaturesController', ['DetailController', 'SaltWastingClinicalFeaturesPermission', '$injector', 'store', function(DetailController, SaltWastingClinicalFeaturesPermission, $injector, store) {
+    function SaltWastingClinicalFeaturesController($scope) {
       var self = this;
 
       $injector.invoke(DetailController, self, {
@@ -28,12 +28,13 @@
       };
     }
 
+    SaltWastingClinicalFeaturesController.$inject = ['$scope'];
     SaltWastingClinicalFeaturesController.prototype = Object.create(DetailController.prototype);
 
     return SaltWastingClinicalFeaturesController;
-  });
+  }]);
 
-  app.directive('saltWastingClinicalFeaturesComponent', function(SaltWastingClinicalFeaturesController) {
+  app.directive('saltWastingClinicalFeaturesComponent', ['SaltWastingClinicalFeaturesController', function(SaltWastingClinicalFeaturesController) {
     return {
       scope: {
         patient: '='
@@ -41,5 +42,5 @@
       controller: SaltWastingClinicalFeaturesController,
       templateUrl: 'app/patients/salt-wasting/clinical-features-component.html'
     };
-  });
+  }]);
 })();

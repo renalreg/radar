@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('DetailController', function($q, $window, GrantPermission) {
+  app.factory('DetailController', ['$q', '$window', 'GrantPermission', function($q, $window, GrantPermission) {
     function DetailController($scope, params) {
       this.scope = $scope;
 
@@ -55,6 +55,8 @@
       this.scope.editPermission = angular.bind(this, this.editPermission);
       this.scope.removePermission = angular.bind(this, this.removePermission);
     }
+
+    DetailController.$inject = ['$scope', 'params'];
 
     DetailController.prototype.load = function(promise) {
       var self = this;
@@ -188,5 +190,5 @@
     };
 
     return DetailController;
-  });
+  }]);
 })();

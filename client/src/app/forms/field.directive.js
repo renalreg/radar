@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmField', function(_) {
+  app.directive('frmField', ['_', function(_) {
     function Field($scope, $attrs) {
       this.scope = $scope;
       this.attrs = $attrs;
@@ -12,6 +12,8 @@
       this.labels = 0;
       this.modelCtrl = null;
     }
+
+    Field.$inject = ['$scope', '$attrs'];
 
     Field.prototype.setValid = function(valid) {
       this.valid = valid;
@@ -44,5 +46,5 @@
     return {
       controller: Field
     };
-  });
+  }]);
 })();

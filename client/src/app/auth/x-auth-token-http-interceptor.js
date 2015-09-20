@@ -3,9 +3,11 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('xAuthTokenHttpInterceptor', function(session) {
+  app.factory('xAuthTokenHttpInterceptor', ['session', function(session) {
     return {
       request: function(config) {
+        // TODO do this on the adapter instead
+
         var token = session.getToken();
 
         if (token !== null) {
@@ -25,5 +27,5 @@
         return response;
       }
     };
-  });
+  }]);
 })();

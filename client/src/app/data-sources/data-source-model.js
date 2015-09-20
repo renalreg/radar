@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('DataSourceModel', function(Model, _, store) {
+  app.factory('DataSourceModel', ['Model', function(Model) {
     function DataSourceModel(modelName, data) {
       Model.call(this, modelName, data);
     }
@@ -21,11 +21,11 @@
     };
 
     return DataSourceModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('data-sources', 'DataSourceModel');
     storeProvider.registerChildModel('dataSource', 'data-sources');
     storeProvider.registerChildModel('dataSources', 'data-sources');
-  });
+  }]);
 })();

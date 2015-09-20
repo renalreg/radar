@@ -5,7 +5,5 @@
 
   var app = angular.module('md5', []);
 
-  app.factory('md5', function() {
-    return md5;
-  });
+  app.constant('md5', md5);
 })();

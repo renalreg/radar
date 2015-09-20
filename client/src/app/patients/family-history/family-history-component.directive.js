@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.genetics');
 
-  app.factory('FamilyHistoryPermission', function(PatientObjectPermission) {
+  app.factory('FamilyHistoryPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
-  });
+  }]);
 
-  app.factory('FamilyHistoryController', function(DetailController, FamilyHistoryPermission) {
-    function FamilyHistoryController($scope, $injector, store) {
+  app.factory('FamilyHistoryController', ['DetailController', 'FamilyHistoryPermission', '$injector', 'store', function(DetailController, FamilyHistoryPermission, $injector, store) {
+    function FamilyHistoryController($scope) {
       var self = this;
 
       $injector.invoke(DetailController, self, {
@@ -28,12 +28,13 @@
       };
     }
 
+    FamilyHistoryController.$inject = ['$scope'];
     FamilyHistoryController.prototype = Object.create(DetailController.prototype);
 
     return FamilyHistoryController;
-  });
+  }]);
 
-  app.directive('familyHistoryComponent', function(FamilyHistoryController) {
+  app.directive('familyHistoryComponent', ['FamilyHistoryController', function(FamilyHistoryController) {
     return {
       scope: {
         patient: '=',
@@ -42,5 +43,5 @@
       controller: FamilyHistoryController,
       templateUrl: 'app/patients/family-history/family-history-component.html'
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmResultGroupSpecField', function(store, _) {
+  app.directive('frmResultGroupSpecField', ['store', '_', function(store, _) {
     return {
       restrict: 'A',
       scope: {
@@ -17,5 +17,5 @@
         });
       }
     };
-  });
+  }]);
 })();

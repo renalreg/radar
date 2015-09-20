@@ -3,11 +3,11 @@
 
   var app = angular.module('radar');
 
-  app.controller('AppController', function(boot, $rootScope) {
+  app.controller('AppController', ['boot', '$rootScope', function(boot, $rootScope) {
     $rootScope.ready = false;
 
     boot.then(function() {
       $rootScope.ready = true;
     });
-  });
+  }]);
 })();

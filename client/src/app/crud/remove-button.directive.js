@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.crud');
 
-  app.directive('crudRemoveButton', function($timeout) {
+  app.directive('crudRemoveButton', ['$timeout', function($timeout) {
     return {
       require: '^crud',
       scope: {
@@ -50,5 +50,5 @@
         });
       }
     };
-  });
+  }]);
 })();

@@ -5,7 +5,7 @@
 
   app.directive('crud', function() {
     return {
-      controller: function($scope) {
+      controller: ['$scope', function($scope) {
         this.list = function() {
           return $scope.list.apply(this, arguments);
         };
@@ -73,7 +73,7 @@
         this.removePermission = function() {
           return $scope.removePermission.apply(this, arguments);
         };
-      }
+      }]
     };
   });
 })();

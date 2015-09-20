@@ -49,6 +49,10 @@ var paths = {
     'bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}',
     'bower_components/font-awesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}'
   ],
+  images: [
+    'src/images/**/*',
+    'bower_components/jquery-ui/themes/smoothness/images/*.{gif,png}'
+  ],
   ieJs: [
     'bower_components/html5shiv/dist/html5shiv.js',
     'bower_components/respond/dest/respond.src.js'
@@ -98,7 +102,6 @@ gulp.task('scripts', function() {
     .pipe(jscs().on('error', gutil.log))
 		.pipe(jshint())
 		.pipe(jshint.reporter('jshint-stylish'))
-		// TODO .pipe(gulpIf(!browserSync.active, jshint.reporter('fail')))
     .pipe(browserSync.reload({stream: true}));
 });
 
@@ -129,7 +132,8 @@ gulp.task('html', ['inject', 'templates'], function() {
     .pipe(jsFilter.restore)
     .pipe(cssFilter)
     .pipe(replace('/bower_components/bootstrap-sass/assets/fonts/bootstrap/', '../fonts/'))
-    .pipe(minifyCss())
+    .pipe(replace('"images/', '"../images/'))
+    .pipe(minifyCss({compatibility: 'ie8'}))
     .pipe(cssFilter.restore)
     .pipe(assets.restore())
     .pipe(useref())
@@ -168,7 +172,7 @@ gulp.task('fonts', function() {
 });
 
 gulp.task('images', function() {
-  return gulp.src('src/images/**/*')
+  return gulp.src(paths.images)
     .pipe(imagemin({optimizationLevel: 5}))
     .pipe(gulp.dest('dist/images'));
 });

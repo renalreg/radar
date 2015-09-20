@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmRequired', function(_, $parse) {
+  app.directive('frmRequired', ['$parse', function($parse) {
     return {
       require: '^frmField',
       link: function(scope, element, attrs, fieldCtrl) {
@@ -20,5 +20,5 @@
         });
       }
     };
-  });
+  }]);
 })();

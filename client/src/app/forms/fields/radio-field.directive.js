@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmRadioField', function(wrapRadioOptions, toRadioView, toRadioModel) {
+  app.directive('frmRadioField', ['wrapRadioOptions', 'toRadioView', 'toRadioModel', function(wrapRadioOptions, toRadioView, toRadioModel) {
     return {
       restrict: 'A',
       scope: {
@@ -35,5 +35,5 @@
         });
       }
     };
-  });
+  }]);
 })();

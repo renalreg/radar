@@ -3,10 +3,10 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('listHelper', function($parse, _, escapeRegExp, searchToDateRegExp, anyValue) {
+  app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'searchToDateRegExp', 'anyValue', function($parse, _, escapeRegExp, searchToDateRegExp, anyValue) {
     return {
       scope: false,
-      controller: function($scope, $attrs) {
+      controller: ['$scope', '$attrs', function($scope, $attrs) {
         var self = this;
 
         var listHelper = $attrs.listHelper;
@@ -268,9 +268,9 @@
             return api ? api.getItems() : [];
           }
         }
-      }
+      }]
     };
-  });
+  }]);
 
   app.factory('ListHelperProxy', function() {
     function ListHelperProxy(callback, params) {

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.navigation');
 
-  app.directive('cohortNavigation', function(patientFeatures, _) {
+  app.directive('cohortNavigation', ['patientFeatures', '_', function(patientFeatures, _) {
     return {
       scope: {
         patient: '=',
@@ -25,6 +25,6 @@
         });
       }
     };
-  });
+  }]);
 })();
 

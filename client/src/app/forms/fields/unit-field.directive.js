@@ -3,13 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmUnitField', function(_, session, store) {
-    function sortUnits(units) {
-      return _.sortBy(units, function(x) {
-        return x.name.toUpperCase();
-      });
-    }
-
+  app.directive('frmUnitField', ['_', 'session', 'store', 'sortOrganisations', function(_, session, store, sortOrganisations) {
     return {
       restrict: 'A',
       scope: {
@@ -23,15 +17,15 @@
         if (user.isAdmin) {
           // TODO filter
           store.findMany('organisations', {type: 'UNIT'}).then(function(units) {
-            scope.units = sortUnits(units);
+            scope.units = sortOrganisations(units);
           });
         } else {
           // TODO filter
-          scope.units = sortUnits(_.map(session.user.organisations, function(x) {
+          scope.units = sortOrganisations(_.map(session.user.organisations, function(x) {
             return x.organisation;
           }));
         }
       }
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.factory('ResultGroupSpecModel', function(Model, store) {
+  app.factory('ResultGroupSpecModel', ['Model', 'store', function(Model, store) {
     function ResultGroupSpecModel(modelName, data) {
       if (data.resultSpecs !== undefined) {
         var resultSpecs = [];
@@ -23,9 +23,9 @@
     ResultGroupSpecModel.prototype = Object.create(Model.prototype);
 
     return ResultGroupSpecModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('result-group-specs', 'ResultGroupSpecModel');
-  });
+  }]);
 })();

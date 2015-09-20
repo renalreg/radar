@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.addresses');
 
-  app.factory('PatientAddressPermission', function(PatientRadarObjectPermission) {
+  app.factory('PatientAddressPermission', ['PatientRadarObjectPermission', function(PatientRadarObjectPermission) {
     return PatientRadarObjectPermission;
-  });
+  }]);
 
-  app.factory('PatientAddressesController', function(ListDetailController, PatientAddressPermission, firstPromise, getRadarDataSource) {
-    function PatientAddressesController($scope, $injector, store) {
+  app.factory('PatientAddressesController', ['ListDetailController', 'PatientAddressPermission', 'firstPromise', 'getRadarDataSource', '$injector', 'store', function(ListDetailController, PatientAddressPermission, firstPromise, getRadarDataSource, $injector, store) {
+    function PatientAddressesController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -36,12 +36,13 @@
       };
     }
 
+    PatientAddressesController.$inject = ['$scope'];
     PatientAddressesController.prototype = Object.create(ListDetailController.prototype);
 
     return PatientAddressesController;
-  });
+  }]);
 
-  app.directive('patientAddressesComponent', function(PatientAddressesController) {
+  app.directive('patientAddressesComponent', ['PatientAddressesController', function(PatientAddressesController) {
     return {
       scope: {
         patient: '='
@@ -49,6 +50,6 @@
       controller: PatientAddressesController,
       templateUrl: 'app/patients/addresses/addresses-component.html'
     };
-  });
+  }]);
 })();
 

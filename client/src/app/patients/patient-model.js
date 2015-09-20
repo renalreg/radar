@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('PatientModel', function(Model, store, _) {
+  app.factory('PatientModel', ['Model', 'store', '_', function(Model, store, _) {
     function PatientModel(modelName, data) {
       var i;
 
@@ -51,10 +51,10 @@
     };
 
     return PatientModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('patients', 'PatientModel');
-  });
+  }]);
 })();
 

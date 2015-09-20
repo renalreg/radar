@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.factory('ResultGroupModel', function(Model, store) {
+  app.factory('ResultGroupModel', ['Model', 'store', function(Model, store) {
     function ResultGroupModel(modelName, data) {
       if (data.resultGroupSpec !== undefined) {
         // Save space by only keeping one copy
@@ -31,9 +31,9 @@
     };
 
     return ResultGroupModel;
-  });
+  }]);
 
-  app.config(function(storeProvider) {
+  app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('result-groups', 'ResultGroupModel');
-  });
+  }]);
 })();

@@ -5,7 +5,5 @@
 
   var app = angular.module('_', []);
 
-  app.factory('_', function() {
-    return _;
-  });
+  app.constant('_', _);
 })();

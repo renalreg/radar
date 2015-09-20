@@ -7,6 +7,8 @@
     this.cookies = $cookies;
   }
 
+  AuthStore.$inject = ['$cookies'];
+
   AuthStore.prototype.logout = function() {
     delete this.cookies.userId;
     delete this.cookies.token;

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmGroup', function(_) {
+  app.directive('frmGroup', function() {
     return {
       require: 'frmField',
       transclude: true,

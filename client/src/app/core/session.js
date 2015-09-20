@@ -10,6 +10,8 @@
     this.isAuthenticated = false;
   }
 
+  Session.$inject = ['authStore'];
+
   Session.prototype.logout = function() {
     this.authStore.logout();
     this.user = null;
@@ -36,7 +38,7 @@
 
   app.service('session', Session);
 
-  app.run(function($rootScope, logoutService, session, $state) {
+  app.run(['$rootScope', 'logoutService', 'session', '$state', function($rootScope, logoutService, session, $state) {
     $rootScope.$on('unauthorized', function() {
       session.logout();
       $state.go('login');
@@ -53,5 +55,5 @@
     }, function(isAuthenticated) {
       $rootScope.isAuthenticated = isAuthenticated;
     });
-  });
+  }]);
 })();

@@ -3,16 +3,16 @@
 
   var app = angular.module('radar');
 
-  app.config(function($httpProvider) {
+  app.config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('unauthorizedHttpInterceptor');
     $httpProvider.interceptors.push('xAuthTokenHttpInterceptor');
-  });
+  }]);
 
-  app.config(function($stateProvider, $urlRouterProvider) {
+  app.config(['$urlRouterProvider', function($urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
-  });
+  }]);
 
-  app.config(function(adapterProvider) {
+  app.config(['adapterProvider', function(adapterProvider) {
     adapterProvider.setBaseUrl('http://localhost:5000');
-  });
+  }]);
 })();

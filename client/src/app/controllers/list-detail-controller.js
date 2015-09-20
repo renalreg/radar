@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListDetailController', function(_, $window, $q, GrantPermission) {
+  app.factory('ListDetailController', ['_', '$window', '$q', 'GrantPermission', function(_, $window, $q, GrantPermission) {
     function ListDetailController($scope, params) {
       this.scope = $scope;
 
@@ -59,6 +59,8 @@
       this.scope.editPermission = angular.bind(this, this.editPermission);
       this.scope.removePermission = angular.bind(this, this.removePermission);
     }
+
+    ListDetailController.$inject = ['$scope', 'params'];
 
     ListDetailController.prototype.load = function(promise) {
       var self = this;
@@ -219,5 +221,5 @@
     };
 
     return ListDetailController;
-  });
+  }]);
 })();

@@ -12,7 +12,7 @@
       config.baseUrl = value;
     };
 
-    this.$get = function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships) {
+    this.$get = ['$http', '$q', '_', 'camelCaseKeys', 'snakeCaseKeys', 'flattenRelationships', function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships) {
       function Adapter(config) {
         this.config = config;
       }
@@ -40,7 +40,7 @@
         data = snakeCaseKeys(data);
 
         if (data.sort) {
-          if (data.sort.startsWith('-')) {
+          if (/^-/.exec(data.sort)) {
             data.sort = '-' + _.snakeCase(data.sort);
           } else {
             data.sort = _.snakeCase(data.sort);
@@ -207,6 +207,6 @@
       };
 
       return new Adapter(config);
-    };
+    }];
   });
 })();

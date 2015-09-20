@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('hasDemographicsPermission', function(_) {
+  app.factory('hasDemographicsPermission', ['_', function(_) {
     return function hasDemographicsPermission(patient, user) {
       var i;
 
@@ -41,6 +41,6 @@
 
       return false;
     };
-  });
+  }]);
 })();
 

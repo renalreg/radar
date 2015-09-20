@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.medications');
 
-  app.factory('ComorbidityPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('ComorbidityPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('ComorbiditiesController', function(ListDetailController, ComorbidityPermission, firstPromise) {
-    function ComorbiditiesController($scope, $injector, $q, store) {
+  app.factory('ComorbiditiesController', ['ListDetailController', 'ComorbidityPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, ComorbidityPermission, firstPromise, $injector, store) {
+    function ComorbiditiesController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -31,12 +31,13 @@
       };
     }
 
+    ComorbiditiesController.$inject = ['$scope'];
     ComorbiditiesController.prototype = Object.create(ListDetailController.prototype);
 
     return ComorbiditiesController;
-  });
+  }]);
 
-  app.directive('comorbiditiesComponent', function(ComorbiditiesController) {
+  app.directive('comorbiditiesComponent', ['ComorbiditiesController', function(ComorbiditiesController) {
     return {
       scope: {
         patient: '='
@@ -44,5 +45,5 @@
       controller: ComorbiditiesController,
       templateUrl: 'app/patients/comorbidities/comorbidities-component.html'
     };
-  });
+  }]);
 })();

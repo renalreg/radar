@@ -3,13 +3,13 @@
 
   var app = angular.module('radar.patients');
 
-  app.config(function($stateProvider) {
+  app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('patients', {
       url: '/patients',
       templateUrl: 'app/patients/patient-list.html',
-      controller: function($scope, $controller, PatientListController) {
+      controller: ['$scope', '$controller', 'PatientListController', function($scope, $controller, PatientListController) {
         $controller(PatientListController, {$scope: $scope});
-      }
+      }]
     });
 
     $stateProvider.state('patient', {
@@ -18,9 +18,9 @@
       templateUrl: 'app/patients/patient-detail.html',
       controller: 'PatientDetailController',
       resolve: {
-        patient: function($stateParams, store) {
+        patient: ['$stateParams', 'store', function($stateParams, store) {
           return store.findOne('patients', $stateParams.patientId);
-        }
+        }]
       }
     });
 
@@ -28,7 +28,7 @@
       url: '/all',
       templateUrl: 'app/patients/all.html'
     });
-  });
+  }]);
 
   // TODO refactor into state and cohort flag
   app.constant('patientFeatures', {
@@ -112,9 +112,9 @@
 
   app.constant('standardPatientFeatures', [
     'DEMOGRAPHICS',
+    'RESULTS',
     'COMORBIDITIES',
     'PATHOLOGY',
-    'RESULTS',  // TODO here?
     'MEDICATIONS',
     'DIALYSIS',
     'PLASMAPHERESIS',

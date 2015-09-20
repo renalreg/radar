@@ -3,20 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmOrganisationField', function(_, store) {
-    function sortByName(x) {
-      return x.name.toUpperCase();
-    }
-
-    function sortByType(x) {
-      // Other organisations first (NHS etc.)
-      return x.type === 'OTHER' ? 0 : 1;
-    }
-
-    function sortOrganisations(organisations) {
-      return _.sortByAll(organisations, sortByType, sortByName);
-    }
-
+  app.directive('frmOrganisationField', ['sortOrganisations', 'store', function(sortOrganisations, store) {
     return {
       restrict: 'A',
       scope: {
@@ -30,5 +17,5 @@
         });
       }
     };
-  });
+  }]);
 })();

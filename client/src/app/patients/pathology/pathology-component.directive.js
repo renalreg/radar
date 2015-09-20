@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.pathology');
 
-  app.factory('PathologyPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('PathologyPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('PathologyController', function(ListDetailController, PathologyPermission, firstPromise) {
-    function PathologyController($scope, $injector, store) {
+  app.factory('PathologyController', ['ListDetailController', 'PathologyPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, PathologyPermission, firstPromise, $injector, store) {
+    function PathologyController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -34,12 +34,13 @@
       };
     }
 
+    PathologyController.$inject = ['$scope'];
     PathologyController.prototype = Object.create(ListDetailController.prototype);
 
     return PathologyController;
-  });
+  }]);
 
-  app.directive('pathologyComponent', function(PathologyController) {
+  app.directive('pathologyComponent', ['PathologyController', function(PathologyController) {
     return {
       scope: {
         patient: '='
@@ -47,5 +48,5 @@
       controller: PathologyController,
       templateUrl: 'app/patients/pathology/pathology-component.html'
     };
-  });
+  }]);
 })();

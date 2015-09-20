@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('transformKeys', function(_) {
+  app.factory('transformKeys', ['_', function(_) {
     return function transformKeys(x, f) {
       if (_.isArray(x)) {
         return _.map(x, function(value) {
@@ -17,9 +17,9 @@
         return x;
       }
     };
-  });
+  }]);
 
-  app.factory('camelCaseKeys', function(transformKeys, _) {
+  app.factory('camelCaseKeys', ['transformKeys', '_', function(transformKeys, _) {
     var re = new RegExp('^[A-Z0-9_]+$');
 
     return function camelCaseObject(x) {
@@ -31,9 +31,9 @@
         }
       });
     };
-  });
+  }]);
 
-  app.factory('snakeCaseKeys', function(transformKeys, _) {
+  app.factory('snakeCaseKeys', ['transformKeys', '_', function(transformKeys, _) {
     var re = new RegExp('^[A-Z0-9_]+$');
 
     return function snakeCaseObject(x) {
@@ -45,5 +45,5 @@
         }
       });
     };
-  });
+  }]);
 })();

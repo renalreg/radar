@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('anyValue', function(_) {
+  app.factory('anyValue', ['_', function(_) {
     return function anyValue(x, callback) {
       var found;
       var value;
@@ -32,5 +32,5 @@
         return callback(x);
       }
     };
-  });
+  }]);
 })();

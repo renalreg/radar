@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('authService', function(session, $q, store, adapter) {
+  app.factory('authService', ['session', '$q', 'store', 'adapter', function(session, $q, store, adapter) {
     return {
       login: login
     };
@@ -37,6 +37,6 @@
 
       return deferred.promise;
     }
-  });
+  }]);
 })();
 

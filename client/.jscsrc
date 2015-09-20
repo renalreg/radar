@@ -10,10 +10,6 @@
   ],
   "requireOperatorBeforeLineBreak": true,
   "requireCamelCaseOrUpperCaseIdentifiers": true,
-  "maximumLineLength": {
-    "value": 120,
-    "allExcept": ["comments", "regex"]
-  },
   "validateIndentation": 2,
   "validateQuoteMarks": "'",
 

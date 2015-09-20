@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.factory('ResultPermission', function(PatientDataSourceObjectPermission) {
+  app.factory('ResultPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
-  });
+  }]);
 
-  app.factory('ResultListController', function(ListDetailController, ResultPermission, firstPromise) {
-    function ResultListController($scope, $injector, store) {
+  app.factory('ResultListController', ['ListDetailController', 'ResultPermission', 'firstPromise', '$injector', 'store', '_', function(ListDetailController, ResultPermission, firstPromise, $injector, store, _) {
+    function ResultListController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -24,11 +24,9 @@
         $scope.resultGroupSpecs = resultGroupSpecs;
       });
 
-      $scope.$watchCollection('resultSpecs', fetch);
-
       var resultSpecsSelected = false;
 
-      function fetch(resultSpecs) {
+      $scope.$watchCollection('resultSpecs', function(resultSpecs) {
         var promise;
 
         if (resultSpecs.length) {
@@ -53,19 +51,15 @@
             resultGroupSpecsPromise
           ]));
         }
-      }
+      });
 
       $scope.create = function() {
         var item = store.create('result-groups', {patient: $scope.patient.id});
         self.edit(item);
       };
-
-      function groupItems() {
-        var items = $scope.items;
-
-      }
     }
 
+    ResultListController.$inject = ['$scope'];
     ResultListController.prototype = Object.create(ListDetailController.prototype);
 
     ResultListController.prototype.groupItems = function() {
@@ -151,9 +145,9 @@
     };
 
     return ResultListController;
-  });
+  }]);
 
-  app.directive('resultListComponent', function(ResultListController) {
+  app.directive('resultListComponent', ['ResultListController', function(ResultListController) {
     return {
       scope: {
         patient: '='
@@ -161,5 +155,5 @@
       controller: ResultListController,
       templateUrl: 'app/patients/results/result-list-component.html'
     };
-  });
+  }]);
 })();

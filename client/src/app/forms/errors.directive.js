@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms');
 
-  app.directive('frmErrors', function(_) {
+  app.directive('frmErrors', ['_', function(_) {
     return {
       require: ['frmErrors', '^frmField'],
       templateUrl: 'app/forms/errors.html',
@@ -43,5 +43,5 @@
         };
       }
     };
-  });
+  }]);
 })();

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('logoutService', function(session, adapter) {
+  app.factory('logoutService', ['session', 'adapter', function(session, adapter) {
     return {
       logout: logout
     };
@@ -13,5 +13,5 @@
         session.logout();
       });
     }
-  });
+  }]);
 })();

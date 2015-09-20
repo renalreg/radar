@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.cohorts');
 
-  app.controller('CohortDetailController', function($scope, cohort) {
+  app.controller('CohortDetailController', ['$scope', 'cohort', function($scope, cohort) {
     $scope.cohort = cohort;
-  });
+  }]);
 })();

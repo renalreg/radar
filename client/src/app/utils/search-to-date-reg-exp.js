@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.utils');
 
-  app.factory('searchToDateRegExp', function(_) {
+  app.factory('searchToDateRegExp', function() {
     var datePatterns = [
       /^([0-9]+)\/0*$/,
       /^([0-9]+)\/([0-9]+)(?:\/0*)?$/,

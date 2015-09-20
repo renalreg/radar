@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.patients.cohorts');
 
-  app.factory('PatientCohortPermission', function(PatientObjectPermission) {
+  app.factory('PatientCohortPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
-  });
+  }]);
 
-  app.factory('PatientCohortsController', function(ListDetailController, PatientCohortPermission) {
-    function PatientCohortsController($scope, $injector, store) {
+  app.factory('PatientCohortsController', ['ListDetailController', 'PatientCohortPermission', '$injector', 'store', function(ListDetailController, PatientCohortPermission, $injector, store) {
+    function PatientCohortsController($scope) {
       var self = this;
 
       $injector.invoke(ListDetailController, self, {
@@ -25,12 +25,13 @@
       };
     }
 
+    PatientCohortsController.$inject = ['$scope'];
     PatientCohortsController.prototype = Object.create(ListDetailController.prototype);
 
     return PatientCohortsController;
-  });
+  }]);
 
-  app.directive('patientCohortsComponent', function(PatientCohortsController) {
+  app.directive('patientCohortsComponent', ['PatientCohortsController', function(PatientCohortsController) {
     return {
       scope: {
         patient: '='
@@ -38,6 +39,6 @@
       controller: PatientCohortsController,
       templateUrl: 'app/patients/cohorts/cohorts-component.html'
     };
-  });
+  }]);
 })();
 

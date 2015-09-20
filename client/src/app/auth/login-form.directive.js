@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('loginForm', function(session, loginService, $state) {
+  app.directive('loginForm', ['session', 'loginService', '$state', function(session, loginService, $state) {
     return {
       restrict: 'A',
       scope: {},
@@ -38,5 +38,5 @@
         };
       }
     };
-  });
+  }]);
 })();

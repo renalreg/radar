@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('logout', function(logoutService, $state) {
+  app.directive('logout', ['logoutService', '$state', function(logoutService, $state) {
     return {
       restrict: 'A',
       link: function(scope, element) {
@@ -15,5 +15,5 @@
         });
       }
     };
-  });
+  }]);
 })();

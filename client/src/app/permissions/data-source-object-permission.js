@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('DataSourceObjectPermission', function(session, _) {
+  app.factory('DataSourceObjectPermission', ['session', function(session) {
     function DataSourceObjectPermission() {
     }
 
@@ -41,6 +41,6 @@
     };
 
     return DataSourceObjectPermission;
-  });
+  }]);
 })();
 
