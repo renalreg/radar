@@ -2,15 +2,13 @@ from flask import request
 
 from radar.api.serializers.patients import PatientSerializer, PatientListRequestSerializer
 from radar.lib.patient_search import PatientQueryBuilder
-from radar.lib.patients import PatientProxy
 from radar.lib.permissions import PatientPermission
-from radar.lib.views.core import RetrieveUpdateDestroyModelView, ListModelView
+from radar.lib.views.core import ListModelView, RetrieveUpdateModelView
 from radar.lib.models import Patient
 from radar.lib.auth.sessions import current_user
 
 
 class PatientListView(ListModelView):
-    serializer_class = PatientSerializer
     model_class = Patient
     permission_classes = [PatientPermission]
 
@@ -20,46 +18,46 @@ class PatientListView(ListModelView):
 
         builder = PatientQueryBuilder(current_user)
 
-        if 'id' in args:
+        if args.get('id') is not None:
             builder.patient_id(args['id'])
 
-        if 'first_name' in args:
+        if args.get('first_name'):
             builder.first_name(args['first_name'])
 
-        if 'last_name' in args:
+        if args.get('last_name'):
             builder.last_name(args['last_name'])
 
-        if 'organisation' in args:
-            if 'is_active' in args:
+        if args.get('organisation') is not None:
+            if args.get('is_active') is not None:
                 builder.organisation(args['organisation'], args['is_active'])
             else:
                 builder.organisation(args['organisation'])
 
-        if 'cohort' in args:
-            if 'is_active' in args:
+        if args.get('cohort') is not None:
+            if args.get('is_active') is not None:
                 builder.cohort(args['cohort'], args['is_active'])
             else:
                 builder.cohort(args['cohort'])
 
-        if 'patient_number' in args:
+        if args.get('patient_number'):
             builder.patient_number(args['patient_number'])
 
-        if 'gender' in args:
+        if args.get('gender'):
             builder.gender(args['gender'])
 
-        if 'date_of_birth' in args:
+        if args.get('date_of_birth') is not None:
             builder.date_of_birth(args['date_of_birth'])
 
-        if 'year_of_birth' in args:
+        if args.get('year_of_birth') is not None:
             builder.year_of_birth(args['year_of_birth'])
 
-        if 'date_of_death' in args:
+        if args.get('date_of_death') is not None:
             builder.date_of_death(args['date_of_death'])
 
-        if 'year_of_death' in args:
+        if args.get('year_of_death') is not None:
             builder.year_of_death(args['year_of_death'])
 
-        if 'is_active' in args:
+        if args.get('is_active') is not None:
             builder.is_active(args['is_active'])
 
         sort, reverse = self.get_sort_args()
@@ -71,17 +69,11 @@ class PatientListView(ListModelView):
 
         return query
 
-    def get_object_list(self):
-        patients, pagination = super(PatientListView, self).get_object_list()
-
-        # Wrap patients in proxy object
-        patients = [PatientProxy(x, current_user) for x in patients]
-
-        return patients, pagination
+    def get_serializer(self):
+        return PatientSerializer(current_user)
 
 
-class PatientDetailView(RetrieveUpdateDestroyModelView):
-    serializer_class = PatientSerializer
+class PatientDetailView(RetrieveUpdateModelView):
     model_class = Patient
     permission_classes = [PatientPermission]
 
@@ -89,6 +81,5 @@ class PatientDetailView(RetrieveUpdateDestroyModelView):
         builder = PatientQueryBuilder(current_user)
         return builder.build()
 
-    def get_object(self):
-        patient = super(PatientDetailView, self).get_object()
-        return PatientProxy(patient, current_user)
+    def get_serializer(self):
+        return PatientSerializer(current_user)

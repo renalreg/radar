@@ -1,5 +1,6 @@
 from radar.api.serializers.data_sources import DataSourceSerializerMixin
 from radar.api.serializers.meta import MetaSerializerMixin
+from radar.lib.patient_demographics import PatientDemographicsProxy
 from radar.lib.serializers.fields import IntegerField
 from radar.lib.serializers.models import ModelSerializer, ReferenceField
 from radar.lib.serializers.codes import CodedIntegerSerializer
@@ -25,3 +26,11 @@ class PatientDemographicsSerializer(MetaSerializerMixin, DataSourceSerializerMix
     class Meta(object):
         model_class = PatientDemographics
         exclude = ['ethnicity_code_id']
+
+    def __init__(self, current_user, **kwargs):
+        super(PatientDemographicsSerializer, self).__init__(**kwargs)
+        self.current_user = current_user
+
+    def to_data(self, value):
+        value = PatientDemographicsProxy(value, self.current_user)
+        return super(PatientDemographicsSerializer, self).to_data(value)

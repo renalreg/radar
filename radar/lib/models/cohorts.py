@@ -14,6 +14,7 @@ class Cohort(db.Model):
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
+    short_name = Column(String, nullable=False)
 
     cohort_patients = relationship('CohortPatient')
     cohort_users = relationship('CohortUser')
@@ -33,6 +34,10 @@ class Cohort(db.Model):
     @property
     def sorted_result_groups(self):
         return [x.result_group_spec for x in sorted(self.cohort_result_group_specs, key=lambda y: y.weight)]
+
+    @property
+    def sorted_features(self):
+        return [x.name for x in sorted(self.cohort_features, key=lambda y: y.weight)]
 
 
 class CohortFeature(db.Model):

@@ -12,20 +12,13 @@ class PatientAddressListView(RadarObjectViewMixin, PatientObjectListView):
     model_class = PatientAddress
     validation_class = PatientAddressValidation
 
-    def get_object_list(self):
-        addresses, pagination = super(PatientAddressListView, self).get_object_list()
-
-        # Wrap addresses in proxy object
-        addresses = [PatientAddressProxy(x, current_user) for x in addresses]
-
-        return addresses, pagination
+    def get_serializer(self):
+        return PatientAddressSerializer(current_user)
 
 
 class PatientAddressDetailView(RadarObjectViewMixin, PatientObjectDetailView):
-    serializer_class = PatientAddressSerializer
     model_class = PatientAddress
     validation_class = PatientAddressValidation
 
-    def get_object(self):
-        demographics = super(PatientAddressDetailView, self).get_object()
-        return PatientAddressProxy(demographics, current_user)
+    def get_serializer(self):
+        return PatientAddressSerializer(current_user)

@@ -18,25 +18,25 @@ class UserListView(ListCreateModelView):
 
         builder = UserQueryBuilder(current_user)
 
-        if 'id' in args:
+        if args.get('id') is not None:
             builder.user_id(args['id'])
 
-        if 'username' in args:
+        if args.get('username'):
             builder.username(args['username'])
 
-        if 'email' in args:
+        if args.get('email'):
             builder.email(args['email'])
 
-        if 'first_name' in args:
+        if args.get('first_name'):
             builder.first_name(args['first_name'])
 
-        if 'last_name' in args:
+        if args.get('last_name'):
             builder.last_name(args['last_name'])
 
-        if 'cohort' in args:
+        if args.get('cohort') is not None:
             builder.cohort(args['cohort'])
 
-        if 'organisation' in args:
+        if args.get('organisation') is not None:
             builder.organisation(args['organisation'])
 
         query = builder.build()

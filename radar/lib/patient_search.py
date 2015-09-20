@@ -67,15 +67,11 @@ class PatientQueryBuilder(object):
             .filter(OrganisationPatient.organisation == organisation)
 
         if is_active is not None:
-            self.query = self.query.filter(CohortPatient.is_active == is_active)
+            self.query = self.query.filter(OrganisationPatient.is_active == is_active)
 
         return self
 
     def cohort(self, cohort, is_active=None):
-        # If the user doesn't have view permissions on this cohort upgrade the query to a demographics query
-        if not cohort.can_view_patient(self.user):
-            self.filtering_by_demographics = True
-
         # Filter by cohort
         self.query = self.query\
             .join(CohortPatient)\
