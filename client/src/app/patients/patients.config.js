@@ -76,6 +76,10 @@
       text: 'Medications',
       state: 'patient.medications({patientId: patient.id})'
     },
+    META: {
+      text: 'Meta',
+      state: 'patient.meta({patientId: patient.id})'
+    },
     NUMBERS: {
       text: 'Numbers',
       state: 'patient.numbers({patientId: patient.id})'

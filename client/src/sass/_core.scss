@@ -168,3 +168,15 @@ a .hidden-demographics {
 form.columns {
   margin-bottom: 9px;
 }
+
+table.item-meta {
+  font-size: 12px;
+  border: 1px solid #eee;
+  color: #777;
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid #eee;
+    padding: 3px 5px;
+  }
+}

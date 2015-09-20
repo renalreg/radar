@@ -15,6 +15,7 @@
     'radar.patients.genetics',
     'radar.patients.hospitalisations',
     'radar.patients.medications',
+    'radar.patients.meta',
     'radar.patients.navigation',
     'radar.patients.numbers',
     'radar.patients.pathology',

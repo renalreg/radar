@@ -40,7 +40,7 @@
               <td>
                 <span ng-if="!user.cohorts.length">-</span>
                 <span ng-repeat="cohort in user.cohorts | orderBy: 'cohort.name'">
-                  {{cohort.cohort.name}}
+                  {{cohort.cohort.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>

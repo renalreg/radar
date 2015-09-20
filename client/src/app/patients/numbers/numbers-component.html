@@ -26,6 +26,8 @@
         <td>{{item.number}}</td>
       </tr>
     </table>
+
+    <div item-meta item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -60,7 +62,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="id" reverse="true">
     <p>
       <span crud-create-button action="create()"></span>
     </p>

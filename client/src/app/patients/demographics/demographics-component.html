@@ -76,6 +76,8 @@
         <td>{{item.emailAddress | missing}}</td>
       </tr>
     </table>
+
+    <div item-meta item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -217,23 +219,23 @@
           </td>
 
           <td>
-            <span ng-if="patient.firstName !== undefined">{{patient.firstName}}</span>
-            <span ng-if="patient.firstName === undefined" class="hidden-demographics">Hidden</span>
+            <span ng-if="item.firstName !== undefined">{{item.firstName}}</span>
+            <span ng-if="item.firstName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
           <td>
-            <span ng-if="patient.lastName !== undefined">{{patient.lastName}}</span>
-            <span ng-if="patient.lastName === undefined" class="hidden-demographics">Hidden</span>
+            <span ng-if="item.lastName !== undefined">{{item.lastName}}</span>
+            <span ng-if="item.lastName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
           <td>
-            <span ng-if="patient.dateOfBirth !== undefined">{{patient.dateOfBirth | dateFormat}}</span>
-            <span ng-if="patient.dateOfBirth === undefined">{{patient.yearOfBirth}}</span>
+            <span ng-if="item.dateOfBirth !== undefined">{{item.dateOfBirth | dateFormat}}</span>
+            <span ng-if="item.dateOfBirth === undefined">{{item.yearOfBirth}}</span>
           </td>
 
           <td>
-            <span ng-if="patient.dateOfDeath !== undefined">{{patient.dateOfDeath | dateFormat}}</span>
-            <span ng-if="patient.dateOfDeath === undefined">{{patient.yearOfDeath}}</span>
+            <span ng-if="item.dateOfDeath !== undefined">{{item.dateOfDeath | dateFormat}}</span>
+            <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath}}</span>
           </td>
 
           <td>{{item.gender.label}}</td>

@@ -173,7 +173,7 @@ gulp.task('fonts', function() {
 
 gulp.task('images', function() {
   return gulp.src(paths.images)
-    .pipe(imagemin({optimizationLevel: 5}))
+    .pipe(imagemin({optimizationLevel: 3}))
     .pipe(gulp.dest('dist/images'));
 });
 

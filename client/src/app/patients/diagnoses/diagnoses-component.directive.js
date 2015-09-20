@@ -23,7 +23,7 @@
         store.findMany('medication-dose-units').then(function(doseUnits) {
           $scope.doseUnits = doseUnits;
         }),
-        store.findMany('diagnosis-cohort-diagnoses').then(function(cohortDiagnoses) {
+        store.findMany('diagnosis-cohort-diagnoses', {cohort: $scope.cohort.id}).then(function(cohortDiagnoses) {
           $scope.cohortDiagnoses = cohortDiagnoses;
         }),
         store.findMany('diagnosis-biopsy-diagnoses').then(function(biopsyDiagnoses) {

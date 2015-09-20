@@ -14,10 +14,9 @@
         scope.items = [];
 
         var features = scope.cohort.features;
-        _.sortBy(features, 'weight');
 
         _.forEach(features, function(x) {
-          var item = patientFeatures[x.name];
+          var item = patientFeatures[x];
 
           if (item !== undefined) {
             scope.items.push(item);

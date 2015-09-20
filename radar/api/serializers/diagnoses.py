@@ -1,6 +1,8 @@
 from radar.api.serializers.cohorts import CohortSerializerMixin
 from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.patient_mixins import PatientSerializerMixin
+from radar.lib.serializers.core import Serializer
+from radar.lib.serializers.fields import IntegerField
 from radar.lib.serializers.models import ModelSerializer, ReferenceField
 from radar.lib.serializers.codes import CodedIntegerSerializer
 from radar.lib.models import Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, DIAGNOSIS_KARYOTYPES, CohortDiagnosis
@@ -24,3 +26,7 @@ class DiagnosisSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSer
     class Meta(object):
         model_class = Diagnosis
         exclude = ['cohort_diagnosis_id']
+
+
+class CohortDiagnosisRequestSerializer(Serializer):
+    cohort = IntegerField()

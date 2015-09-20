@@ -103,7 +103,7 @@ def create_srns_user():
 
     cohort_user = CohortUser()
     cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'INS').one()
+    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_RESEARCHER
 
     cohort_user = validate(cohort_user)
@@ -121,7 +121,7 @@ def create_srns_demograhics_user():
 
     cohort_user = CohortUser()
     cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.name == 'INS').one()
+    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_SENIOR_RESEARCHER
 
     cohort_user = validate(cohort_user)
@@ -130,7 +130,7 @@ def create_srns_demograhics_user():
 
 def create_posts(n):
     for x in range(n):
-        d = random_date(date(2008, 1, 1), date.today())
+        d = random_date(date(2008, 1, 1), date.today() - timedelta(days=1))
 
         post = Post()
         post.title = '%s Newsletter' % d.strftime('%b %Y')
@@ -138,6 +138,14 @@ def create_posts(n):
         post.published_date = d
         post = validate(post)
         db.session.add(post)
+
+    post = Post()
+    post.title = 'New RaDaR Conditions'
+    post.body = 'RaDaR is now open to two new conditions - Calciphylaxis and IgA Nephropathy. '\
+        'No new approvals are needed for these conditions and patients are registered in the normal fashion.'
+    post.published_date = date.today()
+    post = validate(post)
+    db.session.add(post)
 
 
 def create_result_groups_f():
@@ -495,6 +503,7 @@ def create_patients(n):
 
         patient = Patient()
         patient.recruited_organisation = radar_organisation
+        patient.is_active = True
         patient = validate(patient)
         patient.created_date = random_date(date(2008, 1, 1), date.today())
         db.session.add(patient)
@@ -515,23 +524,29 @@ def create_patients(n):
             organisation_patient.created_date = random_date(patient.created_date, date.today())
             db.session.add(organisation_patient)
 
-            for data_source in organisation.data_sources:
-                if data_source.type != DATA_SOURCE_TYPE_RADAR:
-                    create_demographics(patient, data_source, gender)
-                    create_patient_aliases(patient, data_source)
-                    create_patient_numbers(patient, data_source)
-                    create_patient_addresses(patient, data_source)
+            if i < 5:
+                for data_source in organisation.data_sources:
+                    if data_source.type != DATA_SOURCE_TYPE_RADAR:
+                        create_demographics(patient, data_source, gender)
+                        create_patient_aliases(patient, data_source)
+                        create_patient_numbers(patient, data_source)
+                        create_patient_addresses(patient, data_source)
 
-                create_result_groups(patient, data_source, 10)
-                create_dialysis(patient, data_source, 5)
-                create_medications(patient, data_source, 5)
-                create_transplants(patient, data_source, 3)
-                create_hospitalisations(patient, data_source, 3)
-                create_plasmapheresis(patient, data_source, 3)
-                create_renal_imaging(patient, data_source, 3)
+                    create_result_groups(patient, data_source, 10)
+                    create_dialysis(patient, data_source, 5)
+                    create_medications(patient, data_source, 5)
+                    create_transplants(patient, data_source, 3)
+                    create_hospitalisations(patient, data_source, 3)
+                    create_plasmapheresis(patient, data_source, 3)
+                    create_renal_imaging(patient, data_source, 3)
 
         cohort_patient = CohortPatient()
-        cohort_patient.cohort = random.choice(cohorts)
+
+        if i == 0:
+            cohort_patient.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
+        else:
+            cohort_patient.cohort = random.choice(cohorts)
+
         cohort_patient.patient = patient
         cohort_patient.recruited_organisation = radar_organisation
         cohort_patient.is_active = True

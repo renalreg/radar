@@ -9,6 +9,8 @@ class OrganisationListView(ListModelView):
     model_class = Organisation
 
     def filter_query(self, query):
+        query = super(OrganisationListView, self).filter_query(query)
+
         serializer = OrganisationRequestSerializer()
         args = serializer.args_to_value(request.args)
 

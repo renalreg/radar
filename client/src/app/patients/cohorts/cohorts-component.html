@@ -17,8 +17,8 @@
       </tr>
 
       <tr>
-        <th>Recruiting Unit</th>
-        <td>{{item.recruitingOrganisation.name}}</td>
+        <th>Recruited Unit</th>
+        <td>{{item.recruitedOrganisation.name}}</td>
       </tr>
 
       <tr>
@@ -31,6 +31,8 @@
         <td><span tick="item.isActive"></span></td>
       </tr>
     </table>
+
+    <div item-meta item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -50,11 +52,10 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Recruiting Unit</div>
+        <div frm-label>Recruited Unit</div>
 
         <div frm-control>
-          <div frm-unit-field model="item.recruitingOrganisation" required="true"></div>
-          <div frm-errors errors="item.errors.recruitingOrganisation"></div>
+          <div frm-unit-field model="item.recruitedOrganisation" required="true"></div>
         </div>
       </div>
 

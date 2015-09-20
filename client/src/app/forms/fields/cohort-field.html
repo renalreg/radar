@@ -2,6 +2,8 @@
   frm-model
   frm-required
   ng-model="model"
-  ng-options="x as x.name for x in cohorts track by x.id"
+  ng-options="x as x.shortName for x in cohorts track by x.id"
   ng-required="required()"
-  class="form-control"></select>
+  class="form-control">
+  <option></option>
+</select>

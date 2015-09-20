@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.demographics');
+  var app = angular.module('radar.patients.numbers');
 
   app.factory('PatientNumberPermission', ['PatientRadarObjectPermission', function(PatientRadarObjectPermission) {
     return PatientRadarObjectPermission;

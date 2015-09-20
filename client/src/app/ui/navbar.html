@@ -18,7 +18,7 @@
         </li>
 
         <li ng-if="!user.isAdmin && user.cohorts.length == 1" ui-sref-active="active">
-          <a ui-sref="cohort({cohortId: cohort.cohort.id})" ng-repeat="cohort in user.cohorts">{{cohort.cohort.name}}</a>
+          <a ui-sref="cohort({cohortId: cohort.cohort.id})" ng-repeat="cohort in user.cohorts">{{cohort.cohort.shortName}}</a>
         </li>
 
         <li ng-if="!user.isAdmin && user.cohorts.length > 1 && user.cohorts.length <= 5" class="dropdown">
@@ -26,7 +26,7 @@
 
           <ul class="dropdown-menu" role="menu">
             <li ui-sref-active="active" ng-repeat="cohort in user.cohorts">
-              <a ui-sref="cohort({cohortId: cohort.cohort.id})">{{cohort.cohort.name}}</a>
+              <a ui-sref="cohort({cohortId: cohort.cohort.id})">{{cohort.cohort.shortName}}</a>
             </li>
           </ul>
         </li>
@@ -59,6 +59,10 @@
 
         <li ui-sref-active="active">
           <a ui-sref="posts">News</a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="stats">Stats</a>
         </li>
       </ul>
 

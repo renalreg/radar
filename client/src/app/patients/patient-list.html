@@ -44,8 +44,8 @@
               </td>
 
               <td>
-                <span ng-if="patient.dateOfBirth === undefined">{{patient.dateOfBirth | dateFormat}}</span>
-                <span ng-if="patient.dateOfBirth !== undefined">{{patient.yearOfBirth | missing}}</span>
+                <span ng-if="patient.dateOfBirth !== undefined">{{patient.dateOfBirth | dateFormat}}</span>
+                <span ng-if="patient.dateOfBirth === undefined">{{patient.yearOfBirth | missing}}</span>
               </td>
 
               <td>{{patient.gender.label}}</td>
@@ -53,7 +53,7 @@
               <td>
                 <span ng-if="!patient.cohorts.length">-</span>
                 <span ng-repeat="cohort in patient.cohorts | orderBy: 'cohort.name'">
-                  {{cohort.cohort.name}}
+                  {{cohort.cohort.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>

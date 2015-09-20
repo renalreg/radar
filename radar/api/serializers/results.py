@@ -151,6 +151,8 @@ class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, M
     id = IntegerField()
     result_group_spec = ResultGroupSpecReferenceField()
     date = DateTimeField()
+    created_date = DateTimeField()
+    modified_date = DateTimeField()
 
     @classmethod
     def get_results_serializer(cls, result_group_spec):

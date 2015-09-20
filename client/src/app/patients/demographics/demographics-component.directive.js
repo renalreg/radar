@@ -34,6 +34,15 @@
     PatientDemographicsController.$inject = ['$scope'];
     PatientDemographicsController.prototype = Object.create(ListDetailController.prototype);
 
+    PatientDemographicsController.prototype.save = function() {
+      var self = this;
+
+      return ListDetailController.prototype.save.call(self).then(function() {
+        // Reload the patient with the latest demographics
+        self.scope.patient.reload();
+      });
+    };
+
     return PatientDemographicsController;
   }]);
 

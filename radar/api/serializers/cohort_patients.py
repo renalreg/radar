@@ -8,7 +8,7 @@ from radar.lib.serializers.models import ModelSerializer
 
 class CohortPatientSerializer(PatientSerializerMixin, MetaSerializerMixin, ModelSerializer):
     cohort = CohortReferenceField()
-    recruiting_organisation = OrganisationReferenceField()
+    recruited_organisation = OrganisationReferenceField()
 
     class Meta(object):
         model_class = CohortPatient

@@ -1,0 +1,52 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties" ng-if="item">
+      <tr>
+        <th>Active</th>
+        <td><span tick="item.isActive"></span></td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
+      </tr>
+    </table>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Active</div>
+
+        <div frm-control>
+          <div frm-checkbox-field model="item.isActive"></div>
+          <div frm-errors errors="item.errors.isActive"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-button action="view()"></span>
+      </div>
+    </form>
+  </div>
+</div>
