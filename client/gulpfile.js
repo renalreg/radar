@@ -24,8 +24,10 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 
-//var argv = require('yargs').argv;
-//var environment = argv.environment || 'development';
+var argv = require('yargs').argv;
+var environment = argv.environment || 'development';
+
+console.log('Environment: ' + environment);
 
 var paths = {
   vendorJs: [
@@ -66,10 +68,14 @@ gulp.task('clean', function() {
 gulp.task('inject', ['sass', 'scripts'], function() {
   var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
 
-  var appScripts = gulp.src(
-    ['src/app/**/*.module.js', 'src/app/**/*.js'],
-    {read: false}
-  );
+  var appScripts = gulp.src([
+      'src/app/**/*.module.js',
+      'src/app/**/*.js',
+      '!src/app/production.config.js',
+      '!src/app/development.config.js'
+  ], {read: false});
+
+  var environmentScript = gulp.src('src/app/' + environment + '.config.js');
 
   var vendorScripts = gulp.src(paths.vendorJs, {read: false});
 
@@ -80,6 +86,7 @@ gulp.task('inject', ['sass', 'scripts'], function() {
   return gulp.src('src/index.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
+    .pipe(inject(environmentScript, {name: 'environment', ignorePath: ['src']}))
     .pipe(inject(vendorScripts, {name: 'vendor'}))
     .pipe(inject(vendorStyles, {name: 'vendor'}))
     .pipe(inject(ieScripts, {name: 'ie'}))

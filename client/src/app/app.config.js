@@ -11,8 +11,4 @@
   app.config(['$urlRouterProvider', function($urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
   }]);
-
-  app.config(['adapterProvider', function(adapterProvider) {
-    adapterProvider.setBaseUrl('http://localhost:5000');
-  }]);
 })();
