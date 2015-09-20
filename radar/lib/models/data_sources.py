@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -25,3 +25,5 @@ class DataSource(db.Model):
     __table_args__ = (
         UniqueConstraint('organisation_id', 'type'),
     )
+
+Index('data_sources_organisation_id_idx', DataSource.organisation_id)

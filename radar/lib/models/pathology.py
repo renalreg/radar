@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, String
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -32,3 +32,5 @@ class Pathology(db.Model, MetaModelMixin):
     kidney_side = Column(String, nullable=False)
     laboratory_reference_number = Column(String, nullable=False)
     histological_summary = Column(String)
+
+Index('pathology_patient_id_idx', Pathology.patient_id)

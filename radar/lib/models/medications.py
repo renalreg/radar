@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Date, String, ForeignKey, Numeric
+from sqlalchemy import Column, Date, String, ForeignKey, Numeric, Index
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 
@@ -44,3 +44,5 @@ class Medication(db.Model, MetaModelMixin):
     dose_unit = Column(String, nullable=False)
     frequency = Column(String, nullable=False)
     route = Column(String, nullable=False)
+
+Index('medications_patient_id_idx', Medication.patient_id)

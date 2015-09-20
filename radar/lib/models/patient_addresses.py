@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Date, String
+from sqlalchemy import Column, ForeignKey, Date, String, Index
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 from radar.lib.database import db
@@ -35,3 +35,5 @@ class PatientAddress(db.Model, MetaModelMixin):
         ])
 
         return "\n".join(x for x in parts if x)
+
+Index('patient_addresses_patient_id_idx', PatientAddress.patient_id)

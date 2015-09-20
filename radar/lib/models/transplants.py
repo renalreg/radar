@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String
+from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -30,3 +30,5 @@ class Transplant(db.Model, MetaModelMixin):
     # TODO
     # recurrence = Column(Boolean)
     # date_recurred = Column(Date)
+
+Index('transplants_patient_id_idx', Transplant.patient_id)

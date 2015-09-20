@@ -1,10 +1,10 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, String
+
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin
-
 
 DIAGNOSIS_BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
@@ -42,6 +42,9 @@ class Diagnosis(db.Model, MetaModelMixin):
     biopsy_diagnosis = Column(Integer)
     karyotype = Column(Integer)
 
+Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
+Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)
+
 
 class CohortDiagnosis(db.Model):
     __tablename__ = 'cohort_diagnoses'
@@ -52,3 +55,5 @@ class CohortDiagnosis(db.Model):
     cohort = relationship('Cohort')
 
     label = Column(String, nullable=False)
+
+Index('cohort_diagnoses_cohort_id_idx', CohortDiagnosis.cohort_id)

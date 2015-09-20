@@ -37,6 +37,7 @@ class ResultGroup(db.Model, MetaModelMixin):
     date = Column(DateTime(timezone=True), nullable=False)
     results = Column(JSONB, nullable=False)
 
+Index('result_groups_patient_id_idx', ResultGroup.patient_id)
 Index('result_groups_results_gin', ResultGroup.results, postgresql_using='gin')
 
 
@@ -108,3 +109,6 @@ class ResultGroupResultSpec(db.Model):
     __table_args__ = (
         UniqueConstraint('result_group_spec_id', 'result_spec_id'),
     )
+
+Index('result_group_result_specs_result_group_spec_id_idx', ResultGroupResultSpec.result_group_spec_id)
+Index('result_group_result_specs_result_spec_id_idx', ResultGroupResultSpec.result_spec_id)

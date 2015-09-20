@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -20,3 +20,5 @@ class Hospitalisation(db.Model, MetaModelMixin):
     date_of_discharge = Column(DateTime(timezone=True))
     reason_for_admission = Column(Text)
     comments = Column(Text)
+
+Index('hospitalisations_patient_id_idx', Hospitalisation.patient_id)

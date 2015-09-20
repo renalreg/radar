@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -42,6 +42,9 @@ class OrganisationPatient(db.Model, MetaModelMixin):
     __table_args__ = (
         UniqueConstraint('organisation_id', 'patient_id'),
     )
+
+Index('organisation_patients_organisation_id_idx', OrganisationPatient.organisation_id)
+Index('organisation_patients_patient_id_idx', OrganisationPatient.patient_id)
 
 
 class OrganisationUser(db.Model, MetaModelMixin):
@@ -89,6 +92,9 @@ class OrganisationUser(db.Model, MetaModelMixin):
     def managed_roles(self):
         return ORGANISATION_MANAGED_ROLES.get(self.role, [])
 
+Index('organisation_users_organisation_id_idx', OrganisationUser.organisation_id)
+Index('organisation_users_user_id_idx', OrganisationUser.user_id)
+
 
 class Organisation(db.Model):
     __tablename__ = 'organisations'
@@ -105,3 +111,6 @@ class Organisation(db.Model):
     __table_args__ = (
         UniqueConstraint('type', 'code'),
     )
+
+Index('organisations_code_idx', Organisation.code)
+Index('organisations_type_idx', Organisation.type)
