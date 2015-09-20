@@ -79,11 +79,11 @@
 
             <div frm-control>
               <div ng-switch="resultSpec.type">
-                <div ng-switch-when="integer" frm-integer-field model="item.results[resultSpec.code]"></div>
-                <div ng-switch-when="float" frm-number-field model="item.results[resultSpec.code]" units="{{resultSpec.units}}"></div>
-                <div ng-switch-when="string" frm-text-field model="item.results[resultSpec.code]"></div>
-                <div ng-switch-when="codedString" frm-select-field model="item.results[resultSpec.code]" options="resultSpec.options"></div>
-                <div ng-switch-when="codedInteger" frm-select-field model="item.results[resultSpec.code]" options="resultSpec.options"></div>
+                <div ng-switch-when="INTEGER" frm-integer-field model="item.results[resultSpec.code]"></div>
+                <div ng-switch-when="FLOAT" frm-number-field model="item.results[resultSpec.code]" units="{{resultSpec.units}}"></div>
+                <div ng-switch-when="STRING" frm-text-field model="item.results[resultSpec.code]"></div>
+                <div ng-switch-when="CODED_STRING" frm-select-field model="item.results[resultSpec.code]" options="resultSpec.options"></div>
+                <div ng-switch-when="CODED_INTEGER" frm-select-field model="item.results[resultSpec.code]" options="resultSpec.options"></div>
               </div>
 
               <div frm-errors errors="item.errors.results[resultSpec.code]"></div>
