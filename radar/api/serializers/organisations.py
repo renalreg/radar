@@ -11,11 +11,6 @@ class BasicOrganisationSerializer(MetaSerializerMixin, ModelSerializer):
         exclude = ['organisation_id']
 
 
-class OrganisationReferenceField(ReferenceField):
-    model_class = Organisation
-    serializer_class = BasicOrganisationSerializer
-
-
 class DataSourceSerializer(ModelSerializer):
     organisation = BasicOrganisationSerializer()
 
@@ -28,6 +23,11 @@ class OrganisationSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Organisation
+
+
+class OrganisationReferenceField(ReferenceField):
+    model_class = Organisation
+    serializer_class = OrganisationSerializer
 
 
 class OrganisationRequestSerializer(Serializer):

@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.store', []);
+  angular.module('radar.store', ['md5']);
 })();

@@ -150,7 +150,7 @@ def create_result_groups_f():
                 result_group.patient = patient
                 result_group.data_source = data_source
                 result_group.result_group_spec = result_group_spec
-                result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.UTC))
+                result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.utc))
 
                 result_group.results = results = {}
 

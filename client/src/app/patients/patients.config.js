@@ -92,6 +92,10 @@
       text: 'Renal Imaging',
       state: 'patient.renalImaging({patientId: patient.id})'
     },
+    RESULTS: {
+      text: 'Results',
+      state: 'patient.results({patientId: patient.id})'
+    },
     SALT_WASTING_CLINICAL_FEATURES: {
       text: 'Clinical Features',
       state: 'patient.saltWastingClinicalFeatures({patientId: patient.id})'
@@ -110,6 +114,7 @@
     'DEMOGRAPHICS',
     'COMORBIDITIES',
     'PATHOLOGY',
+    'RESULTS',  // TODO here?
     'MEDICATIONS',
     'DIALYSIS',
     'PLASMAPHERESIS',

@@ -12,7 +12,7 @@ def test_date_valid():
 
 
 def test_datetime_valid():
-    now = datetime.now(pytz.UTC)
+    now = datetime.now(pytz.utc)
     value = not_in_future()(now)
     assert value == now
 

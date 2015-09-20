@@ -2,7 +2,6 @@ from radar.lib.data.validation import validate
 from radar.lib.database import db
 from radar.lib.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGroupSpec
 
-# TODO
 COHORTS = [
     {
         'code': 'INS',
@@ -13,9 +12,7 @@ COHORTS = [
             'RENAL_IMAGING',
             'SALT_WASTING_CLINICAL_FEATURES',
         ],
-        'result_group_codes': [
-            'LFT'
-        ],
+        'result_group_codes': [],
     },
     {
         'code': 'MPGN',
@@ -26,9 +23,7 @@ COHORTS = [
             'RENAL_IMAGING',
             'SALT_WASTING_CLINICAL_FEATURES',
         ],
-        'result_group_codes': [
-            'LFT',
-        ],
+        'result_group_codes': [],
     },
     {
         'code': 'SALT_WASTING',
@@ -39,11 +34,10 @@ COHORTS = [
             'RENAL_IMAGING',
             'SALT_WASTING_CLINICAL_FEATURES',
         ],
-        'result_group_codes': [
-            'LFT',
-        ],
+        'result_group_codes': [],
     }
 ]
+# TODO
 
 
 def create_cohorts():

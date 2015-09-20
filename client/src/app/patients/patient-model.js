@@ -5,24 +5,31 @@
 
   app.factory('PatientModel', function(Model, store, _) {
     function PatientModel(modelName, data) {
-      Model.call(this, modelName, data);
-
       var i;
-      var cohorts = [];
-      var organisations = [];
 
-      for (i = 0; i < this.cohorts.length; i++) {
-        var rawCohort = this.cohorts[i];
-        cohorts.push(store.pushToStore(new Model('cohort-patients', rawCohort)));
+      if (data.cohorts !== undefined) {
+        var cohorts = [];
+
+        for (i = 0; i < data.cohorts.length; i++) {
+          var rawCohort = data.cohorts[i];
+          cohorts.push(store.pushToStore(new Model('cohort-patients', rawCohort)));
+        }
+
+        data.cohorts = cohorts;
       }
 
-      for (i = 0; i < this.organisations.length; i++) {
-        var rawOrganisation = this.organisations[i];
-        organisations.push(store.pushToStore(new Model('organisation-patients', rawOrganisation)));
+      if (data.organisations !== undefined) {
+        var organisations = [];
+
+        for (i = 0; i < data.organisations.length; i++) {
+          var rawOrganisation = data.organisations[i];
+          organisations.push(store.pushToStore(new Model('organisation-patients', rawOrganisation)));
+        }
+
+        data.organisations = organisations;
       }
 
-      this.cohorts = cohorts;
-      this.organisations = organisations;
+      Model.call(this, modelName, data);
     }
 
     PatientModel.prototype = Object.create(Model.prototype);

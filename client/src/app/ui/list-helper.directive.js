@@ -34,6 +34,9 @@
           var paginatedItems = [];
 
           var sortBy = 'id';
+          var sortScope = $scope;
+          var sortId = null;
+          var sortIdSet = false;
           var reverse = false;
 
           var page = 1;
@@ -59,6 +62,7 @@
             if (value) {
               sortBy = value;
               _sort();
+              sortId = value;
             }
           });
 
@@ -81,6 +85,7 @@
           self.filter = filter;
           self.getSortBy = getSortBy;
           self.getReverse = getReverse;
+          self.getSortId = getSortId;
           self.getPage = getPage;
           self.setPage = setPage;
           self.getPerPage = getPerPage;
@@ -89,9 +94,11 @@
           self.getCount = getCount;
           self.getItems = getItems;
 
-          function sort(newSortBy, newReverse) {
+          function sort(newSortBy, newReverse, newSortId, newSortScope) {
             sortBy = newSortBy;
             reverse = newReverse;
+            sortId = newSortId;
+            sortScope = newSortScope;
             page = 1;
             _sort();
           }
@@ -99,6 +106,10 @@
           function filter(newSearch) {
             search = newSearch;
             _filter();
+          }
+
+          function getSortId() {
+            return sortId;
           }
 
           function getSortBy() {
@@ -169,7 +180,7 @@
             if (sortBy !== null) {
               var getter = $parse(sortBy);
               sortedItems = _.sortBy(sortedItems, function(item) {
-                return getter(item);
+                return getter(sortScope, item);
               });
             }
 
@@ -199,6 +210,7 @@
           self.sort = sort;
           self.getSortBy = getSortBy;
           self.getReverse = getReverse;
+          self.getSortId = getSortId;
           self.getPage = getPage;
           self.setPage = setPage;
           self.getPerPage = getPerPage;
@@ -211,6 +223,10 @@
             if (api) {
               api.sort(sortBy, reverse);
             }
+          }
+
+          function getSortId() {
+            return getSortBy();
           }
 
           function getSortBy() {

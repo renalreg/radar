@@ -24,7 +24,7 @@ def genetics(patient):
     obj.patient = patient
     obj.cohort = Cohort(id=1)
     obj.sample_sent = True
-    obj.sample_sent_date = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
+    obj.sample_sent_date = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.laboratory_reference_number = '12345'
     obj.results = 'foo\nbar\nbaz'
@@ -34,7 +34,7 @@ def genetics(patient):
 def test_valid(genetics):
     obj = valid(genetics)
     assert obj.sample_sent is True
-    assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
+    assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     assert obj.laboratory == 'Test'
     assert obj.laboratory_reference_number == '12345'
     assert obj.results == 'foo\nbar\nbaz'
@@ -69,12 +69,12 @@ def test_sample_sent_date_none(genetics):
 
 
 def test_sample_sent_date_future(genetics):
-    genetics.sample_sent_date = datetime.now(pytz.UTC) + timedelta(days=1)
+    genetics.sample_sent_date = datetime.now(pytz.utc) + timedelta(days=1)
     invalid(genetics)
 
 
 def test_sample_sent_date_before_dob(genetics):
-    genetics.sample_sent_date = datetime(1999, 12, 31, 23, 59, 59, tzinfo=pytz.UTC)
+    genetics.sample_sent_date = datetime(1999, 12, 31, 23, 59, 59, tzinfo=pytz.utc)
     invalid(genetics)
 
 

@@ -6,7 +6,8 @@ from radar.api.serializers.patient_mixins import PatientSerializerMixin
 from radar.lib.models import ResultGroupSpec, ResultGroup, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, \
     RESULT_SPEC_TYPE_CODED_INTEGER, RESULT_SPEC_TYPE_CODED_STRING
 from radar.lib.serializers.core import Serializer, Empty, Field
-from radar.lib.serializers.fields import StringField, IntegerField, FloatField, DateTimeField, ListField
+from radar.lib.serializers.fields import StringField, IntegerField, FloatField, DateTimeField, ListField, \
+    CommaSeparatedStringField
 from radar.lib.serializers.models import ModelSerializer, ReferenceField
 from radar.lib.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
 from radar.lib.validation.core import ValidationError
@@ -21,7 +22,7 @@ class OptionValueField(Field):
 
 
 class OptionSerializer(Serializer):
-    id = OptionValueField(source='value')
+    id = OptionValueField()
     label = StringField()
 
 
@@ -147,6 +148,7 @@ class ResultsSerializer(Field):
 
 
 class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, Serializer):
+    id = IntegerField()
     result_group_spec = ResultGroupSpecReferenceField()
     date = DateTimeField()
 
@@ -195,4 +197,5 @@ class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, M
 
 
 class ResultGroupRequestSerializer(Serializer):
-    result_group_code = StringField()
+    result_group_codes = CommaSeparatedStringField()
+    result_codes = CommaSeparatedStringField()

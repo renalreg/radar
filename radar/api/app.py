@@ -30,7 +30,8 @@ from radar.api.views.plasmapheresis import PlasmapheresisListView, Plasmapheresi
 from radar.api.views.posts import PostListView, PostDetailView
 from radar.api.views.renal_imaging import RenalImagingListView, RenalImagingDetailView, RenalImagingTypeListView, \
     RenalImagingKidneyTypeListView
-from radar.api.views.results import ResultGroupSpecListView, ResultGroupListView
+from radar.api.views.results import ResultGroupSpecListView, ResultGroupListView, ResultSpecListView, \
+    ResultGroupDetailView
 from radar.api.views.salt_wasting_clinical_features import SaltWastingClinicalFeaturesListView, \
     SaltWastingClinicalFeaturesDetailView
 from radar.api.views.organisations import OrganisationListView, OrganisationDetailView
@@ -176,7 +177,9 @@ def create_app():
 
     # Results
     app.add_url_rule('/result-groups', view_func=ResultGroupListView.as_view('result_group_list'))
+    app.add_url_rule('/result-groups/<int:id>', view_func=ResultGroupDetailView.as_view('result_group_detail'))
     app.add_url_rule('/result-group-specs', view_func=ResultGroupSpecListView.as_view('result_group_spec_list'))
+    app.add_url_rule('/result-specs', view_func=ResultSpecListView.as_view('result_spec_list'))
 
     # Salt Wasting Clinical Features
     app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list'))

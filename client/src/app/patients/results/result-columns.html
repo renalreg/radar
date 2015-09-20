@@ -1,0 +1,33 @@
+<p>
+  <strong>Selected Columns</strong>
+
+  <span class="btn-group">
+    <button
+      ng-repeat="resultSpec in selectedResultSpecs"
+      class="btn btn-xs btn-default"
+      ng-click="remove(resultSpec)">
+      {{resultSpec.name}} <i class="fa fa-times"></i>
+    </button>
+  </span>
+
+  <span
+    ng-if="!selectedResultSpecs.length"
+    class="no-columns-selected">
+    No columns selected.
+  </span>
+</p>
+
+<form class="form-inline columns" ng-show="selectedResultSpecs.length <= 8">
+  <div class="form-group">
+    <label for="resultSpecColumn">Add Column</label>
+
+    <select
+      id="resultSpecColumn"
+      ng-model="selectedResultSpec"
+      ng-change="change()"
+      ng-options="x as x.name for x in resultSpecs track by x.id"
+      class="form-control">
+      <option></option>
+    </select>
+  </div>
+</form>

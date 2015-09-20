@@ -79,6 +79,12 @@ class IntegerField(Field):
         if data is None:
             return None
 
+        if isinstance(data, basestring):
+            data = data.strip()
+
+            if len(data) == 0:
+                return None
+
         try:
             value = int(data)
             value_f = float(data)
@@ -106,6 +112,12 @@ class FloatField(Field):
     def to_value(self, data):
         if data is None:
             return None
+
+        if isinstance(data, basestring):
+            data = data.strip()
+
+            if len(data) == 0:
+                return None
 
         try:
             value = float(data)
@@ -223,3 +235,14 @@ class ListField(Field):
                 data.append(self.field.to_data(value))
 
         return data
+
+
+class CommaSeparatedStringField(Field):
+    def to_value(self, data):
+        if data is None:
+            return None
+
+        return [x.strip() for x in data.split(',')]
+
+    def to_data(self, value):
+        return ','.join(value)

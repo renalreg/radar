@@ -159,3 +159,12 @@ a .hidden-demographics {
 .alert-success a {
   color: $radar-success-text;
 }
+
+.no-columns-selected {
+  color: #777;
+  font-style: italic;
+}
+
+form.columns {
+  margin-bottom: 9px;
+}

@@ -74,6 +74,25 @@ class ResultsValidation(Validation):
 
         return fields
 
+    def validate(self, obj):
+        # True if at least one result was entered
+        result_entered = False
+
+        for field_name in self.fields.keys():
+            if obj.get(field_name) is not None:
+                result_entered = True
+                break
+
+        if not result_entered:
+            errors = {}
+
+            for field_name in self.fields.keys():
+                errors[field_name] = 'Must enter at least one result.'
+
+            raise ValidationError(errors)
+
+        return obj
+
 
 class ResultGroupValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date = Field([required()])

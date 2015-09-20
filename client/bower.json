@@ -9,6 +9,7 @@
   "dependencies": {
     "angular": "1.2",
     "angular-cookies": "1.2",
+    "blueimp-md5": "~1.1.1",
     "bootstrap-sass": "~3.3.5",
     "es5-shim": "~4.1.13",
     "font-awesome": "fontawesome#~4.4.0",

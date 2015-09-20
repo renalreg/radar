@@ -20,6 +20,7 @@
     'radar.patients.pathology',
     'radar.patients.plasmapheresis',
     'radar.patients.renalImaging',
+    'radar.patients.results',
     'radar.patients.saltWasting',
     'radar.patients.transplants',
     'radar.patients.units'

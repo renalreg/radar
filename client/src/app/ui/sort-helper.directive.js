@@ -6,19 +6,19 @@
   app.directive('sortHelper', function() {
     return {
       require: '^listHelper',
-      scope: {},
+      scope: {
+        sortBy: '@sortHelper',
+        sortId: '@'
+      },
       transclude: true,
       templateUrl: 'app/ui/sort-helper.html',
       link: function(scope, element, attrs, listHelperCtrl) {
         scope.sort = function() {
-          var sortBy = getSortBy();
-          var reverse = getReverse();
-
           if (isSorted()) {
             var currentReverse = listHelperCtrl.getReverse();
-            listHelperCtrl.sort(sortBy, !currentReverse);
+            listHelperCtrl.sort(getSortBy(), !currentReverse, getSortId(), getSortScope());
           } else {
-            listHelperCtrl.sort(sortBy, reverse);
+            listHelperCtrl.sort(getSortBy(), getReverse(), getSortId(), getSortScope());
           }
         };
 
@@ -34,13 +34,21 @@
         }
 
         function isSorted() {
-          var sortBy = getSortBy();
-          var currentSortBy = listHelperCtrl.getSortBy();
-          return sortBy === currentSortBy;
+          var sortId = getSortId();
+          var currentSortId = listHelperCtrl.getSortId();
+          return sortId === currentSortId;
+        }
+
+        function getSortId() {
+          return scope.sortId || getSortBy();
+        }
+
+        function getSortScope() {
+          return scope.$parent;
         }
 
         function getSortBy() {
-          return attrs.sortHelper;
+          return scope.sortBy;
         }
 
         function getReverse() {
