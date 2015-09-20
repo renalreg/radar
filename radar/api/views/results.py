@@ -9,22 +9,7 @@ from radar.lib.views.data_sources import DataSourceObjectViewMixin
 from radar.lib.views.patients import PatientObjectListView, PatientObjectDetailView
 
 
-class ResultGroupSpecListView(ListModelView):
-    serializer_class = ResultGroupSpecSerializer
-    model_class = ResultGroupSpec
-
-
-class ResultSpecListView(ListModelView):
-    serializer_class = ResultSpecSerializer
-    model_class = ResultSpec
-
-
-class ResultGroupDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
-    serializer_class = ResultGroupSerializer
-    model_class = ResultGroup
-    validation_class = ResultGroupValidation
-
-
+# TODO should probably enforce specifying a patient here to avoid DOS
 class ResultGroupListView(DataSourceObjectViewMixin, PatientObjectListView):
     serializer_class = ResultGroupSerializer
     model_class = ResultGroup
@@ -45,6 +30,20 @@ class ResultGroupListView(DataSourceObjectViewMixin, PatientObjectListView):
             result_codes = args['result_codes']
             query = query.filter(or_(*[ResultGroup.results[x].astext != None for x in result_codes]))
 
-        print query
-
         return query
+
+
+class ResultGroupDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
+    serializer_class = ResultGroupSerializer
+    model_class = ResultGroup
+    validation_class = ResultGroupValidation
+
+
+class ResultGroupSpecListView(ListModelView):
+    serializer_class = ResultGroupSpecSerializer
+    model_class = ResultGroupSpec
+
+
+class ResultSpecListView(ListModelView):
+    serializer_class = ResultSpecSerializer
+    model_class = ResultSpec
