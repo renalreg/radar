@@ -1,6 +1,6 @@
-from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, String, Date, UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, String, Date, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
+
 from radar.lib.database import db
 from radar.lib.models.common import MetaModelMixin, StringLookupTable
 
@@ -33,6 +33,8 @@ class PatientDemographics(db.Model, MetaModelMixin):
     __table_args__ = (
         UniqueConstraint('patient_id', 'data_source_id'),
     )
+
+Index('patient_demographics_patient_id_idx', PatientDemographics.patient_id)
 
 
 class EthnicityCode(StringLookupTable):

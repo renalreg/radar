@@ -18,7 +18,7 @@
           if (resultSpec) {
             scope.loading = true;
 
-            store.findMany('result-groups', {resultCodes: resultSpec.code}).then(function(resultGroups) {
+            store.findMany('result-groups', {patient: scope.patient.id, resultCodes: resultSpec.code}).then(function(resultGroups) {
               scope.loading = false;
               scope.resultGroups = resultGroups;
             });

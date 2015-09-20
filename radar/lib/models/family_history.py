@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, String
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -19,3 +19,6 @@ class FamilyHistory(db.Model, MetaModelMixin):
     parental_consanguinity = Column(Boolean, nullable=False)
     family_history = Column(Boolean, nullable=False)
     other_family_history = Column(String)
+
+Index('family_history_patient_id_idx', FamilyHistory.patient_id)
+Index('family_history_cohort_id_idx', FamilyHistory.cohort_id)

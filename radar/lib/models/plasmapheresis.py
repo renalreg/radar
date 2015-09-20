@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey, String, Index
 from sqlalchemy import Date
 from sqlalchemy.orm import relationship
 
@@ -39,3 +39,5 @@ class Plasmapheresis(db.Model, MetaModelMixin):
     to_date = Column(Date)
     no_of_exchanges = Column(String)
     response = Column(String)
+
+Index('plasmapheresis_patient_id_idx', Plasmapheresis.patient_id)

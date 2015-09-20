@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -21,6 +21,8 @@ class Comorbidity(db.Model, MetaModelMixin):
 
     disorder_id = Column(Integer, ForeignKey('disorders.id'), nullable=False)
     disorder = relationship('Disorder')
+
+Index('comorbidities_patient_id_idx', Comorbidity.patient_id)
 
 
 class Disorder(IntegerLookupTable):

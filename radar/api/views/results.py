@@ -30,6 +30,8 @@ class ResultGroupListView(DataSourceObjectViewMixin, PatientObjectListView):
             result_codes = args['result_codes']
             query = query.filter(or_(*[ResultGroup.results[x].astext != None for x in result_codes]))
 
+        print query
+
         return query
 
 

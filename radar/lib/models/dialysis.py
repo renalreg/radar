@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.lib.database import db
@@ -21,6 +21,8 @@ class Dialysis(db.Model, MetaModelMixin):
 
     dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
     dialysis_type = relationship('DialysisType')
+
+Index('dialysis_patient_id_idx', Dialysis.patient_id)
 
 
 class DialysisType(IntegerLookupTable):

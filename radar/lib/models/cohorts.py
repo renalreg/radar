@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -12,7 +12,7 @@ class Cohort(db.Model):
     __tablename__ = 'cohorts'
 
     id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False)
+    code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
 
     cohort_patients = relationship('CohortPatient')
@@ -46,6 +46,8 @@ class CohortFeature(db.Model):
     name = Column(String, nullable=False)
     weight = Column(Integer, nullable=False)
 
+Index('cohort_features_cohort_id_idx', CohortFeature.cohort_id)
+
 
 class CohortPatient(db.Model, MetaModelMixin):
     __tablename__ = 'cohort_patients'
@@ -66,6 +68,9 @@ class CohortPatient(db.Model, MetaModelMixin):
     __table_args__ = (
         UniqueConstraint('cohort_id', 'patient_id'),
     )
+
+Index('cohort_patients_cohort_id_idx', CohortPatient.cohort_id)
+Index('cohort_patients_patient_id_idx', CohortPatient.patient_id)
 
 
 class CohortUser(db.Model, MetaModelMixin):
@@ -105,6 +110,9 @@ class CohortUser(db.Model, MetaModelMixin):
     def managed_roles(self):
         return COHORT_MANAGED_ROLES.get(self.role, [])
 
+Index('cohort_users_cohort_id_idx', CohortUser.cohort_id)
+Index('cohort_users_user_id_idx', CohortUser.user_id)
+
 
 class CohortResultGroupSpec(db.Model):
     __tablename__ = 'cohort_result_group_specs'
@@ -122,3 +130,5 @@ class CohortResultGroupSpec(db.Model):
     __table_args__ = (
         UniqueConstraint('cohort_id', 'result_group_spec_id'),
     )
+
+Index('cohort_result_group_specs_cohort_id_idx', CohortResultGroupSpec.cohort_id)

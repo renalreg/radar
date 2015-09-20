@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Index
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from radar.lib.auth.passwords import check_password_hash, generate_password_hash

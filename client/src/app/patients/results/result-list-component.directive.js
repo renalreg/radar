@@ -40,7 +40,7 @@
 
           var resultCodesStr = resultCodes.join(',');
 
-          promise = store.findMany('result-groups', {resultCodes: resultCodesStr});
+          promise = store.findMany('result-groups', {patient: $scope.patient.id, resultCodes: resultCodesStr});
         } else {
           promise = [];
         }

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey, String, Index
 from sqlalchemy.orm import relationship
 from radar.lib.database import db
 from radar.lib.models import MetaModelMixin
@@ -19,3 +19,6 @@ class PatientNumber(db.Model, MetaModelMixin):
     organisation = relationship('Organisation')
 
     number = Column(String, nullable=False)
+
+Index('patient_numbers_patient_id_idx', PatientNumber.patient_id)
+Index('patient_numbers_organisation_id_idx', PatientNumber.organisation_id)

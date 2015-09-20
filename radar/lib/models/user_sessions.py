@@ -1,4 +1,4 @@
-from sqlalchemy import String, Column, Integer, ForeignKey, DateTime, Boolean
+from sqlalchemy import String, Column, Integer, ForeignKey, DateTime, Boolean, Index
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 from radar.lib.database import db
@@ -22,6 +22,8 @@ class UserSession(db.Model):
     @classmethod
     def is_authenticated(cls):
         return True
+
+Index('user_sessions_user_id_idx', UserSession.user_id)
 
 
 class AnonymousSession(object):
