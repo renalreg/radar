@@ -62,7 +62,7 @@
     },
     FAMILY_HISTORY: {
       text: 'Family History',
-      state: 'patient.familyHistory({patientId: patient.id})'
+      state: 'patient.familyHistory({patientId: patient.id, cohortId: cohort.id})'
     },
     GENETICS: {
       text: 'Genetics',
