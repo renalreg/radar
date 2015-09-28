@@ -10,17 +10,6 @@ def cli():
     pass
 
 
-@cli.command('create-tables')
-def create_tables():
-    db.drop_all()
-    db.create_all()
-
-
-@cli.command('drop-tables')
-def drop_tables():
-    db.drop_all()
-
-
 @cli.command('initdb')
 def initdb():
     db.create_all()
