@@ -1,6 +1,7 @@
 from radar.lib.models.cohorts import *
 from radar.lib.models.common import *
 from radar.lib.models.comorbidities import *
+from radar.lib.models.consultants import *
 from radar.lib.models.diagnosis import *
 from radar.lib.models.dialysis import *
 from radar.lib.models.data_sources import *
@@ -15,6 +16,7 @@ from radar.lib.models.pathology import *
 from radar.lib.models.patients import *
 from radar.lib.models.patient_addresses import *
 from radar.lib.models.patient_aliases import *
+from radar.lib.models.patient_consultants import *
 from radar.lib.models.patient_demographics import *
 from radar.lib.models.patient_numbers import *
 from radar.lib.models.plasmapheresis import *

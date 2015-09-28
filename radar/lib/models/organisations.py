@@ -114,3 +114,19 @@ class Organisation(db.Model):
 
 Index('organisations_code_idx', Organisation.code)
 Index('organisations_type_idx', Organisation.type)
+
+
+class OrganisationConsultant(db.Model, MetaModelMixin):
+    __tablename__ = 'organisation_consultants'
+
+    id = Column(Integer, primary_key=True)
+
+    organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    organisation = relationship('Organisation')
+
+    consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
+    consultant = relationship('Consultant')
+
+    __table_args__ = (
+        UniqueConstraint('organisation_id', 'consultant_id'),
+    )
