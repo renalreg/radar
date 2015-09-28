@@ -8,10 +8,14 @@ from radar.lib.models.user_sessions import AnonymousSession, UserSession
 from radar.lib.models.users import User
 
 PUBLIC_ENDPOINTS = ['login', 'post_list']
-SESSION_TIMEOUT = 1800
+DEFAULT_SESSION_TIMEOUT = 1800
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
+
+
+def get_session_timeout():
+    return current_app.config.get('SESSION_TIMEOUT', DEFAULT_SESSION_TIMEOUT)
 
 
 def login(username, password):
@@ -111,7 +115,7 @@ def get_user_session_from_token(token):
     s = TimestampSigner(current_app.config['SECRET_KEY'])
 
     try:
-        user_session_id = int(s.unsign(token, max_age=SESSION_TIMEOUT))
+        user_session_id = int(s.unsign(token, max_age=get_session_timeout()))
     except BadSignature:
         return None
 
