@@ -1,6 +1,9 @@
 from flask import Flask
 
 from radar.api.views.cohort_patients import CohortPatientDetailView, CohortPatientListView
+from radar.api.views.consultants import ConsultantDetailView, ConsultantListView
+from radar.api.views.organisation_consultants import OrganisationConsultantListView, OrganisationConsultantDetailView
+from radar.api.views.patient_consultants import PatientConsultantListView, PatientConsultantDetailView
 from radar.api.views.recruitment_stats import CohortRecruitmentStatsView, OrganisationRecruitmentStatsView, \
     PatientRecruitmentStatsView
 from radar.api.views.cohort_users import CohortUserListView, CohortUserDetailView, CohortUserRoleListView
@@ -88,6 +91,10 @@ def create_app():
     app.add_url_rule('/comorbidities/<int:id>', view_func=ComorbidityDetailView.as_view('comorbidity_detail'))
     app.add_url_rule('/comorbidity-disorders', view_func=DisorderListView.as_view('disorder_list'))
 
+    # Consultants
+    app.add_url_rule('/consultants', view_func=ConsultantListView.as_view('consultant_list'))
+    app.add_url_rule('/consultants/<int:id>', view_func=ConsultantDetailView.as_view('consultant_detail'))
+
     # Data Sources
     app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
     app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))
@@ -127,6 +134,10 @@ def create_app():
     app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
     app.add_url_rule('/organisations/<int:id>', view_func=OrganisationDetailView.as_view('organisation_detail'))
 
+    # Organisation Consultants
+    app.add_url_rule('/organisation-consultants', view_func=OrganisationConsultantListView.as_view('organisation_consultant_list'))
+    app.add_url_rule('/organisation-consultants/<int:id>', view_func=OrganisationConsultantDetailView.as_view('organisation_consultant_detail'))
+
     # Organisation Patients
     app.add_url_rule('/organisation-patients', view_func=OrganisationPatientListView.as_view('organisation_patient_list'))
     app.add_url_rule('/organisation-patients/<int:id>', view_func=OrganisationPatientDetailView.as_view('organisation_patient_detail'))
@@ -152,6 +163,10 @@ def create_app():
     # Patient Aliases
     app.add_url_rule('/patient-aliases', view_func=PatientAliasListView.as_view('patient_alias_list'))
     app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetailView.as_view('patient_alias_detail'))
+
+    # Patient Consultants
+    app.add_url_rule('/patient-consultants', view_func=PatientConsultantListView.as_view('patient_consultant_list'))
+    app.add_url_rule('/patient-consultants/<int:id>', view_func=PatientConsultantDetailView.as_view('patient_consultant_detail'))
 
     # Patient Demographics
     app.add_url_rule('/patient-demographics', view_func=PatientDemographicsListView.as_view('patient_demographics_list'))
