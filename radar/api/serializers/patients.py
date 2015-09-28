@@ -4,7 +4,6 @@ from radar.api.serializers.meta import MetaSerializerMixin
 from radar.api.serializers.organisation_patients import OrganisationPatientSerializer
 from radar.api.serializers.organisations import OrganisationReferenceField
 from radar.api.serializers.patient_demographics import EthnicityCodeReferenceField
-from radar.lib.patient_demographics import PatientDemographicsProxy
 from radar.lib.patients import PatientProxy
 from radar.lib.serializers.core import Serializer
 from radar.lib.serializers.fields import StringField, BooleanField, IntegerField, DateField, ListField

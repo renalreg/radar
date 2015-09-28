@@ -1,9 +1,4 @@
-from radar.lib.models import Patient
-from radar.lib.serializers.models import ReferenceField
-
-
-class PatientReferenceField(ReferenceField):
-    model_class = Patient
+from radar.api.serializers.patient_fields import PatientReferenceField
 
 
 class PatientSerializerMixin(object):
