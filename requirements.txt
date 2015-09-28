@@ -9,8 +9,6 @@ Flask-SQLAlchemy==2.0
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
-numpy==1.9.2
-pandas==0.15.2
 paramiko==1.15.2
 psycopg2==2.6
 py==1.4.30
