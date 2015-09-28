@@ -213,15 +213,15 @@ gulp.task('watch', function() {
   gulp.watch('src/index.html', ['inject']);
 });
 
-gulp.task('bs', function() {
+gulp.task('browser-sync', function() {
   browserSync.init({
-    proxy: "http://localhost:5001",
+    proxy: 'http://localhost:5001',
     open: false,
     port: 5002
   });
 });
 
-gulp.task('express', function (cb) {
+gulp.task('express', function () {
   var app = express();
 
   app.use(express.static('.tmp/serve'));
@@ -235,7 +235,7 @@ gulp.task('express', function (cb) {
   app.listen(5001);
 });
 
-gulp.task('express:dist', function (cb) {
+gulp.task('express:dist', function () {
   var app = express();
 
   app.use(express.static('dist'));
@@ -248,7 +248,7 @@ gulp.task('express:dist', function (cb) {
 });
 
 gulp.task('serve', function(cb) {
-  runSequence('inject', ['watch', 'bs', 'express'], cb);
+  runSequence('inject', ['watch', 'browser-sync', 'express'], cb);
 });
 
 gulp.task('serve:dist', function(cb) {
