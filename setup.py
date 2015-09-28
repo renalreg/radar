@@ -14,7 +14,6 @@ setup(
         'Flask==0.10.1',
         'Flask-SQLAlchemy==2.0',
         'itsdangerous==0.24',
-        'pandas==0.15.2',
         'psycopg2==2.6',
         'python-dateutil==2.4.2',
         'pytz==2015.4',

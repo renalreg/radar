@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pandas
 from sqlalchemy import cast, extract, Integer, func
 
 from radar.lib.database import db
@@ -19,25 +18,27 @@ def recruitment_by_month(date_column, filters=None):
     if filters is not None:
         query = query.filter(*filters)
 
-    data = [(datetime(year, month, 1), count) for year, month, count in query.all()]
+    data = {(year, month): count for year, month, count in query.all()}
 
     if not data:
         return []
 
-    # Create a data frame
-    df = pandas.DataFrame.from_records(data, columns=["date", "count"], index="date")
+    current_year, current_month = min(data.keys())
+    last_year, last_month = max(data.keys())
 
-    # Create a month index
-    df.index = df.index.to_period("M")
+    total = 0
+    results = []
 
-    # Fill in missing months
-    df = df.reindex(pandas.period_range(df.index[0], df.index[-1], freq="M"), fill_value=0)
+    while current_year < last_year or (current_year == last_year and current_month <= last_month):
+        count = data.get((current_year, current_month), 0)
+        total += count
 
-    # Cumulative sum
-    df['total'] = df.cumsum()
+        results.append({'date': datetime(current_year, current_month, 1), 'new': count, 'total': total})
 
-    # Convert the data for the response
-    df.index = df.index.to_datetime()
-    data = [{'date': dt.date(), 'new': new, 'total': total} for dt, new, total in df.to_records()]
+        if current_month == 12:
+            current_year += 1
+            current_month = 1
+        else:
+            current_month += 1
 
-    return data
+    return results
