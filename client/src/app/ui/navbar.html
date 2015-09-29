@@ -64,6 +64,10 @@
         <li ui-sref-active="active">
           <a ui-sref="stats">Stats</a>
         </li>
+
+        <li ui-sref-active="active" ng-if="user.isAdmin">
+          <a ui-sref="admin">Admin</a>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav" ng-if="!isAuthenticated">
