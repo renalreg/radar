@@ -26,8 +26,9 @@ def devdb(patients):
 
 
 @cli.command('runserver')
-def run_server():
-    app.run()
+@click.option('--port', default=5001)
+def run_server(port):
+    app.run(port=port)
 
 
 if __name__ == '__main__':

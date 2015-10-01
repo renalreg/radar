@@ -25,9 +25,9 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 
 var argv = require('yargs').argv;
-var environment = argv.environment || 'development';
+var config = argv.config || 'production';
 
-console.log('Environment: ' + environment);
+console.log('config: ' + config + ' (--config NAME)');
 
 var paths = {
   vendorJs: [
@@ -61,21 +61,16 @@ var paths = {
   ]
 };
 
-gulp.task('clean', function() {
-  return del(['dist', '.tmp']);
-});
-
 gulp.task('inject', ['sass', 'scripts'], function() {
   var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
 
   var appScripts = gulp.src([
       'src/app/**/*.module.js',
       'src/app/**/*.js',
-      '!src/app/production.config.js',
-      '!src/app/development.config.js'
+      '!src/app/config/**/*'
   ], {read: false});
 
-  var environmentScript = gulp.src('src/app/' + environment + '.config.js');
+  var configScript = gulp.src('src/app/config/' + config + '.js');
 
   var vendorScripts = gulp.src(paths.vendorJs, {read: false});
 
@@ -86,7 +81,7 @@ gulp.task('inject', ['sass', 'scripts'], function() {
   return gulp.src('src/index.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
     .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
-    .pipe(inject(environmentScript, {name: 'environment', ignorePath: ['src']}))
+    .pipe(inject(configScript, {name: 'config', ignorePath: ['src']}))
     .pipe(inject(vendorScripts, {name: 'vendor'}))
     .pipe(inject(vendorStyles, {name: 'vendor'}))
     .pipe(inject(ieScripts, {name: 'ie'}))
@@ -110,15 +105,6 @@ gulp.task('scripts', function() {
 		.pipe(jshint())
 		.pipe(jshint.reporter('jshint-stylish'))
     .pipe(browserSync.reload({stream: true}));
-});
-
-gulp.task('dist', function(cb) {
-  runSequence(
-    'clean',
-    ['html', 'fonts', 'images'],
-    'dist:size',
-    cb
-  );
 });
 
 gulp.task('html', ['inject', 'templates'], function() {
@@ -184,7 +170,7 @@ gulp.task('images', function() {
     .pipe(gulp.dest('dist/images'));
 });
 
-gulp.task('dist:size', function() {
+gulp.task('size', function() {
   return gulp.src('dist/**/*')
     .pipe(size({title: 'dist', gzip: 'true', showFiles: true}));
 });
@@ -215,9 +201,8 @@ gulp.task('watch', function() {
 
 gulp.task('browser-sync', function() {
   browserSync.init({
-    proxy: 'http://localhost:5001',
-    open: false,
-    port: 5002
+    proxy: 'http://localhost:8081',
+    open: false
   });
 });
 
@@ -232,7 +217,7 @@ gulp.task('express', function () {
     res.sendFile('.tmp/serve/index.html');
   });
 
-  app.listen(5001);
+  app.listen(8081);
 });
 
 gulp.task('express:dist', function () {
@@ -244,15 +229,26 @@ gulp.task('express:dist', function () {
     res.sendFile('dist/index.html');
   });
 
-  app.listen(5001);
+  app.listen(8080);
+});
+
+gulp.task('build', ['inject']);
+
+gulp.task('build:dist', function(cb) {
+  runSequence(
+    'clean',
+    ['html', 'fonts', 'images'],
+    'size',
+    cb
+  );
 });
 
 gulp.task('serve', function(cb) {
-  runSequence('inject', ['watch', 'browser-sync', 'express'], cb);
+  runSequence('build', ['watch', 'browser-sync', 'express'], cb);
 });
 
 gulp.task('serve:dist', function(cb) {
-  runSequence('dist', 'express:dist', cb);
+  runSequence('build:dist', 'express:dist', cb);
 });
 
 gulp.task('default', ['serve']);
