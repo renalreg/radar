@@ -6,8 +6,8 @@ from radar.lib.serializers.fields import DateField, IntegerField, ListField, Boo
 
 class DataPointSerializer(Serializer):
     date = DateField()
-    new = IntegerField()
-    total = IntegerField()
+    newPatients = IntegerField()
+    totalPatients = IntegerField()
 
 
 class DataPointsSerializer(Serializer):
