@@ -18,12 +18,12 @@
           if (user) {
             if (user.isAdmin) {
               // TODO filter
-              store.findMany('organisations', {type: 'UNIT'}).then(function (units) {
+              store.findMany('organisations', {type: 'UNIT'}).then(function(units) {
                 scope.units = sortOrganisations(units);
               });
             } else {
               // TODO filter
-              scope.units = sortOrganisations(_.map(session.user.organisations, function (x) {
+              scope.units = sortOrganisations(_.map(session.user.organisations, function(x) {
                 return x.organisation;
               }));
             }

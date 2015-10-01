@@ -9,7 +9,7 @@
     };
 
     function logout() {
-      adapter.post('/logout').finally(function() {
+      adapter.post('/logout')['finally'](function() {
         session.logout();
       });
     }

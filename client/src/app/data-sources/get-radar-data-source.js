@@ -20,7 +20,7 @@
           .then(function(dataSources) {
             deferred.resolve(dataSources[0]);
           })
-          .catch(function() {
+          ['catch'](function() {
             deferred.reject();
           });
       }

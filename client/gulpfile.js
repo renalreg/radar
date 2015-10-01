@@ -32,6 +32,7 @@ console.log('config: ' + config + ' (--config NAME)');
 var paths = {
   vendorJs: [
     'bower_components/es5-shim/es5-shim.js',
+    'bower_components/es5-shim/es5-sham.js',
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/jquery-ui.js',
     'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
@@ -60,6 +61,10 @@ var paths = {
     'bower_components/respond/dest/respond.src.js'
   ]
 };
+
+gulp.task('clean', function() {
+  return del(['dist', '.tmp']);
+});
 
 gulp.task('inject', ['sass', 'scripts'], function() {
   var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
@@ -175,6 +180,7 @@ gulp.task('size', function() {
     .pipe(size({title: 'dist', gzip: 'true', showFiles: true}));
 });
 
+// TODO watch:dist
 gulp.task('watch', function() {
   gulp.watch('src/app/**/*.js', function(event) {
     if (event.type === 'changed') {

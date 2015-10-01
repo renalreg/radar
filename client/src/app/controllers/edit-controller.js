@@ -32,7 +32,7 @@
 
       self.scope.saving = true;
 
-      return self.scope.item.save().finally(function() {
+      return self.scope.item.save()['finally'](function() {
         self.scope.saving = false;
       });
     };

@@ -26,7 +26,7 @@
             .then(function() {
               $state.go('patients');
             })
-            .catch(function(errors) {
+            ['catch'](function(errors) {
               if (errors) {
                 scope.errors = errors;
               }

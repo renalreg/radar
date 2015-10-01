@@ -23,11 +23,11 @@
               session.setUser(user);
               deferred.resolve(user);
             })
-            .catch(function() {
+            ['catch'](function() {
               deferred.reject();
             });
         })
-        .catch(function(response) {
+        ['catch'](function(response) {
           if (response.status === 422) {
             deferred.reject(response.data.errors);
           } else {

@@ -128,7 +128,15 @@
 
             <td ng-repeat="resultSpec in resultSpecs">
               <span ng-if="item.results[resultSpec.code] !== undefined">
-                <a href="" ng-click="view(item.results[resultSpec.code])" ng-disabled="viewEnabled(item.results[resultSpec.code])">{{item.results[resultSpec.code].getValue(resultSpec.code) | missing}}</a>
+                <!-- IE doesn't support ng-disabled on <a> -->
+
+                <span ng-if="viewEnabled(item.results[resultSpec.code])">
+                  <a href="" ng-click="view(item.results[resultSpec.code])">{{item.results[resultSpec.code].getValue(resultSpec.code) | missing}}</a>
+                </span>
+
+                <span ng-if="!viewEnabled(item.results[resultSpec.code])">
+                  <a href="" ng-click="view(item.results[resultSpec.code])">{{item.results[resultSpec.code].getValue(resultSpec.code) | missing}}</a>
+                </span>
               </span>
             </td>
 

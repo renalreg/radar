@@ -59,13 +59,11 @@
 
         var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(modelName, 'GET', url);
-
         return self.get(url)
           .then(function(response) {
             return response.data;
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             var data = {status: response.status};
             return $q.reject(data);
           });
@@ -76,8 +74,6 @@
 
         var url = self.getModelUrl(modelName);
 
-        self.logModelRequest(modelName, 'GET', url);
-
         return self.get(url, params)
           .then(function(response) {
             if (meta) {
@@ -86,7 +82,7 @@
               return response.data.data;
             }
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             var data = {status: response.status};
             return $q.reject(data);
           });
@@ -97,13 +93,11 @@
 
         var url = self.getModelUrl(modelName);
 
-        self.logModelRequest(modelName, 'POST', url);
-
         return self.post(url, {}, data)
           .then(function(response) {
             return response.data;
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             var data = {status: response.status};
 
             if (response.status === 422) {
@@ -119,13 +113,11 @@
 
         var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(modelName, 'PUT', url);
-
         return self.put(url, {}, data)
           .then(function(response) {
             return response.data;
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             var data = {status: response.status};
 
             if (response.status === 422) {
@@ -141,13 +133,11 @@
 
         var url = self.getModelUrl(modelName, id);
 
-        self.logModelRequest(modelName, 'DELETE', url);
-
-        return self.delete(url)
+        return self['delete'](url)
           .then(function() {
             return undefined;
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             var data = {status: response.status};
             return $q.reject(data);
           });
@@ -165,7 +155,7 @@
         return this.request('PUT', url, params, data);
       };
 
-      Adapter.prototype.delete = function(url, params) {
+      Adapter.prototype['delete'] = function(url, params) {
         return this.request('DELETE', url, params);
       };
 
@@ -193,17 +183,13 @@
 
             return response;
           })
-          .catch(function(response) {
+          ['catch'](function(response) {
             if (angular.isObject(response.data)) {
               response.data = self.transformResponse(response.data);
             }
 
             return $q.reject(response);
           });
-      };
-
-      Adapter.prototype.logModelRequest = function(modelName, method, url) {
-        console.log('[' + modelName + '] ' + method + ' ' + url);
       };
 
       return new Adapter(config);

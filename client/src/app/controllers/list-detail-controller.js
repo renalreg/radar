@@ -154,7 +154,7 @@
 
           return item;
         })
-        .finally(function() {
+        ['finally'](function() {
           self.scope.saving = false;
         });
     };

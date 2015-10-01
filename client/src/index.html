@@ -26,7 +26,15 @@
 </head>
 
 <body>
-  <div navbar></div>
+  <div navbar>
+    <div class="navbar navbar-static-top navbar-radar">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" ui-sref="index">RaDaR</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div ng-if="ready">
     <div class="ui-view"></div>
@@ -38,7 +46,7 @@
 
   <!--[if lte IE 9]>
     <div class="content">
-      <div class="alert alert-danger">
+      <div class="alert alert-warning">
         <strong>Warning!</strong> You are using an old version of Internet Explorer. RaDaR works best in modern
         browsers such as <a href="http://www.google.com/chrome/">Google Chrome</a> or
         <a href="https://www.mozilla.org/firefox/">Mozilla Firefox</a>.

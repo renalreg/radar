@@ -24,8 +24,8 @@
 
           _.forEach(data, function(x) {
             var date = Date.parse(x.date);
-            newData.push({x: date, y: x.new});
-            totalData.push({x: date, y: x.total});
+            newData.push({x: date, y: x.newPatients});
+            totalData.push({x: date, y: x.totalPatients});
           });
 
           newData = _.sortBy(newData, 'x');

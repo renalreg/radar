@@ -92,7 +92,7 @@
         });
 
         if (existingItem !== null) {
-          promise = promise.finally(function() {
+          promise = promise['finally'](function() {
             existingItem.isLoading = false;
           });
         }
@@ -167,7 +167,7 @@
           promise = adapter.update(modelName, id, data);
 
           if (copy) {
-            promise = promise.finally(function() {
+            promise = promise['finally'](function() {
               existingItem.isSaving = false;
             });
           }
@@ -183,7 +183,7 @@
           return self.pushToStore(item);
         });
 
-        promise = promise.catch(function(data) {
+        promise = promise['catch'](function(data) {
           if (data.status === 422) {
             item.isValid = false;
             item.errors = data.errors;
@@ -194,7 +194,7 @@
           return $q.reject(data);
         });
 
-        promise = promise.finally(function() {
+        promise = promise['finally'](function() {
           item.isSaving = false;
         });
 
@@ -209,10 +209,10 @@
         obj.isDeleted = true;
 
         return adapter.remove(modelName, id)
-          .catch(function() {
+          ['catch'](function() {
             obj.isDeleted = false;
           })
-          .finally(function() {
+          ['finally'](function() {
             obj.isSaving = false;
           });
       };
