@@ -3,3 +3,5 @@ radar.egg-info
 *.pyc
 .idea
 venv
+.vagrant
+Berksfile.lock

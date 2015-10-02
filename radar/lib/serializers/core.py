@@ -237,5 +237,3 @@ class Serializer(Field):
             transformed_errors.update(transformed_field_errors)
 
         return transformed_errors
-
-
