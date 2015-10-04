@@ -47,10 +47,3 @@ template '/home/radar/.bash_profile' do
   mode '00644'
   action :create
 end
-
-directory '/home/radar/bin' do
-  owner 'radar'
-  group 'radar'
-  mode '00755'
-  action :create
-end

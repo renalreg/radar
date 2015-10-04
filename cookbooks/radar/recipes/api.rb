@@ -1,3 +1,10 @@
+name = 'radar-api'
+root_path = "/opt/#{name}"
+python_path = "#{root_path}/bin/python.sh"
+venv_path = "#{root_path}/venv"
+venv_python_path = "#{venv_path}/bin/python.sh"
+conf_path = "/etc/#{name}"
+
 package 'scl-utils' do
   action :install
 end
@@ -16,10 +23,21 @@ package 'python27' do
   action :install
 end
 
-python_system = '/home/radar/bin/python.sh'
-python_venv = '/home/radar/venv/bin/python.sh'
+directory root_path do
+  owner 'radar'
+  group 'radar'
+  mode '00755'
+  action :create
+end
 
-template python_system do
+directory "#{root_path}/bin" do
+  owner 'radar'
+  group 'radar'
+  mode '00755'
+  action :create
+end
+
+template python_path do
   source 'python-system.sh.erb'
   owner 'radar'
   group 'radar'
@@ -27,8 +45,8 @@ template python_system do
   action :create
 end
 
-virtualenv '/home/radar/venv' do
-  python python_system
+virtualenv venv_path do
+  python python_path
   owner 'radar'
   group 'radar'
   packages 'gunicorn' => '19.3.0',
@@ -36,47 +54,54 @@ virtualenv '/home/radar/venv' do
 end
 
 execute 'pip install -r requirements.txt' do
-  command '#{python_venv} -m pip install -r /home/radar/src/requirements.txt'
+  command "#{venv_python_path} -m pip install -r /home/radar/src/requirements.txt"
   user 'radar'
   group 'radar'
-  environment 'PATH' => '/usr/pgsql-9.4/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin' 
+  environment 'PATH' => '/usr/pgsql-9.4/bin:/usr/bin:/bin' 
   action :run
 end
 
 execute 'pip install --editable .' do
-  command '#{python_venv} -m pip install --editable /home/radar/src'
+  command "#{venv_python_path} -m pip install --editable /home/radar/src"
   user 'radar'
   group 'radar'
-  not_if '#{python_venv} -m pip freeze | grep radar'
+  not_if "#{venv_python_path} -m pip freeze | grep radar"
   action :run
 end
 
-template '/home/radar/settings.py' do
-  source 'settings.py.erb'
+directory conf_path do
+  owner 'radar'
+  group 'radar'
+  mode '00755'
+  action :create
+end
+
+template "#{conf_path}/settings.py" do
+  source 'api/settings.py.erb'
   user 'radar'
   group 'radar'
   mode '00644'
   action :create
 end
 
-template '/etc/radar.conf' do
-  source 'conf.erb' 
+template "#{conf_path}/supervisord.conf" do
+  source 'api/supervisord.conf.erb' 
   user 'root'
   group 'root'
   mode '00644'
-  notifies :restart, 'service[radar]'
+  notifies :restart, "service[#{name}]"
   action :create
 end
 
-template '/etc/init.d/radar' do
-  source 'init.erb' 
+template "/etc/init.d/#{name}" do
+  source 'api/init.erb' 
   user 'root'
   group 'root'
   mode '00755'
-  notifies :restart, 'service[radar]'
+  notifies :restart, "service[#{name}]"
   action :create
 end
 
-service 'radar' do
-  action :start
+service name do
+  action [:enable, :start]
 end
