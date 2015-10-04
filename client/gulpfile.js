@@ -177,7 +177,7 @@ gulp.task('images', function() {
 
 gulp.task('size', function() {
   return gulp.src('dist/**/*')
-    .pipe(size({title: 'dist', gzip: 'true', showFiles: true}));
+    .pipe(size({showFiles: true}));
 });
 
 // TODO watch:dist
@@ -238,7 +238,9 @@ gulp.task('express:dist', function () {
   app.listen(8080);
 });
 
-gulp.task('build', ['inject']);
+gulp.task('build', function(cb) {
+  runSequence('inject', cb);
+});
 
 gulp.task('build:dist', function(cb) {
   runSequence(
