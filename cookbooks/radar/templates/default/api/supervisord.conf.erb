@@ -1,0 +1,21 @@
+[supervisord]
+http_port=/var/tmp/radar-api.sock
+logfile=/var/log/radar-api.log
+logfile_maxbytes=50MB
+logfile_backups=10
+loglevel=info
+pidfile=/var/run/radar-api.pid
+nodaemon=false
+minfds=1024
+minprocs=200
+
+[supervisorctl]
+serverurl=unix:///var/tmp/radar-api.sock
+
+[program:radar]
+command=/opt/radar-api/venv/bin/python.sh /opt/radar-api/venv/bin/gunicorn 'radar.api.app:create_app()'
+directory=/opt/radar-api
+user=radar
+autorestart=true
+redirect_stderr=true
+environment=RADAR_SETTINGS=/etc/radar-api/settings.py
