@@ -1,5 +1,5 @@
 dist
-radar.egg-info
+*.egg-info
 *.pyc
 .idea
 venv
