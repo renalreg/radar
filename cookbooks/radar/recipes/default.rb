@@ -6,7 +6,12 @@ package 'vim' do
   action :install
 end
 
+# Needed to pip freeze a virtualenv with packages installed from git
 package 'git' do
+  action :install
+end
+
+package 'htop' do
   action :install
 end
 
