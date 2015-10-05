@@ -1,5 +1,5 @@
 template '/etc/yum.repos.d/nginx.conf' do
-  source 'nginx-repo.conf.erb'
+  source 'nginx_repo.conf.erb'
   user 'root'
   group 'root'
   mode '00644'
