@@ -38,7 +38,7 @@ directory "#{root_path}/bin" do
 end
 
 template python_path do
-  source 'python-system.sh.erb'
+  source 'python.sh.erb'
   owner 'radar'
   group 'radar'
   mode '00755'
@@ -86,6 +86,15 @@ end
 
 template "#{conf_path}/supervisord.conf" do
   source 'api/supervisord.conf.erb' 
+  user 'root'
+  group 'root'
+  mode '00644'
+  notifies :restart, "service[#{name}]"
+  action :create
+end
+
+template "#{conf_path}/gunicorn.py" do
+  source 'api/gunicorn.py.erb'
   user 'root'
   group 'root'
   mode '00644'

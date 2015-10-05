@@ -5,7 +5,8 @@
 # chkconfig: - 85 15
 # description: manages the radar API using supervisord
 # config: /etc/radar-api/supervisord.conf
-# pidfile: /var/run/radar-api.pid
+# pidfile: /var/run/radar-api-supervisord.pid
+#
 
 . /etc/rc.d/init.d/functions
 
@@ -16,14 +17,14 @@ start() {
   daemon /opt/radar-api/venv/bin/python.sh /opt/radar-api/venv/bin/supervisord -c /etc/radar-api/supervisord.conf
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/radar-api
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/radar-api-supervisord
 }
 
 stop() {
   echo -n $"Stopping radar-api: "
-  killproc -p /var/run/radar-api.pid
+  killproc -p /var/run/radar-api-supervisord.pid
   echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/radar-api
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/radar-api-supervisord
 }
 
 restart() {
@@ -35,14 +36,14 @@ case "$1" in
   start)
     start
     ;;
-  stop) 
+  stop)
     stop
     ;;
   restart|force-reload|reload)
     restart
     ;;
   condrestart)
-    [ -f /var/lock/subsys/radar-api ] && restart
+    [ -f /var/lock/subsys/radar-api-supervisord ] && restart
     ;;
   status)
     status radar-api
