@@ -1,3 +1,5 @@
+home_path = '/home/radar'
+
 group 'radar' do
   gid 501
   action :create
@@ -10,21 +12,21 @@ user 'radar' do
   action :create
 end
 
-directory '/home/radar' do
+directory home_path do
   owner 'radar'
   group 'radar'
   mode '00755'
   action :create
 end
 
-directory '/home/radar/.ssh' do
+directory "#{home_path}/.ssh" do
   owner 'radar'
   group 'radar'
   mode '00700'
   action :create
 end
 
-template '/home/radar/.ssh/authorized_keys' do
+template "#{home_path}/.ssh/authorized_keys" do
   source 'vagrant.pub.erb'
   owner 'radar'
   group 'radar'
@@ -32,7 +34,7 @@ template '/home/radar/.ssh/authorized_keys' do
   action :create
 end
 
-template '/home/radar/.bashrc' do
+template "#{home_path}/.bashrc" do
   source 'bashrc.erb'
   owner 'radar'
   group 'radar'
@@ -40,7 +42,7 @@ template '/home/radar/.bashrc' do
   action :create
 end
 
-template '/home/radar/.bash_profile' do
+template "#{home_path}/.bash_profile" do
   source 'bash_profile.erb'
   owner 'radar'
   group 'radar'
