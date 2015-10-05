@@ -11,7 +11,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.synced_folder '.', '/home/radar/src', create: true, owner: 501, group: 501
 
-  if Vagrant.has_plugin?("vagrant-proxyconf")
+  if Vagrant.has_plugin?('vagrant-proxyconf')
     config.proxy.http = 'http://10.0.2.2:3128/'
     config.proxy.https = 'http://10.0.2.2:3128/'
     config.proxy.no_proxy = 'localhost,127.0.0.1,10.0.2.2'
@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
     chef.add_recipe 'radar'
   end
 
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider 'virtualbox' do |v|
     v.memory = 1024
     v.cpus = 2
   end
