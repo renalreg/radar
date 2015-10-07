@@ -30,11 +30,12 @@ template python_path do
 end
 
 virtualenv venv_path do
-  python python_path
+  python_path python_path
   owner 'radar'
   group 'radar'
   packages 'gunicorn' => '19.3.0',
            'supervisor' => '3.1.3'
+  action :create
 end
 
 execute 'pip install -r requirements.txt' do
