@@ -5,7 +5,7 @@ default_action :install
 
 action :install do
   execute "npm install -g #{name}" do
-    command "npm install -g #{name} --loglevel verbose"
+    command "npm install -g #{name}"
     user 'root'
     action :run
   end
