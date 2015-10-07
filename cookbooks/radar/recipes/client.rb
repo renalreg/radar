@@ -1,25 +1,18 @@
-package 'nodejs' do
+include_recipe 'radar::nodejs'
+
+node_module 'gulp' do
   action :install
 end
 
-package 'npm' do
+node_module 'bower' do
   action :install
-end
-
-execute 'npm install -g gulp' do
-  command 'npm install -g gulp'
-  user 'root'
-end
-
-execute 'npm install -g bower' do
-  command 'npm install -g bower'
-  user 'root'
 end
 
 execute 'npm install' do
   cwd '/home/radar/src/client'
-  command 'npm install --no-bin-links'
+  command 'npm install --no-bin-links --loglevel verbose'
   user 'radar'
+  action :run
 end
 
 execute 'bower install' do
@@ -27,6 +20,7 @@ execute 'bower install' do
   command 'bower install'
   user 'radar'
   environment 'HOME' => '/home/radar'
+  action :run
 end
 
 execute 'gulp build' do
@@ -34,6 +28,7 @@ execute 'gulp build' do
   command 'gulp build'
   user 'radar'
   environment 'HOME' => '/home/radar'
+  action :run
 end
 
 execute 'gulp build:dist' do
@@ -41,4 +36,5 @@ execute 'gulp build:dist' do
   command 'gulp build:dist'
   user 'radar'
   environment 'HOME' => '/home/radar'
+  action :run
 end
