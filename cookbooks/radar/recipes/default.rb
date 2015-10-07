@@ -15,9 +15,14 @@ package 'htop' do
   action :install
 end
 
+package 'man' do
+  action :install
+end
+
 include_recipe 'radar::iptables'
 include_recipe 'radar::user'
 include_recipe 'radar::db'
 include_recipe 'radar::api'
 include_recipe 'radar::client'
 include_recipe 'radar::web'
+include_recipe 'radar::rpm'
