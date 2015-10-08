@@ -12,6 +12,7 @@ execute 'npm install' do
   cwd '/home/radar/src/client'
   command 'npm install --no-bin-links'
   user 'radar'
+  environment 'HOME' => '/home/radar'
   action :run
 end
 
@@ -37,11 +38,4 @@ execute 'gulp build:dist' do
   user 'radar'
   environment 'HOME' => '/home/radar'
   action :run
-end
-
-link '/opt/radar-client' do
-  to '/home/radar/src/client/dist'
-  owner 'radar'
-  group 'radar'
-  action :create
 end

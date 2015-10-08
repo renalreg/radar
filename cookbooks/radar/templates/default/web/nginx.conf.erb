@@ -93,7 +93,7 @@ server {
     proxy_set_header Host $http_host;
 
     rewrite ^/api/?(.*) /$1 break;
-    
+
     proxy_pass http://radar_dev_api;
   }
 }
