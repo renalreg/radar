@@ -2,6 +2,8 @@ import shutil
 from subprocess import check_output
 import tempfile
 import os
+import errno
+from pipes import quote
 
 
 class Python(object):
@@ -27,17 +29,21 @@ class Python(object):
             os.fchmod(f.fileno(), 755)
 
     def run(self, args, env=None):
-        args = [self.command()] + args
+        args = self.command() + args
         return run_command(args, env=env)
 
     @classmethod
-    def relocate(cls, path):
+    def copy_at_path(cls, path):
         return cls(path)
 
 
 class SCLPython(Python):
     def command(self):
         return ['scl', 'enable', 'python27', self.path]
+
+    def run(self, args, env=None):
+        args = ['scl', 'enable', 'python27', join_args([self.path] + args)]
+        return run_command(args, env=env)
 
 
 class Virtualenv(object):
@@ -46,19 +52,21 @@ class Virtualenv(object):
         self.python = python
 
         venv_python_path = os.path.join(self.path, 'bin/python')
-        self.venv_python = python.virtualenv(venv_python_path)
+        self.venv_python = python.copy_at_path(venv_python_path)
 
     def create(self):
         args = [
             '-m',
             'virtualenv',
-            '--python=' + self.python.path,
+            '--python',
+            self.python.path,
             '--quiet',
             self.path
         ]
         env = {'PYTHONDONTWRITEBYTECODE': '1'}
         self.python.run(args, env=env)
 
+        mkdir_p(os.path.dirname(self.venv_python.path))
         self.venv_python.create_wrapper(self.venv_python.path + '.sh')
 
     def run(self, args):
@@ -69,13 +77,26 @@ class Virtualenv(object):
         python.create_wrapper(self.venv_python.path + '.sh')
 
 
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+def join_args(args):
+    return ' '.join(quote(x) for x in args)
+
 def run_command(args, env=None, cwd=None):
+    print join_args(args)
     return check_output(args=args, env=env, cwd=cwd)
 
 
 pythons = [
     Python('/usr/bin/python2.7'),
-    SCLPython('/opt/rh/python27/usr/bin/python'),
+    SCLPython('/opt/rh/python27/root/usr/bin/python2.7'),
 ]
 
 python = None
@@ -89,7 +110,7 @@ else:
 
 install_path = '/opt/radar-api'
 install_python_path = os.path.join(install_path, 'venv/bin/python')
-install_python = python.relocate(install_python_path)
+install_python = python.copy_at_path(install_python_path)
 
 # Create a temporary directory to build the package in
 build_path = tempfile.mkdtemp()
@@ -102,7 +123,7 @@ v.create()
 v.run(['-m', 'pip', 'install', '-r', 'requirements.txt'])
 
 # Install package
-v.run(['-m', 'pip', 'install', '-r', 'requirements.txt'])
+v.run(['-m', 'pip', 'install', '--editable', '/home/radar/src/radar'])
 
 # Update build path references to install path
 v.relocate(install_python)
