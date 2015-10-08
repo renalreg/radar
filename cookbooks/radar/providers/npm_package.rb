@@ -6,7 +6,7 @@ use_inline_resources
 
 def package_installed?(package_name)
   cmd = shell_out("npm -j -g ls | jq -r .dependencies.#{package_name}.version")
-  cmd.stdout != 'null'
+  cmd.stdout !~ /null/
 end
 
 action :install do
