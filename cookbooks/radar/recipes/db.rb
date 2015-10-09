@@ -25,5 +25,5 @@ postgresql_database_user 'radar' do
   password 'vagrant'
   database_name 'radar'
   privileges [:all]
-  action :grant
+  action [:create, :grant]
 end

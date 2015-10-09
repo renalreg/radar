@@ -207,7 +207,7 @@ gulp.task('watch', function() {
 
 gulp.task('browser-sync', function() {
   browserSync.init({
-    proxy: 'http://localhost:8081',
+    proxy: 'http://localhost:8082',
     open: false
   });
 });
@@ -223,7 +223,7 @@ gulp.task('express', function () {
     res.sendFile('.tmp/serve/index.html');
   });
 
-  app.listen(8081);
+  app.listen(8082);
 });
 
 gulp.task('express:dist', function () {
@@ -235,7 +235,7 @@ gulp.task('express:dist', function () {
     res.sendFile('dist/index.html');
   });
 
-  app.listen(8080);
+  app.listen(8081);
 });
 
 gulp.task('build', function(cb) {

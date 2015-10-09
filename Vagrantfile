@@ -5,9 +5,16 @@ end
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
 
+  # Web interface
   config.vm.network 'forwarded_port', guest: 80, host: 8080
   config.vm.network 'forwarded_port', guest: 8081, host: 8081
   config.vm.network 'forwarded_port', guest: 8082, host: 8082
+
+  # API
+  config.vm.network 'forwarded_port', guest: 5000, host: 5000
+  config.vm.network 'forwarded_port', guest: 5001, host: 5001
+
+  # PostgreSQL
   config.vm.network 'forwarded_port', guest: 5432, host: 5432
 
   config.vm.synced_folder '.', '/home/vagrant/src', create: true, owner: 'vagrant', group: 'vagrant'
