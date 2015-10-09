@@ -1,7 +1,7 @@
 name = 'radar-api-dev'
 conf_path = "/etc/#{name}"
 sysconfig_path = "/etc/sysconfig/#{name}"
-service_path = "/etc/systemd/system/#{name}.service"
+systemd_path = "/etc/systemd/system/#{name}.service"
 settings_path = "#{conf_path}/settings.py"
 gunicorn_config_path = "#{conf_path}/gunicorn.py"
 
@@ -21,8 +21,8 @@ template sysconfig_path do
   action :create
 end
 
-template service_path do
-  source 'api/service.erb'
+template systemd_path do
+  source 'api/systemd.erb'
   variables :name => name,
             :sysconfig_path => sysconfig_path,
             :gunicorn_config_path => gunicorn_config_path

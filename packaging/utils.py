@@ -169,3 +169,56 @@ def run_tox(args):
 
     if return_code != 0:
         raise SystemExit(1)
+
+
+class Package(object):
+    def __init__(self, name, version, architecture, url):
+        self.name = name
+        self.version = version
+        self.architecture = architecture
+        self.before_install_script = None
+        self.url = url
+        self.dependencies = []
+        self.paths = []
+        self.config_files = []
+
+    def add_dependency(self, package_name):
+        self.dependencies.append(package_name)
+
+    def add_path(self, src, dst):
+        self.paths.append('%s=%s' % (src, dst))
+
+    def add_config_file(self, path):
+        self.config_files.append(path)
+
+    def build(self):
+        rpm_path = '%s-%s.%s.rpm' % (self.name, self.version, self.architecture)
+
+        args = [
+            'fpm',
+            '-s', 'dir',
+            '-t', 'rpm',
+            '--package', rpm_path,
+            '--name', self.name,
+            '--version', self.version,
+            '--url', self.url,
+            '--architecture', self.architecture,
+            '--epoch', '0',
+            '--force',
+        ]
+
+        for package_name in self.dependencies:
+            args.extend(['--depends', package_name])
+
+        for path in self.config_files:
+            args.extend(['--config-files', path])
+
+        if self.before_install_script is not None:
+            args.extend(['--before-install', self.before_install_script])
+
+        for path in self.paths:
+            args.append(path)
+
+        run_command(args, env={'PATH': '/usr/local/bin:/usr/bin:/bin'})
+
+        return rpm_path

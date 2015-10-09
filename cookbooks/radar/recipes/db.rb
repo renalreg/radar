@@ -19,3 +19,11 @@ postgresql_database_user 'vagrant' do
   privileges [:all]
   action [:create, :grant]
 end
+
+postgresql_database_user 'radar' do
+  connection postgresql_connection_info
+  password 'vagrant'
+  database_name 'radar'
+  privileges [:all]
+  action :grant
+end
