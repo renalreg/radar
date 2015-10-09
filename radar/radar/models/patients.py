@@ -1,14 +1,12 @@
 from collections import OrderedDict
 from datetime import datetime
+from sqlalchemy import Column, Integer, select, Boolean, join, Text, ForeignKey
 
-from sqlalchemy import Column, Integer, select, Boolean, join, Text, ForeignKey, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
-
 from radar.database import db
 from radar.models import MetaModelMixin, OrganisationPatient
 from radar.models.patient_demographics import PatientDemographics
-
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -130,7 +128,7 @@ class Patient(db.Model, MetaModelMixin):
         return cls.latest_demographics_query(PatientDemographics.date_of_death)
 
     # TODO test this
-    @date_of_birth.expression
+    @ethnicity_code.expression
     def ethnicity_code(cls):
         return cls.latest_demographics_query(PatientDemographics.ethnicity_code)
 

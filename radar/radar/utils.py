@@ -1,9 +1,8 @@
 from datetime import datetime, date, timedelta
-import re
+from sqlalchemy import and_
 
 import dateutil.parser
 import pytz
-from sqlalchemy import and_
 
 
 def get_path(data, keys):

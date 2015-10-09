@@ -1,12 +1,11 @@
 from sqlalchemy import or_, case, desc, extract
+
 from sqlalchemy.orm import aliased
 from radar.models import PatientAlias, PatientNumber
-
-from radar.organisations import ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI
 from radar.roles import ORGANISATION_VIEW_PATIENT_ROLES, COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES, \
     COHORT_VIEW_DEMOGRAPHICS_ROLES
 from radar.database import db
-from radar.models.organisations import OrganisationPatient, ORGANISATION_TYPE_OTHER, Organisation, OrganisationUser
+from radar.models.organisations import OrganisationPatient, Organisation, OrganisationUser
 from radar.models.cohorts import Cohort, CohortPatient, CohortUser
 from radar.models.patients import Patient, PatientDemographics
 from radar.utils import sql_year_filter, sql_date_filter

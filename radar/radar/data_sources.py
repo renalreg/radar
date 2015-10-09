@@ -20,5 +20,5 @@ def get_radar_data_source():
 
 def is_radar_data_source(data_source):
     return data_source.type == DATA_SOURCE_TYPE_RADAR and \
-           data_source.organisation.type == ORGANISATION_TYPE_OTHER and \
-           data_source.organisation.code == ORGANISATION_CODE_RADAR
+        data_source.organisation.type == ORGANISATION_TYPE_OTHER and \
+        data_source.organisation.code == ORGANISATION_CODE_RADAR

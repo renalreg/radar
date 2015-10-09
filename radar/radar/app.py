@@ -9,7 +9,7 @@ def create_app():
     app.config.from_envvar('RADAR_SETTINGS')
 
     # noinspection PyUnresolvedReferences
-    from radar import models
+    from radar import models  # noqa
 
     db.init_app(app)
 

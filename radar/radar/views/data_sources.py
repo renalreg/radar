@@ -39,4 +39,3 @@ class RadarObjectViewMixin(DataSourceFilterMixin):
         permission_classes = super(RadarObjectViewMixin, self).get_permission_classes()
         permission_classes.append(RadarObjectPermission)
         return permission_classes
-

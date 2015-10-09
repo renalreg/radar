@@ -1,5 +1,4 @@
 from radar.validation.core import Field, Validation
-from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required
 
 

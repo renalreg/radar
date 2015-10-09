@@ -1,7 +1,6 @@
 from radar.models import ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, \
     ORGANISATION_CODE_UKRR, ORGANISATION_CODE_UKRDC, ORGANISATION_CODE_BAPN, ORGANISATION_TYPE_OTHER
-from radar.organisations import is_chi_organisation, is_nhs_organisation, is_ukrr_organisation, \
-    is_handc_organisation, is_radar_organisation
+from radar.organisations import is_radar_organisation
 from radar.validation.core import Validation, pass_call, ValidationError, Field
 from radar.validation.data_sources import RadarDataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin

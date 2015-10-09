@@ -208,8 +208,14 @@ def create_app():
     app.add_url_rule('/result-specs', view_func=ResultSpecListView.as_view('result_spec_list'))
 
     # Salt Wasting Clinical Features
-    app.add_url_rule('/salt-wasting-clinical-features', view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list'))
-    app.add_url_rule('/salt-wasting-clinical-features/<int:id>', view_func=SaltWastingClinicalFeaturesDetailView.as_view('salt_wasting_clinical_features_detail'))
+    app.add_url_rule(
+        '/salt-wasting-clinical-features',
+        view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list')
+    )
+    app.add_url_rule(
+        '/salt-wasting-clinical-features/<int:id>',
+        view_func=SaltWastingClinicalFeaturesDetailView.as_view('salt_wasting_clinical_features_detail')
+    )
 
     # Transplants
     app.add_url_rule('/transplants', view_func=TransplantListView.as_view('transplant_list'))
