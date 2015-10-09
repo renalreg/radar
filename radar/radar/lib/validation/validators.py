@@ -145,13 +145,12 @@ def in_(values):
 
 def not_in_future():
     def not_in_future_f(value):
-        # Convert date to datetime
-        if is_date(value):
-            value_dt = date_to_datetime(value)
-        else:
-            value_dt = value
+        now = datetime.now(pytz.utc)
 
-        if value_dt > datetime.now(pytz.utc):
+        if is_date(value):
+            now = now.date()
+
+        if value > now:
             raise ValidationError("Can't be in the future.")
 
         return value

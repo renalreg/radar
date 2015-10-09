@@ -6,23 +6,23 @@ action :create do
   venv_python_path = "#{new_resource.path}/bin/python.sh"
 
   directory new_resource.path do
-    owner new_resource.owner
+    owner new_resource.user
     group new_resource.group
     mode '00755'
     action :create
   end
 
   execute "create virtualenv at #{new_resource.path}" do
-    user new_resource.owner
-    group new_resource.group
     command "#{new_resource.python_path} -m virtualenv -p #{new_resource.python_path} #{new_resource.path}"
+    user new_resource.user
+    environment new_resource.environment
     not_if "test -f #{new_resource.path}/bin/python"
     action :run
   end
 
   template venv_python_path do
     source 'venv_python.sh.erb'
-    owner new_resource.owner
+    owner new_resource.user
     group new_resource.group
     mode '00755'
     action :create
@@ -38,16 +38,16 @@ action :create do
   # Upgrade pip from 1.x which has SSL issues when using a proxy
   execute "upgrade pip in #{new_resource.path}" do
     command "#{venv_python_path} -m pip install #{pip_wheel_path}"
-    user new_resource.owner
-    group new_resource.group
+    user new_resource.user
+    environment new_resource.environment
     action :run
   end
 
   new_resource.packages.each_pair do |package, version|
     execute "install #{package}==#{version} to #{new_resource.path}" do
-      user new_resource.owner
-      group new_resource.group
       command "#{venv_python_path} -m pip install #{package}==#{version}"
+      user new_resource.user
+      environment new_resource.environment
       not_if "[ `#{venv_python_path} -m pip freeze' | grep #{package} | cut -d'=' -f3` = '#{version}' ]"
       action :run
     end
