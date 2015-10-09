@@ -1,12 +1,14 @@
 from setuptools import setup, find_packages
 
+import radar
+
 setup(
     name='radar',
-    version='0.2.0',
-    long_description=__doc__,
-    author='Rupert Bedford',
-    author_email='rupert.bedford@renalregistry.nhs.uk',
-    url='https://www.renalradar.org/',
+    version=radar.__version__,
+    long_description=radar.__doc__,
+    author='UK Renal Registry',
+    author_email='renalregistry@renalregistry.nhs.uk',
+    url='https://www.radar.nhs.uk/',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

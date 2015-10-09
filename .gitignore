@@ -5,3 +5,4 @@ dist
 venv
 .vagrant
 Berksfile.lock
+build

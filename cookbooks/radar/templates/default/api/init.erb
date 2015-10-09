@@ -14,7 +14,7 @@ RETVAL=0
 
 start() {
   echo -n $"Starting radar-api: "
-  daemon /opt/radar-api/venv/bin/python.sh /opt/radar-api/venv/bin/supervisord -c /etc/radar-api/supervisord.conf
+  daemon /opt/radar/bin/python.sh /opt/radar/bin/supervisord -c /etc/radar-api/supervisord.conf
   RETVAL=$?
   echo
   [ $RETVAL -eq 0 ] && touch /var/lock/subsys/radar-api-supervisord
