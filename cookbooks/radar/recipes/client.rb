@@ -1,5 +1,10 @@
 include_recipe 'radar::nodejs'
 
+home_path = '/home/vagrant'
+src_path = "#{home_path}/src/client"
+
+env = {'HOME' => home_path}
+
 npm_package 'gulp' do
   action :install
 end
@@ -9,33 +14,33 @@ npm_package 'bower' do
 end
 
 execute 'npm install' do
-  cwd '/home/radar/src/client'
   command 'npm install --no-bin-links'
-  user 'radar'
-  environment 'HOME' => '/home/radar'
+  user 'vagrant'
+  environment env
+  cwd src_path
   action :run
 end
 
 execute 'bower install' do
-  cwd '/home/radar/src/client'
   command 'bower install'
-  user 'radar'
-  environment 'HOME' => '/home/radar'
+  user 'vagrant'
+  environment env
+  cwd src_path
   action :run
 end
 
 execute 'gulp build' do
-  cwd '/home/radar/src/client'
   command 'gulp build'
-  user 'radar'
-  environment 'HOME' => '/home/radar'
+  user 'vagrant'
+  environment env
+  cwd src_path
   action :run
 end
 
 execute 'gulp build:dist' do
-  cwd '/home/radar/src/client'
   command 'gulp build:dist'
-  user 'radar'
-  environment 'HOME' => '/home/radar'
+  user 'vagrant'
+  environment env
+  cwd src_path
   action :run
 end
