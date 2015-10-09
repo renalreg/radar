@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import cast, extract, Integer, func
+from sqlalchemy.sql.expression import null
 
 from radar.database import db
 
@@ -11,7 +12,7 @@ def recruitment_by_month(date_column, filters=None):
 
     query = db.session\
         .query(year_column, month_column, func.count())\
-        .filter(date_column != None)\
+        .filter(date_column != null())\
         .group_by(year_column, month_column)\
         .order_by(year_column, month_column)
 

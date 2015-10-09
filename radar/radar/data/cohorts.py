@@ -1,6 +1,7 @@
 from radar.data.validation import validate
 from radar.database import db
 from radar.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGroupSpec
+
 COHORTS = [
     {
         'code': 'ALPORT',
@@ -293,7 +294,6 @@ COHORTS = [
         'result_group_codes': [],
     },
 ]
-
 
 
 def create_cohorts():

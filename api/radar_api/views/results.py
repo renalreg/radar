@@ -1,5 +1,6 @@
 from flask import request
 from sqlalchemy import or_
+from sqlalchemy.sql.expression import null
 from radar_api.serializers.results import ResultGroupSpecSerializer, ResultGroupSerializer, ResultGroupRequestSerializer, \
     ResultSpecSerializer
 from radar.models import ResultGroupSpec, ResultGroup, ResultSpec
@@ -28,7 +29,7 @@ class ResultGroupListView(DataSourceObjectViewMixin, PatientObjectListView):
 
         if 'result_codes' in args:
             result_codes = args['result_codes']
-            query = query.filter(or_(*[ResultGroup.results[x].astext != None for x in result_codes]))
+            query = query.filter(or_(*[ResultGroup.results[x].astext != null() for x in result_codes]))
 
         return query
 

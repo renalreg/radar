@@ -1,9 +1,5 @@
-from decimal import Decimal
-
 from jinja2 import escape, Markup, evalcontextfilter
 from radar.safe_strftime import safe_strftime
-
-from radar.utils import date_to_datetime, is_date
 
 
 def safe_strftime_template_filter(value, format):

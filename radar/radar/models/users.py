@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Index
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from radar.auth.passwords import check_password_hash, generate_password_hash
-
 from radar.database import db
 from radar.models import OrganisationUser, CohortUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin

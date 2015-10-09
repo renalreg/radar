@@ -512,7 +512,7 @@ class Validation(Field):
         new_obj = validator_call.validators(self.get_validators(), new_obj, result)
 
         if result.skipped:
-           return new_obj
+            return new_obj
 
         skipped_fields = set()
 

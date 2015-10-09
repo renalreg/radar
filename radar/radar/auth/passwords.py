@@ -93,4 +93,3 @@ def password_to_nato_values(password):
 
 def password_to_nato_str(password):
     return ', '.join(password_to_nato_values(password))
-

@@ -1,7 +1,7 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, Boolean, String, Index
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
 
+from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin
 

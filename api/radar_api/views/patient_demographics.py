@@ -24,7 +24,6 @@ class PatientDemographicsDetailView(RadarObjectViewMixin, PatientObjectDetailVie
         return PatientDemographicsSerializer(current_user)
 
 
-
 class EthnicityCodeListView(ListModelView):
     serializer_class = EthnicityCodeSerializer
     model_class = EthnicityCode
