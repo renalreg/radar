@@ -1,10 +1,10 @@
 import pytest
 
-from radar.lib.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Patient, Organisation, \
+from radar.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Patient, Organisation, \
     ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, ORGANISATION_CODE_RADAR, \
     ORGANISATION_CODE_UKRR
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.patient_numbers import PatientNumberValidation
+from radar.validation.core import ValidationError
+from radar.validation.patient_numbers import PatientNumberValidation
 from utils import validation_runner
 
 

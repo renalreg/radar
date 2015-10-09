@@ -1,8 +1,8 @@
 from datetime import date, timedelta
 import pytest
-from radar.lib.models import Patient, PatientDemographics
-from radar.lib.validation.core import ValidatorCall, ValidationError
-from radar.lib.validation.validators import valid_date_for_patient
+from radar.models import Patient, PatientDemographics
+from radar.validation.core import ValidatorCall, ValidationError
+from radar.validation.validators import valid_date_for_patient
 
 
 def test_before_dob():

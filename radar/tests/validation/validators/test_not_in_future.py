@@ -1,8 +1,8 @@
 from datetime import date, timedelta, datetime
 import pytest
 import pytz
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import not_in_future
+from radar.validation.core import ValidationError
+from radar.validation.validators import not_in_future
 
 
 def test_date_valid():

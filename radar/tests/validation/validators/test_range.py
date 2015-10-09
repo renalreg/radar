@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidatorCall, ValidationError
-from radar.lib.validation.validators import range_
+from radar.validation.core import ValidatorCall, ValidationError
+from radar.validation.validators import range_
 
 
 def test_valid():

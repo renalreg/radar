@@ -1,5 +1,5 @@
-from radar.lib.serializers.core import Serializer, Empty
-from radar.lib.serializers.fields import IntegerField
+from radar.serializers.core import Serializer, Empty
+from radar.serializers.fields import IntegerField
 
 
 class FooModel(object):

@@ -3,10 +3,10 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.lib.models import PatientDemographics, Patient, DataSource, EthnicityCode, GENDER_MALE, GENDER_FEMALE
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.patient_demographics import PatientDemographicsValidation
-from radar.lib.validation.validators import DAY_ZERO
+from radar.models import PatientDemographics, Patient, DataSource, EthnicityCode, GENDER_MALE, GENDER_FEMALE
+from radar.validation.core import ValidationError
+from radar.validation.patient_demographics import PatientDemographicsValidation
+from radar.validation.validators import DAY_ZERO
 from utils import validation_runner
 
 

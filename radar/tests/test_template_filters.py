@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from radar.lib.template_filters import safe_strftime_template_filter
+from radar.template_filters import safe_strftime_template_filter
 
 
 def test_safe_strftime_1800():

@@ -1,4 +1,4 @@
-from radar.lib.serializers.fields import IntegerField
+from radar.serializers.fields import IntegerField
 
 
 def test_int():

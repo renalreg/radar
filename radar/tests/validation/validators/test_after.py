@@ -1,8 +1,8 @@
 from datetime import date, datetime
 import pytest
 import pytz
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import after
+from radar.validation.core import ValidationError
+from radar.validation.validators import after
 
 
 def test_date_datetime():

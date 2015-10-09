@@ -5,8 +5,10 @@ import os
 import errno
 from pipes import quote
 import sys
+import shutil
 import stat
 import re
+import tempfile
 
 
 class Python(object):
@@ -22,18 +24,6 @@ class Python(object):
 
         return [self.path] + args
 
-    def wrapper(self):
-        command = self.command()
-        sh = '#!/bin/sh\nexec %s' % ' '.join(command)
-        return sh
-
-    def create_wrapper(self, wrapper_path):
-        sh = self.wrapper()
-
-        with open(wrapper_path, 'wb') as f:
-            f.write(sh)
-            os.fchmod(f.fileno(), stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
     def run(self, args, env=None, cwd=None):
         command = self.command(['-u'] + args)
         return run_command(command, env=env, cwd=cwd)
@@ -41,14 +31,6 @@ class Python(object):
     @classmethod
     def clone(cls, path):
         return cls(path)
-
-
-class SCLPython(Python):
-    def command(self, args=None):
-        if args is None:
-            args = []
-
-        return ['scl', 'enable', 'python27', join_args([self.path] + args)]
 
 
 class Virtualenv(object):
@@ -60,7 +42,7 @@ class Virtualenv(object):
         self.venv_python = python.clone(venv_python_path)
 
     def create(self):
-        logging.info('Creating virtualenv at %s' % self.path)
+        logging.info('Creating virtualenv at %s ...' % self.path)
 
         args = [
             '-m', 'virtualenv',
@@ -69,9 +51,6 @@ class Virtualenv(object):
         ]
         env = {'PYTHONDONTWRITEBYTECODE': '1'}
         self.python.run(args, env=env)
-
-        mkdir_p(os.path.dirname(self.venv_python.path))
-        self.venv_python.create_wrapper(self.venv_python.path + '.sh')
 
     def run(self, args, env=None, cwd=None):
         if env is None:
@@ -83,13 +62,10 @@ class Virtualenv(object):
         return self.venv_python.run(args, env=new_env, cwd=cwd)
 
     def relocate(self, path):
-        wrapper_path = self.venv_python.path + '.sh'
         python = self.python.clone(os.path.join(path, 'bin/python'))
-        python.create_wrapper(wrapper_path)
-        wrapper_path = python.path + '.sh'
         bin_path = os.path.join(self.path, 'bin')
         shebang_regex = re.compile('^#!' + re.escape(self.venv_python.path))
-        new_shebang = '#!%s' % wrapper_path
+        new_shebang = '#!%s' % python.path
 
         for filename in os.listdir(bin_path):
             filename = os.path.join(bin_path, filename)
@@ -117,6 +93,24 @@ class Virtualenv(object):
                 f = open(filename, 'wb')
                 f.write(data)
                 f.close()
+
+    def install_package(self, package_name, env=None):
+        self.run(['-m', 'pip', 'install', package_name], env=env)
+
+    def install_requirements(self, path, env=None):
+        cwd = os.path.dirname(path)
+        self.run(['-m', 'pip', 'install', '-r', path], env=env, cwd=cwd)
+
+    def delete(self):
+        logging.info('Deleting virtualenv at %s ...' % self.path)
+        shutil.rmtree(self.path)
+
+    def __enter__(self):
+        self.create()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.delete()
 
 
 def mkdir_p(path):
@@ -150,23 +144,9 @@ def run_command(args, env=None, cwd=None):
         return check_output(args, env=env, cwd=cwd, stderr=subprocess.STDOUT)
     except CalledProcessError as e:
         print e.output
-        raise
-
-
-def relative_to_script(relative_path):
-    script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    path = os.path.abspath(os.path.join(script_path, relative_path))
-    return path
+        logging.error('Command exited with code %d' % e.returncode)
+        sys.exit(1)
 
 
 def get_python():
-    pythons = [
-        Python('/usr/bin/python2.7'),
-        SCLPython('/opt/rh/python27/root/usr/bin/python2.7'),
-    ]
-
-    for x in pythons:
-        if x.exists():
-            return x
-    else:
-        raise ValueError('No python interpreter found!')
+    return Python('/usr/bin/python2.7')

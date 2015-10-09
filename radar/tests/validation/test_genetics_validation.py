@@ -3,9 +3,9 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.lib.models import Patient, PatientDemographics, Cohort, Genetics
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.genetics import GeneticsValidation
+from radar.models import Patient, PatientDemographics, Cohort, Genetics
+from radar.validation.core import ValidationError
+from radar.validation.genetics import GeneticsValidation
 from utils import validation_runner
 
 

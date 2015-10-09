@@ -1,5 +1,5 @@
 import pytest
-from radar.lib.validation.core import ValidationError
+from radar.validation.core import ValidationError
 from test_serializer import FooSerializer
 
 

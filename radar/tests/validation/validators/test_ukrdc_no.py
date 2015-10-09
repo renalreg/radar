@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.patient_number_validators import ukrdc_no
+from radar.validation.core import ValidationError
+from radar.validation.patient_number_validators import ukrdc_no
 
 
 def test_valid_int():

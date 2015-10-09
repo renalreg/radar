@@ -2,9 +2,9 @@ from datetime import date
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, DataSource, Pathology
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.pathology_validation import PathologyValidation
+from radar.models import Patient, PatientDemographics, DataSource, Pathology
+from radar.validation.core import ValidationError
+from radar.validation.pathology_validation import PathologyValidation
 from utils import validation_runner
 
 

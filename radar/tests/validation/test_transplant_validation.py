@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, Transplant, DataSource
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.transplants import TransplantValidation
+from radar.models import Patient, PatientDemographics, Transplant, DataSource
+from radar.validation.core import ValidationError
+from radar.validation.transplants import TransplantValidation
 from utils import validation_runner
 
 

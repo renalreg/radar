@@ -2,10 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, DataSource
-from radar.lib.models.patient_addresses import PatientAddress
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.patient_addresses import PatientAddressValidation
+from radar.models import Patient, PatientDemographics, DataSource
+from radar.models.patient_addresses import PatientAddress
+from radar.validation.core import ValidationError
+from radar.validation.patient_addresses import PatientAddressValidation
 from utils import validation_runner
 
 

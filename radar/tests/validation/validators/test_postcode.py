@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import postcode
+from radar.validation.core import ValidationError
+from radar.validation.validators import postcode
 
 
 def test_valid():

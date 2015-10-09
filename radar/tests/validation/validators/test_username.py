@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import username
+from radar.validation.core import ValidationError
+from radar.validation.validators import username
 
 
 def test_valid():

@@ -1,4 +1,4 @@
-from radar.lib.validation.validators import normalise_whitespace
+from radar.validation.validators import normalise_whitespace
 
 
 def test_no_spaces():

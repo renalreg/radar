@@ -1,7 +1,7 @@
 home_path = '/home/vagrant'
 venv_path = "#{home_path}/venv"
 venv_python_path = "#{venv_path}/bin/python"
-src_path = "#{home_path}/src/radar"
+src_path = "#{home_path}/src"
 
 env = {
   'HOME' => home_path,
@@ -16,31 +16,37 @@ virtualenv venv_path do
   user 'vagrant'
   group 'vagrant'
   environment env
-  packages 'gunicorn' => '19.3.0',
-           'supervisor' => '3.1.3'
   action :create
 end
 
-execute "install dev_requirements.txt in #{venv_path}" do
-  command "#{venv_python_path} -m pip install -r dev_requirements.txt"
-  user 'vagrant'
-  environment env
-  cwd src_path
-  action :run
-end
-
-execute "install requirements.txt in #{venv_path}" do
+execute "install api development dependencies in #{venv_path}" do
   command "#{venv_python_path} -m pip install -r requirements.txt"
   user 'vagrant'
   environment env
-  cwd src_path
+  cwd "#{src_path}/api"
   action :run
 end
 
-execute "install radar in #{venv_python_path}" do
+execute "install api dependencies in #{venv_path}" do
+  command "#{venv_python_path} -m pip install -r requirements.txt"
+  user 'vagrant'
+  environment env
+  cwd "#{src_path}/api"
+  action :run
+end
+
+execute "install radar in #{venv_path}" do
   command "#{venv_python_path} -m pip install --editable ."
   user 'vagrant'
   environment env
-  cwd src_path
+  cwd "#{src_path}/radar"
+  action :run
+end
+
+execute "install api in #{venv_python_path}" do
+  command "#{venv_python_path} -m pip install --editable ."
+  user 'vagrant'
+  environment env
+  cwd "#{src_path}/api"
   action :run
 end

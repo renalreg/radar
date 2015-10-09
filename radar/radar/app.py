@@ -1,6 +1,6 @@
 from flask import Flask
 
-from radar.lib.database import db
+from radar.database import db
 
 
 def create_app():
@@ -9,7 +9,7 @@ def create_app():
     app.config.from_envvar('RADAR_SETTINGS')
 
     # noinspection PyUnresolvedReferences
-    from radar.lib import models
+    from radar import models
 
     db.init_app(app)
 

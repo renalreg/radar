@@ -12,7 +12,7 @@ postgresql_database 'radar' do
   action :create
 end
 
-postgresql_database_user 'radar' do
+postgresql_database_user 'vagrant' do
   connection postgresql_connection_info
   password 'vagrant'
   database_name 'radar'

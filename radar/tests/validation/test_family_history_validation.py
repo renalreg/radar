@@ -1,9 +1,9 @@
 import pytest
 
-from radar.lib.models import Patient, Cohort
-from radar.lib.models.family_history import FamilyHistory
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.family_history import FamilyHistoryValidation
+from radar.models import Patient, Cohort
+from radar.models.family_history import FamilyHistory
+from radar.validation.core import ValidationError
+from radar.validation.family_history import FamilyHistoryValidation
 from utils import validation_runner
 
 

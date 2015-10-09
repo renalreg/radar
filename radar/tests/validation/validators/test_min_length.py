@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import min_length
+from radar.validation.core import ValidationError
+from radar.validation.validators import min_length
 
 
 def test_valid():

@@ -1,9 +1,9 @@
 from datetime import datetime, date
 import pytest
 import pytz
-from radar.lib.models import Patient, PatientDemographics
-from radar.lib.validation.core import ValidationError, ValidatorCall
-from radar.lib.validation.validators import after_date_of_birth
+from radar.models import Patient, PatientDemographics
+from radar.validation.core import ValidationError, ValidatorCall
+from radar.validation.validators import after_date_of_birth
 
 
 def test_valid():
