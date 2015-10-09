@@ -7,3 +7,7 @@ venv
 Berksfile.lock
 build
 *.rpm
+.tox
+htmlcov
+.coverage
+.cache
