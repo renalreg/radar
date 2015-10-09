@@ -1,47 +1,43 @@
-include_recipe 'radar::python'
-
-name = 'radar-api'
+name = 'radar-api-dev'
 conf_path = "/etc/#{name}"
+sysconfig_path = "/etc/sysconfig/#{name}"
+service_path = "/etc/systemd/system/#{name}.service"
+settings_path = "#{conf_path}/settings.py"
+gunicorn_config_path = "#{conf_path}/gunicorn.py"
 
-directory conf_path do
-  owner 'radar'
-  group 'radar'
+template sysconfig_path do
+  source 'api/sysconfig.erb'
+  variables 'settings_path' => settings_path
+  owner 'root'
+  group 'root'
   mode '00755'
   action :create
 end
 
-template "#{conf_path}/settings.py" do
+template service_path do
+  source 'api/service.erb'
+  variables 'name' => name,
+            'sysconfig_path' => sysconfig_path,
+            'gunicorn_config_path' => gunicorn_config_path
+  owner 'root'
+  group 'root'
+  mode '00755'
+  action :create
+end
+
+template settings_path do
   source 'api/settings.py.erb'
-  user 'radar'
-  group 'radar'
-  mode '00644'
-  action :create
-end
-
-template "#{conf_path}/supervisord.conf" do
-  source 'api/supervisord.conf.erb'
-  user 'root'
-  group 'root'
-  mode '00644'
-  notifies :restart, "service[#{name}]"
-  action :create
-end
-
-template "#{conf_path}/gunicorn.py" do
-  source 'api/gunicorn.py.erb'
-  user 'root'
-  group 'root'
-  mode '00644'
-  notifies :restart, "service[#{name}]"
-  action :create
-end
-
-template "/etc/init.d/#{name}" do
-  source 'api/init.erb'
-  user 'root'
+  owner 'root'
   group 'root'
   mode '00755'
-  notifies :restart, "service[#{name}]"
+  action :create
+end
+
+template gunicorn_config_path do
+  source 'api/gunicorn.py.erb'
+  owner 'root'
+  group 'root'
+  mode '00755'
   action :create
 end
 

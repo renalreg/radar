@@ -118,10 +118,15 @@ def build_radar(python, src_directory, install_directory):
     logging.info('Successfully built rpm at %s' % rpm_path)
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command('radar')
 @click.option('--lint/--no-lint', default=True)
 @click.option('--test/--no-test', default=True)
-def main(lint, test):
+def build_radar(lint, test):
     python = get_python()
     src_directory = relative_to_script('../radar')
     install_directory = '/opt/radar-api'
@@ -129,5 +134,16 @@ def main(lint, test):
     test_radar(python, src_directory, lint=lint, test=test)
     build_radar(python, src_directory, install_directory)
 
+
+@cli.command('api')
+def build_api():
+    pass
+
+
+@cli.command('web')
+def build_web():
+    pass
+
+
 if __name__ == '__main__':
-    main()
+    cli()
