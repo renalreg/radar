@@ -19,32 +19,28 @@ virtualenv venv_path do
   action :create
 end
 
-execute "install api development dependencies in #{venv_path}" do
-  command "#{venv_python_path} -m pip install -r requirements.txt"
+execute "#{venv_python_path} -m pip install -r dev-requirements.txt" do
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
   action :run
 end
 
-execute "install api dependencies in #{venv_path}" do
-  command "#{venv_python_path} -m pip install -r requirements.txt"
+execute "#{venv_python_path} -m pip install -r requirements.txt" do
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
   action :run
 end
 
-execute "install radar in #{venv_path}" do
-  command "#{venv_python_path} -m pip install --editable ."
+execute "#{venv_python_path} -m pip install --editable ." do
   user 'vagrant'
   environment env
   cwd "#{src_path}/radar"
   action :run
 end
 
-execute "install api in #{venv_python_path}" do
-  command "#{venv_python_path} -m pip install --editable ."
+execute "#{venv_python_path} -m pip install --editable ." do
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
