@@ -1,12 +1,12 @@
-upstream radar_api {
-  server 127.0.0.1:5000;
+upstream radar_dev_api {
+  server 127.0.0.1:5001;
 }
 
 server {
-  listen 80;
+  listen 8081;
   server_name localhost;
 
-  root /opt/radar-client;
+  root /home/vagrant/src/client/dist;
   index index.html;
 
   # https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
@@ -41,6 +41,55 @@ server {
 
     rewrite ^/api/?(.*) /$1 break;
 
-    proxy_pass http://radar_api;
+    proxy_pass http://radar_dev_api;
+  }
+}
+
+server {
+  listen 8082;
+  server_name localhost;
+
+  root /home/vagrant/src/client;
+  index index.html;
+
+  # https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
+  sendfile off;
+
+  gzip on;
+  gzip_disable "msie6";
+  gzip_http_version 1.1;
+  gzip_comp_level 5;
+  gzip_min_length 256;
+  gzip_proxied any;
+  gzip_vary on;
+
+  gzip_types
+    text/css
+    application/json
+    application/javascript;
+
+  add_header Cache-Control "no-cache, no-store, must-revalidate";
+  add_header Pragma "no-cache";
+  add_header Expires 0;
+
+  location / {
+    try_files /.tmp/serve/$uri /src/$uri /index.html;
+  }
+
+  location /bower_components {
+  }
+
+  location /index.html {
+    root /home/vagrant/src/client/.tmp/serve;
+  }
+
+  location /api {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+
+    rewrite ^/api/?(.*) /$1 break;
+
+    proxy_pass http://radar_dev_api;
   }
 }
