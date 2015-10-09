@@ -11,6 +11,10 @@
   ],
   "requireOperatorBeforeLineBreak": true,
   "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "maximumLineLength": {
+     "value": 160,
+     "allExcept": ["comments", "regex"]
+   },
   "validateIndentation": 2,
   "validateQuoteMarks": "'",
 
