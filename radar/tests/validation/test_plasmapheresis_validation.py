@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import Patient, PatientDemographics, Plasmapheresis, DataSource
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.plasmapheresis import PlasmapheresisValidation
+from radar.models import Patient, PatientDemographics, Plasmapheresis, DataSource
+from radar.validation.core import ValidationError
+from radar.validation.plasmapheresis import PlasmapheresisValidation
 from utils import validation_runner
 
 

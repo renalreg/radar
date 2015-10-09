@@ -1,8 +1,8 @@
 import pytest
 
-from radar.lib.models import Patient, Organisation, OrganisationPatient
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.organisation_patients import OrganisationPatientValidation
+from radar.models import Patient, Organisation, OrganisationPatient
+from radar.validation.core import ValidationError
+from radar.validation.organisation_patients import OrganisationPatientValidation
 from utils import validation_runner
 
 

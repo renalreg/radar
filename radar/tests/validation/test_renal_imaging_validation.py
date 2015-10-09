@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.lib.models import RenalImaging, DataSource, Patient, PatientDemographics
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.renal_imaging import RenalImagingValidation
+from radar.models import RenalImaging, DataSource, Patient, PatientDemographics
+from radar.validation.core import ValidationError
+from radar.validation.renal_imaging import RenalImagingValidation
 from utils import validation_runner
 
 

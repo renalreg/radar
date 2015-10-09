@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import max_
+from radar.validation.core import ValidationError
+from radar.validation.validators import max_
 
 
 def test_valid():

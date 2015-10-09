@@ -1,4 +1,4 @@
-from radar.lib.validation.validators import none_if_blank
+from radar.validation.validators import none_if_blank
 
 
 def test_blank():

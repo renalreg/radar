@@ -25,8 +25,5 @@ setup(
         'six',
         'SQLAlchemy',
         'Werkzeug',
-    ],
-    scripts=[
-        'scripts/manage.py',
-    ],
+    ]
 )

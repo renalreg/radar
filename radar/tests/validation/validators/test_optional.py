@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import SkipField
-from radar.lib.validation.validators import optional
+from radar.validation.core import SkipField
+from radar.validation.validators import optional
 
 
 def test_str():

@@ -1,10 +1,8 @@
-import shutil
 import tempfile
 import logging
 import click
-import os
 
-from package import Virtualenv, run_command, relative_to_script, get_python
+from package import Virtualenv, run_command, get_python
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -14,81 +12,93 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-class RadarVirtualenv(Virtualenv):
-    def install(self, src_directory, test=False):
-        if test:
-            # Install dev_requirements.txt
-            logging.info('Installing dev_requirements.txt ...')
-            self.run(
-                ['-m', 'pip', 'install', '-r', 'dev_requirements.txt'],
-                cwd=src_directory
-            )
+def install_radar(v, test=False):
+    src_directory = '../radar'
 
-        # Install requirements.txt
-        logging.info('Installing requirements.txt ...')
-        self.run(
-            ['-m', 'pip', 'install', '-r', 'requirements.txt'],
-            env={'PATH': '/usr/pgsql-9.4/bin:/usr/bin:/bin'},
-            cwd=src_directory
-        )
+    if test:
+        for package_name in ['flake8', 'pytest']:
+            logging.info('Installing %s ...' % package_name)
+            v.install_package(package_name)
 
-        # Install radar
-        logging.info('Installing radar ...')
-        self.run(['setup.py', 'install'], cwd=src_directory)
+    # Install radar
+    logging.info('Installing radar ...')
+    v.run(['setup.py', 'install'], cwd=src_directory)
 
 
-def test_radar(python, src_directory, lint=True, test=True):
-    logging.info('Testing ...')
+def install_api(v, test=False):
+    src_directory = '../api'
 
-    if not lint and not test:
-        logging.info('Nothing to do')
-        return
+    if test:
+        # Install api development dependencies
+        logging.info('Installing api development dependencies ...')
+        v.install_requirements('../api/dev_requirements.txt')
 
-    tests_directory = os.path.join(src_directory, 'tests')
-    test_directory = tempfile.mkdtemp()
+    # Install api dependencies
+    logging.info('Installing api dependencies ...')
+    v.install_requirements('../api/requirements.txt', env={'PATH': '/usr/pgsql-9.4/bin:/usr/bin:/bin'})
 
-    logging.info('Source directory is %s' % src_directory)
-    logging.info('Test directory is %s' % test_directory)
+    install_radar(v, test)
 
-    # Create the test virtualenv
-    v = RadarVirtualenv(test_directory, python)
-    v.create()
-    v.install(src_directory, test=True)
+    # Install api
+    logging.info('Installing api ...')
+    v.run(['setup.py', 'install'], cwd=src_directory)
+
+
+def test_radar(v, run_lint=True, run_tests=True):
+    package_directory = '../radar/radar'
+    tests_directory = '../radar/tests'
+
+    logging.info('Testing radar ...')
+
+    logging.info('Package directory is %s' % package_directory)
+    logging.info('Tests directory is %s' % tests_directory)
 
     # Run flake8
-    if lint:
+    if run_lint:
         logging.info('Running flake8 ...')
-        v.run(['-m', 'flake8', os.path.join(src_directory, 'radar')])
+        v.run(['-m', 'flake8', package_directory])
 
     # Run tests
-    if test:
+    if run_tests:
         logging.info('Running pytest ...')
         v.run(['-m', 'pytest', tests_directory])
 
-    # Remove test directory
-    logging.info('Deleting test directory ...')
-    shutil.rmtree(test_directory)
+
+def test_api(v, run_lint=True, run_tests=True):
+    test_radar(v, run_lint, run_tests)
+
+    package_directory = '../api/radar_api'
+    tests_directory = '../radar/tests'
+
+    logging.info('Testing api ...')
+
+    logging.info('Package directory is %s' % package_directory)
+    logging.info('Tests directory is %s' % tests_directory)
+
+    # Run flake8
+    if run_lint:
+        logging.info('Running flake8 ...')
+        v.run(['-m', 'flake8', package_directory])
+
+    # Run tests
+    if run_tests:
+        logging.info('Running pytest ...')
+        v.run(['-m', 'pytest', tests_directory])
 
 
-def build_radar(python, src_directory, install_directory):
-    build_directory = tempfile.mkdtemp()
+def package_api(v):
+    install_directory = '/opt/radar-api'
+    src_directory = '../api'
 
-    logging.info('Building ...')
-    logging.info('Source directory is %s' % src_directory)
-    logging.info('Build directory is %s' % build_directory)
+    logging.info('Packaging radar ...')
     logging.info('Install directory is %s' % install_directory)
-
-    # Create the build virtualenv
-    v = RadarVirtualenv(build_directory, python)
-    v.create()
-    v.install(src_directory)
 
     # Update build path references to install path
     logging.info('Updating build virtualenv paths ...')
     v.relocate(install_directory)
 
-    name = 'radar'
-    version = python.run(['setup.py', '--version'], cwd=src_directory).strip()
+    name = 'radar-api'
+    version = v.run(['setup.py', '--version'], cwd=src_directory).strip()
     architecture = 'x86_64'
     rpm_path = '%s-%s.%s.rpm' % (name, version, architecture)
 
@@ -107,13 +117,9 @@ def build_radar(python, src_directory, install_directory):
         '--architecture', architecture,
         '--epoch', '0',
         '--force',
-        '--depends', 'python27',
-        '%s/=%s' % (build_directory, install_directory)
-    ], env={'PATH': '/usr/bin:/bin'})
-
-    # Remove build directory
-    logging.info('Deleting build directory ...')
-    shutil.rmtree(build_directory)
+        '--depends', 'python',
+        '%s/=%s' % (v.path, install_directory)
+    ], env={'PATH': '/usr/local/bin:/usr/bin:/bin'})
 
     logging.info('Successfully built rpm at %s' % rpm_path)
 
@@ -123,20 +129,26 @@ def cli():
     pass
 
 
-@cli.command('radar')
-@click.option('--lint/--no-lint', default=True)
-@click.option('--test/--no-test', default=True)
-def build_radar(lint, test):
-    python = get_python()
-    src_directory = relative_to_script('../radar')
-    install_directory = '/opt/radar-api'
-
-    test_radar(python, src_directory, lint=lint, test=test)
-    build_radar(python, src_directory, install_directory)
-
-
 @cli.command('api')
-def build_api():
+@click.option('--run-lint/--no-lint', default=True)
+@click.option('--run-tests/--no-tests', default=True)
+def build_api(run_lint, run_tests):
+    python = get_python()
+
+    test = run_lint or run_tests
+
+    if test:
+        with Virtualenv(tempfile.mkdtemp(), python) as v:
+            install_api(v, True)
+            test_api(v, run_lint, run_tests)
+
+    with Virtualenv(tempfile.mkdtemp(), python) as v:
+        install_api(v)
+        package_api(v)
+
+
+@cli.command('client')
+def build_web():
     pass
 
 

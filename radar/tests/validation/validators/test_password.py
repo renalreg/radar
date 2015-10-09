@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import password
+from radar.validation.core import ValidationError
+from radar.validation.validators import password
 
 
 def test_xkcd():

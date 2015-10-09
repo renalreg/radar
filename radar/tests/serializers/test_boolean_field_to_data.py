@@ -1,4 +1,4 @@
-from radar.lib.serializers.fields import BooleanField
+from radar.serializers.fields import BooleanField
 
 
 def test_true():

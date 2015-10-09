@@ -1,4 +1,4 @@
-from radar.lib.validation.validators import remove_trailing_comma
+from radar.validation.validators import remove_trailing_comma
 
 
 def test_no_comma():

@@ -1,4 +1,4 @@
-from radar.lib.validation.validators import lower
+from radar.validation.validators import lower
 
 
 def test_lower():

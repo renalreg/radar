@@ -1,6 +1,6 @@
 import pytest
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.validators import not_empty
+from radar.validation.core import ValidationError
+from radar.validation.validators import not_empty
 
 
 def test_str():

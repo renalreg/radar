@@ -3,7 +3,7 @@ import pytest
 
 import pytz
 
-from radar.lib.safe_strftime import safe_strftime
+from radar.safe_strftime import safe_strftime
 
 
 def test_iso_format():

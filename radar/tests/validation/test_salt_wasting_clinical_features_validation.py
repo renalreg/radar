@@ -2,9 +2,9 @@ from datetime import date
 
 import pytest
 
-from radar.lib.models import SaltWastingClinicalFeatures, PatientDemographics, Patient
-from radar.lib.validation.core import ValidationError
-from radar.lib.validation.salt_wasting import SaltWastingClinicalFeaturesValidation
+from radar.models import SaltWastingClinicalFeatures, PatientDemographics, Patient
+from radar.validation.core import ValidationError
+from radar.validation.salt_wasting import SaltWastingClinicalFeaturesValidation
 from utils import validation_runner
 
 

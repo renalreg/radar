@@ -6,7 +6,7 @@ server {
   listen 8081;
   server_name localhost;
 
-  root /home/radar/src/client/dist;
+  root /home/vagrant/src/client/dist;
   index index.html;
 
   # https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
@@ -49,7 +49,7 @@ server {
   listen 8082;
   server_name localhost;
 
-  root /home/radar/src/client;
+  root /home/vagrant/src/client;
   index index.html;
 
   # https://docs.vagrantup.com/v2/synced-folders/virtualbox.html
@@ -80,7 +80,7 @@ server {
   }
 
   location /index.html {
-    root /home/radar/src/client/.tmp/serve;
+    root /home/vagrant/src/client/.tmp/serve;
   }
 
   location /api {

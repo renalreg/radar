@@ -1,4 +1,4 @@
-from radar.lib.models import User
+from radar.models import User
 
 
 def validation_runner(model_class, validation_class, obj, is_admin=True, user=None, old_obj=None):

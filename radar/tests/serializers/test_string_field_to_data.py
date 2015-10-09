@@ -1,4 +1,4 @@
-from radar.lib.serializers.fields import StringField
+from radar.serializers.fields import StringField
 
 
 def test_string():

@@ -3,8 +3,8 @@ from datetime import datetime, date
 import pytest
 import pytz
 
-from radar.lib.serializers.fields import DateTimeField
-from radar.lib.validation.core import ValidationError
+from radar.serializers.fields import DateTimeField
+from radar.validation.core import ValidationError
 
 
 def test_string():

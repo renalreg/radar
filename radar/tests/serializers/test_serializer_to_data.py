@@ -1,4 +1,4 @@
-from radar.lib.serializers.core import Empty
+from radar.serializers.core import Empty
 from test_serializer import FooSerializer, FooModel
 
 
