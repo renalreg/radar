@@ -18,7 +18,10 @@ setup(
     packages=find_packages(),
     zip_safe=True,
     install_requires=[
+        'Flask',
         'radar',
+        'six',
+        'SQLAlchemy',
     ],
     scripts=[
         'scripts/manage.py',

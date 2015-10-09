@@ -1,14 +1,39 @@
 from subprocess import check_output, CalledProcessError
 import subprocess
 import logging
-import os
-import errno
-from pipes import quote
-import sys
 import shutil
-import stat
+
+import os
 import re
-import tempfile
+import tox.config
+import tox.session
+
+PURPLE = '\033[95m'
+CYAN = '\033[96m'
+DARK_CYAN = '\033[36m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
+END = '\033[0m'
+
+
+def heading(x):
+    logging.info(BOLD + '===== ' + x + ' =====' + END)
+
+
+def error(x):
+    logging.error(RED + x + END)
+
+
+def info(x):
+    logging.info(x)
+
+
+def success(x):
+    logging.info(GREEN + x + END)
 
 
 class Python(object):
@@ -42,7 +67,7 @@ class Virtualenv(object):
         self.venv_python = python.clone(venv_python_path)
 
     def create(self):
-        logging.info('Creating virtualenv at %s ...' % self.path)
+        info('Creating virtualenv at %s ...' % self.path)
 
         args = [
             '-m', 'virtualenv',
@@ -81,12 +106,12 @@ class Virtualenv(object):
 
             if shebang_regex.match(data):
                 data = shebang_regex.sub(new_shebang, data)
-                logging.info('Updated shebang in %s' % filename)
+                info('Updated shebang in %s' % filename)
                 update = True
 
             if self.path in data:
                 data = data.replace(self.path, path)
-                logging.info('Updated path in %s' % filename)
+                info('Updated path in %s' % filename)
                 update = True
 
             if update:
@@ -102,7 +127,7 @@ class Virtualenv(object):
         self.run(['-m', 'pip', 'install', '-r', path], env=env, cwd=cwd)
 
     def delete(self):
-        logging.info('Deleting virtualenv at %s ...' % self.path)
+        info('Deleting virtualenv at %s ...' % self.path)
         shutil.rmtree(self.path)
 
     def __enter__(self):
@@ -113,20 +138,6 @@ class Virtualenv(object):
         self.delete()
 
 
-def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
-
-def join_args(args):
-    return ' '.join(quote(x) for x in args)
-
-
 def run_command(args, env=None, cwd=None):
     if cwd is None:
         cwd = os.getcwd()
@@ -134,7 +145,7 @@ def run_command(args, env=None, cwd=None):
     if env is None:
         env = {}
 
-    logging.info('Running {args} with environment {env} and working directory {cwd}'.format(
+    info('Running {args} with environment {env} and working directory {cwd}'.format(
         args=args,
         env=env,
         cwd=cwd
@@ -144,9 +155,17 @@ def run_command(args, env=None, cwd=None):
         return check_output(args, env=env, cwd=cwd, stderr=subprocess.STDOUT)
     except CalledProcessError as e:
         print e.output
-        logging.error('Command exited with code %d' % e.returncode)
-        sys.exit(1)
+        error('Command exited with code %d' % e.returncode)
+        raise SystemExit(1)
 
 
 def get_python():
     return Python('/usr/bin/python2.7')
+
+
+def run_tox(args):
+    config = tox.config.parseconfig(args)
+    return_code = tox.session.Session(config).runcommand()
+
+    if return_code != 0:
+        raise SystemExit(1)
