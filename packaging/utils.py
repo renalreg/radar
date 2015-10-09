@@ -21,7 +21,7 @@ END = '\033[0m'
 
 
 def heading(x):
-    logging.info(BOLD + '===== ' + x + ' =====' + END)
+    logging.info(BOLD + '========== ' + x + ' ==========' + END)
 
 
 def error(x):

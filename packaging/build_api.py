@@ -61,8 +61,8 @@ def package_api(v, src_path):
         (v.path + '/', install_path, False),
         ('api/settings.py', etc_path + '/settings.py', True),
         ('api/gunicorn.py', etc_path + '/gunicorn.py', True),
-        ('api/sysconfig', '/etc/sysconfig/' + name, True),
-        ('api/systemd', '/etc/systemd/system/%s.service' % name, False),
+        ('api/sysconfig', '/etc/sysconfig/' + NAME, True),
+        ('api/systemd', '/etc/systemd/system/%s.service' % NAME, False),
     ]
 
     for src, dst, config_file in paths:

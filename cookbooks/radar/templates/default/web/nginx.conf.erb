@@ -1,4 +1,4 @@
-upstream radar_dev_api {
+upstream radar_api_dev {
   server 127.0.0.1:5001;
 }
 
@@ -41,7 +41,7 @@ server {
 
     rewrite ^/api/?(.*) /$1 break;
 
-    proxy_pass http://radar_dev_api;
+    proxy_pass http://radar_api_dev;
   }
 }
 
@@ -90,6 +90,6 @@ server {
 
     rewrite ^/api/?(.*) /$1 break;
 
-    proxy_pass http://radar_dev_api;
+    proxy_pass http://radar_api_dev;
   }
 }

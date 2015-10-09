@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 
 from radar_api.views.cohort_patients import CohortPatientDetailView, CohortPatientListView
@@ -60,6 +61,11 @@ def create_app():
 
     if app.debug:
         app.after_request(set_cors_headers)
+
+    if not app.debug:
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.INFO)
+        app.logger.addHandler(stream_handler)
 
     app.before_request(require_login)
     app.after_request(refresh_token)
