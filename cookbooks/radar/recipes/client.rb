@@ -5,6 +5,18 @@ src_path = "#{home_path}/src/client"
 
 env = {'HOME' => home_path}
 
+package 'optipng' do
+  action :install
+end
+
+package 'gifsicle' do
+  action :install
+end
+
+package 'libjpeg-turbo-utils' do
+  action :install
+end
+
 npm_package 'gulp' do
   action :install
 end
