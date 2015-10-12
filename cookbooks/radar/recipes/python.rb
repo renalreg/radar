@@ -21,10 +21,10 @@ end
 
 # TODO add config option
 file '/root/.pip/pip.conf' do
-  content = <<-END
+  content <<-EOH
 [global]
 index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
-END
+EOH
   owner 'root'
   group 'root'
   mode '00644'
@@ -39,12 +39,12 @@ directory '/home/vagrant/.pip' do
 end
 
 file '/home/vagrant/.pip/pip.conf' do
-  content = <<-END
+  content <<-EOH
 [global]
 index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
-END
-  owner 'root'
-  group 'root'
+EOH
+  owner 'vagrant'
+  group 'vagrant'
   mode '00644'
   action :create
 end
