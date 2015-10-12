@@ -1,14 +1,23 @@
+build
 dist
-*.egg-info
-*.pyc
+.cache
 .idea
-venv
+*.rpm
+
+# Vagrant / Chef
 .vagrant
 Berksfile.lock
-build
-*.rpm
+
+# Python
+.coverage
 .tox
 htmlcov
-.coverage
-.cache
+*.egg-info
+*.pyc
+venv
+
+# NodeJS
 npm-debug.log*
+node_modules
+bower_components
+node_modules
