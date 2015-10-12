@@ -11,3 +11,4 @@ build
 htmlcov
 .coverage
 .cache
+npm-debug.log*
