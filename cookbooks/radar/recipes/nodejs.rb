@@ -41,11 +41,12 @@ end
 # privilege to create symlinks.
 # http://security.stackexchange.com/questions/10194/why-do-you-have-to-be-an-admin-to-create-a-symlink-in-windows
 # TODO add config option
+# TODO this should possibly be in /etc/npmrc (conflicts with proxy settings though)
 file '/usr/etc/npmrc' do
-  content = <<-END
+  content <<-EOH
 registry = http://rr-systems-live.northbristol.local:2000/
 bin-links = false
-END
+EOH
   owner 'root'
   group 'root'
   mode '00644'
@@ -53,10 +54,10 @@ END
 end
 
 file '/home/vagrant/.npmrc' do
-  content = <<-END
+  content <<-EOH
 registry = http://rr-systems-live.northbristol.local:2000/
 bin-links = false
-END
+EOH
   owner 'root'
   group 'root'
   mode '00644'
