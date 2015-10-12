@@ -13,6 +13,8 @@ npm_package 'bower' do
   action :install
 end
 
+# XXX currently this results in https://github.com/npm/npm/issues/9224
+# A workaround is to install each package separately.
 execute 'npm install' do
   command 'npm install --no-bin-links'
   user 'vagrant'

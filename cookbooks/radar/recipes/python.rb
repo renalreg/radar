@@ -12,6 +12,43 @@ package 'python-virtualenv' do
   action :install
 end
 
+directory '/root/.pip' do
+  owner 'root'
+  group 'root'
+  mode '00755'
+  action :create
+end
+
+# TODO add config option
+file '/root/.pip/pip.conf' do
+  content = <<-END
+[global]
+index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
+END
+  owner 'root'
+  group 'root'
+  mode '00644'
+  action :create
+end
+
+directory '/home/vagrant/.pip' do
+  owner 'root'
+  group 'root'
+  mode '00755'
+  action :create
+end
+
+file '/home/vagrant/.pip/pip.conf' do
+  content = <<-END
+[global]
+index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
+END
+  owner 'root'
+  group 'root'
+  mode '00644'
+  action :create
+end
+
 virtualenv venv_path do
   user 'vagrant'
   group 'vagrant'
@@ -19,28 +56,32 @@ virtualenv venv_path do
   action :create
 end
 
-execute "#{venv_python_path} -m pip install -r dev-requirements.txt" do
+execute 'install api dev dependencies' do
+  command "#{venv_python_path} -m pip install -r dev-requirements.txt"
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
   action :run
 end
 
-execute "#{venv_python_path} -m pip install -r requirements.txt" do
+execute 'install api dependencies' do
+  command "#{venv_python_path} -m pip install -r requirements.txt"
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
   action :run
 end
 
-execute "#{venv_python_path} -m pip install --editable ." do
+execute 'install radar' do
+  command "#{venv_python_path} -m pip install --editable ."
   user 'vagrant'
   environment env
   cwd "#{src_path}/radar"
   action :run
 end
 
-execute "#{venv_python_path} -m pip install --editable ." do
+execute 'install api' do
+  command "#{venv_python_path} -m pip install --editable ."
   user 'vagrant'
   environment env
   cwd "#{src_path}/api"
