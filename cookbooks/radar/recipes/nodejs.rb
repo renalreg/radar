@@ -35,31 +35,18 @@ execute 'install npm' do
   action :run
 end
 
-# NOTE the bin-links option prevents npm from creating symlinking any binaries.
-# VirtualBox supports symlinks if the SharedFoldersEnableSymlinksCreate option
-# is enabled. In Windows you need to have the SeCreateSymbolicLinkPrivilege
-# privilege to create symlinks.
-# http://security.stackexchange.com/questions/10194/why-do-you-have-to-be-an-admin-to-create-a-symlink-in-windows
-# TODO add config option
-# TODO this should possibly be in /etc/npmrc (conflicts with proxy settings though)
-file '/usr/etc/npmrc' do
-  content <<-EOH
-registry = http://rr-systems-live.northbristol.local:2000/
-bin-links = false
-EOH
-  owner 'root'
-  group 'root'
-  mode '00644'
+# Use an alternative registry (e.g npm-lazy-proxy) if specified
+npm_config 'registry' do
+  value node['npm_registry']
   action :create
 end
 
-file '/home/vagrant/.npmrc' do
-  content <<-EOH
-registry = http://rr-systems-live.northbristol.local:2000/
-bin-links = false
-EOH
-  owner 'root'
-  group 'root'
-  mode '00644'
+# NOTE the bin-links option prevents npm from symlinking any binaries.
+# VirtualBox supports symlinks if the SharedFoldersEnableSymlinksCreate option
+# is enabled. In Windows you need to have the SeCreateSymbolicLinkPrivilege
+# privilege to create symlinks.
+# http://security.stackexchange.com/questions/10194
+npm_config 'bin-links' do
+  value node['npm_bin_links']
   action :create
 end
