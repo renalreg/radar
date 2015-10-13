@@ -19,6 +19,11 @@ package 'man' do
   action :install
 end
 
+execute 'yum groupinstall -y "Development Tools"' do
+  user 'root'
+  action :run
+end
+
 include_recipe 'radar::user'
 include_recipe 'radar::db'
 include_recipe 'radar::python'

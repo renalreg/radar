@@ -24,6 +24,7 @@ file '/root/.pip/pip.conf' do
   content <<-EOH
 [global]
 index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
+trusted-host = rr-systems-live.northbristol.local
 EOH
   owner 'root'
   group 'root'
@@ -42,6 +43,7 @@ file '/home/vagrant/.pip/pip.conf' do
   content <<-EOH
 [global]
 index-url = http://rr-systems-live.northbristol.local:2001/root/pypi/+simple/
+trusted-host = rr-systems-live.northbristol.local
 EOH
   owner 'vagrant'
   group 'vagrant'

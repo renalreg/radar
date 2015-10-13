@@ -2,11 +2,13 @@ unless Vagrant.has_plugin?('vagrant-berkshelf')
   raise 'vagrant-berkshelf is not installed, run: vagrant plugin install vagrant-berkshelf'
 end
 
-# NOTE for Windows Hosts
+# XXX Windows hosts only
 # Use Vagrant 1.7.3 (exact version) and VirtualBox 4.x (4.3.30 is known to work)
 # Vagrant 1.7.3 added support for long paths. This was removed in 1.7.4 as it
 # caused problems in VirtualBox 5.
 # FIXME https://github.com/mitchellh/vagrant/issues/1953
+
+# TODO instructions for enabling symlinks
 
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
