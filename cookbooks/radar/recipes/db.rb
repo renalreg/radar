@@ -20,6 +20,7 @@ postgresql_database_user 'vagrant' do
   action [:create, :grant]
 end
 
+# TODO this doesn't give the radar user permissions on the radar tables
 postgresql_database_user 'radar' do
   connection postgresql_connection_info
   password 'vagrant'
