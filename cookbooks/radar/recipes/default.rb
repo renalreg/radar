@@ -24,6 +24,9 @@ execute 'yum groupinstall -y "Development Tools"' do
   action :run
 end
 
+# NOTE selinux is enabled in production
+include_recipe 'selinux::permissive'
+
 include_recipe 'radar::user'
 include_recipe 'radar::db'
 include_recipe 'radar::python'
