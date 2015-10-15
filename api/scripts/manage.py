@@ -1,4 +1,5 @@
 import click
+from radar.data.dev import create_users
 
 from radar_api.app import create_app
 from radar.database import db
@@ -22,6 +23,13 @@ def devdb(patients):
     db.drop_all()
     db.create_all()
     dev.create_data(patients)
+    db.session.commit()
+
+
+@cli.command('devusers')
+@click.option('--count', default=100)
+def devusers(count):
+    create_users(count)
     db.session.commit()
 
 
