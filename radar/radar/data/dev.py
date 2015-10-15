@@ -36,16 +36,18 @@ PASSWORD = 'password'
 
 def create_users(n):
     for x in range(n):
+        username = 'user%d' % (x + 1)
+
+        if User.query.filter(User.username == username).first() is not None:
+            continue
+
         user = User()
         user.first_name = generate_first_name(generate_gender()).capitalize()
         user.last_name = generate_last_name().capitalize()
-        user.username = '%s.%s%d' % (
-            user.first_name.lower(),
-            user.last_name.lower(),
-            x + 1
-        )
-        user.email = '%s@example.org' % user.username
+        user.username = username
+        user.email = '%s@example.org' % username
         user.password = PASSWORD
+        user.is_admin = True
         user = validate(user)
         db.session.add(user)
 
