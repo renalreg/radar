@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-user='radar'
-group='radar'
+USER=radar
+GROUP=radar
 
-getent group $group > /dev/null || groupadd -r $group
-getent passwd $user > /dev/null || useradd -r -g $group -d / -s /sbin/nologin $user
+getent group $GROUP > /dev/null || groupadd -r $GROUP
+getent passwd $USER > /dev/null || useradd -r -g $GROUP -d / -s /sbin/nologin $USER
