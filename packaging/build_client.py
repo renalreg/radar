@@ -27,7 +27,7 @@ def package_client(src_path):
     dist_path = os.path.join(src_path, 'dist')
 
     # TODO version
-    package = Package(NAME, '0.2.0', ARCHITECTURE, URL)
+    package = Package(NAME, '0.3.0', ARCHITECTURE, URL)
     package.add_path(dist_path + '/', install_path)
     rpm_path = package.build()
 
