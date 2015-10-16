@@ -3,6 +3,10 @@ python:
   - 2.7
 install:
   - pip install tox
+  - pip install coveralls
 script:
   - tox -c radar/tox.ini
   - tox -c api/tox.ini
+after_success:
+  - coverage combine radar/.coverage api/.coverage
+  - coveralls
