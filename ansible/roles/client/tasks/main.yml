@@ -1,0 +1,6 @@
+---
+- name: install gulp
+  npm: name=gulp global=true
+
+- name: install bower
+  npm: name=bower global=true
