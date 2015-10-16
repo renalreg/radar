@@ -12,7 +12,7 @@
         var credentials = {
           username: '',
           password: '',
-          logoutOtherSessions: true
+          logoutOtherSessions: false
         };
 
         scope.credentials = credentials;
