@@ -1,0 +1,10 @@
+---
+- name: install radar development server 
+  hosts: all
+  remote_user: vagrant
+  become: yes
+  roles:
+    - common
+    - db
+    - web
+    - rpm

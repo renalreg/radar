@@ -1,0 +1,10 @@
+---
+- name: install nodejs
+  yum: name=nodejs state=present
+
+# python 2.7.5 doesn't support SNI so we have to disable certificate validation
+- name: download npm install script
+  get_url: url=https://www.npmjs.com/install.sh dest=/tmp/install_npm.sh validate_certs=False
+
+- name: install npm
+  command: sh /tmp/install_npm.sh creates=/usr/bin/npm

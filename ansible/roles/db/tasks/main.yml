@@ -1,0 +1,32 @@
+---
+- name: install the postgresql repo 
+  yum: name=http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm state=present
+
+- name: install postgresql
+  yum: name={{ item }} state=present
+  with_items:
+    - postgresql94-server
+    - postgresql94-devel
+
+- name: create postgresql data directory
+  command: /usr/pgsql-9.4/bin/postgresql94-setup initdb creates=/var/lib/pgsql/9.4/data/PG_VERSION
+
+- name: start and enable postgresql
+  service: name=postgresql-9.4 state=started enabled=yes
+
+- name: install psycopg2
+  yum: name=python-psycopg2 state=present
+
+# Allows checking to see if encrypted password has changed
+- name: install passlib
+  yum: name=python-passlib state=present
+
+- name: create the radar database
+  postgresql_db: name=radar
+  become: yes
+  become_user: postgres
+
+- name: create vagrant postgresql user
+  postgresql_user: db=radar name=vagrant password=vagrant
+  become: yes
+  become_user: postgres
