@@ -1,0 +1,2 @@
+---
+postgresql_shared_buffers: '128MB'

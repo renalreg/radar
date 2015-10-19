@@ -1,15 +1,30 @@
 ---
-- name: install radar development server
-  hosts: vagrant
-  remote_user: vagrant
+- hosts: staging, production
+  roles:
+    - repo
+
+- hosts: web
+  become: yes
+  roles:
+    - web
+
+- hosts: db
+  become: yes
+  roles:
+    - db
+
+- hosts: dev
   become: yes
   vars:
     src_path: /home/vagrant/src
     radar_src_path: '{{ src_path }}/radar'
     api_src_path: '{{ src_path }}/api'
     client_src_path: '{{ src_path }}/client'
+    pip_index_url: null
+    pip_trusted_host: null
+    npm_registry: null
   roles:
-#    - common
+    - dev
     - db
-#    - web
-#    - rpm
+    - db_dev
+    - web_dev

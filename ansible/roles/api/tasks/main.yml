@@ -1,27 +1,6 @@
 ---
-- name: create the config directory
-  file: path={{ api_config_path }} state=directory
+- name: install radar-api
+  yum: name=radar-api state=latest
 
-- name: create sysconfig
-  template: src=sysconfig.j2 dest={{ api_sysconfig_path }} owner=root group=root mode=0644
-  notify:
-    - restart api
-
-- name: create systemd service
-  template: src=systemd.j2 dest={{ api_systemd_path }} owner=root group=root mode=0755
-  notify:
-    - reload systemd
-    - restart api
-
-- name: create settings.py
-  template: src=settings.py.j2 dest={{ api_settings_path }} owner=root group=root mode=0644
-  notify:
-    - restart api
-
-- name: create gunicorn.py
-  template: src=gunicorn.py.j2 dest={{ api_gunicorn_path }} owner=root group=root mode=0644
-  notify:
-    - restart api
-
-- name: start and enable api
-  service: name={{ api_name }} state=started enabled=yes
+- name: start and enable radar-api
+  service: name=radar-api state=started enabled=yes

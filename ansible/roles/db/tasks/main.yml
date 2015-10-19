@@ -27,7 +27,7 @@
 - name: install psycopg2
   yum: name=python-psycopg2 state=present
 
-# Allows checking to see if encrypted password has changed
+# Allows checking to see if an encrypted password has changed
 - name: install passlib
   yum: name=python-passlib state=present
 
@@ -36,7 +36,7 @@
   become: yes
   become_user: postgres
 
-- name: create vagrant postgresql user
-  postgresql_user: db=radar name=vagrant password=vagrant
+- name: create the radar postgresql user
+  postgresql_user: db=radar name=radar
   become: yes
   become_user: postgres
