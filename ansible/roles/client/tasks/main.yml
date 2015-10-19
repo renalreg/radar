@@ -1,6 +1,48 @@
 ---
+- name: install packages
+  yum: name={{ item }} state=present
+  with_items:
+    - optipng
+    - gifsicle
+    - libjpeg-turbo-utils
+    - libpng-devel
+    - zlib-devel
+
 - name: install gulp
   npm: name=gulp global=true
 
 - name: install bower
   npm: name=bower global=true
+
+# XXX currently this results in "maximum call stack size exceeded"
+# A workaround is to install each package separately.
+# FIXME https://github.com/npm/npm/issues/9224
+# XXX imagemin will silently fail to build native binaries
+# The symptom is that gulp build:dist will fail on the images step.
+# The first issue is that the modules don't detect the system binaries for
+# optipng, jpegtran, gifsicle etc.
+# The second issue is that the module that downloads the source code doesn't
+# respect proxy settings.
+# So you'll need to downgrade bin-build: npm install bin-build@2.1.1
+# Then run: npm rebuild
+# jpegtran will still fail as it is using a https URL
+# FIXME https://github.com/npm/npm/issues/8682
+- name: install packages from package.json
+  npm: path={{ client_src_path }}  state=latest
+  become: yes
+  become_user: vagrant
+
+- name: install packages from bower.json
+  bower: path={{ client_src_path }} state=latest
+  become: yes
+  become_user: vagrant
+
+- name: build
+  command: gulp build chdir={{ client_src_path }}
+  become: yes
+  become_user: vagrant
+
+- name: build dist
+  command: gulp build:dist chdir={{ client_src_path }}
+  become: yes
+  become_user: vagrant

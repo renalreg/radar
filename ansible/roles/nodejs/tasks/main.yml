@@ -8,3 +8,19 @@
 
 - name: install npm
   command: sh /tmp/install_npm.sh creates=/usr/bin/npm
+
+- name: set registry
+  npm_config: key=registry value=https://registry.npmjs.org/
+
+- name: set bin-links
+  npm_config: key=bin-links value=false
+
+# globalconfig locations:
+# root = /etc/npmrc
+# vagrant = /usr/etc/npmrc
+
+# Update vagrant's globalconfig to /etc/npmrc (defaults to /usr/etc/npmrc otherwise)
+- name: set globalconfig for vagrant
+  npm_config: key=globalconfig value=/etc/npmrc
+  become: yes
+  become_user: vagrant

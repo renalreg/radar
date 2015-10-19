@@ -1,0 +1,8 @@
+---
+api_name: radar-api-dev
+api_config_path: "/etc/{{ api_name }}"
+api_sysconfig_path: "/etc/sysconfig/{{ api_name }}"
+api_systemd_path: "/etc/systemd/system/{{ api_name }}.service"
+api_settings_path: "{{ api_config_path }}/settings.py"
+api_gunicorn_path: "{{ api_config_path }}/gunicorn.py"
+api_pid_path: "/var/run/{{ api_name }}.pid"
