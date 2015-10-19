@@ -1,16 +1,5 @@
 ---
-
-# TODO detect OS (e.g. CentOS) and version (e.g. 7)
-- name: install nginx repo
-  template: src=yum/nginx.conf.j2 dest=/etc/yum.repos.d/nginx.conf
-
-- name: install nginx
-  yum: name=nginx state=present
-
-- name: nginx config
-  template: src=nginx/nginx.conf.j2 dest=/etc/nginx/conf.d/radar-web-dev.conf owner=root group=root mode=0644
+- name: install radar-web
+  yum: name=radar-web state=latest
   notify:
     - restart nginx
-
-- name: start and enable nginx
-  service: name=nginx state=started enabled=yes

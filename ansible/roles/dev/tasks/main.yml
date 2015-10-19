@@ -1,0 +1,30 @@
+---
+- name: install epel repo
+  yum: name=epel-release state=present
+
+- name: install common packages
+  yum: name={{ item }} state=present
+  with_items:
+    - vim
+    - git
+    - htop
+    - man
+
+- name: install development tools
+  yum: name='@Development Tools' state=present
+
+- name: install ruby
+  yum: name={{ item }} state=present
+  with_items:
+    - ruby
+    - ruby-devel
+    - rubygems
+
+- name: install fpm
+  gem: name=fpm state=present
+
+- name: vagrant .bashrc
+  template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant group=vagrant mode=0644
+
+- name: vagrant .bash_profile
+  template: src=bash_profile.j2 dest=/home/vagrant/.bash_profile owner=vagrant group=vagrant mode=0644

@@ -1,4 +1,3 @@
 ---
 dependencies:
-  - { role: client }
-  - { role: api }
+  - { role: nginx }

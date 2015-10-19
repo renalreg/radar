@@ -4,6 +4,8 @@
 # caused problems in VirtualBox 5.
 # FIXME https://github.com/mitchellh/vagrant/issues/1953
 
+provisioner_path = ENV['NBT'] == '1' ? 'ansible/vagrant_bootstrap_nbt.sh' : 'ansible/vagrant_bootstrap.sh'
+
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
 
@@ -21,6 +23,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.synced_folder '.', '/home/vagrant/src', create: true, owner: 'vagrant', group: 'vagrant'
 
+  # FIXME https://github.com/ansible/ansible/pull/10369
+  config.vm.synced_folder 'ansible', '/home/vagrant/ansible', create: true, owner: 'vagrant', group: 'vagrant', :mount_options => ["dmode=755", "fmode=644"]
+
   config.vm.provider 'virtualbox' do |v|
     v.memory = 1024
     v.cpus = 2
@@ -34,5 +39,5 @@ Vagrant.configure(2) do |config|
     config.proxy.no_proxy = 'localhost,127.0.0.1,10.0.2.2'
   end
 
-  config.vm.provision :shell, :path => 'ansible/bootstrap.sh'
+  config.vm.provision :shell, :path => provisioner_path
 end

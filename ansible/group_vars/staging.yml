@@ -1,0 +1,3 @@
+---
+repo_url: 'TODO'
+postgresql_shared_buffers: '2GB'

@@ -1,0 +1,9 @@
+---
+- name: install nginx repo
+  template: src=nginx_repo.conf.j2 dest=/etc/yum.repos.d/nginx.conf
+
+- name: install nginx
+  yum: name=nginx state=present
+
+- name: start and enable nginx
+  service: name=nginx state=started enabled=yes

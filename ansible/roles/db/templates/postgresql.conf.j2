@@ -3,7 +3,7 @@ listen_addresses = '*'
 max_connections = 100
 
 # Memory
-shared_buffers = 128MB
+shared_buffers = {{ postgresql_shared_buffers }}
 dynamic_shared_memory_type = posix
 
 # Logs

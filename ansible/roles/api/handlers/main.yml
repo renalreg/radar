@@ -1,6 +1,0 @@
----
-- name: reload systemd
-  command: systemctl daemon-reload
-
-- name: restart api
-  service: name={{ api_name }} state=restarted
