@@ -16,23 +16,23 @@
   yum: name=python-virtualenv state=present
 
 - name: install api dev dependencies
-  pip: virtualenv={{ python_virtualenv_path }} requirements={{ src_path }}/api/dev-requirements.txt
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/dev-requirements.txt
   become: yes
   become_user: vagrant
 
 - name: install api dependencies
-  pip: virtualenv={{ python_virtualenv_path }} requirements={{ src_path }}/api/requirements.txt
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/requirements.txt
   become: yes
   become_user: vagrant
   environment:
     PATH: '/usr/pgsql-9.4/bin:/usr/local/bin:/usr/bin:/bin'
 
 - name: install radar
-  pip: virtualenv={{ python_virtualenv_path }} name={{ radar_src_path }} extra_args="--editable --no-deps"
+  pip: virtualenv={{ virtualenv_path }} name={{ radar_src_path }} extra_args="--no-deps --editable"
   become: yes
   become_user: vagrant
 
 - name: install api
-  pip: virtualenv={{ python_virtualenv_path }} name={{ api_src_path }} extra_args="--editable --no-deps"
+  pip: virtualenv={{ virtualenv_path }} name={{ api_src_path }} extra_args="--no-deps --editable"
   become: yes
   become_user: vagrant

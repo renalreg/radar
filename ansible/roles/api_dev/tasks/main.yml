@@ -2,24 +2,19 @@
 - name: create the config directory
   file: path={{ api_dev_config_path }} state=directory
 
-- name: create sysconfig
-  template: src=sysconfig.j2 dest={{ api_dev_sysconfig_path }} owner=root group=root mode=0644
-  notify:
-    - restart api
-
 - name: create systemd service
-  template: src=systemd.j2 dest={{ api_dev_systemd_path }} owner=root group=root mode=0755
+  template: src=systemd dest={{ api_dev_systemd_path }} owner=root group=root mode=0755
   notify:
     - reload systemd
     - restart api
 
 - name: create settings.py
-  template: src=settings.py.j2 dest={{ api_dev_settings_path }} owner=root group=root mode=0644
+  template: src=settings.py dest={{ api_dev_settings_path }} owner=root group=root mode=0644
   notify:
     - restart api
 
-- name: create gunicorn.py
-  template: src=gunicorn.py.j2 dest={{ api_dev_gunicorn_path }} owner=root group=root mode=0644
+- name: create uwsgi.ini
+  template: src=uwsgi.ini dest={{ api_dev_uwsgi_path }} owner=root group=root mode=0644
   notify:
     - restart api
 

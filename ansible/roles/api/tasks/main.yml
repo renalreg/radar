@@ -2,5 +2,15 @@
 - name: install radar-api
   yum: name=radar-api state=latest
 
+- name: create settings.py
+  template: src=settings.py dest=/etc/radar-api/settings.py owner=root group=root mode=0644
+  notify:
+    - restart api
+
+- name: create uwsgi.ini
+  template: src=uwsgi.ini dest=/etc/radar-api/uwsgi.ini owner=root group=root mode=0644
+  notify:
+    - restart api
+
 - name: start and enable radar-api
   service: name=radar-api state=started enabled=yes

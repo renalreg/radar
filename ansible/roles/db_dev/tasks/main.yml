@@ -1,5 +1,0 @@
----
-- name: create the vagrant postgresql user
-  postgresql_user: db=radar name=vagrant password=vagrant
-  become: yes
-  become_user: postgres

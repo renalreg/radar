@@ -3,3 +3,8 @@
   yum: name=radar-web state=latest
   notify:
     - restart nginx
+
+- name: nginx config
+  template: src=nginx.conf dest=/etc/nginx/conf.d/radar-web.conf owner=root group=root mode=0644
+  notify:
+    - restart nginx

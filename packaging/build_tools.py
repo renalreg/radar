@@ -123,8 +123,8 @@ class Virtualenv(object):
         self.run(['-m', 'pip', 'install', package_name], env=env)
 
     def install_requirements(self, path, env=None):
-        cwd = os.path.dirname(path)
-        self.run(['-m', 'pip', 'install', '-r', path], env=env, cwd=cwd)
+        head, tail = os.path.split(path)
+        self.run(['-m', 'pip', 'install', '-r', tail], env=env, cwd=head)
 
     def delete(self):
         info('Deleting virtualenv at %s ...' % self.path)
@@ -140,7 +140,9 @@ class Virtualenv(object):
 
 def run_command(args, env=None, cwd=None):
     if cwd is None:
-        cwd = os.getcwd()
+        cwd = '.'
+
+    cwd = os.path.abspath(cwd)
 
     if env is None:
         env = {}
@@ -148,7 +150,7 @@ def run_command(args, env=None, cwd=None):
     info('Running {args} with environment {env} and working directory {cwd}'.format(
         args=args,
         env=env,
-        cwd=cwd
+        cwd=cwd,
     ))
 
     try:
