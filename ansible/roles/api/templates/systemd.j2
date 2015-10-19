@@ -1,0 +1,15 @@
+[Unit]
+After=network.target
+
+[Service]
+PIDFile={{ api_pid_path }}
+User=vagrant
+Group=vagrant
+WorkingDirectory=/home/vagrant
+ExecStart=/home/vagrant/venv/bin/python /home/vagrant/venv/bin/gunicorn --config {{ api_gunicorn_path }} 'radar_api.app:create_app()'
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+EnvironmentFile=-{{ api_sysconfig_path }}
+
+[Install]
+WantedBy=multi-user.target
