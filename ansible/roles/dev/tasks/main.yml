@@ -1,4 +1,7 @@
 ---
+- name: SELinux permissive mode
+  selinux: policy=targeted state=permissive
+
 - name: install epel repo
   yum: name=epel-release state=present
 
@@ -21,10 +24,15 @@
     - rubygems
 
 - name: install fpm
-  gem: name=fpm state=present
+  gem: name=fpm user_install=no state=present
 
-- name: vagrant .bashrc
-  template: src=bashrc.j2 dest=/home/vagrant/.bashrc owner=vagrant group=vagrant mode=0644
+- name: vagrant home
+  file: path=/home/vagrant state=directory owner=vagrant group=vagrant mode=0755
 
-- name: vagrant .bash_profile
-  template: src=bash_profile.j2 dest=/home/vagrant/.bash_profile owner=vagrant group=vagrant mode=0644
+- name: .bashrc for vagrant
+  template: src=bashrc dest=/home/vagrant/.bashrc owner=vagrant group=vagrant mode=0644
+
+- name: .bash_profile for vagrant
+  template: src=bash_profile dest=/home/vagrant/.bash_profile owner=vagrant group=vagrant mode=0644
+
+# TODO create radar user
