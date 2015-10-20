@@ -26,7 +26,7 @@ module.exports = function(config) {
       'bower_components/html5shiv/dist/html5shiv.js',
       'bower_components/respond/dest/respond.src.js',
       'src/app/**/*.module.js',
-      'src/app/**/*!(.spec).js',
+      'src/app/**/!(*.spec).js',
       'src/app/**/*.spec.js'
     ],
 
