@@ -30,10 +30,10 @@
   group: name=radar state=present
 
 - name: create radar user
-  user: name=radar shell=/sbin/nologin groups=radar
+  user: name=radar groups=radar home=/ shell=/sbin/nologin system=yes state=present
 
 - name: create vagrant user
-  user: name=vagrant group=vagrant groups=radar
+  user: name=vagrant group=vagrant groups=radar home=/home/vagrant shell=/bin/bash state=present
 
 - name: vagrant home
   file: path=/home/vagrant state=directory owner=vagrant group=vagrant mode=0755

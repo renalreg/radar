@@ -1,4 +1,4 @@
-#{{ ansible_managed }}
+# {{ ansible_managed }}
 
 SECRET_KEY = 'CHANGE_ME'
 SQLALCHEMY_DATABASE_URI = 'postgres:///radar'

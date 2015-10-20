@@ -1,4 +1,4 @@
-#{{ ansible_managed }}
+# {{ ansible_managed }}
 
 if [ -f /etc/bashrc ]; then
   . /etc/bashrc
