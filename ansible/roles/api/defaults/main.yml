@@ -1,0 +1,6 @@
+---
+api_name: radar-api-dev
+api_config_path: "/etc/{{ api_name }}"
+api_settings_path: "{{ api_config_path }}/settings.py"
+api_uwsgi_path: "{{ api_config_path }}/uwsgi.ini"
+api_secret_key_path: "{{ api_config_path }}/secret_key"
