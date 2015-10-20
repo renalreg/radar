@@ -2,7 +2,7 @@ language: python
 python:
 - 2.7
 install:
-- npm install -g npm@3
+- npm install npm@3 --global --quiet --no-spin
 - ( cd client && npm install --quiet --no-spin )
 - ( cd client && bower install --quiet )
 - pip install tox
@@ -15,7 +15,7 @@ script:
 - tox -c radar/tox.ini
 - tox -c api/tox.ini
 after_success:
-- coveralls-lcov -n -v <(cat client/coverage/*/lcov.info) > client/coveralls.json
+- coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json
 - coverage combine radar/.coverage api/.coverage
 - coveralls --merge=client/coveralls.json
 env:
