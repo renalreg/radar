@@ -1,18 +1,23 @@
 language: python
 python:
-  - 2.7
+- 2.7
 install:
-  - npm install -g npm@3
-  - ( cd client && npm install --quiet --no-spin )
-  - ( cd client && bower install --quiet )
-  - pip install tox
-  - pip install coveralls
-  - gem install coveralls-lcov
+- npm install -g npm@3
+- ( cd client && npm install --quiet --no-spin )
+- ( cd client && bower install --quiet )
+- pip install tox
+- pip install coveralls
+- gem install coveralls-lcov
 script:
-  - ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage )
-  - tox -c radar/tox.ini
-  - tox -c api/tox.ini
+- ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage
+  )
+- tox -c radar/tox.ini
+- tox -c api/tox.ini
 after_success:
-  - coveralls-lcov -n -v <(cat client/coverage/*/lcov.info) > client/coveralls.json
-  - coverage combine radar/.coverage api/.coverage
-  - coveralls --merge=client/coveralls.json
+- coveralls-lcov -n -v <(cat client/coverage/*/lcov.info) > client/coveralls.json
+- coverage combine radar/.coverage api/.coverage
+- coveralls --merge=client/coveralls.json
+env:
+  global:
+  - secure: DV1uPTOKjgJY/Tog3EB71cVzT2kGgxTVia9gGkpASsi+UWR6iuw90r+MyxbaG58Tkh0FD235Jd8Jwul+CJp+JoPwySRyxQI6PkIWXtOijR4B0aKo2fEPi9zvbIuMeepZ8mhp9tBmYkjW5Zo1dwkYtT04AtAMzTM1xmW8nlUs2ibhdqN/uYd11oYd3Y7gZmO7PwmyrfjixIyjexSAVnnMzHUpEFFVwTR08wowxYeBnvbzkCr4MQRCIefx/z++3cwbg2FtMWGYafIVDwZmtzNYHkpBa+tbZL8Om+anzFggTfj5LMu7INnDXMA/dJ6o8tZTbQEBlzL9PSFFU7rv97cjr5667Z3T59B2X7A/iqGmF5/aj8U0dNf3pTA1wSWAVy1v+AKqK4Slj0DWhOzJllF8oX82ldjpB0m3w9lkVH4MFsOWmBNpSU1LuGkRsIZT/YCdH5nTDYLswiZDXhSsXcCsfvQ8zIpXLZsH08EHW9yte3A8SX5dUv1NYv2wVyPkE0zUTv2uOIV5VcWFcZ6LHZ2+xyz5wMwLMzvBcmxl4zpB4zaOzppnWyurUQqw4b4Jjv2ZJBcpI5+0GcktbyjZH1dM6yaJQnYjvvZRqw15V39lftZZcDyf051LOu/p4yc2Fay8OG37BPaPrbRAhE0Sxc3xKvxR6kDQtw8FA/wI+Rhjeo0=
+  - secure: sA9C2ftSTrIYKGDXXiB9LbKqAOL2eU+ly+T/NDx4ux7TB3pphOUtdnR320sVUZBVJVnE7ynizSPgP3lZMdZtTHI3MupuESU8y7XKgfVJc3Q/r+buND2qbj9gobXIrp6SZzx7bHOyJch0dybUDu4NMB70SV1VNDj+mFIzHm8c3gddCCDilQGqob00qHyQO6wfHIVOl/ozPFYclghk54doXJPTPYqNjX7mGmubA4pq/CqKvH0W1uC+kTHEk1gnl97RPtVMIs2Xk7tUy+oWfMAqjuu6785Ak4F62eTHj8+pHid1ES9tE/1ZdapVLQZYZbMlA0ftur2VHSbHHwveNa4GD1OmEiJjzPwnl5WKInO8r6z5j29iqPKICrZtJqqTsrNOjZFMreKTXV87CtK+Q2EySOxTkQjR5xqNfafe8SIPKmYbn4tI1mG8x8tqQ5+VnGQIzHWBd4zLiyRb1T227O7jT8QESmz4vmuhce10s+G386IWIDts5MOyo8NC2pUbwydOXlzKMQDrYpKVTiZhRka6Cu20MEzRaevY4ww/U/MoyYbEM/W8+GxTrwTl443zJKPbVFJdJN2fBVPEMYOwCQ908aBlNYkwMwtcON7pW7iMYX3W8tH8+mRiHJnbnFi7swq00i7xkdlCLTE2FpO60ys7FLUGnR+5GtUTpmROE7FNum4=
