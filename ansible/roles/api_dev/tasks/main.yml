@@ -24,7 +24,7 @@
     creates: "{{ api_dev_secret_key_path }}"
 
 - name: set permissions on secret key
-  file: path={{ api_dev_secret_key_path }} state=file owner=radar group=radar mode=660
+  file: path={{ api_dev_secret_key_path }} state=file owner=root group=radar mode=640
 
 - name: start and enable api
   service: name={{ api_dev_name }} state=started enabled=yes
