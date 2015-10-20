@@ -9,7 +9,8 @@ import logging
 import click
 import os
 
-from build_tools import get_python, Virtualenv, run_tox, info, heading, success, Package
+from build_tools import get_python, Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
+  get_api_src_path
 
 NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
@@ -30,31 +31,31 @@ PATH = ':'.join([
 ])
 
 
-def install_radar(v, src_path):
-    info('Installing radar ...')
-    v.run(['setup.py', 'install'], cwd=src_path)
+def install_api(v, root_path):
+    api_src_path = get_api_src_path(root_path)
+    radar_src_path = get_radar_src_path(root_path)
 
-
-def install_api(v, src_path):
-    heading('Install api')
+    heading('Install %s' % NAME)
 
     info('Installing api dependencies ...')
-    requirements_path = os.path.join(src_path, 'requirements.txt')
+    requirements_path = os.path.join(api_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
-    radar_path = os.path.join(src_path, '../radar')
-    install_radar(v, radar_path)
+    info('Installing radar ...')
+    v.run(['setup.py', 'install'], cwd=radar_src_path)
 
     info('Installing api ...')
-    v.run(['setup.py', 'install'], cwd=src_path)
+    v.run(['setup.py', 'install'], cwd=api_src_path)
 
 
-def package_api(v, src_path):
+def package_api(v, root_path):
+    src_path = get_api_src_path(root_path)
+
     version = v.run(['setup.py', '--version'], cwd=src_path).strip()
     etc_path = '/etc/' + NAME
     install_path = '/opt/' + NAME
 
-    heading('Package api')
+    heading('Package %s' % NAME)
     info('Version is %s' % version)
 
     # Update build path references to install path
@@ -85,21 +86,29 @@ def package_api(v, src_path):
     success('Successfully built rpm at %s' % rpm_path)
 
 
+def test_api(root_path):
+    heading('Test %s' % NAME)
+
+    radar_src_path = get_radar_src_path(root_path)
+    run_tox(['-c', os.path.join(radar_src_path, 'tox.ini')])
+
+    api_src_path = get_api_src_path(root_path)
+    run_tox(['-c', os.path.join(api_src_path, 'tox.ini')])
+
+
 @click.command()
 @click.option('--enable-tests/--disable-tests', default=True)
 def main(enable_tests):
     python = get_python()
 
     root_path = os.path.abspath('../../')
-    src_path = os.path.join(root_path, 'api')
 
     if enable_tests:
-        run_tox(['-c', os.path.join(root_path, 'radar/tox.ini')])
-        run_tox(['-c', os.path.join(root_path, 'api/tox.ini')])
+        test_api(root_path)
 
     with Virtualenv(tempfile.mkdtemp(), python) as v:
-        install_api(v, src_path)
-        package_api(v, src_path)
+        install_api(v, root_path)
+        package_api(v, root_path)
 
 
 if __name__ == '__main__':
