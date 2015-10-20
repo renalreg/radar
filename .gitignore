@@ -10,14 +10,14 @@ Berksfile.lock
 
 # Python
 .coverage
-.tox
-htmlcov
+.tox/
+htmlcov/
 *.egg-info
 *.pyc
-venv
+venv/
 
 # NodeJS
 npm-debug.log*
-node_modules
-bower_components
-node_modules
+node_modules/
+bower_components/
+node_modules/
