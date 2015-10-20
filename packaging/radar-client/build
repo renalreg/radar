@@ -53,9 +53,9 @@ def package_client(src_path):
 
 @click.command()
 def main():
-    os.chdir('../../')
+    root_path = os.path.abspath('../../')
+    src_path = os.path.join(root_path, 'client')
 
-    src_path = 'client'
     build_client(src_path)
     package_client(src_path)
 
