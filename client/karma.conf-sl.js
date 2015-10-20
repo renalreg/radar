@@ -38,9 +38,13 @@ var customLaunchers = {
   },
   sl_ios_safari: {
     base: 'SauceLabs',
-    platform: 'OS X 10.9',
-    browserName: 'iphone',
-    version: '9.0'
+    platform: 'OS X 10.11',
+    browserName: 'iphone'
+  },
+  sl_osx_safari: {
+    base: 'SauceLabs',
+    platform: 'OS X 10.11',
+    browserName: 'safari'
   }
 };
 
