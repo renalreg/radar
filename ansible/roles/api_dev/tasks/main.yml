@@ -18,5 +18,13 @@
   notify:
     - restart api
 
+- name: create secret key
+  command: dd if=/dev/urandom of={{ api_dev_secret_key_path }} bs=1 count=32
+  args:
+    creates: "{{ api_dev_secret_key_path }}"
+
+- name: set permissions on secret key
+  file: path={{ api_dev_secret_key_path }} state=file owner=radar group=radar mode=660
+
 - name: start and enable api
   service: name={{ api_dev_name }} state=started enabled=yes
