@@ -52,9 +52,13 @@ def package_client(src_path):
 
 
 @click.command()
-def main():
+@click.option('--enable-tests/--disable-tests', default=True)
+def main(enable_tests):
     root_path = os.path.abspath('../../')
     src_path = os.path.join(root_path, 'client')
+
+    if enable_tests:
+      run_command(['npm', 'test'], cwd=src_path)
 
     build_client(src_path)
     package_client(src_path)
