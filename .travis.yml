@@ -10,7 +10,7 @@ install:
 - gem install coveralls-lcov
 script:
 - ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage )
-- ( cd client && karma start karma.conf-sl.js || true )
+- ( cd client && karma start sauce-labs.conf.js || true )
 - tox -c radar/tox.ini
 - tox -c api/tox.ini
 after_success:
