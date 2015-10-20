@@ -86,14 +86,14 @@ def package_api(v, src_path):
 
 
 @click.command()
-@click.option('--enable-tox/--disable-tox', default=True)
-def main(enable_tox):
+@click.option('--enable-tests/--disable-tests', default=True)
+def main(enable_tests):
     python = get_python()
 
     root_path = os.path.abspath('../../')
     src_path = os.path.join(root_path, 'api')
 
-    if enable_tox:
+    if enable_tests:
         run_tox(['-c', os.path.join(root_path, 'radar/tox.ini')])
         run_tox(['-c', os.path.join(root_path, 'api/tox.ini')])
 
