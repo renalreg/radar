@@ -1,10 +1,16 @@
-# XXX Windows hosts only
-# Use Vagrant 1.7.3 (exact version) and VirtualBox 4.x (4.3.30 is known to work)
+# XXX On windows hosts only:
+# Use Vagrant 1.7.3  (exact version) and VirtualBox 4.x (4.3.30 is known to work)
 # Vagrant 1.7.3 added support for long paths. This was removed in 1.7.4 as it
 # caused problems in VirtualBox 5.
 # FIXME https://github.com/mitchellh/vagrant/issues/1953
 
-provisioner_path = ENV['NBT'] == '1' ? 'ansible/bootstrap_vagrant_nbt.sh' : 'ansible/bootstrap_vagrant.sh'
+nbt = ENV['NBT'] == '1'
+
+if nbt && !Vagrant.has_plugin?('vagrant-proxyconf')
+  raise 'Please install vagrant-proxyconf (vagrant plugin install vagrant-proxyconf)'
+end
+
+provisioner_path = nbt ? 'ansible/bootstrap_vagrant_nbt.sh' : 'ansible/bootstrap_vagrant.sh'
 
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
@@ -31,7 +37,7 @@ Vagrant.configure(2) do |config|
     v.cpus = 2
   end
 
-  if Vagrant.has_plugin?('vagrant-proxyconf')
+  if nbt
     # Proxies for NBT
     # Install cntlm and make sure it's running on port 3128
     config.proxy.http = 'http://10.0.2.2:3128/'
