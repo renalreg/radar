@@ -38,8 +38,8 @@ Vagrant.configure(2) do |config|
   end
 
   if nbt
-    # Proxies for NBT
-    # Install cntlm and make sure it's running on port 3128
+    # Proxy for NBT
+    # Assumes cntlm is running on port 3128 on the host machine
     config.proxy.http = 'http://10.0.2.2:3128/'
     config.proxy.https = 'http://10.0.2.2:3128/'
     config.proxy.no_proxy = 'localhost,127.0.0.1,10.0.2.2'
