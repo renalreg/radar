@@ -1,7 +1,7 @@
 // Karma configuration
 
 // Browsers to run on Sauce Labs
-customLaunchers = {
+var customLaunchers = {
   'sl_win7_chrome': {
     base: 'SauceLabs',
     platform: 'Windows 7',
@@ -98,8 +98,10 @@ module.exports = function(config) {
     singleRun: true,
 
     sauceLabs: {
-        testName: 'Radar Unit Tests'
+      testName: 'Radar Unit Tests',
+      recordScreenshots: false
     },
-    customLaunchers: customLaunchers
+    customLaunchers: customLaunchers,
+    captureTimeout: 120000
   });
 };
