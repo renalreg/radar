@@ -4,10 +4,10 @@ import subprocess
 import logging
 import shutil
 import os
-import re
 
 import tox.config
 import tox.session
+import virtualenv_tools
 
 PURPLE = '\033[95m'
 CYAN = '\033[96m'
@@ -51,7 +51,13 @@ class Python(object):
         return [self.path] + args
 
     def run(self, args, env=None, cwd=None):
-        command = self.command(['-u'] + args)
+        if env is None:
+            env = {}
+
+        env['PYTHON_UNBUFFERED'] = '1'
+
+        command = self.command(args)
+
         return run_command(command, env=env, cwd=cwd)
 
     @classmethod
@@ -75,50 +81,14 @@ class Virtualenv(object):
             '--quiet',
             self.path
         ]
-        env = {'PYTHONDONTWRITEBYTECODE': '1'}
-        self.python.run(args, env=env)
+
+        self.python.run(args)
 
     def run(self, args, env=None, cwd=None):
-        if env is None:
-            env = {}
+        return self.venv_python.run(args, env=env, cwd=cwd)
 
-        new_env = {'PYTHONDONTWRITEBYTECODE': '1'}
-        new_env.update(env)
-
-        return self.venv_python.run(args, env=new_env, cwd=cwd)
-
-    def relocate(self, path):
-        python = self.python.clone(os.path.join(path, 'bin/python'))
-        bin_path = os.path.join(self.path, 'bin')
-        shebang_regex = re.compile('^#!' + re.escape(self.venv_python.path))
-        new_shebang = '#!%s' % python.path
-
-        for filename in os.listdir(bin_path):
-            filename = os.path.join(bin_path, filename)
-
-            if not os.path.isfile(filename) or os.path.islink(filename):
-                continue
-
-            f = open(filename, 'rb')
-            data = f.read()
-            f.close()
-
-            update = False
-
-            if shebang_regex.match(data):
-                data = shebang_regex.sub(new_shebang, data)
-                info('Updated shebang in %s' % filename)
-                update = True
-
-            if self.path in data:
-                data = data.replace(self.path, path)
-                info('Updated path in %s' % filename)
-                update = True
-
-            if update:
-                f = open(filename, 'wb')
-                f.write(data)
-                f.close()
+    def update_paths(self, new_path):
+        virtualenv_tools.update_paths(self.path, new_path)
 
     def install_package(self, package_name, env=None):
         self.run(['-m', 'pip', 'install', package_name], env=env)

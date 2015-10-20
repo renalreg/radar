@@ -58,8 +58,8 @@ def package_api(v, src_path):
     info('Version is %s' % version)
 
     # Update build path references to install path
-    info('Updating build virtualenv paths ...')
-    v.relocate(install_path)
+    info('Updating virtualenv paths ...')
+    v.update_paths(install_path)
 
     info('Building rpm ...')
 
@@ -90,14 +90,14 @@ def package_api(v, src_path):
 def main(enable_tox):
     python = get_python()
 
-    os.chdir('../../')
+    root_path = os.path.abspath('../../')
+    src_path = os.path.join(root_path, 'api')
 
     if enable_tox:
-        run_tox(['-c', 'radar/tox.ini'])
-        run_tox(['-c', 'api/tox.ini'])
+        run_tox(['-c', os.path.join(root_path, 'radar/tox.ini')])
+        run_tox(['-c', os.path.join(root_path, 'api/tox.ini')])
 
     with Virtualenv(tempfile.mkdtemp(), python) as v:
-        src_path = 'api'
         install_api(v, src_path)
         package_api(v, src_path)
 
