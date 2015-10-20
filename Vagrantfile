@@ -4,7 +4,7 @@
 # caused problems in VirtualBox 5.
 # FIXME https://github.com/mitchellh/vagrant/issues/1953
 
-provisioner_path = ENV['NBT'] == '1' ? 'ansible/vagrant_bootstrap_nbt.sh' : 'ansible/vagrant_bootstrap.sh'
+provisioner_path = ENV['NBT'] == '1' ? 'ansible/bootstrap_vagrant_nbt.sh' : 'ansible/bootstrap_vagrant.sh'
 
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
