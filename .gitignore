@@ -5,9 +5,8 @@ dist/
 *.rpm
 coveralls.json
 
-# Vagrant / Chef
+# Vagrant
 .vagrant/
-Berksfile.lock
 
 # Python
 .coverage
