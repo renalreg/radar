@@ -2,7 +2,7 @@
   "name": "radar-client",
   "version": "0.3.0",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS --reporters dots,coverage"
   },
   "devDependencies": {
     "bower": "^1.6.3",
