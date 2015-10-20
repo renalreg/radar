@@ -1,0 +1,43 @@
+---
+- name: create .pip directory
+  file: path=/home/vagrant/.pip owner=vagrant group=vagrant mode=0755 state=directory
+
+- name: set index-url
+  ini_file: dest=/home/vagrant/.pip/pip.conf section=global option=index-url value={{ pip_index_url }}
+  become: yes
+  become_user: vagrant
+
+- name: set trusted-host
+  ini_file: dest=/home/vagrant/.pip/pip.conf section=global option=trusted-host value={{ pip_trusted_host }}
+  become: yes
+  become_user: vagrant
+
+- name: install virtualenv
+  yum: name=python-virtualenv state=present
+
+- name: install packaging dependencies
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/packaging/requirements.txt
+  become: yes
+  become_user: vagrant
+
+- name: install api dev dependencies
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/dev-requirements.txt
+  become: yes
+  become_user: vagrant
+
+- name: install api dependencies
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/requirements.txt
+  become: yes
+  become_user: vagrant
+  environment:
+    PATH: '/usr/pgsql-9.4/bin:/usr/local/bin:/usr/bin:/bin'
+
+- name: install radar
+  pip: virtualenv={{ virtualenv_path }} name={{ radar_src_path }} extra_args="--no-deps --editable"
+  become: yes
+  become_user: vagrant
+
+- name: install api
+  pip: virtualenv={{ virtualenv_path }} name={{ api_src_path }} extra_args="--no-deps --editable"
+  become: yes
+  become_user: vagrant

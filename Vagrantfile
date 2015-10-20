@@ -1,14 +1,10 @@
-unless Vagrant.has_plugin?('vagrant-berkshelf')
-  raise 'vagrant-berkshelf is not installed, run: vagrant plugin install vagrant-berkshelf'
-end
-
 # XXX Windows hosts only
 # Use Vagrant 1.7.3 (exact version) and VirtualBox 4.x (4.3.30 is known to work)
 # Vagrant 1.7.3 added support for long paths. This was removed in 1.7.4 as it
 # caused problems in VirtualBox 5.
 # FIXME https://github.com/mitchellh/vagrant/issues/1953
 
-# TODO instructions for enabling symlinks
+provisioner_path = ENV['NBT'] == '1' ? 'ansible/bootstrap_vagrant_nbt.sh' : 'ansible/bootstrap_vagrant.sh'
 
 Vagrant.configure(2) do |config|
   config.vm.box = 'bento/centos-7.1'
@@ -27,6 +23,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.synced_folder '.', '/home/vagrant/src', create: true, owner: 'vagrant', group: 'vagrant'
 
+  # FIXME https://github.com/ansible/ansible/pull/10369
+  config.vm.synced_folder 'ansible', '/home/vagrant/ansible', create: true, owner: 'vagrant', group: 'vagrant', :mount_options => ["dmode=755", "fmode=644"]
+
   config.vm.provider 'virtualbox' do |v|
     v.memory = 1024
     v.cpus = 2
@@ -40,7 +39,5 @@ Vagrant.configure(2) do |config|
     config.proxy.no_proxy = 'localhost,127.0.0.1,10.0.2.2'
   end
 
-  config.vm.provision 'chef_solo' do |chef|
-    chef.add_recipe 'radar'
-  end
+  config.vm.provision :shell, :path => provisioner_path
 end

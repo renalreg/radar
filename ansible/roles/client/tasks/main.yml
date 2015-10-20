@@ -1,0 +1,3 @@
+---
+- name: install client
+  yum: name=radar-client state=latest

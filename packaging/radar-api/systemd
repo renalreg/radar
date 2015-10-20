@@ -1,0 +1,13 @@
+[Unit]
+After=syslog.target
+
+[Service]
+ExecStart=/opt/radar-api/bin/uwsgi --ini /etc/radar-api/uwsgi.ini
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

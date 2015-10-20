@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+import sys
+sys.path.append('../')
+
+import logging
+
+import os
+import click
+
+from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error
+
+NAME = 'radar-client'
+ARCHITECTURE = 'noarch'
+URL = 'http://www.radar.nhs.uk/'
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s", "%Y-%m-%d %H:%M:%S")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
+
+def build_client(src_path):
+    heading('Build client')
+    run_command(['gulp', 'build:dist'], cwd=src_path)
+
+
+def package_client(src_path):
+    heading('Package client')
+
+    install_path = '/opt/radar-client'
+    dist_path = os.path.join(src_path, 'dist')
+    package_json_path = os.path.join(src_path, 'package.json')
+
+    version = get_version_from_package_json(package_json_path)
+
+    if version is None:
+      error('No version in %s' % package_json_path)
+      raise SystemExit(1)
+    else:
+      info('Version is %s' % version)
+
+    info('Building rpm ...')
+
+    package = Package(NAME, version, ARCHITECTURE, URL)
+    package.add_path(dist_path + '/', install_path)
+    rpm_path = package.build()
+
+    success('Successfully built rpm at %s' % rpm_path)
+
+
+@click.command()
+def main():
+    root_path = os.path.abspath('../../')
+    src_path = os.path.join(root_path, 'client')
+
+    build_client(src_path)
+    package_client(src_path)
+
+
+if __name__ == '__main__':
+    main()
