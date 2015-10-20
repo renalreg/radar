@@ -11,7 +11,7 @@ install:
 script:
 - ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage
   )
-- ( cd client && karma start karma.conf-sl.js )
+- ( cd client && karma start karma.conf-sl.js && true )
 - tox -c radar/tox.ini
 - tox -c api/tox.ini
 after_success:
@@ -20,5 +20,6 @@ after_success:
 - coveralls --merge=client/coveralls.json
 env:
   global:
+  # Sauce Labs credentials
   - secure: ZK/LS5IiX7+8ZWIazZqJckJhxntmTyUXdMA/jGYNrlqPA4fpu+UpuxBirfrqESbMiSdKmg89rCqD6/oNleNjmLSb5/9kSXdhfbP+J0Mm4TuL78m8oaaredrp8TPTYBR6Az5K88M9kZInzLJxFruaqkq+w4zyYQfaM5YIS5KOTEBfBD77qfd2EPaperSOgUqYJ9SwND/sjmWUN0fHdlADR7orWzckoD2VCXcKzvKve5hkqwlp/x+O1+U0f8EenhDJ4SSQyP5ulxZnRCTi+xBIj4j/2bH6gxyABqFFH6tnKZxgRj6s+Q+naOiOt/LhUAbP27R0voyCJZx3goHyZ6yPMufxWindUnfkObT2LSSLXqdjx3SH9bEtHLtiTzeT/U5Y412Fjap+Od0XP609i+amIDZoIRgNDNO79IUy/ogxhs5JQXxgJqxSxPq96e/vZqirYQyMjRDHC4M9r4QXd02Ue2ePheAQNssNj4ff3SA4kId94QstZxIno7u8K9XQlQNq2dHLZiRVrseFpN9QCwsKmlIY2wJBlWQhJzYdOPM9XSC2yH+oKJj81FzKSXHrru75fcxgBwttO3S6ZO91fnEst4dsnkXcpEGsR9omNcVwYY2mQbFnpcgFTSdMfl+tzpgRe5c8OvoyyHV4fzi12BDA9lwLieBKjpfy6+5XoBCQ+EU=
   - secure: gxKbDCdE17fnpQIF5/i+plzjGAc3YYUbkR/O9UuXGA5cVqyJuXvbkVzIdltQOJK5kIwD7XtiqwXRvECceTDujIAbpV8KMGt9nkLSzwHdbvD18XBOAt3W7G3iduYJIhN9KwpY5sPBzs6jx6sZwnjIluJVQYZZno4uLZA0SmA6bsp7jWR1GKZKNOZB6wKt8VHALycPhzdKdiAb7n3jc0HVu+aO19YN/DgA7WMzxjbYI8MNRHlSvaZNNRBERnlMwYGtmMzg9Kp1mqYAfgrBZr0pZBVQWfJoEKEDfT8i1j0gPiI5xSPzpfOKtQrcfgCBr7Xb4wq+VvCkiWW5ZDOSyPOaZkEvZgSboH8dD3yQZLltAMO+GXkCYAHFE6HUrTP0SBFUgsAXFu53JrHZCnhhrSP0Cdlz7y7BFgbpiiRtuhwMOebF+KQL3Kv1G96q4jJJUl/FQ+x6fhzhwwciWlvjTxQoRJQ4g/8b8+dCN+r6uUaHwqFNa8zUseVt3MhsS198xKRV5dgBh6dw1PUnUgNVlbZfDJGufvVfGjAG54ZPk/T+4kwoyrV7GrRKHCwikmhl93qFaa5uWE9oGLvpJ7W18aoHyBQ2rikHE3vHGEc8cdtrRZKKktC+aK6Os/yxsLO3IgiwwL3Ch5RFNg4uzq2mBqZyH/aK6Ca+zFFN/aOTIj15Xec=
