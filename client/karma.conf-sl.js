@@ -34,7 +34,7 @@ var customLaunchers = {
     base: 'SauceLabs',
     platform: 'Windows 7',
     browserName: 'internet explorer',
-    version: '10'
+    version: '11'
   },
   sl_ios_safari: {
     base: 'SauceLabs',
