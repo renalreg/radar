@@ -1,4 +1,6 @@
-// Karma configuration
+'use strict';
+
+var common = require('./common');
 
 // Browsers to run on Sauce Labs
 var customLaunchers = {
@@ -58,25 +60,11 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
-    files: [
-      'bower_components/es5-shim/es5-shim.js',
-      'bower_components/es5-shim/es5-sham.js',
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/jquery-ui/jquery-ui.js',
-      'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-      'bower_components/lodash/lodash.js',
-      'bower_components/moment/moment.js',
-      'bower_components/angular/angular.js',
-      'bower_components/angular-cookies/angular-cookies.js',
-      'bower_components/ui-router/release/angular-ui-router.js',
-      'bower_components/blueimp-md5/js/md5.js',
-      'bower_components/highcharts/highcharts.js',
-      'bower_components/html5shiv/dist/html5shiv.js',
-      'bower_components/respond/dest/respond.src.js',
-      'src/app/**/*.module.js',
-      'src/app/**/!(*.spec).js',
-      'src/app/**/*.spec.js'
-    ],
+    files: []
+      .concat(common.JS_VENDOR)
+      .concat(common.JS_IE)
+      .concat(common.JS)
+      .concat(common.JS_TESTS),
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

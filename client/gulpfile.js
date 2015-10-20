@@ -22,44 +22,12 @@ var express = require('express');
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
-
 var argv = require('yargs').argv;
+
+var common = require('./common');
+
 var config = argv.config || 'production';
-
 console.log('config: ' + config + ' (--config NAME)');
-
-var paths = {
-  vendorJs: [
-    'bower_components/es5-shim/es5-shim.js',
-    'bower_components/es5-shim/es5-sham.js',
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/jquery-ui/jquery-ui.js',
-    'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js',
-    'bower_components/lodash/lodash.js',
-    'bower_components/moment/moment.js',
-    'bower_components/angular/angular.js',
-    'bower_components/angular-cookies/angular-cookies.js',
-    'bower_components/ui-router/release/angular-ui-router.js',
-    'bower_components/blueimp-md5/js/md5.js',
-    'bower_components/highcharts/highcharts.js'
-  ],
-  vendorCss: [
-    'bower_components/jquery-ui/themes/smoothness/jquery-ui.css',
-    'bower_components/font-awesome/css/font-awesome.css'
-  ],
-  vendorFonts: [
-    'bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}',
-    'bower_components/font-awesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}'
-  ],
-  images: [
-    'src/images/**/*',
-    'bower_components/jquery-ui/themes/smoothness/images/*.{gif,png}'
-  ],
-  ieJs: [
-    'bower_components/html5shiv/dist/html5shiv.js',
-    'bower_components/respond/dest/respond.src.js'
-  ]
-};
 
 gulp.task('clean', function() {
   return del(['dist', '.tmp']);
@@ -67,21 +35,11 @@ gulp.task('clean', function() {
 
 gulp.task('inject', ['sass', 'scripts'], function() {
   var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
-
-  var appScripts = gulp.src([
-      'src/app/**/*.module.js',
-      'src/app/**/*.js',
-      '!src/app/**/*.spec.js',
-      '!src/app/config/**/*'
-  ], {read: false});
-
+  var appScripts = gulp.src(common.JS, {read: false});
   var configScript = gulp.src('src/app/config/' + config + '.js');
-
-  var vendorScripts = gulp.src(paths.vendorJs, {read: false});
-
-  var vendorStyles = gulp.src(paths.vendorCss, {read: false});
-
-  var ieScripts = gulp.src(paths.ieJs, {read: false});
+  var vendorScripts = gulp.src(common.JS_VENDOR, {read: false});
+  var vendorStyles = gulp.src(common.CSS_VENDOR, {read: false});
+  var ieScripts = gulp.src(common.JS_IE, {read: false});
 
   return gulp.src('src/index.html')
     .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
@@ -164,13 +122,13 @@ gulp.task('templates', function() {
 });
 
 gulp.task('fonts', function() {
-  return gulp.src(paths.vendorFonts)
+  return gulp.src(common.FONTS_VENDOR)
     .pipe(flatten())
     .pipe(gulp.dest('dist/fonts'));
 });
 
 gulp.task('images', function() {
-  return gulp.src(paths.images)
+  return gulp.src(common.IMAGES)
     .pipe(imagemin({optimizationLevel: 3}))
     .pipe(gulp.dest('dist/images'));
 });
