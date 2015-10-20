@@ -25,7 +25,6 @@
     npm_registry: null
     virtualenv_path: '/home/vagrant/venv'
   roles:
-    #- dev
+    - dev
     - db
-    #- db_dev
-    #- web_dev
+    - web_dev
