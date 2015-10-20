@@ -72,6 +72,7 @@ gulp.task('inject', ['sass', 'scripts'], function() {
   var appScripts = gulp.src([
       'src/app/**/*.module.js',
       'src/app/**/*.js',
+      '!src/app/**/*.spec.js',
       '!src/app/config/**/*'
   ], {read: false});
 
