@@ -12,6 +12,7 @@ Berksfile.lock
 .coverage
 .tox/
 htmlcov/
+coverage/
 *.egg-info
 *.pyc
 venv/

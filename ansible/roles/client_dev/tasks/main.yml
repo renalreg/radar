@@ -8,11 +8,12 @@
     - libpng-devel
     - zlib-devel
 
-- name: install gulp
-  npm: name=gulp global=yes
-
-- name: install bower
-  npm: name=bower global=yes
+- name: install npm packages
+  npm: name={{ item }} global=yes
+  with_items:
+    - gulp
+    - bower
+    - karma-cli
 
 # XXX currently this results in "maximum call stack size exceeded"
 # A workaround is to install each package separately.
