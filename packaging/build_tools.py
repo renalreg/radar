@@ -111,9 +111,7 @@ class Virtualenv(object):
 
 def run_command(args, env=None, cwd=None):
     if cwd is None:
-        cwd = '.'
-
-    cwd = os.path.abspath(cwd)
+        cwd = os.getcwd()
 
     if env is None:
         env = {}
@@ -124,11 +122,11 @@ def run_command(args, env=None, cwd=None):
         cwd=cwd,
     ))
 
-    try:
-        return check_output(args, env=env, cwd=cwd, stderr=subprocess.STDOUT)
-    except CalledProcessError as e:
-        print e.output
-        error('Command exited with code %d' % e.returncode)
+    p = subprocess.Popen(args, cwd=cwd, env=env, bufsize=1)
+    p.communicate()
+
+    if p.returncode != 0:
+        error('Command exited with code %d' % p.returncode)
         raise SystemExit(1)
 
 
@@ -136,7 +134,10 @@ def get_python():
     return Python('/usr/bin/python2.7')
 
 
-def run_tox(args):
+def run_tox(args=None):
+    if args is None:
+        args = []
+
     config = tox.config.parseconfig(args)
     return_code = tox.session.Session(config).runcommand()
 
@@ -206,3 +207,15 @@ def get_version_from_package_json(path):
     package = json.loads(package_data)
 
     return package.get('version', None)
+
+
+def get_api_src_path(root_path):
+    return os.path.join(root_path, 'api')
+
+
+def get_radar_src_path(root_path):
+    return os.path.join(root_path, 'radar')
+
+
+def get_client_src_path(root_path):
+    return os.path.join(root_path, 'client')

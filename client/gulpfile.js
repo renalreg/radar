@@ -18,7 +18,6 @@ var gulpFilter = require('gulp-filter');
 var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
 var gutil = require('gulp-util');
-
 var express = require('express');
 var del = require('del');
 var runSequence = require('run-sequence');

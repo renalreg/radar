@@ -8,7 +8,8 @@ import logging
 import os
 import click
 
-from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error
+from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error, \
+  get_client_src_path
 
 NAME = 'radar-client'
 ARCHITECTURE = 'noarch'
@@ -22,13 +23,17 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-def build_client(src_path):
-    heading('Build client')
+def build_client(root_path):
+    src_path = get_client_src_path(root_path)
+
+    heading('Build %s' % NAME)
     run_command(['gulp', 'build:dist'], cwd=src_path)
 
 
-def package_client(src_path):
-    heading('Package client')
+def package_client(root_path):
+    src_path = get_client_src_path(root_path)
+
+    heading('Package %s' % NAME)
 
     install_path = '/opt/radar-client'
     dist_path = os.path.join(src_path, 'dist')
@@ -51,17 +56,23 @@ def package_client(src_path):
     success('Successfully built rpm at %s' % rpm_path)
 
 
+def test_client(root_path):
+    heading('Test %s' % NAME)
+
+    src_path = get_client_src_path(root_path)
+    run_command(['karma', 'start', '--single-run', '--browsers', 'PhantomJS', '--reporters', 'dots'], cwd=src_path)
+
+
 @click.command()
 @click.option('--enable-tests/--disable-tests', default=True)
 def main(enable_tests):
     root_path = os.path.abspath('../../')
-    src_path = os.path.join(root_path, 'client')
 
     if enable_tests:
-      run_command(['npm', 'test'], cwd=src_path)
+      test_client(root_path)
 
-    build_client(src_path)
-    package_client(src_path)
+    build_client(root_path)
+    package_client(root_path)
 
 
 if __name__ == '__main__':
