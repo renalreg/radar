@@ -26,6 +26,15 @@
 - name: install fpm
   gem: name=fpm user_install=no state=present
 
+- name: create radar group
+  group: name=radar state=present
+
+- name: create radar user
+  user: name=radar shell=/sbin/nologin groups=radar
+
+- name: create vagrant user
+  user: name=vagrant group=vagrant groups=radar
+
 - name: vagrant home
   file: path=/home/vagrant state=directory owner=vagrant group=vagrant mode=0755
 
@@ -34,5 +43,3 @@
 
 - name: .bash_profile for vagrant
   template: src=bash_profile dest=/home/vagrant/.bash_profile owner=vagrant group=vagrant mode=0644
-
-# TODO create radar user
