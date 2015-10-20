@@ -9,8 +9,7 @@ install:
 - pip install coveralls
 - gem install coveralls-lcov
 script:
-- ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage
-  )
+- ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage )
 - ( cd client && karma start karma.conf-sl.js || true )
 - tox -c radar/tox.ini
 - tox -c api/tox.ini
