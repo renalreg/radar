@@ -1,11 +1,11 @@
-build
-dist
-.cache
-.idea
+build/
+dist/
+.cache/
+.idea/
 *.rpm
 
 # Vagrant / Chef
-.vagrant
+.vagrant/
 Berksfile.lock
 
 # Python

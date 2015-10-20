@@ -1,10 +1,11 @@
+import json
 from subprocess import check_output, CalledProcessError
 import subprocess
 import logging
 import shutil
-
 import os
 import re
+
 import tox.config
 import tox.session
 
@@ -224,3 +225,14 @@ class Package(object):
         run_command(args, env={'PATH': '/usr/local/bin:/usr/bin:/bin'})
 
         return rpm_path
+
+
+def get_version_from_package_json(path):
+    try:
+        package_data = open(path, 'rb').read()
+    except IOError:
+        return None
+
+    package = json.loads(package_data)
+
+    return package.get('version', None)
