@@ -6,10 +6,12 @@ install:
   - ( cd client && bower install --quiet )
   - pip install tox
   - pip install coveralls
+  - gem install coveralls-lcov
 script:
   - ( cd client && npm test )
   - tox -c radar/tox.ini
   - tox -c api/tox.ini
 after_success:
+  - ( cd client && coveralls-lcov -n -v coverage/*/lcov.info > coveralls.json)
   - coverage combine radar/.coverage api/.coverage
-  - coveralls
+  - coveralls --merge=client/coveralls.json
