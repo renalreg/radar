@@ -99,14 +99,12 @@ def test_api(root_path):
 @click.command()
 @click.option('--enable-tests/--disable-tests', default=True)
 def main(enable_tests):
-    python = get_python()
-
     root_path = os.path.abspath('../../')
 
     if enable_tests:
         test_api(root_path)
 
-    with Virtualenv(tempfile.mkdtemp(), python) as v:
+    with Virtualenv(tempfile.mkdtemp()) as v:
         install_api(v, root_path)
         package_api(v, root_path)
 
