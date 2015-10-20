@@ -20,10 +20,7 @@
     radar_src_path: '{{ src_path }}/radar'
     api_src_path: '{{ src_path }}/api'
     client_src_path: '{{ src_path }}/client'
-    pip_index_url: null
-    pip_trusted_host: null
-    npm_registry: null
-    virtualenv_path: '/home/vagrant/venv'
+    virtualenv_path: /home/vagrant/venv
   roles:
     - dev
     - db
