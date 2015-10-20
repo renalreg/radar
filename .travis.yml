@@ -12,6 +12,6 @@ script:
   - tox -c radar/tox.ini
   - tox -c api/tox.ini
 after_success:
-  - ( cd client && coveralls-lcov -n -v coverage/*/lcov.info > coveralls.json)
+  - coveralls-lcov -n -v <(cat client/coverage/*/lcov.info) > client/coveralls.json
   - coverage combine radar/.coverage api/.coverage
   - coveralls --merge=client/coveralls.json
