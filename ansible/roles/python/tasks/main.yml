@@ -15,6 +15,11 @@
 - name: install virtualenv
   yum: name=python-virtualenv state=present
 
+- name: install packaging dependencies
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/packaging/requirements.txt
+  become: yes
+  become_user: vagrant
+
 - name: install api dev dependencies
   pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/dev-requirements.txt
   become: yes
