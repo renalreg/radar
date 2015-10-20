@@ -66,7 +66,10 @@ class Python(object):
 
 
 class Virtualenv(object):
-    def __init__(self, path, python):
+    def __init__(self, path, python=None):
+        if python is None:
+            python = get_python()
+
         self.path = path
         self.python = python
 
