@@ -2,8 +2,8 @@ language: python
 python:
   - 2.7
 install:
-  - cd client && npm install
-  - cd client && bower install
+  - cd client && npm install --quiet
+  - cd client && bower install --quiet
   - pip install tox
   - pip install coveralls
 script:
