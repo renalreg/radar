@@ -3,6 +3,7 @@ dist/
 .cache/
 .idea/
 *.rpm
+coveralls.json
 
 # Vagrant / Chef
 .vagrant/
@@ -17,7 +18,7 @@ coverage/
 *.pyc
 venv/
 
-# NodeJS
+# JavaScript
 npm-debug.log*
 node_modules/
 bower_components/
