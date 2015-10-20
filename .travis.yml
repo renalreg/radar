@@ -2,12 +2,12 @@ language: python
 python:
   - 2.7
 install:
-  - cd client && npm install --quiet
-  - cd client && bower install --quiet
+  - ( cd client && npm install --quiet )
+  - ( cd client && bower install --quiet )
   - pip install tox
   - pip install coveralls
 script:
-  - cd client && npm test
+  - ( cd client && npm test )
   - tox -c radar/tox.ini
   - tox -c api/tox.ini
 after_success:
