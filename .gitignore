@@ -1,24 +1,25 @@
-build/
-dist/
 .cache/
 .idea/
+build/
+dist/
 *.rpm
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
 coveralls.json
 
 # Vagrant
 .vagrant/
 
 # Python
-.coverage
 .tox/
-htmlcov/
-coverage/
+venv/
 *.egg-info
 *.pyc
-venv/
 
 # JavaScript
-npm-debug.log*
-node_modules/
 bower_components/
 node_modules/
+npm-debug.log*
