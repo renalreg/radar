@@ -18,6 +18,14 @@
       expect(f('2015-01-02')).toBe(true);
     });
 
+    it('not a date', function () {
+      var f = dateSearch('hello');
+
+      expect(f('')).toBe(false);
+      expect(f('hello')).toBe(false);
+      expect(f('2015-01-02')).toBe(false);
+    });
+
     it('[0-9]', function () {
       var f = dateSearch('1');
 
