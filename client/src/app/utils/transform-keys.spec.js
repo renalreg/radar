@@ -14,6 +14,10 @@
       expect(camelCaseKeys({})).toEqual({});
     });
 
+    it('handles an empty list', function() {
+      expect(camelCaseKeys([])).toEqual([]);
+    });
+
     it('handles a flat object', function() {
       expect(camelCaseKeys({
         key_one: 'key_one',
@@ -90,6 +94,10 @@
 
     it('handles an empty object', function() {
       expect(snakeCaseKeys({})).toEqual({});
+    });
+
+    it('handles an empty list', function() {
+      expect(snakeCaseKeys([])).toEqual([]);
     });
 
     it('handles a flat object', function() {
