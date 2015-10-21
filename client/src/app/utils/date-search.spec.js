@@ -25,12 +25,14 @@
       expect(f('hello')).toBe(false);
       expect(f('1')).toBe(false);
 
+      expect(f('0003-00-00')).toBe(false);
+
       expect(f('1-00-00')).toBe(false);
       expect(f('10-00-00')).toBe(false);
       expect(f('100-00-00')).toBe(false);
       expect(f('1000-00-00')).toBe(true);
-      expect(f('0100-00-00')).toBe(true);
-      expect(f('0010-00-00')).toBe(true);
+      expect(f('0100-00-00')).toBe(false);
+      expect(f('0010-00-00')).toBe(false);
       expect(f('0001-00-00')).toBe(true);
 
       expect(f('0000-1-00')).toBe(false);

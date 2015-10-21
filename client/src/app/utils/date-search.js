@@ -83,7 +83,7 @@
         '(?:Z|[+-][0-9]{2}:[0-9]{2})?'
       );
 
-      if (hour) {
+      if (hour || minute || second) {
         return '(?:' + dt + ')';
       } else {
         return '(?:(?:' + d + ')|(?:' + dt + '))';
@@ -101,7 +101,9 @@
 
       var s;
 
-      if (!dayMonthSeparator) {
+      if (dayMonthSeparator) {
+        s = _getDateRegExp(year, month, day, hour, minute, second)
+      } else {
         s = (
           '(?:' +
           _getDateRegExp(day, '', '', '', '', '') + '|' +
@@ -112,8 +114,6 @@
           _getDateRegExp('', '', '', '', '', day) +
           ')'
         )
-      } else {
-        s = _getDateRegExp(year, month, day, hour, minute, second)
       }
 
       s = '^' + s + '$';
