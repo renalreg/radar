@@ -151,7 +151,8 @@
 
     function dateSearch(search) {
       var params;
-      var match
+      var match;
+      var f;
 
       if (match = dateTimeRegExp.exec(search)) {
         params = {
@@ -180,14 +181,16 @@
       if (match) {
         var valueRegExp = getDateRegExp(params);
 
-        return function(value) {
+        f = function(value) {
           return valueRegExp.test(value);
         }
       } else {
-        return function() {
+        f = function() {
           return false;
         }
       }
+
+      return f;
     }
 
     return dateSearch;
