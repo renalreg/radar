@@ -2,7 +2,7 @@
   'use strict';
 
   describe('any value', function() {
-    beforeEach(module('radar'));
+    beforeEach(module('radar.utils'));
 
     var anyValue;
 

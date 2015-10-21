@@ -2,7 +2,7 @@
   'use strict';
 
   describe('camel case keys', function() {
-    beforeEach(module('radar'));
+    beforeEach(module('radar.utils'));
 
     var camelCaseKeys;
 
