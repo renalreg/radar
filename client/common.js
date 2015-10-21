@@ -1,10 +1,11 @@
 var JS = [
   'src/app/**/*.module.js',
   'src/app/!(*.spec).js',
-  'src/app/!(config)/**/!(*.spec).js',
+  'src/app/!(config)/**/!(*.spec).js'
 ];
 
 var JS_TESTS = [
+  'bower_components/angular-mocks/angular-mocks.js',
   'src/app/**/*.spec.js'
 ];
 
