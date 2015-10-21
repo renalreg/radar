@@ -36,7 +36,7 @@
     // 99:99:9
     // 99:99:99
 
-    var searchRegExp = new RegExp(
+    var dateTimeRegExp = new RegExp(
       '^\\s*' +
       '(?:([0-9]{1,2})' + // begin day
       '(?:(/)' + // begin separator
@@ -44,12 +44,27 @@
       '(?:(/)' + // begin separator
       '(?:([0-9]{1,4})' + // begin year
       '(?:(\\s+)' + // begin separator
+      '(?:([0-9]{1,2})' + // begin hour
+      '(?:(:)' + // begin separator
+      '(?:([0-9]{1,2})' + // begin minute
+      '(?:(:)' + // begin separator
+      '(?:([0-9]{1,2})' + // begin second
+      ')?' + // end second
+      ')?' + // end separator
+      ')?' + // end minute
+      ')?' + // end separator
+      ')?' + // end hour
       ')?' + // end separator
       ')?' + // end year
       ')?' + // end separator
       ')?' + // end month
       ')?' + // end separator
       ')?' + // end day
+      '\\s*$'
+    );
+
+    var timeRegExp = new RegExp(
+      '^\\s*' +
       '(?:([0-9]{1,2})' + // begin hour
       '(?:(:)' + // begin separator
       '(?:([0-9]{1,2})' + // begin minute
@@ -63,55 +78,49 @@
       '\\s*$'
     );
 
-    function _getDateRegExp(year, month, day, hour, minute, second) {
+    function _getDateRegExp(params) {
       var d = (
-        getDigitGroupRegExp(year, 4) +
+        getDigitGroupRegExp(params.year, 4) +
         '-' +
-        getDigitGroupRegExp(month, 2) +
+        getDigitGroupRegExp(params.month, 2) +
         '-' +
-        getDigitGroupRegExp(day, 2)
+        getDigitGroupRegExp(params.day, 2)
       );
 
       var dt = (
         d +
         'T' +
-        getDigitGroupRegExp(hour, 2) +
+        getDigitGroupRegExp(params.hour, 2) +
         ':' +
-        getDigitGroupRegExp(minute, 2) +
+        getDigitGroupRegExp(params.minute, 2) +
         ':' +
-        getDigitGroupRegExp(second, 2) +
+        getDigitGroupRegExp(params.second, 2) +
         '(?:Z|[+-][0-9]{2}:[0-9]{2})?'
       );
 
-      if (hour || minute || second) {
+      if (params.hour || params.minute || params.second) {
         return '(?:' + dt + ')';
       } else {
         return '(?:(?:' + d + ')|(?:' + dt + '))';
       }
     }
 
-    function getDateRegExp(match) {
-      var day = match[1] || '';
-      var dayMonthSeparator = match[2];
-      var month = match[3] || '';
-      var year = match[5] || '';
-      var hour = match[7] || '';
-      var minute = match[9] || '';
-      var second = match[11] || '';
-
+    function getDateRegExp(params) {
       var s;
 
-      if (dayMonthSeparator) {
-        s = _getDateRegExp(year, month, day, hour, minute, second)
+      if (params.dayMonthSeparator || params.hourMinuteSeparator) {
+        s = _getDateRegExp(params)
       } else {
+        var value = params.day;
+
         s = (
           '(?:' +
-          _getDateRegExp(day, '', '', '', '', '') + '|' +
-          _getDateRegExp('', day, '', '', '', '') + '|' +
-          _getDateRegExp('', '', day, '', '', '') + '|' +
-          _getDateRegExp('', '', '', day, '', '') + '|' +
-          _getDateRegExp('', '', '', '', day, '') + '|' +
-          _getDateRegExp('', '', '', '', '', day) +
+          _getDateRegExp({year: value}) + '|' +
+          _getDateRegExp({month: value}) + '|' +
+          _getDateRegExp({day: value}) + '|' +
+          _getDateRegExp({hour: value}) + '|' +
+          _getDateRegExp({minute: value}) + '|' +
+          _getDateRegExp({second: value}) +
           ')'
         )
       }
@@ -121,10 +130,11 @@
       return new RegExp(s);
     }
 
-    function getDigitGroupRegExp(digits, width) {
-      var pad = width - digits.length;
+    function getDigitGroupRegExp(digits, n) {
+      var length = digits ? digits.length : 0;
+      var pad = n - length;
 
-      if (pad == width) {
+      if (pad == n) {
         return '[0-9]{' + pad + '}';
       } else if (pad > 0) {
         return (
@@ -140,17 +150,42 @@
     }
 
     function dateSearch(search) {
-      var match = searchRegExp.exec(search);
+      var params;
+      var match
 
-      if (match === null) {
-        return function() {
-          return false;
-        }
-      } else {
-        var valueRegExp = getDateRegExp(match);
+      if (match = dateTimeRegExp.exec(search)) {
+        params = {
+          day: match[1],
+          dayMonthSeparator: match[2],
+          month: match[3],
+          monthYearSeparator: match[4],
+          year: match[5],
+          yearHourSeparator: match[6],
+          hour: match[7],
+          hourMinuteSeparator: match[8],
+          minute: match[9],
+          minuteSecondSeparator: match[10],
+          second: match[11],
+        };
+      } else if (match = timeRegExp.exec(search)) {
+        params = {
+          hour: match[1],
+          hourMinuteSeparator: match[2],
+          minute: match[3],
+          minuteSecondSeparator: match[4],
+          second: match[5],
+        };
+      }
+
+      if (match) {
+        var valueRegExp = getDateRegExp(params);
 
         return function(value) {
           return valueRegExp.test(value);
+        }
+      } else {
+        return function() {
+          return false;
         }
       }
     }

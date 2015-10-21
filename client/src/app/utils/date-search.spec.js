@@ -232,6 +232,13 @@
       var f = dateSearch('12:');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
+      expect(f('1200-00-00T00:00:00')).toBe(false);
+      expect(f('0012-00-00T00:00:00')).toBe(false);
+      expect(f('0000-12-00T00:00:00')).toBe(false);
+      expect(f('0000-00-12T00:00:00')).toBe(false);
+      expect(f('0000-00-00T00:12:00')).toBe(false);
+      expect(f('0000-00-00T00:00:12')).toBe(false);
+
       expect(f('0000-00-00T12:00:00')).toBe(true);
     });
 
