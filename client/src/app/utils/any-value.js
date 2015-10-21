@@ -5,7 +5,7 @@
 
   app.factory('anyValue', ['_', function(_) {
     return function anyValue(x, callback) {
-      var found;
+      var found = false;
       var value;
 
       if (_.isArray(x)) {
@@ -14,7 +14,7 @@
           found = anyValue(value, callback);
 
           if (found) {
-            return true;
+            break;
           }
         }
       } else if (_.isObject(x)) {
@@ -24,13 +24,15 @@
             found = anyValue(value, callback);
 
             if (found) {
-              return true;
+              break;
             }
           }
         }
       } else {
-        return callback(x);
+        found = callback(x);
       }
+
+      return found;
     };
   }]);
 })();
