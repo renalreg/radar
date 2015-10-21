@@ -166,7 +166,7 @@
           hourMinuteSeparator: match[8],
           minute: match[9],
           minuteSecondSeparator: match[10],
-          second: match[11],
+          second: match[11]
         };
       } else if (match = timeRegExp.exec(search)) {
         params = {
@@ -174,7 +174,7 @@
           hourMinuteSeparator: match[2],
           minute: match[3],
           minuteSecondSeparator: match[4],
-          second: match[5],
+          second: match[5]
         };
       }
 
