@@ -160,6 +160,7 @@ class DateField(Field):
         if value is None:
             return None
 
+        # TODO always %Y-%m-%d
         return value.isoformat()
 
 
@@ -187,6 +188,7 @@ class DateTimeField(Field):
         return value
 
     def to_data(self, value):
+        # TODO always %Y-%m-%dT%H:%M:%S+00:00
         return value.isoformat()
 
 
