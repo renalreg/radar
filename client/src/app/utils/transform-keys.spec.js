@@ -68,7 +68,7 @@
       ]);
     });
 
-    it('skips upper cased keys', function() {
+    it('skips constants', function() {
       expect(camelCaseKeys({
         KEY_1: 'value_1',
         KEY_2: 'value_2'
@@ -144,6 +144,16 @@
           item_two_key_two: 'itemTwoValueTwo'
         }
       ]);
+    });
+
+    it('skips constants', function() {
+      expect(snakeCaseKeys({
+        KEY1: 'value1',
+        KEY2: 'value2'
+      })).toEqual({
+        KEY1: 'value1',
+        KEY2: 'value2'
+      });
     });
   });
 })();
