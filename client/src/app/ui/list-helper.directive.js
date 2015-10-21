@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'searchToDateRegExp', 'anyValue', function($parse, _, escapeRegExp, searchToDateRegExp, anyValue) {
+  app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'dateSearch', 'anyValue', function($parse, _, escapeRegExp, dateSearch, anyValue) {
     return {
       scope: false,
       controller: ['$scope', '$attrs', function($scope, $attrs) {
@@ -153,20 +153,19 @@
             filteredItems = items;
 
             if (search) {
-              var patterns = [escapeRegExp(search.trim())];
+              var searchRegExp = new RegExp(escapeRegExp(search.trim()), 'i');
+              var searchMatcher = function(value) {
+                return searchRegExp.test(value);
+              };
 
-              var datePattern = searchToDateRegExp(search);
+              var dateMatcher = dateSearch(search);
 
-              if (datePattern !== null) {
-                patterns.push(datePattern);
-              }
-
-              var re = new RegExp(patterns.join('|'), 'i');
+              var matcher = function(value) {
+                return searchMatcher(value) || dateMatcher(value);
+              };
 
               filteredItems = _.filter(filteredItems, function(x) {
-                return anyValue(x.getData(), function(value) {
-                  return re.exec(value);
-                });
+                return anyValue(x.getData(), matcher);
               });
             }
 
