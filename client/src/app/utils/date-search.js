@@ -179,10 +179,10 @@
       }
 
       if (match) {
-        var valueRegExp = getDateRegExp(params);
+        var regExp = getDateRegExp(params);
 
         f = function(value) {
-          return valueRegExp.test(value);
+          return regExp.test(value);
         }
       } else {
         f = function() {
