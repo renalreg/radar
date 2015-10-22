@@ -12,6 +12,7 @@
     - git
     - htop
     - man
+    - bind-utils
 
 - name: install development tools
   yum: name='@Development Tools' state=present
