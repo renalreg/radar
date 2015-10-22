@@ -7,7 +7,7 @@
 nbt = ENV['NBT'] == '1'
 
 if nbt && !Vagrant.has_plugin?('vagrant-proxyconf')
-  raise 'Please install vagrant-proxyconf (vagrant plugin install vagrant-proxyconf)'
+  raise 'Please install vagrant-proxyconf: vagrant plugin install vagrant-proxyconf'
 end
 
 provisioner_path = nbt ? 'ansible/bootstrap_vagrant_nbt.sh' : 'ansible/bootstrap_vagrant.sh'
