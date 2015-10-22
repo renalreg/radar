@@ -48,3 +48,10 @@ class ResultGroupSpecListView(ListModelView):
 class ResultSpecListView(ListModelView):
     serializer_class = ResultSpecSerializer
     model_class = ResultSpec
+
+
+def register_views(app):
+    app.add_url_rule('/result-groups', view_func=ResultGroupListView.as_view('result_group_list'))
+    app.add_url_rule('/result-groups/<int:id>', view_func=ResultGroupDetailView.as_view('result_group_detail'))
+    app.add_url_rule('/result-group-specs', view_func=ResultGroupSpecListView.as_view('result_group_spec_list'))
+    app.add_url_rule('/result-specs', view_func=ResultSpecListView.as_view('result_spec_list'))

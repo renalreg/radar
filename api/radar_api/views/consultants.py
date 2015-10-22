@@ -11,3 +11,8 @@ class ConsultantListView(ListModelView):
 class ConsultantDetailView(RetrieveModelView):
     serializer_class = ConsultantSerializer
     model_class = Consultant
+
+
+def register_views(app):
+    app.add_url_rule('/consultants', view_func=ConsultantListView.as_view('consultant_list'))
+    app.add_url_rule('/consultants/<int:id>', view_func=ConsultantDetailView.as_view('consultant_detail'))

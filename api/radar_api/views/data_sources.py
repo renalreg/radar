@@ -29,3 +29,8 @@ class DataSourceListView(ListModelView):
 class DataSourceDetailView(RetrieveModelView):
     serializer_class = DataSourceSerializer
     model_class = DataSource
+
+
+def register_views(app):
+    app.add_url_rule('/data-sources', view_func=DataSourceListView.as_view('data_source_list'))
+    app.add_url_rule('/data-sources/<int:id>', view_func=DataSourceDetailView.as_view('data_source_detail'))

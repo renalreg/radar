@@ -20,3 +20,9 @@ class OrganisationUserDetailView(RetrieveUpdateDestroyModelView):
 
 class OrganisationUserRoleListView(CodedStringListView):
     items = ORGANISATION_ROLES
+
+
+def register_views(app):
+    app.add_url_rule('/organisation-users', view_func=OrganisationUserListView.as_view('organisation_user_list'))
+    app.add_url_rule('/organisation-users/<int:id>', view_func=OrganisationUserDetailView.as_view('organisation_user_detail'))
+    app.add_url_rule('/organisation-user-roles', view_func=OrganisationUserRoleListView.as_view('organisation_user_role_list'))

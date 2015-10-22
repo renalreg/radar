@@ -15,3 +15,8 @@ class PatientAliasDetailView(RadarObjectViewMixin, DemographicsViewMixin, Patien
     serializer_class = PatientAliasSerializer
     model_class = PatientAlias
     validation_class = PatientAliasValidation
+
+
+def register_views(app):
+    app.add_url_rule('/patient-aliases', view_func=PatientAliasListView.as_view('patient_alias_list'))
+    app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetailView.as_view('patient_alias_detail'))

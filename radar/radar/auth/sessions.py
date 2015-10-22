@@ -7,7 +7,6 @@ from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
 
-PUBLIC_ENDPOINTS = ['login', 'post_list']
 DEFAULT_SESSION_TIMEOUT = 1800
 
 current_user = LocalProxy(lambda: get_user())
@@ -70,7 +69,7 @@ def logout_other_sessions():
 
 
 def require_login():
-    if request.method != 'OPTIONS' and request.endpoint not in PUBLIC_ENDPOINTS and not current_user.is_authenticated():
+    if request.method != 'OPTIONS' and not current_app.is_public_endpoint(request.endpoint) and not current_user.is_authenticated():
         abort(401)
 
 

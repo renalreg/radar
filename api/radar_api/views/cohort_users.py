@@ -20,3 +20,9 @@ class CohortUserDetailView(RetrieveUpdateDestroyModelView):
 
 class CohortUserRoleListView(CodedStringListView):
     items = COHORT_ROLES
+
+
+def register_views(app):
+    app.add_url_rule('/cohort-users', view_func=CohortUserListView.as_view('cohort_user_list'))
+    app.add_url_rule('/cohort-users/<int:id>', view_func=CohortUserDetailView.as_view('cohort_user_detail'))
+    app.add_url_rule('/cohort-user-roles', view_func=CohortUserRoleListView.as_view('cohort_user_role_list'))

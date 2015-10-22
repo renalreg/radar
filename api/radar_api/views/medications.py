@@ -28,3 +28,11 @@ class MedicationFrequencyListView(CodedStringListView):
 
 class MedicationRouteListView(CodedStringListView):
     items = MEDICATION_ROUTES
+
+
+def register_views(app):
+    app.add_url_rule('/medications', view_func=MedicationListView.as_view('medication_list'))
+    app.add_url_rule('/medications/<int:id>', view_func=MedicationDetailView.as_view('medication_detail'))
+    app.add_url_rule('/medication-dose-units', view_func=MedicationDoseUnitListView.as_view('medication_dose_unit_list'))
+    app.add_url_rule('/medication-frequencies', view_func=MedicationFrequencyListView.as_view('medication_frequency_list'))
+    app.add_url_rule('/medication-routes', view_func=MedicationRouteListView.as_view('medication_route_list'))

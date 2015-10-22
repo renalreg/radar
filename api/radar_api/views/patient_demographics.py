@@ -31,3 +31,10 @@ class EthnicityCodeListView(ListModelView):
 
 class GenderListView(CodedIntegerListView):
     items = GENDERS
+
+
+def register_views(app):
+    app.add_url_rule('/patient-demographics', view_func=PatientDemographicsListView.as_view('patient_demographics_list'))
+    app.add_url_rule('/patient-demographics/<int:id>', view_func=PatientDemographicsDetailView.as_view('patient_demographics_detail'))
+    app.add_url_rule('/ethnicity-codes', view_func=EthnicityCodeListView.as_view('ethnicity_code_list'))
+    app.add_url_rule('/genders', view_func=GenderListView.as_view('gender_list'))

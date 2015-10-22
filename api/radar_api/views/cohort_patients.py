@@ -14,3 +14,8 @@ class CohortPatientDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = CohortPatientSerializer
     model_class = CohortPatient
     validation_class = CohortPatientValidation
+
+
+def register_views(app):
+    app.add_url_rule('/cohort-patients', view_func=CohortPatientListView.as_view('cohort_patient_list'))
+    app.add_url_rule('/cohort-patients/<int:id>', view_func=CohortPatientDetailView.as_view('cohort_patient_detail'))

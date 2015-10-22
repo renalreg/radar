@@ -21,3 +21,8 @@ class PatientAddressDetailView(RadarObjectViewMixin, PatientObjectDetailView):
 
     def get_serializer(self):
         return PatientAddressSerializer(current_user)
+
+
+def register_views(app):
+    app.add_url_rule('/patient-addresses', view_func=PatientAddressListView.as_view('patient_address_list'))
+    app.add_url_rule('/patient-addresses/<int:id>', view_func=PatientAddressDetailView.as_view('patient_address_detail'))

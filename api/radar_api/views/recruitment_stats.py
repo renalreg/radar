@@ -45,3 +45,9 @@ class PatientRecruitmentStatsView(ApiView):
     def get(self):
         points = recruitment_by_month(Patient.created_date)
         return {'points': points}
+
+
+def register_views(app):
+    app.add_url_rule('/cohort-recruitment-stats', view_func=CohortRecruitmentStatsView.as_view('cohort_recruitment_stats'))
+    app.add_url_rule('/organisation-recruitment-stats', view_func=OrganisationRecruitmentStatsView.as_view('organisation_recruitment_stats'))
+    app.add_url_rule('/patient-recruitment-stats', view_func=PatientRecruitmentStatsView.as_view('patient_recruitment_stats'))

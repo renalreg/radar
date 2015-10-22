@@ -15,3 +15,9 @@ class PostDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = PostSerializer
     model_class = Post
     validation_class = PostValidation
+
+
+def register_views(app):
+    app.add_public_endpoint('post_list')
+    app.add_url_rule('/posts', view_func=PostListView.as_view('post_list'))
+    app.add_url_rule('/posts/<int:id>', view_func=PostDetailView.as_view('post_detail'))

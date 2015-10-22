@@ -21,6 +21,8 @@ class LoginView(ApiView):
     @request_json(LoginSerializer)
     @response_json(TokenSerializer)
     def post(self, credentials):
+        # TODO validation
+
         result = login(credentials['username'], credentials['password'])
 
         if result is None:
@@ -32,3 +34,8 @@ class LoginView(ApiView):
         user, token = result
 
         return {'user_id': user.id, 'token': token}
+
+
+def register_views(app):
+    app.add_public_endpoint('login')
+    app.add_url_rule('/login', view_func=LoginView.as_view('login'))

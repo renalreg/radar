@@ -15,3 +15,7 @@ class UserSessionListView(ListModelView):
             .filter(UserSession.is_active)
 
         return query
+
+
+def register_views(app):
+    app.add_url_rule('/user-sessions', view_func=UserSessionListView.as_view('user_session_list'))

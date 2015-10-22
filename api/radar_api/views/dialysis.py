@@ -21,3 +21,9 @@ class DialysisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
 class DialysisTypeListView(ListModelView):
     serializer_class = DialysisTypeSerializer
     model_class = DialysisType
+
+
+def register_views(app):
+    app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
+    app.add_url_rule('/dialysis/<int:id>', view_func=DialysisDetailView.as_view('dialysis_detail'))
+    app.add_url_rule('/dialysis-types', view_func=DialysisTypeListView.as_view('dialysis_type_list'))

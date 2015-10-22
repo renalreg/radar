@@ -21,3 +21,9 @@ class ComorbidityDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
 class DisorderListView(ListModelView):
     serializer_class = DisorderSerializer
     model_class = Disorder
+
+
+def register_views(app):
+    app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
+    app.add_url_rule('/comorbidities/<int:id>', view_func=ComorbidityDetailView.as_view('comorbidity_detail'))
+    app.add_url_rule('/comorbidity-disorders', view_func=DisorderListView.as_view('disorder_list'))

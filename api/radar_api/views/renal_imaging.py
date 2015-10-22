@@ -24,3 +24,10 @@ class RenalImagingTypeListView(CodedStringListView):
 
 class RenalImagingKidneyTypeListView(CodedStringListView):
     items = RENAL_IMAGING_KIDNEY_TYPES
+
+
+def register_views(app):
+    app.add_url_rule('/renal-imaging', view_func=RenalImagingListView.as_view('renal_imaging_list'))
+    app.add_url_rule('/renal-imaging/<int:id>', view_func=RenalImagingDetailView.as_view('renal_imaging_detail'))
+    app.add_url_rule('/renal-imaging-types', view_func=RenalImagingTypeListView.as_view('renal_imaging_type_list'))
+    app.add_url_rule('/renal-imaging-kidney-types', view_func=RenalImagingKidneyTypeListView.as_view('renal_imaging_kidney_type_list'))
