@@ -15,3 +15,8 @@ class PatientNumberDetailView(RadarObjectViewMixin, DemographicsViewMixin, Patie
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
     validation_class = PatientNumberValidation
+
+
+def register_views(app):
+    app.add_url_rule('/patient-numbers', view_func=PatientNumberListView.as_view('patient_number_list'))
+    app.add_url_rule('/patient-numbers/<int:id>', view_func=PatientNumberDetailView.as_view('patient_number_detail'))

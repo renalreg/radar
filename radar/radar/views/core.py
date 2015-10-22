@@ -385,7 +385,7 @@ class RetrieveUpdateModelView(RetrieveModelViewMixin, UpdateModelViewMixin, Mode
         return self.update(*args, **kwargs)
 
 
-def request_json(serializer_class):
+def request_json(serializer_class, validation_class=None):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -396,6 +396,17 @@ def request_json(serializer_class):
 
             serializer = serializer_class()
             data = serializer.to_value(json)
+
+            if validation_class is not None:
+                validation = validation_class()
+                ctx = {}
+
+                try:
+                    validation.after_update(ctx, {}, data)
+                except ValidationError as e:
+                    print e.errors
+                    errors = serializer.transform_errors(e.errors)
+                    raise ValidationError(errors)
 
             args = list(args)
             args.append(data)

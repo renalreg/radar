@@ -83,3 +83,8 @@ class PatientDetailView(RetrieveUpdateModelView):
 
     def get_serializer(self):
         return PatientSerializer(current_user)
+
+
+def register_views(app):
+    app.add_url_rule('/patients', view_func=PatientListView.as_view('patient_list'))
+    app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))

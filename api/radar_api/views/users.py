@@ -47,3 +47,8 @@ class UserListView(ListCreateModelView):
 class UserDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = UserSerializer
     model_class = User
+
+
+def register_views(app):
+    app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))
+    app.add_url_rule('/users/<int:id>', view_func=UserDetailView.as_view('user_detail'))

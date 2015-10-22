@@ -15,3 +15,8 @@ class HospitalisationDetailView(DataSourceObjectViewMixin, PatientObjectDetailVi
     serializer_class = HospitalisationSerializer
     model_class = Hospitalisation
     validation_class = HospitalisationValidation
+
+
+def register_views(app):
+    app.add_url_rule('/hospitalisations', view_func=HospitalisationListView.as_view('hospitalisation_list'))
+    app.add_url_rule('/hospitalisations/<int:id>', view_func=HospitalisationDetailView.as_view('hospitalisation_detail'))

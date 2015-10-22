@@ -23,3 +23,8 @@ class OrganisationListView(ListModelView):
 class OrganisationDetailView(RetrieveModelView):
     serializer_class = OrganisationSerializer
     model_class = Organisation
+
+
+def register_views(app):
+    app.add_url_rule('/organisations', view_func=OrganisationListView.as_view('organisation_list'))
+    app.add_url_rule('/organisations/<int:id>', view_func=OrganisationDetailView.as_view('organisation_detail'))
