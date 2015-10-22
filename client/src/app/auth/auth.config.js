@@ -17,6 +17,7 @@
 
     $stateProvider.state('forgotPassword', {
       url: '/forgot-password',
+      controller: 'ForgotPasswordController',
       templateUrl: 'app/auth/forgot-password.html'
     });
   }]);

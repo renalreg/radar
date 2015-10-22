@@ -6,7 +6,8 @@
   app.factory('authService', ['session', '$q', 'store', 'adapter', function(session, $q, store, adapter) {
     return {
       login: login,
-      forgotUsername: forgotUsername
+      forgotUsername: forgotUsername,
+      forgotPassword: forgotPassword
     };
 
     function login(credentials) {
@@ -48,6 +49,17 @@
             return $q.reject();
           }
         });
+    }
+
+    function forgotPassword(username) {
+      return adapter.post('/forgot-password', {}, {username: username})
+        ['catch'](function(response) {
+        if (response.status === 422) {
+          return $q.reject(response.data.errors);
+        } else {
+          return $q.reject();
+        }
+      });
     }
   }]);
 })();
