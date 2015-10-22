@@ -37,6 +37,7 @@ from radar_api.views import transplants
 from radar_api.views import users
 from radar_api.views import login
 from radar_api.views import forgot_username
+from radar_api.views import reset_password
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import require_login, refresh_token
 from radar.database import db
@@ -99,6 +100,7 @@ class RadarApi(Flask):
         posts.register_views(self)
         recruitment_stats.register_views(self)
         renal_imaging.register_views(self)
+        reset_password.register_views(self)
         results.register_views(self)
         salt_wasting_clinical_features.register_views(self)
         transplants.register_views(self)
