@@ -11,6 +11,7 @@
 
     $stateProvider.state('forgotUsername', {
       url: '/forgot-username',
+      controller: 'ForgotUsernameController',
       templateUrl: 'app/auth/forgot-username.html'
     });
 

@@ -1,4 +1,5 @@
 from flask import Response
+from radar.auth.exceptions import UserNotFound
 
 from radar.auth.forgot_username import forgot_username
 from radar.serializers.core import Serializer
@@ -17,7 +18,9 @@ class ForgotUsernameView(ApiView):
     def post(self, data):
         email = data['email']
 
-        if not forgot_username(email):
+        try:
+            forgot_username(email)
+        except UserNotFound:
             raise ValidationError({'email': 'No users found with that email address.'})
 
         return Response(status=200)
