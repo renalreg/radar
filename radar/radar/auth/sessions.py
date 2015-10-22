@@ -68,6 +68,12 @@ def logout_other_sessions():
         db.session.commit()
 
 
+def logout_user(user):
+    UserSession.query\
+        .filter(UserSession.user == user)\
+        .update({'is_active': False})
+
+
 def require_login():
     if request.method != 'OPTIONS' and not current_app.is_public_endpoint(request.endpoint) and not current_user.is_authenticated():
         abort(401)
