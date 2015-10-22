@@ -1,5 +1,5 @@
 from flask import Response
-from radar.auth.forgot_password import forgot_password
+from radar.auth.forgot_password import forgot_password, UserNotFound
 
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField
@@ -17,7 +17,9 @@ class ForgotPasswordView(ApiView):
     def post(self, data):
         username = data['username']
 
-        if not forgot_password(username):
+        try:
+            forgot_password(username)
+        except UserNotFound:
             raise ValidationError({'username': 'No user found with that username.'})
 
         return Response(status=200)
