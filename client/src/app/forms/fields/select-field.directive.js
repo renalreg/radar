@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmSelectField', ['unwrapSelectOption', 'wrapSelectOption', 'wrapSelectOptions', function(unwrapSelectOption, wrapSelectOption, wrapSelectOptions) {
+  app.directive('frmSelectField', ['toSelectModel', 'toSelectView', 'wrapSelectOptions', function(toSelectModel, toSelectView, wrapSelectOptions) {
     return {
       restrict: 'A',
       scope: {
@@ -16,19 +16,11 @@
         scope.data = {};
 
         scope.$watch('model', function(value) {
-          if (value === null) {
-            scope.data.model = null;
-          } else {
-            scope.data.model = wrapSelectOption(value);
-          }
+          scope.data.model = toSelectView(value);
         });
 
         scope.$watch('data.model', function(value) {
-          if (value === undefined) {
-            scope.model = null;
-          } else {
-            scope.model = unwrapSelectOption(value);
-          }
+          scope.model = toSelectModel(value);
         });
 
         scope.$watchCollection('options', function(options) {

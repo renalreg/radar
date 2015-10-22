@@ -14,7 +14,7 @@
   });
 
   app.factory('toRadioModel', function() {
-    return function toRadioView(options, viewValue) {
+    return function toRadioModel(options, viewValue) {
       for (var i = 0; i < options.length; i++) {
         var option = options[i];
 
@@ -52,19 +52,21 @@
     };
   }]);
 
-  app.factory('unwrapSelectOption', function() {
-    return function unwrapOption(option) {
-      if (option) {
-        return option.value;
+  app.factory('toSelectModel', function() {
+    return function toSelectModel(option) {
+      if (option === null || option === undefined) {
+        return null;
       } else {
-        return option;
+        return option.value;
       }
     };
   });
 
-  app.factory('wrapSelectOption', function() {
-    return function wrapSelectOption(option) {
-      if (angular.isObject(option)) {
+  app.factory('toSelectView', function() {
+    return function toSelectView(option) {
+      if (option === null || option === undefined) {
+        option = null;
+      } else if (angular.isObject(option)) {
         option = {
           id: option.id,
           label: option.label,
@@ -82,12 +84,12 @@
     };
   });
 
-  app.factory('wrapSelectOptions', ['_', 'wrapSelectOption', function(_, wrapSelectOption) {
+  app.factory('wrapSelectOptions', ['_', 'toSelectView', function(_, toSelectView) {
     return function wrapSelectOptions(options) {
-      if (options) {
+      if (options && options.length) {
         // Convert array (e.g. ['Foo', 'Bar']) into option objects
         // (e.g. [{id: 'Foo', label: 'Foo', value: 'Foo'}, ...])
-        options = _.map(options, wrapSelectOption);
+        options = _.map(options, toSelectView);
       }
 
       return options;
