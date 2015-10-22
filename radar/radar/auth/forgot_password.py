@@ -1,6 +1,7 @@
 import base64
 import os
 from datetime import datetime
+from radar.auth.exceptions import UserNotFound, InvalidToken
 
 from radar.auth.passwords import generate_password_hash, check_password_hash
 from radar.auth.sessions import logout_user
@@ -8,14 +9,6 @@ from radar.database import db
 from radar.models import User
 
 RESET_PASSWORD_MAX_AGE = 86400  # 1 day
-
-
-class UserNotFound(Exception):
-    pass
-
-
-class InvalidToken(Exception):
-    pass
 
 
 def generate_reset_password_token():
