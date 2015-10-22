@@ -17,10 +17,7 @@ class ForgotPasswordView(ApiView):
     def post(self, data):
         username = data['username']
 
-        print username
-
         if not forgot_password(username):
-            print 'hello'
             raise ValidationError({'username': 'No user found with that username.'})
 
         return Response(status=200)
