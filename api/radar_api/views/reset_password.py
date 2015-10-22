@@ -34,4 +34,3 @@ class ResetPasswordView(ApiView):
 def register_views(app):
     app.add_public_endpoint('reset_password')
     app.add_url_rule('/reset-password', view_func=ResetPasswordView.as_view('reset_password'))
-
