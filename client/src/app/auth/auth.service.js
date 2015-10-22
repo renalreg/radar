@@ -7,8 +7,17 @@
     return {
       login: login,
       forgotUsername: forgotUsername,
-      forgotPassword: forgotPassword
+      forgotPassword: forgotPassword,
+      resetPassword: resetPassword
     };
+
+    function errorHandler(response) {
+      if (response.status === 422) {
+        deferred.reject(response.data.errors);
+      } else {
+        deferred.reject();
+      }
+    }
 
     function login(credentials) {
       var deferred = $q.defer();
@@ -29,37 +38,27 @@
               deferred.reject();
             });
         })
-        ['catch'](function(response) {
-          if (response.status === 422) {
-            deferred.reject(response.data.errors);
-          } else {
-            deferred.reject();
-          }
-        });
+        ['catch'](errorHandler);
 
       return deferred.promise;
     }
 
     function forgotUsername(email) {
-      return adapter.post('/forgot-username', {}, {email: email})
-        ['catch'](function(response) {
-          if (response.status === 422) {
-            return $q.reject(response.data.errors);
-          } else {
-            return $q.reject();
-          }
-        });
+      return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler);
     }
 
     function forgotPassword(username) {
-      return adapter.post('/forgot-password', {}, {username: username})
-        ['catch'](function(response) {
-        if (response.status === 422) {
-          return $q.reject(response.data.errors);
-        } else {
-          return $q.reject();
-        }
-      });
+      return adapter.post('/forgot-password', {}, {username: username})['catch'](errorHandler);
+    }
+
+    function resetPassword(token, username, password) {
+      var data = {
+        token: token,
+        username: username,
+        password: password
+      };
+
+      return adapter.post('/reset-password', {}, data)['catch'](errorHandler);
     }
   }]);
 })();

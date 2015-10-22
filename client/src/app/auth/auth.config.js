@@ -20,5 +20,11 @@
       controller: 'ForgotPasswordController',
       templateUrl: 'app/auth/forgot-password.html'
     });
+
+    $stateProvider.state('resetPassword', {
+      url: '/reset-password/:token',
+      controller: 'ResetPasswordController',
+      templateUrl: 'app/auth/reset-password.html'
+    });
   }]);
 })();
