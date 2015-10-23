@@ -1,7 +1,8 @@
 from radar.auth.passwords import check_password_hash
-from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError
+from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
+    pass_call
 from radar.validation.meta import MetaValidationMixin
-from radar.validation.validators import required, optional, email_address
+from radar.validation.validators import required, optional, email_address, not_empty
 
 
 class PasswordField(Field):
@@ -22,10 +23,34 @@ class UserValidation(MetaValidationMixin, Validation):
     username = Field([required()])
     password = PasswordField([optional()])
     password_hash = PasswordHashField([optional()])
-    email = Field([required(), email_address()])
-    first_name = Field([required()])
-    last_name = Field([required()])
+    email = Field([optional(), email_address()])
+    first_name = Field([optional()])
+    last_name = Field([optional()])
     is_admin = Field([required()])
+
+    @pass_call
+    @pass_new_obj
+    def validate_first_name(self, call, obj, first_name):
+        if not obj.is_bot:
+            first_name = call.validators([not_empty()], first_name)
+
+        return first_name
+
+    @pass_call
+    @pass_new_obj
+    def validate_last_name(self, call, obj, last_name):
+        if not obj.is_bot:
+            last_name = call.validators([not_empty()], last_name)
+
+        return last_name
+
+    @pass_call
+    @pass_new_obj
+    def validate_email(self, call, obj, email):
+        if not obj.is_bot:
+            email = call.validators([required()], email)
+
+        return email
 
     @pass_context
     @pass_old_obj
