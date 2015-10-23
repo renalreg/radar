@@ -3,7 +3,7 @@ import string
 
 import werkzeug.security
 
-# Parameters to user for password generation
+# Parameters to use for password generation
 # log2(36 ^ 10) = ~51 bits
 GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
 GENERATE_PASSWORD_LENGTH = 10
