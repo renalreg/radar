@@ -41,7 +41,7 @@ class YMixin(object):
     z = Field()
     z._tag = 'y_z'
     norf = Field()
-    norf._tag = 't_norf'
+    norf._tag = 'y_norf'
 
 
 class NorfMixin(YMixin, XMixin):
@@ -68,7 +68,7 @@ def test_validation_fields():
         ('bar', 'bar_bar'),
         ('x', 'x_x'),
         ('y', 'y_y'),
-        ('y', 'y_z'),
+        ('z', 'y_z'),
         ('norf', 'norf_norf'),
         ('baz', 'baz_baz'),
         ('world', 'baz_world'),

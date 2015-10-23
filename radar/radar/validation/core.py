@@ -416,8 +416,10 @@ class ValidationMetaclass(type):
         for validation_class in bases:
             if hasattr(validation_class, '_declared_fields'):
                 # Copy fields from another serializer
+                base_fields = validation_class._declared_fields.items()
+
                 # Fields on this class and earlier base classes will take precedence
-                fields.extend(reversed(validation_class._declared_fields.items()))
+                fields.extend(reversed(base_fields))
             else:
                 # Copy fields from mixins
                 mixin_fields = ValidationMetaclass.get_mixin_fields(validation_class).items()
@@ -443,7 +445,8 @@ class ValidationMetaclass(type):
         fields.sort(key=lambda x: x[1]._creation_counter, reverse=True)
 
         for validation_mixin_klass in validation_class.__bases__:
-            fields.extend(reversed(ValidationMetaclass.get_mixin_fields(validation_mixin_klass).items()))
+            base_fields = ValidationMetaclass.get_mixin_fields(validation_mixin_klass).items()
+            fields.extend(reversed(base_fields))
 
         fields = ValidationMetaclass.unique_fields(fields)
         fields = reversed(fields)
