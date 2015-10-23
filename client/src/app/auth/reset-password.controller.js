@@ -23,6 +23,11 @@
           if (errors) {
             $scope.errors = errors;
           }
+
+          if (errors.token) {
+            notificationService.error({message: errors.token, timeout: 30000});
+            $state.go('forgotPassword');
+          }
         });
     };
   }]);

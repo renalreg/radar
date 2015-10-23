@@ -9,6 +9,7 @@
     return {
       notifications: notifications,
       success: success,
+      error: error,
       remove: remove
     };
 
@@ -22,6 +23,24 @@
       }
 
       params['type'] = 'success';
+
+      return _notify(params);
+    }
+
+    function error(params) {
+      if (angular.isArray(params) || !angular.isObject(params)) {
+        params = {message: params};
+      }
+
+      if (angular.isArray(params['message'])) {
+        params['message'] = params['message'].join(' ');
+      }
+
+      if (params['title'] === undefined) {
+        params['title'] = 'Error!';
+      }
+
+      params['type'] = 'error';
 
       return _notify(params);
     }

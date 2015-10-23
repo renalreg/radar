@@ -13,9 +13,9 @@
 
     function errorHandler(response) {
       if (response.status === 422) {
-        deferred.reject(response.data.errors);
+        return $q.reject(response.data.errors);
       } else {
-        deferred.reject();
+        return $q.reject();
       }
     }
 
