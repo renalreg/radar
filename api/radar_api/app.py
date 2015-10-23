@@ -1,5 +1,6 @@
 import logging
 from flask import Flask
+from radar_api.auth import require_login
 
 from radar_api.views import cohort_patients
 from radar_api.views import consultants
@@ -39,7 +40,7 @@ from radar_api.views import login
 from radar_api.views import forgot_username
 from radar_api.views import reset_password
 from radar.auth.cors import set_cors_headers
-from radar.auth.sessions import require_login, refresh_token
+from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
 
