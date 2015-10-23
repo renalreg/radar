@@ -251,7 +251,7 @@ class ValidateFieldBeforeUpdateCall(object):
 
         args.append(self.old_value)
 
-        return f(*args)
+        f(*args)
 
 
 class ValidateFieldCall(object):
