@@ -12,6 +12,9 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
     organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users', read_only=True)
     cohorts = ListField(field=CohortUserSerializer(), source='cohort_users', read_only=True)
 
+    current_password = StringField(write_only=True)
+    password = StringField(write_only=True)
+
     class Meta(object):
         model_class = User
         fields = ('id', 'is_admin', 'username', 'email', 'first_name', 'last_name')

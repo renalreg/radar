@@ -65,7 +65,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     @property
     def password(self):
-        return self._password
+        return getattr(self, '_password', None)
 
     @password.setter
     def password(self, value):
@@ -75,7 +75,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self.force_password_change = False
 
     def set_initial_password(self, value):
-        self.password = value
+        self._password = value
         self.force_password_change = True
 
     def check_password(self, password):

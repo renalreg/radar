@@ -116,7 +116,8 @@ class ModelSerializer(Serializer):
 
     def update(self, obj, deserialized_data):
         for attr, value in deserialized_data.items():
-            setattr(obj, attr, value)
+            if hasattr(obj, attr):
+                setattr(obj, attr, value)
 
         return obj
 
