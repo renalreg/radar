@@ -96,8 +96,6 @@ class ContextBeforeUpdateCall(object):
         if getattr(f, '_pass_call', False):
             args.append(self)
 
-        args.append(ctx)
-
         if getattr(f, '_pass_old_obj', False):
             args.append(self.old_obj)
 
