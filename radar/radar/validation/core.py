@@ -187,10 +187,6 @@ class ValidateBeforeUpdateCall(object):
 
         f(*args)
 
-    def run_validators(self, validators, old_value, new_value, result=None):
-        call = ValidatorCall(self.ctx, old_value)
-        return run_validators(validators, call, new_value, result)
-
 
 class ValidateCall(object):
     def __init__(self, ctx, old_obj):
@@ -218,7 +214,7 @@ class ValidateCall(object):
         return run_validators(validators, call, obj, result)
 
     def validators_for_field(self, validators, obj, field, result=None):
-        old_value = getattr(self.old_obj, field.field_name)
+        old_value = field.get_value(self.old_obj)
         new_value = field.get_value(obj)
         call = ValidatorCall(self.ctx, old_value)
 
