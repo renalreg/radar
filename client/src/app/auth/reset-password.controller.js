@@ -3,7 +3,9 @@
 
   var app = angular.module('radar');
 
-  app.controller('ResetPasswordController', ['$scope', '$state', 'authService', '$stateParams', function($scope, $state, authService, $stateParams) {
+  var MESSAGE = 'Your password has been reset, you can now login with your new password.';
+
+  app.controller('ResetPasswordController', ['$scope', '$state', 'authService', '$stateParams', 'notificationService', function($scope, $state, authService, $stateParams, notificationService) {
     $scope.errors = {};
     $scope.data = {};
 
@@ -14,7 +16,7 @@
 
       authService.resetPassword(token, $scope.data.username, $scope.data.password)
         .then(function() {
-          // TODO show message
+          notificationService.success({message: MESSAGE, timeout: 30000});
           $state.go('login');
         })
         ['catch'](function(errors) {

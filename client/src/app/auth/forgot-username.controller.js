@@ -3,7 +3,9 @@
 
   var app = angular.module('radar');
 
-  app.controller('ForgotUsernameController', ['$scope', '$state', 'authService', function($scope, $state, authService) {
+  var MESSAGE = 'Check your email for a reminder of your username(s).';
+
+  app.controller('ForgotUsernameController', ['$scope', '$state', 'authService', 'notificationService', function($scope, $state, authService, notificationService) {
     $scope.errors = {};
     $scope.data = {};
 
@@ -12,7 +14,7 @@
 
       authService.forgotUsername($scope.data.email)
         .then(function() {
-          // TODO show message
+          notificationService.success({message: MESSAGE, timeout: 30000});
           $state.go('login');
         })
         ['catch'](function(errors) {

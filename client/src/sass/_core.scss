@@ -14,14 +14,10 @@ body {
 
 .content {
   padding: $radar-padding;
+}
 
-  > :first-child {
-    margin-top: 0;
-  }
-
-  > :last-child {
-    margin-bottom: 0;
-  }
+h1:first-child {
+  margin-top: 0;
 }
 
 .footer {
