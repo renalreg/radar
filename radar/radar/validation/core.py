@@ -387,6 +387,20 @@ class ValidationMetaclass(type):
         return super(ValidationMetaclass, cls).__new__(cls, name, bases, attrs)
 
     @staticmethod
+    def unique_fields(fields):
+        new_fields = []
+        field_names = set()
+
+        for field_name, field in fields:
+            if field_name in field_names:
+                continue
+
+            field_names.add(field_name)
+            new_fields.append((field_name, field))
+
+        return new_fields
+
+    @staticmethod
     def get_fields(bases, attrs):
         fields = []
 
@@ -395,40 +409,45 @@ class ValidationMetaclass(type):
             if isinstance(obj, Field):
                 fields.append((field_name, attrs.pop(field_name)))
 
-        # Sort the fields in the order they were declared
-        fields.sort(key=lambda x: x[1]._creation_counter)
+        # Sort the fields in reverse declaration order
+        fields.sort(key=lambda x: x[1]._creation_counter, reverse=True)
 
-        # Sort the fields in the order they were declared
-        fields.sort(key=lambda x: x[1]._creation_counter)
-
-        # Loop in reverse to maintain correct field ordering
-        for validation_class in reversed(bases):
+        # Loop through parent classes
+        for validation_class in bases:
             if hasattr(validation_class, '_declared_fields'):
                 # Copy fields from another serializer
-                # Parent serializer's fields go first
-                fields = list(validation_class._declared_fields.items()) + fields
+                # Fields on this class and earlier base classes will take precedence
+                fields.extend(reversed(validation_class._declared_fields.items()))
             else:
                 # Copy fields from mixins
                 mixin_fields = ValidationMetaclass.get_mixin_fields(validation_class).items()
 
-                # Sort the mixin fields in the order they were declared
-                mixin_fields.sort(key=lambda x: x[1]._creation_counter)
-
                 # Add the mixin fields
-                fields = mixin_fields + fields
+                fields.extend(reversed(mixin_fields))
 
-        return OrderedDict(fields)
+        fields = ValidationMetaclass.unique_fields(fields)
+        fields = reversed(fields)
+        fields = OrderedDict(fields)
+
+        return fields
 
     @staticmethod
     def get_mixin_fields(validation_class):
-        fields = {}
-
-        for validation_mixin_klass in reversed(validation_class.__bases__):
-            fields.update(ValidationMetaclass.get_mixin_fields(validation_mixin_klass))
+        fields = []
 
         for field_name, obj in validation_class.__dict__.items():
             if isinstance(obj, Field):
-                fields[field_name] = obj
+                fields.append((field_name, obj))
+
+        # Sort the fields in reverse declaration order
+        fields.sort(key=lambda x: x[1]._creation_counter, reverse=True)
+
+        for validation_mixin_klass in validation_class.__bases__:
+            fields.extend(reversed(ValidationMetaclass.get_mixin_fields(validation_mixin_klass).items()))
+
+        fields = ValidationMetaclass.unique_fields(fields)
+        fields = reversed(fields)
+        fields = OrderedDict(fields)
 
         return fields
 
