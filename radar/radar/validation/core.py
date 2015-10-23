@@ -292,7 +292,7 @@ def run_validators(validators, call, new_value, result=None):
             if result is not None:
                 result.skipped = True
 
-            return new_value
+            break
 
     return new_value
 
@@ -301,6 +301,9 @@ class CleanObject(object):
     def __init__(self, data):
         for key, value in data.items():
             setattr(self, key, value)
+
+    def __getitem__(self, key):
+        return getattr(self, key)
 
 
 class Field(object):
