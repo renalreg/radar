@@ -7,7 +7,7 @@ from radar.validation.core import ContextBeforeUpdateCall, pass_call, pass_full,
 
 class MockFunction(object):
     def __init__(self):
-        self.args = []
+        self.args = None
 
     def __call__(self, *args):
         self.args = args
@@ -16,7 +16,7 @@ class MockFunction(object):
 
 class MockErrorFunction(object):
     def __init__(self):
-        self.args = []
+        self.args = None
 
     def __call__(self, *args):
         self.args = args
