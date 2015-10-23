@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, date
 
 import pytz
 
@@ -145,10 +145,10 @@ def in_(values):
 
 def not_in_future():
     def not_in_future_f(value):
-        now = datetime.now(pytz.utc)
-
         if is_date(value):
-            now = now.date()
+            now = date.today()
+        else:
+            now = datetime.now(pytz.utc)
 
         if value > now:
             raise ValidationError("Can't be in the future.")
