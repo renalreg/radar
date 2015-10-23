@@ -1,6 +1,8 @@
+import pytest
+
 from radar.validation.core import ContextBeforeUpdateCall, pass_call, pass_full, pass_old_obj, ContextCall, pass_new_obj, \
     pass_context, ValidatorCall, pass_old_value, PreValidateCall, ValidateBeforeUpdateCall, ValidateCall, \
-    ValidateFieldBeforeUpdateCall, ValidateFieldCall
+    ValidateFieldBeforeUpdateCall, ValidateFieldCall, Field, ValidationError
 
 
 class MockFunction(object):
@@ -10,6 +12,15 @@ class MockFunction(object):
     def __call__(self, *args):
         self.args = args
         return 42
+
+
+class MockErrorFunction(object):
+    def __init__(self):
+        self.args = []
+
+    def __call__(self, *args):
+        self.args = args
+        raise ValidationError('An error!')
 
 
 def test_context_before_update_call():
@@ -153,6 +164,24 @@ def test_validator_call():
 
     assert f.args[0] is new_value
     assert len(f.args) == 1
+
+
+def test_validator_call_validators():
+    old_value = object()
+    new_value = object()
+    ctx = {}
+
+    f = MockFunction()
+    pass_full(f)
+
+    c = ValidatorCall(ctx, old_value)
+    assert c.validators([f], new_value) == 42
+
+    assert f.args[0] is ctx
+    assert f.args[1] is c
+    assert f.args[2] is old_value
+    assert f.args[3] is new_value
+    assert len(f.args) == 4
 
 
 def test_validator_call_with_context():
@@ -360,6 +389,77 @@ def test_validate_call():
     assert len(f.args) == 1
 
 
+def test_validate_call_validators():
+    old_obj = object()
+    new_obj = object()
+    ctx = {}
+
+    f = MockFunction()
+    pass_full(f)
+
+    c = ValidateCall(ctx, old_obj)
+    assert c.validators([f], new_obj) == 42
+
+    assert f.args[0] is ctx
+    assert isinstance(f.args[1], ValidatorCall)
+    assert f.args[2] is old_obj
+    assert f.args[3] is new_obj
+    assert len(f.args) == 4
+
+
+def test_validate_call_validators_for_field():
+    field_name = 'foo'
+    old_value = object()
+    new_value = object()
+    old_obj = {field_name: old_value}
+    new_obj = {field_name: new_value}
+    ctx = {}
+
+    f = MockFunction()
+    pass_full(f)
+
+    field = Field()
+    field.bind('foo')
+
+    c = ValidateCall(ctx, old_obj)
+    assert c.validators_for_field([f], new_obj, field) == 42
+    assert new_obj['foo'] == 42
+
+    assert f.args[0] is ctx
+    assert isinstance(f.args[1], ValidatorCall)
+    assert f.args[2] is old_value
+    assert f.args[3] is new_value
+    assert len(f.args) == 4
+
+
+def test_validate_call_validators_for_field_error():
+    field_name = 'foo'
+    old_value = object()
+    new_value = object()
+    old_obj = {field_name: old_value}
+    new_obj = {field_name: new_value}
+    ctx = {}
+
+    f = MockErrorFunction()
+    pass_full(f)
+
+    field = Field()
+    field.bind('foo')
+
+    c = ValidateCall(ctx, old_obj)
+
+    with pytest.raises(ValidationError) as e:
+        c.validators_for_field([f], new_obj, field)
+
+    assert e.value.errors == {'foo': ['An error!']}
+
+    assert f.args[0] is ctx
+    assert isinstance(f.args[1], ValidatorCall)
+    assert f.args[2] is old_value
+    assert f.args[3] is new_value
+    assert len(f.args) == 4
+
+
 def test_validate_call_with_context():
     old_obj = object()
     new_obj = object()
@@ -510,6 +610,26 @@ def test_validate_field_call():
 
     assert f.args[0] is new_value
     assert len(f.args) == 1
+
+
+def test_validate_field_call_validators():
+    old_obj = object()
+    new_obj = object()
+    old_value = object()
+    new_value = object()
+    ctx = {}
+
+    f = MockFunction()
+    pass_full(f)
+
+    c = ValidateFieldCall(ctx, old_obj, new_obj, old_value)
+    assert c.validators([f], new_value) == 42
+
+    assert f.args[0] is ctx
+    assert isinstance(f.args[1], ValidatorCall)
+    assert f.args[2] is old_value
+    assert f.args[3] is new_value
+    assert len(f.args) == 4
 
 
 def test_validate_field_call_with_context():
