@@ -3,6 +3,11 @@ from radar.validation.core import ValidationError
 from radar.validation.patient_number_validators import ukrr_no
 
 
+def test_invalid_string():
+    with pytest.raises(ValidationError):
+        ukrr_no()('hello')
+
+
 def test_valid_int():
     value = ukrr_no()(200012345)
     assert value == 200012345

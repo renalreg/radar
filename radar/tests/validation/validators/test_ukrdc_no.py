@@ -3,6 +3,10 @@ from radar.validation.core import ValidationError
 from radar.validation.patient_number_validators import ukrdc_no
 
 
+def test_invalid_string():
+    invalid('hello')
+
+
 def test_valid_int():
     assert valid(100000123) == 100000123
 
