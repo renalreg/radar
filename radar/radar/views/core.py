@@ -77,6 +77,9 @@ class ValidationViewMixin(object):
         else:
             return validation_class()
 
+    def get_context(self, deserialized_data):
+        return {'user': current_user}
+
 
 class BaseView(SerializerViewMixin, ValidationViewMixin, PermissionViewMixin, ApiView):
     pass
@@ -206,11 +209,11 @@ class CreateModelViewMixin(object):
             obj = serializer.create()
             obj = serializer.update(obj, deserialized_data)
         else:
-            ctx = {'user': current_user}
+            ctx = self.get_context(deserialized_data)
+            obj = serializer.create()
 
             with db.session.no_autoflush:
                 try:
-                    obj = serializer.create()
                     validation.before_update(ctx, obj)
                     old_obj = validation.clone(obj)
                     obj = serializer.update(obj, deserialized_data)
@@ -311,7 +314,7 @@ class UpdateModelViewMixin(object):
         if validation is None:
             obj = serializer.update(obj, deserialized_data)
         else:
-            ctx = {'user': current_user}
+            ctx = self.get_context(deserialized_data)
 
             with db.session.no_autoflush:
                 try:

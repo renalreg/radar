@@ -4,7 +4,8 @@
       <div frm-label>Current Password</div>
 
       <div frm-control>
-        <div frm-password-field model="data.currentPassword" required="true"></div>
+        <div frm-password-field model="item.currentPassword" required="true"></div>
+        <div frm-errors errors="item.errors.currentPassword"></div>
       </div>
     </div>
 
@@ -13,6 +14,7 @@
 
       <div frm-control>
         <div frm-text-field model="data.email" required="true"></div>
+        <div frm-errors errors="item.errors.email"></div>
       </div>
     </div>
 
@@ -21,6 +23,7 @@
 
       <div frm-control>
         <div frm-text-field model="data.confirmEmail" required="true"></div>
+        <div frm-errors></div>
       </div>
     </div>
 
