@@ -1,4 +1,4 @@
-from flask import abort, request, current_app, has_request_context, _request_ctx_stack
+from flask import request, current_app, has_request_context, _request_ctx_stack
 from itsdangerous import BadSignature, TimestampSigner
 from sqlalchemy import func, not_
 from werkzeug.local import LocalProxy
@@ -72,11 +72,6 @@ def logout_user(user):
     UserSession.query\
         .filter(UserSession.user == user)\
         .update({'is_active': False})
-
-
-def require_login():
-    if request.method != 'OPTIONS' and not current_app.is_public_endpoint(request.endpoint) and not current_user.is_authenticated():
-        abort(401)
 
 
 def refresh_token(response):
