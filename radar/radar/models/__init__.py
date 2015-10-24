@@ -12,6 +12,7 @@ from radar.models.genetics import *
 from radar.models.hospitalisations import *
 from radar.models.results import *
 from radar.models.medications import *
+from radar.models.nephrectomies import *
 from radar.models.organisations import *
 from radar.models.posts import *
 from radar.models.pathology import *
