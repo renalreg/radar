@@ -12,3 +12,4 @@ six==1.10.0
 SQLAlchemy==1.0.8
 uWSGI==2.0.11.2
 Werkzeug==0.10.4
+zxcvbn==1.0
