@@ -25,7 +25,7 @@
 
           _.each(data, function(value, key) {
             newData[key] = flattenRelationships(value, depth + 1);
-          })
+          });
         }
       } else {
         newData = data;

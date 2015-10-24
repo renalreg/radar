@@ -16,6 +16,7 @@
   "strict": true,
   "predef": [
     "angular",
-    "describe", "expect", "it"
+    "describe", "expect", "it", "beforeEach",
+    "module", "inject"
   ]
 }

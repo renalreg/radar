@@ -6,7 +6,7 @@
 
     var flattenRelationships;
 
-    beforeEach(inject(function(_flattenRelationships_){
+    beforeEach(inject(function(_flattenRelationships_) {
       flattenRelationships = _flattenRelationships_;
     }));
 
@@ -89,7 +89,7 @@
             hello: 'world'
           },
           {
-            id:3,
+            id: 3,
             hello: 'world'
           }
         ]

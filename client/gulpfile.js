@@ -23,6 +23,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 var argv = require('yargs').argv;
+var stylish = require('gulp-jscs-stylish');
 
 var common = require('./common');
 
@@ -64,9 +65,11 @@ gulp.task('sass', function() {
 
 gulp.task('scripts', function() {
   return gulp.src('src/app/**/*.js')
-    .pipe(jscs().on('error', gutil.log))
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint())
+    .pipe(jscs())
+    .on('error', function() {}) // continue despite linting errors
+    .pipe(stylish.combineWithHintResults())
+    .pipe(jshint.reporter('jshint-stylish'))
     .pipe(browserSync.reload({stream: true}));
 });
 

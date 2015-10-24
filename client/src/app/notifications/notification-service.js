@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.notifications');
 
-  app.factory('notificationService', ['$timeout', function($timeout) {
+  app.factory('notificationService', ['$timeout', '_', function($timeout, _) {
     var notifications = [];
 
     return {
@@ -18,11 +18,11 @@
         params = {message: params};
       }
 
-      if (params['title'] === undefined) {
-        params['title'] = 'Success!';
+      if (params.title === undefined) {
+        params.title = 'Success!';
       }
 
-      params['type'] = 'success';
+      params.type = 'success';
 
       return _notify(params);
     }
@@ -32,38 +32,38 @@
         params = {message: params};
       }
 
-      if (angular.isArray(params['message'])) {
-        params['message'] = params['message'].join(' ');
+      if (angular.isArray(params.message)) {
+        params.message = params.message.join(' ');
       }
 
-      if (params['title'] === undefined) {
-        params['title'] = 'Error!';
+      if (params.title === undefined) {
+        params.title = 'Error!';
       }
 
-      params['type'] = 'error';
+      params.type = 'error';
 
       return _notify(params);
     }
 
     function _notify(params) {
-      if (params['timeout'] === undefined) {
-        params['timeout'] = 5000; // 5 seconds
+      if (params.timeout === undefined) {
+        params.timeout = 5000; // 5 seconds
       }
 
       var notification = {
-        type: params['type'],
-        title: params['title'],
-        message: params['message'],
-        timeout: params['timeout'],
+        type: params.type,
+        title: params.title,
+        message: params.message,
+        timeout: params.timeout,
         remove: function() {
           remove(this);
         }
       };
 
-      if (notification['timeout'] > 0) {
+      if (notification.timeout > 0) {
         $timeout(function() {
-          remove(notification)
-        }, notification['timeout']);
+          remove(notification);
+        }, notification.timeout);
       }
 
       notifications.push(notification);

@@ -109,7 +109,7 @@
       var s;
 
       if (params.dayMonthSeparator || params.hourMinuteSeparator) {
-        s = _getDateRegExp(params)
+        s = _getDateRegExp(params);
       } else {
         var value = params.day;
 
@@ -122,7 +122,7 @@
           _getDateRegExp({minute: value}) + '|' +
           _getDateRegExp({second: value}) +
           ')'
-        )
+        );
       }
 
       s = '^' + s + '$';
@@ -134,7 +134,7 @@
       var length = digits ? digits.length : 0;
       var pad = n - length;
 
-      if (pad == n) {
+      if (pad === n) {
         return '[0-9]{' + pad + '}';
       } else if (pad > 0) {
         return (
@@ -154,7 +154,9 @@
       var match;
       var f;
 
-      if (match = dateTimeRegExp.exec(search)) {
+      match = dateTimeRegExp.exec(search);
+
+      if (match) {
         params = {
           day: match[1],
           dayMonthSeparator: match[2],
@@ -168,14 +170,18 @@
           minuteSecondSeparator: match[10],
           second: match[11]
         };
-      } else if (match = timeRegExp.exec(search)) {
-        params = {
-          hour: match[1],
-          hourMinuteSeparator: match[2],
-          minute: match[3],
-          minuteSecondSeparator: match[4],
-          second: match[5]
-        };
+      } else {
+        match = timeRegExp.exec(search);
+
+        if (match) {
+          params = {
+            hour: match[1],
+            hourMinuteSeparator: match[2],
+            minute: match[3],
+            minuteSecondSeparator: match[4],
+            second: match[5]
+          };
+        }
       }
 
       if (match) {
@@ -183,11 +189,11 @@
 
         f = function(value) {
           return regExp.test(value);
-        }
+        };
       } else {
         f = function() {
           return false;
-        }
+        };
       }
 
       return f;

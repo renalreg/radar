@@ -1,13 +1,13 @@
 (function() {
   'use strict';
 
-  describe('wrap options', function () {
+  describe('wrap options', function() {
     beforeEach(module('radar'));
 
-    describe('to radio view', function () {
+    describe('to radio view', function() {
       var toRadioView;
 
-      beforeEach(inject(function (_toRadioView_) {
+      beforeEach(inject(function(_toRadioView_) {
         toRadioView = _toRadioView_;
       }));
 
@@ -20,10 +20,10 @@
       });
     });
 
-    describe('to radio model', function () {
+    describe('to radio model', function() {
       var toRadioModel;
 
-      beforeEach(inject(function (_toRadioModel_) {
+      beforeEach(inject(function(_toRadioModel_) {
         toRadioModel = _toRadioModel_;
       }));
 
@@ -55,10 +55,10 @@
       });
     });
 
-    describe('wrap radio options', function () {
+    describe('wrap radio options', function() {
       var wrapRadioOptions;
 
-      beforeEach(inject(function (_wrapRadioOptions_) {
+      beforeEach(inject(function(_wrapRadioOptions_) {
         wrapRadioOptions = _wrapRadioOptions_;
       }));
 
@@ -114,10 +114,10 @@
       });
     });
 
-    describe('to select view', function () {
+    describe('to select view', function() {
       var toSelectView;
 
-      beforeEach(inject(function (_toSelectView_) {
+      beforeEach(inject(function(_toSelectView_) {
         toSelectView = _toSelectView_;
       }));
 
@@ -152,10 +152,10 @@
       });
     });
 
-    describe('to select model', function () {
+    describe('to select model', function() {
       var toSelectModel;
 
-      beforeEach(inject(function (_toSelectModel_) {
+      beforeEach(inject(function(_toSelectModel_) {
         toSelectModel = _toSelectModel_;
       }));
 
@@ -190,10 +190,10 @@
       });
     });
 
-    describe('wrap select options', function () {
+    describe('wrap select options', function() {
       var wrapSelectOptions;
 
-      beforeEach(inject(function (_wrapSelectOptions_) {
+      beforeEach(inject(function(_wrapSelectOptions_) {
         wrapSelectOptions = _wrapSelectOptions_;
       }));
 

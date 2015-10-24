@@ -14,6 +14,7 @@
     "gulp-imagemin": "^2.3.0",
     "gulp-inject": "^1.5.0",
     "gulp-jscs": "^2.0.0",
+    "gulp-jscs-stylish": "^1.2.1",
     "gulp-jshint": "^1.11.2",
     "gulp-minify-css": "^1.2.1",
     "gulp-minify-html": "^1.0.4",

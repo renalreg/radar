@@ -1,3 +1,6 @@
+// jshint camelcase: false
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+
 (function() {
   'use strict';
 
@@ -6,7 +9,7 @@
 
     var camelCaseKeys;
 
-    beforeEach(inject(function(_camelCaseKeys_){
+    beforeEach(inject(function(_camelCaseKeys_) {
       camelCaseKeys = _camelCaseKeys_;
     }));
 
@@ -88,7 +91,7 @@
 
     var snakeCaseKeys;
 
-    beforeEach(inject(function(_snakeCaseKeys_){
+    beforeEach(inject(function(_snakeCaseKeys_) {
       snakeCaseKeys = _snakeCaseKeys_;
     }));
 

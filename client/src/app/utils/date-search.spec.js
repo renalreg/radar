@@ -6,11 +6,11 @@
 
     var dateSearch;
 
-    beforeEach(inject(function (_dateSearch_) {
+    beforeEach(inject(function(_dateSearch_) {
       dateSearch = _dateSearch_;
     }));
 
-    it('empty string', function () {
+    it('empty string', function() {
       var f = dateSearch('');
 
       expect(f('')).toBe(false);
@@ -18,7 +18,7 @@
       expect(f('2015-01-02')).toBe(true);
     });
 
-    it('not a date', function () {
+    it('not a date', function() {
       var f = dateSearch('hello');
 
       expect(f('')).toBe(false);
@@ -26,7 +26,7 @@
       expect(f('2015-01-02')).toBe(false);
     });
 
-    it('[0-9]', function () {
+    it('[0-9]', function() {
       var f = dateSearch('1');
 
       expect(f('')).toBe(false);
@@ -64,7 +64,7 @@
       expect(f('0000-00-00T00:00:01')).toBe(true);
     });
 
-    it('[0-9]{2}', function () {
+    it('[0-9]{2}', function() {
       var f = dateSearch('12');
 
       expect(f('12-00-00')).toBe(false);
@@ -84,7 +84,7 @@
       expect(f('0000-00-00T00:00:12')).toBe(true);
     });
 
-    it('[0-9]{2}/', function () {
+    it('[0-9]{2}/', function() {
       var f = dateSearch('12/');
 
       expect(f('12-00-00')).toBe(false);
@@ -104,7 +104,7 @@
       expect(f('0000-00-00T00:00:12')).toBe(false);
     });
 
-    it('[0-9]{2}/[0-9]', function () {
+    it('[0-9]{2}/[0-9]', function() {
       var f = dateSearch('12/1');
 
       expect(f('0012-01-00')).toBe(false);
@@ -119,7 +119,7 @@
       expect(f('0000-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}', function () {
+    it('[0-9]{2}/[0-9]{2}', function() {
       var f = dateSearch('12/10');
 
       expect(f('0012-10-00')).toBe(false);
@@ -130,7 +130,7 @@
       expect(f('0000-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/', function () {
+    it('[0-9]{2}/[0-9]{2}/', function() {
       var f = dateSearch('12/10/');
 
       expect(f('0012-10-00')).toBe(false);
@@ -141,7 +141,7 @@
       expect(f('0000-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]', function() {
       var f = dateSearch('12/10/4');
 
       expect(f('4-10-12')).toBe(false);
@@ -153,7 +153,7 @@
       expect(f('0004-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{2}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{2}', function() {
       var f = dateSearch('12/10/42');
 
       expect(f('42-10-12')).toBe(false);
@@ -163,7 +163,7 @@
       expect(f('0042-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{3}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{3}', function() {
       var f = dateSearch('12/10/999');
 
       expect(f('999-10-12')).toBe(false);
@@ -171,13 +171,13 @@
       expect(f('0999-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4}', function() {
       var f = dateSearch('12/10/2015');
 
       expect(f('2015-10-12')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]', function() {
       var f = dateSearch('12/10/2015 1');
 
       expect(f('2015-10-12T00:00:00')).toBe(false);
@@ -185,21 +185,21 @@
       expect(f('2015-10-12T10:00:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}', function() {
       var f = dateSearch('12/10/2015 12');
 
       expect(f('2015-10-12T00:00:00')).toBe(false);
       expect(f('2015-10-12T12:00:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:', function() {
       var f = dateSearch('12/10/2015 12:');
 
       expect(f('2015-10-12T00:00:00')).toBe(false);
       expect(f('2015-10-12T12:00:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]', function() {
       var f = dateSearch('12/10/2015 12:3');
 
       expect(f('2015-10-12T12:00:00')).toBe(false);
@@ -207,21 +207,21 @@
       expect(f('2015-10-12T12:30:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}', function() {
       var f = dateSearch('12/10/2015 12:34');
 
       expect(f('2015-10-12T12:00:00')).toBe(false);
       expect(f('2015-10-12T12:34:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:', function() {
       var f = dateSearch('12/10/2015 12:34:');
 
       expect(f('2015-10-12T12:00:00')).toBe(false);
       expect(f('2015-10-12T12:34:00')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]', function() {
       var f = dateSearch('12/10/2015 12:34:5');
 
       expect(f('2015-10-12T12:34:00')).toBe(false);
@@ -229,14 +229,14 @@
       expect(f('2015-10-12T12:34:05')).toBe(true);
     });
 
-    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}', function () {
+    it('[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}', function() {
       var f = dateSearch('12/10/2015 12:34:56');
 
       expect(f('2015-10-12T12:34:00')).toBe(false);
       expect(f('2015-10-12T12:34:56')).toBe(true);
     });
 
-    it('[0-9]{2}:', function () {
+    it('[0-9]{2}:', function() {
       var f = dateSearch('12:');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
@@ -250,7 +250,7 @@
       expect(f('0000-00-00T12:00:00')).toBe(true);
     });
 
-    it('[0-9]{2}:[0-9]', function () {
+    it('[0-9]{2}:[0-9]', function() {
       var f = dateSearch('12:3');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
@@ -258,21 +258,21 @@
       expect(f('0000-00-00T12:03:00')).toBe(true);
     });
 
-    it('[0-9]{2}:[0-9]{2}', function () {
+    it('[0-9]{2}:[0-9]{2}', function() {
       var f = dateSearch('12:34');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
       expect(f('0000-00-00T12:34:00')).toBe(true);
     });
 
-    it('[0-9]{2}:[0-9]{2}:', function () {
+    it('[0-9]{2}:[0-9]{2}:', function() {
       var f = dateSearch('12:34:');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
       expect(f('0000-00-00T12:34:00')).toBe(true);
     });
 
-    it('[0-9]{2}:[0-9]{2}:[0-9]', function () {
+    it('[0-9]{2}:[0-9]{2}:[0-9]', function() {
       var f = dateSearch('12:34:5');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
@@ -280,14 +280,14 @@
       expect(f('0000-00-00T12:34:05')).toBe(true);
     });
 
-    it('[0-9]{2}:[0-9]{2}:[0-9]{2}', function () {
+    it('[0-9]{2}:[0-9]{2}:[0-9]{2}', function() {
       var f = dateSearch('12:34:56');
 
       expect(f('0000-00-00T00:00:00')).toBe(false);
       expect(f('0000-00-00T12:34:56')).toBe(true);
     });
 
-    it('trailing whitespace', function () {
+    it('trailing whitespace', function() {
       var f = dateSearch('   12/10/2015 12:34:56  ');
 
       expect(f('2015-10-12T12:34:00')).toBe(false);
