@@ -218,6 +218,22 @@ gulp.task('test', function(cb) {
   }, cb).start();
 });
 
+gulp.task('coverage', function(cb) {
+  new karma.Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true,
+    browsers: ['PhantomJS'],
+    reporters: ['dots', 'coverage']
+  }, cb).start();
+});
+
+gulp.task('sauce-labs', function(cb) {
+  new karma.Server({
+    configFile: __dirname + '/sauce-labs.conf.js',
+    singleRun: true
+  }, cb).start();
+});
+
 gulp.task('build', function(cb) {
   runSequence('inject', cb);
 });

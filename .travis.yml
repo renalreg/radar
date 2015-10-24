@@ -9,10 +9,11 @@ install:
 - pip install coveralls
 - gem install coveralls-lcov
 script:
-- ( cd client && karma start --single-run --browsers PhantomJS --reporters dots,coverage )
-- ( cd client && karma start sauce-labs.conf.js || true )
-- tox -c radar/tox.ini
-- tox -c api/tox.ini
+- ( cd client && gulp lint )
+- ( cd client && gulp coverage )
+- ( cd client && gulp sauce-labs || true )
+- ( cd radar && tox )
+- ( cd api && tox )
 after_success:
 - coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json
 - coverage combine radar/.coverage api/.coverage
