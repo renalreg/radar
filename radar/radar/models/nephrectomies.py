@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, IntegerLookupTable
 
-NEPHRECTOMY_SIDES = OrderedDict([
+NEPHRECTOMY_KIDNEY_SIDES = OrderedDict([
     ('LEFT', 'Left'),
     ('RIGHT', 'Right'),
     ('BILATERAL', 'Bilateral'),
