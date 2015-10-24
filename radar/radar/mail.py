@@ -6,6 +6,13 @@ from jinja2 import Environment, PackageLoader
 
 COMMA_SPACE = ', '
 
+env = Environment(
+    loader=PackageLoader('radar', 'templates/emails'),
+    trim_blocks=True,
+    lstrip_blocks=True,
+    autoescape=True,
+)
+
 
 def send_email(to_addresses, subject, message_plain, message_html=None, from_address=None):
     if from_address is None:
@@ -37,13 +44,6 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
 
 
 def send_email_from_template(to_addresses, subject, template_name, context, from_address=None):
-    env = Environment(
-        loader=PackageLoader('radar', 'templates/emails'),
-        trim_blocks=True,
-        lstrip_blocks=True,
-        autoescape=True,
-    )
-
     template_plain = env.get_template('%s.txt' % template_name)
     message_plain = template_plain.render(**context)
 
