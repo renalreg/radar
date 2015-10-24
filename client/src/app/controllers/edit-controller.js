@@ -9,7 +9,7 @@
 
       this.scope.loading = true;
       this.scope.item = null;
-      self.scope.originalItem = null;
+      this.scope.originalItem = null;
 
       this.scope.save = angular.bind(this, this.save);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
