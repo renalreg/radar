@@ -2,6 +2,8 @@ import re
 from datetime import datetime, date
 
 import pytz
+import sqlalchemy
+import zxcvbn
 
 from radar.constants import HUMAN_DATE_FORMAT
 from radar.safe_strftime import safe_strftime
@@ -321,3 +323,27 @@ def after_day_zero(dt_format=HUMAN_DATE_FORMAT):
         return after_f(value)
 
     return after_day_zero_f
+
+
+def sqlalchemy_connection_string():
+    def sqlalchemy_connection_string_f(value):
+        try:
+            sqlalchemy.engine.url.make_url(value)
+        except sqlalchemy.exc.ArgumentError:
+            raise ValidationError('Not a valid SQLAlchemy connection string.')
+
+        return value
+
+    return sqlalchemy_connection_string_f
+
+
+def min_crack_time(min_seconds):
+    def min_crack_time_f(value):
+        seconds = zxcvbn.password_strength(value)['crack_time']
+
+        if seconds < min_seconds:
+            raise ValidationError('Crack time of %d seconds is less than minimum of %d seconds.' % (seconds, min_seconds))
+
+        return value
+
+    return min_crack_time_f
