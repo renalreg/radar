@@ -23,11 +23,15 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
+def run_gulp(task, env=None, cwd=None):
+    run_command(['gulp', task, '--color'], env=env, cwd=cwd)
+
+
 def build_client(root_path):
     src_path = get_client_src_path(root_path)
 
     heading('Build %s' % NAME)
-    run_command(['gulp', 'build:dist'], cwd=src_path)
+    run_gulp('build:dist', cwd=src_path)
 
 
 def package_client(root_path):
@@ -57,10 +61,11 @@ def package_client(root_path):
 
 
 def test_client(root_path):
-    heading('Test %s' % NAME)
-
     src_path = get_client_src_path(root_path)
-    run_command(['karma', 'start', '--single-run', '--browsers', 'PhantomJS', '--reporters', 'dots'], cwd=src_path)
+
+    heading('Test %s' % NAME)
+    run_gulp('lint', cwd=src_path)
+    run_gulp('test', cwd=src_path)
 
 
 @click.command()
@@ -69,7 +74,7 @@ def main(enable_tests):
     root_path = os.path.abspath('../../')
 
     if enable_tests:
-      test_client(root_path)
+        test_client(root_path)
 
     build_client(root_path)
     package_client(root_path)
