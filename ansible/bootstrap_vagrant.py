@@ -32,11 +32,11 @@ def info(x):
 
 
 def run_command(args, env=None, cwd=None):
-    if cwd is None:
-        cwd = os.getcwd()
-
     if env is None:
         env = {}
+
+    if cwd is None:
+        cwd = os.getcwd()
 
     p = subprocess.Popen(args, cwd=cwd, env=env, bufsize=1)
     p.communicate()
@@ -67,9 +67,37 @@ def run_ansible_playbook(extra_vars=None):
 
     run_command(cmd, env={
         'HOME': '/home/vagrant',
-        'PYTHON_UNBUFFERED': '1',
+        'PYTHONUNBUFFERED': '1',
         'ANSIBLE_FORCE_COLOR': '1'
     })
+
+
+def filesystem_supports_symlinks():
+    """Checks if the filesystem supports symlinks.
+
+    If we are running on a Windows host symlinks might not be available in the VirtualBox share.
+    """
+
+    target_file = 'symlink-test'
+
+    # Cleanup a failed previous test
+    try:
+        os.remove(target_file)
+    except OSError:
+        pass
+
+    # Attempt to create a symlink
+    try:
+        os.symlink('/', target_file)
+    except OSError:
+        # Filesystem doesn't support symlinks
+        return False
+
+    # Cleanup
+    os.remove(target_file)
+
+    # Filesystem supports symlinks
+    return True
 
 
 if __name__ == '__main__':
@@ -88,6 +116,11 @@ if __name__ == '__main__':
         extra_vars[key] = value
 
     os.chdir('/home/vagrant/src/ansible')
+
+    # Filesystem doesn't support symlinks (e.g. a Windows host)
+    if not filesystem_supports_symlinks():
+        # Tell npm not to symlink bin scripts
+        extra_vars['npm_bin_links'] = 'false'
 
     run_yum_install('epel-release')
     run_yum_install('ansible')

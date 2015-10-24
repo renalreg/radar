@@ -1,0 +1,13 @@
+Hi,
+
+We received a request to remind you of the username(s) associated with your RaDaR email address ({{ email }}).
+
+These are the usernames registered with this email address:
+
+{% for user in users %}
+* {{ user.username }}
+{% endfor %}
+
+Thanks,
+
+RaDaR Bot

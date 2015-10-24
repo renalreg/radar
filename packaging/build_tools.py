@@ -54,7 +54,7 @@ class Python(object):
         if env is None:
             env = {}
 
-        env['PYTHON_UNBUFFERED'] = '1'
+        env['PYTHONUNBUFFERED'] = '1'
 
         command = self.command(args)
 
