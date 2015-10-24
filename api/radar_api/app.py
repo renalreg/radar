@@ -1,7 +1,11 @@
-import logging
-from flask import Flask
-from radar_api.auth import require_login
+from __future__ import print_function
 
+import logging
+import sys
+
+from flask import Flask
+
+from radar_api.auth import require_login
 from radar_api.views import cohort_patients
 from radar_api.views import consultants
 from radar_api.views import forgot_password
@@ -43,6 +47,7 @@ from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
+from radar_api.config import check_config, InvalidConfig
 
 
 class RadarApi(Flask):
@@ -54,6 +59,8 @@ class RadarApi(Flask):
         self.config.from_object('radar.default_settings')
         self.config.from_object('radar_api.default_settings')
         self.config.from_envvar('RADAR_SETTINGS')
+
+        check_config(self.config)
 
         db.init_app(self)
 
@@ -108,6 +115,7 @@ class RadarApi(Flask):
         users.register_views(self)
         user_sessions.register_views(self)
 
+
     def add_public_endpoint(self, endpoint):
         self.public_endpoints.append(endpoint)
 
@@ -116,4 +124,10 @@ class RadarApi(Flask):
 
 
 def create_app():
-    return RadarApi()
+    try:
+        app = RadarApi()
+    except InvalidConfig as e:
+        print(e, file=sys.stderr)
+        raise SystemExit(1)
+
+    return app
