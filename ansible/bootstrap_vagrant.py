@@ -67,7 +67,7 @@ def run_ansible_playbook(extra_vars=None):
 
     run_command(cmd, env={
         'HOME': '/home/vagrant',
-        'PYTHON_UNBUFFERED': '1',
+        'PYTHONUNBUFFERED': '1',
         'ANSIBLE_FORCE_COLOR': '1'
     })
 
