@@ -50,4 +50,10 @@ def send_email_from_template(to_addresses, subject, template_name, context, from
     template_html = env.get_template('%s.html' % template_name)
     message_html = template_html.render(**context)
 
-    send_email(to_addresses, subject, message_plain, message_html, from_address)
+    send_email(
+        to_addresses,
+        subject,
+        message_plain,
+        message_html=message_html,
+        from_address=from_address
+    )
