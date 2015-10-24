@@ -1,5 +1,6 @@
 import re
 from datetime import datetime, date
+from urlparse import urlparse
 
 import pytz
 import sqlalchemy
@@ -28,6 +29,8 @@ TAB_TO_SPACE_REGEX = re.compile('\t')
 NORMALISE_WHITESPACE_REGEX = re.compile('\s{2,}')
 
 DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
+
+TRAILING_SLASH_REGEX = re.compile('.*/$')
 
 
 def required():
@@ -349,17 +352,26 @@ def min_crack_time(min_seconds):
     return min_crack_time_f
 
 
-# TODO
 def url():
     def url_f(value):
+        result = urlparse(value)
+
+        if not result.scheme:
+            raise ValidationError('No scheme.')
+
+        if not result.netloc:
+            raise ValidationError('No network location.')
+
         return value
 
     return url_f
 
 
-# TODO
 def no_trailing_slash():
     def no_trailing_slash_f(value):
+        if TRAILING_SLASH_REGEX.match(value):
+            raise ValidationError("Shouldn't have a trailing slash.")
+
         return value
 
     return no_trailing_slash_f

@@ -1,4 +1,5 @@
 import pytest
+
 from radar.validation.core import ValidationError
 from radar.validation.validators import email_address
 
