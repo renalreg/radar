@@ -2,6 +2,7 @@ from random import SystemRandom
 import string
 
 import werkzeug.security
+import zxcvbn
 
 # Parameters to use for password generation
 # log2(36 ^ 10) = ~51 bits
@@ -47,6 +48,18 @@ NATO_ALPHABET = {
     '9': 'NINE',
 }
 
+USER_INPUTS = [
+    'disease'
+    'group',
+    'nhs',
+    'radar',
+    'rare',
+    'renal',
+    'registry',
+    'study',
+    'ukrr'
+]
+
 
 def generate_password():
     return ''.join(SystemRandom().sample(GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH))
@@ -79,3 +92,26 @@ def password_to_nato_values(password):
 
 def password_to_nato_str(password):
     return ', '.join(password_to_nato_values(password))
+
+
+def password_strength(password, user_inputs=None):
+    return zxcvbn.password_strength(password, user_inputs)['score']
+
+
+def is_strong_password(password, user=None):
+    if user is None:
+        user_inputs = USER_INPUTS
+    else:
+        user_inputs = [
+            user.username,
+            user.email,
+            user.first_name,
+            user.last_name
+        ]
+
+        # Remove nulls
+        user_inputs = [x for x in user_inputs if x]
+
+        user_inputs.extend(USER_INPUTS)
+
+    return password_strength(password, user_inputs) >= 3

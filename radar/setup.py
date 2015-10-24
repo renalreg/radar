@@ -31,5 +31,6 @@ setup(
         'six',
         'SQLAlchemy',
         'Werkzeug',
+        'zxcvbn',
     ]
 )
