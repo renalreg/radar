@@ -1,5 +1,5 @@
 from radar.models import RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
-from radar.validation.core import Validation, Field, pass_call
+from radar.validation.core import Validation, Field, pass_call, ValidationError
 from radar.validation.data_sources import DataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
@@ -11,7 +11,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     date = Field([required(), valid_date_for_patient()])
     imaging_type = Field([required(), in_(RENAL_IMAGING_TYPES.keys())])
 
-    right_present = Field([required()])
+    right_present = Field([optional()])
     right_type = Field([optional(), in_(RENAL_IMAGING_KIDNEY_TYPES.keys())])
     right_length = Field([optional(), range_(1, 30)])
     right_volume = Field([optional()])  # TODO range
@@ -21,7 +21,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     right_nephrolithiasis = Field([optional()])
     right_other_malformation = Field([none_if_blank(), optional(), max_length(1000)])
 
-    left_present = Field([required()])
+    left_present = Field([optional()])
     left_type = Field([optional(), in_(RENAL_IMAGING_KIDNEY_TYPES.keys())])
     left_length = Field([optional(), range_(1, 30)])
     left_volume = Field([optional()])  # TODO range
@@ -62,6 +62,12 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
 
     @pass_call
     def validate(self, call, obj):
+        if obj.right_present is None and obj.left_present is None:
+            raise ValidationError({
+                'right_present': 'Either right or left must be present.',
+                'left_present': 'Either right or left must be present.'
+            })
+
         if obj.right_present:
             call.validators_for_field([required()], obj, self.right_type)
             call.validators_for_field([required()], obj, self.right_cysts)

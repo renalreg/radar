@@ -115,7 +115,7 @@ def test_imaging_type_invalid(renal_imaging):
 
 def test_right_present_missing(renal_imaging):
     renal_imaging.right_present = None
-    invalid(renal_imaging)
+    valid(renal_imaging)
 
 
 def test_right_present_false(renal_imaging):
@@ -228,7 +228,7 @@ def test_right_other_malformation_blank(renal_imaging):
 
 def test_left_present_missing(renal_imaging):
     renal_imaging.left_present = None
-    invalid(renal_imaging)
+    valid(renal_imaging)
 
 
 def test_left_present_false(renal_imaging):
@@ -337,6 +337,12 @@ def test_left_other_malformation_blank(renal_imaging):
     renal_imaging.left_other_malformation = ''
     obj = valid(renal_imaging)
     assert obj.left_other_malformation is None
+
+
+def test_present_missing(renal_imaging):
+    renal_imaging.right_present = None
+    renal_imaging.left_present = None
+    invalid(renal_imaging)
 
 
 def invalid(obj, **kwargs):
