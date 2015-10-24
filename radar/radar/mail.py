@@ -11,7 +11,7 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
     if from_address is None:
         from_address = current_app.config.get('FROM_ADDRESS', 'bot@radar.nhs.uk')
 
-    send_emails = current_app.config.get('SEND_EMAILS', current_app.debug)
+    send_emails = current_app.config.get('SEND_EMAILS', not current_app.debug)
 
     m = MIMEMultipart('alternative')
     m['Subject'] = subject
