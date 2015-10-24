@@ -1,6 +1,6 @@
 from radar.models.nephrectomies import NEPHRECTOMY_KIDNEY_SIDES, NEPHRECTOMY_KIDNEY_TYPES, \
     NEPHRECTOMY_ENTRY_TYPES
-from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
+from radar.validation.core import Field, Validation
 from radar.validation.data_sources import DataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
