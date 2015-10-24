@@ -24,6 +24,7 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 var argv = require('yargs').argv;
 var stylish = require('gulp-jscs-stylish');
+var karma = require('karma');
 
 var common = require('./common');
 
@@ -71,15 +72,6 @@ gulp.task('scripts', function() {
     .pipe(stylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(browserSync.reload({stream: true}));
-});
-
-gulp.task('lint', function() {
-  return gulp.src('src/app/**/*.js')
-    .pipe(jshint())
-    .pipe(jscs())
-    .pipe(stylish.combineWithHintResults())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('html', ['inject', 'templates'], function() {
@@ -206,6 +198,24 @@ gulp.task('express:dist', function () {
   });
 
   app.listen(8081);
+});
+
+gulp.task('lint', function() {
+  return gulp.src('src/app/**/*.js')
+    .pipe(jshint())
+    .pipe(jscs())
+    .pipe(stylish.combineWithHintResults())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('test', function(cb) {
+  new karma.Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true,
+    browsers: ['PhantomJS'],
+    reporters: ['dots']
+  }, cb).start();
 });
 
 gulp.task('build', function(cb) {
