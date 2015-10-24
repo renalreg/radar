@@ -70,7 +70,7 @@ def password_to_nato_values(password):
         if x.isupper():
             nato_value = 'UPPER ' + nato_value
         elif x.islower():
-            nato_value = 'LOWER ' + nato_value
+            nato_value = 'lower ' + nato_value.lower()
 
         nato_values.append(nato_value)
 

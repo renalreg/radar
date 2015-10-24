@@ -3,7 +3,7 @@ from radar.auth.passwords import password_to_nato_str, check_password_hash, gene
 
 def test_password_to_nato_str():
     password = 'aAzZ123'
-    assert password_to_nato_str(password) == 'LOWER ALFA, UPPER ALFA, LOWER ZULU, UPPER ZULU, ONE, TWO, THREE'
+    assert password_to_nato_str(password) == 'lower alfa, UPPER ALFA, lower zulu, UPPER ZULU, ONE, TWO, THREE'
 
 
 def test_password_hash():
