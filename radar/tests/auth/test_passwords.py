@@ -32,7 +32,7 @@ def test_strong_passwords():
     assert is_strong_password('7pJnW4yUWx')
 
 
-def test_weak_password_for_user():
+def test_weak_passwords_for_user():
     user = User()
     user.username = 'dtclihbswm'
     user.email = 'rihylunxov@example.org'
