@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index
+from collections import OrderedDict
+
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -24,7 +26,7 @@ NEPHRECTOMY_ENTRY_TYPES = OrderedDict([
 
 
 class Nephrectomy(db.Model, MetaModelMixin):
-    __tablename__ = 'nephrectomy'
+    __tablename__ = 'nephrectomies'
 
     id = Column(Integer, primary_key=True)
 
@@ -37,6 +39,6 @@ class Nephrectomy(db.Model, MetaModelMixin):
     date = Column(Date, nullable=False)
     kidney_side = Column(String, nullable=False)
     kidney_type = Column(String, nullable=False)
-    entry_type = Column(String, nullable=False
+    entry_type = Column(String, nullable=False)
 
-Index('nephrectomy_patient_id_idx', Dialysis.patient_id)
+Index('nephrectomies_patient_id_idx', Nephrectomy.patient_id)

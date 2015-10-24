@@ -80,6 +80,10 @@
       text: 'Meta',
       state: 'patient.meta({patientId: patient.id})'
     },
+    NEPHRECTOMIES: {
+      text: 'Nephrectomies',
+      state: 'patients.nephrectomies({patientId: patient.id})'
+    },
     NUMBERS: {
       text: 'Numbers',
       state: 'patient.numbers({patientId: patient.id})'
