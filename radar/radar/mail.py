@@ -33,3 +33,13 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
         s.quit()
     else:
         print m.to_string()
+
+
+def send_email_from_template(to_addresses, subject, template_name, context, from_address=None):
+    template_path_plain = 'email/%s.txt' % template_name
+    template_path_html = 'email/%s.html' % template_name
+
+    message_plain = render_template(template_path_plain, **context)
+    message_html = render_template(template_path_html, **context)
+
+    send_email(to_addresses, subject, message_plain, message_html, from_address)
