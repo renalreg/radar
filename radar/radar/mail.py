@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText, MIMEMultipart
 
-
 from flask import current_app
 
 COMMA_SPACE = ', '
