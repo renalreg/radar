@@ -45,4 +45,5 @@ Vagrant.configure(2) do |config|
     config.proxy.no_proxy = 'localhost,127.0.0.1,10.0.2.2'
   end
 
+  config.vm.provision :shell, :path => provisioner_path, :privileged => false
 end
