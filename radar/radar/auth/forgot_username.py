@@ -1,5 +1,6 @@
 from radar.auth.exceptions import UserNotFound
 from radar.models import User
+from radar.mail import send_email_from_template
 
 
 def forgot_username(email):
@@ -8,4 +9,8 @@ def forgot_username(email):
     if len(users) == 0:
         raise UserNotFound()
 
-    # TODO send email with usernames
+    # Send username reminder email
+    send_email_from_template(email, 'RaDaR Username Reminder', 'forgot_username', {
+        'email': email,
+        'users': users,
+    })

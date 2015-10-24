@@ -347,3 +347,19 @@ def min_crack_time(min_seconds):
         return value
 
     return min_crack_time_f
+
+
+# TODO
+def url():
+    def url_f(value):
+        return value
+
+    return url_f
+
+
+# TODO
+def no_trailing_slash():
+    def no_trailing_slash_f(value):
+        return value
+
+    return no_trailing_slash_f

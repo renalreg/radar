@@ -1,12 +1,15 @@
 import base64
 import os
 from datetime import datetime
-from radar.auth.exceptions import UserNotFound, InvalidToken
 
+from flask import current_app
+
+from radar.auth.exceptions import UserNotFound, InvalidToken
 from radar.auth.passwords import generate_password_hash, check_password_hash
 from radar.auth.sessions import logout_user
 from radar.database import db
 from radar.models import User
+from radar.mail import send_email_from_template
 
 RESET_PASSWORD_MAX_AGE = 86400  # 1 day
 
@@ -31,8 +34,12 @@ def forgot_password(username):
 
     db.session.commit()
 
-    # TODO send email to user
-    print token
+    reset_password_url = current_app.config['BASE_URL'] + '/reset-password/%s' % token
+
+    send_email_from_template(user.email, 'RaDaR Password Reset', 'reset_password', {
+        'reset_password_url': reset_password_url,
+        'user': user,
+    })
 
 
 def reset_password(token, username, password):

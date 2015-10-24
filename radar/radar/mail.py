@@ -1,5 +1,6 @@
 import smtplib
-from email.mime.text import MIMEText, MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from flask import current_app
 from jinja2 import Environment, PackageLoader
@@ -17,6 +18,9 @@ env = Environment(
 def send_email(to_addresses, subject, message_plain, message_html=None, from_address=None):
     if from_address is None:
         from_address = current_app.config.get('FROM_ADDRESS', 'bot@radar.nhs.uk')
+
+    if not isinstance(to_addresses, list):
+        to_addresses = [to_addresses]
 
     send_emails = current_app.config.get('SEND_EMAILS', not current_app.debug)
 
@@ -40,7 +44,7 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
         s.sendmail(from_address, to_addresses, m)
         s.quit()
     else:
-        print m.to_string()
+        print m.as_string()
 
 
 def send_email_from_template(to_addresses, subject, template_name, context, from_address=None):
