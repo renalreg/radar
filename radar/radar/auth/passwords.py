@@ -52,10 +52,6 @@ def generate_password():
     return ''.join(SystemRandom().sample(GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH))
 
 
-def check_reset_password_token_hash(reset_token_hash, reset_token):
-    return werkzeug.security.check_password_hash(reset_token_hash, reset_token)
-
-
 def generate_password_hash(password):
     # 50000 iterations
     return werkzeug.security.generate_password_hash(password, 'pbkdf2:sha1:50000')
@@ -72,9 +68,9 @@ def password_to_nato_values(password):
         nato_value = NATO_ALPHABET.get(x.lower(), x)
 
         if x.isupper():
-            nato_value = 'CAPITAL ' + nato_value
+            nato_value = 'UPPER ' + nato_value
         elif x.islower():
-            nato_value = 'SMALL ' + nato_value
+            nato_value = 'LOWER ' + nato_value
 
         nato_values.append(nato_value)
 
