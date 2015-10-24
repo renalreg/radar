@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, IntegerLookupTable
+from radar.models.common import MetaModelMixin
 
 NEPHRECTOMY_KIDNEY_SIDES = OrderedDict([
     ('LEFT', 'Left'),
