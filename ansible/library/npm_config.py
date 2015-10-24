@@ -34,10 +34,10 @@ def set_value(module, key, value, global_flag=False):
     if global_flag:
         cmd.append('--global')
 
-    if value:
-        cmd.extend(['set', key, value])
-    else:
+    if value is None:
         cmd.extend(['delete', key])
+    else:
+        cmd.extend(['set', key, value])
 
     module.run_command(cmd)
 
@@ -55,6 +55,9 @@ def main():
     key = module.params['key']
     value = module.params['value']
     global_flag = module.params['global']
+
+    if value == '':
+        value = None
 
     old_value = get_value(module, key, global_flag=global_flag)
 
