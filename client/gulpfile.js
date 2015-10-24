@@ -73,6 +73,15 @@ gulp.task('scripts', function() {
     .pipe(browserSync.reload({stream: true}));
 });
 
+gulp.task('lint', function() {
+  return gulp.src('src/app/**/*.js')
+    .pipe(jshint())
+    .pipe(jscs())
+    .pipe(stylish.combineWithHintResults())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
+});
+
 gulp.task('html', ['inject', 'templates'], function() {
   var templates = gulp.src('.tmp/templates/*.js', {read: false});
 
