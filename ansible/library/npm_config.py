@@ -34,10 +34,10 @@ def set_value(module, key, value, global_flag=False):
     if global_flag:
         cmd.append('--global')
 
-    if value is None:
-        cmd.extend(['delete', key])
-    else:
+    if value:
         cmd.extend(['set', key, value])
+    else:
+        cmd.extend(['delete', key])
 
     module.run_command(cmd)
 

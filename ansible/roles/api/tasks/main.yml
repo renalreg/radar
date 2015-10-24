@@ -13,7 +13,7 @@
     - restart api
 
 - name: create secret key
-  command: dd if=/dev/urandom of={{ api_secret_key_path }} bs=1 count=32
+  shell: dd if=/dev/urandom bs=1 count=32 | base64 > {{ api_dev_secret_key_path }}
   args:
     creates: "{{ api_secret_key_path }}"
 

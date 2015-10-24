@@ -32,7 +32,7 @@
 # privilege to create symlinks.
 # http://security.stackexchange.com/questions/10194
 - name: disable bin-links for vagrant
-  npm_config: key=bin-links value=false
+  npm_config: key=bin-links value={{ npm_bin_links }}
   become: yes
   become_user: vagrant
 

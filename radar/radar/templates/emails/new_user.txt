@@ -1,0 +1,14 @@
+Hi {{ user.first_name or user.username }},
+
+You have been registered as a user on RaDaR.
+
+Username: {{ user.username }}
+Initial password: {{ password }}
+
+You can login using the url below:
+
+{{ login_url }}
+
+Thanks,
+
+RaDaR Bot
