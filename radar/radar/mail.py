@@ -2,6 +2,7 @@ import smtplib
 from email.mime.text import MIMEText, MIMEMultipart
 
 from flask import current_app
+from jinja2 import Environment, PackageLoader
 
 COMMA_SPACE = ', '
 
@@ -36,10 +37,17 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
 
 
 def send_email_from_template(to_addresses, subject, template_name, context, from_address=None):
-    template_path_plain = 'email/%s.txt' % template_name
-    template_path_html = 'email/%s.html' % template_name
+    env = Environment(
+        loader=PackageLoader('radar', 'templates/emails'),
+        trim_blocks=True,
+        lstrip_blocks=True,
+        autoescape=True,
+    )
 
-    message_plain = render_template(template_path_plain, **context)
-    message_html = render_template(template_path_html, **context)
+    template_plain = env.get_template('%s.txt' % template_name)
+    message_plain = template_plain.render(**context)
+
+    template_html = env.get_template('%s.html' % template_name)
+    message_html = template_html.render(**context)
 
     send_email(to_addresses, subject, message_plain, message_html, from_address)
