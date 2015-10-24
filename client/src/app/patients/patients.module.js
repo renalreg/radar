@@ -17,6 +17,7 @@
     'radar.patients.medications',
     'radar.patients.meta',
     'radar.patients.navigation',
+    'radar.patients.nephrectomies',
     'radar.patients.numbers',
     'radar.patients.pathology',
     'radar.patients.plasmapheresis',
