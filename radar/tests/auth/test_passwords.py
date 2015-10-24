@@ -13,6 +13,6 @@ def test_password_hash():
     assert check_password_hash(password_hash, password)
 
 
-def generate_password():
+def test_generate_password():
     password = generate_password()
     assert len(password) == GENERATE_PASSWORD_LENGTH
