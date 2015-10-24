@@ -34,6 +34,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider 'virtualbox' do |v|
     v.memory = 1024
+
+    # NOTE > 1 CPUs on a OS X host causes guest kernel panics
     v.cpus = 1
   end
 
