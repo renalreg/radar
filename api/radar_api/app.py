@@ -115,7 +115,6 @@ class RadarApi(Flask):
         users.register_views(self)
         user_sessions.register_views(self)
 
-
     def add_public_endpoint(self, endpoint):
         self.public_endpoints.append(endpoint)
 
