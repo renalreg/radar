@@ -32,11 +32,11 @@ def info(x):
 
 
 def run_command(args, env=None, cwd=None):
-    if cwd is None:
-        cwd = os.getcwd()
-
     if env is None:
         env = {}
+
+    if cwd is None:
+        cwd = os.getcwd()
 
     p = subprocess.Popen(args, cwd=cwd, env=env, bufsize=1)
     p.communicate()
@@ -72,6 +72,25 @@ def run_ansible_playbook(extra_vars=None):
     })
 
 
+# If we are running on a Windows host symlinks might not be available in the VirtualBox share
+def filesystem_supports_symlinks():
+    target_file = 'symlink-test'
+
+    try:
+        os.remove(target_file)
+    except OSError:
+        pass
+
+    try:
+        os.symlink('/', target_file)
+    except OSError:
+        return False
+
+    os.remove(target_file)
+
+    return True
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--pip-index-url', default=None)
@@ -88,6 +107,9 @@ if __name__ == '__main__':
         extra_vars[key] = value
 
     os.chdir('/home/vagrant/src/ansible')
+
+    if not filesystem_supports_symlinks():
+        extra_vars['npm_bin_links'] = 'false'
 
     run_yum_install('epel-release')
     run_yum_install('ansible')
