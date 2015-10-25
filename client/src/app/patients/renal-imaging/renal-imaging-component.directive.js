@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('RenalImagingController', ['ListDetailController', 'RenalImagingPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, RenalImagingPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    RenalImagingPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function RenalImagingController($scope) {
       var self = this;
 
@@ -38,7 +44,17 @@
     RenalImagingController.prototype = Object.create(ListDetailController.prototype);
 
     return RenalImagingController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'RenalImagingPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('RenalImagingController', controllerFactory);
 
   app.directive('renalImagingComponent', ['RenalImagingController', function(RenalImagingController) {
     return {

@@ -5,7 +5,9 @@
 
   var MESSAGE = 'Check your email for a link to reset your password.';
 
-  app.controller('ForgotPasswordController', ['$scope', '$state', 'authService', 'notificationService', function($scope, $state, authService, notificationService) {
+  function ForgotPasswordController(
+    $scope, $state, authService, notificationService
+  ) {
     $scope.errors = {};
     $scope.data = {};
 
@@ -23,5 +25,11 @@
           }
         });
     };
-  }]);
+  }
+
+  ForgotPasswordController.$inject = [
+    '$scope', '$state', 'authService', 'notificationService'
+  ];
+
+  app.controller('ForgotPasswordController', ForgotPasswordController);
 })();

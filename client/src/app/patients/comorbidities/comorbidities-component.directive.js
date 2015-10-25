@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('ComorbiditiesController', ['ListDetailController', 'ComorbidityPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, ComorbidityPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    ComorbidityPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function ComorbiditiesController($scope) {
       var self = this;
 
@@ -35,7 +41,17 @@
     ComorbiditiesController.prototype = Object.create(ListDetailController.prototype);
 
     return ComorbiditiesController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'ComorbidityPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('ComorbiditiesController', controllerFactory);
 
   app.directive('comorbiditiesComponent', ['ComorbiditiesController', function(ComorbiditiesController) {
     return {

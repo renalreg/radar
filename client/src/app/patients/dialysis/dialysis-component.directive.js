@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('DialysisController', ['ListDetailController', 'DialysisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, DialysisPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    DialysisPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function DialysisController($scope) {
       var self = this;
 
@@ -35,7 +41,17 @@
     DialysisController.prototype = Object.create(ListDetailController.prototype);
 
     return DialysisController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'DialysisPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('DialysisController', controllerFactory);
 
   app.directive('dialysisComponent', ['DialysisController', function(DialysisController) {
     return {

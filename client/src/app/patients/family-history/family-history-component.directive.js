@@ -7,7 +7,12 @@
     return PatientObjectPermission;
   }]);
 
-  app.factory('FamilyHistoryController', ['DetailController', 'FamilyHistoryPermission', '$injector', 'store', function(DetailController, FamilyHistoryPermission, $injector, store) {
+  function controllerFactory(
+    DetailController,
+    FamilyHistoryPermission,
+    $injector,
+    store
+  ) {
     function FamilyHistoryController($scope) {
       var self = this;
 
@@ -32,7 +37,16 @@
     FamilyHistoryController.prototype = Object.create(DetailController.prototype);
 
     return FamilyHistoryController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'DetailController',
+    'FamilyHistoryPermission',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('FamilyHistoryController', controllerFactory);
 
   app.directive('familyHistoryComponent', ['FamilyHistoryController', function(FamilyHistoryController) {
     return {

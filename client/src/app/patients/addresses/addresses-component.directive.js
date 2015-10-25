@@ -7,7 +7,14 @@
     return PatientRadarObjectPermission;
   }]);
 
-  app.factory('PatientAddressesController', ['ListDetailController', 'PatientAddressPermission', 'firstPromise', 'getRadarDataSource', '$injector', 'store', function(ListDetailController, PatientAddressPermission, firstPromise, getRadarDataSource, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    PatientAddressPermission,
+    firstPromise,
+    getRadarDataSource,
+    $injector,
+    store
+  ) {
     function PatientAddressesController($scope) {
       var self = this;
 
@@ -40,7 +47,18 @@
     PatientAddressesController.prototype = Object.create(ListDetailController.prototype);
 
     return PatientAddressesController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'PatientAddressPermission',
+    'firstPromise',
+    'getRadarDataSource',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('PatientAddressesController', controllerFactory);
 
   app.directive('patientAddressesComponent', ['PatientAddressesController', function(PatientAddressesController) {
     return {
@@ -52,4 +70,3 @@
     };
   }]);
 })();
-

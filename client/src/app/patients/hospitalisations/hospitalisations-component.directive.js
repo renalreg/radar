@@ -7,7 +7,12 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('HospitalisationsController', ['ListDetailController', 'HospitalisationPermission', '$injector', 'store', function(ListDetailController, HospitalisationPermission, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    HospitalisationPermission,
+    $injector,
+    store
+  ) {
     function HospitalisationsController($scope) {
       var self = this;
 
@@ -30,7 +35,16 @@
     HospitalisationsController.prototype = Object.create(ListDetailController.prototype);
 
     return HospitalisationsController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'HospitalisationPermission',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('HospitalisationsController', controllerFactory);
 
   app.directive('hospitalisationsComponent', ['HospitalisationsController', function(HospitalisationsController) {
     return {

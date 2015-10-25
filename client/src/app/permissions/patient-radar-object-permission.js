@@ -3,7 +3,9 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientRadarObjectPermission', ['PermissionChain', 'PatientObjectPermission', 'RadarObjectPermission', function(PermissionChain, PatientObjectPermission, RadarObjectPermission) {
+  function permissionFactory(
+    PermissionChain, PatientObjectPermission, RadarObjectPermission
+  ) {
     function PatientRadarObjectPermission(patient) {
       PermissionChain.call(this, [
         new PatientObjectPermission(patient),
@@ -14,5 +16,11 @@
     PatientRadarObjectPermission.prototype = Object.create(PermissionChain.prototype);
 
     return PatientRadarObjectPermission;
-  }]);
+  }
+
+  permissionFactory.$inject = [
+    'PermissionChain', 'PatientObjectPermission', 'RadarObjectPermission'
+  ];
+
+  app.factory('PatientRadarObjectPermission', permissionFactory);
 })();

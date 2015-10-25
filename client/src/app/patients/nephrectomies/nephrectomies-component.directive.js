@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('NephrectomiesController', ['ListDetailController', 'NephrectomyPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, NephrectomyPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    NephrectomyPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function NephrectomiesController($scope) {
       var self = this;
 
@@ -41,7 +47,17 @@
     NephrectomiesController.prototype = Object.create(ListDetailController.prototype);
 
     return NephrectomiesController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'NephrectomyPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('NephrectomiesController', controllerFactory);
 
   app.directive('nephrectomiesComponent', ['NephrectomiesController', function(NephrectomiesController) {
     return {

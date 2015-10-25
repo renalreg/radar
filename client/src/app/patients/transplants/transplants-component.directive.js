@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('TransplantsController', ['ListDetailController', 'TransplantPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, TransplantPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    TransplantPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function TransplantsController($scope) {
       var self = this;
 
@@ -35,7 +41,17 @@
     TransplantsController.prototype = Object.create(ListDetailController.prototype);
 
     return TransplantsController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'TransplantPermission',
+    'firstPromise',
+    '$injector',
+    'store',
+  ];
+
+  app.factory('TransplantsController', controllerFactory);
 
   app.directive('transplantsComponent', ['TransplantsController', function(TransplantsController) {
     return {

@@ -12,7 +12,7 @@
       config.baseUrl = value;
     };
 
-    this.$get = ['$http', '$q', '_', 'camelCaseKeys', 'snakeCaseKeys', 'flattenRelationships', function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships) {
+    this.$get = function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships) {
       function Adapter(config) {
         this.config = config;
       }
@@ -193,6 +193,10 @@
       };
 
       return new Adapter(config);
-    }];
+    };
+
+    this.$get.$inject = [
+      '$http', '$q', '_', 'camelCaseKeys', 'snakeCaseKeys', 'flattenRelationships'
+    ];
   });
 })();

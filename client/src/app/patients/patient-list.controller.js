@@ -3,7 +3,13 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('PatientListController', ['ListController', '$injector', 'ListHelperProxy', 'firstPromise', 'store', function(ListController, $injector, ListHelperProxy, firstPromise, store) {
+  function controllerFactory(
+    ListController,
+    $injector,
+    ListHelperProxy,
+    firstPromise,
+    store
+  ) {
     function PatientListController($scope) {
       var self = this;
 
@@ -49,5 +55,15 @@
     PatientListController.prototype = Object.create(ListController.prototype);
 
     return PatientListController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListController',
+    '$injector',
+    'ListHelperProxy',
+    'firstPromise',
+    'store'
+  ];
+
+  app.factory('PatientListController', controllerFactory);
 })();

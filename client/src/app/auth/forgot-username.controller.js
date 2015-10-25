@@ -5,7 +5,9 @@
 
   var MESSAGE = 'Check your email for a reminder of your username(s).';
 
-  app.controller('ForgotUsernameController', ['$scope', '$state', 'authService', 'notificationService', function($scope, $state, authService, notificationService) {
+  function ForgotUsernameController(
+    $scope, $state, authService, notificationService
+  ) {
     $scope.errors = {};
     $scope.data = {};
 
@@ -23,5 +25,11 @@
           }
         });
     };
-  }]);
+  }
+
+  ForgotUsernameController.$inject = [
+    '$scope', '$state', 'authService', 'notificationService'
+  ];
+
+  app.controller('ForgotUsernameController', ForgotUsernameController);
 })();

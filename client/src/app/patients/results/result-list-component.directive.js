@@ -7,7 +7,14 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('ResultListController', ['ListDetailController', 'ResultPermission', 'firstPromise', '$injector', 'store', '_', function(ListDetailController, ResultPermission, firstPromise, $injector, store, _) {
+  function controllerFactory(
+    ListDetailController,
+    ResultPermission,
+    firstPromise,
+    $injector,
+    store,
+    _
+  ) {
     function ResultListController($scope) {
       var self = this;
 
@@ -145,7 +152,18 @@
     };
 
     return ResultListController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'ResultPermission',
+    'firstPromise',
+    '$injector',
+    'store',
+    '_'
+  ];
+
+  app.factory('ResultListController', controllerFactory);
 
   app.directive('resultListComponent', ['ResultListController', function(ResultListController) {
     return {

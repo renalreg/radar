@@ -7,7 +7,14 @@
     return PatientRadarObjectPermission;
   }]);
 
-  app.factory('PatientDemographicsController', ['ListDetailController', 'PatientDemographicsPermission', 'firstPromise', 'DenyPermission', '$injector', 'store', function(ListDetailController, PatientDemographicsPermission, firstPromise, DenyPermission, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    PatientDemographicsPermission,
+    firstPromise,
+    DenyPermission,
+    $injector,
+    store
+  ) {
     function PatientDemographicsController($scope) {
       var self = this;
 
@@ -44,7 +51,18 @@
     };
 
     return PatientDemographicsController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'PatientDemographicsPermission',
+    'firstPromise',
+    'DenyPermission',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('PatientDemographicsController', controllerFactory);
 
   app.directive('patientDemographicsComponent', ['PatientDemographicsController', function(PatientDemographicsController) {
     return {

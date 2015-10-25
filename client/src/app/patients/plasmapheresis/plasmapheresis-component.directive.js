@@ -7,7 +7,13 @@
     return PatientDataSourceObjectPermission;
   }]);
 
-  app.factory('PlasmapheresisController', ['ListDetailController', 'PlasmapheresisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, PlasmapheresisPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    PlasmapheresisPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function PlasmapheresisController($scope) {
       var self = this;
 
@@ -38,7 +44,17 @@
     PlasmapheresisController.prototype = Object.create(ListDetailController.prototype);
 
     return PlasmapheresisController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'PlasmapheresisPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('PlasmapheresisController', controllerFactory);
 
   app.directive('plasmapheresisComponent', ['PlasmapheresisController', function(PlasmapheresisController) {
     return {

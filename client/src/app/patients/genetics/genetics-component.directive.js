@@ -7,7 +7,12 @@
     return PatientObjectPermission;
   }]);
 
-  app.factory('GeneticsController', ['DetailController', 'GeneticsPermission', '$injector', 'store', function(DetailController, GeneticsPermission, $injector, store) {
+  function controllerFactory(
+    DetailController,
+    GeneticsPermission,
+    $injector,
+    store
+  ) {
     function GeneticsController($scope) {
       var self = this;
 
@@ -32,7 +37,16 @@
     GeneticsController.prototype = Object.create(DetailController.prototype);
 
     return GeneticsController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'DetailController',
+    'GeneticsPermission',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('GeneticsController', controllerFactory);
 
   app.directive('geneticsComponent', ['GeneticsController', function(GeneticsController) {
     return {
@@ -45,4 +59,3 @@
     };
   }]);
 })();
-

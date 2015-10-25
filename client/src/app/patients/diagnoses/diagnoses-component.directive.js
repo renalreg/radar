@@ -7,7 +7,13 @@
     return PatientObjectPermission;
   }]);
 
-  app.factory('DiagnosesController', ['ListDetailController', 'DiagnosisPermission', 'firstPromise', '$injector', 'store', function(ListDetailController, DiagnosisPermission, firstPromise, $injector, store) {
+  function controllerFactory(
+    ListDetailController,
+    DiagnosisPermission,
+    firstPromise,
+    $injector,
+    store
+  ) {
     function DiagnosesController($scope) {
       var self = this;
 
@@ -44,7 +50,17 @@
     DiagnosesController.prototype = Object.create(ListDetailController.prototype);
 
     return DiagnosesController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListDetailController',
+    'DiagnosisPermission',
+    'firstPromise',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('DiagnosesController', controllerFactory);
 
   app.directive('diagnosesComponent', ['DiagnosesController', function(DiagnosesController) {
     return {

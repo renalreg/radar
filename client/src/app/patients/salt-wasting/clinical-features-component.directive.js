@@ -7,7 +7,12 @@
     return PatientObjectPermission;
   }]);
 
-  app.factory('SaltWastingClinicalFeaturesController', ['DetailController', 'SaltWastingClinicalFeaturesPermission', '$injector', 'store', function(DetailController, SaltWastingClinicalFeaturesPermission, $injector, store) {
+  function controllerFactory(
+    DetailController,
+    SaltWastingClinicalFeaturesPermission,
+    $injector,
+    store
+  ) {
     function SaltWastingClinicalFeaturesController($scope) {
       var self = this;
 
@@ -32,7 +37,16 @@
     SaltWastingClinicalFeaturesController.prototype = Object.create(DetailController.prototype);
 
     return SaltWastingClinicalFeaturesController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'DetailController',
+    'SaltWastingClinicalFeaturesPermission',
+    '$injector',
+    'store'
+  ];
+
+  app.factory('SaltWastingClinicalFeaturesController', controllerFactory);
 
   app.directive('saltWastingClinicalFeaturesComponent', ['SaltWastingClinicalFeaturesController', function(SaltWastingClinicalFeaturesController) {
     return {

@@ -9,7 +9,12 @@
       scope: {
         item: '='
       },
-      template: '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled" type="button" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Edit</button>',
+      template: (
+          '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled"' +
+          ' type="button" class="btn btn-xs btn-primary">' +
+          '<i class="fa fa-pencil"></i> Edit' +
+          '</button>'
+      ),
       link: function(scope, element, attrs, crudCtrl) {
         scope.action = function() {
           crudCtrl.edit(scope.item);

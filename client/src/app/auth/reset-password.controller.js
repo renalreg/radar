@@ -5,7 +5,9 @@
 
   var MESSAGE = 'Your password has been reset, you can now login with your new password.';
 
-  app.controller('ResetPasswordController', ['$scope', '$state', 'authService', '$stateParams', 'notificationService', function($scope, $state, authService, $stateParams, notificationService) {
+  function ResetPasswordController(
+    $scope, $state, authService, $stateParams, notificationService
+  ) {
     $scope.errors = {};
     $scope.data = {};
 
@@ -30,5 +32,11 @@
           }
         });
     };
-  }]);
+  }
+
+  ResetPasswordController.$inject = [
+    '$scope', '$state', 'authService', '$stateParams', 'notificationService'
+  ];
+
+  app.controller('ResetPasswordController', ResetPasswordController);
 })();
