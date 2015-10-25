@@ -17,7 +17,6 @@ var revReplace = require('gulp-rev-replace');
 var gulpFilter = require('gulp-filter');
 var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
-var gutil = require('gulp-util');
 var express = require('express');
 var del = require('del');
 var runSequence = require('run-sequence');
@@ -30,6 +29,8 @@ var common = require('./common');
 
 var config = argv.config || 'production';
 console.log('config: ' + config + ' (--config NAME)');
+
+function noop() {}
 
 gulp.task('clean', function() {
   return del(['dist', '.tmp']);
@@ -68,7 +69,7 @@ gulp.task('scripts', function() {
   return gulp.src('src/app/**/*.js')
     .pipe(jshint())
     .pipe(jscs())
-    .on('error', function() {}) // continue despite linting errors
+    .on('error', noop) // continue despite linting errors
     .pipe(stylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(browserSync.reload({stream: true}));
