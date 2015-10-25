@@ -38,11 +38,11 @@ var customLaunchers = {
     browserName: 'internet explorer',
     version: '11'
   },
-  sl_ios_safari: {
-    base: 'SauceLabs',
-    platform: 'OS X 10.11',
-    browserName: 'iphone'
-  },
+  // sl_ios_safari: {
+  //   base: 'SauceLabs',
+  //   platform: 'OS X 10.11',
+  //   browserName: 'iphone'
+  // },
   sl_osx_safari: {
     base: 'SauceLabs',
     platform: 'OS X 10.11',
