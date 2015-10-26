@@ -88,7 +88,9 @@ def table_to_csv(db, table_name, column_names, output_file):
     writer.writerow(column_names)
 
     rows = get_data(db, table_name, column_names)
-    writer.writerow([to_str(x) for x in rows])
+
+    for row in rows:
+        writer.writerow([to_str(x) for x in row])
 
 
 def get_data(db, table_name, column_names):
