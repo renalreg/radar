@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from collections import defaultdict, OrderedDict
 from datetime import date, datetime
 import csv
