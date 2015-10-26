@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from datetime import date, datetime
 import csv
 import os.path
@@ -64,6 +64,8 @@ def get_tables(db, database_name):
         table_name = column['table_name']
         column_name = column['column_name']
         tables[table_name].append(column_name)
+
+    tables = OrderedDict(sorted(tables.items()))
 
     return tables
 
