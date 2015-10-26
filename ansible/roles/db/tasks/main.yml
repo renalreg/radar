@@ -40,8 +40,21 @@
   postgresql_user: db=radar name=radar
   become: yes
   become_user: postgres
+  when: "'vagrant' not in group_names"
 
-- name: create the vagrant postgresql user
+- name: set the password for the postgres postgresql user (vagrant)
+  postgresql_user: name=postgres password=vagrant
+  become: yes
+  become_user: postgres
+  when: "'vagrant' in group_names"
+
+- name: create the radar postgresql user (vagrant)
+  postgresql_user: db=radar name=radar password=vagrant
+  become: yes
+  become_user: postgres
+  when: "'vagrant' in group_names"
+
+- name: create the vagrant postgresql user (vagrant)
   postgresql_user: db=radar name=vagrant password=vagrant
   become: yes
   become_user: postgres
