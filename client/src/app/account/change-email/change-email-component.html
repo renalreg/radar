@@ -1,6 +1,14 @@
 <div crud>
   <form class="form-container form-horizontal" crud-submit="save()" novalidate>
     <div frm-field frm-group>
+      <div frm-label>Current Email</div>
+
+      <div frm-control>
+        <p class="form-control-static">{{ originalItem.email }}</p>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
       <div frm-label>Current Password</div>
 
       <div frm-control>
