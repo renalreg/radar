@@ -13,7 +13,7 @@
       <div frm-label>New Email</div>
 
       <div frm-control>
-        <div frm-text-field model="data.email" required="true"></div>
+        <div frm-email-field model="data.email" required="true"></div>
         <div frm-errors errors="item.errors.email"></div>
       </div>
     </div>
@@ -22,8 +22,10 @@
       <div frm-label>Confirm New Email</div>
 
       <div frm-control>
-        <div frm-text-field model="data.confirmEmail" required="true"></div>
-        <div frm-errors></div>
+        <div frm-confirm-email-field email="data.email" required="true"></div>
+        <div frm-errors>
+          <div frm-error key="equalTo">Emails do not match.</div>
+        </div>
       </div>
     </div>
 

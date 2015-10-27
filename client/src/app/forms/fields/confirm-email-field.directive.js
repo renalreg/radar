@@ -3,14 +3,15 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmPasswordField', function() {
+  app.directive('frmConfirmEmailField', function() {
     return {
       restrict: 'A',
       scope: {
         required: '&',
-        model: '='
+        model: '=',
+        email: '='
       },
-      templateUrl: 'app/forms/fields/password-field.html'
+      templateUrl: 'app/forms/fields/confirm-email-field.html'
     };
   });
 })();
