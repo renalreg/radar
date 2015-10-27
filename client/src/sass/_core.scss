@@ -202,3 +202,11 @@ table.item-meta {
     padding: 3px 5px;
   }
 }
+
+.not-live-warning {
+  color: #fff;
+  background-color: $radar-danger;
+  text-align: center;
+  font-size: 11px;
+  padding: 3px 15px;
+}
