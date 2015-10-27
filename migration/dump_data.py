@@ -55,7 +55,7 @@ def get_tables(db, database_name):
                 table_name = 'testresult' or
                 table_name = 'unit' or
                 table_name = 'user' or
-                table_name = 'user_mapping'
+                table_name = 'usermapping'
             )
         order by table_name, ordinal_position
     """, [database_name])
