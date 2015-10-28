@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.users');
+  var app = angular.module('radar.users.new');
 
   app.factory('NewUserController', ['ModelEditController', '$injector', 'store', function(ModelEditController, $injector, store) {
     function NewUserController($scope) {
@@ -25,7 +25,7 @@
     return {
       scope: {},
       controller: NewUserController,
-      templateUrl: 'app/users/new-user-component.html'
+      templateUrl: 'app/users/new/new-user-component.html'
     };
   }]);
 })();
