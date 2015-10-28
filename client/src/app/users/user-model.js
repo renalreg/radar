@@ -5,28 +5,30 @@
 
   app.factory('UserModel', ['Model', 'store', '_', function(Model, store, _) {
     function UserModel(modelName, data) {
-      var i;
+      if (data !== undefined) {
+        var i;
 
-      if (data.cohorts !== undefined) {
-        var cohorts = [];
+        if (data.cohorts !== undefined) {
+          var cohorts = [];
 
-        for (i = 0; i < data.cohorts.length; i++) {
-          var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(new Model('cohort-users', rawCohort)));
+          for (i = 0; i < data.cohorts.length; i++) {
+            var rawCohort = data.cohorts[i];
+            cohorts.push(store.pushToStore(new Model('cohort-users', rawCohort)));
+          }
+
+          data.cohorts = cohorts;
         }
 
-        data.cohorts = cohorts;
-      }
+        if (data.organisations !== undefined) {
+          var organisations = [];
 
-      if (data.organisations !== undefined) {
-        var organisations = [];
+          for (i = 0; i < data.organisations.length; i++) {
+            var rawOrganisation = data.organisations[i];
+            organisations.push(store.pushToStore(new Model('organisation-users', rawOrganisation)));
+          }
 
-        for (i = 0; i < data.organisations.length; i++) {
-          var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(new Model('organisation-users', rawOrganisation)));
+          data.organisations = organisations;
         }
-
-        data.organisations = organisations;
       }
 
       Model.call(this, modelName, data);

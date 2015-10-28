@@ -7,6 +7,10 @@
     function Model(modelName, data) {
       var self = this;
 
+      if (data === undefined) {
+        data = {};
+      }
+
       self.modelName = modelName;
       self.isSaving = false;
       self.isDeleted = false;
