@@ -12,6 +12,9 @@
 
       this.scope.append = angular.bind(this, this.append);
       this.scope.remove = angular.bind(this, this.remove);
+
+      this.scope.removeEnabled = angular.bind(this, this.removeEnabled);
+      this.scope.removePermission = angular.bind(this, this.removePermission);
     }
 
     ListEditController.$inject = ['$scope'];
@@ -34,6 +37,14 @@
 
     ListEditController.prototype.remove = function(item) {
       _.pull(this.scope.items, item);
+    };
+
+    ListEditController.prototype.removeEnabled = function() {
+      return true;
+    };
+
+    ListEditController.prototype.removePermission = function() {
+      return true;
     };
 
     return ListEditController;

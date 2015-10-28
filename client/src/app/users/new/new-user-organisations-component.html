@@ -1,5 +1,13 @@
-<div ng-repeat="item in items">
-  <pre>{{ item | json}}</pre>
-</div>
+<div crud>
+  <div ng-repeat="item in items">
+    <pre>{{ item | json}}</pre>
 
-<div crud-append-button action="appendOrganisation()"></div>
+    <p>
+      <span crud-list-remove-button item="item"></span>
+    </p>
+  </div>
+
+  <p>
+    <span crud-list-append-button action="appendOrganisation()"></span>
+  </p>
+</div>

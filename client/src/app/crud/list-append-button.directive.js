@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.crud');
 
-  app.directive('crudAppendButton', function() {
+  app.directive('crudListAppendButton', function() {
     return {
       scope: {
         action: '&'
