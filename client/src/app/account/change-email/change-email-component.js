@@ -3,11 +3,15 @@
 
   var app = angular.module('radar.account.changeEmail');
 
-  app.factory('ChangeEmailController', ['EditController', '$injector', 'notificationService', function(EditController, $injector, notificationService) {
+  function controllerFactory(
+    ModelEditController,
+    $injector,
+    notificationService
+  ) {
     function ChangeEmailController($scope) {
       var self = this;
 
-      $injector.invoke(EditController, self, {
+      $injector.invoke(ModelEditController, self, {
         $scope: $scope,
         params: {}
       });
@@ -18,7 +22,7 @@
     }
 
     ChangeEmailController.$inject = ['$scope'];
-    ChangeEmailController.prototype = Object.create(EditController.prototype);
+    ChangeEmailController.prototype = Object.create(ModelEditController.prototype);
 
     ChangeEmailController.prototype.save = function() {
       var self = this;
@@ -26,14 +30,20 @@
       // Set the user's email
       self.scope.item.email = self.scope.data.email;
 
-      return EditController.prototype.save.call(this).then(function() {
+      return ModelEditController.prototype.save.call(this).then(function() {
         notificationService.success('Your email has been updated.');
         self.scope.data = {};
       });
     };
 
     return ChangeEmailController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ModelEditController',
+    '$injector',
+    'notificationService'
+  ];
 
   app.directive('changeEmailComponent', ['ChangeEmailController', function(ChangeEmailController) {
     return {

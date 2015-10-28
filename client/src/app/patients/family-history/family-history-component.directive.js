@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    DetailController,
+    ModelDetailController,
     FamilyHistoryPermission,
     $injector,
     store
@@ -16,7 +16,7 @@
     function FamilyHistoryController($scope) {
       var self = this;
 
-      $injector.invoke(DetailController, self, {
+      $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
         params: {
           permission: new FamilyHistoryPermission($scope.patient)
@@ -34,13 +34,13 @@
     }
 
     FamilyHistoryController.$inject = ['$scope'];
-    FamilyHistoryController.prototype = Object.create(DetailController.prototype);
+    FamilyHistoryController.prototype = Object.create(ModelDetailController.prototype);
 
     return FamilyHistoryController;
   }
 
   controllerFactory.$inject = [
-    'DetailController',
+    'ModelDetailController',
     'FamilyHistoryPermission',
     '$injector',
     'store'

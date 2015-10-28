@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    DetailController,
+    ModelDetailController,
     SaltWastingClinicalFeaturesPermission,
     $injector,
     store
@@ -16,7 +16,7 @@
     function SaltWastingClinicalFeaturesController($scope) {
       var self = this;
 
-      $injector.invoke(DetailController, self, {
+      $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
         params: {
           permission: new SaltWastingClinicalFeaturesPermission($scope.patient)
@@ -34,13 +34,13 @@
     }
 
     SaltWastingClinicalFeaturesController.$inject = ['$scope'];
-    SaltWastingClinicalFeaturesController.prototype = Object.create(DetailController.prototype);
+    SaltWastingClinicalFeaturesController.prototype = Object.create(ModelDetailController.prototype);
 
     return SaltWastingClinicalFeaturesController;
   }
 
   controllerFactory.$inject = [
-    'DetailController',
+    'ModelDetailController',
     'SaltWastingClinicalFeaturesPermission',
     '$injector',
     'store'

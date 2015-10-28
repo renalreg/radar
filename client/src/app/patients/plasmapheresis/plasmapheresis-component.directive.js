@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ListDetailController,
+    ModelListDetailController,
     PlasmapheresisPermission,
     firstPromise,
     $injector,
@@ -17,7 +17,7 @@
     function PlasmapheresisController($scope) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           permission: new PlasmapheresisPermission($scope.patient)
@@ -41,13 +41,13 @@
     }
 
     PlasmapheresisController.$inject = ['$scope'];
-    PlasmapheresisController.prototype = Object.create(ListDetailController.prototype);
+    PlasmapheresisController.prototype = Object.create(ModelListDetailController.prototype);
 
     return PlasmapheresisController;
   }
 
   controllerFactory.$inject = [
-    'ListDetailController',
+    'ModelListDetailController',
     'PlasmapheresisPermission',
     'firstPromise',
     '$injector',

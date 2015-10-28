@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.users');
 
-  app.factory('NewUserController', ['EditController', '$injector', 'store', function(EditController, $injector, store) {
+  app.factory('NewUserController', ['ModelEditController', '$injector', 'store', function(ModelEditController, $injector, store) {
     function NewUserController($scope) {
       var self = this;
 
-      $injector.invoke(EditController, self, {
+      $injector.invoke(ModelEditController, self, {
         $scope: $scope,
         params: {}
       });
@@ -16,7 +16,7 @@
     }
 
     NewUserController.$inject = ['$scope'];
-    NewUserController.prototype = Object.create(EditController.prototype);
+    NewUserController.prototype = Object.create(ModelEditController.prototype);
 
     return NewUserController;
   }]);

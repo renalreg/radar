@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.users.cohorts');
 
-  app.factory('UserCohortsController', function(ListDetailController) {
+  app.factory('UserCohortsController', function(ModelListDetailController) {
     function UserCohortsController($scope, $injector, store, firstPromise) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {}
       });
@@ -24,7 +24,7 @@
       };
     }
 
-    UserCohortsController.prototype = Object.create(ListDetailController.prototype);
+    UserCohortsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return UserCohortsController;
   });

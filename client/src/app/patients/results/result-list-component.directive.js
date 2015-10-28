@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ListDetailController,
+    ModelListDetailController,
     ResultPermission,
     firstPromise,
     $injector,
@@ -18,7 +18,7 @@
     function ResultListController($scope) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           permission: new ResultPermission($scope.patient)
@@ -67,7 +67,7 @@
     }
 
     ResultListController.$inject = ['$scope'];
-    ResultListController.prototype = Object.create(ListDetailController.prototype);
+    ResultListController.prototype = Object.create(ModelListDetailController.prototype);
 
     ResultListController.prototype.groupItems = function() {
       var self = this;
@@ -127,7 +127,7 @@
     ResultListController.prototype.load = function(promise) {
       var self = this;
 
-      return ListDetailController.prototype.load.call(this, promise).then(function(items) {
+      return ModelListDetailController.prototype.load.call(this, promise).then(function(items) {
         self.groupItems();
         return items;
       });
@@ -136,7 +136,7 @@
     ResultListController.prototype.save = function() {
       var self = this;
 
-      return ListDetailController.prototype.save.call(this).then(function(item) {
+      return ModelListDetailController.prototype.save.call(this).then(function(item) {
         self.groupItems();
         return item;
       });
@@ -145,7 +145,7 @@
     ResultListController.prototype.remove = function(item) {
       var self = this;
 
-      return ListDetailController.prototype.remove.call(this, item).then(function(item) {
+      return ModelListDetailController.prototype.remove.call(this, item).then(function(item) {
         self.groupItems();
         return item;
       });
@@ -155,7 +155,7 @@
   }
 
   controllerFactory.$inject = [
-    'ListDetailController',
+    'ModelListDetailController',
     'ResultPermission',
     'firstPromise',
     '$injector',

@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListDetailController', ['_', '$window', '$q', 'GrantPermission', function(_, $window, $q, GrantPermission) {
-    function ListDetailController($scope, params) {
+  app.factory('ModelListDetailController', ['_', '$window', '$q', 'GrantPermission', function(_, $window, $q, GrantPermission) {
+    function ModelListDetailController($scope, params) {
       this.scope = $scope;
 
       if (params.createPermission) {
@@ -60,9 +60,9 @@
       this.scope.removePermission = angular.bind(this, this.removePermission);
     }
 
-    ListDetailController.$inject = ['$scope', 'params'];
+    ModelListDetailController.$inject = ['$scope', 'params'];
 
-    ListDetailController.prototype.load = function(promise) {
+    ModelListDetailController.prototype.load = function(promise) {
       var self = this;
 
       self.scope.loading = true;
@@ -74,11 +74,11 @@
       });
     };
 
-    ListDetailController.prototype.discardChanges = function() {
+    ModelListDetailController.prototype.discardChanges = function() {
       return $window.confirm('Discard unsaved changes?');
     };
 
-    ListDetailController.prototype.list = function() {
+    ModelListDetailController.prototype.list = function() {
       var ok = this.scope.item === null || !this.scope.editing || !this.scope.item.isDirty() ||
         this.discardChanges();
 
@@ -92,7 +92,7 @@
       this.scope.item = null;
     };
 
-    ListDetailController.prototype.view = function(item) {
+    ModelListDetailController.prototype.view = function(item) {
       var ok = this.scope.item === null || !this.scope.editing || !this.scope.item.isDirty() ||
         this.discardChanges();
 
@@ -106,7 +106,7 @@
       this.scope.item = item;
     };
 
-    ListDetailController.prototype.edit = function(item) {
+    ModelListDetailController.prototype.edit = function(item) {
       var ok = this.scope.item === null || !this.scope.editing || !this.scope.item.isDirty() ||
         this.discardChanges();
 
@@ -120,7 +120,7 @@
       this.scope.item = item.clone();
     };
 
-    ListDetailController.prototype.remove = function(item) {
+    ModelListDetailController.prototype.remove = function(item) {
       var self = this;
 
       if (self.scope.item !== null && self.scope.item.getId() === item.getId()) {
@@ -139,7 +139,7 @@
       });
     };
 
-    ListDetailController.prototype.save = function() {
+    ModelListDetailController.prototype.save = function() {
       var self = this;
 
       self.scope.saving = true;
@@ -159,7 +159,7 @@
         });
     };
 
-    ListDetailController.prototype.saveAndList = function() {
+    ModelListDetailController.prototype.saveAndList = function() {
       var self = this;
 
       return self.save().then(function() {
@@ -167,7 +167,7 @@
       });
     };
 
-    ListDetailController.prototype.saveAndView = function() {
+    ModelListDetailController.prototype.saveAndView = function() {
       var self = this;
 
       return self.save().then(function(item) {
@@ -175,51 +175,51 @@
       });
     };
 
-    ListDetailController.prototype.listEnabled = function() {
+    ModelListDetailController.prototype.listEnabled = function() {
       return !this.scope.saving;
     };
 
-    ListDetailController.prototype.createEnabled = function() {
+    ModelListDetailController.prototype.createEnabled = function() {
       return !this.scope.saving;
     };
 
-    ListDetailController.prototype.viewEnabled = function(item) {
+    ModelListDetailController.prototype.viewEnabled = function(item) {
       return item !== null &&
         item.getId() !== null &&
         !item.isDeleted &&
         !this.scope.saving;
     };
 
-    ListDetailController.prototype.editEnabled = function(item) {
+    ModelListDetailController.prototype.editEnabled = function(item) {
       return item !== null &&
         item.getId() !== null &&
         !item.isDeleted &&
         !this.scope.saving;
     };
 
-    ListDetailController.prototype.removeEnabled = function(item) {
+    ModelListDetailController.prototype.removeEnabled = function(item) {
       return item !== null &&
         item.getId() !== null &&
         !item.isSaving &&
         !item.isDeleted;
     };
 
-    ListDetailController.prototype.saveEnabled = function() {
+    ModelListDetailController.prototype.saveEnabled = function() {
       return !this.scope.saving;
     };
 
-    ListDetailController.prototype.createPermission = function(item) {
+    ModelListDetailController.prototype.createPermission = function(item) {
       return this._createPermission.hasPermission();
     };
 
-    ListDetailController.prototype.editPermission = function(item) {
+    ModelListDetailController.prototype.editPermission = function(item) {
       return this._editPermission.hasObjectPermission(item);
     };
 
-    ListDetailController.prototype.removePermission = function(item) {
+    ModelListDetailController.prototype.removePermission = function(item) {
       return this._removePermission.hasObjectPermission(item);
     };
 
-    return ListDetailController;
+    return ModelListDetailController;
   }]);
 })();

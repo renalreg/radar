@@ -3,11 +3,15 @@
 
   var app = angular.module('radar.account.changePassword');
 
-  app.factory('ChangePasswordController', ['EditController', '$injector', 'notificationService', function(EditController, $injector, notificationService) {
+  function controllerFactory(
+    ModelEditController,
+    $injector,
+    notificationService
+  ) {
     function ChangePasswordController($scope) {
       var self = this;
 
-      $injector.invoke(EditController, self, {
+      $injector.invoke(ModelEditController, self, {
         $scope: $scope,
         params: {}
       });
@@ -18,7 +22,7 @@
     }
 
     ChangePasswordController.$inject = ['$scope'];
-    ChangePasswordController.prototype = Object.create(EditController.prototype);
+    ChangePasswordController.prototype = Object.create(ModelEditController.prototype);
 
     ChangePasswordController.prototype.save = function() {
       var self = this;
@@ -26,14 +30,22 @@
       // Set the user's password
       self.scope.item.password = self.scope.data.password;
 
-      return EditController.prototype.save.call(this).then(function() {
+      return ModelEditController.prototype.save.call(this).then(function() {
         notificationService.success('Your password has been updated.');
         self.scope.data = {};
       });
     };
 
     return ChangePasswordController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ModelEditController',
+    '$injector',
+    'notificationService'
+  ];
+
+  app.factory('ChangePasswordController', controllerFactory);
 
   app.directive('changePasswordComponent', ['ChangePasswordController', function(ChangePasswordController) {
     return {

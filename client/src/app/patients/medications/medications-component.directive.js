@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ListDetailController,
+    ModelListDetailController,
     MedicationPermission,
     firstPromise,
     $injector,
@@ -17,7 +17,7 @@
     function MedicationsController($scope) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           permission: new MedicationPermission($scope.patient)
@@ -44,13 +44,13 @@
     }
 
     MedicationsController.$inject = ['$scope'];
-    MedicationsController.prototype = Object.create(ListDetailController.prototype);
+    MedicationsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return MedicationsController;
   }
 
   controllerFactory.$inject = [
-    'ListDetailController',
+    'ModelListDetailController',
     'MedicationPermission',
     'firstPromise',
     '$injector',

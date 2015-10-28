@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    DetailController,
+    ModelDetailController,
     GeneticsPermission,
     $injector,
     store
@@ -16,7 +16,7 @@
     function GeneticsController($scope) {
       var self = this;
 
-      $injector.invoke(DetailController, self, {
+      $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
         params: {
           permission: new GeneticsPermission($scope.patient)
@@ -34,13 +34,13 @@
     }
 
     GeneticsController.$inject = ['$scope'];
-    GeneticsController.prototype = Object.create(DetailController.prototype);
+    GeneticsController.prototype = Object.create(ModelDetailController.prototype);
 
     return GeneticsController;
   }
 
   controllerFactory.$inject = [
-    'DetailController',
+    'ModelDetailController',
     'GeneticsPermission',
     '$injector',
     'store'

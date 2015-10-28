@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.users.units');
 
-  app.factory('UserUnitsController', function(ListDetailController) {
+  app.factory('UserUnitsController', function(ModelListDetailController) {
     function UserUnitsController($scope, $injector, store, firstPromise) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {}
       });
@@ -24,7 +24,7 @@
       };
     }
 
-    UserUnitsController.prototype = Object.create(ListDetailController.prototype);
+    UserUnitsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return UserUnitsController;
   });

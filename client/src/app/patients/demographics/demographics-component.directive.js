@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ListDetailController,
+    ModelListDetailController,
     PatientDemographicsPermission,
     firstPromise,
     DenyPermission,
@@ -18,7 +18,7 @@
     function PatientDemographicsController($scope) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           createPermission: new DenyPermission(),
@@ -39,12 +39,12 @@
     }
 
     PatientDemographicsController.$inject = ['$scope'];
-    PatientDemographicsController.prototype = Object.create(ListDetailController.prototype);
+    PatientDemographicsController.prototype = Object.create(ModelListDetailController.prototype);
 
     PatientDemographicsController.prototype.save = function() {
       var self = this;
 
-      return ListDetailController.prototype.save.call(self).then(function() {
+      return ModelListDetailController.prototype.save.call(self).then(function() {
         // Reload the patient with the latest demographics
         self.scope.patient.reload();
       });
@@ -54,7 +54,7 @@
   }
 
   controllerFactory.$inject = [
-    'ListDetailController',
+    'ModelListDetailController',
     'PatientDemographicsPermission',
     'firstPromise',
     'DenyPermission',

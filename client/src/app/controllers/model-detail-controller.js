@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('DetailController', ['$q', '$window', 'GrantPermission', function($q, $window, GrantPermission) {
-    function DetailController($scope, params) {
+  app.factory('ModelDetailController', ['$q', '$window', 'GrantPermission', function($q, $window, GrantPermission) {
+    function ModelDetailController($scope, params) {
       this.scope = $scope;
 
       if (params.createPermission) {
@@ -56,9 +56,9 @@
       this.scope.removePermission = angular.bind(this, this.removePermission);
     }
 
-    DetailController.$inject = ['$scope', 'params'];
+    ModelDetailController.$inject = ['$scope', 'params'];
 
-    DetailController.prototype.load = function(promise) {
+    ModelDetailController.prototype.load = function(promise) {
       var self = this;
 
       self.scope.loading = true;
@@ -69,11 +69,11 @@
       });
     };
 
-    DetailController.prototype.discardChanges = function() {
+    ModelDetailController.prototype.discardChanges = function() {
       return $window.confirm('Discard unsaved changes?');
     };
 
-    DetailController.prototype.view = function(item) {
+    ModelDetailController.prototype.view = function(item) {
       if (item === undefined) {
         item = this.scope.item;
       }
@@ -98,7 +98,7 @@
       this.scope.item = item;
     };
 
-    DetailController.prototype.edit = function(item) {
+    ModelDetailController.prototype.edit = function(item) {
       var ok = !this.scope.editing ||
         !this.scope.item.isDirty() ||
         this.discardChanges();
@@ -113,7 +113,7 @@
       this.scope.item = item.clone();
     };
 
-    DetailController.prototype.save = function() {
+    ModelDetailController.prototype.save = function() {
       var self = this;
 
       self.scope.saving = true;
@@ -123,7 +123,7 @@
       });
     };
 
-    DetailController.prototype.saveAndView = function() {
+    ModelDetailController.prototype.saveAndView = function() {
       var self = this;
 
       return self.save().then(function(item) {
@@ -131,7 +131,7 @@
       });
     };
 
-    DetailController.prototype.remove = function() {
+    ModelDetailController.prototype.remove = function() {
       var self = this;
 
       self.scope.saving = true;
@@ -147,48 +147,48 @@
         });
     };
 
-    DetailController.prototype.viewEnabled = function() {
+    ModelDetailController.prototype.viewEnabled = function() {
       return this.scope.item !== null &&
         this.scope.item.getId() !== null &&
         !this.scope.saving;
     };
 
-    DetailController.prototype.createEnabled = function() {
+    ModelDetailController.prototype.createEnabled = function() {
       return this.scope.item === null && !this.scope.saving;
     };
 
-    DetailController.prototype.editEnabled = function() {
+    ModelDetailController.prototype.editEnabled = function() {
       return this.scope.item !== null &&
         this.scope.item.getId() !== null &&
         !this.scope.saving;
     };
 
-    DetailController.prototype.removeEnabled = function() {
+    ModelDetailController.prototype.removeEnabled = function() {
       return this.scope.item !== null &&
         this.scope.item.getId() !== null &&
         !this.scope.saving;
     };
 
-    DetailController.prototype.saveEnabled = function() {
+    ModelDetailController.prototype.saveEnabled = function() {
       return this.scope.item !== null && !this.scope.saving;
     };
 
-    DetailController.prototype.cancelEnabled = function() {
+    ModelDetailController.prototype.cancelEnabled = function() {
       return !this.scope.saving;
     };
 
-    DetailController.prototype.createPermission = function() {
+    ModelDetailController.prototype.createPermission = function() {
       return this._createPermission.hasPermission();
     };
 
-    DetailController.prototype.editPermission = function() {
+    ModelDetailController.prototype.editPermission = function() {
       return this._editPermission.hasObjectPermission(this.scope.item);
     };
 
-    DetailController.prototype.removePermission = function() {
+    ModelDetailController.prototype.removePermission = function() {
       return this._removePermission.hasObjectPermission(this.scope.item);
     };
 
-    return DetailController;
+    return ModelDetailController;
   }]);
 })();

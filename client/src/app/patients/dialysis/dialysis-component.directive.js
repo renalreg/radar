@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ListDetailController,
+    ModelListDetailController,
     DialysisPermission,
     firstPromise,
     $injector,
@@ -17,7 +17,7 @@
     function DialysisController($scope) {
       var self = this;
 
-      $injector.invoke(ListDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           permission: new DialysisPermission($scope.patient)
@@ -38,13 +38,13 @@
     }
 
     DialysisController.$inject = ['$scope'];
-    DialysisController.prototype = Object.create(ListDetailController.prototype);
+    DialysisController.prototype = Object.create(ModelListDetailController.prototype);
 
     return DialysisController;
   }
 
   controllerFactory.$inject = [
-    'ListDetailController',
+    'ModelListDetailController',
     'DialysisPermission',
     'firstPromise',
     '$injector',
