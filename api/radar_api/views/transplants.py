@@ -24,5 +24,5 @@ class TransplantTypeListView(CodedStringListView):
 
 def register_views(app):
     app.add_url_rule('/transplants', view_func=TransplantListView.as_view('transplant_list'))
-    app.add_url_rule('/transplants/<int:id>', view_func=TransplantDetailView.as_view('transplant_detail'))
+    app.add_url_rule('/transplants/<id>', view_func=TransplantDetailView.as_view('transplant_detail'))
     app.add_url_rule('/transplant-types', view_func=TransplantTypeListView.as_view('transplant_type_list'))
