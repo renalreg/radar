@@ -28,6 +28,6 @@ class PathologyKidneySideListView(CodedStringListView):
 
 def register_views(app):
     app.add_url_rule('/pathology', view_func=PathologyListView.as_view('pathology_list'))
-    app.add_url_rule('/pathology/<int:id>', view_func=PathologyDetailView.as_view('pathology_detail'))
+    app.add_url_rule('/pathology/<id>', view_func=PathologyDetailView.as_view('pathology_detail'))
     app.add_url_rule('/pathology-kidney-types', view_func=PathologyKidneyTypeListView.as_view('pathology_kidney_type_list'))
     app.add_url_rule('/pathology-kidney-sides', view_func=PathologyKidneySideListView.as_view('pathology_kidney_side_list'))

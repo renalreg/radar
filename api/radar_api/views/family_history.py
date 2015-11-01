@@ -19,4 +19,4 @@ class FamilyHistoryDetailView(CohortObjectViewMixin, PatientObjectDetailView):
 
 def register_views(app):
     app.add_url_rule('/family-history', view_func=FamilyHistoryListView.as_view('family_history_list'))
-    app.add_url_rule('/family-history/<int:id>', view_func=FamilyHistoryDetailView.as_view('family_history_detail'))
+    app.add_url_rule('/family-history/<id>', view_func=FamilyHistoryDetailView.as_view('family_history_detail'))

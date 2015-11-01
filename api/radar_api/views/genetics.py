@@ -19,4 +19,4 @@ class GeneticsDetailView(CohortObjectViewMixin, PatientObjectDetailView):
 
 def register_views(app):
     app.add_url_rule('/genetics', view_func=GeneticsListView.as_view('genetics_list'))
-    app.add_url_rule('/genetics/<int:id>', view_func=GeneticsDetailView.as_view('genetics_detail'))
+    app.add_url_rule('/genetics/<id>', view_func=GeneticsDetailView.as_view('genetics_detail'))

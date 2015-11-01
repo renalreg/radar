@@ -22,6 +22,6 @@ def register_views(app):
         view_func=SaltWastingClinicalFeaturesListView.as_view('salt_wasting_clinical_features_list')
     )
     app.add_url_rule(
-        '/salt-wasting-clinical-features/<int:id>',
+        '/salt-wasting-clinical-features/<id>',
         view_func=SaltWastingClinicalFeaturesDetailView.as_view('salt_wasting_clinical_features_detail')
     )

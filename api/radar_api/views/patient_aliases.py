@@ -19,4 +19,4 @@ class PatientAliasDetailView(RadarObjectViewMixin, DemographicsViewMixin, Patien
 
 def register_views(app):
     app.add_url_rule('/patient-aliases', view_func=PatientAliasListView.as_view('patient_alias_list'))
-    app.add_url_rule('/patient-aliases/<int:id>', view_func=PatientAliasDetailView.as_view('patient_alias_detail'))
+    app.add_url_rule('/patient-aliases/<id>', view_func=PatientAliasDetailView.as_view('patient_alias_detail'))
