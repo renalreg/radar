@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
 
 from sqlalchemy.orm import relationship
 from radar.database import db
-from radar.models.common import MetaModelMixin
+from radar.models.common import MetaModelMixin, UUIDPKColumn
 
 TRANSPLANT_TYPES = OrderedDict([
     ('DBD', 'DBD'),
@@ -15,7 +15,7 @@ TRANSPLANT_TYPES = OrderedDict([
 class Transplant(db.Model, MetaModelMixin):
     __tablename__ = 'transplants'
 
-    id = Column(Integer, primary_key=True)
+    id = UUIDPKColumn()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

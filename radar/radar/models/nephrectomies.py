@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin
+from radar.models.common import MetaModelMixin, UUIDPKColumn
 
 NEPHRECTOMY_KIDNEY_SIDES = OrderedDict([
     ('LEFT', 'Left'),
@@ -28,7 +28,7 @@ NEPHRECTOMY_ENTRY_TYPES = OrderedDict([
 class Nephrectomy(db.Model, MetaModelMixin):
     __tablename__ = 'nephrectomies'
 
-    id = Column(Integer, primary_key=True)
+    id = UUIDPKColumn()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

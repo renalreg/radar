@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey
 from sqlalchemy.orm import relationship
+
 from radar.database import db
 from radar.models import MetaModelMixin
 

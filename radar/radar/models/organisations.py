@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.roles import ORGANISATION_VIEW_DEMOGRAPHICS_ROLES, ORGANISATION_VIEW_PATIENT_ROLES, ORGANISATION_EDIT_PATIENT_ROLES, \
     ORGANISATION_VIEW_USER_ROLES, ORGANISATION_MANAGED_ROLES, ORGANISATION_RECRUIT_PATIENT_ROLES
-from radar.models.common import MetaModelMixin
+from radar.models.common import MetaModelMixin, UUIDPKColumn
 
 
 ORGANISATION_CODE_UKRDC = 'UKRDC'
@@ -29,7 +29,7 @@ ORGANISATION_TYPES = [
 class OrganisationPatient(db.Model, MetaModelMixin):
     __tablename__ = 'organisation_patients'
 
-    id = Column(Integer, primary_key=True)
+    id = UUIDPKColumn()
 
     organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
     organisation = relationship('Organisation')

@@ -1,13 +1,15 @@
 from sqlalchemy import String, Column, Integer, ForeignKey, Index
 from sqlalchemy.orm import relationship
+
 from radar.database import db
 from radar.models import MetaModelMixin
+from radar.models.common import UUIDPKColumn
 
 
 class PatientAlias(db.Model, MetaModelMixin):
     __tablename__ = 'patient_aliases'
 
-    id = Column(Integer, primary_key=True)
+    id = UUIDPKColumn()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

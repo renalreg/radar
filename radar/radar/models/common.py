@@ -1,8 +1,17 @@
 from sqlalchemy import Integer, Column, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import text
 
 from radar.database import db
+
+
+class UUIDPKColumn(Column):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('primary_key', True)
+        kwargs.setdefault('server_default', text('uuid_generate_v4()'))
+        super(UUIDPKColumn, self).__init__(UUID, *args, **kwargs)
 
 
 class CreatedUserMixin(object):
