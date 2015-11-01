@@ -248,3 +248,36 @@ class CommaSeparatedStringField(Field):
 
     def to_data(self, value):
         return ','.join(value)
+
+
+class UUIDField(Field):
+    default_error_messages = {
+        'invalid': 'A valid UUID is required.'
+    }
+
+    def __init__(self, **kwargs):
+        super(UUIDField, self).__init__(**kwargs)
+
+    def to_value(self, data):
+        if data is None:
+            return None
+
+        if isinstance(data, dict) or isinstance(data, list) or isinstance(data, bool):
+            self.fail('invalid')
+
+        value = six.text_type(data)
+
+        try:
+            UUID(data)
+        except ValueError:
+            self.fail('invalid')
+
+        return value
+
+    def to_data(self, value):
+        if value is None:
+            return None
+
+        data = six.text_type(value)
+
+        return data
