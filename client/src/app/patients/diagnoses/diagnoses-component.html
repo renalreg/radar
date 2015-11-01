@@ -114,7 +114,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="date">Date</th>
           <th sort-helper="cohortDiagnosis">Diagnosis</th>
           <th></th>
@@ -128,7 +127,6 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
           <td>{{item.date | dateFormat}}</td>
           <td>{{item.cohortDiagnosis.label}}</td>
 

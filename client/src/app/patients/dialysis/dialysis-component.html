@@ -102,7 +102,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="dialysisType.name">Dialysis Type</th>
@@ -118,7 +117,6 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
           <td>{{item.dialysisType.label}}</td>

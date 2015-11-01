@@ -114,7 +114,6 @@
       <thead>
       <tr>
         <th></th>
-        <th sort-helper="id">ID</th>
         <th sort-helper="dateOfAdmission">Date of Admission</th>
         <th sort-helper="dateOfDischarge">Date of Discharge</th>
         <th sort-helper="reasonForAdmission">Reason for Admission</th>
@@ -130,7 +129,6 @@
           <span crud-list-edit-button item="item"></span>
         </td>
 
-        <td>{{item.id}}</td>
         <td>{{item.dateOfAdmission | dateFormat}}</td>
         <td>{{item.dateOfDischarge | dateFormat}}</td>
         <td>{{item.reasonForAdmission}}</td>

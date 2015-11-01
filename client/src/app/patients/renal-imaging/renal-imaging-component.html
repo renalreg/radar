@@ -386,7 +386,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="date">Date</th>
           <th sort-helper="imagingType.label">Imaging Type</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
@@ -401,7 +400,6 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
           <td>{{item.date | dateFormat}}</td>
           <td>{{item.imagingType.label}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>

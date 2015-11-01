@@ -86,7 +86,6 @@
       <thead>
       <tr>
         <th></th>
-        <th sort-helper="id">ID</th>
         <th sort-helper="transplantDate">Date</th>
         <th sort-helper="transplantType.label">Type</th>
         <th sort-helper="dataSource.getName()">Data Source</th>
@@ -101,7 +100,6 @@
           <span crud-list-edit-button item="item"></span>
         </td>
 
-        <td>{{item.id}}</td>
         <td>{{item.transplantDate | dateFormat}}</td>
         <td>{{item.transplantType.label}}</td>
         <td class="data-source">{{item.dataSource.getName()}}</td>

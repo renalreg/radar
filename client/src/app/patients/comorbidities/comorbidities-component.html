@@ -100,7 +100,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="id">ID</th>
           <th sort-helper="disorder.label">Disorder</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
@@ -116,7 +115,6 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.id}}</td>
           <td>{{item.disorder.label}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
