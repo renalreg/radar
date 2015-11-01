@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models import MetaModelMixin
+from radar.models.common import UUIDPKColumn
 
 RESULT_SPEC_TYPE_INTEGER = 'INTEGER'
 RESULT_SPEC_TYPE_FLOAT = 'FLOAT'
@@ -23,7 +24,7 @@ RESULT_SPEC_TYPES = [
 class ResultGroup(db.Model, MetaModelMixin):
     __tablename__ = 'result_groups'
 
-    id = Column(Integer, primary_key=True)
+    id = UUIDPKColumn()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
