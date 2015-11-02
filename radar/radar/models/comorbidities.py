@@ -3,13 +3,13 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models import MetaModelMixin, IntegerLookupTable
-from radar.models.common import UUIDPKColumn
+from radar.models.common import uuid_pk_column
 
 
 class Comorbidity(db.Model, MetaModelMixin):
     __tablename__ = 'comorbidities'
 
-    id = UUIDPKColumn()
+    id = uuid_pk_column()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

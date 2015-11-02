@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, UUIDPKColumn
+from radar.models.common import MetaModelMixin, uuid_pk_column
 
 DIAGNOSIS_BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
@@ -25,7 +25,7 @@ DIAGNOSIS_KARYOTYPES = OrderedDict([
 class Diagnosis(db.Model, MetaModelMixin):
     __tablename__ = 'diagnoses'
 
-    id = UUIDPKColumn()
+    id = uuid_pk_column()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

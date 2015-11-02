@@ -7,11 +7,8 @@ from sqlalchemy.sql import text
 from radar.database import db
 
 
-class UUIDPKColumn(Column):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('primary_key', True)
-        kwargs.setdefault('server_default', text('uuid_generate_v4()'))
-        super(UUIDPKColumn, self).__init__(UUID, *args, **kwargs)
+def uuid_pk_column():
+    return Column(UUID, primary_key=True, server_default=text('uuid_generate_v4()'))
 
 
 class CreatedUserMixin(object):
