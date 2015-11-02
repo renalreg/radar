@@ -2,6 +2,6 @@
 
 DEBUG = True
 SECRET_KEY = open('{{ api_dev_secret_key_path }}', 'rb').read()
-SQLALCHEMY_DATABASE_URI = 'postgres:///radar'
+SQLALCHEMY_DATABASE_URI = 'postgres://radar@localhost/radar'
 SESSION_TIMEOUT = 86400
 BASE_URL = 'http://localhost:8082/#'
