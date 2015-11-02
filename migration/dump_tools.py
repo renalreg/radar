@@ -4,7 +4,7 @@ from datetime import datetime, date
 from sqlalchemy import create_engine
 
 
-def get_db(schema, host, port, username, password, database):
+def get_connection_string(schema, host, port, username, password, database):
     connection_string = '{schema}://{username}:{password}@{host}:{port}/{database}'.format(
         schema=schema,
         host=host,
@@ -13,6 +13,11 @@ def get_db(schema, host, port, username, password, database):
         password=password,
         database=database,
     )
+    return connection_string
+
+
+def get_db(schema, host, port, username, password, database):
+    connection_string = get_connection_string(schema, host, port, username, password, database)
     db = create_engine(connection_string)
     return db
 
@@ -22,8 +27,20 @@ def to_str(value):
         value = datetime_to_str(value)
     elif isinstance(value, date):
         value = date_to_str(value)
+    elif isinstance(value, dict):
+        value = dict_to_str(value)
+    elif isinstance(value, dict):
+        value = list_to_str(value)
 
     return value
+
+
+def list_to_str(value):
+    return ', '.join(value)
+
+
+def dict_to_str(value):
+    return ', '.join(['%s=%s' % (k, v) for k, v in value.items()])
 
 
 def date_to_str(value):
@@ -55,4 +72,4 @@ def rows_to_csv(rows, output_file):
             writer.writerow(row.keys())
             first = False
 
-        writer.writerow([to_str(x) for x in row])
+        writer.writerow([to_str(x) for x in row.values()])
