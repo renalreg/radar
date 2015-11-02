@@ -12,6 +12,9 @@
         posts: ['store', function(store) {
           return store.findMany('posts', {sort: '-publishedDate'});
         }]
+      },
+      data: {
+        public: true
       }
     });
   }]);

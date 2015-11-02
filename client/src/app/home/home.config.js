@@ -6,7 +6,10 @@
   app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('index', {
       url: '/',
-      templateUrl: 'app/home/home.html'
+      templateUrl: 'app/home/home.html',
+      data: {
+        public: true
+      }
     });
   }]);
 })();

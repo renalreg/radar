@@ -45,6 +45,8 @@
     'notificationService'
   ];
 
+  app.factory('ChangeEmailController', controllerFactory);
+
   app.directive('changeEmailComponent', ['ChangeEmailController', function(ChangeEmailController) {
     return {
       scope: {
