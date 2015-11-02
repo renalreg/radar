@@ -2,13 +2,13 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, IntegerLookupTable, UUIDPKColumn
+from radar.models.common import MetaModelMixin, IntegerLookupTable, uuid_pk_column
 
 
 class Dialysis(db.Model, MetaModelMixin):
     __tablename__ = 'dialysis'
 
-    id = UUIDPKColumn()
+    id = uuid_pk_column()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')

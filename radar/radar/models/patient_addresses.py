@@ -4,13 +4,13 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models import MetaModelMixin
-from radar.models.common import UUIDPKColumn
+from radar.models.common import uuid_pk_column
 
 
 class PatientAddress(db.Model, MetaModelMixin):
     __tablename__ = 'patient_addresses'
 
-    id = UUIDPKColumn()
+    id = uuid_pk_column()
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     patient = relationship('Patient')
