@@ -1,6 +1,9 @@
 from datetime import datetime, date
-import delorean
 import six
+from uuid import UUID
+
+import delorean
+
 from radar.serializers.core import Field
 from radar.validation.core import ValidationError
 
