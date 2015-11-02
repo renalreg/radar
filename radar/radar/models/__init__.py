@@ -27,3 +27,4 @@ from radar.models.renal_imaging import *
 from radar.models.salt_wasting import *
 from radar.models.transplants import *
 from radar.models.users import *
+from radar.models.user_sessions import *
