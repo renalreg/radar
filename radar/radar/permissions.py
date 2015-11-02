@@ -132,17 +132,14 @@ class DataSourceObjectPermission(Permission):
 
             organisation = data_source.organisation
 
-            grant = False
-
             for organisation_user in user.organisation_users:
                 # User is a member of the organisation and has the edit patient permission
                 if organisation_user.organisation == organisation and organisation_user.has_edit_patient_permission:
-                    grant = True
+                    return True
+        else:
+            return True
 
-            if not grant:
-                return False
-
-        return True
+        return False
 
 
 class RadarObjectPermission(Permission):
@@ -159,10 +156,12 @@ class RadarObjectPermission(Permission):
             data_source = obj.data_source
 
             # Can only modify RaDaR data
-            if not is_radar_data_source(data_source):
-                return False
+            if is_radar_data_source(data_source):
+                return True
+        else:
+            return True
 
-        return True
+        return False
 
 
 class CohortObjectPermission(Permission):
@@ -187,11 +186,12 @@ class CohortObjectPermission(Permission):
                 return True
 
             cohort = obj.cohort
-            cohort_membership = user.get_disease_group_membership(cohort)
 
-            # View permission through organisation membership
-            if cohort_membership is not None and cohort_membership.has_view_patient_permission:
-                return True
+            # View permission through cohort membership
+            for cohort_user in user.cohort_users:
+                # User is a member of the cohort and has the view patient permission
+                if cohort_user.cohort == cohort and cohort_user.has_view_patient_permission:
+                    return True
 
         return False
 
