@@ -59,9 +59,3 @@
   become: yes
   become_user: postgres
   when: "'vagrant' in group_names"
-
-- name: create the vagrant postgresql user (vagrant)
-  postgresql_user: db=radar name=vagrant password=vagrant
-  become: yes
-  become_user: postgres
-  when: "'vagrant' in group_names"
