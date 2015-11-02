@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 from collections import defaultdict, OrderedDict
-from datetime import date, datetime
-import csv
 import os.path
 
-from sqlalchemy import create_engine
 import click
+
+from dump_tools import rows_to_csv, get_db
 
 
 @click.command()
@@ -20,19 +19,6 @@ def main(output_dir, host, port, username, password, database):
     db = get_db('mysql', host, port, username, password, database)
     tables = get_tables(db, database)
     tables_to_csv(db, tables, output_dir)
-
-
-def get_db(schema, host, port, username, password, database):
-    connection_string = '{schema}://{username}:{password}@{host}:{port}/{database}'.format(
-        schema=schema,
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        database=database,
-    )
-    db = create_engine(connection_string)
-    return db
 
 
 def get_tables(db, database_name):
@@ -85,14 +71,8 @@ def tables_to_csv(db, tables, output_dir):
 def table_to_csv(db, table_name, column_names, output_file):
     """Dump a table to a CSV file."""
 
-    writer = csv.writer(output_file)
-
-    writer.writerow(column_names)
-
     rows = get_data(db, table_name, column_names)
-
-    for row in rows:
-        writer.writerow([to_str(x) for x in row])
+    rows_to_csv(rows, output_file)
 
 
 def get_data(db, table_name, column_names):
@@ -101,34 +81,6 @@ def get_data(db, table_name, column_names):
         table_name=table_name,
         columns=columns
     ))
-
-
-def to_str(value):
-    if isinstance(value, date):
-        value = date_to_str(value)
-    elif isinstance(value, datetime):
-        value = datetime_to_str(value)
-
-    return value
-
-
-def date_to_str(value):
-    return '%04d-%02d-%02d' % (
-        value.year,
-        value.month,
-        value.day,
-    )
-
-
-def datetime_to_str(value):
-    return '%04d-%02d-%02d %02d:%02d:%02d' % (
-        value.year,
-        value.month,
-        value.day,
-        value.hour,
-        value.minute,
-        value.second,
-    )
 
 
 if __name__ == '__main__':

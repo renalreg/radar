@@ -2,8 +2,8 @@
 
 import csv
 
-from sqlalchemy import create_engine
 import click
+from dump_tools import get_db
 
 TEXT_TYPES = [
     'character varying',
@@ -46,19 +46,6 @@ def radar2(output, host, port, username, password, database, schema, analyse):
     schema_rows = get_radar2_schema_rows(db, database, schema)
     schema = get_schema(db, schema_rows, analyse)
     schema_to_csv(schema, output, analyse)
-
-
-def get_db(schema, host, port, username, password, database):
-    connection_string = '{schema}://{username}:{password}@{host}:{port}/{database}'.format(
-        schema=schema,
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        database=database,
-    )
-    db = create_engine(connection_string)
-    return db
 
 
 def get_radar1_schema_rows(db, database_name):
