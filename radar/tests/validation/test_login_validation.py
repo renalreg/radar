@@ -2,7 +2,7 @@ import pytest
 
 from radar.validation.login import LoginValidation
 from radar.validation.core import ValidationError
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 def test_valid():

@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, Plasmapheresis, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.plasmapheresis import PlasmapheresisValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

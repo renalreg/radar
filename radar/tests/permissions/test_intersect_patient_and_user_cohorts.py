@@ -1,5 +1,5 @@
 from radar.permissions import intersect_patient_and_user_cohorts as intersect_cohorts
-from utils import make_patient, make_user, make_cohorts
+from helpers.permissions import make_patient, make_user, make_cohorts
 
 
 def test_empty():

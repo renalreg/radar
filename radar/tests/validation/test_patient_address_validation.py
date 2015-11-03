@@ -6,7 +6,7 @@ from radar.models import Patient, PatientDemographics, DataSource
 from radar.models.patient_addresses import PatientAddress
 from radar.validation.core import ValidationError
 from radar.validation.patient_addresses import PatientAddressValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture
