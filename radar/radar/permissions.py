@@ -49,13 +49,13 @@ def intersect_patient_and_user_organisations(patient, user, patient_membership=F
 
 
 def intersect_patient_and_user_cohorts(patient, user, patient_membership=False, user_membership=False):
-    cohort_patients = {x.cohort.id: x for x in patient.cohort_patients}
+    cohort_patients = {x.cohort: x for x in patient.cohort_patients}
 
     intersection = []
 
     for cohort_user in user.cohort_users:
-        cohort_id = cohort_user.cohort.id
-        cohort_patient = cohort_patients.get(cohort_id)
+        cohort = cohort_user.cohort
+        cohort_patient = cohort_patients.get(cohort)
 
         if cohort_patient:
             if patient_membership and user_membership:
