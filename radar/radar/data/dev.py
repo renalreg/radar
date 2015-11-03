@@ -557,7 +557,7 @@ def create_patients(n):
         db.session.add(cohort_patient)
 
 
-def create_data(patients_n):
+def create_data(patients_n=5, users_n=10):
     # Always generate the same "random" data
     random.seed(0)
 
@@ -570,6 +570,7 @@ def create_data(patients_n):
     create_srns_user()
     create_srns_demograhics_user()
 
-    create_users(10)
-    create_posts(10)
+    create_users(users_n)
     create_patients(patients_n)
+
+    create_posts(10)
