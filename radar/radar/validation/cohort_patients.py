@@ -30,7 +30,7 @@ class CohortPatientValidation(MetaValidationMixin, Validation):
         # Updating existing record
         if old_obj.id is not None:
             # Permission for the old patient (might have been updated)
-            if not has_edit_patient_permission(old_obj.patient, current_user):
+            if not can_user_edit_patient(current_user, old_obj.patient):
                 raise ValidationError({'cohort': 'Permission denied!'})
 
         return new_obj

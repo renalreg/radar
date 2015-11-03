@@ -120,27 +120,27 @@ class Permission(object):
 
 
 class PatientPermission(Permission):
-   """Checks that the user can view or update a patient.
+    """Checks that the user can view or update a patient.
 
-   Permission is granted if:
-   * The user is an admin.
-   * The user is updating the patient and they have the edit patient permission
-     through their group membership.
-   * The user is viewing the patient and they have the view patient permission
-     through their group membership.
-   """
+    Permission is granted if:
+    * The user is an admin.
+    * The user is updating the patient and they have the edit patient permission
+      through their group membership.
+    * The user is viewing the patient and they have the view patient permission
+      through their group membership.
+    """
 
-   def has_object_permission(self, request, user, obj):
-       if not super(PatientPermission, self).has_object_permission(request, user, obj):
-           return False
+    def has_object_permission(self, request, user, obj):
+        if not super(PatientPermission, self).has_object_permission(request, user, obj):
+            return False
 
-       if user.is_admin:
-           return True
+        if user.is_admin:
+            return True
 
-       if is_write_request(request):
-           return can_user_edit_patient(user, obj)
-       else:
-           return can_user_view_patient(user, obj)
+        if is_write_request(request):
+            return can_user_edit_patient(user, obj)
+        else:
+            return can_user_view_patient(user, obj)
 
 
 class PatientObjectPermission(PatientPermission):
@@ -253,6 +253,8 @@ class CohortObjectPermission(Permission):
             # will check the user has permission to edit this patient's data.
             return True
         else:
+            patient = obj.patient
+
             # User isn't allowed to view this patient
             if not can_user_view_patient(user, patient):
                 return False
