@@ -1,4 +1,4 @@
-from radar.permissions import has_edit_patient_permission
+from radar.permissions import can_user_edit_patient
 from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required
@@ -17,7 +17,7 @@ class CohortPatientValidation(MetaValidationMixin, Validation):
         current_user = ctx['user']
 
         # Permission for the new patient
-        if not has_edit_patient_permission(new_obj.patient, current_user):
+        if not can_user_edit_patient(current_user, new_obj.patient):
             raise ValidationError({'cohort': 'Permission denied!'})
 
         # Check that the patient doesn't already belong to this cohort

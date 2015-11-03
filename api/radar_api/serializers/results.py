@@ -7,7 +7,7 @@ from radar.models import ResultGroupSpec, ResultGroup, RESULT_SPEC_TYPE_INTEGER,
     RESULT_SPEC_TYPE_CODED_INTEGER, RESULT_SPEC_TYPE_CODED_STRING
 from radar.serializers.core import Serializer, Empty, Field
 from radar.serializers.fields import StringField, IntegerField, FloatField, DateTimeField, ListField, \
-    CommaSeparatedStringField
+    CommaSeparatedStringField, UUIDField
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
 from radar.validation.core import ValidationError
@@ -148,7 +148,7 @@ class ResultsSerializer(Field):
 
 
 class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, Serializer):
-    id = IntegerField()
+    id = UUIDField()
     result_group_spec = ResultGroupSpecReferenceField()
     date = DateTimeField()
     created_date = DateTimeField()
