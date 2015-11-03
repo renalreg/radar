@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, Transplant, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.transplants import TransplantValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

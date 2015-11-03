@@ -2,7 +2,7 @@ import pytest
 
 from radar.validation.reset_password import ResetPasswordValidation
 from radar.validation.core import ValidationError
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 def test_valid():

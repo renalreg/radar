@@ -4,7 +4,7 @@ from radar.models import Cohort, User, CohortUser
 from radar.roles import COHORT_SENIOR_RESEARCHER, COHORT_RESEARCHER
 from radar.validation.cohort_users import CohortUserValidation
 from radar.validation.core import ValidationError
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

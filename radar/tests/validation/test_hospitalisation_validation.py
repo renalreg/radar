@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, Hospitalisation, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.hospitalisations import HospitalisationValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

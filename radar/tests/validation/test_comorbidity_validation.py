@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, DataSource, Comorbidity, Disorder
 from radar.validation.comorbidities import ComorbidityValidation
 from radar.validation.core import ValidationError
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

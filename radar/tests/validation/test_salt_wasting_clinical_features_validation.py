@@ -5,7 +5,7 @@ import pytest
 from radar.models import SaltWastingClinicalFeatures, PatientDemographics, Patient
 from radar.validation.core import ValidationError
 from radar.validation.salt_wasting import SaltWastingClinicalFeaturesValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

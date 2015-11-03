@@ -1,6 +1,6 @@
 from radar.permissions import can_user_edit_patient
 from radar.roles import COHORT_RESEARCHER, ORGANISATION_CLINICIAN
-from utils import make_cohorts, make_user, make_patient, make_organisations
+from helpers.permissions import make_cohorts, make_user, make_patient, make_organisations
 
 
 def test_admin():

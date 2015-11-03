@@ -5,7 +5,7 @@ import pytest
 from radar.models import Nephrectomy, Patient, PatientDemographics, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.nephrectomies import NephrectomyValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture

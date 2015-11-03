@@ -5,7 +5,7 @@ import pytest
 from radar.models import Dialysis, DialysisType, Patient, PatientDemographics, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.dialysis import DialysisValidation
-from utils import validation_runner
+from helpers.validation import validation_runner
 
 
 @pytest.fixture
