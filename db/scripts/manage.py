@@ -18,21 +18,9 @@ def app_context(f):
 
 
 @click.group()
-@click.option('--host', default='localhost')
-@click.option('--port', default=5432)
-@click.option('--username', default='radar')
-@click.option('--password', default='vagrant')
-@click.option('--database', default='radar')
+@click.option('--connection-string', default='postgresql:///radar')
 @click.pass_context
-def cli(ctx, host, port, username, password, database):
-    connection_string = 'postgresql://{username}:{password}@{host}:{port}/{database}'.format(
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        database=database,
-    )
-
+def cli(ctx, connection_string):
     config = {
         'SQLALCHEMY_DATABASE_URI': connection_string
     }
@@ -40,28 +28,21 @@ def cli(ctx, host, port, username, password, database):
     ctx.obj['app'] = create_app(config)
 
 
-@cli.command('initdb')
+@cli.command('init')
 @app_context
-def initdb():
+def init_command():
     db.create_all()
     create_initial_data()
 
 
-@cli.command('devdb')
+@cli.command('dev')
 @click.option('--patients', default=5)
+@click.option('--users', default=0)
 @app_context
-def devdb(patients):
+def dev_command(patients, users):
     db.drop_all()
     db.create_all()
-    dev.create_data(patients)
-    db.session.commit()
-
-
-@cli.command('devusers')
-@click.option('--count', default=100)
-@app_context
-def devusers(count):
-    create_users(count)
+    dev.create_data(patients, users)
     db.session.commit()
 
 
