@@ -27,13 +27,13 @@ def has_edit_patient_permission(patient, user):
 
 
 def intersect_patient_and_user_organisations(patient, user, patient_membership=False, user_membership=False):
-    organisation_patients = {x.organisation.id: x for x in patient.organisation_patients}
+    organisation_patients = {x.organisation: x for x in patient.organisation_patients}
 
     intersection = []
 
     for organisation_user in user.organisation_users:
-        organisation_id = organisation_user.organisation.id
-        organisation_patient = organisation_patients.get(organisation_id)
+        organisation = organisation_user.organisation
+        organisation_patient = organisation_patients.get(organisation)
 
         if organisation_patient:
             if patient_membership and user_membership:
