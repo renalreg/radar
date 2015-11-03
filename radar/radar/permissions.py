@@ -108,7 +108,7 @@ def intersect_patient_and_user_cohorts(patient, user, patient_membership=False, 
 
 
 def is_write_request(request):
-    return request.method != 'GET'
+    return request.method not in ['GET', 'HEAD']
 
 
 class Permission(object):
