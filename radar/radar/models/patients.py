@@ -26,8 +26,8 @@ class Patient(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
 
-    recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
-    recruited_organisation = relationship('Organisation')
+    recruited_by_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    recruited_by_organisation = relationship('Organisation')
 
     is_active = Column(Boolean, nullable=False, default=True)
     comments = Column(Text)
