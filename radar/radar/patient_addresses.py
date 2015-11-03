@@ -1,4 +1,4 @@
-from radar.permissions import has_view_demographics_permission
+from radar.permissions import can_user_view_demographics
 from radar.serializers.core import Empty
 
 
@@ -6,7 +6,7 @@ class PatientAddressProxy(object):
     def __init__(self, address, user):
         self.address = address
         self.user = user
-        self.demographics_permission = has_view_demographics_permission(address.patient, user)
+        self.demographics_permission = can_user_view_demographics(user, address.patient)
 
     @property
     def address_line_1(self):
