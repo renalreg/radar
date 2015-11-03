@@ -65,8 +65,8 @@ class CohortPatient(db.Model, MetaModelMixin):
     patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     patient = relationship('Patient')
 
-    recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
-    recruited_organisation = relationship('Organisation')
+    recruited_by_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    recruited_by_organisation = relationship('Organisation')
 
     is_active = Column(Boolean, nullable=False, default=True)
 

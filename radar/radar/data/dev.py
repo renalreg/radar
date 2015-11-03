@@ -504,7 +504,7 @@ def create_patients(n):
         print 'patient #%d' % (i + 1)
 
         patient = Patient()
-        patient.recruited_organisation = radar_organisation
+        patient.recruited_by_organisation = radar_organisation
         patient.is_active = True
         patient = validate(patient)
         patient.created_date = random_date(date(2008, 1, 1), date.today())
@@ -550,7 +550,7 @@ def create_patients(n):
             cohort_patient.cohort = random.choice(cohorts)
 
         cohort_patient.patient = patient
-        cohort_patient.recruited_organisation = radar_organisation
+        cohort_patient.recruited_by_organisation = radar_organisation
         cohort_patient.is_active = True
         cohort_patient = validate(cohort_patient)
         cohort_patient.created_date = random_date(patient.created_date, date.today())
