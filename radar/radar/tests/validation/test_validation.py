@@ -56,7 +56,6 @@ class BazValidation(NorfMixin, BarValidation, QuxMixin, FooValidation):
     world._tag = 'baz_world'
 
 
-
 def test_validation_fields():
     v = BazValidation()
     v.get_fields()

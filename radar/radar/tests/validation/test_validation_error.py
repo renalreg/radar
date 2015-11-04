@@ -123,7 +123,7 @@ def test_first_list_in_dict():
     assert e.first() == (('foo',), 'error @ foo.0')
 
 
-def test_first_list_in_dict():
+def test_first_dict_in_list():
     e = ValidationError([
         OrderedDict([
             ('foo', 'error @ 0.foo'),

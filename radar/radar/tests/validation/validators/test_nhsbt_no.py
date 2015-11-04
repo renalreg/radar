@@ -40,4 +40,3 @@ def invalid(value):
         nhsbt_no()(value)
 
     return e
-
