@@ -3,7 +3,8 @@ from radar.models import DATA_SOURCE_TYPE_RADAR
 
 
 def has_group_permission_for_patient(user, patient, permission):
-    """Check that the user has a permission on any of the groups they share with the patient."""
+    """Check that the user has a permission on any of the groups they share with
+    the patient."""
 
     if user.is_admin:
         return True
@@ -16,7 +17,8 @@ def has_group_permission_for_patient(user, patient, permission):
 
 
 def has_organisation_permission_for_patient(user, patient, permission):
-    """Check that the the user has a permission on any of the organisations they share with the patient."""
+    """Check that the the user has a permission on any of the organisations
+    they share with the patient."""
 
     if user.is_admin:
         return True
@@ -29,7 +31,8 @@ def has_organisation_permission_for_patient(user, patient, permission):
 
 
 def has_cohort_permission_for_patient(user, patient, permission):
-    """Check that the user has a permission on any of the cohorts they share with the patient."""
+    """Check that the user has a permission on any of the cohorts they share
+    with the patient."""
 
     if user.is_admin:
         return True
@@ -95,7 +98,7 @@ def can_view_patient_object(user, patient, cohort=None):
     if not can_view_patient(user, patient):
         return False
 
-    # If the object being viewed belongs to a cohort we also need to check cohort permissions
+    # If the object belongs to a cohort we also need to check cohort permissions
     if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
         return False
 
@@ -120,8 +123,8 @@ def can_edit_patient_object(user, patient, organisation=None):
     if not can_edit_patient(user, patient):
         return False
 
-    # If the object being viewed belongs to a cohort we also need to check cohort permissions
-    if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
+    # If the object belongs to a organisation we also need to check organisation permissions
+    if organisation is not None and not has_organisation_permission(user, organisation, 'has_view_patient_permission'):
         return False
 
     return True
