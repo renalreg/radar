@@ -30,6 +30,30 @@ def has_cohort_permission_for_patient(user, patient, permission):
         return any(getattr(x, permission) for x in cohort_users)
 
 
+def has_cohort_permission(user, cohort, permission):
+    if user.is_admin:
+        return True
+    else:
+        for cohort_user in user.cohort_users:
+            # User is a member of the cohort and has the view patient permission
+            if cohort_user.cohort == cohort and cohort_user.has_view_patient_permission:
+                return True
+
+        return False
+
+
+def has_organisation_permission(user, organisation, permission):
+    if user.is_admin:
+        return True
+    else:
+        for organisation_user in user.organisation_users:
+            # User is a member of the organisation and has the edit patient permission
+            if organisation_user.organisation == organisation and organisation_user.has_edit_patient_permission:
+                return True
+
+        return False
+
+
 def can_view_demographics(user, patient):
     return has_group_permission_for_patient(user, patient, 'has_view_demographics_permission')
 
@@ -41,17 +65,8 @@ def can_view_patient(user, patient, cohort=None):
     if not has_group_permission_for_patient(user, patient, 'has_view_patient_permission'):
         return False
 
-    if cohort is not None:
-        grant = False
-
-        for cohort_user in user.cohort_users:
-            # User is a member of the cohort and has the view patient permission
-            if cohort_user.cohort == cohort and cohort_user.has_view_patient_permission:
-                grant = True
-                break
-
-        if not grant:
-            return False
+    if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
+        return False
 
     return True
 
@@ -63,17 +78,8 @@ def can_edit_patient(user, patient, organisation=None):
     if not has_organisation_permission_for_patient(user, patient, 'has_edit_patient_permission'):
         return False
 
-    if organisation is not None:
-        grant = False
-
-        for organisation_user in user.organisation_users:
-            # User is a member of the organisation and has the edit patient permission
-            if organisation_user.organisation == organisation and organisation_user.has_edit_patient_permission:
-                grant = True
-                break
-
-        if not grant:
-            return False
+    if organisation is not None and not has_organisation_permission(user, organisation, 'has_edit_patient_permission'):
+        return False
 
     return True
 
