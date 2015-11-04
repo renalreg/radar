@@ -3,88 +3,133 @@ from radar.models import DATA_SOURCE_TYPE_RADAR
 
 
 def has_group_permission_for_patient(user, patient, permission):
-    if user.is_admin:
-        grant = True
-    else:
-        grant = has_organisation_permission_for_patient(user, patient, permission)
+    """Check that the user has a permission on any of the groups they share with the patient."""
 
-        if not grant:
-            grant = has_cohort_permission_for_patient(user, patient, permission)
-
-    return grant
-
-
-def has_organisation_permission_for_patient(user, patient, permission):
     if user.is_admin:
         return True
     else:
+        # Has the permission through shared organisation or cohort membership
+        return (
+            has_organisation_permission_for_patient(user, patient, permission) or
+            has_cohort_permission_for_patient(user, patient, permission)
+        )
+
+
+def has_organisation_permission_for_patient(user, patient, permission):
+    """Check that the the user has a permission on any of the organisations they share with the patient."""
+
+    if user.is_admin:
+        return True
+    else:
+        # Organisations in common with the patient
         organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
+
+        # Check the user has the required permission
         return any(getattr(x, permission) for x in organisation_users)
 
 
 def has_cohort_permission_for_patient(user, patient, permission):
+    """Check that the user has a permission on any of the cohorts they share with the patient."""
+
     if user.is_admin:
         return True
     else:
+        # Cohorts in common with the patient
         cohort_users = intersect_patient_and_user_cohorts(patient, user, user_membership=True)
+
+        # Check the user has the required permission
         return any(getattr(x, permission) for x in cohort_users)
 
 
 def has_cohort_permission(user, cohort, permission):
+    """Check that the user has a permission on a cohort."""
+
     if user.is_admin:
         return True
     else:
         for cohort_user in user.cohort_users:
-            # User is a member of the cohort and has the view patient permission
-            if cohort_user.cohort == cohort and cohort_user.has_view_patient_permission:
+            # User is a member of the cohort and has the required permission
+            if cohort_user.cohort == cohort and getattr(cohort_user, permission):
                 return True
 
+        # User not a member of the cohort or doesn't have the required permission
         return False
 
 
 def has_organisation_permission(user, organisation, permission):
+    """Check that the user has a permission on an organisation."""
+
     if user.is_admin:
         return True
     else:
         for organisation_user in user.organisation_users:
-            # User is a member of the organisation and has the edit patient permission
-            if organisation_user.organisation == organisation and organisation_user.has_edit_patient_permission:
+            # User is a member of the organisation and has the required permission
+            if organisation_user.organisation == organisation and getattr(organisation_user, permission):
                 return True
 
+        # User not a member of the organisation or doesn't have the required permission
         return False
 
 
 def can_view_demographics(user, patient):
+    """Check that the user can view the patient's demographics."""
+
     return has_group_permission_for_patient(user, patient, 'has_view_demographics_permission')
 
 
-def can_view_patient(user, patient, cohort=None):
+def can_view_patient(user, patient):
+    """Check that the user can view the patient."""
+
+    return (
+        user.is_admin or
+        has_group_permission_for_patient(user, patient, 'has_view_patient_permission')
+    )
+
+
+def can_view_patient_object(user, patient, cohort=None):
+    """Check that the user can view an object belonging to a patient."""
+
     if user.is_admin:
         return True
 
-    if not has_group_permission_for_patient(user, patient, 'has_view_patient_permission'):
+    if not can_view_patient(user, patient):
         return False
 
+    # If the object being viewed belongs to a cohort we also need to check cohort permissions
     if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
         return False
 
     return True
 
 
-def can_edit_patient(user, patient, organisation=None):
+def can_edit_patient(user, patient):
+    """Check that the user can edit the patient."""
+
+    return (
+        user.is_admin or
+        has_organisation_permission_for_patient(user, patient, 'has_edit_patient_permission')
+    )
+
+
+def can_edit_patient_object(user, patient, organisation=None):
+    """Check that the user can edit an object belonging to a patient."""
+
     if user.is_admin:
         return True
 
-    if not has_organisation_permission_for_patient(user, patient, 'has_edit_patient_permission'):
+    if not can_edit_patient(user, patient):
         return False
 
-    if organisation is not None and not has_organisation_permission(user, organisation, 'has_edit_patient_permission'):
+    # If the object being viewed belongs to a cohort we also need to check cohort permissions
+    if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
         return False
 
     return True
 
 
 def intersect_patient_and_user_organisations(patient, user, patient_membership=False, user_membership=False):
+    """Find the intersection of the organisations the patient and user belong to."""
+
     organisation_patients = {x.organisation: x for x in patient.organisation_patients}
 
     intersection = []
@@ -107,6 +152,8 @@ def intersect_patient_and_user_organisations(patient, user, patient_membership=F
 
 
 def intersect_patient_and_user_cohorts(patient, user, patient_membership=False, user_membership=False):
+    """Find the intersection of the cohorts the patient and user belong to."""
+
     cohort_patients = {x.cohort: x for x in patient.cohort_patients}
 
     intersection = []
@@ -128,8 +175,10 @@ def intersect_patient_and_user_cohorts(patient, user, patient_membership=False, 
     return intersection
 
 
-def is_write_request(request):
-    return request.method not in ['GET', 'HEAD']
+def is_safe_method(request):
+    """Check if the HTTP method is safe (read-only)."""
+
+    return request.method in ['GET', 'HEAD']
 
 
 class Permission(object):
@@ -158,10 +207,10 @@ class PatientPermission(Permission):
         if user.is_admin:
             return True
 
-        if is_write_request(request):
-            return can_edit_patient(user, obj)
-        else:
+        if is_safe_method(request):
             return can_view_patient(user, obj)
+        else:
+            return can_edit_patient(user, obj)
 
 
 class PatientObjectPermission(PatientPermission):
@@ -198,7 +247,10 @@ class DataSourceObjectPermission(Permission):
         if user.is_admin:
             return True
 
-        if is_write_request(request):
+        if is_safe_method(request):
+            # Users can view data from data sources they aren't members of
+            return True
+        else:
             data_source = obj.data_source
 
             # Can only modify RaDaR data (any organisation)
@@ -209,9 +261,6 @@ class DataSourceObjectPermission(Permission):
             patient = obj.patient
 
             return can_edit_patient(user, patient, organisation=organisation)
-        else:
-            # Users can view data from data sources they aren't members of
-            return True
 
 
 class RadarObjectPermission(Permission):
@@ -232,14 +281,14 @@ class RadarObjectPermission(Permission):
         if user.is_admin:
             return True
 
-        if is_write_request(request):
+        if is_safe_method(request):
+            # This permission only affects which objects can be edited
+            return True
+        else:
             data_source = obj.data_source
 
             # Can only modify RaDaR data
             return is_radar_data_source(data_source)
-        else:
-            # This permission only affects which objects can be edited
-            return True
 
 
 class CohortObjectPermission(Permission):
@@ -267,13 +316,7 @@ class CohortObjectPermission(Permission):
         if user.is_admin:
             return True
 
-        # Updating the object
-        if is_write_request(request):
-            # The CohortObjectPermission class should be used with the
-            # PatientObjectPermission class. The PatientObjectPermission class
-            # will check the user has permission to edit this patient's data.
-            return True
-        else:
+        if is_safe_method(request):
             patient = obj.patient
 
             # User isn't allowed to view this patient
@@ -286,6 +329,11 @@ class CohortObjectPermission(Permission):
             # cohort. This prevents users viewing data from other cohorts even
             # if they have permission to view the patient.
             return can_view_patient(user, patient, cohort=cohort)
+        else:
+            # The CohortObjectPermission class should be used with the
+            # PatientObjectPermission class. The PatientObjectPermission class
+            # will check the user has permission to edit this patient's data.
+            return True
 
 
 class PatientDataSourceObjectPermission(PatientObjectPermission, DataSourceObjectPermission):

@@ -1,4 +1,4 @@
-from radar.permissions import is_write_request
+from radar.permissions import is_safe_method
 
 
 class MockRequest(object):
@@ -6,13 +6,13 @@ class MockRequest(object):
         self.method = method
 
 
-def test_read_requests():
+def test_safe_requests():
     for method in ['GET', 'HEAD']:
         request = MockRequest(method)
-        assert not is_write_request(request)
+        assert is_safe_method(request)
 
 
-def test_write_requests():
+def test_unsafe_requests():
     for method in ['POST', 'PUT', 'DELETE']:
         request = MockRequest(method)
-        assert is_write_request(request)
+        assert not is_safe_method(request)
