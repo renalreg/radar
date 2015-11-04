@@ -1,4 +1,4 @@
-from radar.permissions import can_user_view_demographics
+from radar.permissions import can_view_demographics
 from radar.serializers.core import Empty
 
 
@@ -6,7 +6,7 @@ class PatientProxy(object):
     def __init__(self, patient, user):
         self.patient = patient
         self.user = user
-        self.demographics_permission = can_user_view_demographics(user, patient)
+        self.demographics_permission = can_view_demographics(user, patient)
 
     @property
     def first_name(self):
