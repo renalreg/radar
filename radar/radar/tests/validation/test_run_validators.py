@@ -102,7 +102,7 @@ def test_run_validators_skip():
             assert f.args is None
 
 
-def test_run_validators_skip():
+def test_run_validators_error():
     old_value = object()
     new_value = object()
     ctx = {}
@@ -119,7 +119,6 @@ def test_run_validators_skip():
         fs.append(f)
 
     c = ValidatorCall(ctx, old_value)
-    r = Result()
 
     with pytest.raises(ValidationError) as e:
         run_validators(fs, c, new_value)
