@@ -1,5 +1,6 @@
 [run]
 branch = true
+omit = radar_api/tests/*
 
 [html]
 directory = coverage
