@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -94,6 +94,11 @@ class CohortUser(db.Model, MetaModelMixin):
     __table_args__ = (
         UniqueConstraint('cohort_id', 'user_id'),
     )
+
+    @hybrid_method
+    def has_permission(self, permission):
+        # TODO
+        raise NotImplementedError()
 
     @hybrid_property
     def has_view_demographics_permission(self):
