@@ -1,6 +1,6 @@
 from radar.permissions import can_view_demographics
 from radar.roles import COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER, ORGANISATION_CLINICIAN
-from radar.tests.helpers.permissions import make_cohorts, make_user, make_patient, make_organisations
+from radar.tests.permissions.helpers import make_cohorts, make_user, make_patient, make_organisations
 
 
 def test_admin():

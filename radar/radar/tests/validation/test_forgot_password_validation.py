@@ -2,7 +2,7 @@ import pytest
 
 from radar.validation.forgot_password import ForgotPasswordValidation
 from radar.validation.core import ValidationError
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 def test_valid():

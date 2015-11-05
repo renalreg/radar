@@ -6,7 +6,7 @@ from radar.models import Patient, PatientDemographics, Diagnosis, Cohort, \
     CohortDiagnosis
 from radar.validation.core import ValidationError
 from radar.validation.diagnoses import DiagnosisValidation
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture

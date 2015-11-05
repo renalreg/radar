@@ -5,7 +5,7 @@ from radar.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Pat
     ORGANISATION_CODE_UKRR
 from radar.validation.core import ValidationError
 from radar.validation.patient_numbers import PatientNumberValidation
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture

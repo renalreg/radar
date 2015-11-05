@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, DataSource, Pathology
 from radar.validation.core import ValidationError
 from radar.validation.pathology_validation import PathologyValidation
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture
