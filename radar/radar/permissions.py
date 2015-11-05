@@ -95,7 +95,12 @@ def can_view_patient_object(user, patient, cohort=None):
     if user.is_admin:
         return True
 
-    if not can_view_patient(user, patient):
+    # Shortcut if the user has permission through their organisation membership
+    # We don't need to check cohort permissions as they can view data from any cohort
+    if has_organisation_permission_for_patient(user, patient, 'has_view_patient_permission'):
+        return True
+
+    if not has_cohort_permission_for_patient(user, patient, 'has_view_patient_permission'):
         return False
 
     # If the object belongs to a cohort we also need to check cohort permissions
@@ -263,7 +268,7 @@ class DataSourceObjectPermission(Permission):
             organisation = data_source.organisation
             patient = obj.patient
 
-            return can_edit_patient(user, patient, organisation=organisation)
+            return can_edit_patient_object(user, patient, organisation=organisation)
 
 
 class RadarObjectPermission(Permission):
@@ -331,7 +336,7 @@ class CohortObjectPermission(Permission):
             # Check the user has the view patient permission for the object's
             # cohort. This prevents users viewing data from other cohorts even
             # if they have permission to view the patient.
-            return can_view_patient(user, patient, cohort=cohort)
+            return can_view_patient_object(user, patient, cohort=cohort)
         else:
             # The CohortObjectPermission class should be used with the
             # PatientObjectPermission class. The PatientObjectPermission class

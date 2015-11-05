@@ -1,5 +1,5 @@
 from radar.permissions import intersect_patient_and_user_organisations as intersect_organisations
-from radar.tests.helpers.permissions import make_patient, make_user, make_organisations
+from radar.tests.permissions.helpers import make_patient, make_user, make_organisations
 
 
 def test_empty():

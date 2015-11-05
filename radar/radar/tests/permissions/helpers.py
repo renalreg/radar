@@ -49,9 +49,9 @@ def make_user(organisations=None, cohorts=None):
         if isinstance(organisation, OrganisationUser):
             organisation_user = organisation
         else:
-            if isinstance(organisation, list):
+            try:
                 organisation, role = organisation
-            else:
+            except (TypeError, ValueError):
                 role = None
 
             organisation_user = OrganisationUser()
@@ -65,9 +65,9 @@ def make_user(organisations=None, cohorts=None):
         if isinstance(cohort, CohortUser):
             cohort_user = cohort
         else:
-            if isinstance(cohort, list):
+            try:
                 cohort, role = cohort
-            else:
+            except (TypeError, ValueError):
                 role = None
 
             cohort_user = CohortUser()

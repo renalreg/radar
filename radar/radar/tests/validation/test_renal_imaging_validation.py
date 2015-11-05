@@ -5,7 +5,7 @@ import pytest
 from radar.models import RenalImaging, DataSource, Patient, PatientDemographics
 from radar.validation.core import ValidationError
 from radar.validation.renal_imaging import RenalImagingValidation
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture

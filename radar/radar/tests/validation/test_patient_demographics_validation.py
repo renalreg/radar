@@ -7,7 +7,7 @@ from radar.models import PatientDemographics, Patient, DataSource, EthnicityCode
 from radar.validation.core import ValidationError
 from radar.validation.patient_demographics import PatientDemographicsValidation
 from radar.validation.validators import DAY_ZERO
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture

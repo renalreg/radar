@@ -6,7 +6,7 @@ import pytz
 from radar.models import Patient, PatientDemographics, Cohort, Genetics
 from radar.validation.core import ValidationError
 from radar.validation.genetics import GeneticsValidation
-from radar.tests.helpers.validation import validation_runner
+from radar.tests.validation.helpers import validation_runner
 
 
 @pytest.fixture
