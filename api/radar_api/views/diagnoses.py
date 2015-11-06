@@ -1,7 +1,7 @@
 from flask import request
 from radar_api.serializers.diagnoses import CohortDiagnosisSerializer, DiagnosisSerializer, \
     CohortDiagnosisRequestSerializer
-from radar.models import CohortDiagnosis, Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, DIAGNOSIS_KARYOTYPES
+from radar.models import CohortDiagnosis, Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES
 from radar.validation.diagnoses import DiagnosisValidation
 from radar.views.codes import CodedIntegerListView
 from radar.views.cohorts import CohortObjectViewMixin
@@ -43,13 +43,8 @@ class DiagnosisBiopsyDiagnosesListView(CodedIntegerListView):
     items = DIAGNOSIS_BIOPSY_DIAGNOSES
 
 
-class DiagnosisKaryotypeListView(CodedIntegerListView):
-    items = DIAGNOSIS_KARYOTYPES
-
-
 def register_views(app):
     app.add_url_rule('/diagnoses', view_func=DiagnosisListView.as_view('diagnosis_list'))
     app.add_url_rule('/diagnoses/<id>', view_func=DiagnosisDetailView.as_view('diagnosis_detail'))
     app.add_url_rule('/diagnosis-cohort-diagnoses', view_func=CohortDiagnosisListView.as_view('diagnosis_cohort_diagnosis_list'))
     app.add_url_rule('/diagnosis-biopsy-diagnoses', view_func=DiagnosisBiopsyDiagnosesListView.as_view('diagnosis_biopsy_diagnosis_list'))
-    app.add_url_rule('/diagnosis-karyotypes', view_func=DiagnosisKaryotypeListView.as_view('diagnosis_karyotype_list'))

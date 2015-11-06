@@ -14,13 +14,6 @@ DIAGNOSIS_BIOPSY_DIAGNOSES = OrderedDict([
     (5, 'No BX @ Time of Diagnosis'),
 ])
 
-DIAGNOSIS_KARYOTYPES = OrderedDict([
-    (1, 'XX'),
-    (2, 'XY'),
-    (9, 'Not Done'),
-    (8, 'Other'),
-])
-
 
 class Diagnosis(db.Model, MetaModelMixin):
     __tablename__ = 'diagnoses'
@@ -40,7 +33,6 @@ class Diagnosis(db.Model, MetaModelMixin):
 
     diagnosis_text = Column(String)
     biopsy_diagnosis = Column(Integer)
-    karyotype = Column(Integer)
 
 Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
 Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)
