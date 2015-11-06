@@ -72,6 +72,10 @@
       text: 'Hospitalisations',
       state: 'patient.hospitalisations({patientId: patient.id})'
     },
+    INS_CLINICAL_FEATURES: {
+      text: 'Clinical Features',
+      state: 'patient.insClinicalFeatures({patientId: patient.id})'
+    },
     MEDICATIONS: {
       text: 'Medications',
       state: 'patient.medications({patientId: patient.id})'
