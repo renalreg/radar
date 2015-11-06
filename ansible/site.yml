@@ -23,5 +23,5 @@
     virtualenv_path: /home/vagrant/venv
   roles:
     - dev
-    - db
+    - db_dev
     - web_dev
