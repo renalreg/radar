@@ -1,8 +1,13 @@
 from radar.models import Organisation
-from radar.permissions import PatientPermission
+from radar.permissions import PatientPermission, PatientObjectPermission
 from radar.roles import COHORT_RESEARCHER, ORGANISATION_CLINICIAN
 from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_cohorts, make_organisations
 from radar.models.cohorts import Cohort
+
+
+class MockObj(object):
+    def __init__(self, patient):
+        self.patient = patient
 
 
 def make_read_request():
@@ -13,14 +18,22 @@ def make_write_request():
     return MockRequest('POST')
 
 
-def should_grant(request, user, obj):
-    permission = PatientPermission()
-    assert permission.has_object_permission(request, user, obj)
+def should_grant(request, user, patient):
+    patient_permission = PatientPermission()
+    assert patient_permission.has_object_permission(request, user, patient)
+
+    patient_object_permission = PatientObjectPermission()
+    obj = MockObj(patient)
+    assert patient_object_permission.has_object_permission(request, user, obj)
 
 
-def should_deny(request, user, obj):
-    permission = PatientPermission()
-    assert not permission.has_object_permission(request, user, obj)
+def should_deny(request, user, patient):
+    patient_permission = PatientPermission()
+    assert not patient_permission.has_object_permission(request, user, patient)
+
+    patient_object_permission = PatientObjectPermission()
+    obj = MockObj(patient)
+    assert not patient_object_permission.has_object_permission(request, user, obj)
 
 
 def test_admin():
