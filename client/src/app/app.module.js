@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('radar', [
-    'ngCookies',
+    'LocalStorageModule',
     'ui.router',
     'radar.account',
     'radar.auth',
