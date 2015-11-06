@@ -1,9 +1,8 @@
 <div loading="loading" crud>
   <div ng-if="viewing">
     <p>
-      <span crud-create-button action="create()"></span>
+      <span crud-list-button></span>
       <span crud-edit-button item="item"></span>
-      <span crud-remove-button item="item"></span>
     </p>
 
     <table class="table properties" ng-if="item">
@@ -116,5 +115,48 @@
         <span crud-cancel-button action="view()"></span>
       </div>
     </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="sampleSentDate" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="sampleSent">Sample Sent</th>
+          <th sort-helper="sampleSentDate">Sample Sent Date</th>
+          <th sort-helper="karyotype.label">Karyotype</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td><span tick="item.sampleSent"></span></td>
+          <td>{{item.sampleSentDate | dateFormat | missing}}</td>
+          <td>{{item.karyotype.label | missing}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
   </div>
 </div>

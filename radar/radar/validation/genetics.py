@@ -23,6 +23,7 @@ class GeneticsValidation(PatientValidationMixin, CohortValidationMixin, MetaVali
             obj.sample_sent_date = None
             obj.laboratory = None
             obj.laboratory_reference_number = None
+            obj.karyotype = None
             obj.results = None
 
         return obj

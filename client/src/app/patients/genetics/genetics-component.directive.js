@@ -8,7 +8,7 @@
   }]);
 
   function controllerFactory(
-    ModelDetailController,
+    ModelListDetailController,
     GeneticsPermission,
     $injector,
     store,
@@ -17,7 +17,7 @@
     function GeneticsController($scope) {
       var self = this;
 
-      $injector.invoke(ModelDetailController, self, {
+      $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
           permission: new GeneticsPermission($scope.patient)
@@ -25,13 +25,11 @@
       });
 
       self.load(firstPromise([
-        store.findFirst('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
+        store.findMany('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
         store.findMany('genetics-karyotypes').then(function(karyotypes) {
           $scope.karyotypes = karyotypes;
         })
-      ])).then(function() {
-        self.view();
-      });
+      ]));
 
       $scope.create = function() {
         var item = store.create('genetics', {patient: $scope.patient.id, cohort: $scope.cohort});
@@ -40,13 +38,13 @@
     }
 
     GeneticsController.$inject = ['$scope'];
-    GeneticsController.prototype = Object.create(ModelDetailController.prototype);
+    GeneticsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return GeneticsController;
   }
 
   controllerFactory.$inject = [
-    'ModelDetailController',
+    'ModelListDetailController',
     'GeneticsPermission',
     '$injector',
     'store',

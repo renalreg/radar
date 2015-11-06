@@ -62,6 +62,7 @@ def test_sample_not_sent(genetics):
     assert obj.sample_sent_date is None
     assert obj.laboratory is None
     assert obj.laboratory_reference_number is None
+    assert obj.karyotype is None
     assert obj.results is None
 
 
