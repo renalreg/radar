@@ -4,6 +4,11 @@ from radar.models.patients import Patient
 from radar.models.users import User
 
 
+class MockRequest(object):
+    def __init__(self, method):
+        self.method = method
+
+
 def make_cohorts(n):
     return [Cohort() for _ in range(n)]
 
