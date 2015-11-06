@@ -2,7 +2,6 @@ from functools import update_wrapper
 
 import click
 
-from radar.data.dev import create_users
 from radar.app import create_app
 from radar.database import db
 from radar.data import dev, create_initial_data
