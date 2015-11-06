@@ -14,6 +14,9 @@ RADAR = 1
 DENY = False
 GRANT = True
 
+NOT_ADMIN = False
+ADMIN = True
+
 
 def make_request(action):
     if action == READ:
@@ -44,16 +47,21 @@ def make_obj(source):
     return obj
 
 
-@pytest.mark.parametrize(['action', 'source', 'expected'], [
-    (READ, RADAR, GRANT),
-    (READ, EXTERNAL, GRANT),
-    (WRITE, RADAR, GRANT),
-    (WRITE, EXTERNAL, DENY),
+@pytest.mark.parametrize(['is_admin', 'action', 'source', 'expected'], [
+    (NOT_ADMIN, READ, RADAR, GRANT),
+    (NOT_ADMIN, READ, EXTERNAL, GRANT),
+    (NOT_ADMIN, WRITE, RADAR, GRANT),
+    (NOT_ADMIN, WRITE, EXTERNAL, DENY),
+    (ADMIN, READ, RADAR, GRANT),
+    (ADMIN, READ, EXTERNAL, GRANT),
+    (ADMIN, WRITE, RADAR, GRANT),
+    (ADMIN, WRITE, EXTERNAL, GRANT),
 ])
-def test_has_object_permission(action, source, expected):
+def test_has_object_permission(is_admin, action, source, expected):
     permission = RadarObjectPermission()
     request = make_request(action)
     user = make_user()
+    user.is_admin = is_admin
     obj = make_obj(source)
 
     assert permission.has_object_permission(request, user, obj) == expected
