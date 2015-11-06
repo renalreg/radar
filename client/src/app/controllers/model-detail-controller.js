@@ -56,6 +56,8 @@
       this.scope.removePermission = angular.bind(this, this.removePermission);
 
       this.scope.createVisible = angular.bind(this, this.createVisible);
+      this.scope.editVisible = angular.bind(this, this.editVisible);
+      this.scope.removeVisible = angular.bind(this, this.removeVisible);
     }
 
     ModelDetailController.$inject = ['$scope', 'params'];
@@ -193,6 +195,14 @@
 
     ModelDetailController.prototype.createVisible = function() {
       return this.scope.item === null;
+    };
+
+    ModelDetailController.prototype.editVisible = function() {
+      return this.scope.item !== null;
+    };
+
+    ModelDetailController.prototype.removeVisible = function() {
+      return this.scope.item !== null;
     };
 
     return ModelDetailController;

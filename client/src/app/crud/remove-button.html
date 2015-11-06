@@ -1,4 +1,4 @@
-<span ng-if="permission">
+<span ng-if="permission && visible">
   <span ng-show="!item.isDeleted">
     <span ng-show="!clicked">
       <button ng-click="remove()" ng-disabled="!removeEnabled" type="button" class="btn btn-link"><i class="fa fa-trash-o"></i> Delete</button>

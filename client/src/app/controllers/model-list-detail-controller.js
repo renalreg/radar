@@ -60,6 +60,8 @@
       this.scope.removePermission = angular.bind(this, this.removePermission);
 
       this.scope.createVisible = angular.bind(this, this.createVisible);
+      this.scope.editVisible = angular.bind(this, this.editVisible);
+      this.scope.removeVisible = angular.bind(this, this.removeVisible);
     }
 
     ModelListDetailController.$inject = ['$scope', 'params'];
@@ -224,6 +226,14 @@
 
     ModelListDetailController.prototype.createVisible = function() {
       return true;
+    };
+
+    ModelListDetailController.prototype.editVisible = function(item) {
+      return item !== null && item.getId() !== null;
+    };
+
+    ModelListDetailController.prototype.removeVisible = function(item) {
+      return item !== null && item.getId() !== null;
     };
 
     return ModelListDetailController;

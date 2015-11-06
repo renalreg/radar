@@ -77,6 +77,14 @@
         this.createVisible = function() {
           return $scope.createVisible.apply(this, arguments);
         };
+
+        this.editVisible = function() {
+          return $scope.editVisible.apply(this, arguments);
+        };
+
+        this.removeVisible = function() {
+          return $scope.removeVisible.apply(this, arguments);
+        };
       }]
     };
   });

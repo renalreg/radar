@@ -48,6 +48,12 @@
         }, function(value) {
           scope.permission = value;
         });
+
+        scope.$watch(function() {
+          return crudCtrl.removeVisible(scope.item);
+        }, function(value) {
+          scope.visible = value;
+        });
       }
     };
   }]);
