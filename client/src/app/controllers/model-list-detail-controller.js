@@ -58,6 +58,8 @@
       this.scope.createPermission = angular.bind(this, this.createPermission);
       this.scope.editPermission = angular.bind(this, this.editPermission);
       this.scope.removePermission = angular.bind(this, this.removePermission);
+
+      this.scope.createVisible = angular.bind(this, this.createVisible);
     }
 
     ModelListDetailController.$inject = ['$scope', 'params'];
@@ -218,6 +220,10 @@
 
     ModelListDetailController.prototype.removePermission = function(item) {
       return this._removePermission.hasObjectPermission(item);
+    };
+
+    ModelListDetailController.prototype.createVisible = function() {
+      return true;
     };
 
     return ModelListDetailController;

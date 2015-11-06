@@ -9,18 +9,24 @@
       scope: {
         action: '&'
       },
-      template: '<button ng-click="action()" ng-if="permission" ng-disabled="!enabled" type="button" class="btn btn-primary">New</button>',
+      template: '<button ng-click="action()" ng-if="permission && visible" ng-disabled="!enabled" type="button" class="btn btn-primary">New</button>',
       link: function(scope, element, attrs, crudCtrl) {
         scope.$watch(function() {
-          return crudCtrl.createEnabled(scope.item);
+          return crudCtrl.createEnabled();
         }, function(value) {
           scope.enabled = value;
         });
 
         scope.$watch(function() {
-          return crudCtrl.createPermission(scope.item);
+          return crudCtrl.createPermission();
         }, function(value) {
           scope.permission = value;
+        });
+
+        scope.$watch(function() {
+          return crudCtrl.createVisible();
+        }, function(value) {
+          scope.visible = value;
         });
       }
     };

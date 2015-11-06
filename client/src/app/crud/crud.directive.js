@@ -73,6 +73,10 @@
         this.removePermission = function() {
           return $scope.removePermission.apply(this, arguments);
         };
+
+        this.createVisible = function() {
+          return $scope.createVisible.apply(this, arguments);
+        };
       }]
     };
   });
