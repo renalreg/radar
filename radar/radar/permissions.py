@@ -197,6 +197,19 @@ class Permission(object):
         return True
 
 
+class AdminPermission(Permission):
+    """Checks that the user is an admin."""
+
+    def has_permission(self, request, user):
+        if not super(AdminPermission, self).has_permission(request, user):
+            return False
+
+        return user.is_admin
+
+    def has_object_permission(self, request, user, obj):
+        return self.has_permission(request, user)
+
+
 class PatientPermission(Permission):
     """Checks that the user can view or update a patient.
 

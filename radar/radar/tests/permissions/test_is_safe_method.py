@@ -1,11 +1,7 @@
 import pytest
 
 from radar.permissions import is_safe_method
-
-
-class MockRequest(object):
-    def __init__(self, method):
-        self.method = method
+from radar.tests.permissions.helpers import MockRequest
 
 
 @pytest.mark.parametrize('method', ['GET', 'HEAD'])
