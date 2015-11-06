@@ -30,11 +30,6 @@
         <th>Biopsy Diagnosis</th>
         <td>{{item.biopsyDiagnosis.label | missing}}</td>
       </tr>
-
-      <tr>
-        <th>Karyotype</th>
-        <td>{{item.karyotype.label | missing}}</td>
-      </tr>
     </table>
 
     <div item-meta item="item"></div>
@@ -80,15 +75,6 @@
         <div frm-control>
           <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses"></div>
           <div frm-errors errors="item.errors.biopsyDiagnosis"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Karyotype</div>
-
-        <div frm-control>
-          <div frm-select-field model="item.karyotype" options="karyotypes"></div>
-          <div frm-errors errors="item.errors.karyotype"></div>
         </div>
       </div>
 

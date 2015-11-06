@@ -11,7 +11,8 @@
     ModelDetailController,
     GeneticsPermission,
     $injector,
-    store
+    store,
+    firstPromise
   ) {
     function GeneticsController($scope) {
       var self = this;
@@ -23,7 +24,12 @@
         }
       });
 
-      self.load(store.findFirst('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id})).then(function() {
+      self.load(firstPromise([
+        store.findFirst('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
+        store.findMany('genetics-karyotypes').then(function(karyotypes) {
+          $scope.karyotypes = karyotypes;
+        })
+      ])).then(function() {
         self.view();
       });
 
@@ -43,7 +49,8 @@
     'ModelDetailController',
     'GeneticsPermission',
     '$injector',
-    'store'
+    'store',
+    'firstPromise'
   ];
 
   app.factory('GeneticsController', controllerFactory);

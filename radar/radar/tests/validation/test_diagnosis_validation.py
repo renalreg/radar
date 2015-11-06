@@ -29,7 +29,6 @@ def diagnosis(patient):
     obj.cohort_diagnosis = CohortDiagnosis(cohort=cohort)
     obj.diagnosis_text = 'Foo Bar Baz'
     obj.biopsy_diagnosis = 1
-    obj.karyotype = 1
 
     return obj
 
@@ -42,7 +41,6 @@ def test_valid(diagnosis):
     assert obj.cohort_diagnosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
     assert obj.biopsy_diagnosis == 1
-    assert obj.karyotype == 1
     assert obj.created_user is not None
     assert obj.created_date is not None
     assert obj.modified_user is not None
@@ -104,17 +102,6 @@ def test_biopsy_diagnosis_missing(diagnosis):
 
 def test_biopsy_diagnosis_invalid(diagnosis):
     diagnosis.biopsy_diagnosis = 99999
-    invalid(diagnosis)
-
-
-def test_karyotype_missing(diagnosis):
-    diagnosis.karyotype = None
-    obj = valid(diagnosis)
-    assert obj.karyotype is None
-
-
-def test_karyotype_invalid(diagnosis):
-    diagnosis.karyotype = 99999
     invalid(diagnosis)
 
 

@@ -1,8 +1,9 @@
 from radar_api.serializers.genetics import GeneticsSerializer
 from radar.models import Genetics
-from radar.validation.genetics import GeneticsValidation
+from radar.validation.genetics import GeneticsValidation, GENETICS_KARYOTYPES
 from radar.views.cohorts import CohortObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
+from radar.views.codes import CodedIntegerListView
 
 
 class GeneticsListView(CohortObjectViewMixin, PatientObjectListView):
@@ -17,6 +18,11 @@ class GeneticsDetailView(CohortObjectViewMixin, PatientObjectDetailView):
     validation_class = GeneticsValidation
 
 
+class GeneticsKaryotypeListView(CodedIntegerListView):
+    items = GENETICS_KARYOTYPES
+
+
 def register_views(app):
     app.add_url_rule('/genetics', view_func=GeneticsListView.as_view('genetics_list'))
     app.add_url_rule('/genetics/<id>', view_func=GeneticsDetailView.as_view('genetics_detail'))
+    app.add_url_rule('/genetics-karyotypes', view_func=GeneticsKaryotypeListView.as_view('genetics_karyotype_list'))

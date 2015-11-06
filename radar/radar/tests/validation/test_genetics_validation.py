@@ -27,6 +27,7 @@ def genetics(patient):
     obj.sample_sent_date = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.laboratory_reference_number = '12345'
+    obj.karyotype = 1
     obj.results = 'foo\nbar\nbaz'
     return obj
 
@@ -37,6 +38,7 @@ def test_valid(genetics):
     assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     assert obj.laboratory == 'Test'
     assert obj.laboratory_reference_number == '12345'
+    assert obj.karyotype == 1
     assert obj.results == 'foo\nbar\nbaz'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -88,6 +90,17 @@ def test_laboratory_reference_number_blank(genetics):
     genetics.laboratory_reference_number = ''
     obj = valid(genetics)
     assert obj.laboratory_reference_number is None
+
+
+def test_karyotype_missing(genetics):
+    genetics.karyotype = None
+    obj = valid(genetics)
+    assert obj.karyotype is None
+
+
+def test_karyotype_invalid(genetics):
+    genetics.karyotype = 99999
+    invalid(genetics)
 
 
 def test_results_blank(genetics):

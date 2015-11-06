@@ -34,9 +34,6 @@
         }),
         store.findMany('diagnosis-biopsy-diagnoses').then(function(biopsyDiagnoses) {
           $scope.biopsyDiagnoses = biopsyDiagnoses;
-        }),
-        store.findMany('diagnosis-karyotypes').then(function(karyotypes) {
-          $scope.karyotypes = karyotypes;
         })
       ]));
 
