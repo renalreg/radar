@@ -145,7 +145,7 @@ gulp.task('size', function() {
 });
 
 // TODO watch:dist
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', ['build'], function(cb) {
   function log(event) {
     console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
   }
@@ -154,9 +154,9 @@ gulp.task('watch', ['build'], function() {
     log(event);
 
     if (event.type === 'changed') {
-      gulp.start('scripts');
+      return gulp.start('scripts');
     } else {
-      gulp.start('inject');
+      return gulp.start('inject');
     }
   });
 
