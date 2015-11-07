@@ -8,10 +8,18 @@ from radar.validation.validators import required, optional, \
 
 
 class DiagnosisValidation(PatientValidationMixin, CohortValidationMixin, MetaValidationMixin, Validation):
-    date = Field([required(), valid_date_for_patient()])
+    date_of_onset = Field([required(), valid_date_for_patient()])
+    date_of_diagnosis = Field([required(), valid_date_for_patient()])
     cohort_diagnosis = Field([required()])
     diagnosis_text = Field([none_if_blank(), optional(), max_length(1000)])
     biopsy_diagnosis = Field([optional(), in_(DIAGNOSIS_BIOPSY_DIAGNOSES.keys())])
+
+    @pass_new_obj
+    def validate_date_of_diagnosis(self, obj, date_of_diagnosis):
+        if date_of_diagnosis < obj.date_of_onset:
+            raise ValidationError('Must be on or after date of onset.')
+
+        return date_of_diagnosis
 
     @pass_new_obj
     def validate_cohort_diagnosis(self, obj, cohort_diagnosis):

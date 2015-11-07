@@ -12,8 +12,13 @@
       </tr>
 
       <tr>
-        <th>Date</th>
-        <td>{{item.date | dateFormat}}</td>
+        <th>Date of Onset</th>
+        <td>{{item.dateOfOnset | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Diagnosis</th>
+        <td>{{item.dateOfDiagnosis | dateFormat}}</td>
       </tr>
 
       <tr>
@@ -43,11 +48,20 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Date</div>
+        <div frm-label>Date of Onset</div>
 
         <div frm-control>
-          <div frm-date-field model="item.date" required="true"></div>
-          <div frm-errors errors="item.errors.date"></div>
+          <div frm-date-field model="item.dateOfOnset" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfOnset"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Diagnosis</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfDiagnosis" required="true" min-date="item.dateOfOnset"></div>
+          <div frm-errors errors="item.errors.dateOfDiagnosis"></div>
         </div>
       </div>
 
@@ -85,7 +99,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="date" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="dateOfDiagnosis" reverse="true">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -100,7 +114,8 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="date">Date</th>
+          <th sort-helper="dateOfOnset">Date of Onset</th>
+          <th sort-helper="dateOfDiagnosis">Date of Diagnosis</th>
           <th sort-helper="cohortDiagnosis">Diagnosis</th>
           <th></th>
         </tr>
@@ -113,7 +128,8 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.date | dateFormat}}</td>
+          <td>{{item.dateOfOnset | dateFormat}}</td>
+          <td>{{item.dateOfDiagnosis | dateFormat}}</td>
           <td>{{item.cohortDiagnosis.label}}</td>
 
           <td>

@@ -25,7 +25,8 @@ def diagnosis(patient):
     obj = Diagnosis()
     obj.patient = patient
     obj.cohort = cohort
-    obj.date = date(2015, 1, 1)
+    obj.date_of_onset = date(2014, 1, 1)
+    obj.date_of_diagnosis = date(2015, 1, 1)
     obj.cohort_diagnosis = CohortDiagnosis(cohort=cohort)
     obj.diagnosis_text = 'Foo Bar Baz'
     obj.biopsy_diagnosis = 1
@@ -37,7 +38,8 @@ def test_valid(diagnosis):
     obj = valid(diagnosis)
     assert obj.patient is not None
     assert obj.cohort is not None
-    assert obj.date == date(2015, 1, 1)
+    assert obj.date_of_onset == date(2014, 1, 1)
+    assert obj.date_of_diagnosis == date(2015, 1, 1)
     assert obj.cohort_diagnosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
     assert obj.biopsy_diagnosis == 1
@@ -57,18 +59,38 @@ def test_cohort_missing(diagnosis):
     invalid(diagnosis)
 
 
-def test_date_missing(diagnosis):
-    diagnosis.date = None
+def test_date_of_onset_missing(diagnosis):
+    diagnosis.date_of_onset = None
     invalid(diagnosis)
 
 
-def test_date_before_dob(diagnosis):
-    diagnosis.date = date(1999, 1, 1)
+def test_date_of_onset_before_dob(diagnosis):
+    diagnosis.date_of_onset = date(1999, 1, 1)
     invalid(diagnosis)
 
 
-def test_date_in_future(diagnosis):
-    diagnosis.date = date.today() + timedelta(days=1)
+def test_date_of_onset_in_future(diagnosis):
+    diagnosis.date_of_onset = date.today() + timedelta(days=1)
+    invalid(diagnosis)
+
+
+def test_date_of_diagnosis_missing(diagnosis):
+    diagnosis.date_of_diagnosis = None
+    invalid(diagnosis)
+
+
+def test_date_of_diagnosis_before_dob(diagnosis):
+    diagnosis.date_of_diagnosis = date(1999, 1, 1)
+    invalid(diagnosis)
+
+
+def test_date_of_diagnosis_in_future(diagnosis):
+    diagnosis.date_of_diagnosis = date.today() + timedelta(days=1)
+    invalid(diagnosis)
+
+
+def test_date_of_diagnosis_before_date_of_onset(diagnosis):
+    diagnosis.date_of_diagnosis = diagnosis.date_of_onset - timedelta(days=1)
     invalid(diagnosis)
 
 

@@ -26,7 +26,8 @@ class Diagnosis(db.Model, MetaModelMixin):
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')
 
-    date = Column(Date, nullable=False)
+    date_of_onset = Column(Date, nullable=False)
+    date_of_diagnosis = Column(Date, nullable=False)
 
     cohort_diagnosis_id = Column(Integer, ForeignKey('cohort_diagnoses.id'), nullable=False)
     cohort_diagnosis = relationship('CohortDiagnosis')
