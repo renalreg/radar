@@ -15,6 +15,7 @@
     "respond": "~1.4.2",
     "ui-router": "~0.2.15",
     "angular-mocks": "1.2",
-    "angular-local-storage": "~0.2.3"
+    "angular-local-storage": "~0.2.3",
+    "tinymce": "~4.2.7"
   }
 }
