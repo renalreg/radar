@@ -24,6 +24,7 @@ var browserSync = require('browser-sync').create();
 var argv = require('yargs').argv;
 var stylish = require('gulp-jscs-stylish');
 var karma = require('karma');
+var print = require('gulp-print');
 
 var common = require('./common');
 
@@ -145,7 +146,13 @@ gulp.task('size', function() {
 
 // TODO watch:dist
 gulp.task('watch', ['build'], function() {
+  function log(event) {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  }
+
   gulp.watch('src/app/**/*.js', function(event) {
+    log(event);
+
     if (event.type === 'changed') {
       gulp.start('scripts');
     } else {
@@ -154,17 +161,23 @@ gulp.task('watch', ['build'], function() {
   });
 
   gulp.watch('src/sass/**/*.scss', function(event) {
+    log(event);
+
     if (event.type === 'changed') {
-      gulp.start('sass');
+      return gulp.start('sass');
     } else {
-      gulp.start('inject');
+      return gulp.start('inject');
     }
   });
 
-  gulp.watch('src/index.html', ['inject']);
+  gulp.watch('src/index.html', function(event) {
+    log(event);
+    return gulp.start('inject');
+  });
 
   gulp.watch(['src/app/**/*.html', '!src/index.html'], function(event) {
-    browserSync.reload(event.path);
+    log(event);
+    return browserSync.reload(event.path);
   });
 });
 
