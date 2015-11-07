@@ -144,7 +144,7 @@ gulp.task('size', function() {
 });
 
 // TODO watch:dist
-gulp.task('watch', function() {
+gulp.task('watch', ['build'], function() {
   gulp.watch('src/app/**/*.js', function(event) {
     if (event.type === 'changed') {
       gulp.start('scripts');
