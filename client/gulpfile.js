@@ -19,41 +19,21 @@ var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
 var express = require('express');
 var del = require('del');
-var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 var argv = require('yargs').argv;
 var stylish = require('gulp-jscs-stylish');
 var karma = require('karma');
-var print = require('gulp-print');
+var gutil = require('gulp-util');
 
 var common = require('./common');
 
 var config = argv.config || 'production';
-console.log('config: ' + config + ' (--config NAME)');
+gutil.log('config: ' + config + ' (--config NAME)');
 
 function noop() {}
 
 gulp.task('clean', function() {
   return del(['dist', '.tmp']);
-});
-
-gulp.task('inject', ['sass', 'scripts'], function() {
-  var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
-  var appScripts = gulp.src(common.JS, {read: false});
-  var configScript = gulp.src('src/app/config/' + config + '.js');
-  var vendorScripts = gulp.src(common.JS_VENDOR, {read: false});
-  var vendorStyles = gulp.src(common.CSS_VENDOR, {read: false});
-  var ieScripts = gulp.src(common.JS_IE, {read: false});
-
-  return gulp.src('src/index.html')
-    .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
-    .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
-    .pipe(inject(configScript, {name: 'config', ignorePath: ['src']}))
-    .pipe(inject(vendorScripts, {name: 'vendor'}))
-    .pipe(inject(vendorStyles, {name: 'vendor'}))
-    .pipe(inject(ieScripts, {name: 'ie'}))
-    .pipe(gulp.dest('.tmp/serve'))
-    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('sass', function() {
@@ -76,7 +56,42 @@ gulp.task('scripts', function() {
     .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('html', ['inject', 'templates'], function() {
+gulp.task('inject', function() {
+  var appStyles = gulp.src('.tmp/serve/css/**/*.css', {read: false});
+  var appScripts = gulp.src(common.JS, {read: false});
+  var configScript = gulp.src('src/app/config/' + config + '.js');
+  var vendorScripts = gulp.src(common.JS_VENDOR, {read: false});
+  var vendorStyles = gulp.src(common.CSS_VENDOR, {read: false});
+  var ieScripts = gulp.src(common.JS_IE, {read: false});
+
+  return gulp.src('src/index.html')
+    .pipe(inject(appStyles, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
+    .pipe(inject(appScripts, {name: 'app', ignorePath: ['src', '.tmp/serve']}))
+    .pipe(inject(configScript, {name: 'config', ignorePath: ['src']}))
+    .pipe(inject(vendorScripts, {name: 'vendor'}))
+    .pipe(inject(vendorStyles, {name: 'vendor'}))
+    .pipe(inject(ieScripts, {name: 'ie'}))
+    .pipe(gulp.dest('.tmp/serve'))
+    .pipe(browserSync.reload({stream: true}));
+});
+
+gulp.task('templates', function() {
+  return gulp.src('src/app/**/*.html')
+    .pipe(minifyHtml({
+      empty: true,
+      spare: true,
+      quotes: true,
+      conditionals: true
+    }))
+    .pipe(templateCache({
+      root: 'app/',
+      module: 'radar',
+      filename: 'templates.js'
+    }))
+    .pipe(gulp.dest('.tmp/templates'));
+});
+
+gulp.task('html', function() {
   var templates = gulp.src('.tmp/templates/*.js', {read: false});
 
   var assets = useref.assets();
@@ -111,22 +126,6 @@ gulp.task('html', ['inject', 'templates'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('templates', function() {
-  return gulp.src('src/app/**/*.html')
-    .pipe(minifyHtml({
-      empty: true,
-      spare: true,
-      quotes: true,
-      conditionals: true
-    }))
-    .pipe(templateCache({
-      root: 'app/',
-      module: 'radar',
-      filename: 'templates.js'
-    }))
-    .pipe(gulp.dest('.tmp/templates'));
-});
-
 gulp.task('fonts', function() {
   return gulp.src(common.FONTS_VENDOR)
     .pipe(flatten())
@@ -144,41 +143,46 @@ gulp.task('size', function() {
     .pipe(size({showFiles: true}));
 });
 
-// TODO watch:dist
-gulp.task('watch', ['build'], function(cb) {
-  function log(event) {
-    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+gulp.task('build', gulp.series(gulp.parallel('scripts', 'sass'), 'inject'));
+
+gulp.task('build:dist', gulp.series(
+  'clean',
+  gulp.parallel('scripts', 'sass', 'templates'),
+  'inject',
+  gulp.parallel('html', 'fonts', 'images'),
+  'size'
+));
+
+gulp.task('reload', function(done) {
+  browserSync.reload();
+  done();
+});
+
+gulp.task('watch', function() {
+  function watch(glob, opt, task) {
+    return gulp.watch(glob, opt, task)
+      .on('add', function(path) {
+        gutil.log(gutil.colors.green('Added ' + path));
+      })
+      .on('change', function(path) {
+        gutil.log(gutil.colors.yellow('Modified ' + path));
+      })
+      .on('unlink', function(path) {
+        gutil.log(gutil.colors.red('Deleted ' + path));
+      });
   }
 
-  gulp.watch('src/app/**/*.js', function(event) {
-    log(event);
+  watch('src/app/**/*.js', gulp.series('scripts'))
+    .on('add', gulp.series('inject'))
+    .on('unlink', gulp.series('inject'));
 
-    if (event.type === 'changed') {
-      return gulp.start('scripts');
-    } else {
-      return gulp.start('inject');
-    }
-  });
+  watch('src/sass/**/*.scss', gulp.series('sass'))
+    .on('add', gulp.series('inject'))
+    .on('unlink', gulp.series('inject'));
 
-  gulp.watch('src/sass/**/*.scss', function(event) {
-    log(event);
+  watch('src/index.html', gulp.series('inject'));
 
-    if (event.type === 'changed') {
-      return gulp.start('sass');
-    } else {
-      return gulp.start('inject');
-    }
-  });
-
-  gulp.watch('src/index.html', function(event) {
-    log(event);
-    return gulp.start('inject');
-  });
-
-  gulp.watch(['src/app/**/*.html', '!src/index.html'], function(event) {
-    log(event);
-    return browserSync.reload(event.path);
-  });
+  watch(['src/app/**/*.html', '!src/index.html'], gulp.series('reload'));
 });
 
 gulp.task('browser-sync', function() {
@@ -188,7 +192,7 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('express', function () {
+gulp.task('express', function() {
   var app = express();
 
   app.use(express.static('.tmp/serve'));
@@ -202,7 +206,7 @@ gulp.task('express', function () {
   app.listen(8082);
 });
 
-gulp.task('express:dist', function () {
+gulp.task('express:dist', function() {
   var app = express();
 
   app.use(express.static('dist'));
@@ -248,25 +252,8 @@ gulp.task('sauce-labs', function(cb) {
   }, cb).start();
 });
 
-gulp.task('build', function(cb) {
-  runSequence('inject', cb);
-});
+gulp.task('serve', gulp.series('build', gulp.parallel('watch', 'browser-sync', 'express')));
 
-gulp.task('build:dist', function(cb) {
-  runSequence(
-    'clean',
-    ['html', 'fonts', 'images'],
-    'size',
-    cb
-  );
-});
+gulp.task('serve:dist', gulp.series('build:dist', 'express:dist'));
 
-gulp.task('serve', function(cb) {
-  runSequence('build', ['watch', 'browser-sync', 'express'], cb);
-});
-
-gulp.task('serve:dist', function(cb) {
-  runSequence('build:dist', 'express:dist', cb);
-});
-
-gulp.task('default', ['serve']);
+gulp.task('default', gulp.series('serve'));

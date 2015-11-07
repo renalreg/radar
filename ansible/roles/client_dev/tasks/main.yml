@@ -11,9 +11,11 @@
 - name: install npm packages
   npm: name={{ item }} global=yes
   with_items:
-    - gulp
     - bower
     - karma-cli
+
+- name: install gulp
+  npm: name=gulp version=gulpjs/gulp-cli#4.0 global=yes
 
 # XXX currently this results in "maximum call stack size exceeded"
 # A workaround is to install each package separately.
