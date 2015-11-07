@@ -26,7 +26,16 @@
 </head>
 
 <body>
-  <div not-live-warning></div>
+  <div not-live></div>
+
+  <!--[if lte IE 9]>
+    <div class="header-alert header-alert-warning" ng-if="!live">
+      <i class="fa fa-exclamation-circle"></i>
+      You are using an old version of Internet Explorer. RaDaR works best in modern
+      browsers such as <a href="http://www.google.com/chrome/">Google Chrome</a> or
+      <a href="https://www.mozilla.org/firefox/">Mozilla Firefox</a>.
+    </div>
+  <![endif]-->
 
   <div navbar>
     <div class="navbar navbar-static-top navbar-radar">
@@ -45,16 +54,6 @@
   <div ng-if="!ready" class="content">
     <div class="well"><strong>Loading <i class="fa fa-spinner"></i></strong></div>
   </div>
-
-  <!--[if lte IE 9]>
-    <div class="content">
-      <div class="alert alert-warning">
-        <strong>Warning!</strong> You are using an old version of Internet Explorer. RaDaR works best in modern
-        browsers such as <a href="http://www.google.com/chrome/">Google Chrome</a> or
-        <a href="https://www.mozilla.org/firefox/">Mozilla Firefox</a>.
-      </div>
-    </div>
-  <![endif]-->
 
   <div class="footer">
     <p>&copy; <a href="http://www.renalreg.org">UK Renal Registry</a>, <a href="http://www.renal.org">The Renal Association</a></p>
