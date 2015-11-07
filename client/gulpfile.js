@@ -153,10 +153,6 @@ gulp.task('watch', ['build'], function() {
     }
   });
 
-  gulp.watch('src/app/**/*.html', function(event) {
-    browserSync.reload(event.path);
-  });
-
   gulp.watch('src/sass/**/*.scss', function(event) {
     if (event.type === 'changed') {
       gulp.start('sass');
@@ -166,6 +162,10 @@ gulp.task('watch', ['build'], function() {
   });
 
   gulp.watch('src/index.html', ['inject']);
+
+  gulp.watch(['src/app/**/*.html', '!src/index.html'], function(event) {
+    browserSync.reload(event.path);
+  });
 });
 
 gulp.task('browser-sync', function() {
