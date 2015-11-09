@@ -54,6 +54,7 @@
       this.scope.editEnabled = angular.bind(this, this.editEnabled);
       this.scope.removeEnabled = angular.bind(this, this.removeEnabled);
       this.scope.saveEnabled = angular.bind(this, this.saveEnabled);
+      this.scope.cancelEnabled = angular.bind(this, this.cancelEnabled);
 
       this.scope.createPermission = angular.bind(this, this.createPermission);
       this.scope.editPermission = angular.bind(this, this.editPermission);
@@ -209,6 +210,10 @@
     };
 
     ModelListDetailController.prototype.saveEnabled = function() {
+      return !this.scope.saving;
+    };
+
+    ModelListDetailController.prototype.cancelEnabled = function() {
       return !this.scope.saving;
     };
 
