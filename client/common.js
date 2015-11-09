@@ -22,7 +22,8 @@ var JS_VENDOR = [
   'bower_components/blueimp-md5/js/md5.js',
   'bower_components/highcharts/highcharts.js',
   'bower_components/angular-local-storage/dist/angular-local-storage.js',
-  'bower_components/tinymce/tinymce.js'
+  'bower_components/tinymce/tinymce.js',
+  'bower_components/zxcvbn/dist/zxcvbn.js'
 ];
 
 var JS_IE = [
