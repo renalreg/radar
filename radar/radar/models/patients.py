@@ -59,8 +59,6 @@ class Patient(db.Model, MetaModelMixin):
 
     @recruited_date.expression
     def recruited_date(cls):
-        patient_alias = aliased(Patient)
-
         return select([OrganisationPatient.recruited_date])\
             .select_from(join(OrganisationPatient, Organisation))\
             .where(OrganisationPatient.patient_id == cls.id)\
