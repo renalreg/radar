@@ -3,61 +3,61 @@
 
   var app = angular.module('radar.core');
 
-  function Session(authStore) {
-    this.authStore = authStore;
+  function sessionFactory(authStore, $rootScope) {
+    function Session() {
+      this.setUser(null);
+    }
 
-    this.user = null;
-    this.isAuthenticated = false;
+    Session.prototype.logout = function() {
+      authStore.logout();
+      this.setUser(null);
+    };
+
+    Session.prototype.login = function(user) {
+      authStore.setUserId(user.id);
+      this.setUser(user);
+    };
+
+    Session.prototype.getToken = function() {
+      return authStore.getToken();
+    };
+
+    Session.prototype.setToken = function(token) {
+      authStore.setToken(token);
+    };
+
+    Session.prototype.getUserId = function() {
+      return authStore.getUserId();
+    };
+
+    Session.prototype.setUserId = function(id) {
+      return authStore.setUserId(id);
+    };
+
+    Session.prototype.getUser = function() {
+      return this.user;
+    };
+
+    Session.prototype.setUser = function(user) {
+      this.user = user;
+      $rootScope.user = user;
+
+      var isAuthenticated = user !== null;
+      this.isAuthenticated = isAuthenticated;
+      $rootScope.isAuthenticated = isAuthenticated;
+    };
+
+    return new Session();
   }
 
-  Session.$inject = ['authStore'];
+  sessionFactory.$inject = ['authStore', '$rootScope'];
 
-  Session.prototype.logout = function() {
-    this.authStore.logout();
-    this.user = null;
-    this.isAuthenticated = false;
-  };
-
-  Session.prototype.getToken = function() {
-    return this.authStore.getToken();
-  };
-
-  Session.prototype.setToken = function(token) {
-    this.authStore.setToken(token);
-  };
-
-  Session.prototype.getUserId = function() {
-    return this.authStore.getUserId();
-  };
-
-  Session.prototype.getUser = function() {
-    return this.user;
-  };
-
-  Session.prototype.setUser = function(user) {
-    this.authStore.setUserId(user.id);
-    this.user = user;
-    this.isAuthenticated = true;
-  };
-
-  app.service('session', Session);
+  app.factory('session', sessionFactory);
 
   app.run(['$rootScope', 'logoutService', 'session', '$state', function($rootScope, logoutService, session, $state) {
     $rootScope.$on('unauthorized', function() {
       session.logout();
       $state.go('login');
-    });
-
-    $rootScope.$watch(function() {
-      return session.user;
-    }, function(user) {
-      $rootScope.user = user;
-    });
-
-    $rootScope.$watch(function() {
-      return session.isAuthenticated;
-    }, function(isAuthenticated) {
-      $rootScope.isAuthenticated = isAuthenticated;
     });
   }]);
 })();

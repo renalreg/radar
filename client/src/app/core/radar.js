@@ -13,7 +13,7 @@
 
       store.findOne('users', userId)
         .then(function(user) {
-          session.setUser(user);
+          session.login(user);
         })
         ['catch'](function() {
         session.logout();

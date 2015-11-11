@@ -5,7 +5,7 @@ import sys
 
 from flask import Flask
 
-from radar_api.auth import require_login
+from radar_api.auth import require_login, force_password_change
 from radar_api.views import cohort_patients
 from radar_api.views import consultants
 from radar_api.views import forgot_password
@@ -75,6 +75,8 @@ class RadarApi(Flask):
             self.logger.addHandler(stream_handler)
 
         self.before_request(require_login)
+        self.before_request(force_password_change)
+
         self.after_request(refresh_token)
 
         register_template_filters(self)

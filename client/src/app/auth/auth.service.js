@@ -31,7 +31,7 @@
 
           return store.findOne('users', userId)
             .then(function(user) {
-              session.setUser(user);
+              session.login(user);
               deferred.resolve(user);
             })
             ['catch'](function() {
@@ -62,4 +62,3 @@
     }
   }]);
 })();
-

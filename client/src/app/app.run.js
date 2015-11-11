@@ -25,7 +25,7 @@
     $rootScope.$on('$stateChangeStart', function(event, toState) {
       if (!isPublicState(toState)) {
         radar.readyPromise.then(function() {
-          if (session.getUserId() === null) {
+          if (!session.isAuthenticated) {
             event.preventDefault();
             $state.go('login');
           }
@@ -41,7 +41,7 @@
 
           if (user !== null && user.forcePasswordChange) {
             notificationService.info({
-              title: 'Attention!',
+              title: 'Attention',
               message: 'Please update your password.'
             });
             event.preventDefault();

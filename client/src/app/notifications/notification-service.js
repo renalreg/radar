@@ -45,7 +45,7 @@
       setDefaults(params, {
         title: 'Error',
         icon: 'fa-exclamation-circle',
-        type: 'error'
+        type: 'fail'
       });
       return _notify(params);
     }
@@ -79,8 +79,6 @@
           remove(this);
         }
       };
-
-      console.log(notification);
 
       if (notification.timeout > 0) {
         $timeout(function() {
