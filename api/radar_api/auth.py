@@ -20,4 +20,5 @@ def force_password_change():
         not current_app.is_public_endpoint(request.endpoint) and
         request.endpoint not in ['user_detail', 'logout']
     ):
+        # TODO include an error message
         abort(403)
