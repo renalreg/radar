@@ -7,6 +7,8 @@ from sqlalchemy.orm import relationship, aliased
 from radar.database import db
 from radar.models import MetaModelMixin, OrganisationPatient
 from radar.models.patient_demographics import PatientDemographics
+from radar.models.organisations import Organisation
+from radar.organisations import is_radar_organisation
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -46,6 +48,26 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def cohorts(self):
         return [x.cohort for x in self.cohort_patients]
+
+    @hybrid_property
+    def recruited_date(self):
+        for x in self.organisation_patients:
+            if is_radar_organisation(x.organisation):
+                return x.recruited_date
+
+        return None
+
+    @recruited_date.expression
+    def recruited_date(cls):
+        patient_alias = aliased(Patient)
+
+        return select([OrganisationPatient.recruited_date])\
+            .select_from(join(OrganisationPatient, Organisation))\
+            .where(OrganisationPatient.patient_id == cls.id)\
+            .where(Organisation.code == 'RADAR')\
+            .where(Organisation.type == 'OTHER')\
+            .limit(1)\
+            .as_scalar()
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
