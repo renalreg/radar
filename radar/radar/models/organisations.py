@@ -43,6 +43,15 @@ class OrganisationPatient(db.Model, MetaModelMixin):
         UniqueConstraint('organisation_id', 'patient_id'),
     )
 
+    @hybrid_property
+    def recruited_date(self):
+        return self.created_date
+
+    @recruited_date.setter
+    def recruited_date(self, value):
+        self.created_date = value
+
+
 Index('organisation_patients_organisation_id_idx', OrganisationPatient.organisation_id)
 Index('organisation_patients_patient_id_idx', OrganisationPatient.patient_id)
 

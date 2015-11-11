@@ -24,6 +24,13 @@
         </span>
       </li>
 
+      <li class="info">
+        <span>
+          <span class="key">Recruited</span>
+          <span class="value">{{patient.recruitedDate | dateFormat | missing}}</span>
+        </span>
+      </li>
+
       <li ng-repeat="organisation in patient.getUnits()" ng-if="organisation.isActive" class="info">
         <span>
           <span class="key">Unit</span>

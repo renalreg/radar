@@ -20,6 +20,7 @@
               <th sort-helper="lastName">Last Name</th>
               <th sort-helper="dateOfBirth">DOB</th>
               <th sort-helper="gender">Gender</th>
+              <th sort-helper="recruitedDate">Date Recruited</th>
               <th>Cohorts</th>
               <th>Units</th>
             </tr>
@@ -49,6 +50,8 @@
               </td>
 
               <td>{{patient.gender.label}}</td>
+
+              <td>{{patient.recruitedDate | dateFormat | missing}}</td>
 
               <td>
                 <span ng-if="!patient.cohorts.length">-</span>

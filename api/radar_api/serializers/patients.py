@@ -6,7 +6,8 @@ from radar_api.serializers.organisations import OrganisationReferenceField
 from radar_api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar.patients import PatientProxy
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, BooleanField, IntegerField, DateField, ListField
+from radar.serializers.fields import StringField, BooleanField, IntegerField, \
+    DateField, ListField, DateTimeField
 from radar.serializers.models import ModelSerializer
 from radar.serializers.codes import CodedStringSerializer
 from radar.models import Patient, GENDERS
@@ -26,6 +27,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     recruited_by_organisation = OrganisationReferenceField(read_only=True)
     is_active = BooleanField()
     comments = StringField()
+    recruited_date = DateTimeField()
 
     class Meta(object):
         model_class = Patient

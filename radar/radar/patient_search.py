@@ -239,30 +239,30 @@ def sort_by_demographics_field(current_user, field, reverse, else_=None):
     return expression
 
 
-def sort_by_field(field, reverse):
+def sort_by_field(field, reverse=False):
     if reverse:
         field = desc(field)
 
     return field
 
 
-def sort_by_radar_id(reverse):
+def sort_by_radar_id(reverse=False):
     return sort_by_field(Patient.id, reverse)
 
 
-def sort_by_first_name(current_user, reverse):
+def sort_by_first_name(current_user, reverse=False):
     return sort_by_demographics_field(current_user, Patient.first_name, reverse)
 
 
-def sort_by_last_name(current_user, reverse):
+def sort_by_last_name(current_user, reverse=False):
     return sort_by_demographics_field(current_user, Patient.last_name, reverse)
 
 
-def sort_by_gender(reverse):
+def sort_by_gender(reverse=False):
     return sort_by_field(Patient.gender, reverse)
 
 
-def sort_by_date_of_birth(current_user, reverse):
+def sort_by_date_of_birth(current_user, reverse=False):
     date_of_birth_order = sort_by_demographics_field(current_user, Patient.date_of_birth, reverse)
 
     if current_user.is_admin:
@@ -277,7 +277,11 @@ def sort_by_date_of_birth(current_user, reverse):
         return [year_order, anonymised_order, date_of_birth_order]
 
 
-def sort_patients(user, sort_by, reverse):
+def sort_by_recruited_date(reverse=False):
+    return sort_by_field(Patient.recruited_date, reverse)
+
+
+def sort_patients(user, sort_by, reverse=False):
     if sort_by == 'first_name':
         clauses = [sort_by_first_name(user, reverse)]
     elif sort_by == 'last_name':
@@ -286,10 +290,12 @@ def sort_patients(user, sort_by, reverse):
         clauses = [sort_by_gender(reverse)]
     elif sort_by == 'date_of_birth':
         clauses = sort_by_date_of_birth(user, reverse)
+    elif sort_by == 'recruited_date':
+        clauses = [sort_by_recruited_date(reverse)]
     else:
         return [sort_by_radar_id(reverse)]
 
     # Decide ties using RaDaR ID
-    clauses.append(sort_by_radar_id(False))
+    clauses.append(sort_by_radar_id())
 
     return clauses
