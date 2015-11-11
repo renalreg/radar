@@ -17,6 +17,7 @@ def force_password_change():
         request.method != 'OPTIONS' and
         request.endpoint is not None and
         current_user.is_authenticated() and
+        current_user.force_password_change and
         not current_app.is_public_endpoint(request.endpoint) and
         request.endpoint not in ['user_detail', 'logout']
     ):
