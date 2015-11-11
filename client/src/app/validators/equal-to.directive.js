@@ -7,12 +7,12 @@
     return {
       restrict: 'A',
       require: 'ngModel',
-      scope: true,
+      scope: false,
       link: function(scope, element, attrs, ngModelCtrl) {
-        ngModelCtrl.$parsers.push(function(confirmPassword) {
-          var password = $parse(attrs.equalToValidator)(scope);
-          ngModelCtrl.$setValidity('equalTo', password === confirmPassword);
-          return confirmPassword;
+        ngModelCtrl.$parsers.push(function(thisValue) {
+          var otherValue = $parse(attrs.equalToValidator)(scope);
+          ngModelCtrl.$setValidity('equalTo', thisValue === otherValue);
+          return thisValue;
         });
       }
     };
