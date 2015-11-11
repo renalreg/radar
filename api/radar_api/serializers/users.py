@@ -17,7 +17,15 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
 
     class Meta(object):
         model_class = User
-        fields = ('id', 'is_admin', 'username', 'email', 'first_name', 'last_name')
+        fields = (
+            'id',
+            'is_admin',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'force_password_change'
+        )
 
 
 class UserListRequestSerializer(Serializer):

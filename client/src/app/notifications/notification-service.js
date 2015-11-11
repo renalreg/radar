@@ -9,43 +9,62 @@
     return {
       notifications: notifications,
       success: success,
-      error: error,
+      fail: fail,
+      info: info,
       remove: remove
     };
 
-    function success(params) {
-      if (!angular.isObject(params)) {
-        params = {message: params};
-      }
-
-      if (params.title === undefined) {
-        params.title = 'Success!';
-      }
-
-      params.type = 'success';
-
-      return _notify(params);
-    }
-
-    function error(params) {
+    function toParams(params) {
       if (angular.isArray(params) || !angular.isObject(params)) {
         params = {message: params};
       }
 
-      if (angular.isArray(params.message)) {
-        params.message = params.message.join(' ');
-      }
+      return params
+    }
 
-      if (params.title === undefined) {
-        params.title = 'Error!';
-      }
+    function setDefaults(params, defaults) {
+      _.each(defaults, function(value, key) {
+        if (params[key] === undefined) {
+          params[key] = value;
+        }
+      });
+    }
 
-      params.type = 'error';
+    function success(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Success',
+        icon: 'fa-check-circle',
+        type: 'success'
+      });
+      return _notify(params);
+    }
 
+    function fail(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Error',
+        icon: 'fa-exclamation-circle',
+        type: 'error'
+      });
+      return _notify(params);
+    }
+
+    function info(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Info',
+        icon: 'fa-info-circle',
+        type: 'info'
+      });
       return _notify(params);
     }
 
     function _notify(params) {
+      if (angular.isArray(params.message)) {
+        params.message = params.message.join(' ');
+      }
+
       if (params.timeout === undefined) {
         params.timeout = 5000; // 5 seconds
       }
@@ -54,11 +73,14 @@
         type: params.type,
         title: params.title,
         message: params.message,
+        icon: params.icon,
         timeout: params.timeout,
         remove: function() {
           remove(this);
         }
       };
+
+      console.log(notification);
 
       if (notification.timeout > 0) {
         $timeout(function() {

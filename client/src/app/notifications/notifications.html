@@ -2,6 +2,8 @@
   <div class="alert" ng-class="getClass(notification)">
     <button type="button" class="close" aria-label="Close" ng-click="notification.remove()"><span aria-hidden="true">&times;</span></button>
 
-    <strong>{{notification.title}}</strong> {{notification.message}}
+    <strong><span ng-if="notification.icon" class="fa" ng-class="notification.icon"></span> {{notification.title}}</strong>
+
+    {{notification.message}}
   </div>
 </div>

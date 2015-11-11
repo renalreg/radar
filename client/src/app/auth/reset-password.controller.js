@@ -27,7 +27,7 @@
           }
 
           if (errors.token) {
-            notificationService.error({message: errors.token, timeout: 30000});
+            notificationService.fail({message: errors.token, timeout: 30000});
             $state.go('forgotPassword');
           }
         });

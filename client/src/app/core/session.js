@@ -30,6 +30,10 @@
     return this.authStore.getUserId();
   };
 
+  Session.prototype.getUser = function() {
+    return this.user;
+  };
+
   Session.prototype.setUser = function(user) {
     this.authStore.setUserId(user.id);
     this.user = user;

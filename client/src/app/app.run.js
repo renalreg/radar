@@ -3,17 +3,27 @@
 
   var app = angular.module('radar');
 
-  app.run(['$rootScope', 'radar', 'getValueAtPath', 'session', '$state', function($rootScope, radar, getValueAtPath, session, $state) {
+  function run(
+    $rootScope,
+    radar,
+    getValueAtPath,
+    session,
+    $state,
+    notificationService
+  ) {
     $rootScope.$watch(function() {
       return radar.ready;
     }, function(ready) {
       $rootScope.ready = ready;
     });
 
-    $rootScope.$on('$stateChangeStart', function(event, toState) {
-      var publicState = getValueAtPath(toState, 'data.public');
+    function isPublicState(state) {
+      return getValueAtPath(state, 'data.public');
+    }
 
-      if (!publicState) {
+    // Users that haven't logged in can only view public pages
+    $rootScope.$on('$stateChangeStart', function(event, toState) {
+      if (!isPublicState(toState)) {
         radar.readyPromise.then(function() {
           if (session.getUserId() === null) {
             event.preventDefault();
@@ -22,5 +32,34 @@
         });
       }
     });
-  }]);
+
+    // Force the user to change their password
+    $rootScope.$on('$stateChangeStart', function(event, toState) {
+      if (!isPublicState(toState) && toState.name != 'changePassword') {
+        radar.readyPromise.then(function() {
+          var user = session.getUser();
+
+          if (user !== null && user.forcePasswordChange) {
+            notificationService.info({
+              title: 'Attention!',
+              message: 'Please update your password.'
+            });
+            event.preventDefault();
+            $state.go('changePassword');
+          }
+        });
+      }
+    });
+  }
+
+  run.$inject = [
+    '$rootScope',
+    'radar',
+    'getValueAtPath',
+    'session',
+    '$state',
+    'notificationService'
+  ];
+
+  app.run(run);
 })();
