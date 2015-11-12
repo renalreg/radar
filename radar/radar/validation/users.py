@@ -1,6 +1,6 @@
 from radar.auth.passwords import check_password_hash
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
-    pass_call
+    pass_call, pass_context
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional, email_address, not_empty
 
@@ -16,7 +16,6 @@ class PasswordHashField(Field):
         pass
 
 
-# TODO
 # TODO check username not already taken
 class UserValidation(MetaValidationMixin, Validation):
     id = Field()
@@ -27,6 +26,7 @@ class UserValidation(MetaValidationMixin, Validation):
     first_name = Field([optional()])
     last_name = Field([optional()])
     is_admin = Field([required()])
+    force_password_change = Field([required()])
 
     @pass_call
     @pass_new_obj
@@ -54,6 +54,30 @@ class UserValidation(MetaValidationMixin, Validation):
 
     @pass_context
     @pass_old_obj
+    @pass_new_obj
+    def validate_force_password_change(self, ctx, old_obj, new_obj, value):
+        current_user = ctx['user']
+
+        if not current_user.is_admin:
+            # New user
+            if old_obj.id is None:
+                if not force_password_change:
+                    raise ValidationError('New users must be forced to change their password.')
+            else:
+                # An ordinary user tried to force a password change
+                if not old_obj.force_password_change and new_obj.force_password_change:
+                    raise ValidationError('Only admins can force a password change.')
+                elif (
+                    old_obj.force_password_change and
+                    not new_obj.force_password_change and
+                    old_obj.password_hash == new_obj.password_hash
+                ):
+                    raise ValidationError('A password change is required.')
+
+        return value
+
+    @pass_context
+    @pass_old_obj
     def validate(self, ctx, old_obj, new_obj):
         password_required = False
 
@@ -70,6 +94,10 @@ class UserValidation(MetaValidationMixin, Validation):
             current_password = ctx.get('current_password')
 
             if current_password is None or not check_password_hash(current_password_hash, current_password):
+                # Incorrect password
                 raise ValidationError({'current_password': 'Incorrect password!'})
+            elif old_obj.force_password_change and new_obj.check_password(current_password):
+                # New password must be different to old password if force password change was set
+                raise ValidationError({'password': 'New password must be different to old password.'})
 
         return new_obj
