@@ -3,6 +3,8 @@
 
   var app = angular.module('radar.validators');
 
+  var DATE_REGEX = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/;
+
   app.directive('dateValidator', ['moment', function(moment) {
     return {
       restrict: 'A',
@@ -17,22 +19,26 @@
           var valid;
           var modelValue;
 
-          if (viewValue === '' || viewValue === undefined) {
+          if (viewValue === null || viewValue === undefined) {
             valid = true;
             modelValue = null;
-          } else if (viewValue && viewValue.length === 10) {
-            var date = moment(viewValue, 'DD/MM/YYYY');
+          } else {
+            modelValue = viewValue.trim();
 
-            if (date.isValid()) {
-              valid = true;
-              modelValue = date.format('YYYY-MM-DD');
+            if (DATE_REGEX.test(modelValue)) {
+              var date = moment(viewValue, 'DD/MM/YYYY');
+
+              if (date.isValid()) {
+                valid = true;
+                modelValue = date.format('YYYY-MM-DD');
+              } else {
+                valid = false;
+                modelValue = null;
+              }
             } else {
               valid = false;
               modelValue = null;
             }
-          } else {
-            valid = false;
-            modelValue = null;
           }
 
           ngModelCtrl.$setValidity('date', valid);
