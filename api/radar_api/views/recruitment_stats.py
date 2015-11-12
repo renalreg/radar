@@ -1,4 +1,5 @@
 from flask import request
+from radar.organisations import get_radar_organisation
 
 from radar_api.serializers.recruitment_stats import DataPointsSerializer, CohortRecruitmentRequestSerializer, \
     OrganisationRecruitmentRequestSerializer
@@ -43,7 +44,8 @@ class OrganisationRecruitmentStatsView(ApiView):
 class PatientRecruitmentStatsView(ApiView):
     @response_json(DataPointsSerializer)
     def get(self):
-        points = recruitment_by_month(Patient.created_date)
+        organisation = get_radar_organisation()
+        points = recruitment_by_month(OrganisationPatient.created_date, [OrganisationPatient.organisation == organisation])
         return {'points': points}
 
 

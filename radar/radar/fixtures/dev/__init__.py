@@ -515,6 +515,14 @@ def create_patients(n):
         create_patient_numbers(patient, radar_data_source)
         create_patient_addresses(patient, radar_data_source)
 
+        radar_patient = OrganisationPatient()
+        radar_patient.organisation = radar_organisation
+        radar_patient.patient = patient
+        radar_patient.is_active = True
+        radar_patient = validate(radar_patient)
+        radar_patient.created_date = random_date(patient.created_date, date.today())
+        db.session.add(radar_patient)
+
         for organisation in random.sample(organisations, random.randint(1, 3)):
             organisation_patient = OrganisationPatient()
             organisation_patient.organisation = organisation
