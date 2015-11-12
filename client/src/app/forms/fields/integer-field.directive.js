@@ -3,8 +3,6 @@
 
   var app = angular.module('radar.forms.fields');
 
-  // TODO validators
-
   app.directive('frmIntegerField', function() {
     return {
       restrict: 'A',
