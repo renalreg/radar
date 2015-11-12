@@ -8,7 +8,7 @@ from radar.serializers.models import ModelSerializer
 from radar.models import User
 
 
-class UserSerializer(MetaSerializerMixin, Serializer):
+class UserSerializer(MetaSerializerMixin, ModelSerializer):
     id = IntegerField()
     is_admin = BooleanField()
     username = StringField()
@@ -22,6 +22,18 @@ class UserSerializer(MetaSerializerMixin, Serializer):
 
     current_password = StringField(write_only=True)
     password = StringField(write_only=True)
+
+    class Meta:
+        model_class = User
+        fields = (
+            'id',
+            'is_admin',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'force_password_change',
+        )
 
 
 class UserListRequestSerializer(Serializer):
