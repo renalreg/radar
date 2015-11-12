@@ -20,7 +20,7 @@
         }, function(otherValue) {
           var thisValue = getThisValue();
           validate(thisValue, otherValue);
-        })
+        });
 
         function getThisValue() {
           return ngModelCtrl.$modelValue;
