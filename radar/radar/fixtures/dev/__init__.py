@@ -6,8 +6,8 @@ import pytz
 from sqlalchemy import func, desc
 
 from radar.fixtures import create_initial_data
-from radar.fixtures.dev_constants import MEDICATION_NAMES
-from radar.fixtures.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
+from radar.fixtures.dev.constants import MEDICATION_NAMES
+from radar.fixtures.dev.utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
     generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \

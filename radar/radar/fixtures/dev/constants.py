@@ -91,7 +91,6 @@ MEDICATION_NAMES = [
     'Aspirin',
 ]
 
-
 ADDRESS_LINE_1 = [
     '1 Church Road',
     '2 Station Road',
@@ -99,7 +98,6 @@ ADDRESS_LINE_1 = [
     '5 Fox Lane',
     '8 Concorde Lane'
 ]
-
 
 ADDRESS_LINE_2 = [
     'Redland',

@@ -10,7 +10,6 @@ UNITS = [
     ('RJ121', "Guy's"),
     ('RJZ', "King's College"),
     ('REE01', 'Southmead'),
-
 ]
 
 OTHER_ORGANISATIONS = [
