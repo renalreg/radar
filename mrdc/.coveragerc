@@ -1,0 +1,6 @@
+[run]
+branch = true
+omit = radar_mrdc/tests/*
+
+[html]
+directory = coverage
