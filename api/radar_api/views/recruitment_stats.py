@@ -3,7 +3,7 @@ from radar.organisations import get_radar_organisation
 
 from radar_api.serializers.recruitment_stats import DataPointsSerializer, CohortRecruitmentRequestSerializer, \
     OrganisationRecruitmentRequestSerializer
-from radar.models import CohortPatient, OrganisationPatient, Patient
+from radar.models import CohortPatient, OrganisationPatient
 from radar.recruitment_stats import recruitment_by_month
 from radar.validation.core import ValidationError
 from radar.views.core import response_json, ApiView
