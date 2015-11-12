@@ -24,9 +24,12 @@ class UserValidation(MetaValidationMixin, Validation):
     is_admin = Field([required()])
     force_password_change = Field([required()])
 
+    @pass_context
     @pass_new_obj
-    def validate_password(self, obj, password):
-        if not is_strong_password(password, obj):
+    def validate_password(self, ctx, obj, password):
+        allow_weak_passwords = ctx.get('allow_weak_passwords', False)
+
+        if not allow_weak_passwords and not is_strong_password(password, obj):
             raise ValidationError('Password is too weak.')
 
         return password
