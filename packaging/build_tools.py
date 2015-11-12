@@ -225,6 +225,6 @@ def get_client_src_path(root_path):
     return os.path.join(root_path, 'client')
 
 
-def get_commit_date():
+def get_git_commit_date():
     output = check_output(['git', 'log', '-n', '1', '--format=%cd', '--date=iso-strict'])
     return delorean.parse(output).datetime
