@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from radar.data.validation import validate
+from radar.fixtures.validation import validate
 from radar.database import db
 from radar.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec, RESULT_SPEC_TYPE_CODED_STRING, \
     RESULT_SPEC_TYPE_FLOAT

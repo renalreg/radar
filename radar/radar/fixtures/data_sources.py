@@ -1,4 +1,4 @@
-from radar.data.validation import validate
+from radar.fixtures.validation import validate
 from radar.data_sources import DATA_SOURCE_TYPE_RADAR
 from radar.database import db
 from radar.models import DataSource, ORGANISATION_TYPE_UNIT, Organisation, DATA_SOURCE_TYPE_PV

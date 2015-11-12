@@ -1,4 +1,4 @@
-from radar.data.validation import validate
+from radar.fixtures.validation import validate
 from radar.database import db
 from radar.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGroupSpec
 

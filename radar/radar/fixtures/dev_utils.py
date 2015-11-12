@@ -2,7 +2,7 @@ import difflib
 import random
 from datetime import date, timedelta
 
-from radar.data.dev_constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS_LINE_1, \
+from radar.fixtures.dev_constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS_LINE_1, \
     ADDRESS_LINE_3, ADDRESS_LINE_2, POSTCODES
 from radar.utils import is_date, date_to_datetime
 
