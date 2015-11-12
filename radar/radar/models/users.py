@@ -112,7 +112,6 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 Index('users_username_idx', func.lower(User.username))
 
 
-
 class AnonymousUser(object):
     @classmethod
     def is_authenticated(cls):
