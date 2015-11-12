@@ -19,7 +19,7 @@
         params = {message: params};
       }
 
-      return params
+      return params;
     }
 
     function setDefaults(params, defaults) {

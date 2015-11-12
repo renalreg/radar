@@ -35,7 +35,7 @@
 
     // Force the user to change their password
     $rootScope.$on('$stateChangeStart', function(event, toState) {
-      if (!isPublicState(toState) && toState.name != 'changePassword') {
+      if (!isPublicState(toState) && toState.name !== 'changePassword') {
         radar.readyPromise.then(function() {
           var user = session.getUser();
 
