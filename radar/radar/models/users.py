@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index
 
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -35,7 +35,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    _username = Column('username', String, nullable=False, unique=True)
+    _username = Column('username', String, nullable=False)
     password_hash = Column(String, nullable=False)
     _email = Column('email', String, nullable=False)
     first_name = Column(String)
@@ -107,6 +107,10 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     @classmethod
     def is_authenticated(cls):
         return True
+
+# Ensure usernames are unique
+Index('users_username_idx', func.lower(User.username))
+
 
 
 class AnonymousUser(object):
