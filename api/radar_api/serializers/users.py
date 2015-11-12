@@ -3,29 +3,25 @@ from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.organisation_users import OrganisationUserSerializer
 from radar_api.serializers.patients import OrganisationReferenceField, CohortReferenceField
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, IntegerField, ListField
+from radar.serializers.fields import StringField, IntegerField, ListField, BooleanField
 from radar.serializers.models import ModelSerializer
 from radar.models import User
 
 
-class UserSerializer(MetaSerializerMixin, ModelSerializer):
+class UserSerializer(MetaSerializerMixin, Serializer):
+    id = IntegerField()
+    is_admin = BooleanField()
+    username = StringField()
+    email = StringField()
+    first_name = StringField()
+    last_name = StringField()
+    force_password_change = BooleanField()
+
     organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users', read_only=True)
     cohorts = ListField(field=CohortUserSerializer(), source='cohort_users', read_only=True)
 
     current_password = StringField(write_only=True)
     password = StringField(write_only=True)
-
-    class Meta(object):
-        model_class = User
-        fields = (
-            'id',
-            'is_admin',
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'force_password_change'
-        )
 
 
 class UserListRequestSerializer(Serializer):
