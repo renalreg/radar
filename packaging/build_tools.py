@@ -8,6 +8,7 @@ import os
 import tox.config
 import tox.session
 import virtualenv_tools
+import delorean
 
 PURPLE = '\033[95m'
 CYAN = '\033[96m'
@@ -222,3 +223,8 @@ def get_radar_src_path(root_path):
 
 def get_client_src_path(root_path):
     return os.path.join(root_path, 'client')
+
+
+def get_commit_date():
+    output = check_output(['git', 'log', '-n', '1', '--format=%cd', '--date=iso-strict'])
+    return delorean.parse(output).datetime
