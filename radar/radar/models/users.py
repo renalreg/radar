@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from radar.auth.passwords import check_password_hash, generate_password_hash
 from radar.database import db
@@ -34,9 +35,9 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, nullable=False, unique=True)
+    _username = Column('username', String, nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    _email = Column('email', String, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
     is_admin = Column(Boolean, default=False, nullable=False)
@@ -54,6 +55,28 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
         self._password = None
+
+    @hybrid_property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, username):
+        if username is not None:
+            username = username.lower()
+
+        self._username = username
+
+    @hybrid_property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, email):
+        if email is not None:
+            email = email.lower()
+
+        self._email = email
 
     @property
     def organisations(self):
