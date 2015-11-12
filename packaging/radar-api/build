@@ -15,6 +15,7 @@ from build_tools import get_python, Virtualenv, run_tox, info, heading, success,
 NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
 URL = 'http://www.radar.nhs.uk/'
+RELEASE = 1
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
