@@ -22,6 +22,9 @@ class DisorderListView(ListModelView):
     serializer_class = DisorderSerializer
     model_class = Disorder
 
+    def sort_query(self, query):
+        return query.order_by(Disorder.label)
+
 
 def register_views(app):
     app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
