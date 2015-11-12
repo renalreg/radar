@@ -14,6 +14,7 @@
     'radar.filters',
     'radar.forms',
     'radar.home',
+    'radar.logs',
     'radar.notifications',
     'radar.organisations',
     'radar.patients',
