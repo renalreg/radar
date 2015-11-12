@@ -233,6 +233,16 @@ COHORTS = [
         'result_group_codes': [],
     },
     {
+        'code': 'NEPHROS',
+        'name': 'Nephrotic Syndrome',
+        'short_name': 'NephroS',
+        'features': [
+            'DEMOGRAPHICS',
+            'RESULTS',
+        ],
+        'result_group_codes': [],
+    },
+    {
         'code': 'OBS',
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
