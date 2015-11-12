@@ -1,6 +1,6 @@
 from radar.auth.passwords import check_password_hash
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
-    pass_call, pass_context
+    pass_call
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional, email_address, not_empty
 
@@ -61,7 +61,7 @@ class UserValidation(MetaValidationMixin, Validation):
         if not current_user.is_admin:
             # New user
             if old_obj.id is None:
-                if not force_password_change:
+                if not new_obj.force_password_change:
                     raise ValidationError('New users must be forced to change their password.')
             else:
                 # An ordinary user tried to force a password change
