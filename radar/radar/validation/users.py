@@ -1,4 +1,4 @@
-from radar.auth.passwords import check_password_hash
+from radar.auth.passwords import check_password_hash, is_strong_password
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
     pass_call
 from radar.validation.meta import MetaValidationMixin
@@ -7,13 +7,9 @@ from radar.validation.validators import required, optional, email_address, not_e
 
 class PasswordField(Field):
     def set_value(self, obj, value):
+        # Password is optional but we don't want to overwrite it with None
         if value is not None:
             super(PasswordField, self).set_value(obj, value)
-
-
-class PasswordHashField(Field):
-    def set_value(self, obj, value):
-        pass
 
 
 # TODO check username not already taken
@@ -21,12 +17,19 @@ class UserValidation(MetaValidationMixin, Validation):
     id = Field()
     username = Field([required()])
     password = PasswordField([optional()])
-    password_hash = PasswordHashField([optional()])
+    password_hash = Field([optional()])
     email = Field([optional(), email_address()])
     first_name = Field([optional()])
     last_name = Field([optional()])
     is_admin = Field([required()])
     force_password_change = Field([required()])
+
+    @pass_new_obj
+    def validate_password(self, obj, password):
+        if not is_strong_password(password, obj):
+            raise ValidationError('Password is too weak.')
+
+        return password
 
     @pass_call
     @pass_new_obj
