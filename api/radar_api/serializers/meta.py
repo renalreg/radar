@@ -1,13 +1,25 @@
+from radar.models import User
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, IntegerField
+from radar.serializers.models import ModelSerializer
 
 
-class BasicUserSerializer(Serializer):
+class BasicUserSerializer(ModelSerializer):
     id = IntegerField()
     username = StringField()
     email = StringField()
     first_name = StringField()
     last_name = StringField()
+
+    class Meta:
+        model_class = User
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name'
+        )
 
 
 class CreatedUserMixin(object):
