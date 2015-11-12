@@ -22,6 +22,9 @@ class DialysisTypeListView(ListModelView):
     serializer_class = DialysisTypeSerializer
     model_class = DialysisType
 
+    def sort_query(self, query):
+        return query.order_by(DialysisType.label)
+
 
 def register_views(app):
     app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
