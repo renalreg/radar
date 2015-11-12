@@ -5,14 +5,14 @@ from jinja2.utils import generate_lorem_ipsum
 import pytz
 from sqlalchemy import func, desc
 
-from radar.data import create_initial_data
-from radar.data.dev_constants import MEDICATION_NAMES
-from radar.data.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
+from radar.fixtures import create_initial_data
+from radar.fixtures.dev_constants import MEDICATION_NAMES
+from radar.fixtures.dev_utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
     generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \
     generate_postcode
-from radar.data.validation import validate
+from radar.fixtures.validation import validate
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
@@ -48,7 +48,7 @@ def create_users(n):
         user.email = '%s@example.org' % username
         user.password = PASSWORD
         user.is_admin = True
-        user = validate(user)
+        user = validate(user, {'allow_weak_passwords': True})
         db.session.add(user)
 
 
@@ -58,7 +58,7 @@ def create_admin_user():
     admin.email = 'admin@example.org'
     admin.is_admin = True
     admin.password = PASSWORD
-    admin = validate(admin)
+    admin = validate(admin, {'allow_weak_passwords': True})
     db.session.add(admin)
 
 
@@ -82,7 +82,7 @@ def create_southmead_user():
     user.email = 'southmead_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user)
+    user = validate(user, {'allow_weak_passwords': True})
     db.session.add(user)
 
     organisation_user = OrganisationUser()
@@ -100,14 +100,13 @@ def create_srns_user():
     user.email = 'srns_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user)
+    user = validate(user, {'allow_weak_passwords': True})
     db.session.add(user)
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_RESEARCHER
-
     cohort_user = validate(cohort_user)
     db.session.add(cohort_user)
 
@@ -118,14 +117,13 @@ def create_srns_demograhics_user():
     user.email = 'srns_demographics_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user)
+    user = validate(user, {'allow_weak_passwords': True})
     db.session.add(user)
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_SENIOR_RESEARCHER
-
     cohort_user = validate(cohort_user)
     db.session.add(cohort_user)
 

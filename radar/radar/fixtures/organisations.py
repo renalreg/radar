@@ -1,4 +1,4 @@
-from radar.data.validation import validate
+from radar.fixtures.validation import validate
 from radar.database import db
 from radar.models import Organisation, ORGANISATION_CODE_RADAR, ORGANISATION_TYPE_OTHER, ORGANISATION_TYPE_UNIT, \
     ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_UKRR, ORGANISATION_CODE_HANDC, \

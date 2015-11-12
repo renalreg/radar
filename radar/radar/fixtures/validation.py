@@ -63,15 +63,21 @@ VALIDATIONS = {
 }
 
 
-def validate(obj):
+def validate(obj, ctx=None):
     model_class = obj.__class__
     validation_class = VALIDATIONS[model_class]
-    return validation_runner(model_class, validation_class, obj)
+    return validation_runner(model_class, validation_class, obj, ctx)
 
 
-def validation_runner(model_class, validation_class, obj):
+def validation_runner(model_class, validation_class, obj, ctx=None):
+    if ctx is None:
+        ctx = {}
+
     validation = validation_class()
-    ctx = {'user': User.query.filter(User.username == 'bot').one()}
+
+    if ctx.get('user') is None:
+        ctx['user'] = User.query.filter(User.username == 'bot').one()
+
     validation.before_update(ctx, model_class())
     old_obj = validation.clone(obj)
     obj = validation.after_update(ctx, old_obj, obj)

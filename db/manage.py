@@ -4,7 +4,7 @@ import click
 
 from radar.app import create_app
 from radar.database import db
-from radar.data import dev, create_initial_data
+from radar.fixtures import dev, create_initial_data
 
 
 def app_context(f):
