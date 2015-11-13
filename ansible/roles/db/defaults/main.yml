@@ -1,2 +1,2 @@
 ---
-postgresql_shared_buffers: '128MB'
+postgresql_shared_buffers: 128MB
