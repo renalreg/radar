@@ -1,5 +1,7 @@
 ---
-- hosts: staging, production
+- hosts:
+    - staging
+    - production
   roles:
     - repo
 
