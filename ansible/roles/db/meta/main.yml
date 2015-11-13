@@ -1,3 +1,4 @@
 ---
 dependencies:
-  - { role: epel }
+  - { role: epel_repo }
+  - { role: postgresql_repo }
