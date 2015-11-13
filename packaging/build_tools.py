@@ -1,9 +1,13 @@
+from __future__ import print_function
+
 import json
-from subprocess import check_output, CalledProcessError
+from subprocess import check_output
 import subprocess
 import logging
 import shutil
 import os
+import select
+import sys
 
 import tox.config
 import tox.session
@@ -113,7 +117,14 @@ class Virtualenv(object):
         self.delete()
 
 
-def run_command(args, env=None, cwd=None):
+class ANY(object):
+    pass
+
+
+def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
+    if allowed_exit_codes is None:
+        allowed_exit_codes = [0]
+
     if cwd is None:
         cwd = os.getcwd()
 
@@ -126,12 +137,48 @@ def run_command(args, env=None, cwd=None):
         cwd=cwd,
     ))
 
-    p = subprocess.Popen(args, cwd=cwd, env=env, bufsize=1)
-    p.communicate()
+    p = subprocess.Popen(args, cwd=cwd, env=env, stdout=subprocess.PIPE,stderr=subprocess.PIPE, bufsize=1)
 
-    if p.returncode != 0:
+    poll = select.poll()
+    poll.register(p.stdout, select.POLLIN | select.POLLHUP)
+    poll.register(p.stderr, select.POLLIN | select.POLLHUP)
+    poll_count = 2
+
+    events = poll.poll()
+    output = []
+
+    while poll_count > 0 and len(events) > 0:
+        for event in events:
+            (f, event) = event
+
+            if event & select.POLLIN:
+                if f == p.stdout.fileno():
+                    line = p.stdout.readline()
+
+                    if len(line) > 0:
+                        output.append(line)
+                        print(line, end='')
+                elif f == f.stderr.fileno():
+                    line = p.stderr.readline()
+
+                    if len(line) > 0:
+                        print(line, end='', file=sys.stderr)
+
+            if event & select.POLLHUP:
+                poll_count -= 1
+                poll.unregister(f)
+
+        if poll_count > 0:
+            events = poll.poll()
+
+    exit_code = p.wait()
+    output = ''.join(output)
+
+    if allowed_exit_codes is not ANY and exit_code not in allowed_exit_codes:
         error('Command exited with code %d' % p.returncode)
         raise SystemExit(1)
+
+    return exit_code, output
 
 
 def get_python():
@@ -150,12 +197,13 @@ def run_tox(args=None):
 
 
 class Package(object):
-    def __init__(self, name, version, architecture, url):
+    def __init__(self, name, version, release, architecture, url):
         self.name = name
         self.version = version
         self.architecture = architecture
         self.before_install_script = None
         self.url = url
+        self.release = release
         self.dependencies = []
         self.paths = []
         self.config_files = []
@@ -170,7 +218,7 @@ class Package(object):
         self.config_files.append(path)
 
     def build(self):
-        rpm_path = '%s-%s.%s.rpm' % (self.name, self.version, self.architecture)
+        rpm_path = '%s-%s-%s.%s.rpm' % (self.name, self.version, self.release, self.architecture)
 
         args = [
             'fpm',
