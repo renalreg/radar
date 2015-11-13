@@ -67,6 +67,7 @@ def package_api(v, root_path):
 
     package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
     package.add_dependency('python')
+    package.add_dependency('postgresql94-libs')
 
     paths = [
         (v.path + '/', install_path, False),
