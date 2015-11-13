@@ -1,4 +1,7 @@
 ---
+- name: install postgresql94-libs
+  yum: name=postgresql94-libs state=present
+
 - name: create the config directory
   file: path={{ api_dev_config_path }} state=directory
 

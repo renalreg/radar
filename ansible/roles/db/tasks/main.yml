@@ -1,7 +1,4 @@
 ---
-- name: install the postgresql repo
-  yum: name=http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution|lower }}94-9.4-1.noarch.rpm state=present
-
 - name: install postgresql
   yum: name={{ item }} state=present
   with_items:
@@ -46,9 +43,3 @@
   postgresql_user: db=radar name=radar password={{ db_password }}
   become: yes
   become_user: postgres
-
-- name: set the password for the postgres postgresql user (vagrant)
-  postgresql_user: name=postgres password=vagrant
-  become: yes
-  become_user: postgres
-  when: "'vagrant' in group_names"
