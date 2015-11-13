@@ -1,0 +1,6 @@
+---
+repo_url: TODO
+postgresql_shared_buffers: 2GB
+postgresql_radar_password: '{{ vault_postgresql_radar_password }}'
+db_host: db.staging.radar.nhs.uk
+web_base_url: https://nww.staging.radar.nhs.uk

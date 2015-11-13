@@ -1,6 +1,6 @@
 ---
-- name: install {{ api_name }}
-  yum: name={{ api_name }} state=latest
+- name: install radar-api
+  yum: name=radar-api state=latest
 
 - name: create settings.py
   template: src=settings.py dest={{ api_settings_path }} owner=root group=root mode=0644
@@ -8,17 +8,17 @@
     - restart api
 
 - name: create uwsgi.ini
-  template: src=uwsgi.ini dest={{ api_wsgi_path }} owner=root group=root mode=0644
+  template: src=uwsgi.ini dest={{ api_uwsgi_path }} owner=root group=root mode=0644
   notify:
     - restart api
 
 - name: create secret key
-  shell: dd if=/dev/urandom bs=1 count=32 | base64 > {{ api_dev_secret_key_path }}
+  shell: dd if=/dev/urandom bs=1 count=32 | base64 > {{ api_secret_key_path }}
   args:
     creates: "{{ api_secret_key_path }}"
 
 - name: set permissions on secret key
   file: path={{ api_secret_key_path }} state=file owner=root group=radar mode=640
 
-- name: start and enable {{ api_name }}
-  service: name={{ api_name }} state=started enabled=yes
+- name: start and enable radar-api
+  service: name=radar-api state=started enabled=yes

@@ -1,0 +1,4 @@
+---
+db_hostname: localhost
+db_password: password
+web_base_url: http://localhost
