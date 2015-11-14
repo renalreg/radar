@@ -5,6 +5,7 @@ from urlparse import urlparse
 import pytz
 import sqlalchemy
 import zxcvbn
+import bleach
 
 from radar.constants import HUMAN_DATE_FORMAT
 from radar.safe_strftime import safe_strftime
@@ -375,3 +376,18 @@ def no_trailing_slash():
         return value
 
     return no_trailing_slash_f
+
+
+def sanitize_html():
+    def sanitize_html_f(value):
+        value = bleach.clean(
+            value,
+            tags=['a', 'br', 'em', 'li', 'ol', 'p', 'strong', 'ul'],
+            attributes={
+                'a': ['href', 'target']
+            }
+        )
+
+        return value
+
+    return sanitize_html_f
