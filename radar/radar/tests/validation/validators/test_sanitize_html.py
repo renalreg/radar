@@ -1,5 +1,3 @@
-import pytest
-
 from radar.validation.validators import sanitize_html as _sanitize_html
 
 sanitize_html = _sanitize_html()
