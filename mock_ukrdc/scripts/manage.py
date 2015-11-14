@@ -1,6 +1,6 @@
 import click
 
-from radar_mrdc.app import create_app
+from radar_mock_ukrdc.app import create_app
 
 @click.group()
 def cli():
