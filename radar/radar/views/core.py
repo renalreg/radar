@@ -19,7 +19,7 @@ class ApiView(MethodView):
         try:
             return super(ApiView, self).dispatch_request(*args, **kwargs)
         except BadRequest:
-            abort(401)
+            abort(400)
         except PermissionDenied:
             abort(403)
         except NotFound:
