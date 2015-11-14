@@ -9,5 +9,5 @@ class Post(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
-    body = Column(Text, nullable=False)
     published_date = Column(DateTime(timezone=True), nullable=False)
+    body = Column(Text, nullable=False)
