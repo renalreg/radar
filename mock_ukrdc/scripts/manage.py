@@ -9,7 +9,7 @@ def cli():
 
 @cli.command('runserver')
 @click.option('--host', default='0.0.0.0')
-@click.option('--port', default=5100)
+@click.option('--port', default=5101)
 def runserver(host, port):
     app.run(host=host, port=port)
 
