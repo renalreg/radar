@@ -1,0 +1,25 @@
+<div crud>
+  <form class="form-container" crud-submit="save()" frm-layout="vertical" novalidate>
+    <div frm-field frm-group>
+      <div frm-label>Title</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.title" required="true"></div>
+        <div frm-errors errors="item.errors.title"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Body</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.body" required="true"></div>
+        <div frm-errors errors="item.errors.body"></div>
+      </div>
+    </div>
+
+    <div frm-buttons>
+      <span crud-save-button></span>
+    </div>
+  </form>
+</div>

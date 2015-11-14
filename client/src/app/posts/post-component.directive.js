@@ -18,6 +18,16 @@
     PostController.$inject = ['$scope'];
     PostController.prototype = Object.create(ModelEditController.prototype);
 
+    PostController.prototype.save = function() {
+      var self = this;
+
+      return ModelEditController.prototype.save.call(self).then(function(post) {
+        // Update the post to the post we just saved, this is only needed when
+        // saving a new post
+        self.scope.post = post;
+      });
+    };
+
     return PostController;
   }]);
 

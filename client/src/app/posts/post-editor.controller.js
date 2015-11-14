@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.posts');
 
-  app.controller('PostDetailControler', ['$scope', 'post', '$sce', function($scope, post, $sce) {
+  app.controller('PostEditorControler', ['$scope', 'post', '$sce', function($scope, post, $sce) {
     $scope.post = post;
 
     $scope.$watch('post.body', function(body) {
