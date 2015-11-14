@@ -58,7 +58,6 @@ class RadarApi(Flask):
 
         self.public_endpoints = []
 
-        self.config.from_object('radar.default_settings')
         self.config.from_object('radar_api.default_settings')
         self.config.from_envvar('RADAR_SETTINGS')
 
