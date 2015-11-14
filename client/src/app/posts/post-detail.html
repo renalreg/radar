@@ -1,6 +1,6 @@
 <div page-wrapper>
   <div class="post">
-    <h1 class="page-header">{{post.title}} <small>{{post.publishedDate | dateFormat}}</small></h1>
+    <h1 class="page-header"><a ui-sref="post({postId: post.id})">{{post.title}}</a> <small>{{post.publishedDate | dateFormat}}</small></h1>
 
     <div ng-bind-html="post.html"></div>
   </div>
