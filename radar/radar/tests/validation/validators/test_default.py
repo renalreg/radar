@@ -7,3 +7,7 @@ def test_none():
 
 def test_not_none():
     assert default('Hello')('World') == 'World'
+
+
+def test_function():
+    assert default(lambda: 'Hello')(None) == 'Hello'

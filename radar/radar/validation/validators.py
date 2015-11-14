@@ -393,11 +393,22 @@ def sanitize_html():
     return sanitize_html_f
 
 
+def call_me_maybe(x):
+    try:
+        return x()
+    except TypeError:
+        return x
+
+
 def default(default_value):
     def default_f(value):
         if value is None:
-            value = default_value
+            value = call_me_maybe(default_value)
 
         return value
 
     return default_f
+
+
+def default_now():
+    return default(lambda: datetime.now(tz=pytz.UTC))
