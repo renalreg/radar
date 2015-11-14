@@ -2,6 +2,7 @@ from flask import Flask
 
 from radar_mock_ukrdc.views import PatientSearchView
 
+
 def create_app():
     app = Flask(__name__)
 
