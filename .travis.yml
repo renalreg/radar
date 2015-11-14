@@ -13,6 +13,7 @@ script:
 - ( cd client && gulp coverage )
 - ( cd radar && tox )
 - ( cd api && tox )
+- ( cd mock_ukrdc && tox )
 - ( cd client && gulp sauce-labs || true )
 after_success:
 - coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json
