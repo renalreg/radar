@@ -2,7 +2,7 @@ from radar_api.serializers.posts import PostSerializer
 from radar.validation.posts import PostValidation
 from radar.views.core import ListModelView, CreateModelView, RetrieveModelView, \
     UpdateModelView, DestroyModelView
-
+from radar.permissions import AdminPermission
 from radar.models import Post
 
 
@@ -15,6 +15,7 @@ class PostListView(ListModelView):
 class PostCreateView(CreateModelView):
     serializer_class = PostSerializer
     validation_class = PostValidation
+    permission_classes = [AdminPermission]
 
 
 class PostRetrieveView(RetrieveModelView):
@@ -26,10 +27,12 @@ class PostUpdateView(UpdateModelView):
     serializer_class = PostSerializer
     model_class = Post
     validation_class = PostValidation
+    permission_classes = [AdminPermission]
 
 
 class PostDestroyView(DestroyModelView):
     model_class = Post
+    permission_classes = [AdminPermission]
 
 
 def register_views(app):
