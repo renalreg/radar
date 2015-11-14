@@ -1,5 +1,7 @@
 <div page-wrapper>
-  <h1 class="page-header">{{post.title}} <small>{{post.publishedDate | dateFormat}}</small></h1>
+  <div class="post">
+    <h1 class="page-header">{{post.title}} <small>{{post.publishedDate | dateFormat}}</small></h1>
 
-  <div ng-bind-html="post.html"></div>
+    <div ng-bind-html="post.html"></div>
+  </div>
 </div>
