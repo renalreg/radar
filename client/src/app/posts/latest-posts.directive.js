@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients');
 
-  app.factory('LatestPostsController', ['ListController', '$injector', 'store', function(ListController, $injector, store) {
+  app.factory('LatestPostsController', ['ListController', '$injector', 'store', '$sce', function(ListController, $injector, store, $sce) {
     function LatestPostsController($scope) {
       var self = this;
 
