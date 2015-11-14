@@ -2,8 +2,8 @@
   <h1 class="page-header">News</h1>
 
   <div ng-repeat="post in posts">
-    <h2>{{post.title}} <small>{{post.publishedDate | dateFormat}}</small></h2>
+    <h2><a ui-sref="post({postId: post.id})">{{post.title}}</a> <small>{{post.publishedDate | dateFormat}}</small></h2>
 
-    <p class="newlines">{{post.body}}</p>
+    <div ng-bind-html="post.html"></div>
   </div>
 </div>

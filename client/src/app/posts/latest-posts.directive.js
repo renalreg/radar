@@ -9,7 +9,13 @@
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      self.load(store.findMany('posts', {sort: '-publishedDate', perPage: 1, page: 1}));
+      self.load(store.findMany('posts', {sort: '-publishedDate', perPage: 1, page: 1}).then(function(posts) {
+        _.each(posts, function(post) {
+          post.html = $sce.trustAsHtml(post.body);
+        });
+
+        return posts;
+      }));
     }
 
     LatestPostsController.$inject = ['$scope'];
@@ -27,4 +33,3 @@
     };
   }]);
 })();
-

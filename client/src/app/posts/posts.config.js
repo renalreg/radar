@@ -17,5 +17,20 @@
         public: true
       }
     });
+
+    $stateProvider.state('post', {
+      url: '/news/:postId',
+      templateUrl: 'app/posts/post-detail.html',
+      controller: 'PostDetailControler',
+      resolve: {
+        post: ['store', '$stateParams', function(store, $stateParams) {
+          console.log('Hello!');
+          return store.findOne('posts', $stateParams.postId);
+        }]
+      },
+      data: {
+        public: true
+      }
+    });
   }]);
 })();
