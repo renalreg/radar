@@ -388,6 +388,21 @@ class RetrieveUpdateModelView(RetrieveModelViewMixin, UpdateModelViewMixin, Mode
         return self.update(*args, **kwargs)
 
 
+class CreateModelView(CreateModelViewMixin, ModelView):
+    def post(self, *args, **kwargs):
+        return self.create(*args, **kwargs)
+
+
+class UpdateModelView(UpdateModelViewMixin, ModelView):
+    def put(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
+
+class DestroyModelView(DestroyModelViewMixin, ModelView):
+    def delete(self, *args, **kwargs):
+        return self.destroy(*args, **kwargs)
+
+
 def request_json(serializer_class, validation_class=None):
     def decorator(f):
         @wraps(f)
