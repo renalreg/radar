@@ -137,7 +137,7 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
         cwd=cwd,
     ))
 
-    p = subprocess.Popen(args, cwd=cwd, env=env, stdout=subprocess.PIPE,stderr=subprocess.PIPE, bufsize=1)
+    p = subprocess.Popen(args, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
 
     poll = select.poll()
     poll.register(p.stdout, select.POLLIN | select.POLLHUP)
@@ -175,7 +175,7 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     output = ''.join(output)
 
     if allowed_exit_codes is not ANY and exit_code not in allowed_exit_codes:
-        error('Command exited with code %d' % p.returncode)
+        error('Command exited with code %d' % exit_code)
         raise SystemExit(1)
 
     return exit_code, output
