@@ -9,7 +9,7 @@ if os.environ.get('USER', '') == 'vagrant':
     del os.link
 
 setup(
-    name='radar_api',
+    name='radar-api',
     version=radar_api.__version__,
     long_description=radar_api.__doc__,
     author='Rupert Bedford',

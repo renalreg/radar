@@ -9,7 +9,7 @@ if os.environ.get('USER', '') == 'vagrant':
     del os.link
 
 setup(
-    name='radar_mock_ukrdc',
+    name='radar-mock-ukrdc',
     version=radar_mock_ukrdc.__version__,
     long_description=radar_mock_ukrdc.__doc__,
     author='Rupert Bedford',
