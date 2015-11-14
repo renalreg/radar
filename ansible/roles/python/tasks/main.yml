@@ -32,6 +32,11 @@
   environment:
     PATH: '/usr/pgsql-9.4/bin:/usr/local/bin:/usr/bin:/bin'
 
+- name: install radar dev dependencies
+  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/radar/dev-requirements.txt
+  become: yes
+  become_user: vagrant
+
 - name: install radar
   pip: virtualenv={{ virtualenv_path }} name={{ radar_src_path }} extra_args="--no-deps --editable"
   become: yes
