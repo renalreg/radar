@@ -11,29 +11,32 @@
 
     return {
       restrict: 'A',
-      require: 'ngModel',
-      link: function(scope, element, attrs, ngModel) {
+      require: ['ngModel', '?^form'],
+      link: function(scope, element, attrs, ctrls) {
+        var ngModelCtrl = ctrls[0];
+        var formCtrl = ctrls[1];
+
         var instance;
 
         var id = 'text-editor-' + nextId++;
         attrs.$set('id', id);
 
-        ngModel.$render = function() {
+        ngModelCtrl.$render = function() {
           var instance = getInstance();
 
           if (instance) {
-            var viewValue = ngModel.$viewValue;
+            var viewValue = ngModelCtrl.$viewValue;
             viewValue = viewValue ? $sce.getTrustedHtml(viewValue) : '';
             instance.setContent(viewValue);
             instance.fire('change');
           }
         };
 
-        ngModel.$formatters.unshift(function(modelValue) {
+        ngModelCtrl.$formatters.unshift(function(modelValue) {
           return modelValue ? $sce.trustAsHtml(modelValue) : '';
         });
 
-        ngModel.$parsers.unshift(function(viewValue) {
+        ngModelCtrl.$parsers.unshift(function(viewValue) {
           return viewValue ? $sce.getTrustedHtml(viewValue) : '';
         });
 
@@ -54,8 +57,14 @@
           plugins: ['link', 'code'],
           setup: function(editor) {
             editor.on('init', function() {
-              ngModel.$render();
-              ngModel.$setPristine();
+              ngModelCtrl.$render();
+              ngModelCtrl.$setPristine();
+
+              if (formCtrl) {
+                formCtrl.$setPristine();
+              }
+
+              scope.$apply();
             });
 
             editor.on('keyup', function() {
@@ -80,7 +89,7 @@
         function updateView(editor) {
           var content = editor.getContent().trim();
           content = $sce.trustAsHtml(content);
-          ngModel.$setViewValue(content);
+          ngModelCtrl.$setViewValue(content);
           scope.$apply();
         }
       }
