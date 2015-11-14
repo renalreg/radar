@@ -20,8 +20,8 @@
 
     $stateProvider.state('newPost', {
       url: '/news/new',
-      templateUrl: 'app/posts/post-editor.html',
-      controller: 'PostEditorControler',
+      templateUrl: 'app/posts/post-edit.html',
+      controller: 'PostEditControler',
       resolve: {
         post: ['store', function(store) {
           return store.create('posts');
@@ -45,8 +45,8 @@
 
     $stateProvider.state('editPost', {
       url: '/news/:postId/edit',
-      templateUrl: 'app/posts/post-editor.html',
-      controller: 'PostEditorControler',
+      templateUrl: 'app/posts/post-edit.html',
+      controller: 'PostEditControler',
       resolve: {
         post: ['store', '$stateParams', function(store, $stateParams) {
           return store.findOne('posts', $stateParams.postId);
