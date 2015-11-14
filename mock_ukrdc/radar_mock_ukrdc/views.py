@@ -1,6 +1,5 @@
 from radar.views.core import ApiView, request_json, response_json
-from radar_mock_ukrdc.serializers import PatientSearchSerializer, \
-    PatientResultSerializer, PatientResultListSerializer
+from radar_mock_ukrdc.serializers import PatientSearchSerializer, PatientResultListSerializer
 from radar_mock_ukrdc.validation import PatientSearchValidation
 
 
