@@ -391,3 +391,13 @@ def sanitize_html():
         return value
 
     return sanitize_html_f
+
+
+def default(default_value):
+    def default_f(value):
+        if value is None:
+            value = default_value
+
+        return value
+
+    return default_f
