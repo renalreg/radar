@@ -1,6 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.ui', []);
+  angular.module('radar.ui', ['tinymce']);
 })();
-
