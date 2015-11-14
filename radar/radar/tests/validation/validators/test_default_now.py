@@ -10,9 +10,9 @@ default_now = _default_now()
 NOW = datetime(2000, 1, 2, 3, 4, 5)
 
 
-@freeze_time("2000-01-01")
+@freeze_time("2000-01-02")
 def test_none():
-    assert default_now(None) == datetime(2000, 1, 1, tzinfo=pytz.UTC)
+    assert default_now(None) == datetime(2000, 1, 2, tzinfo=pytz.UTC)
 
 
 def test_not_none():
