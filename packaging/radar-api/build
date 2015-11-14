@@ -38,14 +38,14 @@ def install_api(v, root_path):
 
     heading('Install %s' % NAME)
 
-    info('Installing api dependencies ...')
+    info('Installing radar-api dependencies ...')
     requirements_path = os.path.join(api_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
     info('Installing radar ...')
     v.run(['setup.py', 'install'], cwd=radar_src_path)
 
-    info('Installing api ...')
+    info('Installing radar-api ...')
     v.run(['setup.py', 'install'], cwd=api_src_path)
 
 
