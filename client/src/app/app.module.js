@@ -20,6 +20,7 @@
     'radar.patients',
     'radar.permissions',
     'radar.posts',
+    'radar.recruitPatient',
     'radar.store',
     'radar.ui',
     'radar.units',

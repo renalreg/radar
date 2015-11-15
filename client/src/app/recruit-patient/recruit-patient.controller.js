@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients');
+  var app = angular.module('radar.recruitPatient');
 
   function RecruitPatientController(
     $scope,
