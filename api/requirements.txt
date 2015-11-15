@@ -10,6 +10,7 @@ MarkupSafe==0.23
 psycopg2==2.6
 python-dateutil==2.4.2
 pytz==2015.4
+radar
 six==1.10.0
 SQLAlchemy==1.0.8
 uWSGI==2.0.11.2
