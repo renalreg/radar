@@ -10,9 +10,9 @@ import click
 import os
 
 from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-  get_mock_ukrdc_src_path
+    get_api_src_path
 
-NAME = 'radar-mock-ukrdc'
+NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
 URL = 'http://www.radar.nhs.uk/'
 RELEASE = 1
@@ -32,25 +32,25 @@ PATH = ':'.join([
 ])
 
 
-def install_mock_ukrdc(v, root_path):
-    mock_ukrdc_src_path = get_mock_ukrdc_src_path(root_path)
+def install_api(v, root_path):
+    api_src_path = get_api_src_path(root_path)
     radar_src_path = get_radar_src_path(root_path)
 
     heading('Install %s' % NAME)
 
-    info('Installing radar-mock-ukrdc dependencies ...')
-    requirements_path = os.path.join(mock_ukrdc_src_path, 'requirements.txt')
+    info('Installing radar-api dependencies ...')
+    requirements_path = os.path.join(api_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
     info('Installing radar ...')
     v.run(['setup.py', 'install'], cwd=radar_src_path)
 
-    info('Installing radar-mock-ukrdc ...')
-    v.run(['setup.py', 'install'], cwd=mock_ukrdc_src_path)
+    info('Installing radar-api ...')
+    v.run(['setup.py', 'install'], cwd=api_src_path)
 
 
-def package_mock_ukrdc(v, root_path):
-    src_path = get_mock_ukrdc_src_path(root_path)
+def package_api(v, root_path):
+    src_path = get_api_src_path(root_path)
 
     version = v.run(['setup.py', '--version'], cwd=src_path)[1].strip()
     etc_path = '/etc/' + NAME
@@ -67,6 +67,7 @@ def package_mock_ukrdc(v, root_path):
 
     package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
     package.add_dependency('python')
+    package.add_dependency('postgresql94-libs')
 
     paths = [
         (v.path + '/', install_path, False),
@@ -87,13 +88,13 @@ def package_mock_ukrdc(v, root_path):
     success('Successfully built rpm at %s' % rpm_path)
 
 
-def test_mock_ukrdc(root_path):
+def test_api(root_path):
     radar_src_path = get_radar_src_path(root_path)
-    mock_ukrdc_src_path = get_mock_ukrdc_src_path(root_path)
+    api_src_path = get_api_src_path(root_path)
 
     heading('Test %s' % NAME)
     run_tox(['-c', os.path.join(radar_src_path, 'tox.ini')])
-    run_tox(['-c', os.path.join(mock_ukrdc_src_path, 'tox.ini')])
+    run_tox(['-c', os.path.join(api_src_path, 'tox.ini')])
 
 
 @click.command()
@@ -102,11 +103,11 @@ def main(enable_tests):
     root_path = os.path.abspath('../../')
 
     if enable_tests:
-        test_mock_ukrdc(root_path)
+        test_api(root_path)
 
     with Virtualenv(tempfile.mkdtemp()) as v:
-        install_mock_ukrdc(v, root_path)
-        package_mock_ukrdc(v, root_path)
+        install_api(v, root_path)
+        package_api(v, root_path)
 
 
 if __name__ == '__main__':
