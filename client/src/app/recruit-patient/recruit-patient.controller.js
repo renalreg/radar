@@ -25,7 +25,7 @@
           $scope.results = results;
           $scope.searchErrors = {};
 
-          if (results) {
+          if (results.length) {
             $state.go('recruitPatient.results');
           } else {
             $scope.patient = {
