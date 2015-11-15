@@ -84,30 +84,30 @@
 
     <table class="table table-condensed table-striped" ng-if="page.getCount()">
       <thead>
-      <tr>
-        <th></th>
-        <th sort-helper="transplantDate">Date</th>
-        <th sort-helper="transplantType.label">Type</th>
-        <th sort-helper="dataSource.getName()">Data Source</th>
-        <th></th>
-      </tr>
+        <tr>
+          <th></th>
+          <th sort-helper="transplantDate">Date</th>
+          <th sort-helper="transplantType.label">Type</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th></th>
+        </tr>
       </thead>
 
       <tbody>
-      <tr ng-repeat="item in page.getItems()">
-        <td>
-          <span crud-list-view-button item="item"></span>
-          <span crud-list-edit-button item="item"></span>
-        </td>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
 
-        <td>{{item.transplantDate | dateFormat}}</td>
-        <td>{{item.transplantType.label}}</td>
-        <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.transplantDate | dateFormat}}</td>
+          <td>{{item.transplantType.label}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
 
-        <td>
-          <span crud-list-remove-button item="item"></span>
-        </td>
-      </tr>
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
       </tbody>
     </table>
 
