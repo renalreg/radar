@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, Boolean, join, Text, ForeignKey
+from sqlalchemy import Column, Integer, select, Boolean, join, Text
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
@@ -8,7 +8,7 @@ from radar.database import db
 from radar.models import MetaModelMixin, OrganisationPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.organisations import Organisation
-from radar.organisations import is_radar_organisation
+from radar.cohorts import is_radar_cohort
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -48,8 +48,8 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def recruited_date(self):
-        for x in self.organisation_patients:
-            if is_radar_organisation(x.organisation):
+        for x in self.cohort_patients:
+            if is_radar_cohort(x.organisation):
                 return x.recruited_date
 
         return None
@@ -164,3 +164,9 @@ class Patient(db.Model, MetaModelMixin):
                 earliest_date_of_birth = date_of_birth
 
         return earliest_date_of_birth
+
+    def in_cohort(self, cohort):
+        return any(x == cohort for x in self.cohorts)
+
+    def in_organisation(self, organisation):
+        return any(x == organisation for x in self.organisations)
