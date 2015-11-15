@@ -29,6 +29,7 @@ setup(
         'psycopg2',
         'python-dateutil',
         'pytz',
+        'requests',
         'six',
         'SQLAlchemy',
         'Werkzeug',
