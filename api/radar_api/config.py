@@ -17,6 +17,7 @@ class ConfigSerializer(Serializer):
     SQLALCHEMY_DATABASE_URI = StringField()
     SESSION_TIMEOUT = IntegerField()
     BASE_URL = StringField()
+    UKRDC_PATIENT_SEARCH_URL = StringField()
 
 
 class ConfigValidation(Validation):
@@ -24,6 +25,7 @@ class ConfigValidation(Validation):
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
     SESSION_TIMEOUT = Field([optional(), min_(0)])
     BASE_URL = Field([required(), url(), no_trailing_slash()])
+    UKRDC_PATIENT_SEARCH_URL = Field([required(), url()])
 
 
 def check_config(config):
