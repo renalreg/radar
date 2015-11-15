@@ -37,7 +37,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     id = Column(Integer, primary_key=True)
     _username = Column('username', String, nullable=False)
     password_hash = Column(String, nullable=False)
-    _email = Column('email', String, nullable=False)
+    _email = Column('email', String)
     first_name = Column(String)
     last_name = Column(String)
     is_admin = Column(Boolean, default=False, nullable=False)
