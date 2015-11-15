@@ -155,8 +155,11 @@ def filter_by_date_of_death(date_of_death):
     return patient_demographics_sub_query(sql_date_filter(PatientDemographics.date_of_death, date_of_death))
 
 
-def filter_by_patient_number(number):
-    query = patient_number_sub_query(PatientNumber.number.like(number + '%'))
+def filter_by_patient_number(number, exact=False):
+    if exact:
+        query = patient_number_sub_query(PatientNumber.number.like(number + '%'))
+    else:
+        query = patient_number_sub_query(PatientNumber.number == number)
 
     # Also search RaDaR IDs
     query = or_(query, filter_by_patient_id(number))
