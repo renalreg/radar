@@ -18,7 +18,7 @@
     $scope.search = function() {
       $scope.loading = true;
 
-      adapter.post('/search')
+      adapter.post('/recruit-patient-search', {}, $scope.searchParams)
         .then(function(response) {
           var results = response.data.results;
 
@@ -26,7 +26,7 @@
           $scope.searchErrors = {};
 
           if (results) {
-            $state.go('recruit.results');
+            $state.go('recruitPatient.results');
           } else {
             $scope.patient = {
               firstName: $scope.searchParams.firstName,
@@ -34,12 +34,12 @@
               dateOfBirth: $scope.searchParams.dateOfBirth
             };
 
-            $state.go('recruit.consent');
+            $state.go('recruitPatient.consent');
           }
         })
         ['catch'](function(response) {
           if (response.status === 422) {
-            scope.searchErrors = response.data.errors || {};
+            $scope.searchErrors = response.data.errors || {};
           }
         })
         ['finally'](function() {
@@ -58,7 +58,7 @@
         chiNo: result.chiNo
       };
 
-      $state.go('recruit.consent');
+      $state.go('recruitPatient.consent');
     };
 
     $scope.patientNotFound = function() {
@@ -70,20 +70,20 @@
         chiNo: $scope.searchParams.chiNo
       };
 
-      $state.go('recruit.consent');
+      $state.go('recruitPatient.consent');
     };
 
     $scope.recruit = function() {
       $scope.loading = true;
 
-      adapter.post('/recruit', {}, $scope.patient)
+      adapter.post('/recruit-patient', {}, $scope.patient)
         .then(function(response) {
-          var patientId = response.data.patientId;
+          var patientId = response.data.id;
           $state.go('patient.demographics', {patientId: patientId});
         })
         ['catch'](function(response) {
           if (response.status === 422) {
-            scope.recruitErrors = response.data.errors || {};
+            $scope.recruitErrors = response.data.errors || {};
           }
         })
         ['finally'](function() {
@@ -92,11 +92,11 @@
     };
 
     $scope.backToSearch = function() {
-      $state.go('recruit.search');
+      $state.go('recruitPatient.search');
     };
 
     $scope.backToResults = function() {
-      $state.go('recruit.results');
+      $state.go('recruitPatient.results');
     };
   }
 
