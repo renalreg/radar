@@ -104,6 +104,10 @@
     };
 
     ModelDetailController.prototype.edit = function(item) {
+      if (item === undefined) {
+        item = this.scope.item;
+      }
+
       var ok = !this.scope.editing ||
         !this.scope.item.isDirty() ||
         this.discardChanges();
