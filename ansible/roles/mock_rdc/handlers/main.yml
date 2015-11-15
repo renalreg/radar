@@ -1,0 +1,3 @@
+---
+- name: restart radar-mock-ukrdc
+  service: name=radar-mock-ukrdc state=restarted

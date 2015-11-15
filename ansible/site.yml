@@ -9,6 +9,7 @@
   become: yes
   roles:
     - web
+    - mock_ukrdc
 
 - hosts: db
   become: yes
@@ -24,6 +25,5 @@
     client_src_path: '{{ src_path }}/client'
     virtualenv_path: /home/vagrant/venv
   roles:
-    - dev
     - db_dev
     - web_dev

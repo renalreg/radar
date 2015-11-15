@@ -1,5 +1,6 @@
 ---
 dependencies:
+  - { role: dev }
   - { role: nginx }
   - { role: client_dev }
   - { role: api_dev }
