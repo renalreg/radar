@@ -1,5 +1,5 @@
 from radar.validation.core import Validation, Field, pass_call
-from radar.validation.validators import optional, required, not_empty, not_in_future, in_, none_if_blank
+from radar.validation.validators import optional, required, not_in_future, in_, none_if_blank
 from radar.validation.patient_number_validators import nhs_no, ukrdc_no, chi_no
 from radar.models.patients import GENDERS
 
