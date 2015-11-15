@@ -14,7 +14,7 @@ install:
   - gem install coveralls-lcov
 before_script:
   - psql -U postgres -c 'create database radar_test;'
-  - psql -U postgres -d radar_test -c 'create extension uuid-ossp;'
+  - psql -U postgres -d radar_test -c 'create extension "uuid-ossp";'
 script:
   - ( cd client && gulp lint )
   - ( cd client && gulp coverage )
