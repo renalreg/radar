@@ -11,7 +11,7 @@ from radar.database import db
 def app():
     return create_app({
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'postgres://localhost:5432/radar_test',
+        'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
         'SECRET_KEY': ''.join(random.sample(string.printable, 32)),
         'BASE_URL': 'http://localhost'
     })
