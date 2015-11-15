@@ -31,7 +31,7 @@ class Patient(db.Model, MetaModelMixin):
     is_active = Column(Boolean, nullable=False, default=True)
     comments = Column(Text)
 
-    organisation_patients = relationship('OrganisationPatient', foreign_keys=[OrganisationPatient.patient_id])
+    organisation_patients = relationship('OrganisationPatient')
     cohort_patients = relationship('CohortPatient')
 
     patient_demographics = relationship('PatientDemographics')
@@ -166,6 +166,7 @@ class Patient(db.Model, MetaModelMixin):
         return earliest_date_of_birth
 
     def in_cohort(self, cohort):
+        print self.cohort_patients
         return any(x == cohort for x in self.cohorts)
 
     def in_organisation(self, organisation):
