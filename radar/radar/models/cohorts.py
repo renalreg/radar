@@ -73,6 +73,14 @@ class CohortPatient(db.Model, MetaModelMixin):
         UniqueConstraint('cohort_id', 'patient_id'),
     )
 
+    @hybrid_property
+    def recruited_date(self):
+        return self.created_date
+
+    @recruited_date.setter
+    def recruited_date(self, value):
+        self.created_date = value
+
 Index('cohort_patients_cohort_id_idx', CohortPatient.cohort_id)
 Index('cohort_patients_patient_id_idx', CohortPatient.patient_id)
 

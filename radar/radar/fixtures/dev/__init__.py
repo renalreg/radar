@@ -29,6 +29,7 @@ from radar.models.users import User
 from radar.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
     get_nhsbt_organisation, get_radar_organisation
 from radar.roles import ORGANISATION_SENIOR_CLINICIAN, COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER
+from radar.cohorts import get_radar_cohort
 
 
 PASSWORD = 'password'
@@ -485,6 +486,7 @@ def create_patients(n):
         .all()
     cohorts = Cohort.query.all()
     radar_organisation = get_radar_organisation()
+    radar_cohort = get_radar_cohort()
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -502,10 +504,8 @@ def create_patients(n):
         print 'patient #%d' % (i + 1)
 
         patient = Patient()
-        patient.recruited_by_organisation = radar_organisation
         patient.is_active = True
         patient = validate(patient)
-        patient.created_date = random_date(date(2008, 1, 1), date.today())
         db.session.add(patient)
 
         gender = generate_gender()
@@ -515,13 +515,14 @@ def create_patients(n):
         create_patient_numbers(patient, radar_data_source)
         create_patient_addresses(patient, radar_data_source)
 
-        radar_patient = OrganisationPatient()
-        radar_patient.organisation = radar_organisation
-        radar_patient.patient = patient
-        radar_patient.is_active = True
-        radar_patient = validate(radar_patient)
-        radar_patient.created_date = random_date(patient.created_date, date.today())
-        db.session.add(radar_patient)
+        radar_cohort_patient = CohortPatient()
+        radar_cohort_patient.patient = patient
+        radar_cohort_patient.cohort = radar_cohort
+        radar_cohort_patient.recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
+        radar_cohort_patient.recruited_by_organisation = radar_organisation
+        radar_cohort_patient.is_active = True
+        radar_cohort_patient = validate(radar_cohort_patient)
+        db.session.add(radar_cohort_patient)
 
         for organisation in random.sample(organisations, random.randint(1, 3)):
             organisation_patient = OrganisationPatient()
@@ -529,7 +530,7 @@ def create_patients(n):
             organisation_patient.patient = patient
             organisation_patient.is_active = True
             organisation_patient = validate(organisation_patient)
-            organisation_patient.created_date = random_date(patient.created_date, date.today())
+            organisation_patient.created_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
             db.session.add(organisation_patient)
 
             if i < 5:
@@ -556,10 +557,10 @@ def create_patients(n):
             cohort_patient.cohort = random.choice(cohorts)
 
         cohort_patient.patient = patient
+        cohort_patient.recruited_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
         cohort_patient.recruited_by_organisation = radar_organisation
         cohort_patient.is_active = True
         cohort_patient = validate(cohort_patient)
-        cohort_patient.created_date = random_date(patient.created_date, date.today())
         db.session.add(cohort_patient)
 
 
