@@ -15,13 +15,12 @@ class Cohort(db.Model):
     code = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
+    notes = Column(String)
 
     cohort_patients = relationship('CohortPatient')
     cohort_users = relationship('CohortUser')
     cohort_features = relationship('CohortFeature')
     cohort_result_group_specs = relationship('CohortResultGroupSpec')
-
-    notes = Column(String)
 
     @property
     def patients(self):
