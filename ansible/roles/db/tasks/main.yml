@@ -34,7 +34,7 @@
   become: yes
   become_user: postgres
 
-- name: add the uuid-ossp extension
+- name: add the uuid-ossp extension to radar
   postgresql_ext: name=uuid-ossp db=radar
   become: yes
   become_user: postgres

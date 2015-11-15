@@ -3,3 +3,18 @@
   command: /home/vagrant/venv/bin/python /home/vagrant/src/db/manage.py dev
   become: yes
   become_user: radar
+
+- name: create the radar test database
+  postgresql_db: name=radar_test
+  become: yes
+  become_user: postgres
+
+- name: grant radar privileges on radar_test
+  postgresql_user: db=radar_test name=radar
+  become: yes
+  become_user: postgres
+
+- name: add the uuid-ossp extension to radar_test
+  postgresql_ext: name=uuid-ossp db=radar_test
+  become: yes
+  become_user: postgres
