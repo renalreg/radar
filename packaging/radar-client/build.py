@@ -9,7 +9,7 @@ import os
 import click
 
 from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error, \
-  get_client_src_path
+    get_client_src_path
 
 NAME = 'radar-client'
 ARCHITECTURE = 'noarch'
@@ -47,10 +47,10 @@ def package_client(root_path):
     version = get_version_from_package_json(package_json_path)
 
     if version is None:
-      error('No version in %s' % package_json_path)
-      raise SystemExit(1)
+        error('No version in %s' % package_json_path)
+        raise SystemExit(1)
     else:
-      info('Version is %s' % version)
+        info('Version is %s' % version)
 
     info('Building rpm ...')
 
