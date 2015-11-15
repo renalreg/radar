@@ -48,13 +48,6 @@
   </div>
 
   <div patient-navigation patient="patient"></div>
-
-  <div
-    ng-repeat="cohort in patient.cohorts | orderBy: 'cohort.cohort.name'"
-    ng-if="cohort.isActive"
-    cohort-navigation
-    patient="patient"
-    cohort="cohort.cohort"></div>
 </div>
 
 <div page-wrapper>

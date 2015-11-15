@@ -121,10 +121,4 @@
       state: 'patient.units({patientId: patient.id})'
     }
   });
-
-  app.constant('standardPatientFeatures', [
-    'DEMOGRAPHICS',
-    'COHORTS',
-    'UNITS'
-  ]);
 })();
