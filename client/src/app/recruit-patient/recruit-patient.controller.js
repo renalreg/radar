@@ -107,7 +107,7 @@
 
     function backToSearch() {
       $state.go('recruitPatient.search');
-    };
+    }
 
     function backToResults() {
       $state.go('recruitPatient.results');
