@@ -1,24 +1,30 @@
 language: python
 python:
-- 2.7
+  - 2.7
+addons:
+  postgresql: "9.4"
+services:
+  - postgresql
 install:
-- npm install npm@3 --global --quiet --no-spin
-- ( cd client && npm install --quiet --no-spin )
-- ( cd client && bower install --quiet )
-- pip install tox
-- pip install coveralls
-- gem install coveralls-lcov
+  - npm install npm@3 --global --quiet --no-spin
+  - ( cd client && npm install --quiet --no-spin )
+  - ( cd client && bower install --quiet )
+  - pip install tox
+  - pip install coveralls
+  - gem install coveralls-lcov
+before_script:
+  - psql -c 'create database radar_test;' -U postgres
 script:
-- ( cd client && gulp lint )
-- ( cd client && gulp coverage )
-- ( cd radar && tox )
-- ( cd api && tox )
-- ( cd mock_ukrdc && tox )
-- ( cd client && gulp sauce-labs || true )
+  - ( cd client && gulp lint )
+  - ( cd client && gulp coverage )
+  - ( cd radar && tox )
+  - ( cd api && tox )
+  - ( cd mock_ukrdc && tox )
+  - ( cd client && gulp sauce-labs || true )
 after_success:
-- coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json
-- coverage combine radar/.coverage api/.coverage
-- coveralls --merge=client/coveralls.json
+  - coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json
+  - coverage combine radar/.coverage api/.coverage
+  - coveralls --merge=client/coveralls.json
 env:
   global:
   # Sauce Labs credentials
