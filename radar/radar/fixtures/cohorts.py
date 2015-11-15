@@ -4,6 +4,17 @@ from radar.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGro
 
 COHORTS = [
     {
+        'code': 'RADAR',
+        'name': 'RaDaR',
+        'short_name': 'RaDaR',
+        'features': [
+            'DEMOGRAPHICS',
+            'COHORTS',
+            'UNITS'
+        ],
+        'result_group_codes': [],
+    },
+    {
         'code': 'ALPORT',
         'name': 'Alport Syndrome',
         'short_name': 'Alport',
