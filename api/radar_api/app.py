@@ -53,13 +53,17 @@ from radar_api.config import check_config, InvalidConfig
 
 
 class RadarApi(Flask):
-    def __init__(self):
+    def __init__(self, config=None):
         super(RadarApi, self).__init__(__name__)
 
         self.public_endpoints = []
 
         self.config.from_object('radar_api.default_settings')
-        self.config.from_envvar('RADAR_SETTINGS')
+
+        if config is None:
+            self.config.from_envvar('RADAR_SETTINGS')
+        else:
+            self.config.update(config)
 
         check_config(self.config)
 
@@ -127,9 +131,9 @@ class RadarApi(Flask):
         return endpoint in self.public_endpoints
 
 
-def create_app():
+def create_app(config=None):
     try:
-        app = RadarApi()
+        app = RadarApi(config)
     except InvalidConfig as e:
         print(e, file=sys.stderr)
         raise SystemExit(1)
