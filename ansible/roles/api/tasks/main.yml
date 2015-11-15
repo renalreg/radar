@@ -5,12 +5,12 @@
 - name: create settings.py
   template: src=settings.py dest={{ api_settings_path }} owner=root group=root mode=0644
   notify:
-    - restart api
+    - restart radar-api
 
 - name: create uwsgi.ini
   template: src=uwsgi.ini dest={{ api_uwsgi_path }} owner=root group=root mode=0644
   notify:
-    - restart api
+    - restart radar-api
 
 - name: create secret key
   shell: dd if=/dev/urandom bs=1 count=32 | base64 > {{ api_secret_key_path }}
