@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients');
+  var app = angular.module('radar.posts');
 
   app.factory('LatestPostsController', ['ListController', '$injector', 'store', '$sce', '_', function(ListController, $injector, store, $sce, _) {
     function LatestPostsController($scope) {

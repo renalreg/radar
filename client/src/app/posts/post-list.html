@@ -1,6 +1,10 @@
 <div page-wrapper>
   <h1 class="page-header">News</h1>
 
+  <p new-post-permission>
+    <a ui-sref="newPost" class="btn btn-primary">New Post</a>
+  </p>
+
   <div loading="loading" list-helper="proxy">
     <div ng-show="!items.length">
       <p>No posts found.</p>
