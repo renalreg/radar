@@ -20,8 +20,11 @@
 
     $stateProvider.state('newPost', {
       url: '/news/new',
-      templateUrl: 'app/posts/post-edit.html',
-      controller: 'PostEditControler',
+      templateUrl: 'app/posts/post-detail.html',
+      controller: ['$scope', '$controller', 'PostDetailController', 'post', function($scope, $controller, PostDetailController, post) {
+        $scope.post = post;
+        $controller(PostDetailController, {$scope: $scope});
+      }],
       resolve: {
         post: ['store', function(store) {
           return store.create('posts');
@@ -32,7 +35,10 @@
     $stateProvider.state('post', {
       url: '/news/:postId',
       templateUrl: 'app/posts/post-detail.html',
-      controller: 'PostDetailControler',
+      controller: ['$scope', '$controller', 'PostDetailController', 'post', function($scope, $controller, PostDetailController, post) {
+        $scope.post = post;
+        $controller(PostDetailController, {$scope: $scope});
+      }],
       resolve: {
         post: ['store', '$stateParams', function(store, $stateParams) {
           return store.findOne('posts', $stateParams.postId);
@@ -40,17 +46,6 @@
       },
       data: {
         public: true
-      }
-    });
-
-    $stateProvider.state('editPost', {
-      url: '/news/:postId/edit',
-      templateUrl: 'app/posts/post-edit.html',
-      controller: 'PostEditControler',
-      resolve: {
-        post: ['store', '$stateParams', function(store, $stateParams) {
-          return store.findOne('posts', $stateParams.postId);
-        }]
       }
     });
   }]);

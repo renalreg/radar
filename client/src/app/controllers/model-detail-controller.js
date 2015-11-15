@@ -70,6 +70,7 @@
       return $q.when(promise).then(function(item) {
         self.scope.item = item;
         self.scope.loading = false;
+        return item;
       });
     };
 

@@ -6,7 +6,7 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('textEditor', ['tinymce', '$sce', function(tinymce, $sce) {
+  app.directive('textEditor', ['tinymce', '$sce', '$rootScope', '$timeout', function(tinymce, $sce, $rootScope, $timeout) {
     var nextId = 0;
 
     return {
@@ -22,14 +22,7 @@
         attrs.$set('id', id);
 
         ngModelCtrl.$render = function() {
-          var instance = getInstance();
-
-          if (instance) {
-            var viewValue = ngModelCtrl.$viewValue;
-            viewValue = viewValue ? $sce.getTrustedHtml(viewValue) : '';
-            instance.setContent(viewValue);
-            instance.fire('change');
-          }
+          updateUi();
         };
 
         ngModelCtrl.$formatters.unshift(function(modelValue) {
@@ -49,33 +42,35 @@
           }
         });
 
-        tinymce.init({
-          selector: '#' + id,
-          menubar: false,
-          toolbar: 'bold italic | link unlink | bullist numlist | code',
-          valid_elements: 'a[href|target=_blank],br,em,li,ol,p,strong,ul',
-          plugins: ['link', 'code'],
-          setup: function(editor) {
-            editor.on('init', function() {
-              ngModelCtrl.$render();
-              ngModelCtrl.$setPristine();
+        $timeout(function() {
+          tinymce.init({
+            selector: '#' + id,
+            menubar: false,
+            toolbar: 'bold italic | link unlink | bullist numlist | code',
+            valid_elements: 'a[href|target=_blank],br,em,li,ol,p,strong,ul',
+            plugins: ['link', 'code'],
+            setup: function(editor) {
+              editor.on('init', function() {
+                ngModelCtrl.$render();
+                ngModelCtrl.$setPristine();
 
-              if (formCtrl) {
-                formCtrl.$setPristine();
-              }
+                if (formCtrl) {
+                  formCtrl.$setPristine();
+                }
 
-              scope.$apply();
-            });
+                scope.$apply();
+              });
 
-            editor.on('keyup', function() {
-              updateView(editor);
-            });
+              editor.on('keyup', function() {
+                updateView(editor);
+              });
 
-            // Content changed using toolbar buttons
-            editor.on('change', function() {
-              updateView(editor);
-            });
-          }
+              // Content changed using toolbar buttons
+              editor.on('change', function() {
+                updateView(editor);
+              });
+            }
+          });
         });
 
         function getInstance() {
@@ -86,11 +81,24 @@
           return instance;
         }
 
+        function updateUi() {
+          var instance = getInstance();
+
+          if (instance) {
+            var viewValue = $sce.getTrustedHtml(ngModelCtrl.$viewValue || '');
+            instance.setContent(viewValue);
+            instance.fire('change');
+          }
+        }
+
         function updateView(editor) {
           var content = editor.getContent().trim();
           content = $sce.trustAsHtml(content);
           ngModelCtrl.$setViewValue(content);
-          scope.$apply();
+
+          if (!$rootScope.$$phase) {
+            scope.$apply();
+          }
         }
       }
     };

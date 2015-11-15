@@ -1,7 +1,49 @@
 <div page-wrapper>
-  <div class="post">
-    <h1 class="page-header"><a ui-sref="post({postId: post.id})">{{post.title}}</a> <small>{{post.publishedDate | dateFormat}}</small></h1>
+  <div loading="loading" crud>
+    <div ng-if="viewing">
+      <h1 class="page-header"><a ui-sref="post({postId: item.id})">{{item.title}}</a> <small>{{item.publishedDate | dateFormat}}</small></h1>
 
-    <div ng-bind-html="post.html"></div>
+      <p>
+        <span crud-edit-button item="item"></span>
+        <span crud-remove-button item="item"></span>
+      </p>
+
+      <div ng-bind-html="item.getHtml()"></div>
+    </div>
+
+    <div ng-if="editing">
+      <h1 class="page-header" ng-if="!item.id">New Post</h1>
+      <h1 class="page-header" ng-if="item.id">Edit Post</h1>
+
+      <p>
+        <span crud-view-button item="originalItem"></span>
+        <span crud-remove-button item="originalItem"></span>
+      </p>
+
+      <form class="form-container" crud-submit="saveAndView()" frm-layout="vertical" novalidate>
+        <div frm-field frm-group>
+          <div frm-label>Title</div>
+
+          <div frm-control>
+            <div frm-text-field model="item.title" required="true"></div>
+            <div frm-errors errors="item.errors.title"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Body</div>
+
+          <div frm-control>
+            <div frm-text-editor-field model="item.body" required="true"></div>
+            <div frm-errors errors="item.errors.body"></div>
+          </div>
+        </div>
+
+        <div frm-buttons>
+          <span crud-save-button></span>
+          <span crud-cancel-button action="view()"></span>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

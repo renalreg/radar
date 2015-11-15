@@ -2,6 +2,6 @@
   <div ng-repeat="item in items" class="post">
     <h2><a ui-sref="post({postId: item.id})">{{item.title}}</a> <small>{{item.publishedDate | dateFormat}}</small></h2>
 
-    <div ng-bind-html="item.html"></div>
+    <div ng-bind-html="item.getHtml()"></div>
   </div>
 </div>
