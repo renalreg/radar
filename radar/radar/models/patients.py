@@ -5,9 +5,9 @@ from sqlalchemy import Column, Integer, select, Boolean, join, Text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, aliased
 from radar.database import db
-from radar.models import MetaModelMixin, OrganisationPatient
+from radar.models import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.organisations import Organisation
+from radar.models.cohorts import Cohort, CohortPatient
 from radar.cohorts import is_radar_cohort
 
 GENDER_NOT_KNOWN = 0
@@ -49,18 +49,17 @@ class Patient(db.Model, MetaModelMixin):
     @hybrid_property
     def recruited_date(self):
         for x in self.cohort_patients:
-            if is_radar_cohort(x.organisation):
+            if is_radar_cohort(x.cohort):
                 return x.recruited_date
 
         return None
 
     @recruited_date.expression
     def recruited_date(cls):
-        return select([OrganisationPatient.recruited_date])\
-            .select_from(join(OrganisationPatient, Organisation))\
-            .where(OrganisationPatient.patient_id == cls.id)\
-            .where(Organisation.code == 'RADAR')\
-            .where(Organisation.type == 'OTHER')\
+        return select([CohortPatient.recruited_date])\
+            .select_from(join(CohortPatient, Cohort))\
+            .where(CohortPatient.patient_id == cls.id)\
+            .where(Cohort.code == 'RADAR')\
             .limit(1)\
             .as_scalar()
 
