@@ -73,6 +73,24 @@
       $state.go('recruit.consent');
     };
 
+    $scope.recruit = function() {
+      $scope.loading = true;
+
+      adapter.post('/recruit', {}, $scope.patient)
+        .then(function(response) {
+          var patientId = response.data.patientId;
+          $state.go('patient.demographics', {patientId: patientId});
+        })
+        ['catch'](function(response) {
+          if (response.status === 422) {
+            scope.recruitErrors = response.data.errors || {};
+          }
+        })
+        ['finally'](function() {
+          $scope.loading = false;
+        });
+    };
+
     $scope.backToSearch = function() {
       $state.go('recruit.search');
     };
