@@ -21,9 +21,9 @@
       templateUrl: 'app/recruit-patient/recruit-patient-results.html'
     });
 
-    $stateProvider.state('recruitPatient.consent', {
+    $stateProvider.state('recruitPatient.form', {
       url: '',
-      templateUrl: 'app/recruit-patient/recruit-patient-consent.html'
+      templateUrl: 'app/recruit-patient/recruit-patient-form.html'
     });
   }]);
 })();

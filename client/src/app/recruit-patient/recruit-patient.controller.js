@@ -6,16 +6,38 @@
   function RecruitPatientController(
     $scope,
     adapter,
-    $state
+    $state,
+    $q,
+    store
   ) {
-    $scope.loading = false;
+    $scope.loading = true;
+
+    $q.all([
+      store.findMany('genders').then(function(genders) {
+        $scope.genders = genders;
+      }),
+      store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
+        $scope.ethnicityCodes = ethnicityCodes;
+      })
+    ]).then(function() {
+      $scope.loading = false;
+    });
 
     $scope.searchParams = {};
     $scope.searchErrors = {};
 
     $scope.patient = {};
+    $scope.patientErrors = {};
 
-    $scope.search = function() {
+    $scope.search = search;
+    $scope.patientFound = patientFound;
+    $scope.patientNotFound = patientNotFound;
+    $scope.recruit = recruit;
+
+    $scope.backToSearch = backToSearch;
+    $scope.backToResults = backToResults;
+
+    function search() {
       $scope.loading = true;
 
       adapter.post('/recruit-patient-search', {}, $scope.searchParams)
@@ -28,13 +50,7 @@
           if (results.length) {
             $state.go('recruitPatient.results');
           } else {
-            $scope.patient = {
-              firstName: $scope.searchParams.firstName,
-              lastName: $scope.searchParams.lastName,
-              dateOfBirth: $scope.searchParams.dateOfBirth
-            };
-
-            $state.go('recruitPatient.consent');
+            $scope.patientNotFound();
           }
         })
         ['catch'](function(response) {
@@ -45,9 +61,9 @@
         ['finally'](function() {
           $scope.loading = false;
         });
-    };
+    }
 
-    $scope.patientFound = function(result) {
+    function patientFound(result) {
       $scope.patient = {
         mpiid: result.mpiid,
         radarId: result.radarId,
@@ -58,22 +74,20 @@
         chiNo: result.chiNo
       };
 
-      $state.go('recruitPatient.consent');
-    };
+      $state.go('recruitPatient.form');
+    }
 
-    $scope.patientNotFound = function() {
+    function patientNotFound() {
       $scope.patient = {
         firstName: $scope.searchParams.firstName,
         lastName: $scope.searchParams.lastName,
-        dateOfBirth: $scope.searchParams.dateOfBirth,
-        nhsNo: $scope.searchParams.nhsNo,
-        chiNo: $scope.searchParams.chiNo
+        dateOfBirth: $scope.searchParams.dateOfBirth
       };
 
-      $state.go('recruitPatient.consent');
-    };
+      $state.go('recruitPatient.form');
+    }
 
-    $scope.recruit = function() {
+    function recruit() {
       $scope.loading = true;
 
       adapter.post('/recruit-patient', {}, $scope.patient)
@@ -83,27 +97,29 @@
         })
         ['catch'](function(response) {
           if (response.status === 422) {
-            $scope.recruitErrors = response.data.errors || {};
+            $scope.patientErrors = response.data.errors || {};
           }
         })
         ['finally'](function() {
           $scope.loading = false;
         });
-    };
+    }
 
-    $scope.backToSearch = function() {
+    function backToSearch() {
       $state.go('recruitPatient.search');
     };
 
-    $scope.backToResults = function() {
+    function backToResults() {
       $state.go('recruitPatient.results');
-    };
+    }
   }
 
   RecruitPatientController.$inject = [
     '$scope',
     'adapter',
-    '$state'
+    '$state',
+    '$q',
+    'store'
   ];
 
   app.controller('RecruitPatientController', RecruitPatientController);

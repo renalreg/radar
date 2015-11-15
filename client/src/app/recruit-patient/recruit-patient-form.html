@@ -1,0 +1,97 @@
+<ol class="breadcrumb">
+  <li><a href="" ng-click="backToSearch()">Search</a></li>
+  <li ng-if="results.length"><a href="" ng-click="backToResults()">Results</a></li>
+  <li class="active">Patient Details</li>
+</ol>
+
+<h2>Patient Details</h2>
+
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th>MPIID</th>
+      <th>RaDaR ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>DOB</th>
+      <th>Gender</th>
+      <th>NHS No.</th>
+      <th>CHI No.</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>{{patient.mpiid | missing}}</td>
+      <td>{{patient.radarId | missing}}</td>
+      <td>{{patient.firstName | missing}}</td>
+      <td>{{patient.lastName | missing}}</td>
+      <td>{{patient.dateOfBirth | dateFormat}}</td>
+      <td>{{patient.gender.label | missing}}</td>
+      <td>{{patient.nhsNo | missing}}</td>
+      <td>{{patient.chiNo | missing}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<form class="form-horizontal form-container" submit-if-valid="recruit()" novalidate>
+  <div ng-if="!patient.radarId">
+    <div frm-field frm-group>
+      <div frm-label>Gender</div>
+
+      <div frm-control>
+        <div frm-select-field model="patient.gender" required="true" options="genders"></div>
+        <div frm-errors errors="patientErrors.gender"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Ethnicity</div>
+
+      <div frm-control>
+        <div frm-select-field model="patient.ethnicityCode" options="ethnicityCodes"></div>
+        <div frm-errors errors="patientErrors.ethnicityCode"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>NHS No.</div>
+
+      <div frm-control>
+        <div frm-text-field model="patient.nhsNo"></div>
+        <div frm-errors errors="patientErrors.nhsNo"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>CHI No.</div>
+
+      <div frm-control>
+        <div frm-text-field model="patient.chiNo"></div>
+        <div frm-errors errors="patientErrors.chiNo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Recruited Unit</div>
+
+    <div frm-control>
+      <div frm-unit-field model="patient.recruitedByOrganisation" required="true"></div>
+      <div frm-errors errors="patientErrors.recruitedByOrganisation"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Cohort</div>
+
+    <div frm-control>
+      <div frm-cohort-field model="patient.cohort" required="true"></div>
+      <div frm-errors errors="patientErrors.cohort"></div>
+    </div>
+  </div>
+
+  <div frm-buttons>
+    <span submit-button>Recruit Patient</span>
+  </div>
+</form>
