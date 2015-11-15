@@ -222,3 +222,8 @@ table.item-meta {
 .post {
   max-width: 600px;
 }
+
+// FIXME https://github.com/twbs/bootstrap-sass/issues/919
+.breadcrumb > li + li:before {
+    content: "/\00a0";
+}
