@@ -2,6 +2,7 @@ import click
 
 from radar_api.app import create_app
 
+
 @click.group()
 def cli():
     pass
