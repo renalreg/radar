@@ -3,18 +3,25 @@
 
   var app = angular.module('radar.posts');
 
+  app.factory('PostPermission', ['AdminPermission', function(AdminPermission) {
+    return AdminPermission;
+  }]);
+
   function controllerFactory(
     ModelDetailController,
     $injector,
     $state,
-    $sce
+    $sce,
+    PostPermission
   ) {
     function PostDetailController($scope) {
       var self = this;
 
       $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
-        params: {}
+        params: {
+          permission: new PostPermission()
+        }
       });
 
       self.load($scope.post).then(function(post) {
@@ -59,7 +66,8 @@
     'ModelDetailController',
     '$injector',
     '$state',
-    '$sce'
+    '$sce',
+    'PostPermission'
   ];
 
   app.factory('PostDetailController', controllerFactory);

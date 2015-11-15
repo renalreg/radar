@@ -3,14 +3,14 @@
 
   var app = angular.module('radar.posts');
 
-  app.directive('newPostPermission', ['AdminPermission', '$compile', function(AdminPermission, $compile) {
+  app.directive('newPostPermission', ['PostPermission', '$compile', function(PostPermission, $compile) {
     return {
       scope: true,
       link: function(scope, element, attrs) {
-        var adminPermission = new AdminPermission();
+        var permission = new PostPermission();
 
         scope.$watch(function() {
-          return adminPermission.hasPermission();
+          return permission.hasPermission();
         }, function(hasPermission) {
           scope.hasPermission = hasPermission;
         });

@@ -11,7 +11,7 @@
       return session.isAuthenticated && session.user.isAdmin;
     };
 
-    AdminPermission.prototype.hasObjectPermission = function(obj) {
+    AdminPermission.prototype.hasObjectPermission = function() {
       return session.isAuthenticated && session.user.isAdmin;
     };
 
