@@ -1,0 +1,4 @@
+---
+mock_ukrdc_config_path: "/etc/radar-mock-ukrdc"
+mock_ukrdc_settings_path: "{{ mock_ukrdc_config_path }}/settings.py"
+mock_ukrdc_uwsgi_path: "{{ mock_ukrdc_config_path }}/uwsgi.ini"

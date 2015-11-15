@@ -1,0 +1,6 @@
+---
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: restart radar-mock-ukrdc-dev
+  service: name=radar-mock-ukrdc-dev state=restarted
