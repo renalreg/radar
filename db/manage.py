@@ -21,7 +21,8 @@ def app_context(f):
 @click.pass_context
 def cli(ctx, connection_string):
     config = {
-        'SQLALCHEMY_DATABASE_URI': connection_string
+        'SQLALCHEMY_DATABASE_URI': connection_string,
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False
     }
 
     ctx.obj['app'] = create_app(config)
