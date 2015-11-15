@@ -29,21 +29,21 @@
 # jpegtran will still fail as it is using a https URL
 # FIXME https://github.com/npm/npm/issues/8682
 - name: install packages from package.json
-  npm: path={{ client_src_path }}  state=latest
+  npm: path={{ src_path }}/client  state=latest
   become: yes
   become_user: vagrant
 
 - name: install packages from bower.json
-  bower: path={{ client_src_path }} state=latest
+  bower: path={{ src_path }}/client state=latest
   become: yes
   become_user: vagrant
 
 - name: build
-  command: gulp build chdir={{ client_src_path }}
+  command: gulp build chdir={{ src_path }}/client
   become: yes
   become_user: vagrant
 
 - name: build dist
-  command: gulp build:dist chdir={{ client_src_path }}
+  command: gulp build:dist chdir={{ src_path }}/client
   become: yes
   become_user: vagrant

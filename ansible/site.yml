@@ -20,10 +20,8 @@
   become: yes
   vars:
     src_path: /home/vagrant/src
-    radar_src_path: '{{ src_path }}/radar'
-    api_src_path: '{{ src_path }}/api'
-    client_src_path: '{{ src_path }}/client'
     virtualenv_path: /home/vagrant/venv
   roles:
+    - mock_ukrdc_dev
     - db_dev
     - web_dev
