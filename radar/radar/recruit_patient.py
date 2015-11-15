@@ -20,7 +20,7 @@ def recruit_patient_search(params):
         .filter(filter_by_date_of_birth(params['date_of_birth']))\
 
     if params.get('patient_number'):
-        query = query.filter(filter_by_patient_number(params['patient_number']))
+        query = query.filter(filter_by_patient_number(params['patient_number'], exact=True))
 
     patients = query.all()
 
