@@ -7,12 +7,9 @@
     $stateProvider.state('posts', {
       url: '/news',
       templateUrl: 'app/posts/post-list.html',
-      controller: 'PostListController',
-      resolve: {
-        posts: ['store', function(store) {
-          return store.findMany('posts', {sort: '-publishedDate'});
-        }]
-      },
+      controller: ['$scope', '$controller', 'PostListController', function($scope, $controller, PostListController) {
+        $controller(PostListController, {$scope: $scope});
+      }],
       data: {
         public: true
       }
