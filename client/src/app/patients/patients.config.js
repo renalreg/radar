@@ -24,6 +24,28 @@
       }
     });
 
+    $stateProvider.state('recruit', {
+      url: '/recruit',
+      abstract: true,
+      controller: 'RecruitPatientController',
+      templateUrl: 'app/patients/recruit-patient.html'
+    });
+
+    $stateProvider.state('recruit.search', {
+      url: '',
+      templateUrl: 'app/patients/recruit-patient-search.html'
+    });
+
+    $stateProvider.state('recruit.results', {
+      url: '',
+      templateUrl: 'app/patients/recruit-patient-results.html'
+    });
+
+    $stateProvider.state('recruit.consent', {
+      url: '',
+      templateUrl: 'app/patients/recruit-patient-consent.html'
+    });
+
     $stateProvider.state('patient.all', {
       url: '/all',
       templateUrl: 'app/patients/all.html'

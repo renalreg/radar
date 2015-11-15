@@ -1,0 +1,46 @@
+<ol class="breadcrumb">
+  <li><a href="" ng-click="backToSearch()">Search</a></li>
+  <li class="active">Results</li>
+</ol>
+
+<h2>Results</h2>
+
+<p>Use the "Select" button to choose the patient you want to recruit from the list.</p>
+
+<p>If the patient isn't in the list you may use the "Not Found" button at the bottom of the page.</p>
+
+<table class="table table-condensed table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>MPIID</th>
+      <th>RaDaR ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>DOB</th>
+      <th>NHS No.</th>
+      <th>CHI No.</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr ng-repeat="patient in results">
+      <td><a ng-click="patientFound(patient)" class="btn btn-success btn-xs">Select</a></td>
+      <td>{{patient.mpiid | missing}}</td>
+      <td>{{patient.radarId | missing}}</td>
+      <td>{{patient.firstName | missing}}</td>
+      <td>{{patient.lastName | missing}}</td>
+      <td>{{patient.dateOfBirth | dateFormat}}</td>
+      <td>{{patient.nhsNo | missing}}</td>
+      <td>{{patient.chiNo | missing}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  If the patient isn't in the above list use the "Not Found" button to add a new patient:
+</p>
+
+<p>
+  <a href="" ng-click="patientNotFound()" class="btn btn-danger btn-xs">Not Found</a>
+</p>

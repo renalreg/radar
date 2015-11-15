@@ -1,0 +1,54 @@
+<ol class="breadcrumb">
+  <li class="active">Search</li>
+</ol>
+
+<form class="form-horizontal form-container" submit-if-valid="search()" novalidate>
+  <div frm-field frm-group>
+    <div frm-label>First Name</div>
+
+    <div frm-control>
+      <div frm-text-field model="searchParams.firstName" required="true"></div>
+      <div frm-errors errors="searchErrors.firstName"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Last Name</div>
+
+    <div frm-control>
+      <div frm-text-field model="searchParams.lastName" required="true"></div>
+      <div frm-errors errors="searchErrors.lastName"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Date of Birth</div>
+
+    <div frm-control>
+      <div frm-date-field model="searchParams.dateOfBirth" required="true"></div>
+      <div frm-errors errors="searchErrors.dateOfBirth"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>NHS No.</div>
+
+    <div frm-control>
+      <div frm-text-field model="searchParams.nhsNo"></div>
+      <div frm-errors errors="searchErrors.nhsNo"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>CHI No.</div>
+
+    <div frm-control>
+      <div frm-text-field model="searchParams.chiNo"></div>
+      <div frm-errors errors="searchErrors.chiNo"></div>
+    </div>
+  </div>
+
+  <div frm-buttons>
+    <span submit-button>Search</span>
+  </div>
+</form>
