@@ -288,6 +288,14 @@
         if (params.perPage) {
           this.perPage = params.perPage;
         }
+
+        if (params.sortBy) {
+          this.sortBy = params.sortBy;
+        }
+
+        if (params.reverse) {
+          this.reverse = params.reverse;
+        }
       }
     }
 
@@ -367,4 +375,3 @@
     return ListHelperProxy;
   });
 })();
-

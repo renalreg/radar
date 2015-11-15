@@ -20,7 +20,11 @@
       };
       $scope.filters = angular.copy(defaultFilters);
 
-      var proxy = new ListHelperProxy(search, {perPage: 50});
+      var proxy = new ListHelperProxy(search, {
+        perPage: 50,
+        sortBy: 'id',
+        reverse: true
+      });
       proxy.load();
 
       $scope.proxy = proxy;
