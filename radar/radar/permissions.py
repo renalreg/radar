@@ -413,3 +413,14 @@ class UserPermission(Permission):
             user == obj or
             has_permission_for_any_group(user, 'has_edit_user_membership_permission')
         )
+
+
+class RecruitPatientPermission(Permission):
+    def has_permission(request, user):
+        if not super(RecruitPatientPermission, self).has_permission(request, user):
+            return False
+
+        return (
+            user.is_admin or
+            has_permission_for_any_organisation(user, 'has_recruit_patient_permission')
+        )
