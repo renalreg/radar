@@ -1,5 +1,6 @@
 from radar.data_sources import is_radar_data_source
 from radar.models import DATA_SOURCE_TYPE_RADAR
+from radar.cohorts import is_radar_cohort
 
 
 def has_group_permission_for_patient(user, patient, permission):
@@ -424,3 +425,15 @@ class RecruitPatientPermission(Permission):
             user.is_admin or
             has_permission_for_any_organisation(user, 'has_recruit_patient_permission')
         )
+
+
+class CohortPatientPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(CohortPatientPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        if is_safe_method(request):
+            return True
+        else:
+            # Not allowed to remove patient's from the RaDaR cohort
+            return not is_radar_cohort(obj.cohort)
