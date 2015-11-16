@@ -11,12 +11,18 @@
       resetPassword: resetPassword
     };
 
-    function errorHandler(response) {
-      if (response.status === 422) {
-        return $q.reject(response.data.errors);
-      } else {
-        return $q.reject();
+    function errorHandler(promise) {
+      if (promise === undefined) {
+        promise = $q;
       }
+
+      return function(response) {
+        if (response.status === 422) {
+          return promise.reject(response.data.errors);
+        } else {
+          return promise.reject();
+        }
+      };
     }
 
     function login(credentials) {
@@ -38,17 +44,17 @@
               deferred.reject();
             });
         })
-        ['catch'](errorHandler);
+        ['catch'](errorHandler(deferred));
 
       return deferred.promise;
     }
 
     function forgotUsername(email) {
-      return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler);
+      return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler());
     }
 
     function forgotPassword(username) {
-      return adapter.post('/forgot-password', {}, {username: username})['catch'](errorHandler);
+      return adapter.post('/forgot-password', {}, {username: username})['catch'](errorHandler());
     }
 
     function resetPassword(token, username, password) {
@@ -58,7 +64,7 @@
         password: password
       };
 
-      return adapter.post('/reset-password', {}, data)['catch'](errorHandler);
+      return adapter.post('/reset-password', {}, data)['catch'](errorHandler());
     }
   }]);
 })();
