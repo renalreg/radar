@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('hasDemographicsPermission', ['_', function(_) {
-    return function hasDemographicsPermission(patient, user) {
+  app.factory('hasDemographicsPermissionForPatient', ['_', function(_) {
+    return function hasDemographicsPermissionForPatient(user, patient) {
       var i;
 
       if (user.isAdmin) {
@@ -43,4 +43,3 @@
     };
   }]);
 })();
-
