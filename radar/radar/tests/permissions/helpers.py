@@ -45,13 +45,11 @@ def make_patient(organisations=None, cohorts=None):
         organisation_patient = OrganisationPatient()
         organisation_patient.organisation = organisation
         organisation_patient.patient = patient
-        patient.organisation_patients.append(organisation_patient)
 
     for cohort in cohorts:
         cohort_patient = CohortPatient()
         cohort_patient.cohort = cohort
         cohort_patient.patient = patient
-        patient.cohort_patients.append(cohort_patient)
 
     return patient
 

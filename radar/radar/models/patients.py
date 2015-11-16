@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, select, Boolean, join, Text
 
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, aliased
+from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
@@ -30,13 +30,6 @@ class Patient(db.Model, MetaModelMixin):
 
     is_active = Column(Boolean, nullable=False, default=True)
     comments = Column(Text)
-
-    organisation_patients = relationship('OrganisationPatient')
-    cohort_patients = relationship('CohortPatient')
-
-    patient_demographics = relationship('PatientDemographics')
-    patient_numbers = relationship('PatientNumber')
-    patient_aliases = relationship('PatientAlias')
 
     @property
     def organisations(self):

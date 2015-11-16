@@ -1,5 +1,4 @@
-from radar.fixtures.validation import validate
-from radar.database import db
+from radar.fixtures.validation import validate_and_add
 from radar.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGroupSpec
 
 COHORTS = [
@@ -323,16 +322,14 @@ def create_cohorts():
         cohort.code = x['code']
         cohort.name = x['name']
         cohort.short_name = x['short_name']
-        cohort = validate(cohort)
-        db.session.add(cohort)
+        cohort = validate_and_add(cohort)
 
         for i, name in enumerate(x['features']):
             cohort_feature = CohortFeature()
             cohort_feature.cohort = cohort
             cohort_feature.name = name
             cohort_feature.weight = i * 100  # leave some gaps
-            cohort_feature = validate(cohort_feature)
-            db.session.add(cohort_feature)
+            validate_and_add(cohort_feature)
 
         for i, code in enumerate(x['result_group_codes']):
             result_group_spec = ResultGroupSpec.query.filter(ResultGroupSpec.code == code).one()
@@ -341,5 +338,4 @@ def create_cohorts():
             cohort_result_group_spec.cohort = cohort
             cohort_result_group_spec.result_group_spec = result_group_spec
             cohort_result_group_spec.weight = i * 100  # leave some gaps
-            cohort_result_group_spec = validate(cohort_result_group_spec)
-            db.session.add(cohort_result_group_spec)
+            validate_and_add(cohort_result_group_spec)

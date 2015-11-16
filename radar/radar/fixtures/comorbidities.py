@@ -1,5 +1,4 @@
-from radar.fixtures.validation import validate
-from radar.database import db
+from radar.fixtures.validation import validate_and_add
 from radar.models import Disorder
 
 DISORDERS = [
@@ -16,5 +15,4 @@ DISORDERS = [
 def create_disorders():
     for v in DISORDERS:
         disorder = Disorder(label=v)
-        disorder = validate(disorder)
-        db.session.add(disorder)
+        validate_and_add(disorder)

@@ -30,6 +30,7 @@ from radar.validation.result_specs import ResultSpecValidation
 from radar.validation.result_groups import ResultGroupValidation
 from radar.validation.transplants import TransplantValidation
 from radar.validation.users import UserValidation
+from radar.database import db
 
 VALIDATIONS = {
     User: UserValidation,
@@ -63,10 +64,17 @@ VALIDATIONS = {
 }
 
 
-def validate(obj, ctx=None):
-    model_class = obj.__class__
-    validation_class = VALIDATIONS[model_class]
-    return validation_runner(model_class, validation_class, obj, ctx)
+def validate_and_add(obj, ctx=None):
+    # Queries run during validation can cause a premature flush
+    with db.session.no_autoflush:
+        model_class = obj.__class__
+        validation_class = VALIDATIONS[model_class]
+        obj = validation_runner(model_class, validation_class, obj, ctx)
+
+    db.session.add(obj)
+    db.session.flush()
+
+    return obj
 
 
 def validation_runner(model_class, validation_class, obj, ctx=None):
@@ -81,4 +89,5 @@ def validation_runner(model_class, validation_class, obj, ctx=None):
     validation.before_update(ctx, model_class())
     old_obj = validation.clone(obj)
     obj = validation.after_update(ctx, old_obj, obj)
+
     return obj

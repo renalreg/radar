@@ -1,6 +1,5 @@
-from radar.fixtures.validation import validate
+from radar.fixtures.validation import validate_and_add
 from radar.data_sources import DATA_SOURCE_TYPE_RADAR
-from radar.database import db
 from radar.models import DataSource, ORGANISATION_TYPE_UNIT, Organisation, DATA_SOURCE_TYPE_PV
 from radar.organisations import get_radar_organisation
 
@@ -14,8 +13,7 @@ def create_radar_data_source():
     data_source = DataSource()
     data_source.organisation = get_radar_organisation()
     data_source.type = DATA_SOURCE_TYPE_RADAR
-    data_source = validate(data_source)
-    db.session.add(data_source)
+    validate_and_add(data_source)
 
 
 def create_unit_data_sources():
@@ -26,5 +24,4 @@ def create_unit_data_sources():
             data_source = DataSource()
             data_source.organisation = unit
             data_source.type = data_source_type
-            data_source = validate(data_source)
-            db.session.add(data_source)
+            validate_and_add(data_source)

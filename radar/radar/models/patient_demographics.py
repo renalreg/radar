@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Date, UniqueConstrai
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, StringLookupTable, uuid_pk_column
+from radar.models.common import MetaModelMixin, StringLookupTable, uuid_pk_column, \
+    patient_id_column, patient_relationship
 
 
 class PatientDemographics(db.Model, MetaModelMixin):
@@ -10,8 +11,8 @@ class PatientDemographics(db.Model, MetaModelMixin):
 
     id = uuid_pk_column()
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship('patient_demographics')
 
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')

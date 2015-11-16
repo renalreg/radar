@@ -1,5 +1,4 @@
-from radar.fixtures.validation import validate
-from radar.database import db
+from radar.fixtures.validation import validate_and_add
 from radar.models import Organisation, ORGANISATION_CODE_RADAR, ORGANISATION_TYPE_OTHER, ORGANISATION_TYPE_UNIT, \
     ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_UKRR, ORGANISATION_CODE_HANDC, \
     ORGANISATION_CODE_UKRDC, ORGANISATION_CODE_NHSBT, ORGANISATION_CODE_BAPN
@@ -35,8 +34,7 @@ def create_other_organisations():
         organisation.code = organisation_code
         organisation.type = ORGANISATION_TYPE_OTHER
         organisation.name = organisation_name
-        organisation = validate(organisation)
-        db.session.add(organisation)
+        validate_and_add(organisation)
 
 
 def create_unit_organisations():
@@ -45,5 +43,4 @@ def create_unit_organisations():
         organisation.code = code
         organisation.type = ORGANISATION_TYPE_UNIT
         organisation.name = name
-        organisation = validate(organisation)
-        db.session.add(organisation)
+        validate_and_add(organisation)
