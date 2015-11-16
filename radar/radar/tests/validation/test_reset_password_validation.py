@@ -9,11 +9,11 @@ def test_valid():
     obj = valid({
         'token': '12345',
         'username': 'hello',
-        'password': 'password',
+        'password': '2irPtfNUURf8G',
     })
     assert obj['token'] == '12345'
     assert obj['username'] == 'hello'
-    assert obj['password'] == 'password'
+    assert obj['password'] == '2irPtfNUURf8G'
 
 
 def test_token_missing():
@@ -34,6 +34,14 @@ def test_password_missing():
     invalid({
         'token': '12345',
         'username': 'hello',
+    })
+
+
+def test_weak_password():
+    invalid({
+        'token': '12345',
+        'username': 'hello',
+        'password': 'password',
     })
 
 
