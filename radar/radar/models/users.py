@@ -109,7 +109,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         return True
 
 # Ensure usernames are unique
-Index('users_username_idx', func.lower(User.username))
+Index('users_username_idx', func.lower(User.username), unique=True)
 
 
 class AnonymousUser(object):
