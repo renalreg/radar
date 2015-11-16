@@ -43,10 +43,10 @@ def install_api(v, root_path):
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
     info('Installing radar ...')
-    v.run(['setup.py', 'install'], cwd=radar_src_path)
+    v.run(['-m', 'pip', 'install', '.', '--no-deps'], cwd=radar_src_path)
 
     info('Installing radar-api ...')
-    v.run(['setup.py', 'install'], cwd=api_src_path)
+    v.run(['-m', 'pip', 'install', '.', '--no-deps'], cwd=api_src_path)
 
 
 def package_api(v, root_path):
