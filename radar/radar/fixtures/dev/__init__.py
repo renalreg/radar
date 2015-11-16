@@ -53,12 +53,14 @@ def create_users(n):
 
 
 def create_admin_user():
-    admin = User()
-    admin.username = 'admin'
-    admin.email = 'admin@example.org'
-    admin.is_admin = True
-    admin.password = PASSWORD
-    validate_and_add(admin, {'allow_weak_passwords': True})
+    user = User()
+    user.username = 'admin'
+    user.email = 'admin@example.org'
+    user.first_name = 'Foo'
+    user.last_name = 'Bar'
+    user.is_admin = True
+    user.password = PASSWORD
+    validate_and_add(user, {'allow_weak_passwords': True})
 
 
 def create_bot_user():
@@ -80,6 +82,8 @@ def create_southmead_user():
     user = User()
     user.username = 'southmead_demo'
     user.email = 'southmead_demo@example.org'
+    user.first_name = 'Foo'
+    user.last_name = 'Bar'
     user.is_admin = False
     user.password = PASSWORD
     user = validate_and_add(user, {'allow_weak_passwords': True})
@@ -95,6 +99,8 @@ def create_srns_user():
     user = User()
     user.username = 'srns_demo'
     user.email = 'srns_demo@example.org'
+    user.first_name = 'Foo'
+    user.last_name = 'Bar'
     user.is_admin = False
     user.password = PASSWORD
     user = validate_and_add(user, {'allow_weak_passwords': True})
@@ -110,6 +116,8 @@ def create_srns_demograhics_user():
     user = User()
     user.username = 'srns_demographics_demo'
     user.email = 'srns_demographics_demo@example.org'
+    user.first_name = 'Foo'
+    user.last_name = 'Bar'
     user.is_admin = False
     user.password = PASSWORD
     user = validate_and_add(user, {'allow_weak_passwords': True})
