@@ -41,7 +41,7 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
         smtp_port = current_app.config.get('SMTP_PORT', 25)
 
         s = smtplib.SMTP(smtp_host, smtp_port)
-        s.sendmail(from_address, to_addresses, m)
+        s.sendmail(from_address, to_addresses, m.as_string())
         s.quit()
     else:
         print m.as_string()
