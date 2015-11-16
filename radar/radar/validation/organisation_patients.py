@@ -1,6 +1,7 @@
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required
+from radar.permissions import has_permission_for_organisation
 
 
 class OrganisationPatientValidation(MetaValidationMixin, Validation):
@@ -11,19 +12,10 @@ class OrganisationPatientValidation(MetaValidationMixin, Validation):
 
     @staticmethod
     def has_permission(current_user, organisation):
-        if current_user.is_admin:
-            grant = True
-        else:
-            grant = False
-
-            for organisation_user in current_user.organisation_users:
-                if organisation_user.organisation == organisation:
-                    if organisation_user.has_edit_patient_permission:
-                        grant = True
-
-                    break
-
-        return grant
+        return (
+            current_user.is_admin or
+            has_permission_for_organisation(current_user, organisation, 'has_edit_patient_permission')
+        )
 
     @pass_context
     @pass_old_obj
