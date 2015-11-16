@@ -34,7 +34,7 @@
     return {
       scope: {},
       controller: NewUserController,
-      templateUrl: 'app/users/new/new-user-component.html'
+      templateUrl: 'app/users/new-user-component.html'
     };
   }]);
 })();

@@ -3,14 +3,16 @@
 
   var app = angular.module('radar.recruitPatient');
 
-  app.directive('recruitPatientPermission', ['AdminPermission', '$compile', function(AdminPermission, $compile) {
+  function recruitPatientPermission(
+    hasRecruitPatientPermission,
+    $compile,
+    session
+  ) {
     return {
       scope: true,
       link: function(scope, element, attrs) {
-        var adminPermission = new AdminPermission();
-
         scope.$watch(function() {
-          return adminPermission.hasPermission();
+          return hasRecruitPatientPermission(session.user);
         }, function(hasPermission) {
           scope.hasPermission = hasPermission;
         });
@@ -21,5 +23,13 @@
         $compile(element)(scope);
       }
     };
-  }]);
+  }
+
+  recruitPatientPermission.$inject = [
+    'hasRecruitPatientPermission',
+    '$compile',
+    'session'
+  ];
+
+  app.directive('recruitPatientPermission', recruitPatientPermission);
 })();

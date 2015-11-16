@@ -421,7 +421,11 @@ def request_json(serializer_class, validation_class=None):
 
             if validation_class is not None:
                 validation = validation_class()
+
                 ctx = {}
+
+                if current_user.is_authenticated():
+                    ctx['user'] = current_user
 
                 try:
                     validation.after_update(ctx, {}, data)

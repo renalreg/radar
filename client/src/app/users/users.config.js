@@ -14,7 +14,7 @@
 
     $stateProvider.state('newUser', {
       url: '/users/new',
-      templateUrl: 'app/users/new/new-user.html'
+      templateUrl: 'app/users/new-user.html'
     });
 
     $stateProvider.state('user', {
