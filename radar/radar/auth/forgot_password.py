@@ -71,4 +71,7 @@ def reset_password(token, username, password):
     user.reset_password_token = None
     user.reset_password_date = None
 
+    # Unset the force password change flag
+    user.force_password_change = False
+
     db.session.commit()
