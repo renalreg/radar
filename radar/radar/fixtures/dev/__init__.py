@@ -465,7 +465,7 @@ def create_patients(n):
     organisations = Organisation.query\
         .filter(Organisation.type == ORGANISATION_TYPE_UNIT)\
         .all()
-    cohorts = Cohort.query.all()
+    cohorts = Cohort.query.filter(Cohort.code != 'RADAR').all()
     radar_organisation = get_radar_organisation()
     radar_cohort = get_radar_cohort()
 
