@@ -416,7 +416,7 @@ class UserPermission(Permission):
 
 
 class RecruitPatientPermission(Permission):
-    def has_permission(request, user):
+    def has_permission(self, request, user):
         if not super(RecruitPatientPermission, self).has_permission(request, user):
             return False
 
