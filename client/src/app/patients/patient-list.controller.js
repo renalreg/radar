@@ -22,7 +22,7 @@
 
       var proxy = new ListHelperProxy(search, {
         perPage: 50,
-        sortBy: 'id',
+        sortBy: 'recruitedDate',
         reverse: true
       });
       proxy.load();
