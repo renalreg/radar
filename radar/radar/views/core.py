@@ -34,6 +34,7 @@ class PermissionViewMixin(object):
     def check_permissions(self):
         for permission in self.get_permissions():
             if not permission.has_permission(request, current_user):
+                print 'Denied by', permission
                 raise PermissionDenied()
 
     def check_object_permissions(self, obj):
