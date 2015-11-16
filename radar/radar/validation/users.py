@@ -1,6 +1,6 @@
 from radar.auth.passwords import check_password_hash, is_strong_password
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
-    pass_call
+    pass_call, pass_old_value
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional, email_address, not_empty
 
@@ -23,6 +23,16 @@ class UserValidation(MetaValidationMixin, Validation):
     last_name = Field([optional()])
     is_admin = Field([required()])
     force_password_change = Field([required()])
+
+    @pass_context
+    @pass_old_value
+    def validate_username(self, ctx, old_username, new_username):
+        current_user = ctx['user']
+
+        if old_username != new_username and not current_user.is_admin:
+            raise ValidationError('Only admins can change usernames.')
+
+        return new_username
 
     @pass_context
     @pass_new_obj
