@@ -3,8 +3,13 @@
 
   var app = angular.module('radar.users.cohorts');
 
-  app.factory('UserCohortsController', function(ModelListDetailController) {
-    function UserCohortsController($scope, $injector, store, firstPromise) {
+  function controllerFactory(
+    ModelListDetailController,
+    $injector,
+    store,
+    firstPromise
+  ) {
+    function UserCohortsController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
@@ -24,12 +29,22 @@
       };
     }
 
+    UserCohortsController.$inject = ['$scope'];
     UserCohortsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return UserCohortsController;
-  });
+  }
 
-  app.directive('userCohortsComponent', function(UserCohortsController) {
+  controllerFactory.$inject = [
+    'ModelListDetailController',
+    '$injector',
+    'store',
+    'firstPromise'
+  ];
+
+  app.factory('UserCohortsController', controllerFactory);
+
+  app.directive('userCohortsComponent', ['UserCohortsController', function(UserCohortsController) {
     return {
       scope: {
         user: '='
@@ -37,5 +52,5 @@
       controller: UserCohortsController,
       templateUrl: 'app/users/cohorts/cohorts-component.html'
     };
-  });
+  }]);
 })();
