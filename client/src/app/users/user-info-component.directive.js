@@ -26,6 +26,15 @@
     UserInfoController.$inject = ['$scope'];
     UserInfoController.prototype = Object.create(ModelDetailController.prototype);
 
+    UserInfoController.prototype.save = function() {
+      // If the password is blank don't update it
+      if (!this.scope.item.password) {
+        this.scope.item.password = undefined;
+      }
+
+      return ModelDetailController.prototype.save.call(this);
+    };
+
     return UserInfoController;
   }]);
 

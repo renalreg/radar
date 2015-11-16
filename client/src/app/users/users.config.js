@@ -12,6 +12,11 @@
       }]
     });
 
+    $stateProvider.state('newUser', {
+      url: '/users/new',
+      templateUrl: 'app/users/new/new-user.html'
+    });
+
     $stateProvider.state('user', {
       url: '/users/:userId',
       templateUrl: 'app/users/user-detail.html',

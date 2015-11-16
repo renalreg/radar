@@ -32,6 +32,11 @@
         </tr>
 
         <tr>
+          <th>Force Password Change?</th>
+          <td><span tick="item.forcePasswordChange"></span></td>
+        </tr>
+
+        <tr>
           <th>Is Admin?</th>
           <td><span tick="item.isAdmin"></span></td>
         </tr>
@@ -82,7 +87,26 @@
 
         <div frm-control>
           <div frm-password-field model="item.password"></div>
+          <div frm-help>Leave blank to keep the same password.</div>
           <div frm-errors errors="item.errors.password"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirm Password</div>
+
+        <div frm-control>
+          <div frm-confirm-password-field model="item.confirmPassword" password="item.password" required="item.password.length > 0"></div>
+          <div frm-errors></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Force Password Change?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.forcePasswordChange"></div>
+          <div frm-errors errors="item.errors.forcePasswordChange"></div>
         </div>
       </div>
 
@@ -90,7 +114,7 @@
         <div frm-label>Is Admin?</div>
 
         <div frm-control>
-          <div frm-checkbox-field model="item.isAdmin"></div>
+          <div frm-boolean-field model="item.isAdmin"></div>
           <div frm-errors errors="item.errors.isAdmin"></div>
         </div>
       </div>

@@ -37,10 +37,28 @@
     </div>
 
     <div frm-field frm-group>
+      <div frm-label>Password</div>
+
+      <div frm-control>
+        <div frm-password-field model="item.password" required="true"></div>
+        <div frm-errors errors="item.errors.password"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Confirm Password</div>
+
+      <div frm-control>
+        <div frm-confirm-password-field model="item.confirmPassword" password="item.password" required="true"></div>
+        <div frm-errors></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
       <div frm-label>Is Admin?</div>
 
       <div frm-control>
-        <div frm-checkbox-field model="item.isAdmin"></div>
+        <div frm-boolean-field model="item.isAdmin"></div>
         <div frm-errors errors="item.errors.isAdmin"></div>
       </div>
     </div>
