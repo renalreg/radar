@@ -1,5 +1,4 @@
-from radar.fixtures.validation import validate
-from radar.database import db
+from radar.fixtures.validation import validate_and_add
 from radar.models import CohortDiagnosis, Cohort
 
 COHORT_DIAGNOSES = {
@@ -23,5 +22,4 @@ def create_cohort_diagnoses():
             cohort_diagnosis = CohortDiagnosis()
             cohort_diagnosis.cohort = cohort
             cohort_diagnosis.label = cohort_diagnosis_label
-            cohort_diagnosis = validate(cohort_diagnosis)
-            db.session.add(cohort_diagnosis)
+            validate_and_add(cohort_diagnosis)

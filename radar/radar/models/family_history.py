@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column
+from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
 
 class FamilyHistory(db.Model, MetaModelMixin):
@@ -10,8 +10,8 @@ class FamilyHistory(db.Model, MetaModelMixin):
 
     id = uuid_pk_column()
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship('family_history')
 
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')

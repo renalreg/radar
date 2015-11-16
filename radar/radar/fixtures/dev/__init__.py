@@ -12,7 +12,7 @@ from radar.fixtures.dev.utils import random_date, generate_gender, generate_firs
     generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
     generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \
     generate_postcode
-from radar.fixtures.validation import validate
+from radar.fixtures.validation import validate_and_add
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
@@ -49,8 +49,7 @@ def create_users(n):
         user.email = '%s@example.org' % username
         user.password = PASSWORD
         user.is_admin = True
-        user = validate(user, {'allow_weak_passwords': True})
-        db.session.add(user)
+        validate_and_add(user, {'allow_weak_passwords': True})
 
 
 def create_admin_user():
@@ -59,8 +58,7 @@ def create_admin_user():
     admin.email = 'admin@example.org'
     admin.is_admin = True
     admin.password = PASSWORD
-    admin = validate(admin, {'allow_weak_passwords': True})
-    db.session.add(admin)
+    validate_and_add(admin, {'allow_weak_passwords': True})
 
 
 def create_bot_user():
@@ -75,6 +73,7 @@ def create_bot_user():
     bot.created_date = func.now()
     bot.modified_date = func.now()
     db.session.add(bot)
+    db.session.flush()
 
 
 def create_southmead_user():
@@ -83,16 +82,13 @@ def create_southmead_user():
     user.email = 'southmead_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user, {'allow_weak_passwords': True})
-    db.session.add(user)
+    user = validate_and_add(user, {'allow_weak_passwords': True})
 
     organisation_user = OrganisationUser()
     organisation_user.user = user
     organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
     organisation_user.role = ORGANISATION_SENIOR_CLINICIAN
-
-    organisation_user = validate(organisation_user)
-    db.session.add(organisation_user)
+    validate_and_add(organisation_user)
 
 
 def create_srns_user():
@@ -101,15 +97,13 @@ def create_srns_user():
     user.email = 'srns_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user, {'allow_weak_passwords': True})
-    db.session.add(user)
+    user = validate_and_add(user, {'allow_weak_passwords': True})
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_RESEARCHER
-    cohort_user = validate(cohort_user)
-    db.session.add(cohort_user)
+    validate_and_add(cohort_user)
 
 
 def create_srns_demograhics_user():
@@ -118,15 +112,13 @@ def create_srns_demograhics_user():
     user.email = 'srns_demographics_demo@example.org'
     user.is_admin = False
     user.password = PASSWORD
-    user = validate(user, {'allow_weak_passwords': True})
-    db.session.add(user)
+    user = validate_and_add(user, {'allow_weak_passwords': True})
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
     cohort_user.role = COHORT_SENIOR_RESEARCHER
-    cohort_user = validate(cohort_user)
-    db.session.add(cohort_user)
+    validate_and_add(cohort_user)
 
 
 def create_posts(n):
@@ -137,16 +129,14 @@ def create_posts(n):
         post.title = '%s Newsletter' % d.strftime('%b %Y')
         post.body = generate_lorem_ipsum(n=3, html=False)
         post.published_date = d
-        post = validate(post)
-        db.session.add(post)
+        validate_and_add(post)
 
     post = Post()
     post.title = 'New RaDaR Conditions'
     post.body = 'RaDaR is now open to two new conditions - Calciphylaxis and IgA Nephropathy. '\
         'No new approvals are needed for these conditions and patients are registered in the normal fashion.'
     post.published_date = date.today()
-    post = validate(post)
-    db.session.add(post)
+    validate_and_add(post)
 
 
 def create_result_groups_f():
@@ -173,8 +163,7 @@ def create_result_groups_f():
                     elif type == RESULT_SPEC_TYPE_CODED_STRING or type == RESULT_SPEC_TYPE_CODED_INTEGER:
                         results[result_spec.code] = random.choice(result_spec.option_values)
 
-                result_group = validate(result_group)
-                db.session.add(result_group)
+                validate_and_add(result_group)
 
     return f
 
@@ -230,8 +219,7 @@ def create_demographics_f():
             new_d.work_number = old_d.work_number
             new_d.email_address = old_d.email_address
 
-        new_d = validate(new_d)
-        db.session.add(new_d)
+        validate_and_add(new_d)
 
     return create_demographics
 
@@ -256,8 +244,7 @@ def create_patient_aliases_f():
         else:
             alias.last_name = d.last_name
 
-        alias = validate(alias)
-        db.session.add(alias)
+        validate_and_add(alias)
 
     return create_patient_aliases
 
@@ -288,8 +275,7 @@ def create_patient_numbers_f():
             else:
                 new_n.number = old_n.number
 
-            new_n = validate(new_n)
-            db.session.add(new_n)
+            validate_and_add(new_n)
 
     return create_patient_numbers
 
@@ -328,8 +314,7 @@ def create_patient_addresses_f():
                 new_a.address_line_3 = old_a.address_line_3
                 new_a.postcode = old_a.postcode
 
-        new_a = validate(new_a)
-        db.session.add(new_a)
+        validate_and_add(new_a)
 
     return create_patient_addresses
 
@@ -349,9 +334,7 @@ def create_dialysis_f():
 
             dialysis.dialysis_type = random.choice(dialysis_types)
 
-            dialysis = validate(dialysis)
-
-            db.session.add(dialysis)
+            validate_and_add(dialysis)
 
     return create_dialysis
 
@@ -373,9 +356,7 @@ def create_medications_f():
             medication.frequency = random.choice(MEDICATION_FREQUENCIES.keys())
             medication.route = random.choice(MEDICATION_ROUTES.keys())
 
-            medication = validate(medication)
-
-            db.session.add(medication)
+            validate_and_add(medication)
 
     return create_medications
 
@@ -396,9 +377,7 @@ def create_transplants_f():
             if random.random() > 0.75:
                 transplant.date_failed = random_date(transplant.transplant_date, date.today())
 
-            transplant = validate(transplant)
-
-            db.session.add(transplant)
+            validate_and_add(transplant)
 
     return create_transplants
 
@@ -413,9 +392,7 @@ def create_hospitalisations_f():
             hospitalisation.date_of_discharge = random_date(hospitalisation.date_of_admission, date.today())
             hospitalisation.reason_for_admission = 'Test'
 
-            hospitalisation = validate(hospitalisation)
-
-            db.session.add(hospitalisation)
+            validate_and_add(hospitalisation)
 
     return create_hospitalisations
 
@@ -434,9 +411,7 @@ def create_plasmapheresis_f():
             plasmapheresis.no_of_exchanges = random.choice(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())
             plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES.keys())
 
-            plasmapheresis = validate(plasmapheresis)
-
-            db.session.add(plasmapheresis)
+            validate_and_add(plasmapheresis)
 
     return create_plasmapheresis
 
@@ -472,9 +447,7 @@ def create_renal_imaging_f():
                     renal_imaging.left_nephrocalcinosis = random_bool()
                     renal_imaging.left_nephrolithiasis = random_bool()
 
-            renal_imaging = validate(renal_imaging)
-
-            db.session.add(renal_imaging)
+            validate_and_add(renal_imaging)
 
     return create_renal_imaging
 
@@ -505,8 +478,7 @@ def create_patients(n):
 
         patient = Patient()
         patient.is_active = True
-        patient = validate(patient)
-        db.session.add(patient)
+        validate_and_add(patient)
 
         gender = generate_gender()
 
@@ -521,17 +493,15 @@ def create_patients(n):
         radar_cohort_patient.recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
         radar_cohort_patient.recruited_by_organisation = radar_organisation
         radar_cohort_patient.is_active = True
-        radar_cohort_patient = validate(radar_cohort_patient)
-        db.session.add(radar_cohort_patient)
+        validate_and_add(radar_cohort_patient)
 
         for organisation in random.sample(organisations, random.randint(1, 3)):
             organisation_patient = OrganisationPatient()
             organisation_patient.organisation = organisation
             organisation_patient.patient = patient
             organisation_patient.is_active = True
-            organisation_patient = validate(organisation_patient)
+            validate_and_add(organisation_patient)
             organisation_patient.created_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
-            db.session.add(organisation_patient)
 
             if i < 5:
                 for data_source in organisation.data_sources:
@@ -560,24 +530,24 @@ def create_patients(n):
         cohort_patient.recruited_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
         cohort_patient.recruited_by_organisation = radar_organisation
         cohort_patient.is_active = True
-        cohort_patient = validate(cohort_patient)
-        db.session.add(cohort_patient)
+        validate_and_add(cohort_patient)
 
 
 def create_data(patients_n=5, users_n=10):
     # Always generate the same "random" data
     random.seed(0)
 
-    create_bot_user()
-    create_admin_user()
+    with db.session.no_autoflush:
+        create_bot_user()
+        create_admin_user()
 
-    create_initial_data()
+        create_initial_data()
 
-    create_southmead_user()
-    create_srns_user()
-    create_srns_demograhics_user()
+        create_southmead_user()
+        create_srns_user()
+        create_srns_demograhics_user()
 
-    create_users(users_n)
-    create_patients(patients_n)
+        create_users(users_n)
+        create_patients(patients_n)
 
-    create_posts(10)
+        create_posts(10)

@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.roles import COHORT_VIEW_DEMOGRAPHICS_ROLES, COHORT_VIEW_PATIENT_ROLES, \
     COHORT_VIEW_USER_ROLES, COHORT_MANAGED_ROLES
-from radar.models.common import MetaModelMixin
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 
 
 class Cohort(db.Model):
@@ -61,8 +61,8 @@ class CohortPatient(db.Model, MetaModelMixin):
     cohort_id = Column(Integer, ForeignKey('cohorts.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     cohort = relationship('Cohort')
 
-    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship('cohort_patients')
 
     recruited_by_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
     recruited_by_organisation = relationship('Organisation')

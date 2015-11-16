@@ -1,6 +1,5 @@
 from collections import OrderedDict
-from radar.fixtures.validation import validate
-from radar.database import db
+from radar.fixtures.validation import validate_and_add
 from radar.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec, RESULT_SPEC_TYPE_CODED_STRING, \
     RESULT_SPEC_TYPE_FLOAT
 
@@ -508,8 +507,7 @@ def create_result_specs():
         if options is not None:
             result_spec.options = [{'id': k, 'label': v} for k, v in options.items()]
 
-        result_spec = validate(result_spec)
-        db.session.add(result_spec)
+        validate_and_add(result_spec)
 
 
 def create_result_group_specs():
@@ -517,8 +515,7 @@ def create_result_group_specs():
         result_group_spec = ResultGroupSpec()
         result_group_spec.code = x['code']
         result_group_spec.name = x['name']
-        result_group_spec = validate(result_group_spec)
-        db.session.add(result_group_spec)
+        result_group_spec = validate_and_add(result_group_spec)
 
         for i, result_code in enumerate(x['result_codes']):
             result_spec = ResultSpec.query.filter(ResultSpec.code == result_code).one()
@@ -526,5 +523,4 @@ def create_result_group_specs():
             result_group_result_spec.result_group_spec = result_group_spec
             result_group_result_spec.result_spec = result_spec
             result_group_result_spec.weight = i * 100  # leave some gaps
-            result_group_result_spec = validate(result_group_result_spec)
-            db.session.add(result_group_result_spec)
+            validate_and_add(result_group_result_spec)

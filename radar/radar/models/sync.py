@@ -9,8 +9,8 @@ class PatientLatestImport(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship()
 
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')
@@ -29,8 +29,8 @@ class PatientImportLog(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship()
 
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')
@@ -43,7 +43,7 @@ class PatientExportLog(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    patient = relationship('Patient')
+    patient_id = patient_id_column()
+    patient = patient_relationship()
 
     data = Column(Text)
