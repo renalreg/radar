@@ -6,14 +6,14 @@ from radar.user_search import UserQueryBuilder
 from radar.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.models import User
 from radar.auth.sessions import current_user
-from radar.permissions import UserPermission
+from radar.permissions import UserListPermission, UserDetailPermission
 
 
 class UserListView(ListCreateModelView):
     serializer_class = UserSerializer
     validation_class = UserValidation
     model_class = User
-    permission_classes = [UserPermission]
+    permission_classes = [UserListPermission]
     sort_fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
     def get_query(self):
@@ -52,7 +52,7 @@ class UserDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = UserSerializer
     validation_class = UserValidation
     model_class = User
-    permission_classes = [UserPermission]
+    permission_classes = [UserDetailPermission]
 
     def get_context(self, deserialized_data):
         ctx = super(UserDetailView, self).get_context(deserialized_data)
