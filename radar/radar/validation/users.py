@@ -2,7 +2,7 @@ from radar.auth.passwords import check_password_hash, is_strong_password
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
     pass_call, pass_old_value
 from radar.validation.meta import MetaValidationMixin
-from radar.validation.validators import required, optional, email_address, not_empty
+from radar.validation.validators import required, optional, email_address, not_empty, none_if_blank
 
 
 class PasswordField(Field):
@@ -14,59 +14,94 @@ class PasswordField(Field):
 
 # TODO check username not already taken
 class UserValidation(MetaValidationMixin, Validation):
-    id = Field()
+    id = Field([optional()])
     username = Field([required()])
     password = PasswordField([optional()])
     password_hash = Field([optional()])
-    email = Field([optional(), email_address()])
-    first_name = Field([optional()])
-    last_name = Field([optional()])
+    email = Field([none_if_blank(), optional(), email_address()])
+    first_name = Field([none_if_blank(), optional()])
+    last_name = Field([none_if_blank(), optional()])
     is_admin = Field([required()])
     force_password_change = Field([required()])
 
     @pass_context
+    @pass_old_obj
     @pass_old_value
-    def validate_username(self, ctx, old_username, new_username):
+    def validate_username(self, ctx, old_obj, old_username, new_username):
         current_user = ctx['user']
 
-        if old_username != new_username and not current_user.is_admin:
+        if old_obj.id is not None and old_username != new_username and not current_user.is_admin:
             raise ValidationError('Only admins can change usernames.')
 
         return new_username
 
     @pass_context
+    @pass_call
+    @pass_old_obj
     @pass_new_obj
-    def validate_password(self, ctx, obj, password):
-        allow_weak_passwords = ctx.get('allow_weak_passwords', False)
+    def validate_password(self, ctx, call, old_obj, new_obj, password):
+        current_user = ctx['user']
 
-        if not allow_weak_passwords and not is_strong_password(password, obj):
-            raise ValidationError('Password is too weak.')
+        # Setting password
+        if password is not None:
+            # Can't change other user's passwords
+            if old_obj.id is not None and new_obj != current_user or current_user.is_admin:
+                raise ValidationError('Permission denied!')
+
+            allow_weak_passwords = ctx.get('allow_weak_passwords', False)
+
+            if not allow_weak_passwords and not is_strong_password(password, new_obj):
+                raise ValidationError('Password is too weak.')
 
         return password
 
+    @pass_context
     @pass_call
+    @pass_old_obj
     @pass_new_obj
-    def validate_first_name(self, call, obj, first_name):
-        if not obj.is_bot:
-            first_name = call.validators([not_empty()], first_name)
+    @pass_old_value
+    def validate_first_name(self, ctx, call, old_obj, new_obj, old_first_name, new_first_name):
+        current_user = ctx['user']
 
-        return first_name
+        # First name has changed
+        if old_obj.id is not None and new_first_name != old_first_name:
+            # Regular user trying to change another user's first name
+            if new_obj != current_user and not current_user.is_admin:
+                raise ValidationError("Permission denied!")
 
+        return new_first_name
+
+    @pass_context
     @pass_call
+    @pass_old_obj
     @pass_new_obj
-    def validate_last_name(self, call, obj, last_name):
-        if not obj.is_bot:
-            last_name = call.validators([not_empty()], last_name)
+    @pass_old_value
+    def validate_last_name(self, ctx, call, old_obj, new_obj, old_last_name, new_last_name):
+        current_user = ctx['user']
 
-        return last_name
+        # Last name has changed
+        if old_obj.id is not None and old_last_name != new_last_name:
+            # Regular user trying to change another user's last name
+            if new_obj != current_user and not current_user.is_admin:
+                raise ValidationError("Permission denied!")
 
+        return new_last_name
+
+    @pass_context
     @pass_call
+    @pass_old_obj
     @pass_new_obj
-    def validate_email(self, call, obj, email):
-        if not obj.is_bot:
-            email = call.validators([required()], email)
+    @pass_old_value
+    def validate_email(self, ctx, call, old_obj, new_obj, old_email, new_email):
+        current_user = ctx['user']
 
-        return email
+        # Email has changed
+        if old_obj.id is not None and old_email != new_email:
+            # Regular user trying to change another user's email
+            if new_obj != current_user and not current_user.is_admin:
+                raise ValidationError("Permission denied!")
+
+        return new_email
 
     @pass_context
     @pass_old_obj
@@ -88,32 +123,66 @@ class UserValidation(MetaValidationMixin, Validation):
                     not new_obj.force_password_change and
                     old_obj.password_hash == new_obj.password_hash
                 ):
+                    # Can't unset flag without changing password
+                    # NOTE we check the password has actually changed in the validate method
                     raise ValidationError('A password change is required.')
 
         return value
 
     @pass_context
+    @pass_new_obj
+    @pass_old_value
+    def validate_is_admin(self, ctx, obj, old_is_admin, new_is_admin):
+        current_user = ctx['user']
+
+        if new_is_admin:
+            # Must be an admin to grant admin rights
+            if not old_is_admin and not current_user.is_admin:
+                raise ValidationError('Permission denied!')
+        else:
+            # Can't revoke your own admin rights
+            if old_is_admin and current_user == obj:
+                raise ValidationError('Permission denied!')
+
+        return new_is_admin
+
+    @pass_context
+    @pass_call
     @pass_old_obj
-    def validate(self, ctx, old_obj, new_obj):
-        password_required = False
+    def validate(self, ctx, call, old_obj, new_obj):
+        current_user = ctx['user']
 
-        # Email changed for existing user
-        if old_obj.id is not None and old_obj.email != new_obj.email:
-            password_required = True
+        # Password is required when creating a new user
+        if old_obj.id is None:
+            call.validators_for_field([required()], new_obj, self.password)
 
-        # Password changed for existing user
-        if old_obj.id is not None and old_obj.password_hash != new_obj.password_hash:
-            password_required = True
+        # Humans need a name and email
+        if not new_obj.is_bot:
+            call.validators_for_field([not_empty()], new_obj, self.first_name)
+            call.validators_for_field([not_empty()], new_obj, self.last_name)
+            call.validators_for_field([required()], new_obj, self.email)
 
-        if password_required:
-            current_password_hash = old_obj.password_hash
-            current_password = ctx.get('current_password')
+        # Check passwords if updating your own email or password
+        if current_user == new_obj:
+            password_required = False
 
-            if current_password is None or not check_password_hash(current_password_hash, current_password):
-                # Incorrect password
-                raise ValidationError({'current_password': 'Incorrect password!'})
-            elif old_obj.force_password_change and new_obj.check_password(current_password):
-                # New password must be different to old password if force password change was set
-                raise ValidationError({'password': 'New password must be different to old password.'})
+            # Email changed for existing user
+            if old_obj.id is not None and old_obj.email != new_obj.email:
+                password_required = True
+
+            # Password changed for existing user
+            if old_obj.id is not None and old_obj.password_hash != new_obj.password_hash:
+                password_required = True
+
+            if password_required:
+                current_password_hash = old_obj.password_hash
+                current_password = ctx.get('current_password')
+
+                if current_password is None or not check_password_hash(current_password_hash, current_password):
+                    # Incorrect password
+                    raise ValidationError({'current_password': 'Incorrect password!'})
+                elif old_obj.force_password_change and new_obj.check_password(current_password):
+                    # New password must be different to old password if force password change was set
+                    raise ValidationError({'password': 'New password must be different to old password.'})
 
         return new_obj

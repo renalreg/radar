@@ -95,11 +95,6 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self._password = value
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
-        self.force_password_change = False
-
-    def set_initial_password(self, value):
-        self._password = value
-        self.force_password_change = True
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
