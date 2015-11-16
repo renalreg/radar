@@ -17,7 +17,7 @@
       }
 
       return obj.cohort.code !== 'RADAR';
-    }
+    };
 
     return PatientCohortPermission;
   }]);

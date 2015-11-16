@@ -2,7 +2,7 @@ from radar.auth.passwords import check_password_hash, is_strong_password
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
     pass_call, pass_old_value
 from radar.validation.meta import MetaValidationMixin
-from radar.validation.validators import required, optional, email_address, not_empty, none_if_blank
+from radar.validation.validators import required, optional, email_address, not_empty, none_if_blank, default
 
 
 class PasswordField(Field):
@@ -21,8 +21,8 @@ class UserValidation(MetaValidationMixin, Validation):
     email = Field([none_if_blank(), optional(), email_address()])
     first_name = Field([none_if_blank(), optional()])
     last_name = Field([none_if_blank(), optional()])
-    is_admin = Field([required()])
-    force_password_change = Field([required()])
+    is_admin = Field([default(False), required()])
+    force_password_change = Field([default(False), required()])
 
     @pass_context
     @pass_old_obj
