@@ -17,12 +17,12 @@
       </tr>
 
       <tr>
-        <th>Recruited Unit</th>
+        <th>Recruited by Unit</th>
         <td>{{item.recruitedByOrganisation.name}}</td>
       </tr>
 
       <tr>
-        <th>Added</th>
+        <th>Recruited Date</th>
         <td>{{item.createdDate | dateTimeFormat}}</td>
       </tr>
 
@@ -52,7 +52,7 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Recruited Unit</div>
+        <div frm-label>Recruited by Unit</div>
 
         <div frm-control>
           <div frm-unit-field model="item.recruitedByOrganisation" required="true"></div>
@@ -91,7 +91,8 @@
         <tr>
           <th></th>
           <th sort-helper="cohort.name">Cohort</th>
-          <th sort-helper="createdDate">Added</th>
+          <th sort-helper="recruitedByOrganisation.name">Recruited By Unit</th>
+          <th sort-helper="createdDate">Recruited Date</th>
           <th sort-helper="isActive">Active</th>
           <th></th>
         </tr>
@@ -105,6 +106,7 @@
           </td>
 
           <td>{{item.cohort.name}}</td>
+          <td>{{item.recruitedByOrganisation.name}}</td>
           <td>{{item.createdDate | dateFormat}}</td>
           <td><span tick="item.isActive"></span></td>
 

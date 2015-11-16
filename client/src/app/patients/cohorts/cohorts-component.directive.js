@@ -4,7 +4,22 @@
   var app = angular.module('radar.patients.cohorts');
 
   app.factory('PatientCohortPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
-    return PatientObjectPermission;
+    function PatientCohortPermission() {
+      console.log(arguments);
+      PatientObjectPermission.apply(this, arguments);
+    }
+
+    PatientCohortPermission.prototype = Object.create(PatientObjectPermission.prototype);
+
+    PatientCohortPermission.prototype.hasObjectPermission = function(obj) {
+      if (!PatientObjectPermission.prototype.hasObjectPermission.call(this, obj)) {
+        return false;
+      }
+
+      return obj.cohort.code !== 'RADAR';
+    }
+
+    return PatientCohortPermission;
   }]);
 
   function controllerFactory(
