@@ -392,6 +392,18 @@ class PatientCohortObjectPermission(PatientObjectPermission, CohortObjectPermiss
 
 
 class UserPermission(Permission):
+    def has_permission(self, request, user):
+        if not super(UserPermission, self).has_permission(request, user):
+            return False
+
+        if is_safe_method(request):
+            return True
+        else:
+            return (
+                user.is_admin or
+                has_permission_for_any_group(user, 'has_edit_user_membership_permission')
+            )
+
     def has_object_permission(self, request, user, obj):
         if not super(UserPermission, self).has_object_permission(request, user, obj):
             return False

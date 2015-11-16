@@ -6,6 +6,7 @@ from radar.validation.validators import email_address
 
 def test_valid():
     assert valid('foo@example.org') == 'foo@example.org'
+    assert valid('a@a.a') == 'a@a.a'
 
 
 def test_upper():

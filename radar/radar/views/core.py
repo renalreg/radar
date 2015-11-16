@@ -49,7 +49,11 @@ class PermissionViewMixin(object):
         return [permission() for permission in self.get_permission_classes()]
 
     def dispatch_request(self, *args, **kwargs):
-        self.check_permissions()
+        try:
+            self.check_permissions()
+        except PermissionDenied:
+            abort(403)
+
         return super(PermissionViewMixin, self).dispatch_request(*args, **kwargs)
 
 

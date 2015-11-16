@@ -45,7 +45,7 @@ class UserValidation(MetaValidationMixin, Validation):
         # Setting password
         if password is not None:
             # Can't change other user's passwords
-            if old_obj.id is not None and new_obj != current_user or current_user.is_admin:
+            if old_obj.id is not None and new_obj != current_user and not current_user.is_admin:
                 raise ValidationError('Permission denied!')
 
             allow_weak_passwords = ctx.get('allow_weak_passwords', False)
