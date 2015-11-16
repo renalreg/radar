@@ -44,7 +44,14 @@ def has_cohort_permission_for_patient(user, patient, permission):
         return any(getattr(x, permission) for x in cohort_users)
 
 
-def has_cohort_permission(user, cohort, permission):
+def has_permission_for_any_cohort(user, permission):
+    return (
+        user.is_admin or
+        any(getattr(x, permission) for x in user.cohort_users)
+    )
+
+
+def has_permission_for_cohort(user, cohort, permission):
     """Check that the user has a permission on a cohort."""
 
     if user.is_admin:
@@ -59,7 +66,14 @@ def has_cohort_permission(user, cohort, permission):
         return False
 
 
-def has_organisation_permission(user, organisation, permission):
+def has_permission_for_any_organisation(user, permission):
+    return (
+        user.is_admin or
+        any(getattr(x, permission) for x in user.organisation_users)
+    )
+
+
+def has_permission_for_organisation(user, organisation, permission):
     """Check that the user has a permission on an organisation."""
 
     if user.is_admin:
@@ -72,6 +86,14 @@ def has_organisation_permission(user, organisation, permission):
 
         # User not a member of the organisation or doesn't have the required permission
         return False
+
+
+def has_permission_for_any_group(user, permission):
+    return (
+        user.is_admin or
+        has_permission_for_any_organisation(user, permission) or
+        has_permission_for_any_cohort(user, permission)
+    )
 
 
 def can_view_demographics(user, patient):
@@ -104,7 +126,7 @@ def can_view_patient_object(user, patient, cohort=None):
         return False
 
     # If the object belongs to a cohort we also need to check cohort permissions
-    if cohort is not None and not has_cohort_permission(user, cohort, 'has_view_patient_permission'):
+    if cohort is not None and not has_permission_for_cohort(user, cohort, 'has_view_patient_permission'):
         return False
 
     return True
@@ -129,7 +151,7 @@ def can_edit_patient_object(user, patient, organisation=None):
         return False
 
     # If the object belongs to a organisation we also need to check organisation permissions
-    if organisation is not None and not has_organisation_permission(user, organisation, 'has_view_patient_permission'):
+    if organisation is not None and not has_permission_for_organisation(user, organisation, 'has_view_patient_permission'):
         return False
 
     return True
@@ -367,3 +389,15 @@ class PatientRadarObjectPermission(PatientObjectPermission, RadarObjectPermissio
 
 class PatientCohortObjectPermission(PatientObjectPermission, CohortObjectPermission):
     pass
+
+
+class UserPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(UserPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return (
+            user.is_admin or
+            user == obj or
+            has_permission_for_any_group(user, 'has_edit_user_membership_permission')
+        )

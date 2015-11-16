@@ -1,17 +1,19 @@
 from flask import request
-from radar.validation.users import UserValidation
 
+from radar.validation.users import UserValidation
 from radar_api.serializers.users import UserSerializer, UserListRequestSerializer
 from radar.user_search import UserQueryBuilder
 from radar.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.models import User
 from radar.auth.sessions import current_user
+from radar.permissions import UserPermission
 
 
 class UserListView(ListCreateModelView):
     serializer_class = UserSerializer
     validation_class = UserValidation
     model_class = User
+    permission_classes = [UserPermission]
     sort_fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
     def get_query(self):
@@ -50,6 +52,7 @@ class UserDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = UserSerializer
     validation_class = UserValidation
     model_class = User
+    permission_classes = [UserPermission]
 
     def get_context(self, deserialized_data):
         ctx = super(UserDetailView, self).get_context(deserialized_data)
