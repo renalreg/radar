@@ -5,7 +5,6 @@
 
   app.factory('PatientCohortPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     function PatientCohortPermission() {
-      console.log(arguments);
       PatientObjectPermission.apply(this, arguments);
     }
 

@@ -3,17 +3,24 @@
 
   var app = angular.module('radar.cohorts');
 
+  app.factory('CohortNotesPermission', ['AdminPermission', function(AdminPermission) {
+    return AdminPermission;
+  }]);
+
   function controllerFactory(
     ModelDetailController,
     $injector,
-    store
+    store,
+    CohortNotesPermission
   ) {
     function CohortNotesController($scope) {
       var self = this;
 
       $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
-        params: {}
+        params: {
+          permission: new CohortNotesPermission()
+        }
       });
 
       self.load($scope.cohort).then(function() {
@@ -30,7 +37,8 @@
   controllerFactory.$inject = [
     'ModelDetailController',
     '$injector',
-    'store'
+    'store',
+    'CohortNotesPermission'
   ];
 
   app.factory('CohortNotesController', controllerFactory);
