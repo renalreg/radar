@@ -5,7 +5,7 @@ from radar.models import Cohort
 
 
 class CohortSerializer(MetaSerializerMixin, ModelSerializer):
-    features = ListField(StringField(), source='sorted_features')
+    features = ListField(StringField(), source='sorted_features', read_only=True)
 
     class Meta(object):
         model_class = Cohort

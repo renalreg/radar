@@ -230,6 +230,25 @@ class AdminPermission(Permission):
         return user.is_admin
 
     def has_object_permission(self, request, user, obj):
+        if not super(AdminPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return self.has_permission(request, user)
+
+
+class AdminWritePermission(Permission):
+    """Checks that the user is an admin for unsafe (write) requests."""
+
+    def has_permission(self, request, user):
+        if not super(AdminWritePermission, self).has_permission(request, user):
+            return False
+
+        return is_safe_method(request) or user.is_admin
+
+    def has_object_permission(self, request, user, obj):
+        if not super(AdminWritePermission, self).has_object_permission(request, user, obj):
+            return False
+
         return self.has_permission(request, user)
 
 
