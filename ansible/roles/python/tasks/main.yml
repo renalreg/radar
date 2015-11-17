@@ -1,4 +1,11 @@
 ---
+- name: install postgresql
+  yum: name={{ item }} state=present
+  with_items:
+  - postgresql94
+  - postgresql94-libs
+  - postgresql94-devel
+
 - name: create .pip directory
   file: path=/home/vagrant/.pip owner=vagrant group=vagrant mode=0755 state=directory
 
