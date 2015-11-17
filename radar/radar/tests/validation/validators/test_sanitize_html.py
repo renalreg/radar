@@ -3,11 +3,15 @@ from radar.validation.validators import sanitize_html as _sanitize_html
 sanitize_html = _sanitize_html()
 
 SAFE_HTML = """
-<p><a href="http://www.google.com/" target="_blank">Hello</a></p>
+<a href="http://www.google.com/" target="_blank">Hello</a>
 
-<p><strong>Strong</strong></p>
+<strong>Strong</strong>
 
-<p><em>Em</em></p>
+<em>Em</em>
+
+<b>Bold</b>
+
+<i>Italic</i>
 
 <p>Hello<br>World</p>
 
