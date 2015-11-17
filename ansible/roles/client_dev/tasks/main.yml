@@ -38,12 +38,12 @@
   become: yes
   become_user: vagrant
 
-- name: build
+- name: gulp build
   command: gulp build chdir={{ src_path }}/client
   become: yes
   become_user: vagrant
 
-- name: build dist
+- name: gulp build:dist
   command: gulp build:dist chdir={{ src_path }}/client
   become: yes
   become_user: vagrant
