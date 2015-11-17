@@ -20,10 +20,12 @@ SAFE_HTML = """
   <li>One</li>
   <li>Two</li>
 </ol>
+
+<div>A div!</div>
 """
 
 UNSAFE_HTML = """
-<div>A div!</div>
+<div style="color: red">Bad</div>
 
 <script>alert('Uh oh!');</script>
 
@@ -31,7 +33,7 @@ UNSAFE_HTML = """
 """
 
 SANITIZED_UNSAFE_HTML = """
-&lt;div&gt;A div!&lt;/div&gt;
+<div>Bad</div>
 
 &lt;script&gt;alert('Uh oh!');&lt;/script&gt;
 
