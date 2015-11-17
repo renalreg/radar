@@ -26,13 +26,21 @@
           quill.setHTML($sce.getTrustedHtml(ngModel.$viewValue || ''));
         };
 
+        ngModel.$formatters.unshift(function(modelValue) {
+          return modelValue ? $sce.trustAsHtml(modelValue) : '';
+        });
+
+        ngModel.$parsers.unshift(function(viewValue) {
+          return viewValue ? $sce.getTrustedHtml(viewValue) : '';
+        });
+
         quill.on('text-change', function() {
-          console.log('text-change');
           scope.$evalAsync(read);
         });
 
         function read() {
           var html = quill.getHTML();
+          html = $sce.trustAsHtml(html);
           ngModel.$setViewValue(html);
         }
       }
