@@ -98,12 +98,13 @@ class Virtualenv(object):
     def update_paths(self, new_path):
         virtualenv_tools.update_paths(self.path, new_path)
 
-    def install_package(self, package_name, env=None):
-        self.run(['-m', 'pip', 'install', package_name], env=env)
-
     def install_requirements(self, path, env=None):
         head, tail = os.path.split(path)
-        self.run(['-m', 'pip', 'install', '-r', tail], env=env, cwd=head)
+        self.pip(['install', '-r', tail], env=env, cwd=head)
+
+    def pip(self, arguments, env=None, cwd=None):
+        command = [os.path.join(self.path, 'bin/pip')] + arguments
+        return run_command(command, env=env, cwd=cwd)
 
     def delete(self):
         info('Deleting virtualenv at %s ...' % self.path)
