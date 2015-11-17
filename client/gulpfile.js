@@ -14,7 +14,6 @@ var flatten = require('gulp-flatten');
 var useref = require('gulp-useref');
 var rev = require('gulp-rev');
 var revReplace = require('gulp-rev-replace');
-var gulpFilter = require('gulp-filter');
 var replace = require('gulp-replace');
 var jscs = require('gulp-jscs');
 var express = require('express');
@@ -24,6 +23,8 @@ var argv = require('yargs').argv;
 var stylish = require('gulp-jscs-stylish');
 var karma = require('karma');
 var gutil = require('gulp-util');
+var gulpif = require('gulp-if');
+var lazypipe = require('lazypipe');
 
 var common = require('./common');
 
@@ -46,7 +47,7 @@ gulp.task('sass', function() {
     .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('scripts', function() {
+gulp.task('js', function() {
   return gulp.src('src/app/**/*.js')
     .pipe(jshint())
     .pipe(jscs())
@@ -92,37 +93,41 @@ gulp.task('templates', function() {
 });
 
 gulp.task('html', function() {
+  var rewrite = lazypipe()
+    .pipe(function() {
+      var jqueryUi = lazypipe()
+        .pipe(replace, 'images/', '../images/jquery-ui/');
+
+      // glob is relative to src/index.html
+      return gulpif('../../bower_components/jquery-ui/**/*.css', jqueryUi());
+    });
+
   var templates = gulp.src('.tmp/templates/*.js', {read: false});
 
-  var assets = useref.assets();
+  var js = lazypipe()
+    .pipe(rev)
+    .pipe(uglify);
 
-  var jsFilter = gulpFilter('**/*.js', {restore: true});
-  var cssFilter = gulpFilter('**/*.css', {restore: true});
-  var htmlFilter = gulpFilter('*.html', {restore: true});
+  var css = lazypipe()
+    .pipe(rev)
+    .pipe(replace, '/bower_components/bootstrap-sass/assets/fonts/bootstrap/', '../fonts/')
+    .pipe(minifyCss, {compatibility: 'ie8'});
 
-  return gulp.src('.tmp/serve/index.html')
-    .pipe(inject(templates, {name: 'templates', ignorePath: '.tmp/templates'}))
-    .pipe(assets)
-    .pipe(rev())
-    .pipe(jsFilter)
-    .pipe(uglify())
-    .pipe(jsFilter.restore)
-    .pipe(cssFilter)
-    .pipe(replace('/bower_components/bootstrap-sass/assets/fonts/bootstrap/', '../fonts/'))
-    .pipe(replace('"images/', '"../images/'))
-    .pipe(minifyCss({compatibility: 'ie8'}))
-    .pipe(cssFilter.restore)
-    .pipe(assets.restore())
-    .pipe(useref())
-    .pipe(revReplace())
-    .pipe(htmlFilter)
-    .pipe(minifyHtml({
+  var html = lazypipe()
+    .pipe(minifyHtml, {
       empty: true,
       spare: true,
       quotes: true,
       conditionals: true
-    }))
-    .pipe(htmlFilter.restore)
+    });
+
+  return gulp.src('.tmp/serve/index.html')
+    .pipe(inject(templates, {name: 'templates', ignorePath: '.tmp/templates'}))
+    .pipe(useref({}, rewrite))
+    .pipe(gulpif('*.js', js()))
+    .pipe(gulpif('*.css', css()))
+    .pipe(revReplace())
+    .pipe(gulpif('*.html', html()))
     .pipe(gulp.dest('dist'));
 });
 
@@ -132,22 +137,28 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest('dist/fonts'));
 });
 
-gulp.task('images', function() {
+gulp.task('images-jquery-ui', function() {
+  return gulp.src(common.IMAGES_JQUERY_UI)
+    .pipe(imagemin({optimizationLevel: 3}))
+    .pipe(gulp.dest('dist/images/jquery-ui'));
+});
+
+gulp.task('images', gulp.parallel('images-jquery-ui', function() {
   return gulp.src(common.IMAGES)
     .pipe(imagemin({optimizationLevel: 3}))
     .pipe(gulp.dest('dist/images'));
-});
+}));
 
 gulp.task('size', function() {
   return gulp.src('dist/**/*')
     .pipe(size({showFiles: true}));
 });
 
-gulp.task('build', gulp.series(gulp.parallel('scripts', 'sass'), 'inject'));
+gulp.task('build', gulp.series(gulp.parallel('js', 'sass'), 'inject'));
 
 gulp.task('build:dist', gulp.series(
   'clean',
-  gulp.parallel('scripts', 'sass', 'templates'),
+  gulp.parallel('js', 'sass', 'templates'),
   'inject',
   gulp.parallel('html', 'fonts', 'images'),
   'size'
@@ -172,7 +183,7 @@ gulp.task('watch', function() {
       });
   }
 
-  watch('src/app/**/*.js', gulp.series('scripts'))
+  watch('src/app/**/*.js', gulp.series('js'))
     .on('add', gulp.series('inject'))
     .on('unlink', gulp.series('inject'));
 

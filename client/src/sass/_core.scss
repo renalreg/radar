@@ -227,3 +227,11 @@ table.item-meta {
 .breadcrumb > li + li:before {
     content: "/\00a0";
 }
+
+.text-editor-toolbar {
+  margin: 0 0 9px 0;
+}
+
+.text-editor {
+  border: 1px solid #ccc;
+}
