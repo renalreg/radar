@@ -43,10 +43,10 @@ def install_mock_ukrdc(v, root_path):
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
     info('Installing radar ...')
-    v.pip(['install', '.', '--no-deps'], cwd=radar_src_path)
+    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
 
     info('Installing radar-mock-ukrdc ...')
-    v.pip(['install', '.', '--no-deps'], cwd=mock_ukrdc_src_path)
+    v.pip(['install', '--no-deps', '.'], cwd=mock_ukrdc_src_path)
 
 
 def package_mock_ukrdc(v, root_path):
