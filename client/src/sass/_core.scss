@@ -207,15 +207,14 @@ table.item-meta {
   text-align: center;
   font-size: 11px;
   padding: 3px 15px;
+  color: #fff;
 }
 
 .header-alert-danger {
-  color: $radar-danger-text;
   background-color: $radar-danger;
 }
 
 .header-alert-warning {
-  color: $radar-warning-text;
   background-color: $radar-warning;
 }
 
