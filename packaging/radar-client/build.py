@@ -71,6 +71,7 @@ def test_client(root_path):
 
 @click.command()
 @click.option('--enable-tests/--disable-tests', default=True)
+@click.option('--upload/--no-upload', default=True)
 def main(enable_tests):
     root_path = os.path.abspath('../../')
 
