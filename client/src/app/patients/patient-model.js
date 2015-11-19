@@ -50,6 +50,24 @@
       });
     };
 
+    PatientModel.prototype.getCohorts = function(all) {
+      if (all === undefined) {
+        all = false;
+      }
+
+      if (all) {
+        return this.cohorts;
+      } else {
+        return _.filter(this.cohorts, function(x) {
+          return x.cohort.code !== 'RADAR';
+        });
+      }
+
+      return _.filter(this.organisations, function(x) {
+        return x.organisation.type === 'UNIT';
+      });
+    };
+
     return PatientModel;
   }]);
 
