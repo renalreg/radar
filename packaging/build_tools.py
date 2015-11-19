@@ -181,8 +181,8 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     return exit_code, output
 
 
-def git(arguments, env=None, cwd=None):
-    return run_command(['git'] + arguments, env=None, cwd=None)
+def git(arguments, env=None, cwd=None, allowed_exit_codes=None):
+    return run_command(['git'] + arguments, env=env, cwd=cwd, allowed_exit_codes=allowed_exit_codes)
 
 
 def get_python():
@@ -289,3 +289,8 @@ def get_git_commit_date():
 def get_git_branch():
     output = git(['symbolic-ref', 'HEAD'])[1].strip()
     return output
+
+
+def get_git_dirty():
+    status = git(['status', '--porcelain'])[1].strip()
+    return len(status) > 0
