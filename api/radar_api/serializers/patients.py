@@ -31,7 +31,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
 
     class Meta(object):
         model_class = Patient
-        fields = ['id']
+        fields = ['id', 'created_date', 'modified_date']
 
     def __init__(self, current_user, **kwargs):
         super(PatientSerializer, self).__init__(**kwargs)
