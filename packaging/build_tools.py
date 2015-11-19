@@ -1,4 +1,5 @@
 from __future__ import print_function
+from paramiko import SSHClient, AutoAddPolicy, Channel
 
 import json
 import subprocess
@@ -121,10 +122,54 @@ class ANY(object):
     pass
 
 
-def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
+def get_command_output(stdout, stderr):
+    poll = select.poll()
+    poll.register(stdout, select.POLLIN | select.POLLHUP)
+    poll.register(stderr, select.POLLIN | select.POLLHUP)
+    poll_count = 2
+
+    events = poll.poll()
+    output = []
+
+    while poll_count > 0 and len(events) > 0:
+        for event in events:
+            (f, event) = event
+
+            if event & select.POLLIN:
+                if f == stdout.fileno():
+                    line = stdout.readline()
+
+                    if len(line) > 0:
+                        output.append(line)
+                        print(line, end='')
+                elif f == f.stderr.fileno():
+                    line = stderr.readline()
+
+                    if len(line) > 0:
+                        print(line, end='', file=sys.stderr)
+
+            if event & select.POLLHUP:
+                poll_count -= 1
+                poll.unregister(f)
+
+        if poll_count > 0:
+            events = poll.poll()
+
+    output = ''.join(output)
+
+    return output
+
+
+def check_exit_code(exit_code, allowed_exit_codes=None):
     if allowed_exit_codes is None:
         allowed_exit_codes = [0]
 
+    if allowed_exit_codes is not ANY and exit_code not in allowed_exit_codes:
+        error('Command exited with code %d' % exit_code)
+        raise SystemExit(1)
+
+
+def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     if cwd is None:
         cwd = os.getcwd()
 
@@ -138,45 +183,10 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     ))
 
     p = subprocess.Popen(args, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
-
-    poll = select.poll()
-    poll.register(p.stdout, select.POLLIN | select.POLLHUP)
-    poll.register(p.stderr, select.POLLIN | select.POLLHUP)
-    poll_count = 2
-
-    events = poll.poll()
-    output = []
-
-    while poll_count > 0 and len(events) > 0:
-        for event in events:
-            (f, event) = event
-
-            if event & select.POLLIN:
-                if f == p.stdout.fileno():
-                    line = p.stdout.readline()
-
-                    if len(line) > 0:
-                        output.append(line)
-                        print(line, end='')
-                elif f == f.stderr.fileno():
-                    line = p.stderr.readline()
-
-                    if len(line) > 0:
-                        print(line, end='', file=sys.stderr)
-
-            if event & select.POLLHUP:
-                poll_count -= 1
-                poll.unregister(f)
-
-        if poll_count > 0:
-            events = poll.poll()
-
+    output = get_command_output(p.stdout, p.stderr)
     exit_code = p.wait()
-    output = ''.join(output)
 
-    if allowed_exit_codes is not ANY and exit_code not in allowed_exit_codes:
-        error('Command exited with code %d' % exit_code)
-        raise SystemExit(1)
+    check_exit_code(exit_code, allowed_exit_codes)
 
     return exit_code, output
 
@@ -281,16 +291,47 @@ def get_mock_ukrdc_src_path(root_path):
     return os.path.join(root_path, 'mock_ukrdc')
 
 
-def get_git_commit_date():
-    output = git(['log', '-n', '1', '--format=%cd', '--date=iso-strict'])[1].strip()
-    return delorean.parse(output).datetime
+class Git(object):
+    def __init__(self, path):
+        self.path = path
+
+    def commit_date(self):
+        output = git(['log', '-n', '1', '--format=%cd', '--date=iso-strict'], cwd=self.path)[1].strip()
+        return delorean.parse(output).datetime
+
+    def branch(self):
+        output = git(['symbolic-ref', 'HEAD'], cwd=self.path)[1].strip()
+        return output
+
+    def dirty(self):
+        status = git(['status', '--porcelain'], cwd=self.path)[1].strip()
+        return len(status) > 0
 
 
-def get_git_branch():
-    output = git(['symbolic-ref', 'HEAD'])[1].strip()
-    return output
+class Server(object):
+    def __init__(self, hostname, port=22, username=None, password=None, key_filename=None):
+        self.client = SSHClient()
+        self.client.set_missing_host_key_policy(AutoAddPolicy())
+        self.client.connect(hostname, port=port, username=username, password=password, key_filename=key_filename)
+
+    def run_command(self, command, allowed_exit_codes=None):
+        channel = self.client.get_transport().open_session()
+        channel.set_combine_stderr(True)
+        channel.exec_command(command)
+
+        f = channel.makefile()
+        output = []
+
+        for line in iter(f.readline, ''):
+            print(line, end='')
+            output.append(line)
+
+        output = ''.join(output)
+
+        exit_code = channel.recv_exit_status()
+        check_exit_code(exit_code, allowed_exit_codes)
+
+        return exit_code, output
 
 
-def get_git_dirty():
-    status = git(['status', '--porcelain'])[1].strip()
-    return len(status) > 0
+
