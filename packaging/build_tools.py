@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import json
-from subprocess import check_output
 import subprocess
 import logging
 import shutil
@@ -182,6 +181,10 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     return exit_code, output
 
 
+def git(arguments, env=None, cwd=None):
+    return run_command(['git'] + arguments, env=None, cwd=None)
+
+
 def get_python():
     return Python('/usr/bin/python2.7')
 
@@ -279,5 +282,10 @@ def get_mock_ukrdc_src_path(root_path):
 
 
 def get_git_commit_date():
-    output = check_output(['git', 'log', '-n', '1', '--format=%cd', '--date=iso-strict'])
+    output = git(['log', '-n', '1', '--format=%cd', '--date=iso-strict'])[1].strip()
     return delorean.parse(output).datetime
+
+
+def get_git_branch():
+    output = git(['symbolic-ref', 'HEAD'])[1].strip()
+    return output
