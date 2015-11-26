@@ -16,7 +16,10 @@
         params: {}
       });
 
-      self.load(store.findMany('result-specs'));
+      self.load(store.findMany('result-group-result-specs').then(function(x) {
+        console.log(x);
+        return x;
+      }));
     }
 
     ResultSpecsController.$inject = ['$scope'];

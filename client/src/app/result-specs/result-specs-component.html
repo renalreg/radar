@@ -6,33 +6,43 @@
 
     <table class="table properties">
       <tr>
+        <th>Group Code</th>
+        <td>{{item.resultGroupSpec.code}}</td>
+      </tr>
+
+      <tr>
+        <th>Group Name</th>
+        <td>{{item.resultGroupSpec.name}}</td>
+      </tr>
+
+      <tr>
         <th>Code</th>
-        <td>{{item.code}}</td>
+        <td>{{item.resultSpec.code}}</td>
       </tr>
 
       <tr>
         <th>Name</th>
-        <td>{{item.name}}</td>
+        <td>{{item.resultSpec.name}}</td>
       </tr>
 
       <tr>
         <th>Short Name</th>
-        <td>{{item.shortName}}</td>
+        <td>{{item.resultSpec.shortName}}</td>
       </tr>
 
       <tr>
         <th>Min Value</th>
-        <td>{{item.minValue | missing}}</td>
+        <td>{{item.resultSpec.minValue | missing}}</td>
       </tr>
 
       <tr>
         <th>Max Value</th>
-        <td>{{item.maxValue | missing}}</td>
+        <td>{{item.resultSpec.maxValue | missing}}</td>
       </tr>
     </table>
   </div>
 
-  <div ng-if="!viewing" list-helper="items as page" per-page="50" sort-by="code">
+  <div ng-if="!viewing" list-helper="items as page" per-page="50" sort-by="resultSpec.name">
     <div filter-helper></div>
 
     <div ng-show="!page.getCount()">
@@ -43,11 +53,13 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="code">Code</th>
-          <th sort-helper="name">Name</th>
-          <th sort-helper="shortName">Short Name</th>
-          <th sort-helper="minValue">Min Value</th>
-          <th sort-helper="maxValue">Max Value</th>
+          <th sort-helper="resultGroupSpec.code">Group Code</th>
+          <th sort-helper="resultGroupSpec.name">Group Name</th>
+          <th sort-helper="resultSpec.code">Code</th>
+          <th sort-helper="resultSpec.name">Name</th>
+          <th sort-helper="resultSpec.shortName">Short Name</th>
+          <th sort-helper="resultSpec.minValue">Min Value</th>
+          <th sort-helper="resultSpec.maxValue">Max Value</th>
         </tr>
       </thead>
 
@@ -57,11 +69,13 @@
             <span crud-list-view-button item="item"></span>
           </td>
 
-          <td>{{item.code}}</td>
-          <td>{{item.name}}</td>
-          <td>{{item.shortName}}</td>
-          <td>{{item.minValue | missing}}</td>
-          <td>{{item.maxValue | missing}}</td>
+          <td>{{item.resultGroupSpec.code}}</td>
+          <td>{{item.resultGroupSpec.name}}</td>
+          <td>{{item.resultSpec.code}}</td>
+          <td><b>{{item.resultSpec.name}}</b></td>
+          <td>{{item.resultSpec.shortName}}</td>
+          <td>{{item.resultSpec.minValue | missing}}</td>
+          <td>{{item.resultSpec.maxValue | missing}}</td>
         </tr>
       </tbody>
     </table>
