@@ -241,9 +241,9 @@ class Package(object):
             '--package', rpm_path,
             '--name', self.name,
             '--version', self.version,
+            '--iteration', self.release,
             '--url', self.url,
             '--architecture', self.architecture,
-            '--epoch', '0',
             '--force',
         ]
 
