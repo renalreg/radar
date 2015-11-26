@@ -21,6 +21,7 @@
     'radar.permissions',
     'radar.posts',
     'radar.recruitPatient',
+    'radar.resultSpecs',
     'radar.store',
     'radar.ui',
     'radar.units',

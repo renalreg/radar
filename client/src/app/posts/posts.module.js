@@ -3,4 +3,3 @@
 
   angular.module('radar.posts', []);
 })();
-

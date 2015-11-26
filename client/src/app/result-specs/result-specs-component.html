@@ -1,0 +1,71 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Code</th>
+        <td>{{item.code}}</td>
+      </tr>
+
+      <tr>
+        <th>Name</th>
+        <td>{{item.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Short Name</th>
+        <td>{{item.shortName}}</td>
+      </tr>
+
+      <tr>
+        <th>Min Value</th>
+        <td>{{item.minValue | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Max Value</th>
+        <td>{{item.maxValue | missing}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="!viewing" list-helper="items as page" per-page="50" sort-by="code">
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="code">Code</th>
+          <th sort-helper="name">Name</th>
+          <th sort-helper="shortName">Short Name</th>
+          <th sort-helper="minValue">Min Value</th>
+          <th sort-helper="maxValue">Max Value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+          </td>
+
+          <td>{{item.code}}</td>
+          <td>{{item.name}}</td>
+          <td>{{item.shortName}}</td>
+          <td>{{item.minValue | missing}}</td>
+          <td>{{item.maxValue | missing}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>
