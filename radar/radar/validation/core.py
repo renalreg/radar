@@ -570,7 +570,9 @@ class Validation(Field):
         skipped_fields = set()
 
         for field_name, field in self.fields.items():
-            if isinstance(old_obj, dict):
+            if old_obj is None:
+                old_value = None
+            elif isinstance(old_obj, dict):
                 old_value = old_obj.get(field_name)
             else:
                 old_value = getattr(old_obj, field_name)
