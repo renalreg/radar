@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import click
 
 from radar_mock_ukrdc.app import create_app
