@@ -244,7 +244,7 @@ COHORTS = [
     },
     {
         'code': 'NEPHROS',
-        'name': 'Nephrotic Syndrome',
+        'name': 'NephroS',
         'short_name': 'NephroS',
         'features': [
             'DEMOGRAPHICS',
