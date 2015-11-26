@@ -5,7 +5,7 @@
 
   app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('resultSpecs', {
-      url: '/results',
+      url: '/result-types',
       templateUrl: 'app/result-specs/result-specs.html'
     });
   }]);
