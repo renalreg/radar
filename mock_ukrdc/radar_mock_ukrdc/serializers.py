@@ -1,19 +1,29 @@
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, DateField, IntegerField, ListField
+from radar.serializers.fields import StringField, DateTimeField, IntegerField, ListField
+
+
+class PatientNameSerializer(Serializer):
+    given = StringField()
+    family = StringField()
+
+
+class PatientNumberSerializer(Serializer):
+    number = StringField()
+    code_system = StringField()
 
 
 class PatientSearchSerializer(Serializer):
-    first_name = StringField()
-    last_name = StringField()
-    date_of_birth = DateField()
+    name = PatientNameSerializer()
+    birth_time = DateTimeField()
+    patient_number = PatientNumberSerializer()
 
 
 class PatientResultSerializer(Serializer):
-    mpiid = IntegerField()
-    first_name = StringField()
-    last_name = StringField()
-    date_of_birth = DateField()
+    name = PatientNameSerializer()
+    birth_time = DateTimeField()
+    gender = StringField()
+    patient_numbers = ListField(PatientNumberSerializer())
 
 
 class PatientResultListSerializer(Serializer):
-    results = ListField(PatientResultSerializer())
+    patients = ListField(PatientResultSerializer())
