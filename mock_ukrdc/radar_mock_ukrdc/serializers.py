@@ -1,5 +1,5 @@
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, DateTimeField, IntegerField, ListField
+from radar.serializers.fields import StringField, DateTimeField, ListField
 
 
 class PatientNameSerializer(Serializer):
