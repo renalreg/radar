@@ -75,7 +75,7 @@ def package_mock_ukrdc(v, root_path):
         (v.path + '/', install_path, False),
         ('settings.py', etc_path + '/settings.py', True),
         ('uwsgi.ini', etc_path + '/uwsgi.ini', True),
-        ('systemd', '/etc/systemd/system/%s.service' % NAME, False),
+        ('systemd', '/usr/lib/systemd/system/%s.service' % NAME, False),
     ]
 
     for src, dst, config_file in paths:
