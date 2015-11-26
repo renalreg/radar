@@ -2,8 +2,8 @@ from flask import request
 from sqlalchemy import or_
 from sqlalchemy.sql.expression import null
 from radar_api.serializers.results import ResultGroupSpecSerializer, ResultGroupSerializer, ResultGroupRequestSerializer, \
-    ResultSpecSerializer
-from radar.models import ResultGroupSpec, ResultGroup, ResultSpec
+    ResultSpecSerializer, ResultGroupResultSpecSerializer
+from radar.models import ResultGroupSpec, ResultGroup, ResultSpec, ResultGroupResultSpec
 from radar.validation.result_groups import ResultGroupValidation
 from radar.views.core import ListModelView
 from radar.views.data_sources import DataSourceObjectViewMixin
@@ -50,8 +50,14 @@ class ResultSpecListView(ListModelView):
     model_class = ResultSpec
 
 
+class ResultGroupResultSpecListView(ListModelView):
+    serializer_class = ResultGroupResultSpecSerializer
+    model_class = ResultGroupResultSpec
+
+
 def register_views(app):
     app.add_url_rule('/result-groups', view_func=ResultGroupListView.as_view('result_group_list'))
     app.add_url_rule('/result-groups/<id>', view_func=ResultGroupDetailView.as_view('result_group_detail'))
     app.add_url_rule('/result-group-specs', view_func=ResultGroupSpecListView.as_view('result_group_spec_list'))
     app.add_url_rule('/result-specs', view_func=ResultSpecListView.as_view('result_spec_list'))
+    app.add_url_rule('/result-group-result-specs', view_func=ResultGroupResultSpecListView.as_view('result_group_result_spec_list'))
