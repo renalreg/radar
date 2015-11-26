@@ -101,7 +101,7 @@ def test_api(root_path):
 
 
 @click.command()
-@click.option('--enable-tests/--disable-tests', default=True)
+@click.option('--tests/--no-tests', default=True)
 def main(enable_tests):
     root_path = os.path.abspath('../../')
 
