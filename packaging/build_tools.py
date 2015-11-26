@@ -133,7 +133,7 @@ def get_command_output(stdout, stderr):
 
     while poll_count > 0 and len(events) > 0:
         for event in events:
-            (f, event) = event
+            f, event = event
 
             if event & select.POLLIN:
                 if f == stdout.fileno():
@@ -142,7 +142,7 @@ def get_command_output(stdout, stderr):
                     if len(line) > 0:
                         output.append(line)
                         print(line, end='')
-                elif f == f.stderr.fileno():
+                elif f == stderr.fileno():
                     line = stderr.readline()
 
                     if len(line) > 0:
@@ -292,11 +292,11 @@ def get_mock_ukrdc_src_path(root_path):
 
 
 class Git(object):
-    def __init__(self, path):
+    def __init__(self, path='.'):
         self.path = path
 
     def commit_date(self):
-        output = git(['log', '-n', '1', '--format=%cd', '--date=iso-strict'], cwd=self.path)[1].strip()
+        output = git(['log', '-n', '1', '--format=%cd', '--date=iso'], cwd=self.path)[1].strip()
         return delorean.parse(output).datetime
 
     def branch(self):
@@ -334,4 +334,11 @@ class Server(object):
         return exit_code, output
 
 
+def get_release(release):
+    git = Git()
 
+    if git.branch() != 'production':
+        commit_date = git.commit_date()
+        release = commit_date.strftime('0.%Y%m%d%H%M%S')
+
+    return release

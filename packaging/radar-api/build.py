@@ -10,7 +10,7 @@ import click
 import os
 
 from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-    get_api_src_path, run_command
+    get_api_src_path, run_command, get_release
 
 NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
@@ -58,6 +58,9 @@ def package_api(v, root_path):
 
     heading('Package %s' % NAME)
     info('Version is %s' % version)
+
+    release = get_release(RELEASE)
+    info('Release is %s' % release)
 
     # Update build path references to install path
     info('Updating virtualenv paths ...')

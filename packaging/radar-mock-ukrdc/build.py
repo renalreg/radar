@@ -10,7 +10,7 @@ import click
 import os
 
 from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-    get_mock_ukrdc_src_path
+    get_mock_ukrdc_src_path, get_release
 
 NAME = 'radar-mock-ukrdc'
 ARCHITECTURE = 'x86_64'
@@ -59,13 +59,16 @@ def package_mock_ukrdc(v, root_path):
     heading('Package %s' % NAME)
     info('Version is %s' % version)
 
+    release = get_release(RELEASE)
+    info('Release is %s' % release)
+
     # Update build path references to install path
     info('Updating virtualenv paths ...')
     v.update_paths(install_path)
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
+    package = Package(NAME, version, release, ARCHITECTURE, URL)
     package.add_dependency('python')
 
     paths = [
