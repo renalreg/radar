@@ -489,6 +489,17 @@ class ValidationMetaclass(type):
         return fields
 
 
+def get_old_value(old_obj, field_name):
+    if old_obj is None:
+        old_value = None
+    elif isinstance(old_obj, dict):
+        old_value = old_obj.get(field_name)
+    else:
+        old_value = getattr(old_obj, field_name)
+
+    return old_value
+
+
 @six.add_metaclass(ValidationMetaclass)
 class Validation(Field):
     def __init__(self, *args, **kwargs):
@@ -570,13 +581,7 @@ class Validation(Field):
         skipped_fields = set()
 
         for field_name, field in self.fields.items():
-            if old_obj is None:
-                old_value = None
-            elif isinstance(old_obj, dict):
-                old_value = old_obj.get(field_name)
-            else:
-                old_value = getattr(old_obj, field_name)
-
+            old_value = get_old_value(old_obj, field_name)
             new_value = field.get_value(new_obj)
 
             try:
@@ -596,11 +601,7 @@ class Validation(Field):
             if field_name in skipped_fields:
                 continue
 
-            if isinstance(old_obj, dict):
-                old_value = old_obj.get(field_name)
-            else:
-                old_value = getattr(old_obj, field_name)
-
+            old_value = get_old_value(old_obj, field_name)
             new_value = field.get_value(new_obj)
 
             try:

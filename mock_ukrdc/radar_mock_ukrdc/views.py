@@ -7,12 +7,25 @@ class PatientSearchView(ApiView):
     @request_json(PatientSearchSerializer, PatientSearchValidation)
     @response_json(PatientResultListSerializer)
     def post(self, data):
-        result = {
-            'first_name': data['first_name'].capitalize(),
-            'last_name': data['last_name'].capitalize(),
-            'date_of_birth': data['date_of_birth']
+        patient = {
+            'name': {
+                'given': data['name']['given'].capitalize(),
+                'family': data['name']['family'].capitalize()
+            },
+            'birth_time': data['birth_time'],
+            'gender': '1',
+            'patient_numbers': [
+                {
+                    'number': '1000000001',
+                    'code_system': 'ukrdc',
+                },
+                {
+                    'number': data['patient_number']['number'],
+                    'code_system': data['patient_number']['code_system'],
+                }
+            ]
         }
 
-        results = [result]
+        patients = [patient]
 
-        return {'results': results}
+        return {'patients': patients}
