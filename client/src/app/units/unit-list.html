@@ -1,7 +1,9 @@
 <div page-wrapper>
   <h1 class="page-header">Units</h1>
 
-  <ul>
-    <li ng-repeat="unit in units"><a ui-sref="unit({unitId: unit.id})">{{unit.name}}</a></li>
-  </ul>
+  <div loading="loading">
+    <ul>
+      <li ng-repeat="unit in units"><a ui-sref="unit({unitId: unit.id})">{{unit.name}}</a></li>
+    </ul>
+  </div>
 </div>

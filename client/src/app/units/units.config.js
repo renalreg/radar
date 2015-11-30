@@ -7,20 +7,7 @@
     $stateProvider.state('units', {
       url: '/units',
       templateUrl: 'app/units/unit-list.html',
-      controller: 'UnitListController',
-      resolve: {
-        units: ['store', 'session', '_', function(store, session, _) {
-          var user = session.user;
-
-          if (user.isAdmin) {
-            return store.findMany('organisations', {type: 'UNIT'});
-          } else {
-            return _.map(user.organisations, function(x) {
-              return x.organisation;
-            });
-          }
-        }]
-      }
+      controller: 'UnitListController'
     });
 
     $stateProvider.state('unit', {
