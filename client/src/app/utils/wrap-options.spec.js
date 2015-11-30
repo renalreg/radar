@@ -150,6 +150,34 @@
           }
         });
       });
+
+      it('uses the id path', function() {
+        expect(toSelectView({
+          foo: 1,
+          label: 'foo'
+        }, 'foo')).toEqual({
+          id: 1,
+          label: 'foo',
+          value: {
+            foo: 1,
+            label: 'foo'
+          }
+        });
+      });
+
+      it('uses the label path', function() {
+        expect(toSelectView({
+          id: 1,
+          foo: 'foo'
+        }, undefined, 'foo')).toEqual({
+          id: 1,
+          label: 'foo',
+          value: {
+            id: 1,
+            foo: 'foo'
+          }
+        });
+      });
     });
 
     describe('to select model', function() {
