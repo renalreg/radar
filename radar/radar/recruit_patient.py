@@ -15,19 +15,35 @@ from radar.data_sources import get_radar_data_source
 from radar.models.organisations import OrganisationPatient, Organisation
 from radar.models.organisations import ORGANISATION_TYPE_OTHER, ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI
 from radar.validation.utils import validate
+from radar.validation.core import ValidationError
 
 
 def recruit_patient_search(params):
-    patients = Patient.query\
-        .filter(filter_by_first_name(params['first_name']))\
-        .filter(filter_by_last_name(params['last_name']))\
-        .filter(filter_by_date_of_birth(params['date_of_birth']))\
-        .filter(filter_by_patient_number_at_organisation(params['number'], params['number_organisation']))\
-        .all()
+    number_filter = filter_by_patient_number_at_organisation(params['number'], params['number_organisation'])
+    patients = Patient.query.filter(number_filter).all()
 
     results = []
 
     for patient in patients:
+        first_name_match = False
+        last_name_match = False
+        date_of_birth_match = False
+
+        for patient_alias in patient.patient_aliases:
+            if patient_alias.first_name.upper() == params['first_name'].upper():
+                first_name_match = True
+
+            if patient_alias.last_name.upper() == params['last_name'].upper():
+                last_name_match = True
+
+            if patient_alias.date_of_birth == params['date_of_birth']:
+                date_of_birth_match = True
+
+        # Check supplied demographics match existing demographics
+        # This prevents patient enumeration
+        if not first_name_match or not last_name_match or not date_of_birth_match:
+            raise ValidationError({'number': "Supplied demographics don't match existing demographics for this patient number."})
+
         result = {
             'first_name': patient.first_name,
             'last_name': patient.last_name,
