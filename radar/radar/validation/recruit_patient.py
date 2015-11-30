@@ -3,7 +3,7 @@ from radar.validation.validators import optional, required, not_in_future, in_, 
 from radar.validation.patient_number_validators import nhs_no, ukrdc_no, chi_no
 from radar.models.patients import GENDERS
 from radar.permissions import has_permission_for_organisation
-from radar.organisations import is_chi_organisation, is_nhs_organisation
+from radar.organisations import is_chi_organisation, is_nhs_organisation, is_radar_organisation
 from radar.models.organisations import ORGANISATION_TYPE_OTHER
 from radar.validation.patient_number_validators import NUMBER_VALIDATORS
 
@@ -34,17 +34,15 @@ class RecruitPatientSearchValidation(Validation):
         return obj
 
 
+# TODO validate patient numbers
 class RecruitPatientValidation(Validation):
-    mpiid = Field([optional(), ukrdc_no()])
-    radar_id = Field([optional()])
-    recruited_by_organisation = Field([required()])
-    cohort = Field([required()])
     first_name = Field([none_if_blank(), optional()])
     last_name = Field([none_if_blank(), optional()])
     date_of_birth = Field([optional(), not_in_future()])
     gender = Field([optional(), in_(GENDERS.keys())])
-    nhs_no = Field([none_if_blank(), optional(), nhs_no()])
-    chi_no = Field([none_if_blank(), optional(), chi_no()])
+    ethnicity_code = Field([optional()])
+    recruited_by_organisation = Field([required()])
+    cohort = Field([required()])
 
     @pass_context
     def validate_recruited_by_organisation(self, ctx, recruited_by_organisation):
@@ -57,7 +55,14 @@ class RecruitPatientValidation(Validation):
 
     @pass_call
     def validate(self, call, obj):
-        if obj['radar_id'] is None:
+        radar_id = None
+
+        for x in obj['patient_numbers']:
+            if is_radar_organisation(x['organisation']):
+                radar_id = int(number)
+                break
+
+        if radar_id is None:
             call.validators_for_field([required()], obj, self.first_name)
             call.validators_for_field([required()], obj, self.last_name)
             call.validators_for_field([required()], obj, self.date_of_birth)
