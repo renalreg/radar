@@ -8,20 +8,10 @@
     adapter,
     $state,
     $q,
-    store
+    store,
+    _
   ) {
     $scope.loading = true;
-
-    $q.all([
-      store.findMany('genders').then(function(genders) {
-        $scope.genders = genders;
-      }),
-      store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
-        $scope.ethnicityCodes = ethnicityCodes;
-      })
-    ]).then(function() {
-      $scope.loading = false;
-    });
 
     $scope.searchParams = {};
     $scope.searchErrors = {};
@@ -37,20 +27,28 @@
     $scope.backToSearch = backToSearch;
     $scope.backToResults = backToResults;
 
+    init();
+
+    function init() {
+      $q.all([loadGenders(), loadEthnicityCodes(), loadNumberOrganisations()]).then(function() {
+        $scope.loading = false;
+      });
+    }
+
     function search() {
       $scope.loading = true;
 
       adapter.post('/recruit-patient-search', {}, $scope.searchParams)
         .then(function(response) {
-          var results = response.data.results;
+          var patients = response.data.patients;
 
-          $scope.results = results;
+          $scope.patients = patients;
           $scope.searchErrors = {};
 
-          if (results.length) {
+          if (patients.length) {
             $state.go('recruitPatient.results');
           } else {
-            $scope.patientNotFound();
+            patientNotFound();
           }
         })
         ['catch'](function(response) {
@@ -63,15 +61,13 @@
         });
     }
 
-    function patientFound(result) {
+    function patientFound(patient) {
       $scope.patient = {
-        mpiid: result.mpiid,
-        radarId: result.radarId,
-        firstName: result.firstName,
-        lastName: result.lastName,
-        dateOfBirth: result.dateOfBirth,
-        nhsNo: result.nhsNo,
-        chiNo: result.chiNo
+        firstName: patient.firstName,
+        lastName: patient.lastName,
+        dateOfBirth: patient.dateOfBirth,
+        gender: patient.gender,
+        patientNumbers: patient.patientNumbers
       };
 
       $state.go('recruitPatient.form');
@@ -81,7 +77,13 @@
       $scope.patient = {
         firstName: $scope.searchParams.firstName,
         lastName: $scope.searchParams.lastName,
-        dateOfBirth: $scope.searchParams.dateOfBirth
+        dateOfBirth: $scope.searchParams.dateOfBirth,
+        patientNumbers: [
+          {
+            number: $scope.searchParams.number,
+            organisation: $scope.searchParams.numberOrganisation
+          }
+        ]
       };
 
       $state.go('recruitPatient.form');
@@ -112,6 +114,42 @@
     function backToResults() {
       $state.go('recruitPatient.results');
     }
+
+    function loadGenders() {
+      return store.findMany('genders').then(function(genders) {
+        $scope.genders = genders;
+      });
+    }
+
+    function loadEthnicityCodes() {
+      return store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
+        $scope.ethnicityCodes = ethnicityCodes;
+      });
+    }
+
+    function loadNumberOrganisations() {
+      return store.findMany('recruit-patient-number-organisations').then(function(organisations) {
+        // Sort by name
+        organisations = _.sortBy(organisations, 'name');
+
+        // Default to a NHS number
+        $scope.searchParams.numberOrganisation = _.find(organisations, function(x) {
+          return x.code == 'NHS' && x.type == 'OTHER';
+        });
+
+        // Convert to options
+        organisations = _.map(organisations, function(organisation) {
+          return {
+            id: organisation.id,
+            label: organisation.name,
+            value: organisation
+          };
+        });
+
+        // Set the options
+        $scope.numberOrganisations = organisations;
+      });
+    }
   }
 
   RecruitPatientController.$inject = [
@@ -119,7 +157,8 @@
     'adapter',
     '$state',
     '$q',
-    'store'
+    'store',
+    '_'
   ];
 
   app.controller('RecruitPatientController', RecruitPatientController);

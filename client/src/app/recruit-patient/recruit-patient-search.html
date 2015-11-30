@@ -36,9 +36,17 @@
     <div frm-label>Patient Number</div>
 
     <div frm-control>
-      <div frm-text-field model="searchParams.patientNumber"></div>
-      <div frm-help>Use a NHS number if available.</div>
-      <div frm-errors errors="searchErrors.patientNumber"></div>
+      <div frm-text-field model="searchParams.number" required="true"></div>
+      <div frm-errors errors="searchErrors.number"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Patient Number Type</div>
+
+    <div frm-control>
+      <div frm-select-field model="searchParams.numberOrganisation" options="numberOrganisations" required="true"></div>
+      <div frm-errors errors="searchErrors.numberOrganisation"></div>
     </div>
   </div>
 

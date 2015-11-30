@@ -6,17 +6,7 @@ from radar.validation.data_sources import RadarDataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, max_length, not_empty, normalise_whitespace
-from radar.validation.patient_number_validators import nhs_no, chi_no, ukrr_no, handc_no, bapn_no, ukrdc_no
-
-
-NUMBER_VALIDATORS = {
-    ORGANISATION_CODE_NHS: [nhs_no()],
-    ORGANISATION_CODE_CHI: [chi_no()],
-    ORGANISATION_CODE_HANDC: [handc_no()],
-    ORGANISATION_CODE_UKRR: [ukrr_no()],
-    ORGANISATION_CODE_UKRDC: [ukrdc_no()],
-    ORGANISATION_CODE_BAPN: [bapn_no()]
-}
+from radar.validation.patient_number_validators import NUMBER_VALIDATORS
 
 
 class PatientNumberValidation(PatientValidationMixin, RadarDataSourceValidationMixin, MetaValidationMixin, Validation):
