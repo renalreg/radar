@@ -1,19 +1,13 @@
-from sqlalchemy import or_, and_
-
-from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
-from radar.patient_search import filter_by_date_of_birth, filter_by_first_name, \
-    filter_by_last_name, filter_by_patient_number_at_organisation
+from radar.patient_search import filter_by_patient_number_at_organisation
 from radar.models.cohorts import CohortPatient
 from radar.models.patient_numbers import PatientNumber
-from radar.organisations import get_nhs_organisation, get_chi_organisation, \
-    get_ukrdc_organisation, get_radar_organisation, is_radar_organisation
+from radar.organisations import get_radar_organisation, is_radar_organisation
 from radar.cohorts import get_radar_cohort
 from radar.data_sources import get_radar_data_source
-from radar.models.organisations import OrganisationPatient, Organisation
-from radar.models.organisations import ORGANISATION_TYPE_OTHER, ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI
+from radar.models.organisations import OrganisationPatient
 from radar.validation.utils import validate
 from radar.validation.core import ValidationError
 
@@ -70,7 +64,7 @@ def recruit_patient(params):
     # Look for a RaDaR ID
     for x in params['patient_numbers']:
         if is_radar_organisation(x['organisation']):
-            radar_id = int(number)
+            radar_id = int(x['number'])
             break
 
     cohort = params['cohort']
