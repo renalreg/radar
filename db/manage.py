@@ -35,6 +35,7 @@ def cli(ctx, connection_string):
 def init_command():
     db.create_all()
     create_initial_data()
+    db.session.commit()
 
 
 @cli.command('dev')
@@ -45,6 +46,20 @@ def dev_command(patients, users):
     db.drop_all()
     db.create_all()
     dev.create_data(patients, users)
+    db.session.commit()
+
+
+@cli.command('create')
+@app_context
+def create_command():
+    db.create_all()
+    db.session.commit()
+
+
+@cli.command('drop')
+@app_context
+def drop_command():
+    db.drop_all()
     db.session.commit()
 
 
