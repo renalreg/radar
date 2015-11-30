@@ -134,7 +134,7 @@
 
         // Default to a NHS number
         $scope.searchParams.numberOrganisation = _.find(organisations, function(x) {
-          return x.code == 'NHS' && x.type == 'OTHER';
+          return x.code === 'NHS' && x.type === 'OTHER';
         });
 
         // Set the options

@@ -62,7 +62,7 @@
     };
   });
 
-  app.factory('toSelectView', function() {
+  app.factory('toSelectView', ['_', function(_) {
     return function toSelectView(option, idPath, labelPath) {
       if (idPath === undefined) {
         idPath = 'id';
@@ -93,7 +93,7 @@
 
       return option;
     };
-  });
+  }]);
 
   app.factory('wrapSelectOptions', ['_', 'toSelectView', function(_, toSelectView) {
     return function wrapSelectOptions(options, idPath, labelPath) {
