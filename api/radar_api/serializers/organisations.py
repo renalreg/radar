@@ -1,6 +1,6 @@
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, ListField
+from radar.serializers.fields import StringField, ListField, BooleanField
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.models import DataSource, Organisation
 
@@ -32,3 +32,4 @@ class OrganisationReferenceField(ReferenceField):
 
 class OrganisationRequestSerializer(Serializer):
     type = StringField()
+    is_national = BooleanField()

@@ -131,10 +131,3 @@ def recruit_patient(params):
     db.session.commit()
 
     return patient
-
-
-def filter_patient_number_organisations(query):
-    return query.filter(or_(
-        and_(Organisation.type == ORGANISATION_TYPE_OTHER, Organisation.code == ORGANISATION_CODE_NHS),
-        and_(Organisation.type == ORGANISATION_TYPE_OTHER, Organisation.code == ORGANISATION_CODE_CHI),
-    ))

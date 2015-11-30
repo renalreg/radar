@@ -6,7 +6,6 @@ from radar.validation.recruit_patient import RecruitPatientValidation, RecruitPa
 from radar_api.serializers.recruit_patient import RecruitPatientSearchSerializer, \
     RecruitPatientResultListSerializer, RecruitPatientSerializer
 from radar.permissions import RecruitPatientPermission
-from radar.recruit_patient import filter_patient_number_organisations
 from radar.views.core import ListModelView
 from radar_api.serializers.organisations import OrganisationSerializer
 from radar.models.organisations import Organisation
@@ -32,26 +31,6 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
         return patient
 
 
-class RecruitPatientNumberOrganisationListView(PermissionViewMixin, ApiView):
-    permission_classes = [RecruitPatientPermission]
-
-    @response_json(lambda: PatientSerializer(current_user))
-    def get(self):
-        organisations = get_recruit_patient_number_organisations()
-        return patient
-
-
-class RecruitPatientNumberOrganisationListView(ListModelView):
-    serializer_class = OrganisationSerializer
-    model_class = Organisation
-
-    def filter_query(self, query):
-        query = super(RecruitPatientNumberOrganisationListView, self).filter_query(query)
-        query = filter_patient_number_organisations(query)
-        return query
-
-
 def register_views(app):
     app.add_url_rule('/recruit-patient', view_func=RecruitPatientView.as_view('recruit_patient'))
     app.add_url_rule('/recruit-patient-search', view_func=RecruitPatientSearchView.as_view('recruit_patient_search'))
-    app.add_url_rule('/recruit-patient-number-organisations', view_func=RecruitPatientNumberOrganisationListView.as_view('recruit_patient_number_organisation_list'))
