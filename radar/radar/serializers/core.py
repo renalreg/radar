@@ -65,12 +65,7 @@ class Field(object):
         raise NotImplementedError()
 
     def transform_errors(self, errors):
-        transformed_errors = {}
-
-        if self.source in errors:
-            transformed_errors[self.field_name] = errors[self.source]
-
-        return transformed_errors
+        return errors
 
 
 class SerializerMetaclass(type):
@@ -232,8 +227,15 @@ class Serializer(Field):
     def transform_errors(self, errors):
         transformed_errors = {}
 
+        # Errors on the serializer
+        if '_' in errors:
+            transformed_errors['_'] = errors['_']
+
         for field in self.fields.values():
-            transformed_field_errors = field.transform_errors(errors)
-            transformed_errors.update(transformed_field_errors)
+            field_errors = errors.get(field.source)
+
+            if field_errors is not None:
+                transformed_field_errors = field.transform_errors(field_errors)
+                transformed_errors[field.source] = transformed_field_errors
 
         return transformed_errors
