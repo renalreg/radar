@@ -18,3 +18,8 @@
   postgresql_ext: name=uuid-ossp db=radar_test
   become: yes
   become_user: postgres
+
+- name: create the vagrant postgresql user
+  postgresql_user: name=vagrant password={{ db_password }}
+  become: yes
+  become_user: postgres
