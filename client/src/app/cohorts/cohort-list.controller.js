@@ -19,8 +19,8 @@
     }
 
     function setCohorts(cohorts) {
-        $scope.cohorts = _.sortBy(cohorts, 'name');
-        $scope.loading = false;
+      $scope.cohorts = _.sortBy(cohorts, 'name');
+      $scope.loading = false;
     }
   }]);
 })();
