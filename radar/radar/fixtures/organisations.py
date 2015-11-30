@@ -12,14 +12,14 @@ UNITS = [
 ]
 
 OTHER_ORGANISATIONS = [
-    (ORGANISATION_CODE_RADAR, 'RaDaR'),
-    (ORGANISATION_CODE_NHS, 'NHS'),
-    (ORGANISATION_CODE_CHI, 'CHI'),
-    (ORGANISATION_CODE_UKRR, 'UK Renal Registry'),
-    (ORGANISATION_CODE_HANDC, 'H&C'),
-    (ORGANISATION_CODE_UKRDC, 'UKRDC'),
-    (ORGANISATION_CODE_NHSBT, 'NHS Blood and Transplant'),
-    (ORGANISATION_CODE_BAPN, 'BAPN'),
+    (ORGANISATION_CODE_RADAR, 'RaDaR', True),
+    (ORGANISATION_CODE_NHS, 'NHS', True),
+    (ORGANISATION_CODE_CHI, 'CHI', True),
+    (ORGANISATION_CODE_UKRR, 'UK Renal Registry', True),
+    (ORGANISATION_CODE_HANDC, 'H&C', True),
+    (ORGANISATION_CODE_UKRDC, 'UKRDC', True),
+    (ORGANISATION_CODE_NHSBT, 'NHS Blood and Transplant', True),
+    (ORGANISATION_CODE_BAPN, 'BAPN', True),
 ]
 
 
@@ -29,11 +29,12 @@ def create_organisations():
 
 
 def create_other_organisations():
-    for organisation_code, organisation_name in OTHER_ORGANISATIONS:
+    for organisation_code, organisation_name, organisation_is_national in OTHER_ORGANISATIONS:
         organisation = Organisation()
         organisation.code = organisation_code
         organisation.type = ORGANISATION_TYPE_OTHER
         organisation.name = organisation_name
+        organisation.is_national = organisation_is_national
         validate_and_add(organisation)
 
 
@@ -43,4 +44,5 @@ def create_unit_organisations():
         organisation.code = code
         organisation.type = ORGANISATION_TYPE_UNIT
         organisation.name = name
+        organisation.is_national = False
         validate_and_add(organisation)

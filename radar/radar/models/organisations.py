@@ -108,6 +108,7 @@ class Organisation(db.Model):
     code = Column(String, nullable=False)
     type = Column(String, nullable=False)
     name = Column(String, nullable=False)
+    is_national = Column(Boolean, nullable=False, default=False)
 
     data_sources = relationship('DataSource')
     organisation_patients = relationship('OrganisationPatient')
