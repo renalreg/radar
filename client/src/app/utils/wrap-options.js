@@ -63,13 +63,24 @@
   });
 
   app.factory('toSelectView', function() {
-    return function toSelectView(option) {
+    return function toSelectView(option, idPath, labelPath) {
+      if (idPath === undefined) {
+        idPath = 'id';
+      }
+
+      if (labelPath === undefined) {
+        labelPath = 'label';
+      }
+
+      var idGetter = _.property(idPath);
+      var labelGetter = _.property(labelPath);
+
       if (option === null || option === undefined) {
         option = null;
       } else if (angular.isObject(option)) {
         option = {
-          id: option.id,
-          label: option.label,
+          id: idGetter(option),
+          label: labelGetter(option),
           value: option
         };
       } else {
@@ -85,11 +96,13 @@
   });
 
   app.factory('wrapSelectOptions', ['_', 'toSelectView', function(_, toSelectView) {
-    return function wrapSelectOptions(options) {
+    return function wrapSelectOptions(options, idPath, labelPath) {
       if (options && options.length) {
         // Convert array (e.g. ['Foo', 'Bar']) into option objects
         // (e.g. [{id: 'Foo', label: 'Foo', value: 'Foo'}, ...])
-        options = _.map(options, toSelectView);
+        options = _.map(options, function(option) {
+          return toSelectView(option, idPath, labelPath);
+        });
       }
 
       return options;

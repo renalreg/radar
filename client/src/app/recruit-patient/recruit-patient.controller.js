@@ -137,15 +137,6 @@
           return x.code == 'NHS' && x.type == 'OTHER';
         });
 
-        // Convert to options
-        organisations = _.map(organisations, function(organisation) {
-          return {
-            id: organisation.id,
-            label: organisation.name,
-            value: organisation
-          };
-        });
-
         // Set the options
         $scope.numberOrganisations = organisations;
       });
