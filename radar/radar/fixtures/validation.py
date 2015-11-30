@@ -30,38 +30,8 @@ from radar.validation.result_specs import ResultSpecValidation
 from radar.validation.result_groups import ResultGroupValidation
 from radar.validation.transplants import TransplantValidation
 from radar.validation.users import UserValidation
+from radar.validation.utils import VALIDATIONS
 from radar.database import db
-
-VALIDATIONS = {
-    User: UserValidation,
-    Post: PostValidation,
-    ResultGroup: ResultGroupValidation,
-    DataSource: DataSourceValidation,
-    Cohort: CohortValidation,
-    Organisation: OrganisationValidation,
-    OrganisationUser: OrganisationUserValidation,
-    OrganisationPatient: OrganisationPatientValidation,
-    CohortUser: CohortUserValidation,
-    CohortPatient: CohortPatientValidation,
-    RenalImaging: RenalImagingValidation,
-    Plasmapheresis: PlasmapheresisValidation,
-    Hospitalisation: HospitalisationValidation,
-    Transplant: TransplantValidation,
-    Patient: PatientValidation,
-    Medication: MedicationValidation,
-    Dialysis: DialysisValidation,
-    PatientDemographics: PatientDemographicsValidation,
-    PatientAlias: PatientAliasValidation,
-    PatientNumber: PatientNumberValidation,
-    PatientAddress: PatientAddressValidation,
-    Disorder: DisorderValidation,
-    CohortDiagnosis: CohortDiagnosisValidation,
-    ResultSpec: ResultSpecValidation,
-    ResultGroupSpec: ResultGroupSpecValidation,
-    ResultGroupResultSpec: ResultGroupResultSpecValidation,
-    CohortFeature: CohortFeatureValidation,
-    CohortResultGroupSpec: CohortResultGroupSpecValidation,
-}
 
 
 def validate_and_add(obj, ctx=None):

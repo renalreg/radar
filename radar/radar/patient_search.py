@@ -167,6 +167,15 @@ def filter_by_patient_number(number, exact=False):
     return query
 
 
+def filter_by_patient_number_at_organisation(number, organisation, exact=False):
+    if exact:
+        query = patient_number_sub_query(PatientNumber.number.like(number + '%'), PatientNumber.organisation == organisation)
+    else:
+        query = patient_number_sub_query(PatientNumber.number == number, PatientNumber.organisation == organisation)
+
+    return query
+
+
 def filter_by_patient_id(patient_id):
     return Patient.id == patient_id
 

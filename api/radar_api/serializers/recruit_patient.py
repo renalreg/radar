@@ -11,33 +11,33 @@ class RecruitPatientSearchSerializer(Serializer):
     first_name = StringField()
     last_name = StringField()
     date_of_birth = DateField()
-    patient_number = StringField()
+    number = StringField()
+    number_organisation = OrganisationReferenceField()
+
+
+class PatientNumberSerializer(Serializer):
+    number = StringField()
+    organisation = OrganisationReferenceField()
 
 
 class RecruitPatientResultSerializer(Serializer):
-    mpiid = IntegerField()
-    radar_id = IntegerField()
     first_name = StringField()
     last_name = StringField()
     date_of_birth = DateField()
     gender = CodedIntegerSerializer(GENDERS)
-    nhs_no = StringField()
-    chi_no = StringField()
+    patient_numbers = ListField(PatientNumberSerializer())
 
 
 class RecruitPatientResultListSerializer(Serializer):
-    results = ListField(RecruitPatientResultSerializer())
+    patients = ListField(RecruitPatientResultSerializer())
 
 
 class RecruitPatientSerializer(Serializer):
-    mpiid = IntegerField()
-    radar_id = IntegerField()
-    recruited_by_organisation = OrganisationReferenceField()
-    cohort = CohortReferenceField()
     first_name = StringField()
     last_name = StringField()
     date_of_birth = DateField()
     gender = CodedIntegerSerializer(GENDERS)
     ethnicity = EthnicityCodeReferenceField()
-    nhs_no = StringField()
-    chi_no = StringField()
+    patient_numbers = ListField(PatientNumberSerializer())
+    recruited_by_organisation = OrganisationReferenceField()
+    cohort = CohortReferenceField()

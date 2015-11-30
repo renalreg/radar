@@ -3,6 +3,35 @@ from radar.validation.validators import optional, required, not_in_future, in_, 
 from radar.validation.patient_number_validators import nhs_no, ukrdc_no, chi_no
 from radar.models.patients import GENDERS
 from radar.permissions import has_permission_for_organisation
+from radar.organisations import is_chi_organisation, is_nhs_organisation
+from radar.models.organisations import ORGANISATION_TYPE_OTHER
+from radar.validation.patient_number_validators import NUMBER_VALIDATORS
+
+
+class RecruitPatientSearchValidation(Validation):
+    first_name = Field([required()])
+    last_name = Field([required()])
+    date_of_birth = Field([required()])
+    number = Field([required()])
+    number_organisation = Field([required()])
+
+    def validate_number_organisation(self, number_organisation):
+        if not is_chi_organisation(number_organisation) and not is_nhs_organisation(number_organisation):
+            raise ValidationError("Not a valid organisation.")
+
+        return number_organisation
+
+    @pass_call
+    def validate(self, call, obj):
+        number_organisation = obj['number_organisation']
+
+        if number_organisation.type == ORGANISATION_TYPE_OTHER:
+            number_validators = NUMBER_VALIDATORS.get(number_organisation.code)
+
+            if number_validators is not None:
+                call.validators_for_field(number_validators, obj, self.number)
+
+        return obj
 
 
 class RecruitPatientValidation(Validation):
