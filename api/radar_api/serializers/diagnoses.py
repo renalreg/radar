@@ -21,6 +21,8 @@ class CohortDiagnosisReferenceField(ReferenceField):
 class DiagnosisSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSerializerMixin, ModelSerializer):
     cohort_diagnosis = CohortDiagnosisReferenceField()
     biopsy_diagnosis = CodedIntegerSerializer(DIAGNOSIS_BIOPSY_DIAGNOSES)
+    age_at_onset = IntegerField(read_only=True)
+    age_at_diagnosis = IntegerField(read_only=True)
 
     class Meta(object):
         model_class = Diagnosis
