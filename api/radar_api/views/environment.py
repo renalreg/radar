@@ -1,19 +1,21 @@
 from flask import current_app
 
 from radar.serializers.core import Serializer
-from radar.serializers.fields import BooleanField
+from radar.serializers.fields import BooleanField, IntegerField
 from radar.views.core import ApiView, response_json
 
 
 class EnvironmentSerializer(Serializer):
     live = BooleanField()
+    session_timeout = IntegerField()
 
 
 class EnvironmentView(ApiView):
     @response_json(EnvironmentSerializer)
     def get(self):
         return {
-            'live': current_app.config.get('LIVE', False)
+            'live': current_app.config.get('LIVE', False),
+            'session_timeout': current_app.config['SESSION_TIMEOUT']
         }
 
 
