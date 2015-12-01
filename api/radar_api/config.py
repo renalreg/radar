@@ -1,14 +1,26 @@
+import string
+
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, IntegerField, BooleanField, FloatField
 from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
-    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default
+    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default, max_, min_length
 
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
+
 DEFAULT_SESSION_TIMEOUT = 1800
+
 DEFAULT_UKRDC_SEARCH_ENABLED = False
 DEFAULT_UKRDC_SEARCH_TIMEOUT = 10
+
 DEFAULT_RESET_PASSWORD_MAX_AGE = 86400  # 1 day
+
+DEFAULT_MINIMUM_PASSWORD_SCORE = 3
+
+# Parameters to use for password generation
+# log2(36 ^ 10) = ~51 bits
+DEFAULT_GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
+DEFAULT_GENERATE_PASSWORD_LENGTH = 10
 
 
 class InvalidConfig(Exception):
@@ -29,6 +41,9 @@ class ConfigSerializer(Serializer):
     UKRDC_SEARCH_URL = StringField()
     UKRDC_SEARCH_TIMEOUT = FloatField()
     RESET_PASSWORD_MAX_AGE = IntegerField()
+    MINIMUM_PASSWORD_SCORE = IntegerField()
+    GENERATE_PASSWORD_ALPHABET = StringField()
+    GENERATE_PASSWORD_LENGTH = IntegerField()
 
 
 class ConfigValidation(Validation):
@@ -40,6 +55,9 @@ class ConfigValidation(Validation):
     UKRDC_SEARCH_URL = Field([optional(), url()])
     UKRDC_SEARCH_TIMEOUT = Field([default(DEFAULT_UKRDC_SEARCH_TIMEOUT), min_(0)])
     RESET_PASSWORD_MAX_AGE = Field([default(DEFAULT_RESET_PASSWORD_MAX_AGE), min_(0)])
+    MINIMUM_PASSWORD_SCORE = Field([default(DEFAULT_MINIMUM_PASSWORD_SCORE), min_(0), max_(4)])
+    GENERATE_PASSWORD_ALPHABET = Field([default(DEFAULT_GENERATE_PASSWORD_ALPHABET), min_length(1)])
+    GENERATE_PASSWORD_LENGTH = Field([default(DEFAULT_GENERATE_PASSWORD_LENGTH), min_(1)])
 
     @pass_call
     def validate(self, call, obj):
