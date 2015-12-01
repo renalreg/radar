@@ -4,9 +4,10 @@ from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
     sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default
 
-
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
 DEFAULT_SESSION_TIMEOUT = 1800
+DEFAULT_UKRDC_SEARCH_ENABLED = False
+DEFAULT_UKRDC_SEARCH_TIMEOUT = 10
 
 
 class InvalidConfig(Exception):
@@ -27,8 +28,9 @@ class ConfigValidation(Validation):
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
     SESSION_TIMEOUT = Field([default(DEFAULT_SESSION_TIMEOUT), min_(0)])
     BASE_URL = Field([required(), url(), no_trailing_slash()])
-    UKRDC_SEARCH_ENABLED = Field([default(False)])
+    UKRDC_SEARCH_ENABLED = Field([default(DEFAULT_UKRDC_SEARCH_ENABLED)])
     UKRDC_SEARCH_URL = Field([optional(), url()])
+    UKRDC_SEARCH_TIMEOUT = Field([default(DEFAULT_UKRDC_SEARCH_TIMEOUT), min_(0)])
 
     @pass_call
     def validate(self, call, obj):
