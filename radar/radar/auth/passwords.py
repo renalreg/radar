@@ -1,14 +1,9 @@
 from random import SystemRandom
-import string
 
 import werkzeug.security
 import zxcvbn
-from flask import current_app
 
-# Parameters to use for password generation
-# log2(36 ^ 10) = ~51 bits
-GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
-GENERATE_PASSWORD_LENGTH = 10
+from radar.config import get_config_value
 
 NATO_ALPHABET = {
     'a': 'ALFA',
@@ -63,11 +58,15 @@ USER_INPUTS = [
 
 
 def get_generate_password_alphabet():
-    return current_app.config['GENERATE_PASSWORD_ALPHABET']
+    return get_config_value('GENERATE_PASSWORD_ALPHABET')
 
 
 def get_generate_password_length():
-    return current_app.config['GENERATE_PASSWORD_LENGTH']
+    return get_config_value('GENERATE_PASSWORD_LENGTH')
+
+
+def get_minimum_password_score():
+    return get_config_value('MINIMUM_PASSWORD_SCORE')
 
 
 def generate_password():
@@ -108,10 +107,6 @@ def password_to_nato_str(password):
 
 def password_score(password, user_inputs=None):
     return zxcvbn.password_strength(password, user_inputs)['score']
-
-
-def get_minimum_password_score():
-    return current_app.config['MINIMUM_PASSWORD_SCORE']
 
 
 def is_strong_password(password, user=None):
