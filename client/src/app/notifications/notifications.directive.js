@@ -6,7 +6,8 @@
   var TYPE_TO_CLASS = {
     success: 'alert-success',
     fail: 'alert-danger',
-    info: 'alert-info'
+    info: 'alert-info',
+    warn: 'alert-warning'
   };
 
   app.directive('notifications', ['notificationService', function(notificationService) {

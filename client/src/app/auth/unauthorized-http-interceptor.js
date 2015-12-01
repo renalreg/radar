@@ -7,7 +7,7 @@
     return {
       responseError: function(rejection) {
         if (rejection.status === 401) {
-          $rootScope.$broadcast('unauthorized');
+          $rootScope.$broadcast('sessions.unauthorized');
         }
 
         return $q.reject(rejection);

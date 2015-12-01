@@ -10,6 +10,7 @@
       notifications: notifications,
       success: success,
       fail: fail,
+      warn: warn,
       info: info,
       remove: remove
     };
@@ -46,6 +47,16 @@
         title: 'Error',
         icon: 'fa-exclamation-circle',
         type: 'fail'
+      });
+      return _notify(params);
+    }
+
+    function warn(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Warning',
+        icon: 'fa-exclamation-circle',
+        type: 'warn'
       });
       return _notify(params);
     }

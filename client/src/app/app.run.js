@@ -9,13 +9,16 @@
     getValueAtPath,
     session,
     $state,
-    notificationService
+    notificationService,
+    sessionTimeoutService
   ) {
     $rootScope.$watch(function() {
       return radar.ready;
     }, function(ready) {
       $rootScope.ready = ready;
     });
+
+    sessionTimeoutService.init();
 
     function isPublicState(state) {
       return getValueAtPath(state, 'data.public');
@@ -58,7 +61,8 @@
     'getValueAtPath',
     'session',
     '$state',
-    'notificationService'
+    'notificationService',
+    'sessionTimeoutService'
   ];
 
   app.run(run);

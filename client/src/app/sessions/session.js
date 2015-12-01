@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.core');
+  var app = angular.module('radar.sessions');
 
   function sessionFactory(authStore, $rootScope) {
     function Session() {
@@ -11,11 +11,13 @@
     Session.prototype.logout = function() {
       authStore.logout();
       this.setUser(null);
+      $rootScope.$broadcast('sessions.logout');
     };
 
     Session.prototype.login = function(user) {
       authStore.setUserId(user.id);
       this.setUser(user);
+      $rootScope.$broadcast('sessions.login');
     };
 
     Session.prototype.getToken = function() {
@@ -24,6 +26,7 @@
 
     Session.prototype.setToken = function(token) {
       authStore.setToken(token);
+      $rootScope.$broadcast('sessions.refresh');
     };
 
     Session.prototype.getUserId = function() {
@@ -55,7 +58,8 @@
   app.factory('session', sessionFactory);
 
   app.run(['$rootScope', 'logoutService', 'session', '$state', function($rootScope, logoutService, session, $state) {
-    $rootScope.$on('unauthorized', function() {
+    $rootScope.$on('sessions.unauthorized', function() {
+      console.log('unauthorized!');
       session.logout();
       $state.go('login');
     });

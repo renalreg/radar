@@ -5,9 +5,9 @@
 
   app.factory('hasRecruitPatientPermission', ['_', function(_) {
     return function hasRecruitPatientPermission(user) {
-      return user.isAdmin || _.any(user.organisations, function(x) {
+      return user !== null && (user.isAdmin || _.any(user.organisations, function(x) {
         return x.hasRecruitPatientPermission;
-      });
+      }));
     };
   }]);
 })();
