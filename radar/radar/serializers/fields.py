@@ -248,8 +248,6 @@ class ListField(Field):
         if '_' in errors:
             transformed_errors['_'] = errors['_']
 
-        print errors
-
         for i, field_errors in errors.items():
             if isinstance(i, int):
                 transformed_field_errors = self.field.transform_errors(field_errors)

@@ -1,4 +1,5 @@
 from flask import current_app
+import requests
 
 from radar.database import db
 from radar.models.patients import Patient
@@ -12,6 +13,8 @@ from radar.data_sources import get_radar_data_source
 from radar.models.organisations import OrganisationPatient
 from radar.validation.utils import validate
 from radar.validation.core import ValidationError
+from radar.serializers.ukrdc import SearchSerializer, ResultListSerializer
+from radar.models.organisations import Organisation
 
 
 def is_ukrdc_search_enabled():
@@ -33,7 +36,56 @@ def search_patients(params):
 
 
 def search_ukrdc_patients(params):
-    pass
+    url = get_ukrdc_search_url()
+
+    request_data = {
+        'name': {
+            'given': params['first_name'],
+            'family': params['last_name'],
+        },
+        'birth_time': params['date_of_birth'],
+        'patient_number': {
+            'number': params['number'],
+            'code_system': params['number_organisation'].code
+        }
+    }
+    request_serializer = SearchSerializer()
+    request_data = request_serializer.to_data(request_data)
+
+    r = requests.post(url, json=request_data)
+
+    if r.status_code != 200:
+        # TODO raise/log error?
+        return []
+
+    response_data = r.json()
+    response_serializer = ResultListSerializer()
+    response_data = response_serializer.to_value(response_data)
+
+    results = []
+
+    for patient in response_data['patients']:
+        result = {}
+        result['first_name'] = patient['name']['given']
+        result['last_name'] = patient['name']['family']
+        result['date_of_birth'] = patient['birth_time']
+        result['gender'] = patient['gender']
+        result['patient_numbers'] = []
+
+        for patient_number in patient['patient_numbers']:
+            number = patient_number['number']
+            organisation_code = patient_number['code_system']
+            organisation_code = organisation_code.upper()
+            number_organisation = Organisation.query.filter(Organisation.code == organisation_code).one()
+
+            result['patient_numbers'].append({
+                'number': number,
+                'organisation': number_organisation,
+            })
+
+        results.append(result)
+
+    return results
 
 
 def search_radar_patients(params):
@@ -54,7 +106,8 @@ def search_radar_patients(params):
             if patient_alias.last_name.upper() == params['last_name'].upper():
                 last_name_match = True
 
-            if patient_alias.date_of_birth == params['date_of_birth']:
+        for patient_demographics in patient.patient_demographics:
+            if patient_demographics.date_of_birth == params['date_of_birth']:
                 date_of_birth_match = True
 
         # Check supplied demographics match existing demographics
@@ -66,6 +119,7 @@ def search_radar_patients(params):
             'first_name': patient.first_name,
             'last_name': patient.last_name,
             'date_of_birth': patient.date_of_birth,
+            'gender': patient.gender,
             'patient_numbers': [
                 {
                     'number': patient.id,
@@ -83,18 +137,34 @@ def search_radar_patients(params):
 
 
 def merge_patient_lists(a, b):
-    pass
+    c = []
+    radar_ids = set()
+
+    for x in a:
+        radar_id = get_radar_id(x)
+        radar_ids.add(radar_id)
+        c.append(x)
+
+    for x in b:
+        radar_id = get_radar_id(x)
+
+        if radar_id not in radar_ids:
+            c.append(x)
+
+    return c
+
+
+def get_radar_id(patient):
+    # Look for a RaDaR ID
+    for x in patient['patient_numbers']:
+        if is_radar_organisation(x['organisation']):
+            return int(x['number'])
+
+    return None
 
 
 def recruit_patient(params):
-    radar_id = None
-
-    # Look for a RaDaR ID
-    for x in params['patient_numbers']:
-        if is_radar_organisation(x['organisation']):
-            radar_id = int(x['number'])
-            break
-
+    radar_id = get_radar_id(params)
     cohort = params['cohort']
     organisation = params['recruited_by_organisation']
 
