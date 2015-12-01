@@ -1,5 +1,5 @@
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, IntegerField, BooleanField
+from radar.serializers.fields import StringField, IntegerField, BooleanField, FloatField
 from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
     sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default
@@ -11,7 +11,12 @@ DEFAULT_UKRDC_SEARCH_TIMEOUT = 10
 
 
 class InvalidConfig(Exception):
-    pass
+    def __init__(self, path, message):
+        self.path = path
+        self.message = message
+
+    def __str__(self):
+        return 'Invalid config: %s - %s' % (self.path, self.message)
 
 
 class ConfigSerializer(Serializer):
@@ -21,6 +26,7 @@ class ConfigSerializer(Serializer):
     BASE_URL = StringField()
     UKRDC_SEARCH_ENABLED = BooleanField()
     UKRDC_SEARCH_URL = StringField()
+    UKRDC_SEARCH_TIMEOUT = FloatField()
 
 
 class ConfigValidation(Validation):
@@ -52,6 +58,6 @@ def check_config(config):
         first_error = e.first()
         path = '.'.join(first_error[0])
         message = first_error[1]
-        raise InvalidConfig('config error: %s - %s' % (path, message))
+        raise InvalidConfig(path, message)
 
     return new_config
