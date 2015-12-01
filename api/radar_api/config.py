@@ -1,11 +1,12 @@
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, IntegerField
-from radar.validation.core import Validation, Field, ValidationError
+from radar.serializers.fields import StringField, IntegerField, BooleanField
+from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
-    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash
+    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default
 
 
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
+DEFAULT_SESSION_TIMEOUT = 1800
 
 
 class InvalidConfig(Exception):
@@ -17,15 +18,25 @@ class ConfigSerializer(Serializer):
     SQLALCHEMY_DATABASE_URI = StringField()
     SESSION_TIMEOUT = IntegerField()
     BASE_URL = StringField()
-    UKRDC_PATIENT_SEARCH_URL = StringField()
+    UKRDC_SEARCH_ENABLED = BooleanField()
+    UKRDC_SEARCH_URL = StringField()
 
 
 class ConfigValidation(Validation):
     SECRET_KEY = Field([required(), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
-    SESSION_TIMEOUT = Field([optional(), min_(0)])
+    SESSION_TIMEOUT = Field([default(DEFAULT_SESSION_TIMEOUT), min_(0)])
     BASE_URL = Field([required(), url(), no_trailing_slash()])
-    UKRDC_PATIENT_SEARCH_URL = Field([required(), url()])
+    UKRDC_SEARCH_ENABLED = Field([default(False)])
+    UKRDC_SEARCH_URL = Field([optional(), url()])
+
+    @pass_call
+    def validate(self, call, obj):
+        if obj['UKRDC_SEARCH_ENABLED']:
+            # URL is required if UKRDC search is enabled
+            call.validators_for_field([required()], obj, self.UKRDC_SEARCH_URL)
+
+        return obj
 
 
 def check_config(config):
