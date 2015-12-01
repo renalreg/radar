@@ -4,10 +4,12 @@ from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, IntegerField, BooleanField, FloatField
 from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
-    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default, max_, min_length
+    sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default, \
+    max_, min_length, email_address
 
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
 
+DEFAULT_DEBUG = False
 DEFAULT_SESSION_TIMEOUT = 1800
 
 DEFAULT_UKRDC_SEARCH_ENABLED = False
@@ -22,6 +24,11 @@ DEFAULT_MINIMUM_PASSWORD_SCORE = 3
 DEFAULT_GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
 DEFAULT_GENERATE_PASSWORD_LENGTH = 10
 
+DEFAULT_EMAIL_ENABLED = False
+DEFAULT_EMAIL_FROM_ADDRESS = 'radar@radar.nhs.uk'
+DEFAULT_EMAIL_SMTP_HOST = 'localhost'
+DEFAULT_EMAIL_SMTP_PORT = 25
+
 
 class InvalidConfig(Exception):
     def __init__(self, path, message):
@@ -33,37 +40,61 @@ class InvalidConfig(Exception):
 
 
 class ConfigSerializer(Serializer):
+    DEBUG = BooleanField()
     SECRET_KEY = StringField()
     SQLALCHEMY_DATABASE_URI = StringField()
-    SESSION_TIMEOUT = IntegerField()
+
     BASE_URL = StringField()
-    UKRDC_SEARCH_ENABLED = BooleanField()
-    UKRDC_SEARCH_URL = StringField()
-    UKRDC_SEARCH_TIMEOUT = FloatField()
+
+    SESSION_TIMEOUT = IntegerField()
+
     RESET_PASSWORD_MAX_AGE = IntegerField()
     MINIMUM_PASSWORD_SCORE = IntegerField()
     GENERATE_PASSWORD_ALPHABET = StringField()
     GENERATE_PASSWORD_LENGTH = IntegerField()
 
+    EMAIL_ENABLED = BooleanField()
+    EMAIL_FROM_ADDRESS = StringField()
+    EMAIL_SMTP_HOST = StringField()
+    EMAIL_SMTP_PORT = IntegerField()
+
+    UKRDC_SEARCH_ENABLED = BooleanField()
+    UKRDC_SEARCH_URL = StringField()
+    UKRDC_SEARCH_TIMEOUT = FloatField()
+
 
 class ConfigValidation(Validation):
+    DEBUG = Field([default(DEFAULT_DEBUG)])
     SECRET_KEY = Field([required(), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
-    SESSION_TIMEOUT = Field([default(DEFAULT_SESSION_TIMEOUT), min_(0)])
+
     BASE_URL = Field([required(), url(), no_trailing_slash()])
-    UKRDC_SEARCH_ENABLED = Field([default(DEFAULT_UKRDC_SEARCH_ENABLED)])
-    UKRDC_SEARCH_URL = Field([optional(), url()])
-    UKRDC_SEARCH_TIMEOUT = Field([default(DEFAULT_UKRDC_SEARCH_TIMEOUT), min_(0)])
+
+    SESSION_TIMEOUT = Field([default(DEFAULT_SESSION_TIMEOUT), min_(0)])
+
     RESET_PASSWORD_MAX_AGE = Field([default(DEFAULT_RESET_PASSWORD_MAX_AGE), min_(0)])
     MINIMUM_PASSWORD_SCORE = Field([default(DEFAULT_MINIMUM_PASSWORD_SCORE), min_(0), max_(4)])
     GENERATE_PASSWORD_ALPHABET = Field([default(DEFAULT_GENERATE_PASSWORD_ALPHABET), min_length(1)])
     GENERATE_PASSWORD_LENGTH = Field([default(DEFAULT_GENERATE_PASSWORD_LENGTH), min_(1)])
+
+    EMAIL_ENABLED = Field([optional()])
+    EMAIL_FROM_ADDRESS = Field([default(DEFAULT_EMAIL_FROM_ADDRESS), email_address()])
+    EMAIL_SMTP_HOST = Field([default(DEFAULT_EMAIL_SMTP_HOST)])
+    EMAIL_SMTP_PORT = Field([default(DEFAULT_EMAIL_SMTP_PORT)])
+
+    UKRDC_SEARCH_ENABLED = Field([default(DEFAULT_UKRDC_SEARCH_ENABLED)])
+    UKRDC_SEARCH_URL = Field([optional(), url()])
+    UKRDC_SEARCH_TIMEOUT = Field([default(DEFAULT_UKRDC_SEARCH_TIMEOUT), min_(0)])
 
     @pass_call
     def validate(self, call, obj):
         if obj['UKRDC_SEARCH_ENABLED']:
             # URL is required if UKRDC search is enabled
             call.validators_for_field([required()], obj, self.UKRDC_SEARCH_URL)
+
+        if obj['EMAIL_ENABLED'] is None:
+            # Disable emails by default in debug mode
+            call.validators_for_field([default(not obj['DEBUG'])], obj, self.EMAIL_ENABLED)
 
         return obj
 
