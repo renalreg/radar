@@ -11,8 +11,8 @@ from radar.mail import send_email_from_template
 from radar.config import get_config_value
 
 
-def get_reset_password_max_age():
-    return get_config_value('RESET_PASSWORD_MAX_AGE')
+def get_password_reset_max_age():
+    return get_config_value('PASSWORD_RESET_MAX_AGE')
 
 
 def get_base_url():
@@ -63,7 +63,7 @@ def reset_password(token, username, password):
     if not check_password_hash(user.reset_password_token, token):
         raise InvalidToken()
 
-    max_age = get_reset_password_max_age()
+    max_age = get_password_reset_max_age()
 
     # Token has expired
     if user.reset_password_date is not None and (user.reset_password_date - datetime.now()).seconds > max_age:

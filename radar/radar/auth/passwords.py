@@ -57,22 +57,21 @@ USER_INPUTS = [
 ]
 
 
-def get_generate_password_alphabet():
-    return get_config_value('GENERATE_PASSWORD_ALPHABET')
+def get_password_alphabet():
+    return get_config_value('PASSWORD_ALPHABET')
 
 
-def get_generate_password_length():
-    return get_config_value('GENERATE_PASSWORD_LENGTH')
+def get_password_length():
+    return get_config_value('PASSWORD_LENGTH')
 
 
-def get_minimum_password_score():
-    return get_config_value('MINIMUM_PASSWORD_SCORE')
+def get_password_min_score():
+    return get_config_value('PASSWORD_MIN_SCORE')
 
 
 def generate_password():
-    alphabet = get_generate_password_alphabet()
-    length = get_generate_password_length()
-
+    alphabet = get_password_alphabet()
+    length = get_password_length()
     return ''.join(SystemRandom().sample(alphabet, length))
 
 
@@ -110,7 +109,7 @@ def password_score(password, user_inputs=None):
 
 
 def is_strong_password(password, user=None):
-    minimum_password_score = get_minimum_password_score()
+    min_score = get_password_min_score()
 
     if user is None:
         user_inputs = USER_INPUTS
@@ -127,4 +126,4 @@ def is_strong_password(password, user=None):
 
         user_inputs.extend(USER_INPUTS)
 
-    return password_score(password, user_inputs) >= minimum_password_score
+    return password_score(password, user_inputs) >= min_score

@@ -15,14 +15,13 @@ DEFAULT_SESSION_TIMEOUT = 1800
 DEFAULT_UKRDC_SEARCH_ENABLED = False
 DEFAULT_UKRDC_SEARCH_TIMEOUT = 10
 
-DEFAULT_RESET_PASSWORD_MAX_AGE = 86400  # 1 day
-
-DEFAULT_MINIMUM_PASSWORD_SCORE = 3
-
 # Parameters to use for password generation
 # log2(36 ^ 10) = ~51 bits
-DEFAULT_GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
-DEFAULT_GENERATE_PASSWORD_LENGTH = 10
+DEFAULT_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
+DEFAULT_PASSWORD_LENGTH = 10
+
+DEFAULT_PASSWORD_RESET_MAX_AGE = 86400  # 1 day
+DEFAULT_PASSWORD_MIN_SCORE = 3
 
 DEFAULT_EMAIL_ENABLED = False
 DEFAULT_EMAIL_FROM_ADDRESS = 'radar@radar.nhs.uk'
@@ -48,10 +47,10 @@ class ConfigSerializer(Serializer):
 
     SESSION_TIMEOUT = IntegerField()
 
-    RESET_PASSWORD_MAX_AGE = IntegerField()
-    MINIMUM_PASSWORD_SCORE = IntegerField()
-    GENERATE_PASSWORD_ALPHABET = StringField()
-    GENERATE_PASSWORD_LENGTH = IntegerField()
+    PASSWORD_ALPHABET = StringField()
+    PASSWORD_LENGTH = IntegerField()
+    PASSWORD_RESET_MAX_AGE = IntegerField()
+    PASSWORD_MIN_SCORE = IntegerField()
 
     EMAIL_ENABLED = BooleanField()
     EMAIL_FROM_ADDRESS = StringField()
@@ -72,10 +71,10 @@ class ConfigValidation(Validation):
 
     SESSION_TIMEOUT = Field([default(DEFAULT_SESSION_TIMEOUT), min_(0)])
 
-    RESET_PASSWORD_MAX_AGE = Field([default(DEFAULT_RESET_PASSWORD_MAX_AGE), min_(0)])
-    MINIMUM_PASSWORD_SCORE = Field([default(DEFAULT_MINIMUM_PASSWORD_SCORE), min_(0), max_(4)])
-    GENERATE_PASSWORD_ALPHABET = Field([default(DEFAULT_GENERATE_PASSWORD_ALPHABET), min_length(1)])
-    GENERATE_PASSWORD_LENGTH = Field([default(DEFAULT_GENERATE_PASSWORD_LENGTH), min_(1)])
+    PASSWORD_ALPHABET = Field([default(DEFAULT_PASSWORD_ALPHABET), min_length(1)])
+    PASSWORD_LENGTH = Field([default(DEFAULT_PASSWORD_LENGTH), min_(1)])
+    PASSWORD_RESET_MAX_AGE = Field([default(DEFAULT_PASSWORD_RESET_MAX_AGE), min_(0)])
+    PASSWORD_MIN_SCORE = Field([default(DEFAULT_PASSWORD_MIN_SCORE), min_(0), max_(4)])
 
     EMAIL_ENABLED = Field([optional()])
     EMAIL_FROM_ADDRESS = Field([default(DEFAULT_EMAIL_FROM_ADDRESS), email_address()])
