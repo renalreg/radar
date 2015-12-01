@@ -25,6 +25,7 @@ class ApiView(MethodView):
         except NotFound:
             abort(404)
         except ValidationError as e:
+            print e.errors
             return jsonify(errors=e.errors), 422
 
 
@@ -224,7 +225,6 @@ class CreateModelViewMixin(object):
                     obj = serializer.update(obj, deserialized_data)
                     validation.after_update(ctx, old_obj, obj)
                 except ValidationError as e:
-                    print e.errors
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
 
@@ -328,7 +328,6 @@ class UpdateModelViewMixin(object):
                     obj = serializer.update(obj, deserialized_data)
                     validation.after_update(ctx, old_obj, obj)
                 except ValidationError as e:
-                    print e.errors
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
 
@@ -431,7 +430,6 @@ def request_json(serializer_class, validation_class=None):
                 try:
                     validation.after_update(ctx, {}, data)
                 except ValidationError as e:
-                    print e.errors
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
 
