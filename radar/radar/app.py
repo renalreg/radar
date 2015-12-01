@@ -1,6 +1,7 @@
 from flask import Flask
 
 from radar.database import db
+from radar.config import check_config
 
 
 def create_app(config=None):
@@ -9,6 +10,8 @@ def create_app(config=None):
 
     if config is not None:
         app.config.update(config)
+
+    app.config.update(check_config(app.config))
 
     # noinspection PyUnresolvedReferences
     from radar import models  # noqa
