@@ -22,5 +22,7 @@ class PatientNumber(db.Model, MetaModelMixin):
 
     number = Column(String, nullable=False)
 
+# TODO add unique index on data_source_id, organisation_id, number
+
 Index('patient_numbers_patient_id_idx', PatientNumber.patient_id)
 Index('patient_numbers_organisation_id_idx', PatientNumber.organisation_id)
