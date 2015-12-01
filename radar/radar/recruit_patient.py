@@ -25,6 +25,10 @@ def get_ukrdc_search_url():
     return current_app.config['UKRDC_SEARCH_URL']
 
 
+def get_ukrdc_search_timeout():
+    return current_app.config['UKRDC_SEARCH_TIMEOUT']
+
+
 def search_patients(params):
     patients = search_radar_patients(params)
 
@@ -37,6 +41,7 @@ def search_patients(params):
 
 def search_ukrdc_patients(params):
     url = get_ukrdc_search_url()
+    timeout = get_ukrdc_search_timeout()
 
     request_data = {
         'name': {
@@ -52,7 +57,11 @@ def search_ukrdc_patients(params):
     request_serializer = SearchSerializer()
     request_data = request_serializer.to_data(request_data)
 
-    r = requests.post(url, json=request_data)
+    try:
+        r = requests.post(url, json=request_data, timeout=timeout)
+    except requests.exceptions.Timeout:
+        # TODO raise/log error?
+        return []
 
     if r.status_code != 200:
         # TODO raise/log error?
