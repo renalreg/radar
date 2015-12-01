@@ -10,7 +10,7 @@ import click
 import os
 
 from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-    get_api_src_path, run_command, get_release
+    get_api_src_path, get_release
 
 NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
