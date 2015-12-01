@@ -1,6 +1,6 @@
 from radar.models.users import User
 from radar.auth.passwords import password_to_nato_str, check_password_hash, \
-    generate_password_hash, generate_password, GENERATE_PASSWORD_LENGTH, \
+    generate_password_hash, generate_password, get_password_length, \
     is_strong_password
 
 
@@ -16,23 +16,26 @@ def test_password_hash():
     assert check_password_hash(password_hash, password)
 
 
-def test_generate_password():
-    password = generate_password()
-    assert len(password) == GENERATE_PASSWORD_LENGTH
+def test_generate_password(app):
+    with app.app_context():
+        password = generate_password()
+        assert len(password) == get_password_length()
 
 
-def test_weak_passwords():
-    assert not is_strong_password('password123')
-    assert not is_strong_password('rarediseaseregistry418')
-    assert not is_strong_password('abcdefghijklmnopqrstuvwyz0123456789')
+def test_weak_passwords(app):
+    with app.app_context():
+        assert not is_strong_password('password123')
+        assert not is_strong_password('rarediseaseregistry418')
+        assert not is_strong_password('abcdefghijklmnopqrstuvwyz0123456789')
 
 
-def test_strong_passwords():
-    assert is_strong_password('besiderisingwoodennearer')
-    assert is_strong_password('7pJnW4yUWx')
+def test_strong_passwords(app):
+    with app.app_context():
+        assert is_strong_password('besiderisingwoodennearer')
+        assert is_strong_password('7pJnW4yUWx')
 
 
-def test_weak_passwords_for_user():
+def test_weak_passwords_for_user(app):
     user = User()
     user.username = 'dtclihbswm'
     user.email = 'rihylunxov@example.org'
@@ -45,14 +48,15 @@ def test_weak_passwords_for_user():
     first_name_password = user.first_name + suffix
     last_name_password = user.last_name + suffix
 
-    assert is_strong_password(username_password)
-    assert not is_strong_password(username_password, user)
+    with app.app_context():
+        assert is_strong_password(username_password)
+        assert not is_strong_password(username_password, user)
 
-    assert is_strong_password(email_password)
-    assert not is_strong_password(email_password, user)
+        assert is_strong_password(email_password)
+        assert not is_strong_password(email_password, user)
 
-    assert is_strong_password(first_name_password)
-    assert not is_strong_password(first_name_password, user)
+        assert is_strong_password(first_name_password)
+        assert not is_strong_password(first_name_password, user)
 
-    assert is_strong_password(last_name_password)
-    assert not is_strong_password(last_name_password, user)
+        assert is_strong_password(last_name_password)
+        assert not is_strong_password(last_name_password, user)
