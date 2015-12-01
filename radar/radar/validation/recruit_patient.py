@@ -1,6 +1,5 @@
 from radar.validation.core import Validation, Field, pass_call, pass_context, ValidationError
 from radar.validation.validators import optional, required, not_in_future, in_, none_if_blank
-from radar.validation.patient_number_validators import nhs_no, ukrdc_no, chi_no
 from radar.models.patients import GENDERS
 from radar.permissions import has_permission_for_organisation
 from radar.organisations import is_chi_organisation, is_nhs_organisation, is_radar_organisation
@@ -34,6 +33,14 @@ class RecruitPatientSearchValidation(Validation):
         return obj
 
 
+def get_radar_id(obj):
+    for x in obj['patient_numbers']:
+        if is_radar_organisation(x['organisation']):
+            return int(x['number'])
+
+    return None
+
+
 # TODO validate patient numbers
 class RecruitPatientValidation(Validation):
     first_name = Field([none_if_blank(), optional()])
@@ -55,12 +62,7 @@ class RecruitPatientValidation(Validation):
 
     @pass_call
     def validate(self, call, obj):
-        radar_id = None
-
-        for x in obj['patient_numbers']:
-            if is_radar_organisation(x['organisation']):
-                radar_id = int(number)
-                break
+        radar_id = get_radar_id(obj)
 
         if radar_id is None:
             call.validators_for_field([required()], obj, self.first_name)
