@@ -53,6 +53,10 @@
         var logoutDelay = (sessionTimeout - 60) * 1000;
 
         logoutTimeout = $timeout(function() {
+          notificationService.info({
+            message: 'You were logged out due to inactivity.',
+            timeout: 0
+          });
           logoutService.logout();
           $state.go('login');
         }, logoutDelay);
