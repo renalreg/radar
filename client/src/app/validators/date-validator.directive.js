@@ -25,7 +25,10 @@
           } else {
             modelValue = viewValue.trim();
 
-            if (DATE_REGEX.test(modelValue)) {
+            if (modelValue === '') {
+              valid = true;
+              modelValue = null;
+            } else if (DATE_REGEX.test(modelValue)) {
               var date = moment(viewValue, 'DD/MM/YYYY');
 
               if (date.isValid()) {
