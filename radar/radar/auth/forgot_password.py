@@ -11,8 +11,6 @@ from radar.database import db
 from radar.models import User
 from radar.mail import send_email_from_template
 
-RESET_PASSWORD_MAX_AGE = 86400  # 1 day
-
 
 def generate_reset_password_token():
     # Token is given to user, hash is stored
@@ -42,6 +40,10 @@ def forgot_password(username):
     })
 
 
+def get_reset_password_max_age():
+    return current_app.config['RESET_PASSWORD_MAX_AGE']
+
+
 def reset_password(token, username, password):
     user = User.query.filter(User.username == username).first()
 
@@ -57,8 +59,10 @@ def reset_password(token, username, password):
     if not check_password_hash(user.reset_password_token, token):
         raise InvalidToken()
 
+    max_age = get_reset_password_max_age()
+
     # Token has expired
-    if user.reset_password_date is not None and (user.reset_password_date - datetime.now()).seconds > RESET_PASSWORD_MAX_AGE:
+    if user.reset_password_date is not None and (user.reset_password_date - datetime.now()).seconds > max_age:
         raise InvalidToken()
 
     # Update the user's password

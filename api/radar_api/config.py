@@ -8,6 +8,7 @@ SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
 DEFAULT_SESSION_TIMEOUT = 1800
 DEFAULT_UKRDC_SEARCH_ENABLED = False
 DEFAULT_UKRDC_SEARCH_TIMEOUT = 10
+DEFAULT_RESET_PASSWORD_MAX_AGE = 86400  # 1 day
 
 
 class InvalidConfig(Exception):
@@ -27,6 +28,7 @@ class ConfigSerializer(Serializer):
     UKRDC_SEARCH_ENABLED = BooleanField()
     UKRDC_SEARCH_URL = StringField()
     UKRDC_SEARCH_TIMEOUT = FloatField()
+    RESET_PASSWORD_MAX_AGE = IntegerField()
 
 
 class ConfigValidation(Validation):
@@ -37,6 +39,7 @@ class ConfigValidation(Validation):
     UKRDC_SEARCH_ENABLED = Field([default(DEFAULT_UKRDC_SEARCH_ENABLED)])
     UKRDC_SEARCH_URL = Field([optional(), url()])
     UKRDC_SEARCH_TIMEOUT = Field([default(DEFAULT_UKRDC_SEARCH_TIMEOUT), min_(0)])
+    RESET_PASSWORD_MAX_AGE = Field([default(DEFAULT_RESET_PASSWORD_MAX_AGE), min_(0)])
 
     @pass_call
     def validate(self, call, obj):
