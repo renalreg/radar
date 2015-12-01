@@ -7,14 +7,12 @@ from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
 
-DEFAULT_SESSION_TIMEOUT = 1800
-
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 
 
 def get_session_timeout():
-    return current_app.config.get('SESSION_TIMEOUT', DEFAULT_SESSION_TIMEOUT)
+    return current_app.config['SESSION_TIMEOUT']
 
 
 def login(username, password):

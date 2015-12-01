@@ -1,3 +1,5 @@
+from flask import current_app
+
 from radar.database import db
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
@@ -12,7 +14,29 @@ from radar.validation.utils import validate
 from radar.validation.core import ValidationError
 
 
-def recruit_patient_search(params):
+def is_ukrdc_search_enabled():
+    return current_app.config['UKRDC_SEARCH_ENABLED']
+
+
+def get_ukrdc_search_url():
+    return current_app.config['UKRDC_SEARCH_URL']
+
+
+def search_patients(params):
+    patients = search_radar_patients(params)
+
+    if is_ukrdc_search_enabled():
+        ukrdc_patients = search_ukrdc_patients(params)
+        patients = merge_patient_lists(patients, ukrdc_patients)
+
+    return patients
+
+
+def search_ukrdc_patients(params):
+    pass
+
+
+def search_radar_patients(params):
     number_filter = filter_by_patient_number_at_organisation(params['number'], params['number_organisation'])
     patients = Patient.query.filter(number_filter).all()
 
@@ -56,6 +80,10 @@ def recruit_patient_search(params):
         results.append(result)
 
     return results
+
+
+def merge_patient_lists(a, b):
+    pass
 
 
 def recruit_patient(params):
