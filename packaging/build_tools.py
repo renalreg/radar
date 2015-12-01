@@ -1,5 +1,5 @@
 from __future__ import print_function
-from paramiko import SSHClient, AutoAddPolicy, Channel
+from paramiko import SSHClient, AutoAddPolicy
 
 import json
 import subprocess
