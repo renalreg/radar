@@ -13,12 +13,12 @@
 
       <tr>
         <th>Date of Onset</th>
-        <td>{{item.dateOfOnset | dateFormat}}</td>
+        <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
       </tr>
 
       <tr>
         <th>Date of Diagnosis</th>
-        <td>{{item.dateOfDiagnosis | dateFormat}}</td>
+        <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
       </tr>
 
       <tr>
@@ -128,8 +128,8 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.dateOfOnset | dateFormat}}</td>
-          <td>{{item.dateOfDiagnosis | dateFormat}}</td>
+          <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
+          <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
           <td>{{item.cohortDiagnosis.label}}</td>
 
           <td>
