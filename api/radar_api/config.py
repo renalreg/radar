@@ -45,9 +45,11 @@ def check_config(config):
 
     try:
         config = serializer.to_value(config)
-        validation.after_update({}, {}, config)
+        new_config = validation.after_update({}, {}, config)
     except ValidationError as e:
         first_error = e.first()
         path = '.'.join(first_error[0])
         message = first_error[1]
         raise InvalidConfig('config error: %s - %s' % (path, message))
+
+    return new_config

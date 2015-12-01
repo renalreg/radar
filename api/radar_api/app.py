@@ -66,7 +66,7 @@ class RadarApi(Flask):
         else:
             self.config.update(config)
 
-        check_config(self.config)
+        self.config.update(check_config(self.config))
 
         db.init_app(self)
 
