@@ -3,6 +3,7 @@ import string
 
 import werkzeug.security
 import zxcvbn
+from flask import current_app
 
 # Parameters to use for password generation
 # log2(36 ^ 10) = ~51 bits
@@ -61,8 +62,19 @@ USER_INPUTS = [
 ]
 
 
+def get_generate_password_alphabet():
+    return current_app.config['GENERATE_PASSWORD_ALPHABET']
+
+
+def get_generate_password_length():
+    return current_app.config['GENERATE_PASSWORD_LENGTH']
+
+
 def generate_password():
-    return ''.join(SystemRandom().sample(GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH))
+    alphabet = get_generate_password_alphabet()
+    length = get_generate_password_length()
+
+    return ''.join(SystemRandom().sample(alphabet, length))
 
 
 def generate_password_hash(password):
@@ -94,11 +106,17 @@ def password_to_nato_str(password):
     return ', '.join(password_to_nato_values(password))
 
 
-def password_strength(password, user_inputs=None):
+def password_score(password, user_inputs=None):
     return zxcvbn.password_strength(password, user_inputs)['score']
 
 
+def get_minimum_password_score():
+    return current_app.config['MINIMUM_PASSWORD_SCORE']
+
+
 def is_strong_password(password, user=None):
+    minimum_password_score = get_minimum_password_score()
+
     if user is None:
         user_inputs = USER_INPUTS
     else:
@@ -114,4 +132,4 @@ def is_strong_password(password, user=None):
 
         user_inputs.extend(USER_INPUTS)
 
-    return password_strength(password, user_inputs) >= 3
+    return password_score(password, user_inputs) >= minimum_password_score
