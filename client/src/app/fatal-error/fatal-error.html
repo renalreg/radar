@@ -1,9 +1,9 @@
-<div class="overlay">
+<div class="overlay" ng-show="open" ng-click="close()">
   <div class="overlay-inner">
-    <div class="fatal-error">
+    <div class="fatal-error" ng-click="$event.stopPropagation()">
       <div class="fatal-error-inner">
         <div class="fatal-error-heading">Error</div>
-        <div class="fatal-error-body">Body</div>
+        <div class="fatal-error-body">An unexpected error occurred while loading the page. Please try reloading the page.</div>
         <div class="fatal-error-footer">
           <button class="btn btn-default" type="button" ng-click="close()">Close</button>
           <button class="btn btn-primary" type="button" ng-click="reload()">Reload</button>
