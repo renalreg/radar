@@ -38,7 +38,7 @@
     function search() {
       $scope.loading = true;
 
-      adapter.post('/recruit-patient-search', {}, $scope.searchParams)
+      return adapter.post('/recruit-patient-search', {}, $scope.searchParams)
         .then(function(response) {
           var patients = response.data.patients;
 
@@ -92,7 +92,7 @@
     function recruit() {
       $scope.loading = true;
 
-      adapter.post('/recruit-patient', {}, $scope.patient)
+      return adapter.post('/recruit-patient', {}, $scope.patient)
         .then(function(response) {
           var patientId = response.data.id;
           $state.go('patient.demographics', {patientId: patientId});

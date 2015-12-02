@@ -24,7 +24,7 @@
         var proxyParams = proxy.getParams();
         var params = angular.extend({}, proxyParams, $scope.filters);
 
-        self.load(store.findMany('users', params, true).then(function(data) {
+        return self.load(store.findMany('users', params, true).then(function(data) {
           proxy.setItems(data.data);
           proxy.setCount(data.pagination.count);
           $scope.count = data.pagination.count;

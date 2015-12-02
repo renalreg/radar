@@ -14,7 +14,7 @@
     $scope.submit = function() {
       $scope.errors = {};
 
-      authService.forgotUsername($scope.data.email)
+      return authService.forgotUsername($scope.data.email)
         .then(function() {
           notificationService.success({message: MESSAGE, timeout: 30000});
           $state.go('login');

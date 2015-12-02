@@ -8,7 +8,7 @@
       require: ['^form', '?^submitIfValid'],
       scope: {},
       transclude: true,
-      template: '<button ng-disabled="formCtrl.$invalid" type="submit" class="btn btn-success"><span ng-transclude></span> <i class="fa fa-spinner fa-spin" ng-show="submitting"></i></button>',
+      templateUrl: 'app/forms/submit-button.html',
       link: function(scope, element, attrs, ctrls) {
         var formCtrl = ctrls[0];
         var submitIfValidCtrl = ctrls[1];
