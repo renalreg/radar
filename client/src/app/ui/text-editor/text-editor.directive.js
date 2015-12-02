@@ -26,10 +26,6 @@
           quill.setHTML($sce.getTrustedHtml(ngModel.$viewValue || ''));
         };
 
-        ngModel.$formatters.unshift(function(modelValue) {
-          return modelValue ? $sce.trustAsHtml(modelValue) : '';
-        });
-
         ngModel.$parsers.unshift(function(viewValue) {
           return viewValue ? $sce.getTrustedHtml(viewValue) : '';
         });

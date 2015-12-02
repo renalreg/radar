@@ -4,8 +4,8 @@
       <span crud-edit-button item="item"></span>
     </p>
 
-    <div ng-if="item.getNotesHtml()" ng-bind-html="item.getNotesHtml()"></div>
-    <p ng-if="!item.getNotesHtml()"><i>No notes.</i></p>
+    <div ng-if="item.notes" ng-bind-html="item.notes"></div>
+    <p ng-if="!item.notes"><i>No notes.</i></p>
   </div>
 
   <div ng-if="editing">

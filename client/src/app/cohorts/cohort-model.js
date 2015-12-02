@@ -3,17 +3,13 @@
 
   var app = angular.module('radar.cohorts');
 
-  app.factory('CohortModel', ['Model', '$sce', function(Model, $sce) {
+  app.factory('CohortModel', ['Model', 'safeHtml', function(Model, safeHtml) {
     function CohortModel(modelName, data) {
+      data.notes = safeHtml(data.notes);
       Model.call(this, modelName, data);
     }
 
     CohortModel.prototype = Object.create(Model.prototype);
-
-    CohortModel.prototype.getNotesHtml = function() {
-      var notes = this.notes || '';
-      return $sce.trustAsHtml(notes);
-    };
 
     return CohortModel;
   }]);
