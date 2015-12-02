@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+from random import SystemRandom
 
 from sqlalchemy import and_
 import dateutil.parser
@@ -100,3 +101,7 @@ def seconds_to_age(seconds):
 def to_age(patient, event_date):
     seconds = (event_date - patient.date_of_birth).total_seconds()
     return seconds_to_age(seconds)
+
+
+def random_string(alphabet, length):
+    return ''.join(SystemRandom().choice(alphabet) for _ in range(length))

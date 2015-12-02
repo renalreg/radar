@@ -16,6 +16,7 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
     first_name = StringField()
     last_name = StringField()
     force_password_change = BooleanField()
+    telephone_number = StringField()
 
     organisations = ListField(field=OrganisationUserSerializer(), source='organisation_users', read_only=True)
     cohorts = ListField(field=CohortUserSerializer(), source='cohort_users', read_only=True)
@@ -32,6 +33,7 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'telephoneNumber',
             'force_password_change',
         )
 
