@@ -22,7 +22,7 @@
         scope.login = function() {
           scope.errors = {};
 
-          loginService.login(credentials)
+          return loginService.login(credentials)
             .then(function() {
               $state.go('patients');
             })
@@ -31,10 +31,6 @@
                 scope.errors = errors;
               }
             });
-        };
-
-        scope.logout = function() {
-          session.logout();
         };
       }
     };
