@@ -11,6 +11,7 @@
     'radar.core',
     'radar.crud',
     'radar.dataSources',
+    'radar.fatalError',
     'radar.filters',
     'radar.forms',
     'radar.home',

@@ -1,0 +1,22 @@
+.noscroll {
+  overflow: hidden;
+}
+
+.overlay {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  overflow-y: auto;
+  z-index: 9999;
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-inner {
+  display: table-cell;
+  vertical-align: middle;
+}
