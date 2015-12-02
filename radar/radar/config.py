@@ -1,5 +1,4 @@
 import string
-from random import SystemRandom
 
 from flask import current_app
 
