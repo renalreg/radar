@@ -1,11 +1,11 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.ui');
+  var app = angular.module('radar.ui.fatalError');
 
   app.directive('fatalError', ['$window', function($window) {
     return {
-      templateUrl: 'app/fatal-error/fatal-error.html',
+      templateUrl: 'app/ui/fatal-error/fatal-error.html',
       link: function(scope) {
         scope.open = false;
 
