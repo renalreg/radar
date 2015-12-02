@@ -5,12 +5,15 @@
 
   app.directive('crudSaveButton', function() {
     return {
-      require: ['^crud', '^form'],
+      require: ['^crud', '^form', '?^crudSubmit'],
       scope: {},
-      template: '<button ng-disabled="!valid || !enabled" type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save</button>',
+      templateUrl: 'app/crud/save-button.html',
       link: function(scope, element, attrs, ctrls) {
         var crudCtrl = ctrls[0];
         var formCtrl = ctrls[1];
+        var crudSubmitCtrl = ctrls[2];
+
+        scope.submitting = false;
 
         scope.$watch(function() {
           return formCtrl.$valid;
@@ -23,6 +26,16 @@
         }, function(value) {
           scope.enabled = value;
         });
+
+        if (crudSubmitCtrl !== null) {
+          crudSubmitCtrl.on('submit', function() {
+            scope.submitting = true;
+          });
+
+          crudSubmitCtrl.on('submitted', function() {
+            scope.submitting = false;
+          });
+        }
       }
     };
   });

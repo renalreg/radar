@@ -9,7 +9,7 @@
       scope: {
         submit: '&submitIfValid'
       },
-      controller: function($scope, $element, $attrs) {
+      controller: function() {
         var listeners = {};
 
         this.on = on;
@@ -22,7 +22,7 @@
 
           var callbacks = listeners[name];
           callbacks.push(callback);
-        };
+        }
 
         function broadcast(name) {
           var callbacks = listeners[name] || [];
@@ -35,7 +35,7 @@
       },
       link: function(scope, element, attrs, ctrls) {
         var formCtrl = ctrls[0];
-        var submitIfValidCtrl = ctrls[1]
+        var submitIfValidCtrl = ctrls[1];
 
         element.on('submit', function(event) {
           event.preventDefault();
@@ -44,7 +44,7 @@
             submitIfValidCtrl.broadcast('submit');
 
             scope.submit()['finally'](function() {
-              submitIfValidCtrl.broadcast('done');
+              submitIfValidCtrl.broadcast('submitted');
             });
           }
         });

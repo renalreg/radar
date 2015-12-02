@@ -21,7 +21,7 @@
             scope.submitting = true;
           });
 
-          submitIfValidCtrl.on('done', function() {
+          submitIfValidCtrl.on('submitted', function() {
             scope.submitting = false;
           });
         }
