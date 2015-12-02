@@ -15,7 +15,7 @@
         output = years + ' ' + (years === 1 ? 'year' : 'years');
 
         if (months > 0) {
-            output +=  ', ' + months + ' ' + (months === 1 ? 'month' : 'months');
+          output +=  ', ' + months + ' ' + (months === 1 ? 'month' : 'months');
         }
       } else {
         output = '-';
