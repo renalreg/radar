@@ -53,8 +53,8 @@
       return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler());
     }
 
-    function forgotPassword(username) {
-      return adapter.post('/forgot-password', {}, {username: username})['catch'](errorHandler());
+    function forgotPassword(username, email) {
+      return adapter.post('/forgot-password', {}, {username: username, email: email})['catch'](errorHandler());
     }
 
     function resetPassword(token, username, password) {
