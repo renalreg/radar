@@ -15,7 +15,7 @@
     store,
     _
   ) {
-    function ResultListController($scope) {
+    function ResultTableController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
@@ -66,10 +66,10 @@
       };
     }
 
-    ResultListController.$inject = ['$scope'];
-    ResultListController.prototype = Object.create(ModelListDetailController.prototype);
+    ResultTableController.$inject = ['$scope'];
+    ResultTableController.prototype = Object.create(ModelListDetailController.prototype);
 
-    ResultListController.prototype.groupItems = function() {
+    ResultTableController.prototype.groupItems = function() {
       var self = this;
 
       var items = self.scope.items;
@@ -124,7 +124,7 @@
       this.scope.groupedItems = groupedItems;
     };
 
-    ResultListController.prototype.load = function(promise) {
+    ResultTableController.prototype.load = function(promise) {
       var self = this;
 
       return ModelListDetailController.prototype.load.call(this, promise).then(function(items) {
@@ -133,7 +133,7 @@
       });
     };
 
-    ResultListController.prototype.save = function() {
+    ResultTableController.prototype.save = function() {
       var self = this;
 
       return ModelListDetailController.prototype.save.call(this).then(function(item) {
@@ -142,7 +142,7 @@
       });
     };
 
-    ResultListController.prototype.remove = function(item) {
+    ResultTableController.prototype.remove = function(item) {
       var self = this;
 
       return ModelListDetailController.prototype.remove.call(this, item).then(function(item) {
@@ -151,7 +151,7 @@
       });
     };
 
-    return ResultListController;
+    return ResultTableController;
   }
 
   controllerFactory.$inject = [
@@ -163,15 +163,15 @@
     '_'
   ];
 
-  app.factory('ResultListController', controllerFactory);
+  app.factory('ResultTableController', controllerFactory);
 
-  app.directive('resultListComponent', ['ResultListController', function(ResultListController) {
+  app.directive('resultTableComponent', ['ResultTableController', function(ResultTableController) {
     return {
       scope: {
         patient: '='
       },
-      controller: ResultListController,
-      templateUrl: 'app/patients/results/result-list-component.html'
+      controller: ResultTableController,
+      templateUrl: 'app/patients/results/result-table-component.html'
     };
   }]);
 })();
