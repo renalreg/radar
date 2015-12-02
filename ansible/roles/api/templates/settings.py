@@ -6,3 +6,4 @@ SESSION_TIMEOUT = 3600
 BASE_URL = '{{ web_base_url }}'
 UKRDC_SEARCH_ENABLED = True
 UKRDC_SEARCH_URL = 'http://localhost:5100/search'
+LIVE = {{ 'True' if api_live else 'False' }}
