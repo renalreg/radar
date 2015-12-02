@@ -10,17 +10,19 @@ from radar.views.core import ApiView, request_json
 
 class ForgotPasswordSerializer(Serializer):
     username = StringField()
+    email = StringField()
 
 
 class ForgotPasswordView(ApiView):
     @request_json(ForgotPasswordSerializer, ForgotPasswordValidation)
     def post(self, data):
         username = data['username']
+        email = data['email']
 
         try:
-            forgot_password(username)
+            forgot_password(username, email)
         except UserNotFound:
-            raise ValidationError({'username': 'No user found with that username.'})
+            raise ValidationError({'username': 'No user found with that username and email.'})
 
         return Response(status=200)
 

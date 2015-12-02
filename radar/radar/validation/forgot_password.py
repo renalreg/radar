@@ -4,3 +4,4 @@ from radar.validation.validators import required
 
 class ForgotPasswordValidation(Validation):
     username = Field([required()])
+    email = Field([required()])

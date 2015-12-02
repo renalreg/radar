@@ -26,8 +26,8 @@ def generate_reset_password_token():
     return token, token_hash
 
 
-def forgot_password(username):
-    user = User.query.filter(User.username == username).first()
+def forgot_password(username, email):
+    user = User.query.filter(User.username == username, User.email == email).first()
 
     if user is None:
         raise UserNotFound()
