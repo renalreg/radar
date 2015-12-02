@@ -24,7 +24,8 @@ def app_context(f):
 def cli(ctx, connection_string):
     config = {
         'SQLALCHEMY_DATABASE_URI': connection_string,
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+        'BASE_URL': 'http://localhost'
     }
 
     ctx.obj['app'] = create_app(config)

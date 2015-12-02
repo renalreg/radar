@@ -1,4 +1,5 @@
 import string
+from random import SystemRandom
 
 from flask import current_app
 
@@ -8,6 +9,7 @@ from radar.validation.core import Validation, Field, ValidationError, pass_call
 from radar.validation.validators import required, min_crack_time, \
     sqlalchemy_connection_string, optional, min_, url, no_trailing_slash, default, \
     max_, min_length, email_address
+from radar.utils import random_string
 
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
 
@@ -29,6 +31,8 @@ DEFAULT_EMAIL_ENABLED = False
 DEFAULT_EMAIL_FROM_ADDRESS = 'radar@radar.nhs.uk'
 DEFAULT_EMAIL_SMTP_HOST = 'localhost'
 DEFAULT_EMAIL_SMTP_PORT = 25
+
+DEFAULT_SECRET_KEY = random_string(string.ascii_letters + string.digits, 64)
 
 
 class InvalidConfig(Exception):
@@ -66,7 +70,7 @@ class ConfigSerializer(Serializer):
 
 class ConfigValidation(Validation):
     DEBUG = Field([default(DEFAULT_DEBUG)])
-    SECRET_KEY = Field([required(), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
+    SECRET_KEY = Field([default(DEFAULT_SECRET_KEY), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
 
     BASE_URL = Field([required(), url(), no_trailing_slash()])

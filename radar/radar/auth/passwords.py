@@ -1,9 +1,8 @@
-from random import SystemRandom
-
 import werkzeug.security
 import zxcvbn
 
 from radar.config import get_config_value
+from radar.utils import random_string
 
 NATO_ALPHABET = {
     'a': 'ALFA',
@@ -72,7 +71,7 @@ def get_password_min_score():
 def generate_password():
     alphabet = get_password_alphabet()
     length = get_password_length()
-    return ''.join(SystemRandom().sample(alphabet, length))
+    return random_string(alphabet, length)
 
 
 def generate_password_hash(password):
