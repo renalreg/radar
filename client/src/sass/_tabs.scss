@@ -1,10 +1,10 @@
 @import "variables";
 
-$radar-tabs-link-color: $radar-secondary-text;
-$radar-tabs-border-color: $radar-secondary;
+$radar-tabs-link-color: $radar-primary-text;
+$radar-tabs-border-color: $radar-primary;
 $radar-tabs-active-link-color: #fff;
-$radar-tabs-active-bg: $radar-secondary;
-$radar-tabs-active-border-color: $radar-secondary;
+$radar-tabs-active-bg: $radar-primary;
+$radar-tabs-active-border-color: $radar-primary;
 $radar-tabs-link-padding: 10px 15px;
 
 .tabs-radar {

@@ -1,33 +1,51 @@
-// RaDaR
+// ===== NHS =====
 
-$radar-primary: #0fb153;
-$radar-primary-text: #07672a;
-$radar-primary-selected: #3abe68;
+$nhs-dark-green: rgb(0, 107, 84);
+$nhs-green: rgb(0, 158, 73);
+$nhs-light-green: rgb(91, 191, 33);
+$nhs-aqua-green: rgb(0, 170, 158);
+$nhs-aqua-blue: rgb(0, 173, 198);
+$nhs-light-blue: rgb(0, 145, 201);
+$nhs-dark-blue: rgb(0, 56, 147);
+$nhs-purple: rgb(86, 0, 140);
+$nhs-dark-pink: rgb(160, 0, 84);
+$nhs-dark-red: rgb(147, 22, 56);
+$nhs-red: rgb(216, 30, 5);
+$nhs-orange: rgb(226, 140, 5);
+$nhs-yellow: rgb(247, 226, 20);
 
-$radar-secondary: #4c90d6;
-$radar-secondary-text: #2a5366;
-$radar-secondary-bg: #c0d7ee;
+// ===== RaDaR =====
 
-$radar-success: #75cf34;
-$radar-success-text: #07672a;
-$radar-success-bg: #ade2b2;
+$radar-primary: $nhs-aqua-green;
+$radar-primary-text: mix($radar-primary, black, 30%);
+$radar-secondary-bg: mix($radar-primary, white, 20%);
+$radar-primary-selected: mix($radar-primary, white, 90%);
 
-$radar-info: #4c90d6;
-$radar-info-text: #2a5366;
-$radar-info-bg: #c0d7ee;
+$radar-secondary: $nhs-aqua-blue;
+$radar-secondary-text: mix($radar-secondary, black, 30%);
+$radar-secondary-bg: mix($radar-secondary, white, 20%);
+$radar-secondary-selected: mix($radar-secondary, white, 90%);
 
-$radar-warning: #fac533;
-$radar-warning-text: #99741a;
-$radar-warning-bg: #fce8a3;
+$radar-success: $nhs-light-green;
+$radar-success-text: mix($radar-success, black, 30%);
+$radar-success-bg: mix($radar-success, white, 20%);
 
-$radar-danger: #ff0006;
-$radar-danger-text: #9d0002;
-$radar-danger-bg: #ffab89;
+$radar-info: $nhs-aqua-blue;
+$radar-info-text: mix($radar-info, black, 30%);
+$radar-info-bg: mix($radar-info, white, 20%);
+
+$radar-warning: $nhs-yellow;
+$radar-warning-text: mix($radar-warning, black, 30%);
+$radar-warning-bg: mix($radar-warning, white, 20%);
+
+$radar-danger: $nhs-red;
+$radar-danger-text: mix($radar-danger, black, 30%);
+$radar-danger-bg: mix($radar-danger, white, 20%);
 
 $radar-footer-height: 45px;
 $radar-padding: 15px;
 
-// Bootstrap
+// ===== Bootstrap =====
 
 // Fonts
 $font-size-base: 13px;
@@ -37,7 +55,7 @@ $icon-font-path: '/bower_components/bootstrap-sass/assets/fonts/bootstrap/';
 $link-color: $radar-primary-text;
 
 // Headings
-$headings-color: #033a16;
+$headings-color: $radar-primary-text;
 $font-size-h1: floor(($font-size-base * 1.8));
 $font-size-h2: floor(($font-size-base * 1.6));
 $font-size-h3: ceil(($font-size-base * 1.4));
