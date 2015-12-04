@@ -1,6 +1,6 @@
 from radar_api.serializers.organisation_users import OrganisationUserSerializer
 from radar.models import OrganisationUser
-from radar.roles import ORGANISATION_ROLES
+from radar.roles import ORGANISATION_ROLE_NAMES
 from radar.validation.organisation_users import OrganisationUserValidation
 from radar.views.codes import CodedStringListView
 from radar.views.core import RetrieveUpdateDestroyModelView, ListCreateModelView
@@ -19,7 +19,7 @@ class OrganisationUserDetailView(RetrieveUpdateDestroyModelView):
 
 
 class OrganisationUserRoleListView(CodedStringListView):
-    items = ORGANISATION_ROLES
+    items = ORGANISATION_ROLE_NAMES
 
 
 def register_views(app):

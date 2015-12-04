@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_method
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.roles import ORGANISATION_VIEW_DEMOGRAPHICS_ROLES, ORGANISATION_VIEW_PATIENT_ROLES, ORGANISATION_EDIT_PATIENT_ROLES, \
-    ORGANISATION_VIEW_USER_ROLES, ORGANISATION_MANAGED_ROLES, ORGANISATION_RECRUIT_PATIENT_ROLES
+from radar.roles import ORGANISATION_PERMISSIONS, ORGANISATION_MANAGED_ROLES
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 
 
@@ -66,29 +65,14 @@ class OrganisationUser(db.Model, MetaModelMixin):
 
     @hybrid_method
     def has_permission(self, permission):
-        # TODO
-        raise NotImplementedError()
+        roles = ORGANISATION_PERMISSIONS.get(permission, [])
+        return self.role in roles
 
-    @hybrid_property
-    def has_view_demographics_permission(self):
-        return self.role in ORGANISATION_VIEW_DEMOGRAPHICS_ROLES
+    @property
+    def permissions(self):
+        return [k for k, v in ORGANISATION_PERMISSIONS.items() if self.role in v]
 
-    @hybrid_property
-    def has_view_patient_permission(self):
-        return self.role in ORGANISATION_VIEW_PATIENT_ROLES
-
-    @hybrid_property
-    def has_edit_patient_permission(self):
-        return self.role in ORGANISATION_EDIT_PATIENT_ROLES
-
-    @hybrid_property
-    def has_recruit_patient_permission(self):
-        return self.role in ORGANISATION_RECRUIT_PATIENT_ROLES
-
-    @hybrid_property
-    def has_view_user_permission(self):
-        return self.role in ORGANISATION_VIEW_USER_ROLES
-
+    # TODO rename
     @property
     def has_edit_user_membership_permission(self):
         return len(self.managed_roles) > 0

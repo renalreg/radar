@@ -2,13 +2,13 @@
 
 <div patient-demographics-component patient="patient"></div>
 
-<div ng-if="demographicsPermission">
+<div ng-if="showDemographics">
   <h2 class="page-header">Patient Numbers</h2>
 
   <div patient-numbers-component patient="patient"></div>
 </div>
 
-<div ng-if="demographicsPermission">
+<div ng-if="showDemographics">
   <h2 class="page-header">Aliases</h2>
 
   <div patient-aliases-component patient="patient"></div>
