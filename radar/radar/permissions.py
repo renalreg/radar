@@ -1,6 +1,7 @@
 from radar.data_sources import is_radar_data_source
 from radar.models import DATA_SOURCE_TYPE_RADAR
 from radar.cohorts import is_radar_cohort
+from radar.roles import PERMISSIONS
 
 
 def has_group_permission_for_patient(user, patient, permission):
@@ -28,7 +29,7 @@ def has_organisation_permission_for_patient(user, patient, permission):
         organisation_users = intersect_patient_and_user_organisations(patient, user, user_membership=True)
 
         # Check the user has the required permission
-        return any(getattr(x, permission) for x in organisation_users)
+        return any(x.has_permission(permission) for x in organisation_users)
 
 
 def has_cohort_permission_for_patient(user, patient, permission):
@@ -42,13 +43,13 @@ def has_cohort_permission_for_patient(user, patient, permission):
         cohort_users = intersect_patient_and_user_cohorts(patient, user, user_membership=True)
 
         # Check the user has the required permission
-        return any(getattr(x, permission) for x in cohort_users)
+        return any(x.has_permission(permission) for x in cohort_users)
 
 
 def has_permission_for_any_cohort(user, permission):
     return (
         user.is_admin or
-        any(getattr(x, permission) for x in user.cohort_users)
+        any(x.has_permission(permission) for x in user.cohort_users)
     )
 
 
@@ -60,7 +61,7 @@ def has_permission_for_cohort(user, cohort, permission):
     else:
         for cohort_user in user.cohort_users:
             # User is a member of the cohort and has the required permission
-            if cohort_user.cohort == cohort and getattr(cohort_user, permission):
+            if cohort_user.cohort == cohort and cohort_user.has_permission(permission):
                 return True
 
         # User not a member of the cohort or doesn't have the required permission
@@ -70,7 +71,7 @@ def has_permission_for_cohort(user, cohort, permission):
 def has_permission_for_any_organisation(user, permission):
     return (
         user.is_admin or
-        any(getattr(x, permission) for x in user.organisation_users)
+        any(x.has_permission(permission) for x in user.organisation_users)
     )
 
 
@@ -82,7 +83,7 @@ def has_permission_for_organisation(user, organisation, permission):
     else:
         for organisation_user in user.organisation_users:
             # User is a member of the organisation and has the required permission
-            if organisation_user.organisation == organisation and getattr(organisation_user, permission):
+            if organisation_user.organisation == organisation and organisation_user.has_permission(permission):
                 return True
 
         # User not a member of the organisation or doesn't have the required permission
@@ -100,7 +101,7 @@ def has_permission_for_any_group(user, permission):
 def can_view_demographics(user, patient):
     """Check that the user can view the patient's demographics."""
 
-    return has_group_permission_for_patient(user, patient, 'has_view_demographics_permission')
+    return has_group_permission_for_patient(user, patient, PERMISSIONS.VIEW_DEMOGRAPHICS)
 
 
 def can_view_patient(user, patient):
@@ -108,7 +109,7 @@ def can_view_patient(user, patient):
 
     return (
         user.is_admin or
-        has_group_permission_for_patient(user, patient, 'has_view_patient_permission')
+        has_group_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT)
     )
 
 
@@ -120,14 +121,14 @@ def can_view_patient_object(user, patient, cohort=None):
 
     # Shortcut if the user has permission through their organisation membership
     # We don't need to check cohort permissions as they can view data from any cohort
-    if has_organisation_permission_for_patient(user, patient, 'has_view_patient_permission'):
+    if has_organisation_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT):
         return True
 
-    if not has_cohort_permission_for_patient(user, patient, 'has_view_patient_permission'):
+    if not has_cohort_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT):
         return False
 
     # If the object belongs to a cohort we also need to check cohort permissions
-    if cohort is not None and not has_permission_for_cohort(user, cohort, 'has_view_patient_permission'):
+    if cohort is not None and not has_permission_for_cohort(user, cohort, PERMISSIONS.VIEW_PATIENT):
         return False
 
     return True
@@ -138,7 +139,7 @@ def can_edit_patient(user, patient):
 
     return (
         user.is_admin or
-        has_organisation_permission_for_patient(user, patient, 'has_edit_patient_permission')
+        has_organisation_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT)
     )
 
 
@@ -152,7 +153,7 @@ def can_edit_patient_object(user, patient, organisation=None):
         return False
 
     # If the object belongs to a organisation we also need to check organisation permissions
-    if organisation is not None and not has_permission_for_organisation(user, organisation, 'has_view_patient_permission'):
+    if organisation is not None and not has_permission_for_organisation(user, organisation, PERMISSIONS.VIEW_PATIENT):
         return False
 
     return True
@@ -421,7 +422,7 @@ class UserListPermission(Permission):
         else:
             return (
                 user.is_admin or
-                has_permission_for_any_group(user, 'has_edit_user_membership_permission')
+                has_permission_for_any_group(user, 'has_edit_user_membership_permission')  # TODO
             )
 
 
@@ -433,7 +434,7 @@ class UserDetailPermission(Permission):
         return (
             user.is_admin or
             user == obj or
-            has_permission_for_any_group(user, 'has_edit_user_membership_permission')
+            has_permission_for_any_group(user, 'has_edit_user_membership_permission')  # TODO
         )
 
 
