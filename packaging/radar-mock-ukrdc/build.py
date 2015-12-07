@@ -38,12 +38,12 @@ def install_mock_ukrdc(v, root_path):
 
     heading('Install %s' % NAME)
 
+    info('Installing radar ...')
+    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
+
     info('Installing radar-mock-ukrdc dependencies ...')
     requirements_path = os.path.join(mock_ukrdc_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
-
-    info('Installing radar ...')
-    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
 
     info('Installing radar-mock-ukrdc ...')
     v.pip(['install', '--no-deps', '.'], cwd=mock_ukrdc_src_path)
