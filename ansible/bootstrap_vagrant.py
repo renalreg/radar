@@ -53,7 +53,7 @@ def run_yum_install(package_name):
 
 def run_ansible_playbook(extra_vars=None):
     if extra_vars is None:
-      extra_vars = {}
+        extra_vars = {}
 
     heading('Running ansible playbook...')
 
@@ -105,15 +105,16 @@ if __name__ == '__main__':
     parser.add_argument('--pip-index-url', default=None)
     parser.add_argument('--pip-trusted-host', default=None)
     parser.add_argument('--npm-registry', default=None)
+    parser.add_argument('--http-proxy', default=None)
     args = parser.parse_args()
 
     extra_vars = {}
 
-    for key in ['pip_index_url', 'pip_trusted_host', 'npm_registry']:
-      value = getattr(args, key)
+    for key in ['pip_index_url', 'pip_trusted_host', 'npm_registry', 'http_proxy']:
+        value = getattr(args, key)
 
-      if value is not None:
-        extra_vars[key] = value
+        if value is not None:
+            extra_vars[key] = value
 
     os.chdir('/home/vagrant/src/ansible')
 

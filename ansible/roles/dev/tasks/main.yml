@@ -44,3 +44,9 @@
 
 - name: .bash_profile for vagrant
   template: src=bash_profile dest=/home/vagrant/.bash_profile owner=vagrant group=vagrant mode=0644
+
+- name: .ssh
+  file: path=/home/vagrant/.ssh state=directory mode=0700
+
+- name: .ssh/config
+  template: src=ssh_config dest=/home/vagrant/.ssh/config owner=vagrant group=vagrant mode=0600
