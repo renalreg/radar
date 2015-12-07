@@ -38,12 +38,12 @@ def install_api(v, root_path):
 
     heading('Install %s' % NAME)
 
+    info('Installing radar ...')
+    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
+
     info('Installing radar-api dependencies ...')
     requirements_path = os.path.join(api_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
-
-    info('Installing radar ...')
-    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
 
     info('Installing radar-api ...')
     v.pip(['install', '--no-deps', '.'], cwd=api_src_path)
@@ -68,7 +68,7 @@ def package_api(v, root_path):
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
+    package = Package(NAME, version, release, ARCHITECTURE, URL)
     package.add_dependency('python')
     package.add_dependency('postgresql94-libs')
 
