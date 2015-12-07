@@ -31,21 +31,11 @@
   pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/dev-requirements.txt
   become: yes
   become_user: vagrant
-
-- name: install radar-api requirements.txt
-  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/api/requirements.txt
-  become: yes
-  become_user: vagrant
   environment:
     PATH: '/usr/pgsql-9.4/bin:/usr/local/bin:/usr/bin:/bin'
 
 - name: install radar-mock-ukrdc dev-requirements.txt
   pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/mock_ukrdc/dev-requirements.txt
-  become: yes
-  become_user: vagrant
-
-- name: install radar-mock-ukrdc requirements.txt
-  pip: virtualenv={{ virtualenv_path }} requirements={{ src_path }}/mock_ukrdc/requirements.txt
   become: yes
   become_user: vagrant
   environment:

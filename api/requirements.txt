@@ -1,3 +1,4 @@
+-e ../radar
 bleach==1.4.2
 click==5.1
 Delorean==0.5.0
