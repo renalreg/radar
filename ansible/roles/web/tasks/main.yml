@@ -1,6 +1,6 @@
 ---
 - name: create dhparam.pem
-  command: openssl dhparam -out /etc/pki/tls/certs/dhparam.pem 4096
+  command: openssl dhparam -out /etc/pki/tls/certs/dhparam.pem 2048
   args:
     creates: /etc/pki/tls/certs/dhparam.pem
 
