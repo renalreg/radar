@@ -17,6 +17,3 @@
   template: src=uwsgi.ini dest={{ mock_ukrdc_dev_uwsgi_path }} owner=root group=root mode=0644
   notify:
     - restart radar-mock-ukrdc-dev
-
-- name: start and enable radar-mock-ukrdc-dev
-  service: name=radar-mock-ukrdc-dev state=started enabled=yes
