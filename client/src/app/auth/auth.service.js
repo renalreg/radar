@@ -3,9 +3,16 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('authService', ['session', '$q', 'store', 'adapter', function(session, $q, store, adapter) {
+  /** Service for authorization actions */
+  function authService(
+    session,
+    $q,
+    store,
+    adapter
+  ) {
     return {
       login: login,
+      logout: logout,
       forgotUsername: forgotUsername,
       forgotPassword: forgotPassword,
       resetPassword: resetPassword
@@ -49,6 +56,12 @@
       return deferred.promise;
     }
 
+    function logout() {
+      return adapter.post('/logout')['finally'](function() {
+        session.logout();
+      });
+    }
+
     function forgotUsername(email) {
       return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler());
     }
@@ -66,5 +79,14 @@
 
       return adapter.post('/reset-password', {}, data)['catch'](errorHandler());
     }
-  }]);
+  }
+
+  authService.$inject = [
+    'session',
+    '$q',
+    'store',
+    'adapter'
+  ];
+
+  app.factory('authService', authService);
 })();

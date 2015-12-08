@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('loginForm', ['session', 'loginService', '$state', function(session, loginService, $state) {
+  app.directive('loginForm', ['session', 'authService', '$state', function(session, authService, $state) {
     return {
       restrict: 'A',
       scope: {},
@@ -22,7 +22,7 @@
         scope.login = function() {
           scope.errors = {};
 
-          return loginService.login(credentials)
+          return authService.login(credentials)
             .then(function() {
               $state.go('patients');
             })
