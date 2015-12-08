@@ -1,0 +1,17 @@
+<div loading="loading">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Cohort</th>
+        <th>Patients</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="count in counts">
+        <td>{{ count.cohort.shortName }}</td>
+        <td>{{ count.patientCount }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
