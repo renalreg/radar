@@ -7,7 +7,7 @@
     function CohortModel(modelName, data) {
       // Mark the notes HTML as safe
       data.notes = safeHtml(data.notes);
-      
+
       Model.call(this, modelName, data);
     }
 
