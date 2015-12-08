@@ -1,6 +1,8 @@
 from collections import OrderedDict
 from radar.utils import Enum
 
+# TODO move to radar.permissions
+
 
 class ORGANISATION_ROLES(Enum):
     IT = 'IT'
