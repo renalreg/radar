@@ -8,7 +8,7 @@
     $rootScope,
     adapter,
     $timeout,
-    logoutService,
+    authService,
     $state
   ) {
     // Session length in seconds
@@ -57,7 +57,7 @@
             message: 'You were logged out due to inactivity.',
             timeout: 0
           });
-          logoutService.logout();
+          authService.logout();
           $state.go('login');
         }, logoutDelay);
       }
@@ -86,7 +86,7 @@
     '$rootScope',
     'adapter',
     '$timeout',
-    'logoutService',
+    'authService',
     '$state'
   ];
 
