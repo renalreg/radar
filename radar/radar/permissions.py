@@ -47,6 +47,8 @@ def has_cohort_permission_for_patient(user, patient, permission):
 
 
 def has_permission_for_any_cohort(user, permission):
+    """Check that the user has a permission on any cohort."""
+
     return (
         user.is_admin or
         any(x.has_permission(permission) for x in user.cohort_users)
@@ -69,6 +71,8 @@ def has_permission_for_cohort(user, cohort, permission):
 
 
 def has_permission_for_any_organisation(user, permission):
+    """Check that the user has a permission on any organisation."""
+
     return (
         user.is_admin or
         any(x.has_permission(permission) for x in user.organisation_users)
@@ -91,6 +95,8 @@ def has_permission_for_organisation(user, organisation, permission):
 
 
 def has_permission_for_any_group(user, permission):
+    """Check that the user has a permission on any group."""
+
     return (
         user.is_admin or
         has_permission_for_any_organisation(user, permission) or
