@@ -28,7 +28,7 @@ from radar.models.patients import Patient, PatientDemographics, GENDER_FEMALE
 from radar.models.users import User
 from radar.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
     get_nhsbt_organisation, get_radar_organisation
-from radar.roles import ORGANISATION_SENIOR_CLINICIAN, COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER
+from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
 from radar.cohorts import get_radar_cohort
 
 
@@ -91,7 +91,7 @@ def create_southmead_user():
     organisation_user = OrganisationUser()
     organisation_user.user = user
     organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
-    organisation_user.role = ORGANISATION_SENIOR_CLINICIAN
+    organisation_user.role = ORGANISATION_ROLES.SENIOR_CLINICIAN
     validate_and_add(organisation_user)
 
 
@@ -108,7 +108,7 @@ def create_srns_user():
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_RESEARCHER
+    cohort_user.role = COHORT_ROLES.RESEARCHER
     validate_and_add(cohort_user)
 
 
@@ -125,7 +125,7 @@ def create_srns_demograhics_user():
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_SENIOR_RESEARCHER
+    cohort_user.role = COHORT_ROLES.SENIOR_RESEARCHER
     validate_and_add(cohort_user)
 
 
