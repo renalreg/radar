@@ -1,6 +1,8 @@
 import re
+
 from radar.validation.core import ValidationError
-from radar.validation.utils import validate_nhs_no
+from radar.models import ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, \
+    ORGANISATION_CODE_UKRR, ORGANISATION_CODE_UKRDC, ORGANISATION_CODE_BAPN
 
 WHITESPACE_REGEX = re.compile('\s')
 LEADING_ZERO_REGEX = re.compile('^0+')
@@ -25,6 +27,31 @@ def clean_int(value):
         value = re.sub('^0+', '', value)
 
     return value
+
+
+def validate_nhs_no(value):
+    if not isinstance(value, basestring):
+        value = str(value)
+
+    value = value.zfill(10)
+
+    if not value.isdigit():
+        return False
+
+    check_digit = 0
+
+    for i in range(0, 9):
+        check_digit += int(value[i]) * (10 - i)
+
+    check_digit = 11 - (check_digit % 11)
+
+    if check_digit == 11:
+        check_digit = 0
+
+    if check_digit != int(value[9]):
+        return False
+
+    return True
 
 
 def _nhs_no(value, number_type):
@@ -120,3 +147,13 @@ def ukrdc_no():
 
         return value
     return ukrdc_no_f
+
+
+NUMBER_VALIDATORS = {
+    ORGANISATION_CODE_NHS: [nhs_no()],
+    ORGANISATION_CODE_CHI: [chi_no()],
+    ORGANISATION_CODE_HANDC: [handc_no()],
+    ORGANISATION_CODE_UKRR: [ukrr_no()],
+    ORGANISATION_CODE_UKRDC: [ukrdc_no()],
+    ORGANISATION_CODE_BAPN: [bapn_no()]
+}

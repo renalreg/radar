@@ -28,14 +28,14 @@ from radar.models.patients import Patient, PatientDemographics, GENDER_FEMALE
 from radar.models.users import User
 from radar.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
     get_nhsbt_organisation, get_radar_organisation
-from radar.roles import ORGANISATION_SENIOR_CLINICIAN, COHORT_RESEARCHER, COHORT_SENIOR_RESEARCHER
+from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
 from radar.cohorts import get_radar_cohort
 
 
-PASSWORD = 'password'
+DEFAULT_PASSWORD = 'password'
 
 
-def create_users(n):
+def create_users(n, password=DEFAULT_PASSWORD):
     for x in range(n):
         username = 'user%d' % (x + 1)
 
@@ -47,29 +47,29 @@ def create_users(n):
         user.last_name = generate_last_name().capitalize()
         user.username = username
         user.email = '%s@example.org' % username
-        user.password = PASSWORD
+        user.password = password
         user.is_admin = True
         validate_and_add(user, {'allow_weak_passwords': True})
 
 
-def create_admin_user():
+def create_admin_user(password=DEFAULT_PASSWORD):
     user = User()
     user.username = 'admin'
     user.email = 'admin@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = True
-    user.password = PASSWORD
+    user.password = password
     validate_and_add(user, {'allow_weak_passwords': True})
 
 
-def create_bot_user():
+def create_bot_user(password=DEFAULT_PASSWORD):
     bot = User()
     bot.username = 'bot'
     bot.email = 'bot@example.org'
     bot.is_admin = True
     bot.is_bot = True
-    bot.password = PASSWORD
+    bot.password = password
     bot.created_user = bot
     bot.modified_user = bot
     bot.created_date = func.now()
@@ -78,54 +78,54 @@ def create_bot_user():
     db.session.flush()
 
 
-def create_southmead_user():
+def create_southmead_user(password=DEFAULT_PASSWORD):
     user = User()
     user.username = 'southmead_demo'
     user.email = 'southmead_demo@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = False
-    user.password = PASSWORD
+    user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
     organisation_user = OrganisationUser()
     organisation_user.user = user
     organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
-    organisation_user.role = ORGANISATION_SENIOR_CLINICIAN
+    organisation_user.role = ORGANISATION_ROLES.SENIOR_CLINICIAN
     validate_and_add(organisation_user)
 
 
-def create_srns_user():
+def create_ins_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'srns_demo'
-    user.email = 'srns_demo@example.org'
+    user.username = 'ins_demo'
+    user.email = 'ins_demo@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = False
-    user.password = PASSWORD
+    user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_RESEARCHER
+    cohort_user.role = COHORT_ROLES.RESEARCHER
     validate_and_add(cohort_user)
 
 
-def create_srns_demograhics_user():
+def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'srns_demographics_demo'
-    user.email = 'srns_demographics_demo@example.org'
+    user.username = 'ins_demographics_demo'
+    user.email = 'ins_demographics_demo@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = False
-    user.password = PASSWORD
+    user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
     cohort_user = CohortUser()
     cohort_user.user = user
     cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_SENIOR_RESEARCHER
+    cohort_user.role = COHORT_ROLES.SENIOR_RESEARCHER
     validate_and_add(cohort_user)
 
 
@@ -465,7 +465,7 @@ def create_patients(n):
     organisations = Organisation.query\
         .filter(Organisation.type == ORGANISATION_TYPE_UNIT)\
         .all()
-    cohorts = Cohort.query.all()
+    cohorts = Cohort.query.filter(Cohort.code != 'RADAR').all()
     radar_organisation = get_radar_organisation()
     radar_cohort = get_radar_cohort()
 
@@ -495,10 +495,12 @@ def create_patients(n):
         create_patient_numbers(patient, radar_data_source)
         create_patient_addresses(patient, radar_data_source)
 
+        recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
+
         radar_cohort_patient = CohortPatient()
         radar_cohort_patient.patient = patient
         radar_cohort_patient.cohort = radar_cohort
-        radar_cohort_patient.recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
+        radar_cohort_patient.recruited_date = recruited_date
         radar_cohort_patient.recruited_by_organisation = radar_organisation
         radar_cohort_patient.is_active = True
         validate_and_add(radar_cohort_patient)
@@ -535,27 +537,27 @@ def create_patients(n):
             cohort_patient.cohort = random.choice(cohorts)
 
         cohort_patient.patient = patient
-        cohort_patient.recruited_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
+        cohort_patient.recruited_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
         cohort_patient.recruited_by_organisation = radar_organisation
         cohort_patient.is_active = True
         validate_and_add(cohort_patient)
 
 
-def create_data(patients_n=5, users_n=10):
+def create_data(patients=5, users=10, password=None):
     # Always generate the same "random" data
     random.seed(0)
 
     with db.session.no_autoflush:
-        create_bot_user()
-        create_admin_user()
+        create_bot_user(password=password)
+        create_admin_user(password=password)
 
         create_initial_data()
 
-        create_southmead_user()
-        create_srns_user()
-        create_srns_demograhics_user()
+        create_southmead_user(password=password)
+        create_ins_user(password=password)
+        create_ins_demograhics_user(password=password)
 
-        create_users(users_n)
-        create_patients(patients_n)
+        create_users(users, password=password)
+        create_patients(patients)
 
         create_posts(10)

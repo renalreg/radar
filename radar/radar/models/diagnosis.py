@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.utils import to_age
 
 DIAGNOSIS_BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
@@ -34,6 +35,16 @@ class Diagnosis(db.Model, MetaModelMixin):
 
     diagnosis_text = Column(String)
     biopsy_diagnosis = Column(Integer)
+
+    @property
+    def age_at_onset(self):
+        x = to_age(self.patient, self.date_of_onset)
+        print x
+        return x
+
+    @property
+    def age_at_diagnosis(self):
+        return to_age(self.patient, self.date_of_diagnosis)
 
 Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
 Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)

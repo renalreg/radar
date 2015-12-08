@@ -2,8 +2,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from flask import current_app
 from jinja2 import Environment, PackageLoader
+
+from radar.config import get_config_value
 
 COMMA_SPACE = ', '
 
@@ -15,14 +16,37 @@ env = Environment(
 )
 
 
+def is_email_enabled():
+    return get_config_value('EMAIL_ENABLED')
+
+
+def get_email_from_address():
+    return get_config_value('EMAIL_FROM_ADDRESS')
+
+
+def get_email_smtp_host():
+    return get_config_value('EMAIL_SMTP_HOST')
+
+
+def get_email_smtp_port():
+    return get_config_value('EMAIL_SMTP_PORT')
+
+
+def get_smtp():
+    smtp_host = get_email_smtp_host()
+    smtp_port = get_email_smtp_port()
+    s = smtplib.SMTP(smtp_host, smtp_port)
+    return s
+
+
 def send_email(to_addresses, subject, message_plain, message_html=None, from_address=None):
     if from_address is None:
-        from_address = current_app.config.get('FROM_ADDRESS', 'bot@radar.nhs.uk')
+        from_address = get_email_from_address()
 
     if not isinstance(to_addresses, list):
         to_addresses = [to_addresses]
 
-    send_emails = current_app.config.get('SEND_EMAILS', not current_app.debug)
+    email_enabled = is_email_enabled()
 
     m = MIMEMultipart('alternative')
     m['Subject'] = subject
@@ -36,12 +60,9 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
         m_html = MIMEText(message_html, 'html')
         m.attach(m_html)
 
-    if send_emails:
-        smtp_host = current_app.config.get('SMTP_HOST', 'localhost')
-        smtp_port = current_app.config.get('SMTP_PORT', 25)
-
-        s = smtplib.SMTP(smtp_host, smtp_port)
-        s.sendmail(from_address, to_addresses, m)
+    if email_enabled:
+        s = get_smtp()
+        s.sendmail(from_address, to_addresses, m.as_string())
         s.quit()
     else:
         print m.as_string()

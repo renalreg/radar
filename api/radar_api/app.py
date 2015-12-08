@@ -50,7 +50,7 @@ from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
-from radar_api.config import check_config, InvalidConfig
+from radar.config import check_config, InvalidConfig
 
 
 class RadarApi(Flask):
@@ -66,7 +66,7 @@ class RadarApi(Flask):
         else:
             self.config.update(config)
 
-        check_config(self.config)
+        self.config.update(check_config(self.config))
 
         db.init_app(self)
 

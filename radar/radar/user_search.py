@@ -5,8 +5,7 @@ from radar.database import db
 from radar.models import OrganisationUser, Organisation, CohortUser
 from radar.models.cohorts import Cohort
 from radar.models.users import User
-from radar.roles import ORGANISATION_VIEW_USER_ROLES
-from radar.roles import COHORT_VIEW_USER_ROLES
+from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
 from radar.permissions import has_permission_for_any_group
 
 
@@ -55,7 +54,7 @@ class UserQueryBuilder(object):
         # Show all users if the user is an admin or if the user can manage group membership
         all_users = (
             self.current_user.is_admin or
-            has_permission_for_any_group(self.current_user, 'has_edit_user_membership_permission')
+            has_permission_for_any_group(self.current_user, 'has_edit_user_membership_permission')  # TODO
         )
 
         if not all_users:
@@ -68,8 +67,8 @@ def filter_by_permissions(current_user):
     # Grant access based on membership of a common organisation/cohort where the user has the view user permission
     # User's can always view their own accounts
     return or_(
-        filter_by_organisation_roles(current_user, ORGANISATION_VIEW_USER_ROLES),
-        filter_by_cohort_roles(current_user, COHORT_VIEW_USER_ROLES),
+        filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_USER)),
+        filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_USER)),
         User.id == current_user.id
     )
 

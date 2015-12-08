@@ -40,6 +40,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     _email = Column('email', String)
     first_name = Column(String)
     last_name = Column(String)
+    telephone_number = Column(String)
     is_admin = Column(Boolean, default=False, nullable=False)
     is_bot = Column(Boolean, default=False, nullable=False)
     is_enabled = Column(Boolean, default=True, nullable=False)

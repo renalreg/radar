@@ -1,4 +1,4 @@
-from flask import request, current_app, has_request_context, _request_ctx_stack
+from flask import request, has_request_context, _request_ctx_stack
 from itsdangerous import BadSignature, TimestampSigner
 from sqlalchemy import func, not_
 from werkzeug.local import LocalProxy
@@ -6,15 +6,18 @@ from werkzeug.local import LocalProxy
 from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
-
-DEFAULT_SESSION_TIMEOUT = 1800
+from radar.config import get_config_value
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 
 
 def get_session_timeout():
-    return current_app.config.get('SESSION_TIMEOUT', DEFAULT_SESSION_TIMEOUT)
+    return get_config_value('SESSION_TIMEOUT')
+
+
+def get_secret_key():
+    return get_config_value('SECRET_KEY')
 
 
 def login(username, password):
@@ -96,8 +99,14 @@ def get_user_agent():
     return ua
 
 
+def get_timestamp_signer():
+    secret_key = get_secret_key()
+    s = TimestampSigner(secret_key)
+    return s
+
+
 def generate_token_for_user_session(user_session):
-    s = TimestampSigner(current_app.config['SECRET_KEY'])
+    s = get_timestamp_signer()
     token = s.sign(str(user_session.id))
     return token
 
@@ -112,7 +121,7 @@ def get_user_session_from_header():
 
 
 def get_user_session_from_token(token):
-    s = TimestampSigner(current_app.config['SECRET_KEY'])
+    s = get_timestamp_signer()
 
     try:
         user_session_id = int(s.unsign(token, max_age=get_session_timeout()))

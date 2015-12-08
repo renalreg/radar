@@ -11,4 +11,4 @@ You can login using the url below:
 
 Thanks,
 
-RaDaR Bot
+RaDaR

@@ -360,7 +360,9 @@ class Field(object):
             setattr(obj, self.field_name, value)
 
     def get_value(self, obj):
-        if isinstance(obj, dict):
+        if obj is None:
+            return None
+        elif isinstance(obj, dict):
             return obj.get(self.field_name)
         else:
             return getattr(obj, self.field_name)
@@ -406,6 +408,9 @@ class Field(object):
 
         validator_call = ValidatorCall(ctx, old_obj)
         new_obj = validator_call.validators(self.get_validators(), new_obj, result)
+
+        validate_call = ValidateCall(ctx, old_obj)
+        new_obj = validate_call(self.validate, new_obj)
 
         return new_obj
 
@@ -489,6 +494,17 @@ class ValidationMetaclass(type):
         return fields
 
 
+def get_old_value(old_obj, field_name):
+    if old_obj is None:
+        old_value = None
+    elif isinstance(old_obj, dict):
+        old_value = old_obj.get(field_name)
+    else:
+        old_value = getattr(old_obj, field_name)
+
+    return old_value
+
+
 @six.add_metaclass(ValidationMetaclass)
 class Validation(Field):
     def __init__(self, *args, **kwargs):
@@ -561,8 +577,11 @@ class Validation(Field):
         pre_validate_call = PreValidateCall(ctx, old_obj)
         new_obj = pre_validate_call(self.pre_validate, new_obj)
 
-        validator_call = ValidatorCall(ctx, old_obj)
-        new_obj = validator_call.validators(self.get_validators(), new_obj, result)
+        try:
+            validator_call = ValidatorCall(ctx, old_obj)
+            new_obj = validator_call.validators(self.get_validators(), new_obj, result)
+        except ValidationError as e:
+            raise ValidationError({'_': e.errors})
 
         if result.skipped:
             return new_obj
@@ -570,11 +589,7 @@ class Validation(Field):
         skipped_fields = set()
 
         for field_name, field in self.fields.items():
-            if isinstance(old_obj, dict):
-                old_value = old_obj.get(field_name)
-            else:
-                old_value = getattr(old_obj, field_name)
-
+            old_value = get_old_value(old_obj, field_name)
             new_value = field.get_value(new_obj)
 
             try:
@@ -594,11 +609,7 @@ class Validation(Field):
             if field_name in skipped_fields:
                 continue
 
-            if isinstance(old_obj, dict):
-                old_value = old_obj.get(field_name)
-            else:
-                old_value = getattr(old_obj, field_name)
-
+            old_value = get_old_value(old_obj, field_name)
             new_value = field.get_value(new_obj)
 
             try:
@@ -623,5 +634,76 @@ class Validation(Field):
                 result.skipped = True
 
             return new_obj
+
+        return new_obj
+
+
+class ListField(Field):
+    def __init__(self, validation, chain=None):
+        super(ListField, self).__init__(chain)
+        self.validation = validation
+
+    def before_update(self, ctx, old_obj):
+        ctx = copy.copy(ctx)
+
+        context_before_update_call = ContextBeforeUpdateCall(old_obj)
+        ctx = context_before_update_call(self.get_context_before_update, ctx)
+
+        if old_obj is not None:
+            errors = {}
+
+            for i, old_value in enumerate(old_obj):
+                try:
+                    self.validation.before_update(ctx, old_value)
+                except ValidationError as e:
+                    errors[i] = e.errors
+
+            if errors:
+                raise ValidationError(errors)
+
+        validate_before_update_call = ValidateBeforeUpdateCall(ctx, old_obj)
+        validate_before_update_call(self.validate_before_update)
+
+    def after_update(self, ctx, old_obj, new_obj, result=None):
+        ctx = copy.copy(ctx)
+
+        context_call = ContextCall(old_obj, new_obj)
+        ctx = context_call(self.get_context, ctx)
+
+        pre_validate_call = PreValidateCall(ctx, old_obj)
+        new_obj = pre_validate_call(self.pre_validate, new_obj)
+
+        errors = {}
+
+        try:
+            validator_call = ValidatorCall(ctx, old_obj)
+            new_obj = validator_call.validators(self.get_validators(), new_obj, result)
+        except ValidationError as e:
+            raise ValidationError({'_': e.errors})
+
+        new_values = list(new_obj)
+        new_obj = []
+
+        for i, new_value in enumerate(new_values):
+            if old_obj is None:
+                old_value = None
+            else:
+                try:
+                    old_value = old_obj[i]
+                except ValueError:
+                    old_value = None
+
+            try:
+                new_value = self.validation.after_update(ctx, old_value, new_value)
+            except ValidationError as e:
+                errors[i] = e.errors
+
+            new_obj.append(new_value)
+
+        if errors:
+            raise ValidationError(errors)
+
+        validate_call = ValidateCall(ctx, old_obj)
+        new_obj = validate_call(self.validate, new_obj)
 
         return new_obj

@@ -241,6 +241,20 @@ class ListField(Field):
 
         return data
 
+    def transform_errors(self, errors):
+        transformed_errors = {}
+
+        # Errors on the list field
+        if '_' in errors:
+            transformed_errors['_'] = errors['_']
+
+        for i, field_errors in errors.items():
+            if isinstance(i, int):
+                transformed_field_errors = self.field.transform_errors(field_errors)
+                transformed_errors[i] = transformed_field_errors
+
+        return transformed_errors
+
 
 class CommaSeparatedStringField(Field):
     def to_value(self, data):

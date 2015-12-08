@@ -1,8 +1,12 @@
 from datetime import datetime, date, timedelta
-from sqlalchemy import and_
+from random import SystemRandom
+import re
 
+from sqlalchemy import and_
 import dateutil.parser
 import pytz
+
+from radar.constants import SECONDS_IN_YEAR
 
 
 def get_path(data, keys):
@@ -80,3 +84,33 @@ def sql_year_filter(column, year):
         column >= datetime(year, 1, 1),
         column < datetime(year + 1, 1, 1)
     )
+
+
+def seconds_to_age(seconds):
+    years = float(seconds) / SECONDS_IN_YEAR
+
+    if years >= 5:
+        years = int(years)
+    else:
+        # Round down to nearest month
+        months = int((years - int(years)) * 12) / 12.0
+        years = int(years) + months
+
+    return years * SECONDS_IN_YEAR
+
+
+def to_age(patient, event_date):
+    seconds = (event_date - patient.date_of_birth).total_seconds()
+    return seconds_to_age(seconds)
+
+
+def random_string(alphabet, length):
+    return ''.join(SystemRandom().choice(alphabet) for _ in range(length))
+
+
+class Enum(object):
+    r = re.compile('^[A-Z]([A-Z0-9_])*$')
+
+    @classmethod
+    def values(cls):
+        return sorted([v for k, v in cls.__dict__.items() if cls.r.match(k)])

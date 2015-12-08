@@ -1,7 +1,4 @@
 ---
-- name: install postgresql94-libs
-  yum: name=postgresql94-libs state=present
-
 - name: create the config directory
   file: path={{ api_dev_config_path }} state=directory
 
@@ -28,6 +25,3 @@
 
 - name: set permissions on secret key
   file: path={{ api_dev_secret_key_path }} state=file owner=root group=radar mode=640
-
-- name: start and enable radar-api-dev
-  service: name=radar-api-dev state=started enabled=yes

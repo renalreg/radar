@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.roles import COHORT_VIEW_DEMOGRAPHICS_ROLES, COHORT_VIEW_PATIENT_ROLES, \
-    COHORT_VIEW_USER_ROLES, COHORT_MANAGED_ROLES
+from radar.roles import COHORT_PERMISSIONS, COHORT_MANAGED_ROLES, PERMISSIONS
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 
 
@@ -102,22 +101,18 @@ class CohortUser(db.Model, MetaModelMixin):
         UniqueConstraint('cohort_id', 'user_id'),
     )
 
-    @hybrid_method
     def has_permission(self, permission):
-        # TODO
-        raise NotImplementedError()
+        grant = getattr(self, 'has_' + permission.lower() + '_permission', None)
 
-    @hybrid_property
-    def has_view_demographics_permission(self):
-        return self.role in COHORT_VIEW_DEMOGRAPHICS_ROLES
+        if grant is None:
+            roles = COHORT_PERMISSIONS.get(permission, [])
+            grant = self.role in roles
 
-    @hybrid_property
-    def has_view_patient_permission(self):
-        return self.role in COHORT_VIEW_PATIENT_ROLES
+        return grant
 
-    @hybrid_property
-    def has_view_user_permission(self):
-        return self.role in COHORT_VIEW_USER_ROLES
+    @property
+    def permissions(self):
+        return [x for x in PERMISSIONS.values() if self.has_permission(x)]
 
     @property
     def has_edit_user_membership_permission(self):
