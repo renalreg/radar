@@ -2,7 +2,7 @@ from radar.validation.core import Validation, Field, pass_call, pass_context, Va
 from radar.validation.validators import optional, required, not_in_future, in_, none_if_blank
 from radar.models.patients import GENDERS
 from radar.permissions import has_permission_for_organisation
-from radar.organisations import is_chi_organisation, is_nhs_organisation, is_radar_organisation
+from radar.organisations import is_radar_organisation
 from radar.models.organisations import ORGANISATION_TYPE_OTHER
 from radar.validation.patient_number_validators import NUMBER_VALIDATORS
 
