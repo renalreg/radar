@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 from radar.database import db
