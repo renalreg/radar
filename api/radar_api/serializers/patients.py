@@ -27,7 +27,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     recruited_by_organisation = OrganisationReferenceField(read_only=True)
     is_active = BooleanField()
     comments = StringField()
-    recruited_date = DateTimeField()
+    recruited_date = DateTimeField(read_only=True)
 
     class Meta(object):
         model_class = Patient
