@@ -42,11 +42,12 @@ def init_command():
 @cli.command('dev')
 @click.option('--patients', default=5)
 @click.option('--users', default=0)
+@click.option('--password', default='password')
 @app_context
-def dev_command(patients, users):
+def dev_command(patients, users, password):
     db.drop_all()
     db.create_all()
-    dev.create_data(patients, users)
+    dev.create_data(patients=patients, users=users, password=password)
     db.session.commit()
 
 
