@@ -14,7 +14,6 @@
         };
 
         scope.close = function() {
-          console.log('close');
           scope.open = false;
         };
 

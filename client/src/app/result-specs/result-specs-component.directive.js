@@ -17,7 +17,6 @@
       });
 
       self.load(store.findMany('result-group-result-specs').then(function(x) {
-        console.log(x);
         return x;
       }));
     }

@@ -59,7 +59,6 @@
 
   app.run(['$rootScope', 'logoutService', 'session', '$state', function($rootScope, logoutService, session, $state) {
     $rootScope.$on('sessions.unauthorized', function() {
-      console.log('unauthorized!');
       session.logout();
       $state.go('login');
     });
