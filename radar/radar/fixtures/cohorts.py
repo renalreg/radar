@@ -7,6 +7,7 @@ COHORTS = [
         'name': 'RaDaR',
         'short_name': 'RaDaR',
         'features': [
+            'DEMOGRAPHICS',
             'COHORTS',
             'UNITS'
         ],
