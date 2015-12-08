@@ -8,7 +8,7 @@
       scope: {
         cohort: '='
       },
-      template: '<div loading="loading"><div recruitment-graph title="{{cohort.name}}" data="data"></div></div>',
+      template: '<div loading="loading"><div recruitment-graph title="{{cohort.name}}" data="data" class="graph"></div></div>',
       link: function(scope) {
         scope.loading = true;
 
