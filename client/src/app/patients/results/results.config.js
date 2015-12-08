@@ -10,9 +10,9 @@
       templateUrl: 'app/patients/results/results.html'
     });
 
-    $stateProvider.state('patient.results.list', {
+    $stateProvider.state('patient.results.table', {
       url: '',
-      templateUrl: 'app/patients/results/result-list.html'
+      templateUrl: 'app/patients/results/result-table.html'
     });
 
     $stateProvider.state('patient.results.graphs', {

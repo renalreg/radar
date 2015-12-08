@@ -3,9 +3,16 @@
 
   var app = angular.module('radar.auth');
 
-  app.factory('authService', ['session', '$q', 'store', 'adapter', function(session, $q, store, adapter) {
+  /** Service for authorization actions */
+  function authService(
+    session,
+    $q,
+    store,
+    adapter
+  ) {
     return {
       login: login,
+      logout: logout,
       forgotUsername: forgotUsername,
       forgotPassword: forgotPassword,
       resetPassword: resetPassword
@@ -25,6 +32,7 @@
       };
     }
 
+    /** Log the user in */
     function login(credentials) {
       var deferred = $q.defer();
 
@@ -49,14 +57,24 @@
       return deferred.promise;
     }
 
+    /** Log the user out */
+    function logout() {
+      return adapter.post('/logout')['finally'](function() {
+        session.logout();
+      });
+    }
+
+    /** Request a username reminder */
     function forgotUsername(email) {
       return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler());
     }
 
-    function forgotPassword(username) {
-      return adapter.post('/forgot-password', {}, {username: username})['catch'](errorHandler());
+    /** Request a reset password link */
+    function forgotPassword(username, email) {
+      return adapter.post('/forgot-password', {}, {username: username, email: email})['catch'](errorHandler());
     }
 
+    /** Reset a password */
     function resetPassword(token, username, password) {
       var data = {
         token: token,
@@ -66,5 +84,14 @@
 
       return adapter.post('/reset-password', {}, data)['catch'](errorHandler());
     }
-  }]);
+  }
+
+  authService.$inject = [
+    'session',
+    '$q',
+    'store',
+    'adapter'
+  ];
+
+  app.factory('authService', authService);
 })();

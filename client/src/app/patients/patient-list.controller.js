@@ -36,7 +36,7 @@
         var proxyParams = proxy.getParams();
         var params = angular.extend({}, proxyParams, $scope.filters);
 
-        self.load(firstPromise([
+        return self.load(firstPromise([
           store.findMany('patients', params, true).then(function(data) {
             proxy.setItems(data.data);
             proxy.setCount(data.pagination.count);

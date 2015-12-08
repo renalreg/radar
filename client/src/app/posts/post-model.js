@@ -3,17 +3,13 @@
 
   var app = angular.module('radar.posts');
 
-  app.factory('PostModel', ['Model', '$sce', function(Model, $sce) {
+  app.factory('PostModel', ['Model', 'safeHtml', function(Model, safeHtml) {
     function PostModel(modelName, data) {
+      data.body = safeHtml(data.body);
       Model.call(this, modelName, data);
     }
 
     PostModel.prototype = Object.create(Model.prototype);
-
-    PostModel.prototype.getHtml = function() {
-      var body = this.body || '';
-      return $sce.trustAsHtml(body);
-    };
 
     return PostModel;
   }]);

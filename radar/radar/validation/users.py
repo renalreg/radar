@@ -21,6 +21,7 @@ class UserValidation(MetaValidationMixin, Validation):
     email = Field([none_if_blank(), optional(), email_address()])
     first_name = Field([none_if_blank(), optional()])
     last_name = Field([none_if_blank(), optional()])
+    telephone_number = Field([none_if_blank(), optional()])
     is_admin = Field([default(False), required()])
     force_password_change = Field([default(False), required()])
 
@@ -54,54 +55,6 @@ class UserValidation(MetaValidationMixin, Validation):
                 raise ValidationError('Password is too weak.')
 
         return password
-
-    @pass_context
-    @pass_call
-    @pass_old_obj
-    @pass_new_obj
-    @pass_old_value
-    def validate_first_name(self, ctx, call, old_obj, new_obj, old_first_name, new_first_name):
-        current_user = ctx['user']
-
-        # First name has changed
-        if old_obj.id is not None and new_first_name != old_first_name:
-            # Regular user trying to change another user's first name
-            if new_obj != current_user and not current_user.is_admin:
-                raise ValidationError("Permission denied!")
-
-        return new_first_name
-
-    @pass_context
-    @pass_call
-    @pass_old_obj
-    @pass_new_obj
-    @pass_old_value
-    def validate_last_name(self, ctx, call, old_obj, new_obj, old_last_name, new_last_name):
-        current_user = ctx['user']
-
-        # Last name has changed
-        if old_obj.id is not None and old_last_name != new_last_name:
-            # Regular user trying to change another user's last name
-            if new_obj != current_user and not current_user.is_admin:
-                raise ValidationError("Permission denied!")
-
-        return new_last_name
-
-    @pass_context
-    @pass_call
-    @pass_old_obj
-    @pass_new_obj
-    @pass_old_value
-    def validate_email(self, ctx, call, old_obj, new_obj, old_email, new_email):
-        current_user = ctx['user']
-
-        # Email has changed
-        if old_obj.id is not None and old_email != new_email:
-            # Regular user trying to change another user's email
-            if new_obj != current_user and not current_user.is_admin:
-                raise ValidationError("Permission denied!")
-
-        return new_email
 
     @pass_context
     @pass_old_obj
@@ -151,6 +104,16 @@ class UserValidation(MetaValidationMixin, Validation):
     @pass_old_obj
     def validate(self, ctx, call, old_obj, new_obj):
         current_user = ctx['user']
+
+        for x in ['first_name', 'last_name', 'email', 'telephone_number']:
+            # Regular user trying to change another user's details
+            if (
+                old_obj.id is not None and
+                getattr(old_obj, x) != getattr(new_obj, x) and
+                new_obj != current_user and
+                not current_user.is_admin
+            ):
+                raise ValidationError({x: 'Permission denied!'})
 
         # Password is required when creating a new user
         if old_obj.id is None:

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientObjectPermission', ['session', '_', function(session, _) {
+  app.factory('PatientObjectPermission', ['session', 'hasGroupPermissionForPatient', function(session, hasGroupPermissionForPatient) {
     function PatientObjectPermission(patient) {
       this.patient = patient;
     }
@@ -15,26 +15,7 @@
 
       var user = session.user;
 
-      var patient = this.patient;
-      var patientOrganisationIds = _.map(patient.organisations, function(organisation) {
-        return organisation.organisation.id;
-      });
-
-      if (user.isAdmin && patientOrganisationIds.length > 0) {
-        return true;
-      }
-
-      var userOrganisations = user.organisations;
-
-      for (var i = 0; i < userOrganisations.length; i++) {
-        var userOrganisation = userOrganisations[i];
-
-        if (_.indexOf(patientOrganisationIds, userOrganisation.organisation.id) >= 0 && userOrganisation.hasEditPatientPermission) {
-          return true;
-        }
-      }
-
-      return false;
+      return hasGroupPermissionForPatient(user, this.patient, 'EDIT_PATIENT');
     };
 
     PatientObjectPermission.prototype.hasObjectPermission = function() {

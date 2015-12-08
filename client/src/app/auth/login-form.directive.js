@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('loginForm', ['session', 'loginService', '$state', function(session, loginService, $state) {
+  app.directive('loginForm', ['session', 'authService', '$state', function(session, authService, $state) {
     return {
       restrict: 'A',
       scope: {},
@@ -22,8 +22,10 @@
         scope.login = function() {
           scope.errors = {};
 
-          loginService.login(credentials)
+          return authService.login(credentials)
             .then(function() {
+              // Redirect to the patients list
+              // TODO not all users will have access to this
               $state.go('patients');
             })
             ['catch'](function(errors) {
@@ -31,10 +33,6 @@
                 scope.errors = errors;
               }
             });
-        };
-
-        scope.logout = function() {
-          session.logout();
         };
       }
     };

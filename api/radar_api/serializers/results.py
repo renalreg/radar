@@ -3,7 +3,7 @@ import six
 from radar_api.serializers.data_sources import DataSourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models import ResultGroupSpec, ResultGroup, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, \
+from radar.models import ResultGroupSpec, ResultGroup, ResultGroupResultSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, \
     RESULT_SPEC_TYPE_CODED_INTEGER, RESULT_SPEC_TYPE_CODED_STRING
 from radar.serializers.core import Serializer, Empty, Field
 from radar.serializers.fields import StringField, IntegerField, FloatField, DateTimeField, ListField, \
@@ -43,6 +43,14 @@ class ResultGroupSpecSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = ResultGroupSpec
+
+
+class ResultGroupResultSpecSerializer(ModelSerializer):
+    result_spec = ResultSpecSerializer()
+    result_group_spec = ResultGroupSpecSerializer()
+
+    class Meta(object):
+        model_class = ResultGroupResultSpec
 
 
 class ResultGroupSpecReferenceField(ReferenceField):

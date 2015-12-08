@@ -22,7 +22,7 @@
           var userOrganisations = user.organisations;
 
           _.forEach(userOrganisations, function(organisation) {
-            if (organisation.hasEditPatientPermission) {
+            if (organisation.hasPermission('EDIT_PATIENT')) {
               organisationIds.push(organisation.organisation.id);
             }
           });

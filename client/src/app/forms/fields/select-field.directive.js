@@ -9,14 +9,16 @@
       scope: {
         required: '&',
         model: '=',
-        options: '='
+        options: '=',
+        idPath: '@',
+        labelPath: '@',
       },
       templateUrl: 'app/forms/fields/select-field.html',
       link: function(scope) {
         scope.data = {};
 
         scope.$watch('model', function(value) {
-          scope.data.model = toSelectView(value);
+          scope.data.model = toSelectView(value, scope.idPath, scope.labelPath);
         });
 
         scope.$watch('data.model', function(value) {
@@ -24,7 +26,7 @@
         });
 
         scope.$watchCollection('options', function(options) {
-          scope.data.options = wrapSelectOptions(options);
+          scope.data.options = wrapSelectOptions(options, scope.idPath, scope.labelPath);
         });
       }
     };

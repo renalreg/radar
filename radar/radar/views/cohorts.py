@@ -5,7 +5,7 @@ from flask import request
 from radar.database import db
 from radar.models import CohortPatient, Cohort, CohortUser, OrganisationPatient, Organisation, OrganisationUser
 from radar.permissions import CohortObjectPermission
-from radar.roles import COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_PATIENT_ROLES
+from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
 from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField
 from radar.auth.sessions import current_user
@@ -37,7 +37,7 @@ class CohortObjectViewMixin(object):
                     CohortPatient.patient_id == model_class.patient_id,
                     CohortPatient.cohort_id == model_class.cohort_id,
                     CohortUser.user == current_user,
-                    CohortUser.role.in_(COHORT_VIEW_PATIENT_ROLES)
+                    CohortUser.role.in_(get_cohort_roles_with_permission(PERMISSIONS.VIEW_PATIENT))
                 )\
                 .exists()
 
@@ -49,7 +49,7 @@ class CohortObjectViewMixin(object):
                 .filter(
                     OrganisationPatient.patient_id == model_class.patient_id,
                     OrganisationUser.user == current_user,
-                    OrganisationUser.role.in_(ORGANISATION_VIEW_PATIENT_ROLES)
+                    OrganisationUser.role.in_(get_organisation_roles_with_permission(PERMISSIONS.VIEW_PATIENT))
                 )\
                 .exists()
 

@@ -11,6 +11,7 @@
         var token = session.getToken();
 
         if (token !== null) {
+          // Send the token in the header
           config.headers['X-Auth-Token'] = token;
         }
 
@@ -21,6 +22,7 @@
         var token = response.headers('X-Auth-Token');
 
         if (token !== null) {
+          // Use the fresh token for future requests
           session.setToken(token);
         }
 

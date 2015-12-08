@@ -1,6 +1,6 @@
 from radar.models import Organisation
 from radar.permissions import PatientPermission, PatientObjectPermission
-from radar.roles import COHORT_RESEARCHER, ORGANISATION_CLINICIAN
+from radar.roles import COHORT_ROLES, ORGANISATION_ROLES
 from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_cohorts, make_organisations
 from radar.models.cohorts import Cohort
 
@@ -54,7 +54,7 @@ def test_admin():
 def test_intersecting_cohorts():
     cohort = Cohort()
     patient = make_patient(cohorts=[cohort])
-    user = make_user(cohorts=[(cohort, COHORT_RESEARCHER)])
+    user = make_user(cohorts=[(cohort, COHORT_ROLES.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -65,7 +65,7 @@ def test_intersecting_cohorts():
 def test_intersecting_organisations():
     organisation = Organisation()
     patient = make_patient(organisations=[organisation])
-    user = make_user(organisations=[(organisation, ORGANISATION_CLINICIAN)])
+    user = make_user(organisations=[(organisation, ORGANISATION_ROLES.CLINICIAN)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -76,8 +76,8 @@ def test_intersecting_organisations():
 def test_disjoint_cohorts():
     cohort_a, cohort_b = make_cohorts(2)
     patient = make_patient(cohorts=[cohort_a])
-    user_a = make_user(cohorts=[(cohort_a, COHORT_RESEARCHER)])
-    user_b = make_user(cohorts=[(cohort_b, COHORT_RESEARCHER)])
+    user_a = make_user(cohorts=[(cohort_a, COHORT_ROLES.RESEARCHER)])
+    user_b = make_user(cohorts=[(cohort_b, COHORT_ROLES.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -91,8 +91,8 @@ def test_disjoint_cohorts():
 def test_disjoint_organisations():
     organisation_a, organisation_b = make_organisations(2)
     patient = make_patient(organisations=[organisation_a])
-    user_a = make_user(organisations=[(organisation_a, ORGANISATION_CLINICIAN)])
-    user_b = make_user(organisations=[(organisation_b, ORGANISATION_CLINICIAN)])
+    user_a = make_user(organisations=[(organisation_a, ORGANISATION_ROLES.CLINICIAN)])
+    user_b = make_user(organisations=[(organisation_b, ORGANISATION_ROLES.CLINICIAN)])
     read_request = make_read_request()
     write_request = make_write_request()
 

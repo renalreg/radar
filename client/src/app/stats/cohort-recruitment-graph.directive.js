@@ -8,7 +8,7 @@
       scope: {
         cohort: '='
       },
-      template: '<div loading="loading"><div recruitment-graph title="{{cohort.name}}" data="data"></div></div>',
+      template: '<div loading="loading"><div recruitment-graph title="{{cohort.name}}" data="data" class="graph"></div></div>',
       link: function(scope) {
         scope.loading = true;
 
@@ -19,7 +19,7 @@
 
           scope.loading = true;
 
-          adapter.get('/cohort-recruitment-stats', {cohort: cohort.id}).then(function(response) {
+          adapter.get('/cohort-recruitment-timeline', {cohort: cohort.id}).then(function(response) {
             scope.loading = false;
             scope.data = response.data.points;
           });

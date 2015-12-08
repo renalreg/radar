@@ -3,8 +3,13 @@
 
   var app = angular.module('radar.users.units');
 
-  app.factory('UserUnitsController', function(ModelListDetailController) {
-    function UserUnitsController($scope, $injector, store, firstPromise) {
+  function controllerFactory(
+    ModelListDetailController,
+    $injector,
+    store,
+    firstPromise
+  ) {
+    function UserUnitsController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
@@ -24,12 +29,22 @@
       };
     }
 
+    UserUnitsController.$inject = ['$scope'];
     UserUnitsController.prototype = Object.create(ModelListDetailController.prototype);
 
     return UserUnitsController;
-  });
+  }
 
-  app.directive('userUnitsComponent', function(UserUnitsController) {
+  controllerFactory.$inject = [
+    'ModelListDetailController',
+    '$injector',
+    'store',
+    'firstPromise'
+  ];
+
+  app.factory('UserUnitsController', controllerFactory);
+
+  app.directive('userUnitsComponent', ['UserUnitsController', function(UserUnitsController) {
     return {
       scope: {
         user: '='
@@ -37,5 +52,5 @@
       controller: UserUnitsController,
       templateUrl: 'app/users/units/units-component.html'
     };
-  });
+  }]);
 })();

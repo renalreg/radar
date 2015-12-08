@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.permissions', []);
+  angular.module('radar.permissions', ['_']);
 })();

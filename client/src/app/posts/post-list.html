@@ -13,7 +13,7 @@
     <div ng-repeat="post in items" class="post">
       <h2><a ui-sref="post({postId: post.id})">{{post.title}}</a> <small>{{post.publishedDate | dateFormat}}</small></h2>
 
-      <div ng-bind-html="post.getHtml()"></div>
+      <div ng-bind-html="post.body"></div>
     </div>
 
     <div pagination-helper></div>

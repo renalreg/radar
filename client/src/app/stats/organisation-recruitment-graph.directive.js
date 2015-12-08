@@ -8,7 +8,7 @@
       scope: {
         organisation: '='
       },
-      template: '<div loading="loading"><div recruitment-graph title="{{organisation.name}}" data="data"></div></div>',
+      template: '<div loading="loading"><div recruitment-graph title="{{organisation.name}}" data="data" class="graph"></div></div>',
       link: function(scope) {
         scope.loading = true;
 
@@ -19,7 +19,7 @@
 
           scope.loading = true;
 
-          adapter.get('/organisation-recruitment-stats', {organisation: organisation.id}).then(function(response) {
+          adapter.get('/organisation-recruitment-timeline', {organisation: organisation.id}).then(function(response) {
             scope.loading = false;
             scope.data = response.data.points;
           });

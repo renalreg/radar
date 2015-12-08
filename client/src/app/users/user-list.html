@@ -20,6 +20,7 @@
               <th sort-helper="email">Email</th>
               <th sort-helper="firstName">First Name</th>
               <th sort-helper="lastName">Last Name</th>
+              <th sort-helper="telephoneNumber">Telephone Number</th>
               <th>Cohorts</th>
               <th>Units</th>
             </tr>
@@ -36,6 +37,8 @@
               <td>{{user.firstName | missing}}</td>
 
               <td>{{user.lastName | missing}}</td>
+
+              <td>{{user.telephoneNumber | missing}}</td>
 
               <td>
                 <span ng-if="!user.cohorts.length">-</span>

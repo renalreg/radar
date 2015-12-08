@@ -1,10 +1,10 @@
 @import "variables";
 
-$radar-tabs-link-color: $radar-secondary-text;
-$radar-tabs-border-color: $radar-secondary;
+$radar-tabs-link-color: $radar-primary-text;
+$radar-tabs-border-color: $radar-primary;
 $radar-tabs-active-link-color: #fff;
-$radar-tabs-active-bg: $radar-secondary;
-$radar-tabs-active-border-color: $radar-secondary;
+$radar-tabs-active-bg: $radar-primary;
+$radar-tabs-active-border-color: $radar-primary;
 $radar-tabs-link-padding: 10px 15px;
 
 .tabs-radar {
@@ -29,7 +29,7 @@ $radar-tabs-link-padding: 10px 15px;
       border: 1px solid transparent;
       border-radius: $border-radius-base $border-radius-base 0 0;
       color: $radar-tabs-link-color;
-      text-decoration: underline;
+      text-decoration: none;
 
       > img {
         max-width: none;
@@ -40,7 +40,6 @@ $radar-tabs-link-padding: 10px 15px;
       color: $radar-tabs-active-link-color;
       background-color: $radar-tabs-active-bg;
       border: 1px solid $radar-tabs-active-border-color;
-      text-decoration: none;
     }
   }
 }

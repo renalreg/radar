@@ -207,15 +207,15 @@ table.item-meta {
   text-align: center;
   font-size: 11px;
   padding: 3px 15px;
+  color: #fff;
+  background-color: #333;
 }
 
 .header-alert-danger {
-  color: $radar-danger-text;
   background-color: $radar-danger;
 }
 
 .header-alert-warning {
-  color: $radar-warning-text;
   background-color: $radar-warning;
 }
 
@@ -226,4 +226,17 @@ table.item-meta {
 // FIXME https://github.com/twbs/bootstrap-sass/issues/919
 .breadcrumb > li + li:before {
     content: "/\00a0";
+}
+
+.text-editor-toolbar {
+  margin: 0 0 9px 0;
+}
+
+.text-editor {
+  border: 1px solid #ccc;
+  min-height: 200px;
+}
+
+.graph {
+  margin-bottom: 18px;
 }

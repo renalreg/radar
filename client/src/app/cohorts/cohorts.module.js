@@ -1,5 +1,9 @@
 (function() {
   'use strict';
 
-  angular.module('radar.cohorts', ['radar.stats', 'radar.store']);
+  angular.module('radar.cohorts', [
+    'ui.router',
+    'radar.stats',
+    'radar.store'
+  ]);
 })();

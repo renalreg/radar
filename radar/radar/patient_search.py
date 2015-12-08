@@ -2,8 +2,7 @@ from sqlalchemy import or_, case, desc, extract
 
 from sqlalchemy.orm import aliased
 from radar.models import PatientAlias, PatientNumber
-from radar.roles import ORGANISATION_VIEW_PATIENT_ROLES, COHORT_VIEW_PATIENT_ROLES, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES, \
-    COHORT_VIEW_DEMOGRAPHICS_ROLES
+from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
 from radar.database import db
 from radar.models.organisations import OrganisationPatient, Organisation, OrganisationUser
 from radar.models.cohorts import Cohort, CohortPatient, CohortUser
@@ -167,6 +166,15 @@ def filter_by_patient_number(number, exact=False):
     return query
 
 
+def filter_by_patient_number_at_organisation(number, organisation, exact=False):
+    if exact:
+        query = patient_number_sub_query(PatientNumber.number.like(number + '%'), PatientNumber.organisation == organisation)
+    else:
+        query = patient_number_sub_query(PatientNumber.number == number, PatientNumber.organisation == organisation)
+
+    return query
+
+
 def filter_by_patient_id(patient_id):
     return Patient.id == patient_id
 
@@ -216,13 +224,13 @@ def filter_by_cohort_roles(current_user, roles):
 def filter_by_permissions(current_user, demographics):
     if demographics:
         return or_(
-            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES),
-            filter_by_cohort_roles(current_user, COHORT_VIEW_DEMOGRAPHICS_ROLES),
+            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
+            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
         )
     else:
         return or_(
-            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_PATIENT_ROLES),
-            filter_by_cohort_roles(current_user, COHORT_VIEW_PATIENT_ROLES),
+            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_PATIENT)),
+            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_PATIENT)),
         )
 
 
@@ -231,8 +239,8 @@ def sort_by_demographics_field(current_user, field, reverse, else_=None):
         expression = field
     else:
         demographics_permission_sub_query = or_(
-            filter_by_organisation_roles(current_user, ORGANISATION_VIEW_DEMOGRAPHICS_ROLES),
-            filter_by_cohort_roles(current_user, COHORT_VIEW_DEMOGRAPHICS_ROLES),
+            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
+            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
         )
         expression = case([(demographics_permission_sub_query, field)], else_=else_)
 

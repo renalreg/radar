@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from functools import update_wrapper
 
 import click
@@ -22,7 +24,8 @@ def app_context(f):
 def cli(ctx, connection_string):
     config = {
         'SQLALCHEMY_DATABASE_URI': connection_string,
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+        'BASE_URL': 'http://localhost'
     }
 
     ctx.obj['app'] = create_app(config)
@@ -33,16 +36,32 @@ def cli(ctx, connection_string):
 def init_command():
     db.create_all()
     create_initial_data()
+    db.session.commit()
 
 
 @cli.command('dev')
 @click.option('--patients', default=5)
 @click.option('--users', default=0)
+@click.option('--password', default='password')
 @app_context
-def dev_command(patients, users):
+def dev_command(patients, users, password):
     db.drop_all()
     db.create_all()
-    dev.create_data(patients, users)
+    dev.create_data(patients=patients, users=users, password=password)
+    db.session.commit()
+
+
+@cli.command('create')
+@app_context
+def create_command():
+    db.create_all()
+    db.session.commit()
+
+
+@cli.command('drop')
+@app_context
+def drop_command():
+    db.drop_all()
     db.session.commit()
 
 

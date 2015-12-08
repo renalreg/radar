@@ -3,6 +3,7 @@
 
   var app = angular.module('radar.auth');
 
+  /** Service for storing user credentials (e.g tokens) */
   function authStore(localStorageService) {
     return {
       logout: logout,

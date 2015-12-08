@@ -2,13 +2,24 @@ from radar.fixtures.validation import validate_and_add
 from radar.models import Disorder
 
 DISORDERS = [
-    'Heart Disease',
-    'Cerebral Palsy',
+    'Auto Immune Disease',
+    'Blindness',
+    'Cardiac Anomaly',
+    'Cardiomyopathy',
+    'CNS Abnormalities',
+    'Congenital CMV',
+    'Deafness',
+    'Diabetes',
+    'Hepatitis B',
+    'Hepatitis C',
+    'Male Pseudohermaphroditism',
+    'Mental Retardation',
+    'Microcephaly',
     'Microcoria',
+    'Nail Patella Syndrome',
     'Polydactyly',
-    'Epilepsy',
-    'Atrial Septal Defect',
-    'Congenital CMV'
+    'Spondyloepiphyseal Displasia',
+    'TORCH Infection not CMV',
 ]
 
 

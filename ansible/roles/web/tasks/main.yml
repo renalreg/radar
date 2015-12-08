@@ -1,4 +1,9 @@
 ---
+- name: create dhparam.pem
+  command: openssl dhparam -out /etc/pki/tls/certs/dhparam.pem 2048
+  args:
+    creates: /etc/pki/tls/certs/dhparam.pem
+
 - name: nginx config
   template: src=nginx.conf dest=/etc/nginx/conf.d/radar-web.conf owner=root group=root mode=0644
   notify:

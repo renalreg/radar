@@ -11,8 +11,8 @@
       link: function(scope) {
         scope.live = true;
 
-        adapter.get('/environment').then(function(environment) {
-          scope.live = environment.live;
+        adapter.get('/environment').then(function(response) {
+          scope.live = response.data.live;
         });
       }
     };

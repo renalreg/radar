@@ -7,20 +7,7 @@
     $stateProvider.state('cohorts', {
       url: '/cohorts',
       templateUrl: 'app/cohorts/cohort-list.html',
-      controller: 'CohortListController',
-      resolve: {
-        cohorts: ['store', 'session', '_', function(store, session, _) {
-          var user = session.user;
-
-          if (user.isAdmin) {
-            return store.findMany('cohorts');
-          } else {
-            return _.map(user.cohorts, function(x) {
-              return x.cohort;
-            });
-          }
-        }]
-      }
+      controller: 'CohortListController'
     });
 
     $stateProvider.state('cohort', {

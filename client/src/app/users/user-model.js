@@ -18,7 +18,7 @@
 
         for (i = 0; i < data.cohorts.length; i++) {
           var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(new Model('cohort-users', rawCohort)));
+          cohorts.push(store.pushToStore(store.create('cohort-users', rawCohort)));
         }
 
         data.cohorts = cohorts;
@@ -31,7 +31,7 @@
 
         for (i = 0; i < data.organisations.length; i++) {
           var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(new Model('organisation-users', rawOrganisation)));
+          organisations.push(store.pushToStore(store.create('organisation-users', rawOrganisation)));
         }
 
         data.organisations = organisations;

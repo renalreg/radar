@@ -29,8 +29,11 @@ def to_str(value):
         value = date_to_str(value)
     elif isinstance(value, dict):
         value = dict_to_str(value)
-    elif isinstance(value, dict):
+    elif isinstance(value, list):
         value = list_to_str(value)
+    elif value in ['\0', '\1']:
+        # Bit type
+        value = int(value == '\1')
 
     return value
 

@@ -32,6 +32,11 @@
         </tr>
 
         <tr>
+          <th>Telephone Number</th>
+          <td>{{item.telephoneNumber | missing}}</td>
+        </tr>
+
+        <tr>
           <th>Force Password Change?</th>
           <td><span tick="item.forcePasswordChange"></span></td>
         </tr>
@@ -79,6 +84,15 @@
         <div frm-control>
           <div frm-text-field model="item.lastName" required="true"></div>
           <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Telephone Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.telephoneNumber"></div>
+          <div frm-errors errors="item.errors.telephoneNumber"></div>
         </div>
       </div>
 

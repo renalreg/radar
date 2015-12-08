@@ -382,7 +382,7 @@ def sanitize_html():
     def sanitize_html_f(value):
         value = bleach.clean(
             value,
-            tags=['a', 'br', 'em', 'li', 'ol', 'p', 'strong', 'ul'],
+            tags=['a', 'b', 'br', 'em', 'i', 'li', 'ol', 'p', 'strong', 'ul', 'div'],
             attributes={
                 'a': ['href', 'target']
             }

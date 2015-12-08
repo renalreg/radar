@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('DataSourceObjectPermission', ['session', function(session) {
+  app.factory('DataSourceObjectPermission', ['session', 'hasPermissionForOrganisation', function(session, hasPermissionForOrganisation) {
     function DataSourceObjectPermission() {
     }
 
@@ -16,31 +16,23 @@
         return false;
       }
 
-      var objDataSource = obj.dataSource;
+      var dataSource = obj.dataSource;
 
-      if (objDataSource.type !== 'RADAR') {
+      if (dataSource.type !== 'RADAR') {
         return false;
       }
 
-      if (session.user.isAdmin) {
+      var user = session.user;
+
+      if (user.isAdmin) {
         return true;
       }
 
-      var objOrganisation = objDataSource.organisation;
-      var userOrganisations = session.user.organisations;
+      var organisation = dataSource.organisation;
 
-      for (var i = 0; i < userOrganisations.length; i++) {
-        var userOrganisation = userOrganisations[i];
-
-        if (userOrganisation.organisation.id === objOrganisation.id) {
-          return userOrganisation.hasEditPatientPermission;
-        }
-      }
-
-      return false;
+      return hasPermissionForOrganisation(user, organisation, 'EDIT_PATIENT');
     };
 
     return DataSourceObjectPermission;
   }]);
 })();
-

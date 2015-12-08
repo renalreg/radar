@@ -1,13 +1,8 @@
-from random import SystemRandom
-import string
-
 import werkzeug.security
 import zxcvbn
 
-# Parameters to use for password generation
-# log2(36 ^ 10) = ~51 bits
-GENERATE_PASSWORD_ALPHABET = string.ascii_lowercase + string.digits
-GENERATE_PASSWORD_LENGTH = 10
+from radar.config import get_config_value
+from radar.utils import random_string
 
 NATO_ALPHABET = {
     'a': 'ALFA',
@@ -61,8 +56,22 @@ USER_INPUTS = [
 ]
 
 
+def get_password_alphabet():
+    return get_config_value('PASSWORD_ALPHABET')
+
+
+def get_password_length():
+    return get_config_value('PASSWORD_LENGTH')
+
+
+def get_password_min_score():
+    return get_config_value('PASSWORD_MIN_SCORE')
+
+
 def generate_password():
-    return ''.join(SystemRandom().sample(GENERATE_PASSWORD_ALPHABET, GENERATE_PASSWORD_LENGTH))
+    alphabet = get_password_alphabet()
+    length = get_password_length()
+    return random_string(alphabet, length)
 
 
 def generate_password_hash(password):
@@ -94,11 +103,13 @@ def password_to_nato_str(password):
     return ', '.join(password_to_nato_values(password))
 
 
-def password_strength(password, user_inputs=None):
+def password_score(password, user_inputs=None):
     return zxcvbn.password_strength(password, user_inputs)['score']
 
 
 def is_strong_password(password, user=None):
+    min_score = get_password_min_score()
+
     if user is None:
         user_inputs = USER_INPUTS
     else:
@@ -114,4 +125,4 @@ def is_strong_password(password, user=None):
 
         user_inputs.extend(USER_INPUTS)
 
-    return password_strength(password, user_inputs) >= 3
+    return password_score(password, user_inputs) >= min_score

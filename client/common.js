@@ -22,8 +22,8 @@ var JS_VENDOR = [
   'bower_components/blueimp-md5/js/md5.js',
   'bower_components/highcharts/highcharts.js',
   'bower_components/angular-local-storage/dist/angular-local-storage.js',
-  'bower_components/tinymce/tinymce.js',
-  'bower_components/zxcvbn/dist/zxcvbn.js'
+  'bower_components/zxcvbn/dist/zxcvbn.js',
+  'bower_components/quill/dist/quill.js'
 ];
 
 var JS_IE = [
@@ -38,12 +38,15 @@ var CSS_VENDOR = [
 
 var FONTS_VENDOR = [
   'bower_components/bootstrap-sass/**/*.{eot,svg,ttf,woff,woff2}',
-  'bower_components/font-awesome/fonts/*.{otf,eot,svg,ttf,woff,woff2}'
+  'bower_components/font-awesome/fonts/*'
 ];
 
 var IMAGES = [
-  'src/images/**/*',
-  'bower_components/jquery-ui/themes/smoothness/images/*.{gif,png}'
+  'src/images/**/*'
+];
+
+var IMAGES_JQUERY_UI = [
+  'bower_components/jquery-ui/themes/smoothness/images/*'
 ];
 
 module.exports = {
@@ -53,5 +56,6 @@ module.exports = {
   JS_IE: JS_IE,
   CSS_VENDOR: CSS_VENDOR,
   FONTS_VENDOR: FONTS_VENDOR,
-  IMAGES: IMAGES
+  IMAGES: IMAGES,
+  IMAGES_JQUERY_UI: IMAGES_JQUERY_UI
 };

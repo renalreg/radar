@@ -1,5 +1,4 @@
 ---
-repo_url: TODO
 postgresql_shared_buffers: 2GB
 db_host: db.staging.radar.nhs.uk
 db_password: '{{ vault_db_password }}'

@@ -3,7 +3,12 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ModelDetailController', ['$q', '$window', 'GrantPermission', function($q, $window, GrantPermission) {
+  function factory(
+    $q,
+    $window,
+    GrantPermission
+  ) {
+    /** Controller for managing a single model */
     function ModelDetailController($scope, params) {
       this.scope = $scope;
 
@@ -211,5 +216,13 @@
     };
 
     return ModelDetailController;
-  }]);
+  }
+
+  factory.$inject = [
+    '$q',
+    '$window',
+    'GrantPermission'
+  ];
+
+  app.factory('ModelDetailController', factory);
 })();

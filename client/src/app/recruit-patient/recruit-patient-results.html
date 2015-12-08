@@ -13,28 +13,26 @@
   <thead>
     <tr>
       <th></th>
-      <th>MPIID</th>
-      <th>RaDaR ID</th>
       <th>First Name</th>
       <th>Last Name</th>
       <th>DOB</th>
       <th>Gender</th>
-      <th>NHS No.</th>
-      <th>CHI No.</th>
+      <th>Patient Numbers</th>
     </tr>
   </thead>
 
   <tbody>
-    <tr ng-repeat="patient in results">
+    <tr ng-repeat="patient in patients">
       <td><a ng-click="patientFound(patient)" class="btn btn-success btn-xs">Select</a></td>
-      <td>{{patient.mpiid | missing}}</td>
-      <td>{{patient.radarId | missing}}</td>
       <td>{{patient.firstName | missing}}</td>
       <td>{{patient.lastName | missing}}</td>
       <td>{{patient.dateOfBirth | dateFormat}}</td>
       <td>{{patient.gender.label | missing}}</td>
-      <td>{{patient.nhsNo | missing}}</td>
-      <td>{{patient.chiNo | missing}}</td>
+      <td>
+        <div ng-repeat="patientNumber in patient.patientNumbers">
+          {{patientNumber.number}} ({{patientNumber.organisation.name}})
+        </div>
+      </td>
     </tr>
   </tbody>
 </table>

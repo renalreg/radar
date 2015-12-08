@@ -10,7 +10,7 @@ import click
 import os
 
 from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-    get_mock_ukrdc_src_path
+    get_mock_ukrdc_src_path, get_release
 
 NAME = 'radar-mock-ukrdc'
 ARCHITECTURE = 'x86_64'
@@ -38,15 +38,15 @@ def install_mock_ukrdc(v, root_path):
 
     heading('Install %s' % NAME)
 
+    info('Installing radar ...')
+    v.pip(['install', '--no-deps', '.'], cwd=radar_src_path)
+
     info('Installing radar-mock-ukrdc dependencies ...')
     requirements_path = os.path.join(mock_ukrdc_src_path, 'requirements.txt')
     v.install_requirements(requirements_path, env={'PATH': PATH})
 
-    info('Installing radar ...')
-    v.run(['setup.py', 'install'], cwd=radar_src_path)
-
     info('Installing radar-mock-ukrdc ...')
-    v.run(['setup.py', 'install'], cwd=mock_ukrdc_src_path)
+    v.pip(['install', '--no-deps', '.'], cwd=mock_ukrdc_src_path)
 
 
 def package_mock_ukrdc(v, root_path):
@@ -59,20 +59,23 @@ def package_mock_ukrdc(v, root_path):
     heading('Package %s' % NAME)
     info('Version is %s' % version)
 
+    release = get_release(RELEASE)
+    info('Release is %s' % release)
+
     # Update build path references to install path
     info('Updating virtualenv paths ...')
     v.update_paths(install_path)
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
+    package = Package(NAME, version, release, ARCHITECTURE, URL)
     package.add_dependency('python')
 
     paths = [
         (v.path + '/', install_path, False),
         ('settings.py', etc_path + '/settings.py', True),
         ('uwsgi.ini', etc_path + '/uwsgi.ini', True),
-        ('systemd', '/etc/systemd/system/%s.service' % NAME, False),
+        ('systemd', '/usr/lib/systemd/system/%s.service' % NAME, False),
     ]
 
     for src, dst, config_file in paths:

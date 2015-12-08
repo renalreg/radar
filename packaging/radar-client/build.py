@@ -9,7 +9,7 @@ import os
 import click
 
 from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error, \
-    get_client_src_path
+    get_client_src_path, get_release
 
 NAME = 'radar-client'
 ARCHITECTURE = 'noarch'
@@ -52,9 +52,12 @@ def package_client(root_path):
     else:
         info('Version is %s' % version)
 
+    release = get_release(RELEASE)
+    info('Release is %s' % release)
+
     info('Building rpm ...')
 
-    package = Package(NAME, version, RELEASE, ARCHITECTURE, URL)
+    package = Package(NAME, version, release, ARCHITECTURE, URL)
     package.add_path(dist_path + '/', install_path)
     rpm_path = package.build()
 

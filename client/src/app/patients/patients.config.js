@@ -106,7 +106,7 @@
     },
     RESULTS: {
       text: 'Results',
-      state: 'patient.results.list({patientId: patient.id})'
+      state: 'patient.results.table({patientId: patient.id})'
     },
     SALT_WASTING_CLINICAL_FEATURES: {
       text: 'Clinical Features',

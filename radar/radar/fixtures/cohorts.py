@@ -18,7 +18,6 @@ COHORTS = [
         'name': 'Alport Syndrome',
         'short_name': 'Alport',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -31,7 +30,6 @@ COHORTS = [
         'name': 'APRT Deficiency',
         'short_name': 'APRT',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -50,7 +48,6 @@ COHORTS = [
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'RENAL_IMAGING',
@@ -67,7 +64,6 @@ COHORTS = [
         'name': 'Atypical Haemolytic Uraemic Syndrome',
         'short_name': 'AHUS',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'RESULTS',
@@ -83,7 +79,6 @@ COHORTS = [
         'name': 'Calciphylaxis',
         'short_name': 'Calciphylaxis',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'RESULTS',
@@ -95,7 +90,6 @@ COHORTS = [
         'name': 'Cystinosis',
         'short_name': 'Cystinosis',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'MEDICATIONS',
             'DIALYSIS',
@@ -109,7 +103,6 @@ COHORTS = [
         'name': 'Cystinuria',
         'short_name': 'Cystinuria',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
         ],
         'result_group_codes': [],
@@ -119,7 +112,6 @@ COHORTS = [
         'name': 'Dent Disease and Lowe Syndrome',
         'short_name': 'Dent & Lowe',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
         ],
         'result_group_codes': [],
@@ -129,7 +121,6 @@ COHORTS = [
         'name': 'Familial Urate Associated Nephropathy',
         'short_name': 'FUAN',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'RENAL_IMAGING',
@@ -143,7 +134,6 @@ COHORTS = [
         'name': 'HNF1b Mutations',
         'short_name': 'HNF1b',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'FAMILY_HISTORY',
             'RENAL_IMAGING',
@@ -156,7 +146,6 @@ COHORTS = [
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'RENAL_IMAGING',
@@ -172,7 +161,6 @@ COHORTS = [
         'name': 'Hypokalaemic Alkalosis',
         'short_name': 'Hypokalaemic Alkalosis',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'RENAL_IMAGING',
@@ -188,7 +176,6 @@ COHORTS = [
         'name': 'Idiopathic Nephrotic Syndrome',
         'short_name': 'INS',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -208,7 +195,6 @@ COHORTS = [
         'name': 'IgA Nephropathy',
         'short_name': 'IgA',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
         ],
         'result_group_codes': [],
@@ -218,7 +204,6 @@ COHORTS = [
         'name': 'Membranoproliferative Glomerulonephritis / Dense Deposit Disease',
         'short_name': 'MPGN',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -237,17 +222,15 @@ COHORTS = [
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
         ],
         'result_group_codes': [],
     },
     {
         'code': 'NEPHROS',
-        'name': 'Nephrotic Syndrome',
+        'name': 'NephroS',
         'short_name': 'NephroS',
         'features': [
-            'DEMOGRAPHICS',
             'RESULTS',
         ],
         'result_group_codes': [],
@@ -257,7 +240,6 @@ COHORTS = [
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'PATHOLOGY',
@@ -275,7 +257,6 @@ COHORTS = [
         'name': 'Pure Red Cell Aplasia',
         'short_name': 'PCRA',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
         ],
         'result_group_codes': [],
@@ -285,7 +266,6 @@ COHORTS = [
         'name': 'STEC-associated HUS',
         'short_name': 'STEC-HUS',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -302,7 +282,6 @@ COHORTS = [
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
         'features': [
-            'DEMOGRAPHICS',
             'DIAGNOSES',
             'COMORBIDITIES',
             'RENAL_IMAGING',

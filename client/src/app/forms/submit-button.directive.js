@@ -5,12 +5,26 @@
 
   app.directive('submitButton', function() {
     return {
-      require: '^form',
+      require: ['^form', '?^submitIfValid'],
       scope: {},
       transclude: true,
-      template: '<button ng-disabled="formCtrl.$invalid" type="submit" class="btn btn-success" ng-transclude></button>',
-      link: function(scope, element, attrs, formCtrl) {
+      templateUrl: 'app/forms/submit-button.html',
+      link: function(scope, element, attrs, ctrls) {
+        var formCtrl = ctrls[0];
+        var submitIfValidCtrl = ctrls[1];
+
         scope.formCtrl = formCtrl;
+        scope.submitting = false;
+
+        if (submitIfValidCtrl !== null) {
+          submitIfValidCtrl.on('submit', function() {
+            scope.submitting = true;
+          });
+
+          submitIfValidCtrl.on('submitted', function() {
+            scope.submitting = false;
+          });
+        }
       }
     };
   });

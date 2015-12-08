@@ -3,7 +3,8 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ModelEditController', ['$q', function($q) {
+  function factory($q) {
+    /** Controller for editing a model */
     function ModelEditController($scope) {
       this.scope = $scope;
 
@@ -50,5 +51,9 @@
     };
 
     return ModelEditController;
-  }]);
+  }
+
+  factory.$inject = ['$q'];
+
+  app.factory('ModelEditController', factory);
 })();
