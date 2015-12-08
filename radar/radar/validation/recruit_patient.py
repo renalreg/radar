@@ -15,7 +15,7 @@ class RecruitPatientSearchValidation(Validation):
     number_organisation = Field([required()])
 
     def validate_number_organisation(self, number_organisation):
-        if not is_chi_organisation(number_organisation) and not is_nhs_organisation(number_organisation):
+        if not number_organisation.is_national:
             raise ValidationError("Not a valid organisation.")
 
         return number_organisation
