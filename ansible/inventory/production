@@ -4,6 +4,6 @@ nww.radar.nhs.uk
 [db]
 db.radar.nhs.uk
 
-[production:children]
-web
-db
+[production]
+nww.radar.nhs.uk
+db.radar.nhs.uk
