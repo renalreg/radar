@@ -3,7 +3,8 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListEditController', ['_', '$q', function(_, $q) {
+  function factory(_, $q) {
+    /** Controller for viewing and editing a list of items */
     function ListEditController($scope) {
       this.scope = $scope;
 
@@ -48,5 +49,9 @@
     };
 
     return ListEditController;
-  }]);
+  }
+
+  factory.$inject = ['_', '$q'];
+
+  app.factory('ListEditController', factory);
 })();

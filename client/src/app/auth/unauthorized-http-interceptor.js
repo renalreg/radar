@@ -6,6 +6,7 @@
   app.factory('unauthorizedHttpInterceptor', ['$rootScope', '$q', function($rootScope, $q) {
     return {
       responseError: function(rejection) {
+        // API endpoint requires login (token may have expired)
         if (rejection.status === 401) {
           $rootScope.$broadcast('sessions.unauthorized');
         }

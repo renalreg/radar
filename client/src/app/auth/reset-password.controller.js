@@ -26,6 +26,7 @@
             $scope.errors = errors;
           }
 
+          // Token is invalid / has expired
           if (errors.token) {
             notificationService.fail({message: errors.token, timeout: 30000});
             $state.go('forgotPassword');

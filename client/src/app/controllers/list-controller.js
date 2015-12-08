@@ -3,7 +3,8 @@
 
   var app = angular.module('radar.controllers');
 
-  app.factory('ListController', ['$q', function($q) {
+  function factory($q) {
+    /** Controller for viewing a list of items */
     function ListController($scope) {
       this.scope = $scope;
 
@@ -25,5 +26,9 @@
     };
 
     return ListController;
-  }]);
+  }
+
+  factory.$inject = ['$q'];
+
+  app.factory('ListController', factory);
 })();

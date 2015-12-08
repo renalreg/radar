@@ -24,6 +24,8 @@
 
           return authService.login(credentials)
             .then(function() {
+              // Redirect to the patients list
+              // TODO not all users will have access to this
               $state.go('patients');
             })
             ['catch'](function(errors) {

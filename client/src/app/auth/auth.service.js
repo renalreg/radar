@@ -32,6 +32,7 @@
       };
     }
 
+    /** Log the user in */
     function login(credentials) {
       var deferred = $q.defer();
 
@@ -56,20 +57,24 @@
       return deferred.promise;
     }
 
+    /** Log the user out */
     function logout() {
       return adapter.post('/logout')['finally'](function() {
         session.logout();
       });
     }
 
+    /** Request a username reminder */
     function forgotUsername(email) {
       return adapter.post('/forgot-username', {}, {email: email})['catch'](errorHandler());
     }
 
+    /** Request a reset password link */
     function forgotPassword(username, email) {
       return adapter.post('/forgot-password', {}, {username: username, email: email})['catch'](errorHandler());
     }
 
+    /** Reset a password */
     function resetPassword(token, username, password) {
       var data = {
         token: token,
