@@ -3,7 +3,7 @@
   yum: name=yum-plugin-priorities state=latest
 
 - name: install nginx repo
-  template: src=nginx_repo.conf dest=/etc/yum.repos.d/nginx.conf
+  template: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo
 
 - name: install nginx
   yum: name=nginx state=latest
