@@ -337,7 +337,7 @@ class Server(object):
 def get_release(release):
     git = Git()
 
-    if git.branch() != 'production':
+    if git.branch() != 'refs/heads/production':
         commit_date = git.commit_date()
         release = commit_date.strftime('0.%Y%m%d%H%M%S')
 
