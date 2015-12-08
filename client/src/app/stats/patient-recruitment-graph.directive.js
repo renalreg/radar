@@ -10,7 +10,7 @@
       link: function(scope) {
         scope.loading = true;
 
-        adapter.get('/patient-recruitment-stats').then(function(response) {
+        adapter.get('/patient-recruitment-timeline').then(function(response) {
           scope.loading = false;
           scope.data = response.data.points;
         });

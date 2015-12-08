@@ -19,7 +19,7 @@
 
           scope.loading = true;
 
-          adapter.get('/organisation-recruitment-stats', {organisation: organisation.id}).then(function(response) {
+          adapter.get('/organisation-recruitment-timeline', {organisation: organisation.id}).then(function(response) {
             scope.loading = false;
             scope.data = response.data.points;
           });
