@@ -95,10 +95,10 @@ def create_southmead_user(password=DEFAULT_PASSWORD):
     validate_and_add(organisation_user)
 
 
-def create_srns_user(password=DEFAULT_PASSWORD):
+def create_ins_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'srns_demo'
-    user.email = 'srns_demo@example.org'
+    user.username = 'ins_demo'
+    user.email = 'ins_demo@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = False
@@ -112,10 +112,10 @@ def create_srns_user(password=DEFAULT_PASSWORD):
     validate_and_add(cohort_user)
 
 
-def create_srns_demograhics_user(password=DEFAULT_PASSWORD):
+def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'srns_demographics_demo'
-    user.email = 'srns_demographics_demo@example.org'
+    user.username = 'ins_demographics_demo'
+    user.email = 'ins_demographics_demo@example.org'
     user.first_name = 'Foo'
     user.last_name = 'Bar'
     user.is_admin = False
@@ -554,8 +554,8 @@ def create_data(patients=5, users=10, password=None):
         create_initial_data()
 
         create_southmead_user(password=password)
-        create_srns_user(password=password)
-        create_srns_demograhics_user(password=password)
+        create_ins_user(password=password)
+        create_ins_demograhics_user(password=password)
 
         create_users(users, password=password)
         create_patients(patients)
