@@ -4,3 +4,4 @@ db_host: demo.radar.nhs.uk
 db_password: '{{ vault_db_password }}'
 db_api_address: 37.48.243.150/32 # demo.radar.nhs.uk
 web_base_url: 'http://demo.radar.nhs.uk/#'
+web_https: false
