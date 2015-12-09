@@ -59,9 +59,18 @@
 
     /** Log the user out */
     function logout() {
-      return adapter.post('/logout')['finally'](function() {
-        session.logout();
-      });
+      var deferred = $q.defer();
+
+      if (session.authenticated) {
+        adapter.post('/logout')['finally'](function() {
+          session.logout();
+          deferred.resolve();
+        });
+      } else {
+        deferred.resolve();
+      }
+
+      return deferred.promise;
     }
 
     /** Request a username reminder */
