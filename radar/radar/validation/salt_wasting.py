@@ -1,9 +1,10 @@
 from radar.validation.core import Validation, Field, pass_call
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import optional, required, none_if_blank, max_length, not_empty, range_
+from radar.validation.meta import MetaValidationMixin
 
 
-class SaltWastingClinicalFeaturesValidation(PatientValidationMixin, Validation):
+class SaltWastingClinicalFeaturesValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     normal_pregnancy = Field([required()])
     abnormal_pregnancy_text = Field([none_if_blank(), optional(), max_length(1000)])
 

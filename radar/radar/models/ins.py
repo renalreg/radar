@@ -35,10 +35,10 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     hypertension = Column(Boolean)
     rash = Column(Boolean)
     rash_details = Column(String)
-    possible_immunoisation_trigger = Column(Boolean)
+    possible_immunisation_trigger = Column(Boolean)
     ophthalmoscopy = Column(Boolean)
     ophthalmoscopy_details = Column(String)
-    comments = String()
+    comments = Column(String)
 
 Index('ins_clinical_pictures_patient_id_idx', InsClinicalPicture.patient_id)
 
