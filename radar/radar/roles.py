@@ -11,11 +11,17 @@ class ORGANISATION_ROLES(Enum):
     SENIOR_CLINICIAN = 'SENIOR_CLINICIAN'
     GOD = 'GOD'
 
+    def __str__(self):
+        return str(self.value)
+
 
 class COHORT_ROLES(Enum):
     SENIOR_RESEARCHER = 'SENIOR_RESEARCHER'
     RESEARCHER = 'RESEARCHER'
     GOD = 'GOD'
+
+    def __str__(self):
+        return str(self.value)
 
 
 ORGANISATION_ROLE_NAMES = OrderedDict([
@@ -42,6 +48,9 @@ class PERMISSIONS(Enum):
     VIEW_DEMOGRAPHICS = 'VIEW_DEMOGRAPHICS'
     VIEW_USER = 'VIEW_USER'
     EDIT_USER_MEMBERSHIP = 'EDIT_USER_MEMBERSHIP'
+
+    def __str__(self):
+        return str(self.value)
 
 
 ORGANISATION_PERMISSIONS = {

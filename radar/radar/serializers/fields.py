@@ -303,3 +303,32 @@ class UUIDField(Field):
         data = six.text_type(value)
 
         return data
+
+
+class EnumField(Field):
+    default_error_messages = {
+        'invalid': 'Not a valid value.'
+    }
+
+    def __init__(self, enum, **kwargs):
+        super(EnumField, self).__init__(self, **kwargs)
+        self.enum = enum
+
+    def to_value(self, data):
+        if data is None:
+            return None
+
+        try:
+            value = self.enum(data)
+        except ValueError:
+            self.fail('invalid')
+
+        return value
+
+    def to_data(self, value):
+        if value is None:
+            return None
+
+        data = six.text_type(value)
+
+        return data
