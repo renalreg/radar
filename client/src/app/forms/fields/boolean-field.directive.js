@@ -13,6 +13,7 @@
       },
       templateUrl: 'app/forms/fields/boolean-field.html',
       link: function(scope) {
+        // TODO this creates two blank options when the model is null
         scope.options = [
           {
             value: undefined,
