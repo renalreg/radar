@@ -1,0 +1,206 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Relapse</th>
+        <td>{{item.dateOfRelapse | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Type of Kidney</th>
+        <td>{{item.typeOfKidney.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Viral Trigger</th>
+        <td>{{item.viralTrigger | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Immunisation Trigger</th>
+        <td>{{item.immunisationTrigger | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Other Trigger</th>
+        <td>{{item.otherTrigger | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>High Dose Oral Prednisolone</th>
+        <td><span tick="item.highDoseOralPrednisolone"></span></td>
+      </tr>
+
+      <tr>
+        <th>IV Methyl Prednisolone</th>
+        <td><span tick="item.ivMethylPrednisolone"></span></td>
+      </tr>
+
+      <tr>
+        <th>Date of Remission</th>
+        <td>{{item.dateOfRemission | dateFormat | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.dateOfRemission">
+        <th>Type of Remission</th>
+        <td>{{item.typeOfRemission.label | missing}}</td>
+      </tr>
+    </table>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Date of Relapse</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRelapse" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfRelapse"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Type of Kidney</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.typeOfKidney" required="true" options="kidneyTypes"></div>
+          <div frm-errors errors="item.errors.typeOfKidney"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Viral Trigger</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.viralTrigger"></div>
+          <div frm-errors errors="item.errors.viralTrigger"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Immunisation Trigger</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.immunisationTrigger"></div>
+          <div frm-errors errors="item.errors.immunisationTrigger"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Other Trigger</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.otherTrigger"></div>
+          <div frm-errors errors="item.errors.otherTrigger"></div>
+        </div>
+      </div>
+
+      <h3>Drugs Given for Relapse</h3>
+
+      <div frm-field frm-group>
+        <div frm-label>High Dose Oral Prednisolone</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.highDoseOralPrednisolone"></div>
+          <div frm-errors errors="item.errors.highDoseOralPrednisolone"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>IV Methyl Prednisolone</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.ivMethylPrednisolone"></div>
+          <div frm-errors errors="item.errors.ivMethylPrednisolone"></div>
+        </div>
+      </div>
+
+      <h3>Remission</h3>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Remission</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRemission"></div>
+          <div frm-errors errors="item.errors.dateOfRemission"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Type of Remission</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.typeOfRemission" options="remissionTypes"></div>
+          <div frm-errors errors="item.errors.typeOfRemission"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="dateOfRelapse" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfRelapse">Date of Relapse</th>
+          <th sort-helper="typeOfKidney.label">Type of Kidney</th>
+          <th sort-helper="dateOfRemission">Date of Remission</th>
+          <th sort-helper="typeOfRemission.label">Type of Remission</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfRelapse | dateFormat}}</td>
+          <td>{{item.typeOfKidney.label}}</td>
+          <td>{{item.dateOfRemission | dateFormat | missing}}</td>
+          <td>{{item.typeOfRemission.label | missing}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

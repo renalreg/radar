@@ -54,7 +54,7 @@
     'store'
   ];
 
-  app.factory('InsRelapseController', controllerFactory);
+  app.factory('InsRelapsesController', controllerFactory);
 
   app.directive('insRelapsesComponent', ['InsRelapsesController', function(InsRelapsesController) {
     return {
