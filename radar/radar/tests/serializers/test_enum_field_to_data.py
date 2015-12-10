@@ -22,7 +22,7 @@ def test_str():
 
 
 def to_data(value):
-    field = EnumField()
+    field = EnumField(Foo)
     field.bind('test')
     value = field.get_value({'test': value})
     data = field.to_data(value)
