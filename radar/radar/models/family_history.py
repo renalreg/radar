@@ -51,7 +51,7 @@ class FamilyHistoryRelative(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
 
-    family_history_id = Column(Integer, ForeignKey('family_history.id'))
+    family_history_id = Column(Integer, ForeignKey('family_history.id'), nullable=False)
     family_history = relationship('FamilyHistory')
 
     relative = Column(Integer, nullable=False)
