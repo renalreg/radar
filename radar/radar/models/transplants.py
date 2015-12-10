@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
-TRANSPLANT_TYPES = OrderedDict([
+TYPE_OF_TRANSPLANTS = OrderedDict([
     (21, 'Live - Sibling'),
     (74, 'Live - Father'),
     (75, 'Live - Mother'),
