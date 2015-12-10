@@ -14,13 +14,13 @@ from radar.fixtures.dev.utils import random_date, generate_gender, generate_firs
     generate_postcode
 from radar.fixtures.validation import validate_and_add
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
-from radar.models import DialysisType, Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
+from radar.models import Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
-    MEDICATION_FREQUENCIES, MEDICATION_ROUTES, TRANSPLANT_TYPES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
+    MEDICATION_FREQUENCIES, MEDICATION_ROUTES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
     RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
     PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser, \
     ResultGroupSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPE_CODED_INTEGER, \
-    RESULT_SPEC_TYPE_CODED_STRING
+    RESULT_SPEC_TYPE_CODED_STRING, TYPES_OF_DIALYSIS, TYPES_OF_TRANSPLANT
 from radar.database import db
 from radar.models.cohorts import Cohort
 from radar.models.posts import Post
@@ -328,8 +328,6 @@ def create_patient_addresses_f():
 
 
 def create_dialysis_f():
-    dialysis_types = DialysisType.query.all()
-
     def create_dialysis(patient, data_source, n):
         for _ in range(n):
             dialysis = Dialysis()
@@ -340,7 +338,7 @@ def create_dialysis_f():
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
 
-            dialysis.dialysis_type = random.choice(dialysis_types)
+            dialysis.type_of_dialysis = random.choice(TYPES_OF_DIALYSIS.keys())
 
             validate_and_add(dialysis)
 
@@ -370,20 +368,19 @@ def create_medications_f():
 
 
 def create_transplants_f():
+    organisations = Organisation.query.all()
+
     def create_transplants(patient, data_source, n):
         for _ in range(n):
             transplant = Transplant()
             transplant.patient = patient
             transplant.data_source = data_source
-            transplant.transplant_date = random_date(patient.earliest_date_of_birth, date.today())
-            transplant.transplant_type = random.choice(TRANSPLANT_TYPES.keys())
-            transplant.recurred = random_bool()
-
-            if transplant.recurred:
-                transplant.date_recurred = random_date(transplant.transplant_date, date.today())
+            transplant.date_of_transplant = random_date(patient.earliest_date_of_birth, date.today())
+            transplant.type_of_transplant = random.choice(TYPES_OF_TRANSPLANT.keys())
+            transplant.organisation = random.choice(organisations)
 
             if random.random() > 0.75:
-                transplant.date_failed = random_date(transplant.transplant_date, date.today())
+                transplant.date_of_failure = random_date(transplant.date_of_transplant, date.today())
 
             validate_and_add(transplant)
 
