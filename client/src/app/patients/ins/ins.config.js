@@ -4,9 +4,16 @@
   var app = angular.module('radar.patients.ins');
 
   app.config(['$stateProvider', function($stateProvider) {
-    $stateProvider.state('patient.insClinicalFeatures', {
-      url: '/ins-clinical-features',
-      templateUrl: 'app/patients/ins/clinical-features.html'
+    $stateProvider.state('patient.insClinicalPictures', {
+      url: '/ins-clinical-pictures',
+      templateUrl: 'app/patients/ins/clinical-pictures.html'
+    });
+  }]);
+
+  app.config(['$stateProvider', function($stateProvider) {
+    $stateProvider.state('patient.insRelapses', {
+      url: '/ins-relapses',
+      templateUrl: 'app/patients/ins/relapses.html'
     });
   }]);
 })();

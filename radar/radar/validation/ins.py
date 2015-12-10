@@ -3,9 +3,10 @@ from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import optional, required, valid_date_for_patient, \
     max_length, none_if_blank, in_
 from radar.models.ins import TYPES_OF_KIDNEY, TYPES_OF_REMISSION
+from radar.validation.meta import MetaValidationMixin
 
 
-class InsClinicalPictureValidation(PatientValidationMixin, Validation):
+class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     date_of_picture = Field([required(), valid_date_for_patient()])
     oedema = Field([optional()])
     hypovalaemia = Field([optional()])
@@ -16,7 +17,7 @@ class InsClinicalPictureValidation(PatientValidationMixin, Validation):
     hypertension = Field([optional()])
     rash = Field([optional()])
     rash_details = Field([none_if_blank(), optional(), max_length(1000)])
-    possible_immunoisation_trigger = Field([optional()])
+    possible_immunisation_trigger = Field([optional()])
     ophthalmoscopy = Field([optional()])
     ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(1000)])
     comments = Field([none_if_blank(), optional(), max_length(1000)])
@@ -33,7 +34,7 @@ class InsClinicalPictureValidation(PatientValidationMixin, Validation):
         return obj
 
 
-class InsRelapseValidation(PatientValidationMixin, Validation):
+class InsRelapseValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     date_of_relapse = Field([required(), valid_date_for_patient()])
     type_of_kidney = Field([required(), in_(TYPES_OF_KIDNEY)])
     viral_trigger = Field([none_if_blank(), optional(), max_length(1000)])

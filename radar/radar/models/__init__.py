@@ -10,6 +10,7 @@ from radar.models.data_sources import *
 from radar.models.family_history import *
 from radar.models.genetics import *
 from radar.models.hospitalisations import *
+from radar.models.ins import *
 from radar.models.results import *
 from radar.models.medications import *
 from radar.models.nephrectomies import *
