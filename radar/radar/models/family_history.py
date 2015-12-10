@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -51,7 +52,7 @@ class FamilyHistoryRelative(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    family_history_id = Column(Integer, ForeignKey('family_history.id'), nullable=False)
+    family_history_id = Column(UUID, ForeignKey('family_history.id'), nullable=False)
     family_history = relationship('FamilyHistory')
 
     relative = Column(Integer, nullable=False)
