@@ -42,16 +42,6 @@ def test_role_missing(organisation_user):
     invalid(organisation_user)
 
 
-def test_role_invalid(organisation_user):
-    organisation_user.role = 'FOO'
-    invalid(organisation_user)
-
-
-def test_role_blank(organisation_user):
-    organisation_user.role = ''
-    invalid(organisation_user)
-
-
 def test_add_to_organisation():
     organisation = Organisation()
 

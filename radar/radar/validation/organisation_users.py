@@ -1,4 +1,4 @@
-from radar.roles import ORGANISATION_ROLE_NAMES
+from radar.roles import ORGANISATION_ROLES
 from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, in_
@@ -8,7 +8,7 @@ class OrganisationUserValidation(MetaValidationMixin, Validation):
     id = Field()
     organisation = Field([required()])
     user = Field([required()])
-    role = Field([required(), in_(ORGANISATION_ROLE_NAMES.keys())])
+    role = Field([required(), in_(ORGANISATION_ROLES)])
 
     @staticmethod
     def has_permission(current_user, organisation, role):
