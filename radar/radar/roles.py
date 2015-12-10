@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from radar.utils import Enum
+from enum import Enum
 
 # TODO move to radar.permissions
 
