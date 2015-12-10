@@ -11,3 +11,10 @@ def test_permissions():
         PERMISSIONS.VIEW_DEMOGRAPHICS,
         PERMISSIONS.VIEW_PATIENT,
     ]
+
+
+def test_role():
+    obj = OrganisationUser()
+    obj.role = ORGANISATION_ROLES.CLINICIAN
+    assert obj.role is ORGANISATION_ROLES.CLINICIAN
+    assert obj._role is ORGANISATION_ROLES.CLINICIAN.value
