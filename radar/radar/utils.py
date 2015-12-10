@@ -106,11 +106,3 @@ def to_age(patient, event_date):
 
 def random_string(alphabet, length):
     return ''.join(SystemRandom().choice(alphabet) for _ in range(length))
-
-
-class Enum(object):
-    r = re.compile('^[A-Z]([A-Z0-9_])*$')
-
-    @classmethod
-    def values(cls):
-        return sorted([v for k, v in cls.__dict__.items() if cls.r.match(k)])

@@ -112,7 +112,7 @@ class CohortUser(db.Model, MetaModelMixin):
 
     @property
     def permissions(self):
-        return [x for x in PERMISSIONS.values() if self.has_permission(x)]
+        return [x.value for x in PERMISSIONS if self.has_permission(x.value)]
 
     @property
     def has_edit_user_membership_permission(self):
