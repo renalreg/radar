@@ -1,7 +1,9 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean
 
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
@@ -47,7 +49,7 @@ class TransplantRejection(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(Integer, ForeignKey('transplants.id'), nullable=False)
+    transplant_id = Column(UUID, ForeignKey('transplants.id'), nullable=False)
     transplant = relationship('Transplant')
 
     date_of_rejection = Column(Date, nullable=False)
@@ -60,7 +62,7 @@ class TransplantBiopsy(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(Integer, ForeignKey('transplants.id'), nullable=False)
+    transplant_id = Column(UUID, ForeignKey('transplants.id'), nullable=False)
     transplant = relationship('Transplant')
 
     date_of_biopsy = Column(Date, nullable=False)
