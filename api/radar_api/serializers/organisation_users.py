@@ -5,12 +5,12 @@ from radar.models import OrganisationUser
 from radar.roles import ORGANISATION_ROLE_NAMES
 from radar.serializers.fields import ListField, StringField
 from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedStringField
+from radar.serializers.codes import CodedStringSerializer
 
 
 class OrganisationUserSerializer(UserSerializerMixin, MetaSerializerMixin, ModelSerializer):
     organisation = OrganisationReferenceField()
-    role = CodedStringField(ORGANISATION_ROLE_NAMES)
+    role = CodedStringSerializer(ORGANISATION_ROLE_NAMES)
     permissions = ListField(StringField(), read_only=True)
 
     class Meta(object):

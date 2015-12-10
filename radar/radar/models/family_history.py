@@ -57,7 +57,7 @@ class FamilyHistoryRelative(db.Model):
     relative = Column(Integer, nullable=False)
 
     # TODO null when patient is deleted
-    patient_id = Column(Integer, 'patients.id')
+    patient_id = Column(Integer, ForeignKey('patients.id'))
     patient = relationship('Patient')
 
 Index('family_history_relatives_family_history_id_idx', FamilyHistoryRelative.family_history_id)
