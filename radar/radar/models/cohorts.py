@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.roles import COHORT_PERMISSIONS, COHORT_MANAGED_ROLES, PERMISSIONS, COHORT_ROLES
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
+from radar.features import FEATURES
 
 
 class Cohort(db.Model):
@@ -46,8 +47,24 @@ class CohortFeature(db.Model):
     cohort_id = Column(Integer, ForeignKey('cohorts.id'))
     cohort = relationship('Cohort')
 
-    name = Column(String, nullable=False)
+    _name = Column('name', String, nullable=False)
     weight = Column(Integer, nullable=False)
+
+    @property
+    def name(self):
+        value = self._name
+
+        if value is not None:
+            value = FEATURES(value)
+
+        return value
+
+    @name.setter
+    def name(self, value):
+        if value is not None:
+            value = value.value
+
+        self._name = value
 
 Index('cohort_features_cohort_id_idx', CohortFeature.cohort_id)
 
