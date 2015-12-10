@@ -22,6 +22,7 @@ setup(
         'bleach',
         'click',
         'Delorean',
+        'enum34',
         'Flask',
         'Flask-SQLAlchemy',
         'itsdangerous',
