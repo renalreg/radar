@@ -17,13 +17,18 @@
       </tr>
 
       <tr>
-        <th>Transplant Date</th>
-        <td>{{item.transplantDate | dateFormat}}</td>
+        <th>Date of Transplant</th>
+        <td>{{item.dateOfTransplant | dateFormat}}</td>
       </tr>
 
       <tr>
-        <th>Transplant Type</th>
-        <td>{{item.transplantType.label}}</td>
+        <th>Type of Transplant</th>
+        <td>{{item.typeOfTransplant.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Failure</th>
+        <td>{{item.dateOfFailure | dateFormat | missing}}</td>
       </tr>
     </table>
 
@@ -47,20 +52,20 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Transplant Date</div>
+        <div frm-label>Date of Transplant</div>
 
         <div frm-control>
-          <div frm-date-field model="item.transplantDate" required="true"></div>
-          <div frm-errors errors="item.errors.transplantDate"></div>
+          <div frm-date-field model="item.dateOfTransplant" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfTransplant"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Transplant Type</div>
+        <div frm-label>Type of Transplant</div>
 
         <div frm-control>
-          <div frm-select-field model="item.transplantType" required="true" options="transplantTypes"></div>
-          <div frm-errors errors="item.errors.transplantType"></div>
+          <div frm-select-field model="item.typeOfTransplant" required="true" options="transplantTypes"></div>
+          <div frm-errors errors="item.errors.typeOfTransplant"></div>
         </div>
       </div>
 
@@ -86,8 +91,9 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="transplantDate">Date</th>
-          <th sort-helper="transplantType.label">Type</th>
+          <th sort-helper="dateOfTransplant">Date</th>
+          <th sort-helper="typeOfTransplant.label">Type</th>
+          <th sort-helper="dateOfFailure.label">Date of Failure</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
@@ -100,8 +106,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.transplantDate | dateFormat}}</td>
-          <td>{{item.transplantType.label}}</td>
+          <td>{{item.dateOfTransplant | dateFormat}}</td>
+          <td>{{item.typeOfTransplant.label}}</td>
+          <td>{{item.dateOfFailure.label}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
