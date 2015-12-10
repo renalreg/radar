@@ -61,7 +61,7 @@
     function logout() {
       var deferred = $q.defer();
 
-      if (session.authenticated) {
+      if (session.isAuthenticated) {
         adapter.post('/logout')['finally'](function() {
           session.logout();
           deferred.resolve();
