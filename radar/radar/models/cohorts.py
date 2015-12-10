@@ -3,7 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.roles import COHORT_PERMISSIONS, COHORT_MANAGED_ROLES, PERMISSIONS
+from radar.roles import COHORT_PERMISSIONS, COHORT_MANAGED_ROLES, PERMISSIONS, COHORT_ROLES
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 
 
@@ -95,11 +95,27 @@ class CohortUser(db.Model, MetaModelMixin):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id])
 
-    role = Column(String, nullable=False)
+    _role = Column('role', String, nullable=False)
 
     __table_args__ = (
         UniqueConstraint('cohort_id', 'user_id'),
     )
+
+    @property
+    def role(self):
+        value = self._role
+
+        if value is not None:
+            value = COHORT_ROLES(value)
+
+        return value
+
+    @role.setter
+    def role(self, value):
+        if value is not None:
+            value = value.value
+
+        self._role = value
 
     def has_permission(self, permission):
         permission_method = permission.value.lower()
