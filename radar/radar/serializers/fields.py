@@ -149,8 +149,13 @@ class DateField(Field):
         if isinstance(data, datetime):
             self.fail('datetime')
 
+        # Already a date
         if isinstance(data, date):
             return data
+
+        # Not a string
+        if not isinstance(data, six.string_types):
+            self.fail('invalid')
 
         try:
             value = delorean.parse(data).date
