@@ -58,7 +58,7 @@ def to_value_invalid(data):
 
 
 def to_value(data):
-    field = EnumField()
+    field = EnumField(Foo)
     field.bind('test')
     data = field.get_data({'test': data})
     value = field.to_value(data)
