@@ -1,6 +1,5 @@
 from datetime import datetime, date, timedelta
 from random import SystemRandom
-import re
 
 from sqlalchemy import and_
 import dateutil.parser
