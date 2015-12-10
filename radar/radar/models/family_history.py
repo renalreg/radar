@@ -46,7 +46,7 @@ Index('family_history_patient_id_idx', FamilyHistory.patient_id)
 Index('family_history_cohort_id_idx', FamilyHistory.cohort_id)
 
 
-class FamilyHistoryRelative(db.Model, MetaModelMixin):
+class FamilyHistoryRelative(db.Model):
     __tablename__ = 'family_history_relatives'
 
     id = Column(Integer, primary_key=True)
