@@ -11,6 +11,9 @@ class Foo(Enum):
     b = 'bar'
     c = 'baz'
 
+    def __str__(self):
+        return str(self.value)
+
 
 def test_enum():
     assert to_value(Foo.a) is Foo.a
