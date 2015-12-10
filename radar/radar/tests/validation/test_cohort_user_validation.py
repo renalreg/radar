@@ -42,16 +42,6 @@ def test_role_missing(cohort_user):
     invalid(cohort_user)
 
 
-def test_role_invalid(cohort_user):
-    cohort_user.role = 'ADMIN'
-    invalid(cohort_user)
-
-
-def test_role_blank(cohort_user):
-    cohort_user.role = ''
-    invalid(cohort_user)
-
-
 def test_add_to_cohort():
     cohort = Cohort()
 

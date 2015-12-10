@@ -1,4 +1,4 @@
-from radar.roles import COHORT_ROLE_NAMES
+from radar.roles import COHORT_ROLES
 from radar.validation.core import Validation, Field, pass_old_obj, ValidationError, pass_context
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, in_
@@ -8,7 +8,7 @@ class CohortUserValidation(MetaValidationMixin, Validation):
     id = Field()
     cohort = Field([required()])
     user = Field([required()])
-    role = Field([required(), in_(COHORT_ROLE_NAMES.keys())])
+    role = Field([required(), in_(COHORT_ROLES)])
 
     @staticmethod
     def has_permission(current_user, cohort, role):
