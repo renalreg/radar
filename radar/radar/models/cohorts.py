@@ -102,7 +102,8 @@ class CohortUser(db.Model, MetaModelMixin):
     )
 
     def has_permission(self, permission):
-        grant = getattr(self, 'has_' + permission.lower() + '_permission', None)
+        permission_method = permission.value.lower()
+        grant = getattr(self, 'has_' + permission_method + '_permission', None)
 
         if grant is None:
             roles = COHORT_PERMISSIONS.get(permission, [])
@@ -112,7 +113,7 @@ class CohortUser(db.Model, MetaModelMixin):
 
     @property
     def permissions(self):
-        return [x.value for x in PERMISSIONS if self.has_permission(x.value)]
+        return [x for x in PERMISSIONS if self.has_permission(x)]
 
     @property
     def has_edit_user_membership_permission(self):
