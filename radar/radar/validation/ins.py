@@ -23,7 +23,7 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
     comments = Field([none_if_blank(), optional(), max_length(1000)])
 
     def pre_validate(self, obj):
-        # Remove rash details of the patient didn't have a rash
+        # Remove rash details if the patient didn't have a rash
         if not obj.rash:
             obj.rash_details = None
 
