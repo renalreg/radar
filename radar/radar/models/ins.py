@@ -10,7 +10,7 @@ TYPES_OF_KIDNEY = OrderedDict([
     ('NATURAL', 'Natural'),
 ])
 
-TYPE_OF_REMISSION = OrderedDict([
+TYPES_OF_REMISSION = OrderedDict([
     ('COMPLETE', 'Complete'),
     ('PARTIAL', 'Partial'),
     ('NONE', 'None'),

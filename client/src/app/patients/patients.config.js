@@ -30,95 +30,52 @@
     });
   }]);
 
-  // TODO refactor into state and cohort flag
-  app.constant('patientFeatures', {
-    ADDRESSES: {
-      text: 'Addresses',
-      state: 'patient.addresses({patientId: patient.id})'
-    },
-    ALIASES: {
-      text: 'Aliases',
-      state: 'patient.aliases({patientId: patient.id})'
-    },
-    DEMOGRAPHICS: {
-      text: 'Demographics',
-      state: 'patient.demographics({patientId: patient.id})'
-    },
-    DIAGNOSES: {
-      text: 'Diagnoses',
-      state: 'patient.diagnoses({patientId: patient.id, cohortId: cohort.id})'
-    },
-    DIALYSIS: {
-      text: 'Dialysis',
-      state: 'patient.dialysis({patientId: patient.id})'
-    },
-    COHORTS: {
-      text: 'Cohorts',
-      state: 'patient.cohorts({patientId: patient.id})'
-    },
-    COMORBIDITIES: {
-      text: 'Comorbidities',
-      state: 'patient.comorbidities({patientId: patient.id})'
-    },
-    FAMILY_HISTORY: {
-      text: 'Family History',
-      state: 'patient.familyHistory({patientId: patient.id, cohortId: cohort.id})'
-    },
-    GENETICS: {
-      text: 'Genetics',
-      state: 'patient.genetics({patientId: patient.id, cohortId: cohort.id})'
-    },
-    HOSPITALISATIONS: {
-      text: 'Hospitalisations',
-      state: 'patient.hospitalisations({patientId: patient.id})'
-    },
-    INS_CLINICAL_FEATURES: {
-      text: 'Clinical Features',
-      state: 'patient.insClinicalFeatures({patientId: patient.id})'
-    },
-    MEDICATIONS: {
-      text: 'Medications',
-      state: 'patient.medications({patientId: patient.id})'
-    },
-    META: {
-      text: 'Meta',
-      state: 'patient.meta({patientId: patient.id})'
-    },
-    NEPHRECTOMIES: {
-      text: 'Nephrectomies',
-      state: 'patients.nephrectomies({patientId: patient.id})'
-    },
-    NUMBERS: {
-      text: 'Numbers',
-      state: 'patient.numbers({patientId: patient.id})'
-    },
-    PATHOLOGY: {
-      text: 'Pathology',
-      state: 'patient.pathology({patientId: patient.id})'
-    },
-    PLASMAPHERESIS: {
-      text: 'Plasmapheresis',
-      state: 'patient.plasmapheresis({patientId: patient.id})'
-    },
-    RENAL_IMAGING: {
-      text: 'Renal Imaging',
-      state: 'patient.renalImaging({patientId: patient.id})'
-    },
-    RESULTS: {
-      text: 'Results',
-      state: 'patient.results.table({patientId: patient.id})'
-    },
-    SALT_WASTING_CLINICAL_FEATURES: {
-      text: 'Clinical Features',
-      state: 'patient.saltWastingClinicalFeatures({patientId: patient.id})'
-    },
-    TRANSPLANTS: {
-      text: 'Transplants',
-      state: 'patient.transplants({patientId: patient.id})'
-    },
-    UNITS: {
-      text: 'Units',
-      state: 'patient.units({patientId: patient.id})'
+  function patient_feature(name, state, cohort) {
+    if (cohort === undefined) {
+      cohort = false;
     }
+
+    var stateParams = {
+      patientId: 'patient.id'
+    };
+
+    if (cohort) {
+      stateParams.cohortId = 'cohort.id';
+    }
+
+    state = state + '({' + _.map(stateParams, function(v, k) {
+      return k + ': ' + v;
+    }).join(', ') + '})';
+
+    return {
+      name: name,
+      state: state
+    };
+  }
+
+  app.constant('patientFeatures', {
+    ADDRESSES: patient_feature('Addresses', 'patient.addresses'),
+    ALIASES: patient_feature('Aliases', 'patient.aliases'),
+    DEMOGRAPHICS: patient_feature('Demographics', 'patient.demographics'),
+    DIAGNOSES: patient_feature('Diagnoses', 'patient.diagnoses', true),
+    DIALYSIS: patient_feature('Dialysis', 'patient.dialysis'),
+    COHORTS: patient_feature('Cohorts', 'patient.cohorts'),
+    COMORBIDITIES: patient_feature('Comorbidities', 'patient.comorbidities'),
+    FAMILY_HISTORY: patient_feature('Family History', 'patient.familyHistory', true),
+    GENETICS: patient_feature('Genetics', 'patient.genetics', true),
+    HOSPITALISATIONS: patient_feature('Hospitalisations', 'patient.hospitalisations'),
+    INS_CLINICAL_PICTURES: patient_feature('Clinical Pictures', 'patient.insClinicalPictures'),
+    INS_RELAPSES: patient_feature('Relapses', 'patient.insRelapses'),
+    MEDICATIONS: patient_feature('Medications', 'patient.medications'),
+    META: patient_feature('Meta', 'patient.meta'),
+    NEPHRECTOMIES: patient_feature('Nephrectomies', 'patient.nephrectomies'),
+    NUMBERS: patient_feature('Numbers', 'patient.numbers'),
+    PATHOLOGY: patient_feature('Pathology', 'patient.pathology'),
+    PLASMAPHERESIS: patient_feature('Plasmapheresis', 'patient.plasmapheresis'),
+    RENAL_IMAGING: patient_feature('Renal Imaging', 'patient.renalImaging'),
+    RESULTS: patient_feature('Results', 'patient.results.table'),
+    SALT_WASTING_CLINICAL_FEATURES: patient_feature('Clinical Features', 'patient.saltWastingClinicalFeatures'),
+    TRANSPLANTS: patient_feature('Transplants', 'patient.transplants'),
+    UNITS: patient_feature('Units', 'patient.units')
   });
 })();
