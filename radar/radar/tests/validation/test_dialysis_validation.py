@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Dialysis, DialysisType, Patient, PatientDemographics, DataSource
+from radar.models import Dialysis, Patient, PatientDemographics, DataSource
 from radar.validation.core import ValidationError
 from radar.validation.dialysis import DialysisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -24,7 +24,7 @@ def dialysis(patient):
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
-    obj.dialysis_type = DialysisType(id=1)
+    obj.type_of_dialysis = 1
     return obj
 
 
@@ -32,7 +32,7 @@ def test_valid(dialysis):
     obj = valid(dialysis)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.dialysis_type.id == 1
+    assert obj.type_of_dialysis == 1
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -84,8 +84,13 @@ def test_to_date_before_from_date(dialysis):
     invalid(dialysis)
 
 
-def test_dialysis_type_missing(dialysis):
-    dialysis.dialysis_type = None
+def test_type_of_dialysis_missing(dialysis):
+    dialysis.type_of_dialysis = None
+    invalid(dialysis)
+
+
+def test_type_of_dialysis_invalid(dialysis):
+    dialysis.type_of_dialysis = 0
     invalid(dialysis)
 
 
