@@ -1,4 +1,4 @@
-from radar.validation.core import Validation, Field
+from radar.validation.core import Validation, Field, pass_new_obj, ValidationError
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import optional, required, valid_date_for_patient, \
     max_length, none_if_blank, in_
@@ -51,3 +51,10 @@ class InsRelapseValidation(PatientValidationMixin, MetaValidationMixin, Validati
             obj.type_of_remission = None
 
         return obj
+
+    @pass_new_obj
+    def validate_date_of_remission(self, obj, date_of_remission):
+        if date_of_remission < obj.date_of_relapse:
+            raise ValidationError('Must be on or after date of relapse.')
+
+        return date_of_remission
