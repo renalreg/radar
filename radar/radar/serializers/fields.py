@@ -145,24 +145,21 @@ class DateField(Field):
     def to_value(self, data):
         if data is None:
             return None
-
-        if isinstance(data, datetime):
+        elif isinstance(data, datetime):
             self.fail('datetime')
-
-        # Already a date
-        if isinstance(data, date):
+        elif isinstance(data, date):
+            # Already a date
             return data
-
-        # Not a string
-        if not isinstance(data, six.string_types):
+        elif not isinstance(data, six.string_types):
+            # Not a string
             self.fail('invalid')
+        else:
+            try:
+                value = delorean.parse(data).date
+            except ValueError:
+                self.fail('invalid')
 
-        try:
-            value = delorean.parse(data).date
-        except ValueError:
-            self.fail('invalid')
-
-        return value
+            return value
 
     def to_data(self, value):
         if value is None:
@@ -181,19 +178,21 @@ class DateTimeField(Field):
     def to_value(self, data):
         if data is None:
             return None
-
-        if isinstance(data, date) and not isinstance(data, datetime):
-            self.fail('date')
-
-        if isinstance(data, datetime):
+        elif isinstance(data, datetime):
+            # Already a datetime
             return data
-
-        try:
-            value = delorean.parse(data).datetime
-        except ValueError:
+        elif isinstance(data, date):
+            self.fail('date')
+        elif not isinstance(data, six.string_types):
+            # Not a string
             self.fail('invalid')
+        else:
+            try:
+                value = delorean.parse(data).datetime
+            except ValueError:
+                self.fail('invalid')
 
-        return value
+            return value
 
     def to_data(self, value):
         # TODO always %Y-%m-%dT%H:%M:%S+00:00
