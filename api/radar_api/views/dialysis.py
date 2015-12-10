@@ -1,9 +1,9 @@
-from radar_api.serializers.dialysis import DialysisSerializer, DialysisTypeSerializer
+from radar_api.serializers.dialysis import DialysisSerializer
 from radar.validation.dialysis import DialysisValidation
-from radar.views.core import ListModelView
-from radar.models import Dialysis, DialysisType
+from radar.models import Dialysis, TYPES_OF_DIALYSIS
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
+from radar.views.codes import CodedStringListView
 
 
 class DialysisListView(DataSourceObjectViewMixin, PatientObjectListView):
@@ -18,12 +18,8 @@ class DialysisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     model_class = Dialysis
 
 
-class DialysisTypeListView(ListModelView):
-    serializer_class = DialysisTypeSerializer
-    model_class = DialysisType
-
-    def sort_query(self, query):
-        return query.order_by(DialysisType.label)
+class DialysisTypeListView(CodedStringListView):
+    items = TYPES_OF_DIALYSIS
 
 
 def register_views(app):

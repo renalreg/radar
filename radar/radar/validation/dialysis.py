@@ -3,13 +3,14 @@ from radar.validation.data_sources import DataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, optional, \
-    valid_date_for_patient
+    valid_date_for_patient, in_
+from radar.models.dialysis import TYPES_OF_DIALYSIS
 
 
 class DialysisValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
-    dialysis_type = Field([required()])
+    type_of_dialysis = Field([required(), in_(TYPES_OF_DIALYSIS.keys())])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):

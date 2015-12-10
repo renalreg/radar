@@ -1,5 +1,5 @@
 from radar_api.serializers.transplants import TransplantSerializer
-from radar.models import TYPE_OF_TRANSPLANTS, Transplant
+from radar.models import TYPES_OF_TRANSPLANT, Transplant
 from radar.validation.transplants import TransplantValidation
 from radar.views.codes import CodedStringListView
 from radar.views.data_sources import DataSourceObjectViewMixin
@@ -19,7 +19,7 @@ class TransplantDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
 
 
 class TransplantTypeListView(CodedStringListView):
-    items = TYPE_OF_TRANSPLANTS
+    items = TYPES_OF_TRANSPLANT
 
 
 def register_views(app):

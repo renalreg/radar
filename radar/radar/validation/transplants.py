@@ -1,4 +1,4 @@
-from radar.models.transplants import TYPE_OF_TRANSPLANTS
+from radar.models.transplants import TYPES_OF_TRANSPLANT
 from radar.validation.core import Validation, Field, pass_new_obj, ValidationError
 from radar.validation.data_sources import DataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
@@ -8,7 +8,7 @@ from radar.validation.validators import required, valid_date_for_patient, option
 
 class TransplantValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date_of_transplant = Field([required(), valid_date_for_patient()])
-    type_of_transplant = Field([required(), in_(TYPE_OF_TRANSPLANTS.keys())])
+    type_of_transplant = Field([required(), in_(TYPES_OF_TRANSPLANT.keys())])
     date_of_failure = Field([optional(), valid_date_for_patient()])
 
     @pass_new_obj
