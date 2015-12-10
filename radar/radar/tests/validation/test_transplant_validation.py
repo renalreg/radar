@@ -22,17 +22,17 @@ def transplant(patient):
     obj = Transplant()
     obj.data_source = DataSource()
     obj.patient = patient
-    obj.transplant_date = date(2015, 1, 1)
-    obj.transplant_type = 'LIVE'
-    obj.date_failed = date(2015, 1, 2)
+    obj.date_of_transplant = date(2015, 1, 1)
+    obj.type_of_transplant = 29
+    obj.date_of_failure = date(2015, 1, 2)
     return obj
 
 
 def test_valid(transplant):
     obj = valid(transplant)
-    assert obj.transplant_date == date(2015, 1, 1)
-    assert obj.transplant_type == 'LIVE'
-    assert obj.date_failed == date(2015, 1, 2)
+    assert obj.date_of_transplant == date(2015, 1, 1)
+    assert obj.type_of_transplant == 29
+    assert obj.date_of_failure == date(2015, 1, 2)
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -49,48 +49,48 @@ def test_data_source_missing(transplant):
     invalid(transplant)
 
 
-def test_transplant_date_missing(transplant):
-    transplant.transplant_date = None
+def test_date_of_transplant_missing(transplant):
+    transplant.date_of_transplant = None
     invalid(transplant)
 
 
-def test_transplant_date_before_dob(transplant):
-    transplant.transplant_date = date(1999, 1, 1)
+def test_date_of_transplant_before_dob(transplant):
+    transplant.date_of_transplant = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_transplant_date_future(transplant):
-    transplant.transplant_date = date.today() + timedelta(days=1)
+def test_date_of_transplant_future(transplant):
+    transplant.date_of_transplant = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_transplant_type_missing(transplant):
-    transplant.transplant_type = None
+def test_type_of_transplant_missing(transplant):
+    transplant.type_of_transplant = None
     invalid(transplant)
 
 
-def test_transplant_type_invalid(transplant):
-    transplant.transplant_type = 'FOO'
+def test_type_of_transplant_invalid(transplant):
+    transplant.type_of_transplant = 0
     invalid(transplant)
 
 
-def test_date_failed_missing(transplant):
-    transplant.date_failed = None
+def test_date_of_failure_missing(transplant):
+    transplant.date_of_failure = None
     valid(transplant)
 
 
-def test_date_failed_before_dob(transplant):
-    transplant.date_failed = date(1999, 1, 1)
+def test_date_of_failure_before_dob(transplant):
+    transplant.date_of_failure = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_date_failed_future(transplant):
-    transplant.date_failed = date.today() + timedelta(days=1)
+def test_date_of_failure_future(transplant):
+    transplant.date_of_failure = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_date_failed_before_transplant_date(transplant):
-    transplant.date_failed = transplant.transplant_date - timedelta(days=1)
+def test_date_of_failure_before_transplant_date(transplant):
+    transplant.date_of_failure = transplant.date_of_transplant - timedelta(days=1)
     invalid(transplant)
 
 
