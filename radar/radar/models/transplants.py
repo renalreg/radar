@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
 
 from radar.database import db
@@ -50,7 +50,7 @@ class TransplantRejection(db.Model):
     id = Column(Integer, primary_key=True)
 
     transplant_id = Column(UUID, ForeignKey('transplants.id'), nullable=False)
-    transplant = relationship('Transplant')
+    transplant = relationship('Transplant', backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_rejection = Column(Date, nullable=False)
 
@@ -63,7 +63,7 @@ class TransplantBiopsy(db.Model):
     id = Column(Integer, primary_key=True)
 
     transplant_id = Column(UUID, ForeignKey('transplants.id'), nullable=False)
-    transplant = relationship('Transplant')
+    transplant = relationship('Transplant', backref=backref('biopsies', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_biopsy = Column(Date, nullable=False)
     recurrence = Column(Boolean, nullable=False)
