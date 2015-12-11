@@ -690,7 +690,7 @@ class ListField(Field):
             else:
                 try:
                     old_value = old_obj[i]
-                except ValueError:
+                except IndexError:
                     old_value = None
 
             try:
