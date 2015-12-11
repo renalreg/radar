@@ -3,7 +3,7 @@ from radar.models.family_history import FamilyHistory, RELATIONSHIPS
 from radar.validation.family_history import FamilyHistoryValidation
 from radar.views.cohorts import CohortObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
-from radar.views.codes import CodedStringListView
+from radar.views.codes import CodedIntegerListView
 
 
 class FamilyHistoryListView(CohortObjectViewMixin, PatientObjectListView):
@@ -18,7 +18,7 @@ class FamilyHistoryDetailView(CohortObjectViewMixin, PatientObjectDetailView):
     validation_class = FamilyHistoryValidation
 
 
-class FamilyHistoryRelationshipListView(CodedStringListView):
+class FamilyHistoryRelationshipListView(CodedIntegerListView):
     items = RELATIONSHIPS
 
 
