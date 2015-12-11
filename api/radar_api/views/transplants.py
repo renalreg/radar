@@ -1,7 +1,7 @@
 from radar_api.serializers.transplants import TransplantSerializer
 from radar.models import TYPES_OF_TRANSPLANT, Transplant
 from radar.validation.transplants import TransplantValidation
-from radar.views.codes import CodedStringListView
+from radar.views.codes import CodedIntegerListView
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
@@ -18,7 +18,7 @@ class TransplantDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     validation_class = TransplantValidation
 
 
-class TransplantTypeListView(CodedStringListView):
+class TransplantTypeListView(CodedIntegerListView):
     items = TYPES_OF_TRANSPLANT
 
 

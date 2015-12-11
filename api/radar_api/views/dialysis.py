@@ -3,7 +3,7 @@ from radar.validation.dialysis import DialysisValidation
 from radar.models import Dialysis, TYPES_OF_DIALYSIS
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
-from radar.views.codes import CodedStringListView
+from radar.views.codes import CodedIntegerListView
 
 
 class DialysisListView(DataSourceObjectViewMixin, PatientObjectListView):
@@ -18,7 +18,7 @@ class DialysisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     model_class = Dialysis
 
 
-class DialysisTypeListView(CodedStringListView):
+class DialysisTypeListView(CodedIntegerListView):
     items = TYPES_OF_DIALYSIS
 
 
