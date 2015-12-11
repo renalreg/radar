@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.genetics');
+  var app = angular.module('radar.patients.familyHistory');
 
   app.factory('FamilyHistoryPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
