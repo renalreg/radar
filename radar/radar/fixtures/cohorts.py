@@ -163,10 +163,11 @@ COHORTS = [
         'short_name': 'Hypokalaemic Alkalosis',
         'features': [
             FEATURES.DIAGNOSES,
+            FEATURES.GENETICS,
+            FEATURES.SALT_WASTING_CLINICAL_FEATURES,
             FEATURES.COMORBIDITIES,
             FEATURES.RENAL_IMAGING,
             FEATURES.RESULTS,
-            FEATURES.SALT_WASTING_CLINICAL_FEATURES,
             FEATURES.MEDICATIONS,
             FEATURES.DIALYSIS,
         ],
