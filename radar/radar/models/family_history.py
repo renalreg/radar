@@ -53,7 +53,7 @@ class FamilyHistoryRelative(db.Model):
     id = Column(Integer, primary_key=True)
 
     family_history_id = Column(UUID, ForeignKey('family_history.id'), nullable=False)
-    family_history = orm.relationship('FamilyHistory')
+    family_history = orm.relationship('FamilyHistory', backref=orm.backref('relatives', cascade='all, delete-orphan', passive_deletes=True))
 
     relationship = Column(Integer, nullable=False)
 
