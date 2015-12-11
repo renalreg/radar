@@ -172,9 +172,9 @@
           <td>{{item.name}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
-          <td>{{item.frequency.label}}</td>
-          <td>{{item.route.label}}</td>
+          <td>{{item.doseQuantity | missing}} {{item.doseUnit.label}}</td>
+          <td>{{item.frequency.label | missing}}</td>
+          <td>{{item.route.label | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>

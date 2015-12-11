@@ -40,9 +40,9 @@ class Medication(db.Model, MetaModelMixin):
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
     name = Column(String, nullable=False)
-    dose_quantity = Column(Numeric, nullable=False)
-    dose_unit = Column(String, nullable=False)
-    frequency = Column(String, nullable=False)
-    route = Column(String, nullable=False)
+    dose_quantity = Column(Numeric)
+    dose_unit = Column(String)
+    frequency = Column(String)
+    route = Column(String)
 
 Index('medications_patient_id_idx', Medication.patient_id)
