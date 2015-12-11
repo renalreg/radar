@@ -150,7 +150,7 @@
 
           <td>{{item.dateOfTransplant | dateFormat}}</td>
           <td>{{item.typeOfTransplant.label}}</td>
-          <td>{{item.dateOfFailure.label}}</td>
+          <td>{{item.dateOfFailure | dateFormat | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
