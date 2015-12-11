@@ -63,6 +63,7 @@
       COHORTS: patientFeature('Cohorts', 'patient.cohorts'),
       COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),
       FAMILY_HISTORY: patientFeature('Family History', 'patient.familyHistory', true),
+      FETAL_ANOMALY_SCANS: patientFeature('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
       GENETICS: patientFeature('Genetics', 'patient.genetics', true),
       HOSPITALISATIONS: patientFeature('Hospitalisations', 'patient.hospitalisations'),
       INS_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.insClinicalPictures'),
