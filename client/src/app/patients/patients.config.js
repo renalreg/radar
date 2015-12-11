@@ -58,7 +58,7 @@
       ADDRESSES: patientFeature('Addresses', 'patient.addresses'),
       ALIASES: patientFeature('Aliases', 'patient.aliases'),
       DEMOGRAPHICS: patientFeature('Demographics', 'patient.demographics'),
-      DIAGNOSES: patientFeature('Diagnoses', 'patient.diagnoses', true),
+      DIAGNOSES: patientFeature('Diagnosis', 'patient.diagnoses', true),
       DIALYSIS: patientFeature('Dialysis', 'patient.dialysis'),
       COHORTS: patientFeature('Cohorts', 'patient.cohorts'),
       COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),
