@@ -1,8 +1,9 @@
 from radar_api.serializers.family_history import FamilyHistorySerializer
-from radar.models.family_history import FamilyHistory
+from radar.models.family_history import FamilyHistory, RELATIONSHIPS
 from radar.validation.family_history import FamilyHistoryValidation
 from radar.views.cohorts import CohortObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
+from radar.views.codes import CodedStringListView
 
 
 class FamilyHistoryListView(CohortObjectViewMixin, PatientObjectListView):
@@ -17,6 +18,11 @@ class FamilyHistoryDetailView(CohortObjectViewMixin, PatientObjectDetailView):
     validation_class = FamilyHistoryValidation
 
 
+class FamilyHistoryRelationshipListView(CodedStringListView):
+    items = RELATIONSHIPS
+
+
 def register_views(app):
     app.add_url_rule('/family-history', view_func=FamilyHistoryListView.as_view('family_history_list'))
     app.add_url_rule('/family-history/<id>', view_func=FamilyHistoryDetailView.as_view('family_history_detail'))
+    app.add_url_rule('/family-history-relationships', view_func=FamilyHistoryRelationshipListView.as_view('family_history_relationship_list'))

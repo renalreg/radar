@@ -8,7 +8,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
 
-RELATIVES = OrderedDict([
+RELATIONSHIPS = OrderedDict([
     (1, 'Mother'),
     (2, 'Father'),
     (3, 'Sister'),
@@ -55,7 +55,7 @@ class FamilyHistoryRelative(db.Model):
     family_history_id = Column(UUID, ForeignKey('family_history.id'), nullable=False)
     family_history = relationship('FamilyHistory')
 
-    relative = Column(Integer, nullable=False)
+    relationship = Column(Integer, nullable=False)
 
     # TODO null when patient is deleted
     patient_id = Column(Integer, ForeignKey('patients.id'))
