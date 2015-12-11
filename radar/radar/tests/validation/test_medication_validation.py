@@ -104,7 +104,7 @@ def test_name_empty(medication):
 
 def test_dose_quantity_missing(medication):
     medication.dose_quantity = None
-    invalid(medication)
+    valid(medication)
 
 
 def test_dose_quantity_negative(medication):
@@ -114,6 +114,11 @@ def test_dose_quantity_negative(medication):
 
 def test_dose_unit_missing(medication):
     medication.dose_quantity = None
+    medication.dose_unit = None
+    valid(medication)
+
+    medication.dose_quantity = 1
+    medication.dose_unit = None
     invalid(medication)
 
 
@@ -124,7 +129,7 @@ def test_dose_unit_invalid(medication):
 
 def test_frequency_missing(medication):
     medication.frequency = None
-    invalid(medication)
+    valid(medication)
 
 
 def test_frequency_invalid(medication):
@@ -134,7 +139,7 @@ def test_frequency_invalid(medication):
 
 def test_route_missing(medication):
     medication.route = None
-    invalid(medication)
+    valid(medication)
 
 
 def test_route_invalid(medication):

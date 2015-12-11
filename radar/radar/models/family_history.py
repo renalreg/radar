@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy import orm
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -37,7 +37,7 @@ class FamilyHistory(db.Model, MetaModelMixin):
     patient = patient_relationship('family_history')
 
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
-    cohort = relationship('Cohort')
+    cohort = orm.relationship('Cohort')
 
     parental_consanguinity = Column(Boolean, nullable=False)
     family_history = Column(Boolean, nullable=False)
@@ -53,12 +53,12 @@ class FamilyHistoryRelative(db.Model):
     id = Column(Integer, primary_key=True)
 
     family_history_id = Column(UUID, ForeignKey('family_history.id'), nullable=False)
-    family_history = relationship('FamilyHistory')
+    family_history = orm.relationship('FamilyHistory')
 
     relationship = Column(Integer, nullable=False)
 
     # TODO null when patient is deleted
     patient_id = Column(Integer, ForeignKey('patients.id'))
-    patient = relationship('Patient')
+    patient = orm.relationship('Patient')
 
 Index('family_history_relatives_family_history_id_idx', FamilyHistoryRelative.family_history_id)
