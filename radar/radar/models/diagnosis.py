@@ -60,4 +60,7 @@ class CohortDiagnosis(db.Model):
 
     label = Column(String, nullable=False)
 
+    edta_code = Column(Integer)
+    snomed_code = Column(Integer)
+
 Index('cohort_diagnoses_cohort_id_idx', CohortDiagnosis.cohort_id)
