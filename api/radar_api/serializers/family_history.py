@@ -5,7 +5,7 @@ from radar.models.family_history import FamilyHistory, FamilyHistoryRelative, RE
 from radar.serializers.core import Serializer
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.serializers.fields import ListField, IntegerField
-from radar.serializers.codes import CodedStringSerializer
+from radar.serializers.codes import CodedIntegerSerializer
 from radar.models.patients import Patient
 
 
@@ -19,7 +19,7 @@ class PatientReferenceField(ReferenceField):
 
 
 class FamilyHistoryRelativeSerializer(ModelSerializer):
-    relationship = CodedStringSerializer(RELATIONSHIPS)
+    relationship = CodedIntegerSerializer(RELATIONSHIPS)
     patient = PatientReferenceField()
 
     class Meta(object):

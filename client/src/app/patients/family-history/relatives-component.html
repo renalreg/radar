@@ -6,12 +6,14 @@
 
     <div class="panel-body">
       <div ng-repeat="item in items track by $index">
+        <pre>{{parent.errors | json}}</pre>
+
         <div frm-field frm-group>
           <div frm-label>Relationship</div>
 
           <div frm-control>
             <div frm-select-field model="item.relationship" required="true" options="relationships"></div>
-            <div frm-errors errors="parent.errors.relatives.$index.relationship"></div>
+            <div frm-errors errors="parent.errors.relatives[$index].relationship"></div>
           </div>
         </div>
 
@@ -19,8 +21,8 @@
           <div frm-label>RaDaR Patient ID</div>
 
           <div frm-control>
-            <div frm-integer-field model="item.patient"></div>
-            <div frm-errors errors="parent.errors.relatives.$index.patient"></div>
+            <div frm-integer-field model="item.patient.id"></div>
+            <div frm-errors errors="parent.errors.relatives[$index].patient"></div>
           </div>
         </div>
 
