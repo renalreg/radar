@@ -7,10 +7,19 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, \
     patient_id_column, patient_relationship
 
-
-# TODO
 TYPES_OF_DIALYSIS = OrderedDict([
     (1, 'Haemodialysis')
+    (2, 'Haemofiltration')
+    (3, 'Haemodiafiltration')
+    (5, 'Ultrafiltration')
+    (11, 'CAPD')
+    (111, 'Assisted CAPD')
+    (12, 'APD')
+    (121, 'Assisted APD')
+    (19, 'Peritoneal Dialysis - Type Unknown')
+    (201, 'Hybrid CAPD with HD')
+    (202, 'Hybrid APD with HD')
+    (203, 'Hybrid APD with CAPD')
 ])
 
 
