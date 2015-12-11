@@ -32,6 +32,36 @@
       </tr>
     </table>
 
+    <table class="table table-condensed table-striped" ng-if="item.rejections">
+      <thead>
+        <tr>
+          <th>Date of Rejection</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="rejection in item.rejections">
+          <td>{{rejection.dateOfRejection | dateFormat}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-condensed table-striped" ng-if="item.biopsies">
+      <thead>
+        <tr>
+          <th>Date of Biopsy</th>
+          <th>Recurrence of Disease</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="biopsy in item.biopsies">
+          <td>{{biopsy.dateOfBiopsy | dateFormat}}</td>
+          <td><span tick="biopsy.recurrence"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
     <div item-meta item="item"></div>
   </div>
 
@@ -68,6 +98,18 @@
           <div frm-errors errors="item.errors.typeOfTransplant"></div>
         </div>
       </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Failure</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfFailure"></div>
+          <div frm-errors errors="item.errors.dateOfFailure"></div>
+        </div>
+      </div>
+
+      <div transplant-rejections-component transplant="item"></div>
+      <div transplant-biopsies-component transplant="item"></div>
 
       <div frm-buttons>
         <span crud-save-button></span>

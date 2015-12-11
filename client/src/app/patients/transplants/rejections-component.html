@@ -1,0 +1,26 @@
+<div loading="loading" crud>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Rejections</h3>
+    </div>
+
+    <div class="panel-body">
+      <div ng-repeat="item in items track by $index">
+        <div frm-field frm-group>
+          <div frm-label>Date of Rejection</div>
+
+          <div frm-control>
+            <div frm-date-field model="item.dateOfRejection" required="true"></div>
+            <div frm-errors errors="parent.errors.biopsies[$index].dateOfRejection"></div>
+          </div>
+        </div>
+
+        <p><span crud-list-remove-button item="item"></span></p>
+
+        <hr />
+      </div>
+
+      <p><span crud-list-append-button action="create()"></span></p>
+    </div>
+  </div>
+</div>
