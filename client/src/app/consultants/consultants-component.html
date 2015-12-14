@@ -1,0 +1,100 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>First Name</th>
+        <td>{{item.firstName}}</td>
+      </tr>
+
+      <tr>
+        <th>Last Name</th>
+        <td>{{item.lastName}}</td>
+      </tr>
+    </table>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>First Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.firstName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Last Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.lastName" required="true"></div>
+          <div frm-errors errors="item.errors.lastName"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="100" sort-by="lastName">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="firstName">First Name</th>
+          <th sort-helper="lastName">Last Name</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.firstName}}</td>
+          <td>{{item.lastName}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

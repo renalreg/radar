@@ -1,16 +1,19 @@
 from radar_api.serializers.consultants import ConsultantSerializer
-from radar.views.core import ListModelView, RetrieveModelView
+from radar.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.models import Consultant
+from radar.permissions import AdminPermission
 
 
-class ConsultantListView(ListModelView):
+class ConsultantListView(ListCreateModelView):
     serializer_class = ConsultantSerializer
     model_class = Consultant
+    permission_classes = [AdminPermission]
 
 
-class ConsultantDetailView(RetrieveModelView):
+class ConsultantDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = ConsultantSerializer
     model_class = Consultant
+    permission_classes = [AdminPermission]
 
 
 def register_views(app):

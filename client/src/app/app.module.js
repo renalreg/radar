@@ -7,6 +7,7 @@
     'radar.account',
     'radar.auth',
     'radar.cohorts',
+    'radar.consultants',
     'radar.controllers',
     'radar.core',
     'radar.crud',
