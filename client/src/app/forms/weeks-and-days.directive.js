@@ -32,8 +32,6 @@
         scope.$watch('period.days', update);
 
         function update() {
-          console.log('update');
-
           var weeks = parseInt(scope.period.weeks);
           var days = parseInt(scope.period.days);
           var value;
@@ -55,6 +53,11 @@
           }
 
           ngModel.$setViewValue(value);
+
+          // Reset the dirty flag after initialisation
+          if (value === null && (ngModel.$viewValue === undefined || ngModel.$viewValue === null)) {
+            ngModel.$setPristine();
+          }
         }
       }
     };

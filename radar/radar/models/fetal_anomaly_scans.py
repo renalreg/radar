@@ -17,7 +17,7 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     data_source = relationship('DataSource')
 
     date_of_scan = Column(Date, nullable=False)
-    gestation_days = Column(Integer, nullable=False)
+    gestational_age = Column(Integer, nullable=False)
     oligohydramnios = Column(Boolean)
     right_anomaly_details = Column(String)
     right_ultrasound_details = Column(String)

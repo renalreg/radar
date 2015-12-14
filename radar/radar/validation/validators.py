@@ -105,20 +105,30 @@ def not_empty():
     return not_empty_f
 
 
-def min_(min_value):
+def min_(min_value, units=None):
+    if units is None:
+        message = 'Must be greater than or equal to %s'
+    else:
+        message = 'Must be greater than or equal to %%s %s.' % units
+
     def min_f(value):
         if value < min_value:
-            raise ValidationError('Must be greater than or equal to %s.' % min_value)
+            raise ValidationError(message % min_value)
 
         return value
 
     return min_f
 
 
-def max_(max_value):
+def max_(max_value, units=None):
+    if units is None:
+        message = 'Must be less than or equal to %s'
+    else:
+        message = 'Must be less than or equal to %%s %s.' % units
+
     def max_f(value):
         if value > max_value:
-            raise ValidationError('Must be less than or equal to %s.' % max_value)
+            raise ValidationError(message % max_value)
 
         return value
 

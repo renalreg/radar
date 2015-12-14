@@ -12,6 +12,7 @@
     'radar.patients.diagnoses',
     'radar.patients.dialysis',
     'radar.patients.familyHistory',
+    'radar.patients.fetalAnomalyScans',
     'radar.patients.genetics',
     'radar.patients.hospitalisations',
     'radar.patients.ins',
