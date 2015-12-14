@@ -15,8 +15,6 @@
         };
 
         ngModel.$render = function() {
-          console.log('$render');
-
           var value = ngModel.$viewValue;
 
           if (value === null || value === undefined) {
