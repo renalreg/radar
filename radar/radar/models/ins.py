@@ -25,7 +25,7 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('ins_clinical_pictures')
 
-    date_of_picture = Column(Date)
+    date_of_picture = Column(Date, nullable=False)
     oedema = Column(Boolean)
     hypovalaemia = Column(Boolean)
     fever = Column(Boolean)
