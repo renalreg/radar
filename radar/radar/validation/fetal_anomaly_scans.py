@@ -7,7 +7,7 @@ from radar.validation.validators import required, optional, min_, max_, none_if_
 
 class FetalAnomalyScanValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date_of_scan = Field([required()])
-    gestation_days = Field([required(), min_(8 * 7), max_(45 * 7)])
+    gestational_age = Field([required(), min_(8 * 7, 'days'), max_(45 * 7, 'days')])
     oligohydramnios = Field([optional()])
     right_anomaly_details = Field([none_if_blank(), optional(), max_length(1000)])
     right_ultrasound_details = Field([none_if_blank(), optional(), max_length(1000)])
