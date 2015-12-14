@@ -25,6 +25,22 @@ class Hnf1bClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin
     diabetic_neuropathy = Field([optional()])
     diabetic_pvd = Field([optional()])
 
+    def pre_validate(self, obj):
+        if obj.type_of_diabetes is None or obj.type_of_diabetes == NO_DIABETES:
+            obj.date_of_diabetes = None
+            obj.diabetic_nephropathy = None
+            obj.diabetic_retinopathy = None
+            obj.diabetic_neuropathy = None
+            obj.diabetic_pvd = None
+
+        if not obj.other_malformation:
+            obj.other_malformation_details = None
+
+        if not obj.genital_malformation:
+            obj.genital_malformation_details = None
+
+        return obj
+
     @pass_call
     def validate(self, call, obj):
         # Date is required if the patient has diabetes

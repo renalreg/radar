@@ -14,6 +14,7 @@
     'radar.patients.familyHistory',
     'radar.patients.fetalAnomalyScans',
     'radar.patients.genetics',
+    'radar.patients.hnf1b',
     'radar.patients.hospitalisations',
     'radar.patients.ins',
     'radar.patients.medications',

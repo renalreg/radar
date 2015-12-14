@@ -1,0 +1,322 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Picture</th>
+        <td>{{item.dateOfPicture | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Renal Cysts</th>
+        <td><span tick="item.cysts"></span></td>
+      </tr>
+
+      <tr>
+        <th>Renal Stones</th>
+        <td><span tick="item.cysts"></span></td>
+      </tr>
+
+      <tr>
+        <th>Single Kidney</th>
+        <td><span tick="item.singleKidney"></span></td>
+      </tr>
+
+      <tr>
+        <th>Other Renal Malformation</th>
+        <td><span tick="item.otherMalformation"></span></td>
+      </tr>
+
+      <tr>
+        <th>Other Renal Malformation</th>
+        <td class="newlines">{{ item.otherMalformationDetails | missing }}</td>
+      </tr>
+
+      <tr>
+        <th>Genital Malformation</th>
+        <td><span tick="item.genitalMalformation"></span></td>
+      </tr>
+
+      <tr>
+        <th>Genital Malformation Details</th>
+        <td class="newlines">{{ item.genitalMalformationDetails | missing }}</td>
+      </tr>
+
+      <tr>
+        <th>Familial Renal Cystic Disease</th>
+        <td><span tick="item.familialCysticDisease"></span></td>
+      </tr>
+    </table>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Diabetes</h3>
+      </div>
+
+      <div class="panel-body">
+        <table class="table properties">
+          <tr>
+            <th>Diabetes</th>
+            <td>{{item.typeOfDiabetes.label | missing}}</td>
+          </tr>
+
+          <tr>
+            <th>Date of Diagnosis</th>
+            <td>{{item.dateOfDiabetes | dateFormat}}</td>
+          </tr>
+
+          <tr>
+            <th>Nephropathy</th>
+            <td><span tick="item.diabeticNephropathy"></span></td>
+          </tr>
+
+          <tr>
+            <th>Retinopathy</th>
+            <td><span tick="item.diabeticRetinopathy"></span></td>
+          </tr>
+
+          <tr>
+            <th>Neuropathy</th>
+            <td><span tick="item.diabeticNeuropathy"></span></td>
+          </tr>
+
+          <tr>
+            <th>PVD</th>
+            <td><span tick="item.diabeticPvd"></span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Date of Picture</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfPicture" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfPicture"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Onset of Renal Disease</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRenalDisease"></div>
+          <div frm-errors errors="item.errors.dateOfRenalDisease"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Renal Cysts</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.cysts"></div>
+          <div frm-errors errors="item.errors.cysts"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Renal Stones</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.stones"></div>
+          <div frm-errors errors="item.errors.stones"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Single Kidney</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.singleKidney"></div>
+          <div frm-errors errors="item.errors.singleKidney"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Other Renal Malformation</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.otherMalformation"></div>
+          <div frm-errors errors="item.errors.otherMalformation"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.otherMalformation">
+        <div frm-field frm-group>
+          <div frm-label>Other Malformation Details</div>
+
+          <div frm-control>
+            <div frm-textarea-field model="item.otherMalformationDetails"></div>
+            <div frm-errors errors="item.errors.otherMalformationDetails"></div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Hyperuricemia Early Onset Gout</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.hyperuricemiaGout"></div>
+          <div frm-errors errors="item.errors.hyperuricemiaGout"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Genital Malformation</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.genitalMalformation"></div>
+          <div frm-errors errors="item.errors.genitalMalformation"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.genitalMalformation">
+        <div frm-field frm-group>
+          <div frm-label>Genital Malformation Details</div>
+
+          <div frm-control>
+            <div frm-textarea-field model="item.genitalMalformationDetails"></div>
+            <div frm-errors errors="item.errors.genitalMalformationDetails"></div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Familial Renal Cystic Disease</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.familialCysticDisease"></div>
+          <div frm-errors errors="item.errors.familialCysticDisease"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Dialysis</h3>
+        </div>
+
+        <div class="panel-body">
+          <div frm-field frm-group>
+            <div frm-label>Diabetes</div>
+
+            <div frm-control>
+              <div frm-select-field model="item.typeOfDiabetes" options="diabetesTypes"></div>
+              <div frm-errors errors="item.errors.typeOfDiabetes"></div>
+            </div>
+          </div>
+
+          <div ng-if="item.typeOfDiabetes !== null && item.typeOfDiabetes !== undefined && item.typeOfDiabetes.id !== 'NO'">
+            <div frm-field frm-group>
+              <div frm-label>Date of Diagnosis</div>
+
+              <div frm-control>
+                <div frm-date-field model="item.dateOfDiabetes" required="item.typeOfDiabetes !== null && item.typeOfDiabetes !== undefined && item.typeOfDiabetes.id !== 'NO'"></div>
+                <div frm-errors errors="item.errors.dateOfDiabetes"></div>
+              </div>
+            </div>
+
+            <div frm-field frm-group>
+              <div frm-label>Nephropathy</div>
+
+              <div frm-control>
+                <div frm-boolean-field model="item.diabeticNephropathy"></div>
+                <div frm-errors errors="item.errors.diabeticNephropathy"></div>
+              </div>
+            </div>
+
+            <div frm-field frm-group>
+              <div frm-label>Retinopathy</div>
+
+              <div frm-control>
+                <div frm-boolean-field model="item.diabeticRetinopathy"></div>
+                <div frm-errors errors="item.errors.diabeticRetinopathy"></div>
+              </div>
+            </div>
+
+            <div frm-field frm-group>
+              <div frm-label>Neuropathy</div>
+
+              <div frm-control>
+                <div frm-boolean-field model="item.diabeticNeuropathy"></div>
+                <div frm-errors errors="item.errors.diabeticNeuropathy"></div>
+              </div>
+            </div>
+
+            <div frm-field frm-group>
+              <div frm-label>PVD</div>
+
+              <div frm-control>
+                <div frm-boolean-field model="item.diabeticPvd"></div>
+                <div frm-errors errors="item.errors.diabeticPvd"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="dateOfPicture" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfPicture">Date</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfPicture | dateFormat}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

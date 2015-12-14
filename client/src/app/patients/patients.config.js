@@ -65,6 +65,7 @@
       FAMILY_HISTORY: patientFeature('Family History', 'patient.familyHistory', true),
       FETAL_ANOMALY_SCANS: patientFeature('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
       GENETICS: patientFeature('Genetics', 'patient.genetics', true),
+      HNF1B_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.hnf1bClinicalPictures'),
       HOSPITALISATIONS: patientFeature('Hospitalisations', 'patient.hospitalisations'),
       INS_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.insClinicalPictures'),
       INS_RELAPSES: patientFeature('Relapses', 'patient.insRelapses'),
