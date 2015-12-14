@@ -10,6 +10,7 @@ from radar.models.data_sources import *
 from radar.models.family_history import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.genetics import *
+from radar.models.hnf1b import *
 from radar.models.hospitalisations import *
 from radar.models.ins import *
 from radar.models.results import *
