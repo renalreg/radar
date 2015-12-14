@@ -1,17 +1,17 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Boolean, String, Date, Integer
+from sqlalchemy import Column, Boolean, String, Date
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
-NO_DIABETES = 1
+NO_DIABETES = 'NO'
 
 TYPES_OF_DIABETES = OrderedDict([
     (NO_DIABETES, 'No'),
-    (2, 'Type I'),
-    (3, 'Type II'),
-    (4, 'Type II MODY'),
+    ('TYPE_1', 'Type I'),
+    ('TYPE_2', 'Type II'),
+    ('TYPE_2_MODY', 'Type II MODY'),
 ])
 
 
@@ -35,7 +35,7 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
     genital_malformation_details = Column(String)
     familial_cystic_disease = Column(Boolean)
     hypertension = Column(Boolean)
-    type_of_diabetes = Column(Integer)
+    type_of_diabetes = Column(String)
     date_of_diabetes = Column(Date)
     diabetic_nephropathy = Column(Boolean)
     diabetic_retinopathy = Column(Boolean)
