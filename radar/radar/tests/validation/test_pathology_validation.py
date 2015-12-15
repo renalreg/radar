@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, DataSource, Pathology
 from radar.validation.core import ValidationError
-from radar.validation.pathology_validation import PathologyValidation
+from radar.validation.pathology import PathologyValidation
 from radar.tests.validation.helpers import validation_runner
 
 
@@ -105,12 +105,12 @@ def test_kidney_side_invalid(pathology):
 
 def test_laboratory_reference_number_missing(pathology):
     pathology.laboratory_reference_number = None
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_laboratory_reference_number_blank(pathology):
     pathology.laboratory_reference_number = ''
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_histological_summary_missing(pathology):
