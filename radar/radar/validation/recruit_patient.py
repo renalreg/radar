@@ -4,7 +4,7 @@ from radar.models.patients import GENDERS
 from radar.permissions import has_permission_for_organisation
 from radar.organisations import is_radar_organisation
 from radar.models.organisations import ORGANISATION_TYPE_OTHER
-from radar.validation.patient_number_validators import NUMBER_VALIDATORS
+from radar.validation.number_validators import NUMBER_VALIDATORS
 
 
 class RecruitPatientSearchValidation(Validation):

@@ -5,7 +5,7 @@ from radar.validation.data_sources import RadarDataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, max_length, not_empty, normalise_whitespace
-from radar.validation.patient_number_validators import NUMBER_VALIDATORS
+from radar.validation.number_validators import NUMBER_VALIDATORS
 
 
 class PatientNumberValidation(PatientValidationMixin, RadarDataSourceValidationMixin, MetaValidationMixin, Validation):

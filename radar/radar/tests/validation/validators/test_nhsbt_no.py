@@ -1,7 +1,7 @@
 import pytest
 
 from radar.validation.core import ValidationError
-from radar.validation.patient_number_validators import nhsbt_no
+from radar.validation.number_validators import nhsbt_no
 
 
 def test_valid_int():
