@@ -8,8 +8,12 @@ class Consultant(db.Model):
 
     id = Column(Integer, primary_key=True)
 
+    title = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
+    email = Column(String)
+    telephone_number = Column(String)
+    gmc_number = Column(Integer)
 
     organisation_consultants = relationship('OrganisationConsultant')
 
