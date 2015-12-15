@@ -8,10 +8,10 @@
       restrict: 'A',
       scope: {
         required: '&',
-        model: '='
+        model: '=',
+        rows: '@'
       },
       templateUrl: 'app/forms/fields/textarea-field.html'
     };
   });
 })();
-

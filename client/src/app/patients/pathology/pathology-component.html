@@ -101,8 +101,11 @@
         <div frm-label>Histological Summary</div>
 
         <div frm-control>
-          <div frm-textarea-field model="item.histologicalSummary"></div>
-          <div frm-help>Please update with EM findings when available.</div>
+          <div frm-textarea-field model="item.histologicalSummary" rows="15"></div>
+          <div frm-help>
+            Copy and paste from the pathology report.<br />
+            Please update with EM findings when available.
+          </div>
           <div frm-errors errors="item.errors.histologicalSummary"></div>
         </div>
       </div>
