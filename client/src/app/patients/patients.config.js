@@ -64,6 +64,7 @@
       COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),
       FAMILY_HISTORY: patientFeature('Family History', 'patient.familyHistory', true),
       FETAL_ANOMALY_SCANS: patientFeature('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
+      FETAL_ULTRASOUNDS: patientFeature('Fetal Ultrasounds', 'patient.fetalUltrasounds'),
       GENETICS: patientFeature('Genetics', 'patient.genetics', true),
       HNF1B_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.hnf1bClinicalPictures'),
       HOSPITALISATIONS: patientFeature('Hospitalisations', 'patient.hospitalisations'),
