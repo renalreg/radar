@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.pregnancy');
+  var app = angular.module('radar.patients.pregnancies');
 
   app.factory('PregnancyPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
     return PatientDataSourceObjectPermission;
@@ -14,7 +14,7 @@
     $injector,
     store
   ) {
-    function PregnancyController($scope) {
+    function PregnanciesController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
@@ -25,19 +25,19 @@
       });
 
       self.load(firstPromise([
-        store.findMany('pregnancy', {patient: $scope.patient.id})
+        store.findMany('pregnancies', {patient: $scope.patient.id})
       ]));
 
       $scope.create = function() {
-        var item = store.create('pregnancy', {patient: $scope.patient.id});
+        var item = store.create('pregnancies', {patient: $scope.patient.id});
         self.edit(item);
       };
     }
 
-    PregnancyController.$inject = ['$scope'];
-    PregnancyController.prototype = Object.create(ModelListDetailController.prototype);
+    PregnanciesController.$inject = ['$scope'];
+    PregnanciesController.prototype = Object.create(ModelListDetailController.prototype);
 
-    return PregnancyController;
+    return PregnanciesController;
   }
 
   controllerFactory.$inject = [
@@ -48,15 +48,15 @@
     'store'
   ];
 
-  app.factory('PregnancyController', controllerFactory);
+  app.factory('PregnanciesController', controllerFactory);
 
-  app.directive('pregnancyComponent', ['PregnancyController', function(PregnancyController) {
+  app.directive('pregnanciesComponent', ['PregnanciesController', function(PregnanciesController) {
     return {
       scope: {
         patient: '='
       },
-      controller: PregnancyController,
-      templateUrl: 'app/patients/pregnancy/pregnancy-component.html'
+      controller: PregnanciesController,
+      templateUrl: 'app/patients/pregnancies/pregnancies-component.html'
     };
   }]);
 })();
