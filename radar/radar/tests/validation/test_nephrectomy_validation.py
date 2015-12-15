@@ -24,7 +24,7 @@ def nephrectomy(patient):
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.kidney_side = 'LEFT'
-    obj.kidney_type = 'NATURAL'
+    obj.kidney_type = 'NATIVE'
     obj.entry_type = 'HA'
     return obj
 
@@ -33,7 +33,7 @@ def test_valid(nephrectomy):
     obj = valid(nephrectomy)
     assert obj.date == date(2015, 1, 1)
     assert obj.kidney_side == 'LEFT'
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
     assert obj.entry_type == 'HA'
     assert obj.created_date is not None
     assert obj.modified_date is not None

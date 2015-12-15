@@ -23,7 +23,7 @@ def pathology(patient):
     obj.data_source = DataSource()
     obj.patient = patient
     obj.date = date(2015, 1, 1)
-    obj.kidney_type = 'NATURAL'
+    obj.kidney_type = 'NATIVE'
     obj.kidney_side = 'RIGHT'
     obj.laboratory_reference_number = '12345'
     obj.histological_summary = 'foo bar baz'
@@ -33,7 +33,7 @@ def pathology(patient):
 def test_valid(pathology):
     obj = valid(pathology)
     assert obj.date == date(2015, 1, 1)
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
     assert obj.kidney_side == 'RIGHT'
     assert obj.laboratory_reference_number == '12345'
     assert obj.histological_summary == 'foo bar baz'
@@ -59,10 +59,10 @@ def test_kidney_type_blank(pathology):
     invalid(pathology)
 
 
-def test_kidney_type_natural(pathology):
-    pathology.kidney_type = 'NATURAL'
+def test_kidney_type_native(pathology):
+    pathology.kidney_type = 'NATIVE'
     obj = valid(pathology)
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
 
 
 def test_kidney_type_transplant(pathology):

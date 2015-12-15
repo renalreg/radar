@@ -7,7 +7,7 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 
 TYPES_OF_KIDNEY = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 TYPES_OF_REMISSION = OrderedDict([

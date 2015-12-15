@@ -25,7 +25,7 @@ def renal_imaging(patient):
     obj.date = date(2015, 1, 1)
     obj.imaging_type = 'USS'
     obj.right_present = True
-    obj.right_type = 'NATURAL'
+    obj.right_type = 'NATIVE'
     obj.right_length = 10
     obj.right_volume = 50
     obj.right_cysts = True
@@ -50,7 +50,7 @@ def test_valid(renal_imaging):
     assert obj.date == date(2015, 1, 1)
     assert obj.imaging_type == 'USS'
     assert obj.right_present is True
-    assert obj.right_type == 'NATURAL'
+    assert obj.right_type == 'NATIVE'
     assert obj.right_length == 10
     assert obj.right_volume == 50
     assert obj.right_cysts is True
