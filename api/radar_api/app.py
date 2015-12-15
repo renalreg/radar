@@ -50,6 +50,7 @@ from radar_api.views import ins
 from radar_api.views import fetal_anomaly_scans
 from radar_api.views import hnf1b
 from radar_api.views import fetal_ultrasounds
+from radar_api.views import pregnancies
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -124,6 +125,7 @@ class RadarApi(Flask):
         patients.register_views(self)
         plasmapheresis.register_views(self)
         posts.register_views(self)
+        pregnancies.register_views(self)
         recruit_patient.register_views(self)
         recruitment_stats.register_views(self)
         renal_imaging.register_views(self)

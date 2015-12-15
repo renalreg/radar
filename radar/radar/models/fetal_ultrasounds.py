@@ -7,9 +7,9 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
 LIQUOR_VOLUMES = OrderedDict([
-    (1, 'Normal'),
-    (2, 'Decreased'),
-    (3, 'Increased'),
+    ('NORMAL', 'Normal'),
+    ('DECREASED', 'Decreased'),
+    ('INCREASED', 'Increased'),
 ])
 
 
@@ -30,7 +30,7 @@ class FetalUltrasound(db.Model, MetaModelMixin):
     head_centile = Column(Integer)
     abdo_centile = Column(Integer)
     uterine_artery_notched = Column(Boolean)
-    liquor_volume = Column(Integer)
+    liquor_volume = Column(String)
     comments = Column(String)
 
 Index('fetal_ultrasounds_patient_id_idx', FetalUltrasound.patient_id)
