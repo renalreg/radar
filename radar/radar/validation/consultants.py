@@ -1,7 +1,11 @@
-from radar.validation.core import Field, Validation
+from radar.validation.core import Field, Validation, ListField
 from radar.validation.meta import MetaValidationMixin
-from radar.validation.validators import not_empty, none_if_blank, optional, email_address, max_length
+from radar.validation.validators import not_empty, none_if_blank, optional, email_address, max_length, required
 from radar.validation.number_validators import gmc_number
+
+
+class OrganisationConsultantValidation(MetaValidationMixin, Validation):
+    organisation = Field([required()])
 
 
 class ConsultantValidation(MetaValidationMixin, Validation):
@@ -11,3 +15,4 @@ class ConsultantValidation(MetaValidationMixin, Validation):
     email = Field([none_if_blank(), optional(), email_address()])
     telephone_number = Field([none_if_blank(), optional(), max_length(100)])
     gmc_number = Field([optional(), gmc_number()])
+    organisation_consultants = ListField(OrganisationConsultantValidation())
