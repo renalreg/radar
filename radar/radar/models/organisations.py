@@ -58,10 +58,6 @@ class OrganisationUser(db.Model, MetaModelMixin):
 
     _role = Column('role', String, nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint('organisation_id', 'user_id'),
-    )
-
     @property
     def role(self):
         value = self._role
@@ -100,6 +96,12 @@ class OrganisationUser(db.Model, MetaModelMixin):
     def managed_roles(self):
         return ORGANISATION_MANAGED_ROLES.get(self.role, [])
 
+Index(
+    'organisation_users_organisation_id_user_id_idx',
+    OrganisationUser.organisation_id,
+    OrganisationUser.user_id,
+    unique=True
+)
 Index('organisation_users_organisation_id_idx', OrganisationUser.organisation_id)
 Index('organisation_users_user_id_idx', OrganisationUser.user_id)
 
@@ -119,10 +121,7 @@ class Organisation(db.Model):
     organisation_patients = relationship('OrganisationPatient')
     organisation_users = relationship('OrganisationUser')
 
-    __table_args__ = (
-        UniqueConstraint('type', 'code'),
-    )
-
+Index('organisations_type_code_idx', Organisation.type, Organisation.code, unique=True)
 Index('organisations_code_idx', Organisation.code)
 Index('organisations_type_idx', Organisation.type)
 
@@ -138,6 +137,9 @@ class OrganisationConsultant(db.Model, MetaModelMixin):
     consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
     consultant = relationship('Consultant')
 
-    __table_args__ = (
-        UniqueConstraint('organisation_id', 'consultant_id'),
-    )
+Index(
+    'organisation_consultants_organisation_id_consultant_id_idx',
+    OrganisationConsultant.organisation_id,
+    OrganisationConsultant.consultant_id,
+    unique=True
+)
