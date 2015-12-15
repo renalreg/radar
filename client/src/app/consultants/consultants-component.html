@@ -40,6 +40,17 @@
         <th>GMC Number</th>
         <td>{{item.gmcNumber | missing}}</td>
       </tr>
+
+      <tr>
+        <th>Organisations</th>
+        <td>
+          <span ng-if="!item.organisationConsultants.length">-</span>
+          <span ng-repeat="organisationConsultant in item.organisationConsultants | orderBy: 'organisation.name'">
+            {{organisationConsultant.organisation.name}}
+            <br ng-if="!$last" />
+          </span>
+        </td>
+      </tr>
     </table>
 
     <div item-meta item="item"></div>
