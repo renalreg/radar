@@ -24,6 +24,7 @@
     'radar.patients.numbers',
     'radar.patients.pathology',
     'radar.patients.plasmapheresis',
+    'radar.patients.pregnancy',
     'radar.patients.renalImaging',
     'radar.patients.results',
     'radar.patients.saltWasting',

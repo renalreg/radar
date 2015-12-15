@@ -75,6 +75,7 @@
       NUMBERS: patientFeature('Numbers', 'patient.numbers'),
       PATHOLOGY: patientFeature('Pathology', 'patient.pathology'),
       PLASMAPHERESIS: patientFeature('Plasmapheresis', 'patient.plasmapheresis'),
+      PREGNANCY: patientFeature('Pregnancy', 'patient.pregnancy'),
       RENAL_IMAGING: patientFeature('Renal Imaging', 'patient.renalImaging'),
       RESULTS: patientFeature('Results', 'patient.results.table'),
       SALT_WASTING_CLINICAL_FEATURES: patientFeature('Clinical Features', 'patient.saltWastingClinicalFeatures'),
