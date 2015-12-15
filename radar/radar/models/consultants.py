@@ -1,5 +1,4 @@
 from sqlalchemy import Integer, Column, String
-from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
@@ -16,8 +15,6 @@ class Consultant(db.Model, MetaModelMixin):
     email = Column(String)
     telephone_number = Column(String)
     gmc_number = Column(Integer)
-
-    organisation_consultants = relationship('OrganisationConsultant')
 
     @property
     def organisations(self):

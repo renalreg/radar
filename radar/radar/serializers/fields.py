@@ -222,7 +222,6 @@ class ListField(Field):
             try:
                 value = self.field.to_value(x)
             except ValidationError as e:
-                print i, e
                 errors[i] = e.errors
             else:
                 values.append(value)
