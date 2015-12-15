@@ -39,7 +39,6 @@ class Diagnosis(db.Model, MetaModelMixin):
     @property
     def age_at_onset(self):
         x = to_age(self.patient, self.date_of_onset)
-        print x
         return x
 
     @property

@@ -1,0 +1,26 @@
+<div loading="loading" crud>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Organisations</h3>
+    </div>
+
+    <div class="panel-body">
+      <div ng-repeat="item in items track by $index">
+        <div frm-field frm-group>
+          <div frm-label>Organisation</div>
+
+          <div frm-control>
+            <div frm-organisation-field model="item.organisation" required="true"></div>
+            <div frm-errors errors="parent.errors.organisationConsultants[$index].organisation"></div>
+          </div>
+        </div>
+
+        <p><span crud-list-remove-button item="item"></span></p>
+
+        <hr />
+      </div>
+
+      <p><span crud-list-append-button action="create()"></span></p>
+    </div>
+  </div>
+</div>

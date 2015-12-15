@@ -106,6 +106,8 @@
         </div>
       </div>
 
+      <div consultant-organisations-component consultant="item"></div>
+
       <div frm-buttons>
         <span crud-save-button></span>
         <span crud-cancel-list-button></span>
@@ -134,6 +136,7 @@
           <th sort-helper="email">Email</th>
           <th sort-helper="telephoneNumber">Telephone Number</th>
           <th sort-helper="gmcNumber">GMC Number</th>
+          <th>Organisations</th>
           <th></th>
         </tr>
       </thead>
@@ -151,6 +154,14 @@
           <td>{{item.email | missing}}</td>
           <td>{{item.telephoneNumber | missing}}</td>
           <td>{{item.gmcNumber | missing}}</td>
+
+          <td>
+            <span ng-if="!item.organisationConsultants.length">-</span>
+            <span ng-repeat="organisationConsultant in item.organisationConsultants | orderBy: 'organisation.name'">
+              {{organisationConsultant.organisation.name}}
+              <br ng-if="!$last" />
+            </span>
+          </td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

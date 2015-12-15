@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
 from radar.roles import ORGANISATION_PERMISSIONS, ORGANISATION_MANAGED_ROLES, PERMISSIONS, ORGANISATION_ROLES
@@ -135,7 +135,7 @@ class OrganisationConsultant(db.Model, MetaModelMixin):
     organisation = relationship('Organisation')
 
     consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
-    consultant = relationship('Consultant')
+    consultant = relationship('Consultant', backref=backref('organisation_consultants', cascade='all, delete-orphan', passive_deletes=True))
 
 Index(
     'organisation_consultants_organisation_id_consultant_id_idx',
