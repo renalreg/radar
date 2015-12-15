@@ -1,8 +1,16 @@
+from collections import OrderedDict
+
 from sqlalchemy import Column, Integer, Date, Index, Boolean, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+
+LIQUOR_VOLUMES = OrderedDict([
+    (1, 'Normal'),
+    (2, 'Decreased'),
+    (3, 'Increased'),
+])
 
 
 class FetalUltrasound(db.Model, MetaModelMixin):

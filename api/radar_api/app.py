@@ -49,6 +49,7 @@ from radar_api.views import recruit_patient
 from radar_api.views import ins
 from radar_api.views import fetal_anomaly_scans
 from radar_api.views import hnf1b
+from radar_api.views import fetal_ultrasounds
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -99,6 +100,7 @@ class RadarApi(Flask):
         environment.register_views(self)
         family_history.register_views(self)
         fetal_anomaly_scans.register_views(self)
+        fetal_ultrasounds.register_views(self)
         forgot_password.register_views(self)
         forgot_username.register_views(self)
         genetics.register_views(self)
