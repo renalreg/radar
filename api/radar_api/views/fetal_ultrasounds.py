@@ -3,7 +3,7 @@ from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
 from radar.validation.fetal_ultrasounds import FetalUltrasoundValidation
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
-from radar.views.codes import CodedIntegerListView
+from radar.views.codes import CodedStringListView
 
 
 class FetalUltrasoundListView(DataSourceObjectViewMixin, PatientObjectListView):
@@ -18,7 +18,7 @@ class FetalUltrasoundDetailView(DataSourceObjectViewMixin, PatientObjectDetailVi
     validation_class = FetalUltrasoundValidation
 
 
-class FetalUltrasoundLiquorVolumeListView(CodedIntegerListView):
+class FetalUltrasoundLiquorVolumeListView(CodedStringListView):
     items = LIQUOR_VOLUMES
 
 
