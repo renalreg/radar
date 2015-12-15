@@ -14,7 +14,7 @@ NEPHRECTOMY_KIDNEY_SIDES = OrderedDict([
 
 NEPHRECTOMY_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 NEPHRECTOMY_ENTRY_TYPES = OrderedDict([

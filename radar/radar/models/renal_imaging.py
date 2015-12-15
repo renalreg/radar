@@ -13,7 +13,7 @@ RENAL_IMAGING_TYPES = OrderedDict([
 
 RENAL_IMAGING_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 

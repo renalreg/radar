@@ -7,7 +7,7 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 
 PATHOLOGY_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 PATHOLOGY_KIDNEY_SIDES = OrderedDict([
