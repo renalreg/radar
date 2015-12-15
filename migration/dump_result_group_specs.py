@@ -10,7 +10,7 @@ from dump_tools import get_db, rows_to_csv
 @click.option('--host', default='localhost')
 @click.option('--port', default=5432)
 @click.option('--username', default='radar')
-@click.option('--password', default='vagrant')
+@click.option('--password', default='password')
 @click.option('--database', default='radar')
 def main(output, host, port, username, password, database):
     db = get_db('postgresql', host, port, username, password, database)

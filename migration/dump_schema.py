@@ -37,7 +37,7 @@ def radar1(output, host, port, username, password, database, analyse):
 @click.option('--host', default='localhost')
 @click.option('--port', default=5432)
 @click.option('--username', default='postgres')
-@click.option('--password', default='vagrant')
+@click.option('--password', default='password')
 @click.option('--database', default='radar')
 @click.option('--schema', default='public')
 @click.option('--analyse/--no-analyse', default=False)
