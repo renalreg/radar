@@ -238,6 +238,15 @@ COHORTS = [
         'result_group_codes': [],
     },
     {
+        'code': 'NSMPGNC3',
+        'name': 'National Study of Membranoproliferative Glomerulonephritis (MPGN) and C3 Glomerulopathy (C3G)',
+        'short_name': 'National Study of MPGN and C3',
+        'features': [
+            FEATURES.RESULTS,
+        ],
+        'result_group_codes': [],
+    },
+    {
         'code': 'OBS',
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
