@@ -9,6 +9,7 @@ from radar.models.dialysis import *
 from radar.models.data_sources import *
 from radar.models.family_history import *
 from radar.models.fetal_anomaly_scans import *
+from radar.models.fetal_ultrasounds import *
 from radar.models.genetics import *
 from radar.models.hnf1b import *
 from radar.models.hospitalisations import *
@@ -26,6 +27,7 @@ from radar.models.patient_consultants import *
 from radar.models.patient_demographics import *
 from radar.models.patient_numbers import *
 from radar.models.plasmapheresis import *
+from radar.models.pregnancies import *
 from radar.models.renal_imaging import *
 from radar.models.salt_wasting import *
 from radar.models.transplants import *
