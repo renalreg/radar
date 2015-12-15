@@ -135,14 +135,14 @@ def max_(max_value, units=None):
     return max_f
 
 
-def range_(min_value=None, max_value=None):
+def range_(min_value=None, max_value=None, units=None):
     @pass_call
     def range_f(call, value):
         if min_value is not None:
-            value = call(min_(min_value), value)
+            value = call(min_(min_value, units), value)
 
         if max_value is not None:
-            value = call(max_(max_value), value)
+            value = call(max_(max_value, units), value)
 
         return value
 
