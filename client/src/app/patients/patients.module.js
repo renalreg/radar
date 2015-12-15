@@ -20,6 +20,7 @@
     'radar.patients.ins',
     'radar.patients.medications',
     'radar.patients.meta',
+    'radar.patients.mpgn',
     'radar.patients.navigation',
     'radar.patients.nephrectomies',
     'radar.patients.numbers',

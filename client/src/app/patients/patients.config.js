@@ -72,6 +72,7 @@
       INS_RELAPSES: patientFeature('Relapses', 'patient.insRelapses'),
       MEDICATIONS: patientFeature('Medications', 'patient.medications'),
       META: patientFeature('Meta', 'patient.meta'),
+      MPGN_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.mpgnClinicalPictures'),
       NEPHRECTOMIES: patientFeature('Nephrectomies', 'patient.nephrectomies'),
       NUMBERS: patientFeature('Numbers', 'patient.numbers'),
       PATHOLOGY: patientFeature('Pathology', 'patient.pathology'),
