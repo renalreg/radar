@@ -17,6 +17,9 @@ BAPN_LEADING_ZEROS = re.compile('^[A-Z](0+)')
 MIN_UKRDC_NO = 100000001
 MAX_UKRDC_NO = 999999999
 
+MIN_GMC_NO = 0
+MAX_GMC_NO = 9999999
+
 
 def clean_int(value):
     if isinstance(value, basestring):
@@ -147,6 +150,23 @@ def ukrdc_no():
 
         return value
     return ukrdc_no_f
+
+
+def gmc_number():
+    def gmc_number_f(value):
+        value = clean_int(value)
+
+        try:
+            x = int(value)
+        except ValueError:
+            raise ValidationError('Not a valid GMC number.')
+
+        if x < MIN_GMC_NO or x > MAX_GMC_NO:
+            raise ValidationError('Not a valid GMC number.')
+
+        return value
+
+    return gmc_number_f
 
 
 NUMBER_VALIDATORS = {
