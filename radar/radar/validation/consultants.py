@@ -10,4 +10,4 @@ class ConsultantValidation(MetaValidationMixin, Validation):
     last_name = Field([not_empty(), max_length(100)])
     email = Field([none_if_blank(), optional(), email_address()])
     telephone_number = Field([none_if_blank(), optional(), max_length(100)])
-    gmc_number = Field([none_if_blank(), optional(), gmc_number()])
+    gmc_number = Field([optional(), gmc_number()])
