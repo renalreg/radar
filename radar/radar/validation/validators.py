@@ -107,7 +107,7 @@ def not_empty():
 
 def min_(min_value, units=None):
     if units is None:
-        message = 'Must be greater than or equal to %s'
+        message = 'Must be greater than or equal to %s.'
     else:
         message = 'Must be greater than or equal to %%s %s.' % units
 
@@ -122,7 +122,7 @@ def min_(min_value, units=None):
 
 def max_(max_value, units=None):
     if units is None:
-        message = 'Must be less than or equal to %s'
+        message = 'Must be less than or equal to %s.'
     else:
         message = 'Must be less than or equal to %%s %s.' % units
 
