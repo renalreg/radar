@@ -11,7 +11,7 @@ class FetalUltrasoundValidation(PatientValidationMixin, DataSourceValidationMixi
     fetal_identifier = Field([optional(), max_length(30)])
     gestational_age = Field([required(), range_(8 * 7, 42 * 7, 'days')])
     head_centile = Field([optional(), range_(0, 100)])
-    abdo_centile = Field([optional(), range_(0, 100)])
+    abdomen_centile = Field([optional(), range_(0, 100)])
     uterine_artery_notched = Field([optional()])
     liquor_volume = Field([optional(), in_(LIQUOR_VOLUMES.keys())])
     comments = Field([none_if_blank(), optional(), max_length(1000)])
