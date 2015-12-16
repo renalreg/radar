@@ -27,7 +27,7 @@ DEFAULT_PASSWORD_RESET_MAX_AGE = 86400  # 1 day
 DEFAULT_PASSWORD_MIN_SCORE = 3
 
 DEFAULT_EMAIL_ENABLED = False
-DEFAULT_EMAIL_FROM_ADDRESS = 'radar@radar.nhs.uk'
+DEFAULT_EMAIL_FROM_ADDRESS = 'RaDaR <radar@radar.nhs.uk>'
 DEFAULT_EMAIL_SMTP_HOST = 'localhost'
 DEFAULT_EMAIL_SMTP_PORT = 25
 
@@ -82,7 +82,7 @@ class ConfigValidation(Validation):
     PASSWORD_MIN_SCORE = Field([default(DEFAULT_PASSWORD_MIN_SCORE), min_(0), max_(4)])
 
     EMAIL_ENABLED = Field([optional()])
-    EMAIL_FROM_ADDRESS = Field([default(DEFAULT_EMAIL_FROM_ADDRESS), email_address()])
+    EMAIL_FROM_ADDRESS = Field([default(DEFAULT_EMAIL_FROM_ADDRESS), email_address(name=True)])
     EMAIL_SMTP_HOST = Field([default(DEFAULT_EMAIL_SMTP_HOST)])
     EMAIL_SMTP_PORT = Field([default(DEFAULT_EMAIL_SMTP_PORT)])
 
