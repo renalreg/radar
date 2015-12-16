@@ -36,7 +36,7 @@ class Pregnancy(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('pregnancies')
 
-    sequence_number = Column(Integer, nullable=False)
+    pregnancy_number = Column(Integer, nullable=False)
     date_of_lmp = Column(Date, nullable=False)
     gravidity = Column(Integer)
     parity1 = Column(Integer)

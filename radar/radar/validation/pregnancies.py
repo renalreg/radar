@@ -7,7 +7,7 @@ from radar.models.pregnancies import OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_T
 
 
 class PregnancyValidation(PatientValidationMixin, MetaValidationMixin, Validation):
-    sequence_number = Field([required(), min_(1)])
+    pregnancy_number = Field([required(), min_(1)])
     date_of_lmp = Field([required(), valid_date_for_patient()])
     gravidity = Field([optional(), range_(0, 9)])
     parity1 = Field([optional(), range_(0, 9)])
