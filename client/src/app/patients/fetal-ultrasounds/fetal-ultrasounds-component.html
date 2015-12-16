@@ -1,0 +1,203 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Data Source</th>
+        <td>{{item.dataSource.getName()}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Scan</th>
+        <td>{{item.dateOfScan | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Fetal Identifier</th>
+        <td>{{item.fetalIndentifier | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Gestational Age</th>
+        <td>{{item.gestationalAge | weeksAndDaysFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Head Centile (%)</th>
+        <td>{{item.headCentile | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Abdomen Centile (%)</th>
+        <td>{{item.abdomenCentile | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Uterine Artery Notched</th>
+        <td><span tick="uterineArteryNotched"></span></td>
+      </tr>
+
+      <tr>
+        <th>Liquor Volume</th>
+        <td>{{item.liquorVolume.label | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
+      </tr>
+    </table>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Data Source</div>
+
+        <div frm-control>
+          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
+          <div frm-errors errors="item.errors.dataSource"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Scan</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfScan" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfScan"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Fetal Indentifier</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.fetalIndentifier"></div>
+          <div frm-help>Only if twins.</div>
+          <div frm-errors errors="item.errors.fetalIndentifier"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Gestational Age</div>
+
+        <div frm-control>
+          <div frm-weeks-and-days-field model="item.gestationalAge" required="true"></div>
+          <div frm-errors errors="item.errors.gestationalAge"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Head Centile</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.headCentile" units="%"></div>
+          <div frm-errors errors="item.errors.headCentile"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Abdomen Centile</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.abdomenCentile" units="%"></div>
+          <div frm-errors errors="item.errors.abdomenCentile"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Uterine Artery Notched</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.uterineArteryNotched"></div>
+          <div frm-errors errors="item.errors.uterineArteryNotched"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Liquor Volume</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.liquorVolume" options="liquorVolumes"></div>
+          <div frm-errors errors="item.errors.liquorVolume"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfScan">Date of Scan</th>
+          <th sort-helper="fetalIdentifier">Fetal Indentifier</th>
+          <th sort-helper="gestationalAge">Gestational Age</th>
+          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfScan | dateFormat}}</td>
+          <td>{{item.fetalIdentifier | missing}}</td>
+          <td>{{item.gestationalAge | weeksAndDaysFormat}}</td>
+          <td class="data-source">{{item.dataSource.getName()}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

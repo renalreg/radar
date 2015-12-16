@@ -25,7 +25,10 @@
       });
 
       self.load(firstPromise([
-        store.findMany('fetal-ultrasounds', {patient: $scope.patient.id})
+        store.findMany('fetal-ultrasounds', {patient: $scope.patient.id}),
+        store.findMany('fetal-ultrasound-liquor-volumes').then(function(liquorVolumes) {
+          $scope.liquorVolumes = liquorVolumes;
+        })
       ]));
 
       $scope.create = function() {

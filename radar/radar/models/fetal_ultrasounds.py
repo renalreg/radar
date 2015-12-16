@@ -28,7 +28,7 @@ class FetalUltrasound(db.Model, MetaModelMixin):
     fetal_identifier = Column(String)
     gestational_age = Column(Integer)
     head_centile = Column(Integer)
-    abdo_centile = Column(Integer)
+    abdomen_centile = Column(Integer)
     uterine_artery_notched = Column(Boolean)
     liquor_volume = Column(String)
     comments = Column(String)
