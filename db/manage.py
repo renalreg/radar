@@ -19,7 +19,7 @@ def app_context(f):
 
 
 @click.group()
-@click.option('--connection-string', default='postgresql:///radar')
+@click.option('--connection-string', default='postgresql://radar:password@localhost/radar')
 @click.pass_context
 def cli(ctx, connection_string):
     config = {
