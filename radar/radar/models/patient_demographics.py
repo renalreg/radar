@@ -38,5 +38,6 @@ class PatientDemographics(db.Model, MetaModelMixin):
 Index('patient_demographics_patient_id_idx', PatientDemographics.patient_id)
 
 
+# TODO remove
 class EthnicityCode(StringLookupTable):
     __tablename__ = 'ethnicity_codes'
