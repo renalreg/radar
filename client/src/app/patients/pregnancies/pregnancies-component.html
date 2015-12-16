@@ -1,0 +1,241 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>ID</th>
+        <td>{{item.id}}</td>
+      </tr>
+
+      <tr>
+        <th>Pregnancy Number</th>
+        <td>{{item.pregnancyNumber}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of LMP</th>
+        <td>{{item.dateOfLmp | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Gravidity</th>
+        <td>{{item.gravidity | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Parity 1 (> 24 weeks)</th>
+        <td>{{item.partity1 | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Parity 2 (< 24 weeks)</th>
+        <td>{{item.partiy2 | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Outcome</th>
+        <td>{{item.outcome.label | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Birth Weight (g)</th>
+        <td>{{item.weight | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Weight Centile at Delivery</th>
+        <td>{{item.weightCentile | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Gestational Age at Delivery</th>
+        <td>{{item.gestationalAge | weeksAndDaysFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Delivery Method</th>
+        <td>{{item.deliveryMethod.label | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Neonatal Intensive Care</th>
+        <td><span tick="item.neonatalIntensiveCare"></span></td>
+      </tr>
+
+      <tr>
+        <th>Pre Eclampsia</th>
+        <td>{{item.preEclampsia.label | missing}}</td>
+      </tr>
+    </table>
+
+    <div item-meta item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Pregnancy Number</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.pregnancyNumber" required="true"></div>
+          <div frm-help>Unique number for each pregnancy.</div>
+          <div frm-errors errors="item.errors.pregnancyNumber"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of LMP</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfLmp" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfLmp"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Gravidity</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.gravidity"></div>
+          <div frm-errors errors="item.errors.gravidity"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Parity 1 (> 24 weeks)</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.parity1"></div>
+          <div frm-errors errors="item.errors.parity1"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Parity 2 (< 24 weeks)</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.parity2"></div>
+          <div frm-errors errors="item.errors.parity2"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Outcome</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.outcome" options="outcomes"></div>
+          <div frm-errors errors="item.errors.outcome"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Birth Weight</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.weight"></div>
+          <div frm-errors errors="item.errors.weight"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Weight Centile at Delivery</div>
+
+        <div frm-control>
+          <div frm-integer-field model="item.weightCentile"></div>
+          <div frm-errors errors="item.errors.weightCentile"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Gestational Age at Delivery</div>
+
+        <div frm-control>
+          <div frm-weeks-and-days-field model="item.gestationalAge"></div>
+          <div frm-errors errors="item.errors.gestationalAge"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Delivery Method</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.deliveryMethod" options="deliveryMethods"></div>
+          <div frm-errors errors="item.errors.deliveryMethod"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Neonatal Intensive Care</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.neonatalIntensiveCare"></div>
+          <div frm-errors errors="item.errors.neonatalIntensiveCare"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Pre Eclampsia</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.preEclampsia" options="preEclampsiaTypes"></div>
+          <div frm-errors errors="item.errors.preEclampsia"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="pregnancyNumber" reverse="true">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="pregnancyNumber">Pregnancy Number</th>
+          <th sort-helper="dateOfLmp">Date of LMP</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.pregnancyNumber}}</td>
+          <td>{{item.dateOfLmp | dateFormat}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

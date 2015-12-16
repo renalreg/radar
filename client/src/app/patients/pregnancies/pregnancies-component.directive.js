@@ -25,7 +25,16 @@
       });
 
       self.load(firstPromise([
-        store.findMany('pregnancies', {patient: $scope.patient.id})
+        store.findMany('pregnancies', {patient: $scope.patient.id}),
+        store.findMany('pregnancy-outcomes').then(function(outcomes) {
+          $scope.outcomes = outcomes;
+        }),
+        store.findMany('pregnancy-delivery-methods').then(function(deliveryMethods) {
+          $scope.deliveryMethods = deliveryMethods;
+        }),
+        store.findMany('pregnancy-pre-eclampsia-types').then(function(preEclampsiaTypes) {
+          $scope.preEclampsiaTypes = preEclampsiaTypes;
+        })
       ]));
 
       $scope.create = function() {
