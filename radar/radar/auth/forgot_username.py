@@ -1,6 +1,6 @@
 from radar.auth.exceptions import UserNotFound
 from radar.models import User
-from radar.mail import send_email_from_template
+from radar.email import send_email_from_template
 
 
 def forgot_username(email):
