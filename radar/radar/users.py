@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_mail import Message
 
-from radar.mail import mail
+from radar.email import mail
 
 
 def send_new_user_email(user, password):
