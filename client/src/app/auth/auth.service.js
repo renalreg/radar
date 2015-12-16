@@ -10,6 +10,8 @@
     store,
     adapter
   ) {
+    var loggingOut = false;
+
     return {
       login: login,
       logout: logout,
@@ -61,8 +63,12 @@
     function logout() {
       var deferred = $q.defer();
 
-      if (session.isAuthenticated) {
+      // Logged in and not already logging out
+      if (session.isAuthenticated && !loggingOut) {
+        loggingOut = true;
+
         adapter.post('/logout')['finally'](function() {
+          loggingOut = false;
           session.logout();
           deferred.resolve();
         });
