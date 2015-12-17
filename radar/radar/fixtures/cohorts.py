@@ -9,6 +9,7 @@ COHORTS = [
         'short_name': 'RaDaR',
         'features': [
             FEATURES.DEMOGRAPHICS,
+            FEATURES.CONSULTANTS,
             FEATURES.COHORTS,
             FEATURES.UNITS
         ],
@@ -252,7 +253,7 @@ COHORTS = [
         'short_name': 'Pregnancy',
         'features': [
             FEATURES.DIAGNOSES,
-            FEATURES.PREGNANCY,
+            FEATURES.PREGNANCIES,
             FEATURES.FETAL_ULTRASOUNDS,
             FEATURES.RESULTS,
             FEATURES.MEDICATIONS,
