@@ -62,6 +62,7 @@
       DIALYSIS: patientFeature('Dialysis', 'patient.dialysis'),
       COHORTS: patientFeature('Cohorts', 'patient.cohorts'),
       COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),
+      CONSULTANTS: patientFeature('Consultants', 'patient.consultants'),
       FAMILY_HISTORY: patientFeature('Family History', 'patient.familyHistory', true),
       FETAL_ANOMALY_SCANS: patientFeature('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
       FETAL_ULTRASOUNDS: patientFeature('Fetal Ultrasounds', 'patient.fetalUltrasounds'),

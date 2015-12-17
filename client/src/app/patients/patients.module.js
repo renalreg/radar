@@ -8,6 +8,7 @@
     'radar.patients.aliases',
     'radar.patients.cohorts',
     'radar.patients.comorbidities',
+    'radar.patients.consultants',
     'radar.patients.demographics',
     'radar.patients.diagnoses',
     'radar.patients.dialysis',
