@@ -3,7 +3,7 @@ import random
 from datetime import date, timedelta
 
 from radar.fixtures.dev.constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS_LINE_1, \
-    ADDRESS_LINE_3, ADDRESS_LINE_2, POSTCODES
+    ADDRESS_LINE_3, ADDRESS_LINE_2, POSTCODES, TITLES
 from radar.utils import is_date, date_to_datetime
 
 
@@ -22,6 +22,10 @@ def generate_gender():
         return GENDER_MALE
     else:
         return GENDER_FEMALE
+
+
+def generate_title(gender):
+    return random.choice(TITLES[gender])
 
 
 def generate_first_name(gender):

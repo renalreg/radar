@@ -6,10 +6,8 @@
   app.factory('PatientConsultantModel', ['Model', 'store', function(Model, store) {
     function PatientConsultantModel(modelName, data) {
       if (data.consultant) {
-        data.consultant = store.pushToStore(new Model('consultants', data.consultant));
+        data.consultant = store.create('consultants', data.consultant);
       }
-
-      console.log(data);
 
       Model.call(this, modelName, data);
     }

@@ -35,6 +35,32 @@
         <th>Last Name</th>
         <td>{{item.consultant.lastName}}</td>
       </tr>
+
+      <tr>
+        <th>Email Address</th>
+        <td>{{item.consultant.emailAddress | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Telephone Number</th>
+        <td>{{item.consultant.telephoneNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>GMC Number</th>
+        <td>{{item.consultant.gmcNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Organisations</th>
+        <td>
+          <span ng-if="!item.consultant.organisationConsultants.length">-</span>
+          <span ng-repeat="organisationConsultant in item.consultant.organisationConsultants | orderBy: 'organisation.name'">
+            {{organisationConsultant.organisation.name}}
+            <br ng-if="!$last" />
+          </span>
+        </td>
+      </tr>
     </table>
 
     <div item-meta item="item"></div>
