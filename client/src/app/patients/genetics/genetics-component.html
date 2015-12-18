@@ -12,33 +12,33 @@
       </tr>
 
       <tr>
-        <th>Sample Sent</th>
-        <td><span tick="item.sampleSent"></span></td>
+        <th>Date Sample Sent</th>
+        <td>{{item.dateSent | dateFormat}}</td>
       </tr>
 
-      <tr ng-show="item.sampleSent">
-        <th>Sample Sent Date</th>
-        <td>{{item.sampleSentDate | dateFormat}}</td>
-      </tr>
-
-      <tr ng-show="item.sampleSent">
+      <tr>
         <th>Laboratory</th>
         <td>{{item.laboratory | missing}}</td>
       </tr>
 
-      <tr ng-show="item.sampleSent">
+      <tr>
         <th>Laboratory Reference Number</th>
         <td>{{item.laboratoryReferenceNumber | missing}}</td>
       </tr>
 
-      <tr ng-show="item.sampleSent">
+      <tr>
         <th>Karyotype</th>
         <td>{{item.karyotype.label | missing}}</td>
       </tr>
 
-      <tr ng-show="item.sampleSent">
+      <tr>
         <th>Results</th>
         <td class="newlines">{{item.results | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Summary</th>
+        <td class="newlines">{{item.summary | missing}}</td>
       </tr>
     </table>
 
@@ -55,58 +55,56 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Has a sample been sent for genetic analysis?</div>
+        <div frm-label>Date Sample Sent</div>
 
         <div frm-control>
-          <div frm-boolean-field model="item.sampleSent" required="true"></div>
-          <div frm-errors errors="item.errors.sampleSent"></div>
+          <div frm-date-field model="item.dateSent" required="true"></div>
+          <div frm-errors errors="item.errors.dateSent"></div>
         </div>
       </div>
 
-      <div ng-show="item.sampleSent">
-        <div frm-field frm-group>
-          <div frm-label>Date Sent</div>
+      <div frm-field frm-group>
+        <div frm-label>Laboratory</div>
 
-          <div frm-control>
-            <div frm-date-field model="item.sampleSentDate" required="item.sampleSent"></div>
-            <div frm-errors errors="item.errors.sampleSentDate"></div>
-          </div>
+        <div frm-control>
+          <div frm-text-field model="item.laboratory"></div>
+          <div frm-errors errors="item.errors.laboratory"></div>
         </div>
+      </div>
 
-        <div frm-field frm-group>
-          <div frm-label>Laboratory</div>
+      <div frm-field frm-group>
+        <div frm-label>Laboratory Reference Number</div>
 
-          <div frm-control>
-            <div frm-text-field model="item.laboratory"></div>
-            <div frm-errors errors="item.errors.laboratory"></div>
-          </div>
+        <div frm-control>
+          <div frm-text-field model="item.laboratoryReferenceNumber"></div>
+          <div frm-errors errors="item.errors.laboratoryReferenceNumber"></div>
         </div>
+      </div>
 
-        <div frm-field frm-group>
-          <div frm-label>Laboratory Reference Number</div>
+      <div frm-field frm-group>
+        <div frm-label>Karyotype</div>
 
-          <div frm-control>
-            <div frm-text-field model="item.laboratoryReferenceNumber"></div>
-            <div frm-errors errors="item.errors.laboratoryReferenceNumber"></div>
-          </div>
+        <div frm-control>
+          <div frm-select-field model="item.karyotype" options="karyotypes"></div>
+          <div frm-errors errors="item.errors.karyotype"></div>
         </div>
+      </div>
 
-        <div frm-field frm-group>
-          <div frm-label>Karyotype</div>
+      <div frm-field frm-group>
+        <div frm-label>Results</div>
 
-          <div frm-control>
-            <div frm-select-field model="item.karyotype" options="karyotypes"></div>
-            <div frm-errors errors="item.errors.karyotype"></div>
-          </div>
+        <div frm-control>
+          <div frm-textarea-field model="item.results" rows="10"></div>
+          <div frm-errors errors="item.errors.results"></div>
         </div>
+      </div>
 
-        <div frm-field frm-group>
-          <div frm-label>Results</div>
+      <div frm-field frm-group>
+        <div frm-label>Summary</div>
 
-          <div frm-control>
-            <div frm-textarea-field model="item.results"></div>
-            <div frm-errors errors="item.errors.results"></div>
-          </div>
+        <div frm-control>
+          <div frm-textarea-field model="item.summary" rows="10"></div>
+          <div frm-errors errors="item.errors.summary"></div>
         </div>
       </div>
 
@@ -117,7 +115,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="sampleSentDate" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="dateSent" reverse="true">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -132,8 +130,7 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="sampleSent">Sample Sent</th>
-          <th sort-helper="sampleSentDate">Sample Sent Date</th>
+          <th sort-helper="dateSent">Date Sample Sent</th>
           <th sort-helper="karyotype.label">Karyotype</th>
           <th></th>
         </tr>
@@ -146,8 +143,7 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td><span tick="item.sampleSent"></span></td>
-          <td>{{item.sampleSentDate | dateFormat | missing}}</td>
+          <td>{{item.dateSent | dateFormat}}</td>
           <td>{{item.karyotype.label | missing}}</td>
 
           <td>
