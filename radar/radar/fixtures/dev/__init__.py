@@ -11,7 +11,7 @@ from radar.fixtures.dev.utils import random_date, generate_gender, generate_firs
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
     generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \
-    generate_postcode
+    generate_postcode, generate_title
 from radar.fixtures.validation import validate_and_add
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.models import Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
@@ -30,6 +30,8 @@ from radar.organisations import get_nhs_organisation, get_chi_organisation, get_
     get_nhsbt_organisation, get_radar_organisation
 from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
 from radar.cohorts import get_radar_cohort
+from radar.models.consultants import Consultant
+from radar.models.organisations import OrganisationConsultant
 
 
 DEFAULT_PASSWORD = 'password'
@@ -540,6 +542,21 @@ def create_patients(n):
         validate_and_add(cohort_patient)
 
 
+def create_consultants():
+    for organisation in Organisation.query.all():
+        consultant = Consultant()
+        gender = generate_gender()
+        consultant.title = generate_title(gender)
+        consultant.first_name = generate_first_name(gender)
+        consultant.last_name = generate_last_name()
+
+        organisation_consultant = OrganisationConsultant()
+        organisation_consultant.organisation = organisation
+        consultant.organisation_consultants.append(organisation_consultant)
+
+        validate_and_add(consultant)
+
+
 def create_data(patients=5, users=10, password=None):
     # Always generate the same "random" data
     random.seed(0)
@@ -556,5 +573,6 @@ def create_data(patients=5, users=10, password=None):
 
         create_users(users, password=password)
         create_patients(patients)
+        create_consultants()
 
         create_posts(10)

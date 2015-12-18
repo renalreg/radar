@@ -2,6 +2,7 @@ from radar.models import User, Post, PatientDemographics, Dialysis, Medication, 
     Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
     DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultSpec, \
     ResultGroupSpec, ResultGroupResultSpec, CohortFeature, CohortResultGroupSpec
+from radar.models.consultants import Consultant
 from radar.validation.cohort_features import CohortFeatureValidation
 from radar.validation.cohort_patients import CohortPatientValidation
 from radar.validation.cohort_result_group_specs import CohortResultGroupSpecValidation
@@ -30,6 +31,7 @@ from radar.validation.result_specs import ResultSpecValidation
 from radar.validation.result_groups import ResultGroupValidation
 from radar.validation.transplants import TransplantValidation
 from radar.validation.users import UserValidation
+from radar.validation.consultants import ConsultantValidation
 from radar.database import db
 from radar.auth.sessions import current_user
 
@@ -62,6 +64,7 @@ VALIDATIONS = {
     ResultGroupResultSpec: ResultGroupResultSpecValidation,
     CohortFeature: CohortFeatureValidation,
     CohortResultGroupSpec: CohortResultGroupSpecValidation,
+    Consultant: ConsultantValidation,
 }
 
 

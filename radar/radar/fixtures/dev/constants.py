@@ -85,6 +85,11 @@ LAST_NAMES = [
     'LEE',
 ]
 
+TITLES = {
+    GENDER_MALE: ['Mr', 'Dr'],
+    GENDER_FEMALE: ['Miss', 'Mrs', 'Dr'],
+}
+
 MEDICATION_NAMES = [
     'Paracetamol',
     'Ibuprofen',
