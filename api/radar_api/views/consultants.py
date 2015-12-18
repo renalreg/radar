@@ -1,10 +1,38 @@
 from flask import request
 
+from sqlalchemy.orm import aliased
+
 from radar_api.serializers.consultants import ConsultantSerializer, ConsultantRequestSerializer
 from radar.views.core import ListModelView, RetrieveModelView, UpdateModelView, DestroyModelView, CreateModelView
 from radar.models import Consultant
 from radar.permissions import AdminPermission
 from radar.validation.consultants import ConsultantValidation
+from radar.database import db
+from radar.models.organisations import OrganisationConsultant, Organisation, OrganisationPatient
+from radar.patient_search import PatientQueryBuilder
+from radar.auth.sessions import current_user
+from radar.models.patients import Patient
+
+
+def filter_consultants_by_patient_id(query, patient_id):
+    # Only return consultants that work at one of the organisations the patient belongs to
+    consultant_alias = aliased(Consultant)
+    consultants_for_patient_query = db.session.query(consultant_alias)\
+        .join(consultant_alias.organisation_consultants)\
+        .join(OrganisationConsultant.organisation)\
+        .join(Organisation.organisation_patients)\
+        .filter(
+            OrganisationPatient.patient_id == patient_id,
+            Consultant.id == consultant_alias.id
+        )
+    query = query.filter(consultants_for_patient_query.exists())
+
+    # Check the user has permission to view this patient
+    patient_query = PatientQueryBuilder(current_user).build()
+    patient_query = patient_query.filter(Patient.id == patient_id)
+    query = query.filter(patient_query.exists())
+
+    return query
 
 
 class ConsultantListView(ListModelView):
@@ -18,8 +46,10 @@ class ConsultantListView(ListModelView):
         serializer = ConsultantRequestSerializer()
         args = serializer.args_to_value(request.args)
 
+        # Consultants available to a patient
         if 'patient' in args:
-            pass
+            patient_id = args['patient']
+            query = filter_consultants_by_patient_id(query, patient_id)
 
         return query
 

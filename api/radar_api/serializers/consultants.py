@@ -2,6 +2,7 @@ from radar_api.serializers.organisations import OrganisationReferenceField
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.fields import ListField, IntegerField
 from radar.serializers.models import ModelSerializer
+from radar.serializers.core import Serializer
 from radar.models.consultants import Consultant
 from radar.models.organisations import OrganisationConsultant
 from radar.database import db
@@ -43,5 +44,5 @@ class ConsultantSerializer(MetaSerializerMixin, ModelSerializer):
         return obj
 
 
-class ConsultantRequestSerializer():
+class ConsultantRequestSerializer(Serializer):
     patient = IntegerField()
