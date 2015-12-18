@@ -23,23 +23,23 @@ def genetics(patient):
     obj = Genetics()
     obj.patient = patient
     obj.cohort = Cohort(id=1)
-    obj.sample_sent = True
-    obj.sample_sent_date = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
+    obj.date_sent = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.laboratory_reference_number = '12345'
     obj.karyotype = 1
     obj.results = 'foo\nbar\nbaz'
+    obj.summary = 'hello\nworld'
     return obj
 
 
 def test_valid(genetics):
     obj = valid(genetics)
-    assert obj.sample_sent is True
-    assert obj.sample_sent_date == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
+    assert obj.date_sent == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     assert obj.laboratory == 'Test'
     assert obj.laboratory_reference_number == '12345'
     assert obj.karyotype == 1
     assert obj.results == 'foo\nbar\nbaz'
+    assert obj.summary == 'hello\nworld'
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -56,28 +56,18 @@ def test_cohort_missing(genetics):
     invalid(genetics)
 
 
-def test_sample_not_sent(genetics):
-    genetics.sample_sent = False
-    obj = valid(genetics)
-    assert obj.sample_sent_date is None
-    assert obj.laboratory is None
-    assert obj.laboratory_reference_number is None
-    assert obj.karyotype is None
-    assert obj.results is None
-
-
-def test_sample_sent_date_none(genetics):
-    genetics.sample_sent_date = None
+def test_date_sent_none(genetics):
+    genetics.date_sent = None
     invalid(genetics)
 
 
-def test_sample_sent_date_future(genetics):
-    genetics.sample_sent_date = datetime.now(pytz.utc) + timedelta(days=1)
+def test_date_sent_future(genetics):
+    genetics.date_sent = datetime.now(pytz.utc) + timedelta(days=1)
     invalid(genetics)
 
 
-def test_sample_sent_date_before_dob(genetics):
-    genetics.sample_sent_date = datetime(1999, 12, 31, 23, 59, 59, tzinfo=pytz.utc)
+def test_date_sent_before_dob(genetics):
+    genetics.date_sent = datetime(1999, 12, 31, 23, 59, 59, tzinfo=pytz.utc)
     invalid(genetics)
 
 
@@ -108,6 +98,12 @@ def test_results_blank(genetics):
     genetics.results = ''
     obj = valid(genetics)
     assert obj.results is None
+
+
+def test_summary_blank(genetics):
+    genetics.summary = ''
+    obj = valid(genetics)
+    assert obj.summary is None
 
 
 def invalid(obj, **kwargs):
