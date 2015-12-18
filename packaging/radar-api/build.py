@@ -96,8 +96,8 @@ def test_api(root_path):
     api_src_path = get_api_src_path(root_path)
 
     heading('Test %s' % NAME)
-    run_tox(['-c', os.path.join(radar_src_path, 'tox.ini')])
-    run_tox(['-c', os.path.join(api_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(radar_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(api_src_path, 'tox.ini')])
 
 
 @click.command()
