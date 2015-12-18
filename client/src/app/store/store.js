@@ -31,6 +31,10 @@
       };
 
       Store.prototype.create = function(modelName, data) {
+        if (data === undefined) {
+          data = {};
+        }
+
         var Model = this.getModelConstructor(modelName);
         data = this.inflate(data);
         return new Model(modelName, data);
