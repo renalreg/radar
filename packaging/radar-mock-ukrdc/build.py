@@ -95,8 +95,8 @@ def test_mock_ukrdc(root_path):
     mock_ukrdc_src_path = get_mock_ukrdc_src_path(root_path)
 
     heading('Test %s' % NAME)
-    run_tox(['-c', os.path.join(radar_src_path, 'tox.ini')])
-    run_tox(['-c', os.path.join(mock_ukrdc_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(radar_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(mock_ukrdc_src_path, 'tox.ini')])
 
 
 @click.command()
