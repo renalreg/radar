@@ -62,22 +62,22 @@
     };
   });
 
-  app.factory('toSelectView', ['_', function(_) {
-    return function toSelectView(option, idPath, labelPath) {
-      if (idPath === undefined) {
-        idPath = 'id';
-      }
-
-      if (labelPath === undefined) {
-        labelPath = 'label';
-      }
-
-      var idGetter = _.property(idPath);
-      var labelGetter = _.property(labelPath);
-
+  app.factory('toSelectView', ['_', '$parse', function(_, $parse) {
+    return function toSelectView(option, idExpression, labelExpression) {
       if (option === null || option === undefined) {
         option = null;
       } else if (angular.isObject(option)) {
+        if (idExpression === undefined) {
+          idExpression = 'id';
+        }
+
+        if (labelExpression === undefined) {
+          labelExpression = 'label';
+        }
+
+        var idGetter = $parse(idExpression);
+        var labelGetter = $parse(labelExpression);
+
         option = {
           id: idGetter(option),
           label: labelGetter(option),

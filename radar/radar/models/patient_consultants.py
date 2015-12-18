@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey
+from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -16,6 +16,9 @@ class PatientConsultant(db.Model, MetaModelMixin):
 
     consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
     consultant = relationship('Consultant')
+
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
 
     __table_args__ = (
         UniqueConstraint('patient_id', 'consultant_id'),

@@ -10,8 +10,8 @@
         required: '&',
         model: '=',
         options: '=',
-        idPath: '@',
-        labelPath: '@',
+        optionsId: '@',
+        optionsLabel: '@',
       },
       templateUrl: 'app/forms/fields/select-field.html',
       link: function(scope) {
@@ -26,7 +26,7 @@
         });
 
         scope.$watchCollection('options', function(options) {
-          scope.data.options = wrapSelectOptions(options, scope.idPath, scope.labelPath);
+          scope.data.options = wrapSelectOptions(options, scope.optionsId, scope.optionsLabel);
         });
       }
     };

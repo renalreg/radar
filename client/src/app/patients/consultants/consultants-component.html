@@ -12,6 +12,16 @@
       </tr>
 
       <tr>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}}</td>
+      </tr>
+
+      <tr>
         <th>Title</th>
         <td>{{item.consultant.title}}</td>
       </tr>
@@ -38,10 +48,28 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
+        <div frm-label>From Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.fromDate" required="true"></div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate" min-date="item.fromDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
         <div frm-label>Consultant</div>
 
         <div frm-control>
-          <div frm-select-field model="item.consultant" required="true" options="consultants"></div>
+          <div frm-select-field model="item.consultant" required="true" options="consultants" options-label="toString()"></div>
           <div frm-errors errors="item.errors.consultant"></div>
         </div>
       </div>
@@ -68,7 +96,9 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="consultant">Consultant</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
+          <th sort-helper="consultant.toString()">Consultant</th>
           <th></th>
         </tr>
       </thead>
@@ -80,7 +110,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.consultant}}</td>
+          <td>{{item.fromDate | dateFormat}}</td>
+          <td>{{item.toDate | dateFormat}}</td>
+          <td>{{item.consultant.toString()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

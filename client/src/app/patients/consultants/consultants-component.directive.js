@@ -27,6 +27,7 @@
       self.load(firstPromise([
         store.findMany('patient-consultants', {patient: $scope.patient.id}),
         store.findMany('consultants', {patient: $scope.patient.id}).then(function(consultants) {
+          console.log(consultants);
           $scope.consultants = consultants;
         })
       ]));
