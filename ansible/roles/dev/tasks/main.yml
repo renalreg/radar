@@ -13,6 +13,7 @@
     - htop
     - man
     - bind-utils
+    - tmux
 
 - name: install development tools
   yum: name='@Development Tools' state=present
