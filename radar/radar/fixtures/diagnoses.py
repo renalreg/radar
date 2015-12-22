@@ -11,7 +11,12 @@ COHORT_DIAGNOSES = {
     'APRT': [
         'Adenine Phosphoribosyltransferase (APRT) Deficiency',
     ],
-    'ARPKD': [],
+    'ADTKD': [
+        'Uromodulin-Associated Nephropathy (Familial Juvenile Hyperuricaemic Nephropathy)',
+    ],
+    'ARPKD': [
+        'Autosomal Recessive Polycystic Kidney Disease',
+    ],
     'AHUS': [
         'Atypical Haemolytic Uraemic Syndrome',
     ],
@@ -27,7 +32,6 @@ COHORT_DIAGNOSES = {
         'Dent Disease',
         'Other Primary Renal Fanconi Syndrome',
     ],
-    'FUAN': [],
     'HNF1B': [
         'Renal Cysts & Diabetes Syndrome',
         'Glomerulocystic Disease',
