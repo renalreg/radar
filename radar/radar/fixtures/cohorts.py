@@ -46,6 +46,19 @@ COHORTS = [
         'result_group_codes': [],
     },
     {
+        'code': 'ADTKD',
+        'name': 'Autosomal Dominant Tubulointerstitial Kidney Disease',
+        'short_name': 'ADTKD',
+        'features': [
+            FEATURES.DIAGNOSES,
+            FEATURES.GENETICS,
+            FEATURES.RENAL_IMAGING,
+            FEATURES.RESULTS,
+            FEATURES.MEDICATIONS,
+        ],
+        'result_group_codes': [],
+    },
+    {
         'code': 'ARPKD',
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
@@ -115,19 +128,6 @@ COHORTS = [
         'short_name': 'Dent & Lowe',
         'features': [
             FEATURES.DIAGNOSES,
-        ],
-        'result_group_codes': [],
-    },
-    {
-        'code': 'FUAN',
-        'name': 'Familial Urate Associated Nephropathy',
-        'short_name': 'FUAN',
-        'features': [
-            FEATURES.DIAGNOSES,
-            FEATURES.GENETICS,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
         ],
         'result_group_codes': [],
     },
