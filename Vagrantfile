@@ -1,9 +1,3 @@
-# XXX On windows hosts only:
-# Use Vagrant 1.7.3 (exact version) and VirtualBox 4.x (4.3.30 is known to work)
-# Vagrant 1.7.3 added support for long paths. This was removed in 1.7.4 as it
-# caused problems in VirtualBox 5.
-# FIXME https://github.com/mitchellh/vagrant/issues/1953
-
 nbt = ENV['NBT'] == '1'
 
 if nbt && !Vagrant.has_plugin?('vagrant-proxyconf')
