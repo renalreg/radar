@@ -26,7 +26,7 @@ def cli():
 @click.option('--database', default='patientview')
 @click.option('--analyse/--no-analyse', default=True)
 def radar1(output, host, port, username, password, database, analyse):
-    db = get_db('mysql', host, port, username, password, database)
+    db = get_db('mysql+pymysql', host, port, username, password, database)
     schema_rows = get_radar1_schema_rows(db, database)
     schema = get_schema(db, schema_rows, analyse)
     schema_to_csv(schema, output, analyse)
@@ -42,7 +42,7 @@ def radar1(output, host, port, username, password, database, analyse):
 @click.option('--schema', default='public')
 @click.option('--analyse/--no-analyse', default=False)
 def radar2(output, host, port, username, password, database, schema, analyse):
-    db = get_db('postgresql', host, port, username, password, database)
+    db = get_db('postgresql+psycopg2', host, port, username, password, database)
     schema_rows = get_radar2_schema_rows(db, database, schema)
     schema = get_schema(db, schema_rows, analyse)
     schema_to_csv(schema, output, analyse)
