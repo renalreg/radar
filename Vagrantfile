@@ -24,6 +24,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder '.', '/home/vagrant/src', create: true, owner: 'vagrant', group: 'vagrant'
 
   # FIXME https://github.com/ansible/ansible/pull/10369
+  # FIXME should be fixed in ansible 2.0
   config.vm.synced_folder 'ansible', '/home/vagrant/ansible', create: true, owner: 'vagrant', group: 'vagrant', :mount_options => ["dmode=755", "fmode=644"]
 
   config.vm.provider 'virtualbox' do |v|
