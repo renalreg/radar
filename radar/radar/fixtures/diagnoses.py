@@ -1,7 +1,54 @@
 from radar.fixtures.validation import validate_and_add
 from radar.models import CohortDiagnosis, Cohort
 
+# TODO
 COHORT_DIAGNOSES = {
+    'ALPORT': [
+        'Alport Syndrome - No Histology',
+        'Alport Syndrome - Histologically Proven',
+        'Thin Basement Membrane Disease',
+    ],
+    'APRT': [
+        'Adenine Phosphoribosyltransferase (APRT) Deficiency',
+    ],
+    'ARPKD': [],
+    'AHUS': [
+        'Atypical Haemolytic Uraemic Syndrome',
+    ],
+    'CALCIP': [],
+    'CYSTIN': [
+        'Cystinosis',
+    ],
+    'CYSURIA': [
+        'Cystinuria',
+    ],
+    'DENTLOWE': [
+        'Lowe syndome (Oculocerebrorenal Syndrome)',
+        'Dent Disease',
+        'Other Primary Renal Fanconi Syndrome',
+    ],
+    'FUAN': [],
+    'HNF1B': [
+        'Renal Cysts & Diabetes Syndrome',
+        'Glomerulocystic Disease',
+        'Multicystic Dysplastic Kidneys',
+        'Inherited/Genetic Diabetes Mellitus Type II (MODY)',
+    ],
+    'HYPERRDG': [
+        'Primary Hyperoxaluria',
+        'Primary Hyperoxaluria Type I',
+        'Primary Hyperoxaluria Type II',
+    ],
+    'HYPALK': [
+        'Gitelman Syndrome',
+        'Type 1 Bartter Syndrome',
+        'Type 2 Bartter Syndrome',
+        'Type 3 Bartter Syndrome',
+        'Type 4a Bartter Syndrome',
+        'Type 4b Bartter Syndrome',
+        'EAST Syndrome',
+        'Liddle Syndrome',
+    ],
     'INS': [
         'SRNS - Primary Steroid Resistance',
         'SRNS - Secondary Steroid Resistance',
@@ -10,7 +57,25 @@ COHORT_DIAGNOSES = {
         'SSNS - Steroid Dependant',
         'SSNS - Frequently Relapsing',
         'SSNS - Partial Steroid Resistance',
-    ]
+    ],
+    'IGANEPHRO': [],
+    'MPGN': [
+        'MPGN (Membranoproliferative Glomerulonephritis Type II - Dense Deposit Disease)',
+    ],
+    'MEMRDG': [],
+    'NEPHROS': [],
+    'NSMPGNC3': [],
+    'OBS': [
+        'Pregnancy',
+    ],
+    'PCRA': [],
+    'STECHUS': [
+        'STEC Associated HUS (Diarrhoea Associated)',
+    ],
+    'VASRDG': [
+        'Systemic Vasculitis - ANCA Positive - No Histology',
+        'Systemic Vasculitis - ANCA Negative - Histologially Proven',
+    ],
 }
 
 
