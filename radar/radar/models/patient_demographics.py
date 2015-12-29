@@ -22,10 +22,7 @@ class PatientDemographics(db.Model, MetaModelMixin):
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
     gender = Column(Integer)
-
-    ethnicity_code_id = Column(String, ForeignKey('ethnicity_codes.id'))
-    ethnicity_code = relationship('EthnicityCode')
-
+    ethnicity = Column(String)
     home_number = Column(String)
     work_number = Column(String)
     mobile_number = Column(String)
@@ -36,8 +33,3 @@ class PatientDemographics(db.Model, MetaModelMixin):
     )
 
 Index('patient_demographics_patient_id_idx', PatientDemographics.patient_id)
-
-
-# TODO remove
-class EthnicityCode(StringLookupTable):
-    __tablename__ = 'ethnicity_codes'

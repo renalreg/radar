@@ -34,7 +34,7 @@ class CreatedUserMixin(object):
 class CreatedDateMixin(object):
     @declared_attr
     def created_date(cls):
-        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default='now()')
 
 
 class ModifiedUserMixin(object):
@@ -50,7 +50,7 @@ class ModifiedUserMixin(object):
 class ModifiedDateMixin(object):
     @declared_attr
     def modified_date(cls):
-        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default='now()')
 
 
 class CreatedMixin(CreatedUserMixin, CreatedDateMixin):

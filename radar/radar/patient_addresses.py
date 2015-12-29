@@ -9,23 +9,23 @@ class PatientAddressProxy(object):
         self.demographics_permission = can_view_demographics(user, address.patient)
 
     @property
-    def address_line_1(self):
+    def address1(self):
         if self.demographics_permission:
-            return self.address.address_line_1
+            return self.address.address1
         else:
             return Empty
 
     @property
-    def address_line_2(self):
+    def address2(self):
         if self.demographics_permission:
-            return self.address.address_line_2
+            return self.address.address2
         else:
             return Empty
 
     @property
-    def address_line_3(self):
+    def address3(self):
         if self.demographics_permission:
-            return self.address.address_line_3
+            return self.address.address3
         else:
             return Empty
 

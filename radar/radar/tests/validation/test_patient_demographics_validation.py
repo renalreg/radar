@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.models import PatientDemographics, Patient, DataSource, EthnicityCode, GENDER_MALE, GENDER_FEMALE
+from radar.models import PatientDemographics, Patient, DataSource, GENDER_MALE, GENDER_FEMALE
 from radar.validation.core import ValidationError
 from radar.validation.patient_demographics import PatientDemographicsValidation
 from radar.validation.validators import DAY_ZERO
@@ -26,7 +26,7 @@ def demographics(patient):
     obj.date_of_birth = date(1900, 1, 1)
     obj.date_of_death = date(2000, 1, 1)
     obj.gender = GENDER_MALE
-    obj.ethnicity_code = EthnicityCode(id=1)
+    obj.ethnicity = 'A'
     obj.home_number = '111111'
     obj.work_number = '222222'
     obj.mobile_number = '333333'
@@ -41,7 +41,7 @@ def test_valid(demographics):
     assert obj.date_of_birth == date(1900, 1, 1)
     assert obj.date_of_death == date(2000, 1, 1)
     assert obj.gender == GENDER_MALE
-    assert obj.ethnicity_code == demographics.ethnicity_code
+    assert obj.ethnicity == 'A'
     assert obj.home_number == '111111'
     assert obj.work_number == '222222'
     assert obj.mobile_number == '333333'
@@ -172,9 +172,9 @@ def test_gender_invalid(demographics):
 
 
 def test_ethnicity_missing(demographics):
-    demographics.ethnicity_code = None
+    demographics.ethnicity = None
     obj = valid(demographics)
-    obj.ethnicity_code = None
+    obj.ethnicity = None
 
 
 def test_home_number_blank(demographics):

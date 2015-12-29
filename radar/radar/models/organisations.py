@@ -111,7 +111,7 @@ class Organisation(db.Model):
 
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False)
-    type = Column(String, nullable=False)
+    type = Column(String, nullable=False)  # TODO remove
     name = Column(String, nullable=False)
 
     # TODO not a very good name

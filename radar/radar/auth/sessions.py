@@ -27,7 +27,6 @@ def login(username, password):
     # Get user by username
     user = User.query\
         .filter(User.username == username)\
-        .filter(not_(User.is_bot))\
         .first()
 
     # User not found

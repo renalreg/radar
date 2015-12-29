@@ -3,14 +3,13 @@ from radar_api.serializers.cohorts import CohortReferenceField
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.organisation_patients import OrganisationPatientSerializer
 from radar_api.serializers.organisations import OrganisationReferenceField
-from radar_api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar.patients import PatientProxy
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
     DateField, ListField, DateTimeField
 from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedStringSerializer
-from radar.models import Patient, GENDERS
+from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
+from radar.models import Patient, GENDERS, ETHNICITIES
 
 
 class PatientSerializer(MetaSerializerMixin, ModelSerializer):
@@ -20,8 +19,8 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     date_of_death = DateField(read_only=True)
     year_of_death = IntegerField(read_only=True)
-    gender = CodedStringSerializer(GENDERS, read_only=True)
-    ethnicity_code = EthnicityCodeReferenceField(read_only=True)
+    gender = CodedIntegerSerializer(GENDERS, read_only=True)
+    ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
     organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients', read_only=True)
     cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients', read_only=True)
     recruited_by_organisation = OrganisationReferenceField(read_only=True)

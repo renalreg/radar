@@ -53,7 +53,7 @@
 
       <tr>
         <th>Ethnicity</th>
-        <td>{{item.ethnicityCode.label | missing}}</td>
+        <td>{{item.ethnicity.label | missing}}</td>
       </tr>
 
       <tr ng-if="item.homeNumber !== undefined">
@@ -138,8 +138,8 @@
             <div frm-label>Ethnicity</div>
 
             <div frm-control>
-              <div frm-select-field model="item.ethnicityCode" options="ethnicityCodes"></div>
-              <div frm-errors errors="item.errors.ethnicityCode"></div>
+              <div frm-select-field model="item.ethnicity" options="ethnicities"></div>
+              <div frm-errors errors="item.errors.ethnicity"></div>
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@
           <th sort-helper="dateOfBirth || yearOfBirth">DOB</th>
           <th sort-helper="dateOfDeath || yearOfDeath">DOD</th>
           <th sort-helper="gender">Gender</th>
-          <th sort-helper="ethnicityCode.label">Ethnicity</th>
+          <th sort-helper="ethnicity.label">Ethnicity</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
         </tr>
       </thead>
@@ -239,7 +239,7 @@
           </td>
 
           <td>{{item.gender.label}}</td>
-          <td>{{item.ethnicityCode.label | missing}}</td>
+          <td>{{item.ethnicity.label | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
         </tr>
       </tbody>

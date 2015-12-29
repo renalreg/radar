@@ -1,4 +1,4 @@
-from radar.models.patients import GENDERS
+from radar.models.patients import GENDERS, ETHNICITIES
 from radar.validation.core import Validation, Field, pass_new_obj, ValidationError
 from radar.validation.data_sources import RadarDataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
@@ -13,7 +13,7 @@ class PatientDemographicsValidation(PatientValidationMixin, RadarDataSourceValid
     date_of_birth = Field([required(), after_day_zero(), not_in_future()])
     date_of_death = Field([optional(), after_day_zero(), not_in_future()])
     gender = Field([required(), in_(GENDERS.keys())])
-    ethnicity_code = Field([optional()])
+    ethnicity = Field([optional(), in_(ETHNICITIES.keys())])
     home_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     work_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     mobile_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])

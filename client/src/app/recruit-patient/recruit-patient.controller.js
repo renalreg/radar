@@ -30,7 +30,7 @@
     init();
 
     function init() {
-      $q.all([loadGenders(), loadEthnicityCodes(), loadNumberOrganisations()]).then(function() {
+      $q.all([loadGenders(), loadEthnicities(), loadNumberOrganisations()]).then(function() {
         $scope.loading = false;
       });
     }
@@ -121,9 +121,9 @@
       });
     }
 
-    function loadEthnicityCodes() {
-      return store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
-        $scope.ethnicityCodes = ethnicityCodes;
+    function loadEthnicities() {
+      return store.findMany('ethnicities').then(function(ethnicities) {
+        $scope.ethnicities = ethnicities;
       });
     }
 

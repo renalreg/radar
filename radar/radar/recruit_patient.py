@@ -203,7 +203,7 @@ def recruit_patient(params):
         patient_demographics.last_name = params['last_name']
         patient_demographics.date_of_birth = params['date_of_birth']
         patient_demographics.gender = params['gender']
-        patient_demographics.ethnicity_code = params.get('ethnicity_code')
+        patient_demographics.ethnicity = params.get('ethnicity')
         patient_demographics = validate(patient_demographics)
         db.session.add(patient_demographics)
 

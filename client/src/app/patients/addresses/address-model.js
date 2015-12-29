@@ -13,16 +13,16 @@
     PatientAddressModel.prototype.getAddress = function() {
       var lines = [];
 
-      if (this.addressLine1) {
-        lines.push(this.addressLine1);
+      if (this.address1) {
+        lines.push(this.address1);
       }
 
-      if (this.addressLine2) {
-        lines.push(this.addressLine2);
+      if (this.address2) {
+        lines.push(this.address2);
       }
 
-      if (this.addressLine3) {
-        lines.push(this.addressLine3);
+      if (this.address3) {
+        lines.push(this.address3);
       }
 
       if (this.postcode) {

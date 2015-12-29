@@ -96,7 +96,7 @@ MEDICATION_NAMES = [
     'Aspirin',
 ]
 
-ADDRESS_LINE_1 = [
+ADDRESS1 = [
     '1 Church Road',
     '2 Station Road',
     '3 Bath Road',
@@ -104,7 +104,7 @@ ADDRESS_LINE_1 = [
     '8 Concorde Lane'
 ]
 
-ADDRESS_LINE_2 = [
+ADDRESS2 = [
     'Redland',
     'Southmead',
     'Horfield',
@@ -112,7 +112,7 @@ ADDRESS_LINE_2 = [
     'Bedminster',
 ]
 
-ADDRESS_LINE_3 = [
+ADDRESS3 = [
     'Bristol'
 ]
 

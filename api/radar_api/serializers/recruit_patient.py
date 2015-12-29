@@ -1,8 +1,7 @@
-from radar_api.serializers.patient_demographics import EthnicityCodeReferenceField
 from radar_api.serializers.cohorts import CohortReferenceField
 from radar_api.serializers.organisations import OrganisationReferenceField
-from radar.serializers.codes import CodedIntegerSerializer
-from radar.models.patients import GENDERS
+from radar.serializers.codes import CodedIntegerSerializer, CodedStringSerializer
+from radar.models.patients import GENDERS, ETHNICITIES
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, DateField, ListField
 
@@ -37,7 +36,7 @@ class RecruitPatientSerializer(Serializer):
     last_name = StringField()
     date_of_birth = DateField()
     gender = CodedIntegerSerializer(GENDERS)
-    ethnicity_code = EthnicityCodeReferenceField()
+    ethnicity = CodedStringSerializer(ETHNICITIES)
     patient_numbers = ListField(PatientNumberSerializer())
     recruited_by_organisation = OrganisationReferenceField()
     cohort = CohortReferenceField()
