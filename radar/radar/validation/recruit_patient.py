@@ -1,6 +1,6 @@
 from radar.validation.core import Validation, Field, pass_call, pass_context, ValidationError
 from radar.validation.validators import optional, required, not_in_future, in_, none_if_blank
-from radar.models.patients import GENDERS
+from radar.models.patients import GENDERS, ETHNICITIES
 from radar.permissions import has_permission_for_organisation
 from radar.organisations import is_radar_organisation
 from radar.models.organisations import ORGANISATION_TYPE_OTHER
@@ -47,7 +47,7 @@ class RecruitPatientValidation(Validation):
     last_name = Field([none_if_blank(), optional()])
     date_of_birth = Field([optional(), not_in_future()])
     gender = Field([optional(), in_(GENDERS.keys())])
-    ethnicity_code = Field([optional()])
+    ethnicities = Field([optional(), in_(ETHNICITIES.keys())])
     recruited_by_organisation = Field([required()])
     cohort = Field([required()])
 

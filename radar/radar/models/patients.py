@@ -22,13 +22,33 @@ GENDERS = OrderedDict([
     (GENDER_NOT_SPECIFIED, 'Not Specified'),
 ])
 
+ETHNICITIES = OrderedDict([
+    ('A', 'White - British'),
+    ('B', 'White - Irish'),
+    ('C', 'Other White Background'),
+    ('D', 'Mixed - White and Black Caribbean'),
+    ('E', 'Mixed - White and Black African'),
+    ('F', 'Mixed - White and Asian'),
+    ('G', 'Other Mixed Background'),
+    ('H', 'Asian or Asian British - Indian'),
+    ('J', 'Asian or Asian British - Pakistani'),
+    ('K', 'Asian or Asian British - Bangladeshi'),
+    ('L', 'Other Asian Background'),
+    ('M', 'Black Carribean'),
+    ('N', 'Black African'),
+    ('P', 'Other Black Background'),
+    ('R', 'Chinese'),
+    ('S', 'Other Ethnic Background'),
+    ('Z', 'Refused / Not Stated'),
+])
+
 
 class Patient(db.Model, MetaModelMixin):
     __tablename__ = 'patients'
 
     id = Column(Integer, primary_key=True)
 
-    is_active = Column(Boolean, nullable=False, default=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default='true')
     comments = Column(Text)
 
     @property
@@ -103,10 +123,9 @@ class Patient(db.Model, MetaModelMixin):
     def date_of_death(self):
         return self.latest_demographics_attr('date_of_death')
 
-    # TODO test this
     @hybrid_property
-    def ethnicity_code(self):
-        return self.latest_demographics_attr('ethnicity_code')
+    def ethnicity(self):
+        return self.latest_demographics_attr('ethnicity')
 
     @hybrid_property
     def gender(self):
@@ -136,10 +155,9 @@ class Patient(db.Model, MetaModelMixin):
     def date_of_death(cls):
         return cls.latest_demographics_query(PatientDemographics.date_of_death)
 
-    # TODO test this
-    @ethnicity_code.expression
-    def ethnicity_code(cls):
-        return cls.latest_demographics_query(PatientDemographics.ethnicity_code)
+    @ethnicity.expression
+    def ethnicity(cls):
+        return cls.latest_demographics_query(PatientDemographics.ethnicity)
 
     @gender.expression
     def gender(cls):

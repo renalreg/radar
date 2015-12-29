@@ -2,8 +2,8 @@ import difflib
 import random
 from datetime import date, timedelta
 
-from radar.fixtures.dev.constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS_LINE_1, \
-    ADDRESS_LINE_3, ADDRESS_LINE_2, POSTCODES, TITLES
+from radar.fixtures.dev.constants import FIRST_NAMES, GENDER_FEMALE, GENDER_MALE, LAST_NAMES, ADDRESS1, \
+    ADDRESS3, ADDRESS2, POSTCODES, TITLES
 from radar.utils import is_date, date_to_datetime
 
 
@@ -121,16 +121,16 @@ def generate_nhsbt_no():
     return str(random.randint(1, 200000))
 
 
-def generate_address_line_1():
-    return random.choice(ADDRESS_LINE_1)
+def generate_address1():
+    return random.choice(ADDRESS1)
 
 
-def generate_address_line_2():
-    return random.choice(ADDRESS_LINE_2)
+def generate_address2():
+    return random.choice(ADDRESS2)
 
 
-def generate_address_line_3():
-    return random.choice(ADDRESS_LINE_3)
+def generate_address3():
+    return random.choice(ADDRESS3)
 
 
 def generate_postcode():

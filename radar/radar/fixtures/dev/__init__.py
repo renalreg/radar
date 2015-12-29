@@ -3,19 +3,19 @@ from datetime import date, datetime, timedelta
 
 from jinja2.utils import generate_lorem_ipsum
 import pytz
-from sqlalchemy import func, desc
+from sqlalchemy import desc
 
 from radar.fixtures import create_initial_data
 from radar.fixtures.dev.constants import MEDICATION_NAMES
 from radar.fixtures.dev.utils import random_date, generate_gender, generate_first_name, generate_last_name, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
-    generate_chi_no, generate_nhs_no, generate_address_line_1, generate_address_line_2, generate_address_line_3, \
+    generate_chi_no, generate_nhs_no, generate_address1, generate_address2, generate_address3, \
     generate_postcode, generate_title
 from radar.fixtures.validation import validate_and_add
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.models import Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
-    RenalImaging, ResultGroup, EthnicityCode, MEDICATION_DOSE_UNITS, \
+    RenalImaging, ResultGroup, ETHNICITIES, MEDICATION_DOSE_UNITS, \
     MEDICATION_FREQUENCIES, MEDICATION_ROUTES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
     RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
     PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser, \
@@ -32,9 +32,7 @@ from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
 from radar.cohorts import get_radar_cohort
 from radar.models.consultants import Consultant
 from radar.models.organisations import OrganisationConsultant
-
-
-DEFAULT_PASSWORD = 'password'
+from radar.fixtures.users import DEFAULT_PASSWORD
 
 
 def create_users(n, password=DEFAULT_PASSWORD):
@@ -52,32 +50,6 @@ def create_users(n, password=DEFAULT_PASSWORD):
         user.password = password
         user.is_admin = True
         validate_and_add(user, {'allow_weak_passwords': True})
-
-
-def create_admin_user(password=DEFAULT_PASSWORD):
-    user = User()
-    user.username = 'admin'
-    user.email = 'admin@example.org'
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
-    user.is_admin = True
-    user.password = password
-    validate_and_add(user, {'allow_weak_passwords': True})
-
-
-def create_bot_user(password=DEFAULT_PASSWORD):
-    bot = User()
-    bot.username = 'bot'
-    bot.email = 'bot@example.org'
-    bot.is_admin = True
-    bot.is_bot = True
-    bot.password = password
-    bot.created_user = bot
-    bot.modified_user = bot
-    bot.created_date = func.now()
-    bot.modified_date = func.now()
-    db.session.add(bot)
-    db.session.flush()
 
 
 def create_southmead_user(password=DEFAULT_PASSWORD):
@@ -179,8 +151,6 @@ def create_result_groups_f():
 
 
 def create_demographics_f():
-    ethnicity_codes = EthnicityCode.query.all()
-
     def create_demographics(patient, data_source, gender):
         old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
         new_d = PatientDemographics()
@@ -192,7 +162,7 @@ def create_demographics_f():
             new_d.last_name = generate_last_name()
             new_d.gender = gender
             new_d.date_of_birth = generate_date_of_birth()
-            new_d.ethnicity_code = random.choice(ethnicity_codes)
+            new_d.ethnicity = random.choice(ETHNICITIES.keys())
 
             # 10% chance of being dead :(
             if random.random() < 0.1:
@@ -222,7 +192,7 @@ def create_demographics_f():
             if random.random() > 0.5:
                 new_d.date_of_birth = new_d.date_of_birth + timedelta(random.randint(-100, 100))
 
-            new_d.ethnicity_code = old_d.ethnicity_code
+            new_d.ethnicity = old_d.ethnicity
             new_d.date_of_death = old_d.date_of_death
             new_d.home_number = old_d.home_number
             new_d.mobile_number = old_d.mobile_number
@@ -303,9 +273,9 @@ def create_patient_addresses_f():
 
         if old_a is None:
             new_a.from_date = patient.earliest_date_of_birth
-            new_a.address_line_1 = generate_address_line_1()
-            new_a.address_line_2 = generate_address_line_2()
-            new_a.address_line_3 = generate_address_line_3()
+            new_a.address1 = generate_address1()
+            new_a.address2 = generate_address2()
+            new_a.address3 = generate_address3()
             new_a.postcode = generate_postcode()
         else:
             to_date = random_date(old_a.from_date, date.today())
@@ -313,15 +283,15 @@ def create_patient_addresses_f():
             if random.random() > 0.5 and to_date != old_a.from_date:
                 old_a.to_date = to_date
                 new_a.from_date = to_date
-                new_a.address_line_1 = generate_address_line_1()
-                new_a.address_line_2 = generate_address_line_2()
-                new_a.address_line_3 = generate_address_line_3()
+                new_a.address1 = generate_address1()
+                new_a.address2 = generate_address2()
+                new_a.address3 = generate_address3()
                 new_a.postcode = generate_postcode()
             else:
                 new_a.from_date = old_a.from_date
-                new_a.address_line_1 = old_a.address_line_1
-                new_a.address_line_2 = old_a.address_line_2
-                new_a.address_line_3 = old_a.address_line_3
+                new_a.address1 = old_a.address1
+                new_a.address2 = old_a.address2
+                new_a.address3 = old_a.address3
                 new_a.postcode = old_a.postcode
 
         validate_and_add(new_a)
@@ -557,14 +527,11 @@ def create_consultants():
         validate_and_add(consultant)
 
 
-def create_data(patients=5, users=10, password=None):
+def create_data(patients=5, users=10, password=DEFAULT_PASSWORD):
     # Always generate the same "random" data
     random.seed(0)
 
     with db.session.no_autoflush:
-        create_bot_user(password=password)
-        create_admin_user(password=password)
-
         create_initial_data()
 
         create_southmead_user(password=password)

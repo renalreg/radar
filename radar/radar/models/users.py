@@ -36,19 +36,19 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     id = Column(Integer, primary_key=True)
     _username = Column('username', String, nullable=False)
-    password_hash = Column(String, nullable=False)
+    password_hash = Column(String)
     _email = Column('email', String)
     first_name = Column(String)
     last_name = Column(String)
     telephone_number = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False)
-    is_bot = Column(Boolean, default=False, nullable=False)
-    is_enabled = Column(Boolean, default=True, nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False, server_default='false')
+    is_bot = Column(Boolean, default=False, nullable=False, server_default='false')
+    is_enabled = Column(Boolean, default=True, nullable=False, server_default='true')
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False)
+    force_password_change = Column(Boolean, default=False, nullable=False, server_default='false')
 
     organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
     cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])
@@ -98,7 +98,10 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self.reset_password_token = None
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return (
+            self.password_hash is not None and
+            check_password_hash(self.password_hash, password)
+        )
 
     @classmethod
     def is_authenticated(cls):
