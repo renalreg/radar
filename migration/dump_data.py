@@ -4,33 +4,32 @@ from collections import defaultdict, OrderedDict
 import os.path
 
 import click
+from sqlalchemy import create_engine
 
-from dump_tools import rows_to_csv, get_db
+from dump_tools import rows_to_csv
 
 
 @click.command()
-@click.argument('output_dir', default='.')
-@click.option('--host', default='localhost')
-@click.option('--port', default=3306)
-@click.option('--username', default='dbaccess')
-@click.option('--password', required=True)
-@click.option('--database', default='patientview')
-def main(output_dir, host, port, username, password, database):
-    db = get_db('mysql+pymysql', host, port, username, password, database)
-    tables = get_tables(db, database)
-    tables_to_csv(db, tables, output_dir)
+@click.argument('src')
+@click.argument('dest', default='.')
+def main(src, dest):
+    engine = create_engine(src)
+    conn = engine.connect()
+
+    tables = get_tables(conn)
+    tables_to_csv(conn, tables, dest)
 
 
-def get_tables(db, database_name):
+def get_tables(conn):
     """Gets a list of tables and their columns."""
 
-    columns = db.execute("""
+    columns = conn.execute("""
         select
             table_name,
             column_name
         from information_schema.columns
         where
-            table_schema = %s and
+            table_schema = DATABASE() and
             (
                 table_name = 'diagnosis' or
                 table_name = 'medicine' or
@@ -44,7 +43,7 @@ def get_tables(db, database_name):
                 table_name = 'usermapping'
             )
         order by table_name, ordinal_position
-    """, [database_name])
+    """)
 
     tables = defaultdict(list)
 
@@ -58,26 +57,26 @@ def get_tables(db, database_name):
     return tables
 
 
-def tables_to_csv(db, tables, output_dir):
+def tables_to_csv(conn, tables, output_dir):
     """Dumps the data in each table to a CSV file in the output directory."""
 
     for table_name, column_names in tables.items():
         print table_name
         output_filename = os.path.join(output_dir, table_name + '.csv')
         output_file = open(output_filename, 'wb')
-        table_to_csv(db, table_name, column_names, output_file)
+        table_to_csv(conn, table_name, column_names, output_file)
 
 
-def table_to_csv(db, table_name, column_names, output_file):
+def table_to_csv(conn, table_name, column_names, output_file):
     """Dump a table to a CSV file."""
 
-    rows = get_data(db, table_name, column_names)
+    rows = get_data(conn, table_name, column_names)
     rows_to_csv(rows, output_file)
 
 
-def get_data(db, table_name, column_names):
+def get_data(conn, table_name, column_names):
     columns = ','.join('`%s`' % x for x in column_names)
-    return db.execute('select {columns} from {table_name} limit 100000'.format(
+    return conn.execute('select {columns} from {table_name} limit 100000'.format(
         table_name=table_name,
         columns=columns
     ))
