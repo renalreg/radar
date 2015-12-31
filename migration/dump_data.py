@@ -16,7 +16,7 @@ from dump_tools import rows_to_csv, get_db
 @click.option('--password', required=True)
 @click.option('--database', default='patientview')
 def main(output_dir, host, port, username, password, database):
-    db = get_db('mysql', host, port, username, password, database)
+    db = get_db('mysql+pymysql', host, port, username, password, database)
     tables = get_tables(db, database)
     tables_to_csv(db, tables, output_dir)
 
