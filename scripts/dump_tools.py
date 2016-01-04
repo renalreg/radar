@@ -1,25 +1,5 @@
-import csv
 from datetime import datetime, date
-
-from sqlalchemy import create_engine
-
-
-def get_connection_string(schema, host, port, username, password, database):
-    connection_string = '{schema}://{username}:{password}@{host}:{port}/{database}'.format(
-        schema=schema,
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        database=database,
-    )
-    return connection_string
-
-
-def get_db(schema, host, port, username, password, database):
-    connection_string = get_connection_string(schema, host, port, username, password, database)
-    db = create_engine(connection_string)
-    return db
+import csv
 
 
 def to_str(value):

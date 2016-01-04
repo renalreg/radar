@@ -111,11 +111,10 @@ class Organisation(db.Model):
 
     id = Column(Integer, primary_key=True)
     code = Column(String, nullable=False)
-    type = Column(String, nullable=False)  # TODO remove
+    type = Column(String, nullable=False)
     name = Column(String, nullable=False)
 
-    # TODO not a very good name
-    is_national = Column(Boolean, nullable=False, default=False)
+    recruitment = Column(Boolean, nullable=False, default=False, server_default='false')
 
     data_sources = relationship('DataSource')
     organisation_patients = relationship('OrganisationPatient')

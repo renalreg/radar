@@ -128,7 +128,7 @@
     }
 
     function loadNumberOrganisations() {
-      return store.findMany('organisations', {isNational: true}).then(function(organisations) {
+      return store.findMany('organisations', {recruitment: true}).then(function(organisations) {
         // Sort by name
         organisations = _.sortBy(organisations, 'name');
 

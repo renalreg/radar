@@ -17,8 +17,8 @@ class OrganisationListView(ListModelView):
         if 'type' in args:
             query = query.filter(Organisation.type == args['type'])
 
-        if 'is_national' in args:
-            query = query.filter(Organisation.is_national == args['is_national'])
+        if 'recruitment' in args:
+            query = query.filter(Organisation.recruitment == args['recruitment'])
 
         return query
 
