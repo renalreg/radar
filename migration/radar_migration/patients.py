@@ -32,6 +32,7 @@ def migrate_patients(migration, old_conn, new_conn):
             r.unitcode AS 'unit_code',
             r.dateReg AS 'date_registered',
             r.hospitalnumber AS 'hospital_number',
+            user.username AS 'username',
             (CASE WHEN COALESCE(p.forename, '') != '' THEN p.forename ELSE r.forename END) AS 'forename',
             (CASE WHEN COALESCE(p.surname, '') != '' THEN p.surname ELSE r.forename END) AS 'surname',
             (CASE WHEN p.dateofbirth IS NOT NULL THEN p.dateofbirth ELSE r.dateofbirth END) AS 'date_of_birth',
@@ -59,6 +60,7 @@ def migrate_patients(migration, old_conn, new_conn):
             WHERE action = 'patient data load'
             GROUP BY nhsno, unitcode
         ) AS l ON (p.nhsno = l.nhsno and p.unitcode = l.unitcode)
+        LEFT JOIN user ON r.radarConsentConfirmedByUserId = user.id
         ORDER BY
             p.nhsno,
             (CASE WHEN p.sourceType = 'PatientView' THEN 0 ELSE 1 END), -- prefer PatientView patients
@@ -89,12 +91,21 @@ def migrate_patients(migration, old_conn, new_conn):
         organisation_id = migration.get_organisation_id('UNIT', row['unit_code'])
         recruited_date = row['date_registered']
 
+        username = row['username']
+
+        if username:
+            user_id = migration.get_user_id(username)
+        else:
+            user_id = migration.user_id
+
         # Add the patient to the RaDaR cohort
         new_conn.execute(
             tables.cohort_patients.insert(),
             cohort_id=migration.cohort_id,
             patient_id=radar_no,
             recruited_organisation_id=organisation_id,
+            created_user_id=user_id,
+            modified_user_id=user_id,
             created_date=recruited_date,
             modified_date=recruited_date,
         )

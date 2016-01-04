@@ -1,4 +1,5 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey
+from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey,\
+    DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
 metadata = MetaData()
@@ -70,4 +71,16 @@ data_sources = Table(
     Column('id', Integer, primary_key=True),
     Column('organisation_id', Integer, ForeignKey('organisations.id')),
     Column('type', String),
+)
+
+cohort_patients = Table(
+    'cohorts', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('cohort_id', Integer),
+    Column('patient_id', Integer),
+    Column('recruited_organisation_id', Integer),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+    Column('created_date', DateTime),
+    Column('modified_date', DateTime),
 )

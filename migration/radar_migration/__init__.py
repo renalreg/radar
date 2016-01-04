@@ -3,6 +3,7 @@ from sqlalchemy import select
 from radar_migration import tables
 from radar_migration.patients import migrate_patients
 from radar_migration.users import migrate_users, create_migration_user
+from radar_migration.organisations import create_units
 
 __version__ = '0.1.0'
 
@@ -14,6 +15,7 @@ class Migration(object):
         self._data_source_id = None
         self._cohort_id = None
         self._organisation_ids = {}
+        self._user_ids = {}
 
     @property
     def user_id(self):
@@ -61,6 +63,17 @@ class Migration(object):
 
         return organisation_id
 
+    def get_user_id(self, username):
+        user_id = self._user_ids.get(username)
+
+        if user_id is None:
+            results = self.conn.execute(select([tables.users.c.id]).where(tables.users.c.username == username))
+            row = results.fetchone()
+            user_id = row[0]
+            self._user_ids[username] = user_id
+
+        return user_id
+
 
 def create_radar(conn):
     result = conn.execute(
@@ -93,6 +106,7 @@ def migrate(old_engine, new_engine):
 
     create_migration_user(new_conn)
     create_radar(new_conn)
+    create_units(new_conn, 'units.csv')
 
     m = Migration(new_conn)
 
