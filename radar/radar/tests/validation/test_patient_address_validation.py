@@ -25,9 +25,9 @@ def address(patient):
     obj.patient = patient
     obj.from_date = date(2014, 1, 1)
     obj.to_date = date(2015, 1, 1)
-    obj.address_line_1 = 'Learning and Research Building'
-    obj.address_line_2 = 'Southmead Hospital'
-    obj.address_line_3 = 'Bristol'
+    obj.address1 = 'Learning and Research Building'
+    obj.address2 = 'Southmead Hospital'
+    obj.address3 = 'Bristol'
     obj.postcode = 'BS10 5NB'
     return obj
 
@@ -36,9 +36,9 @@ def test_valid(address):
     obj = valid(address)
     assert obj.from_date == date(2014, 1, 1)
     assert obj.to_date == date(2015, 1, 1)
-    assert obj.address_line_1 == 'Learning and Research Building'
-    assert obj.address_line_2 == 'Southmead Hospital'
-    assert obj.address_line_3 == 'Bristol'
+    assert obj.address1 == 'Learning and Research Building'
+    assert obj.address2 == 'Southmead Hospital'
+    assert obj.address3 == 'Bristol'
     assert obj.postcode == 'BS10 5NB'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -82,71 +82,71 @@ def test_to_date_before_from_date(address):
     invalid(address)
 
 
-def test_address_line_1_blank(address):
-    address.address_line_1 = ''
+def test_address1_blank(address):
+    address.address1 = ''
     invalid(address)
 
 
-def test_address_line_1_missing(address):
-    address.address_line_1 = None
+def test_address1_missing(address):
+    address.address1 = None
     invalid(address)
 
 
-def test_address_line_1_comma(address):
-    address.address_line_1 = ','
+def test_address1_comma(address):
+    address.address1 = ','
     invalid(address)
 
 
-def test_address_line_1_extra_spaces(address):
-    address.address_line_1 = 'foo   bar'
+def test_address1_extra_spaces(address):
+    address.address1 = 'foo   bar'
     valid(address)
-    assert address.address_line_1 == 'foo bar'
+    assert address.address1 == 'foo bar'
 
 
-def test_address_line_2_blank(address):
-    address.address_line_2 = ''
+def test_address2_blank(address):
+    address.address2 = ''
     obj = valid(address)
-    assert obj.address_line_2 is None
+    assert obj.address2 is None
 
 
-def test_address_line_2_missing(address):
-    address.address_line_2 = None
+def test_address2_missing(address):
+    address.address2 = None
     valid(address)
 
 
-def test_address_line_2_comma(address):
-    address.address_line_2 = ','
+def test_address2_comma(address):
+    address.address2 = ','
     valid(address)
-    assert address.address_line_2 is None
+    assert address.address2 is None
 
 
-def test_address_line_2_extra_spaces(address):
-    address.address_line_2 = 'foo   bar'
+def test_address2_extra_spaces(address):
+    address.address2 = 'foo   bar'
     valid(address)
-    assert address.address_line_2 == 'foo bar'
+    assert address.address2 == 'foo bar'
 
 
-def test_address_line_3_blank(address):
-    address.address_line_3 = ''
+def test_address3_blank(address):
+    address.address3 = ''
     obj = valid(address)
-    assert obj.address_line_3 is None
+    assert obj.address3 is None
 
 
-def test_address_line_3_missing(address):
-    address.address_line_3 = None
+def test_address3_missing(address):
+    address.address3 = None
     valid(address)
 
 
-def test_address_line_3_comma(address):
-    address.address_line_3 = ','
+def test_address3_comma(address):
+    address.address3 = ','
     valid(address)
-    assert address.address_line_3 is None
+    assert address.address3 is None
 
 
-def test_address_line_3_extra_spaces(address):
-    address.address_line_3 = 'foo   bar'
+def test_address3_extra_spaces(address):
+    address.address3 = 'foo   bar'
     valid(address)
-    assert address.address_line_3 == 'foo bar'
+    assert address.address3 == 'foo bar'
 
 
 def test_postcode_blank(address):
