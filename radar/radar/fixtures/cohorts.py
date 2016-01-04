@@ -1,5 +1,5 @@
 from radar.fixtures.validation import validate_and_add
-from radar.models import Cohort, CohortFeature, ResultGroupSpec, CohortResultGroupSpec
+from radar.models import Cohort, CohortFeature
 from radar.features import FEATURES
 
 COHORTS = [
@@ -13,7 +13,6 @@ COHORTS = [
             FEATURES.COHORTS,
             FEATURES.UNITS
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'ALPORT',
@@ -25,7 +24,6 @@ COHORTS = [
             FEATURES.FAMILY_HISTORY,
             FEATURES.RESULTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'APRT',
@@ -43,7 +41,6 @@ COHORTS = [
             FEATURES.DIALYSIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'ADTKD',
@@ -56,7 +53,6 @@ COHORTS = [
             FEATURES.RESULTS,
             FEATURES.MEDICATIONS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'ARPKD',
@@ -72,7 +68,6 @@ COHORTS = [
             FEATURES.DIALYSIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'AHUS',
@@ -87,7 +82,6 @@ COHORTS = [
             FEATURES.PLASMAPHERESIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'CALCIP',
@@ -98,7 +92,6 @@ COHORTS = [
             FEATURES.COMORBIDITIES,
             FEATURES.RESULTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'CYSTIN',
@@ -111,7 +104,6 @@ COHORTS = [
             FEATURES.TRANSPLANTS,
             FEATURES.HOSPITALISATIONS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'CYSURIA',
@@ -120,7 +112,6 @@ COHORTS = [
         'features': [
             FEATURES.DIAGNOSES,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'DENTLOWE',
@@ -129,7 +120,6 @@ COHORTS = [
         'features': [
             FEATURES.DIAGNOSES,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'HNF1B',
@@ -141,7 +131,6 @@ COHORTS = [
             FEATURES.RENAL_IMAGING,
             FEATURES.PATHOLOGY,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'HYPERRDG',
@@ -156,7 +145,6 @@ COHORTS = [
             FEATURES.DIALYSIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'HYPALK',
@@ -172,7 +160,6 @@ COHORTS = [
             FEATURES.MEDICATIONS,
             FEATURES.DIALYSIS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'INS',
@@ -193,7 +180,6 @@ COHORTS = [
             FEATURES.TRANSPLANTS,
             FEATURES.HOSPITALISATIONS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'IGANEPHRO',
@@ -202,7 +188,6 @@ COHORTS = [
         'features': [
             FEATURES.DIAGNOSES,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'MPGN',
@@ -218,7 +203,6 @@ COHORTS = [
             FEATURES.PLASMAPHERESIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'MEMRDG',
@@ -227,7 +211,6 @@ COHORTS = [
         'features': [
             FEATURES.DIAGNOSES,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'NEPHROS',
@@ -236,7 +219,6 @@ COHORTS = [
         'features': [
             FEATURES.RESULTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'NSMPGNC3',
@@ -245,7 +227,6 @@ COHORTS = [
         'features': [
             FEATURES.RESULTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'OBS',
@@ -260,7 +241,6 @@ COHORTS = [
             FEATURES.DIALYSIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'PCRA',
@@ -269,7 +249,6 @@ COHORTS = [
         'features': [
             FEATURES.DIAGNOSES,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'STECHUS',
@@ -285,7 +264,6 @@ COHORTS = [
             FEATURES.PLASMAPHERESIS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
     {
         'code': 'VASRDG',
@@ -300,7 +278,6 @@ COHORTS = [
             FEATURES.MEDICATIONS,
             FEATURES.TRANSPLANTS,
         ],
-        'result_group_codes': [],
     },
 ]
 
@@ -319,12 +296,3 @@ def create_cohorts():
             cohort_feature.name = name
             cohort_feature.weight = i * 100  # leave some gaps
             validate_and_add(cohort_feature)
-
-        for i, code in enumerate(x['result_group_codes']):
-            result_group_spec = ResultGroupSpec.query.filter(ResultGroupSpec.code == code).one()
-
-            cohort_result_group_spec = CohortResultGroupSpec()
-            cohort_result_group_spec.cohort = cohort
-            cohort_result_group_spec.result_group_spec = result_group_spec
-            cohort_result_group_spec.weight = i * 100  # leave some gaps
-            validate_and_add(cohort_result_group_spec)
