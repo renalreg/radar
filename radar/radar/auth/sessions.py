@@ -1,6 +1,6 @@
 from flask import request, has_request_context, _request_ctx_stack
 from itsdangerous import BadSignature, TimestampSigner
-from sqlalchemy import func, not_
+from sqlalchemy import func
 from werkzeug.local import LocalProxy
 
 from radar.database import db
