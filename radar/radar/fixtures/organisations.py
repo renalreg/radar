@@ -29,12 +29,12 @@ def create_organisations():
 
 
 def create_other_organisations():
-    for organisation_code, organisation_name, organisation_is_national in OTHER_ORGANISATIONS:
+    for code, name, recruitment in OTHER_ORGANISATIONS:
         organisation = Organisation()
-        organisation.code = organisation_code
+        organisation.code = code
         organisation.type = ORGANISATION_TYPE_OTHER
-        organisation.name = organisation_name
-        organisation.is_national = organisation_is_national
+        organisation.name = name
+        organisation.recruitment = recruitment
         validate_and_add(organisation)
 
 
@@ -44,5 +44,5 @@ def create_unit_organisations():
         organisation.code = code
         organisation.type = ORGANISATION_TYPE_UNIT
         organisation.name = name
-        organisation.is_national = False
+        organisation.recruitment = False
         validate_and_add(organisation)

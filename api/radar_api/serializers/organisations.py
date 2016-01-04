@@ -32,4 +32,4 @@ class OrganisationReferenceField(ReferenceField):
 
 class OrganisationRequestSerializer(Serializer):
     type = StringField()
-    is_national = BooleanField()
+    recruitment = BooleanField()
