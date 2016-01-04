@@ -3,7 +3,7 @@ from sqlalchemy import select
 from radar_migration import tables
 from radar_migration.patients import migrate_patients
 from radar_migration.users import migrate_users, create_migration_user
-from radar_migration.organisations import create_units
+from radar_migration.organisations import create_units, create_organisations
 
 __version__ = '0.1.0'
 
@@ -49,7 +49,7 @@ class Migration(object):
             row = results.fetchone()
             self._cohort_id = row[0]
 
-        return self._data_source_id
+        return self._cohort_id
 
     def get_organisation_id(self, type, code):
         key = (type, code)
@@ -107,6 +107,7 @@ def migrate(old_engine, new_engine):
     create_migration_user(new_conn)
     create_radar(new_conn)
     create_units(new_conn, 'units.csv')
+    create_organisations(new_conn)
 
     m = Migration(new_conn)
 

@@ -74,7 +74,7 @@ data_sources = Table(
 )
 
 cohort_patients = Table(
-    'cohorts', metadata,
+    'cohort_patients', metadata,
     Column('id', Integer, primary_key=True),
     Column('cohort_id', Integer),
     Column('patient_id', Integer),
@@ -83,4 +83,15 @@ cohort_patients = Table(
     Column('modified_user_id', Integer),
     Column('created_date', DateTime),
     Column('modified_date', DateTime),
+)
+
+patient_numbers = Table(
+    'patient_numbers', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('organisation_id', Integer),
+    Column('number', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
 )

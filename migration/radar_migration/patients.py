@@ -24,6 +24,17 @@ def convert_gender(old_value):
     return new_value
 
 
+def number_to_organisation_code(value):
+    if len(value) != 10 or not value.isdigit():
+        return None
+    elif value > '0101000000' and value < '3112999999':
+        return 'CHI'
+    elif value > '3200000010' and value < '3999999999':
+        return 'HANDC'
+    else:
+        return 'NHS'
+
+
 def migrate_patients(migration, old_conn, new_conn):
     rows = old_conn.execute(text("""
         SELECT
@@ -67,16 +78,17 @@ def migrate_patients(migration, old_conn, new_conn):
             l.load_date DESC -- newer data first
     """))
 
-    nhs_nos = set()
+    seen_nhs_nos = set()
+    seen_hospital_nos = set()
 
     for row in rows:
         nhs_no = row['nhs_no']
 
         # Use the first patient row for each nhsno
-        if nhs_no in nhs_nos:
+        if nhs_no in seen_nhs_nos:
             continue
         else:
-            nhs_nos.add(nhs_no)
+            seen_nhs_nos.add(nhs_no)
 
         radar_no = row['radar_no']
 
@@ -141,15 +153,33 @@ def migrate_patients(migration, old_conn, new_conn):
                 modified_user_id=migration.user_id,
             )
 
-        hospital_number = row['hospital_number']
+        hospital_no = row['hospital_number']
 
-        if hospital_number:
+        # Note: if a hospital number is duplicated it will be assigned to the first patient (ordered by NHS no)
+        if hospital_no and hospital_no not in seen_hospital_nos:
             # Add the patient's hospital number
             new_conn.execute(
                 tables.patient_numbers.insert(),
+                patient_id=radar_no,
                 data_source_id=migration.data_source_id,
                 organisation_id=organisation_id,
-                number=hospital_number,
+                number=hospital_no,
+                created_user_id=migration.user_id,
+                modified_user_id=migration.user_id,
             )
 
-        # TODO nhsno
+            seen_hospital_nos.add(hospital_no)
+
+        # Note: NHS, CHI, H&C... numbers are all stored in the nhsno column
+        organisation_code = number_to_organisation_code(nhs_no)
+
+        if organisation_code is not None:
+            new_conn.execute(
+                tables.patient_numbers.insert(),
+                patient_id=radar_no,
+                data_source_id=migration.data_source_id,
+                organisation_id=migration.get_organisation_id('OTHER', organisation_code),
+                number=nhs_no,
+                created_user_id=migration.user_id,
+                modified_user_id=migration.user_id,
+            )
