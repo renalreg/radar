@@ -3,8 +3,10 @@ from sqlalchemy import select
 from radar_migration import tables
 from radar_migration.patients import migrate_patients
 from radar_migration.users import migrate_users, create_migration_user
-from radar_migration.organisations import create_organisations
-from radar_migration.units import create_units
+from radar_migration.organisations import create_organisations, create_units,\
+    migrate_patient_organisations, create_organisation
+from radar_migration.cohorts import migrate_patient_cohorts, create_cohort,\
+    create_cohorts
 
 __version__ = '0.1.0'
 
@@ -12,11 +14,17 @@ __version__ = '0.1.0'
 class Migration(object):
     def __init__(self, conn):
         self.conn = conn
+
         self._user_id = None
-        self._data_source_id = None
-        self._cohort_id = None
-        self._organisation_ids = {}
         self._user_ids = {}
+
+        self._data_source_id = None
+
+        self._organisation_id = None
+        self._organisation_ids = {}
+
+        self._cohort_id = None
+        self._cohort_ids = {}
 
     @property
     def user_id(self):
@@ -29,12 +37,23 @@ class Migration(object):
         return self._user_id
 
     @property
+    def organisation_id(self):
+        if self._organisation_id is None:
+            s = select([tables.organisations.c.id])\
+                .where(tables.organisations.c.type == 'OTHER')\
+                .where(tables.organisations.c.code == 'RADAR')
+            results = self.conn.execute(s)
+            row = results.fetchone()
+            self._organisation_id = row[0]
+
+        return self._organisation_id
+
+    @property
     def data_source_id(self):
         if self._data_source_id is None:
             s = select([tables.data_sources.c.id])\
-                .select_from(tables.data_sources.join(tables.organisations))\
-                .where(tables.data_sources.c.type == 'RADAR')\
-                .where(tables.organisations.c.code == 'RADAR')
+                .where(tables.data_sources.c.organisation_id == self.organisation_id)\
+                .where(tables.data_sources.c.type == 'RADAR')
             results = self.conn.execute(s)
             row = results.fetchone()
             self._data_source_id = row[0]
@@ -64,6 +83,18 @@ class Migration(object):
 
         return organisation_id
 
+    def get_cohort_id(self, code):
+        key = (type, code)
+        cohort_id = self._cohort_ids.get(key)
+
+        if cohort_id is None:
+            results = self.conn.execute(select([tables.cohorts.c.id]).where(tables.cohorts.c.code == code))
+            row = results.fetchone()
+            cohort_id = row[0]
+            self._cohort_ids[key] = cohort_id
+
+        return cohort_id
+
     def get_user_id(self, username):
         user_id = self._user_ids.get(username)
 
@@ -77,15 +108,13 @@ class Migration(object):
 
 
 def create_radar(conn):
-    result = conn.execute(
-        tables.organisations.insert(),
+    organisation_id = create_organisation(
+        conn,
         code='RADAR',
-        type='RADAR',
+        type='OTHER',
         name='RaDaR',
         recruitment=True,
     )
-
-    organisation_id = result.inserted_primary_key[0]
 
     conn.execute(
         tables.data_sources.insert(),
@@ -93,24 +122,34 @@ def create_radar(conn):
         type='RADAR',
     )
 
-    conn.execute(
-        tables.cohorts.insert(),
+    create_cohort(
+        conn,
         code='RADAR',
         name='RaDaR',
         short_name='RaDaR',
+        features=['DEMOGRAPHICS', 'CONSULTANTS', 'COHORTS', 'UNITS']
     )
 
 
-def migrate(old_engine, new_engine):
+def migrate(
+    old_engine,
+    new_engine,
+    units_filename='units.csv',
+    organisations_filename='organisations.csv',
+    cohorts_filename='cohorts.csv'
+):
     old_conn = old_engine.connect()
     new_conn = new_engine.connect()
 
     create_migration_user(new_conn)
     create_radar(new_conn)
-    create_units(new_conn)
-    create_organisations(new_conn)
+    create_units(new_conn, units_filename)
+    create_organisations(new_conn, organisations_filename)
+    create_cohorts(new_conn, cohorts_filename)
 
     m = Migration(new_conn)
 
     migrate_users(m, old_conn, new_conn)
     migrate_patients(m, old_conn, new_conn)
+    migrate_patient_organisations(m, old_conn, new_conn)
+    migrate_patient_cohorts(m, old_conn, new_conn)

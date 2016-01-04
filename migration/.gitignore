@@ -1,2 +1,2 @@
 *.csv
-!radar_migration/data/*.csv
+!data/*.csv

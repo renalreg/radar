@@ -85,6 +85,15 @@ cohort_patients = Table(
     Column('modified_date', DateTime),
 )
 
+organisation_patients = Table(
+    'organisation_patients', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('organisation_id', Integer),
+    Column('patient_id', Integer),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
 patient_numbers = Table(
     'patient_numbers', metadata,
     Column('id', UUID, primary_key=True),
@@ -94,4 +103,12 @@ patient_numbers = Table(
     Column('number', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
+)
+
+cohort_features = Table(
+    'cohort_features', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('patient_id', Integer),
+    Column('name', String),
+    Column('weight', Integer),
 )
