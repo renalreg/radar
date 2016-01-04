@@ -175,7 +175,7 @@ def get_radar_id(patient):
 def recruit_patient(params):
     radar_id = get_radar_id(params)
     cohort = params['cohort']
-    organisation = params['recruited_by_organisation']
+    organisation = params['recruited_organisation']
 
     if radar_id:
         patient = Patient.query.get(radar_id)
@@ -191,7 +191,7 @@ def recruit_patient(params):
         radar_cohort_patient = CohortPatient()
         radar_cohort_patient.patient = patient
         radar_cohort_patient.cohort = radar_cohort
-        radar_cohort_patient.recruited_by_organisation = organisation
+        radar_cohort_patient.recruited_organisation = organisation
         radar_cohort_patient.is_active = True
         radar_cohort_patient = validate(radar_cohort_patient)
         db.session.add(radar_cohort_patient)
@@ -222,7 +222,7 @@ def recruit_patient(params):
         cohort_patient = CohortPatient()
         cohort_patient.patient = patient
         cohort_patient.cohort = cohort
-        cohort_patient.recruited_by_organisation = organisation
+        cohort_patient.recruited_organisation = organisation
         cohort_patient.is_active = True
         cohort_patient = validate(cohort_patient)
         db.session.add(cohort_patient)

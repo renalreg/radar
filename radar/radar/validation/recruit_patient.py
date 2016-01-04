@@ -48,17 +48,17 @@ class RecruitPatientValidation(Validation):
     date_of_birth = Field([optional(), not_in_future()])
     gender = Field([optional(), in_(GENDERS.keys())])
     ethnicities = Field([optional(), in_(ETHNICITIES.keys())])
-    recruited_by_organisation = Field([required()])
+    recruited_organisation = Field([required()])
     cohort = Field([required()])
 
     @pass_context
-    def validate_recruited_by_organisation(self, ctx, recruited_by_organisation):
+    def validate_recruited_organisation(self, ctx, recruited_organisation):
         current_user = ctx['user']
 
-        if not has_permission_for_organisation(current_user, recruited_by_organisation, 'has_recruit_patient_permission'):
+        if not has_permission_for_organisation(current_user, recruited_organisation, 'has_recruit_patient_permission'):
             raise ValidationError('Permission denied!')
 
-        return recruited_by_organisation
+        return recruited_organisation
 
     @pass_call
     def validate(self, call, obj):

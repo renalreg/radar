@@ -48,6 +48,14 @@ patient_addresses = Table(
     Column('modified_user_id', Integer),
 )
 
+cohorts = Table(
+    'cohorts', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('code', String, primary_key=True),
+    Column('name', String),
+    Column('short_name', String),
+)
+
 organisations = Table(
     'organisations', metadata,
     Column('id', Integer, primary_key=True),

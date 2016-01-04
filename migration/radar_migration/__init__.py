@@ -12,6 +12,7 @@ class Migration(object):
         self.conn = conn
         self._user_id = None
         self._data_source_id = None
+        self._cohort_id = None
         self._organisation_ids = {}
 
     @property
@@ -37,14 +38,26 @@ class Migration(object):
 
         return self._data_source_id
 
-    def get_organisation_id(self, code):
-        organisation_id = self._organisation_ids.get(code)
+    @property
+    def cohort_id(self):
+        if self._cohort_id is None:
+            s = select([tables.cohorts.c.id])\
+                .where(tables.cohorts.c.code == 'RADAR')
+            results = self.conn.execute(s)
+            row = results.fetchone()
+            self._cohort_id = row[0]
+
+        return self._data_source_id
+
+    def get_organisation_id(self, type, code):
+        key = (type, code)
+        organisation_id = self._organisation_ids.get(key)
 
         if organisation_id is None:
-            results = self.conn.execute(select([tables.organisations.c.id]).where(tables.users.c.code == code))
+            results = self.conn.execute(select([tables.organisations.c.id]).where(tables.organisations.c.code == code))
             row = results.fetchone()
             organisation_id = row[0]
-            self._organisation_ids[code] = organisation_id
+            self._organisation_ids[key] = organisation_id
 
         return organisation_id
 
@@ -66,7 +79,12 @@ def create_radar(conn):
         type='RADAR',
     )
 
-
+    conn.execute(
+        tables.cohorts.insert(),
+        code='RADAR',
+        name='RaDaR',
+        short_name='RaDaR',
+    )
 
 
 def migrate(old_engine, new_engine):

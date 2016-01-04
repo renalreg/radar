@@ -470,7 +470,7 @@ def create_patients(n):
         radar_cohort_patient.patient = patient
         radar_cohort_patient.cohort = radar_cohort
         radar_cohort_patient.recruited_date = recruited_date
-        radar_cohort_patient.recruited_by_organisation = radar_organisation
+        radar_cohort_patient.recruited_organisation = radar_organisation
         radar_cohort_patient.is_active = True
         validate_and_add(radar_cohort_patient)
 
@@ -507,7 +507,7 @@ def create_patients(n):
 
         cohort_patient.patient = patient
         cohort_patient.recruited_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
-        cohort_patient.recruited_by_organisation = radar_organisation
+        cohort_patient.recruited_organisation = radar_organisation
         cohort_patient.is_active = True
         validate_and_add(cohort_patient)
 

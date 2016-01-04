@@ -39,12 +39,16 @@ def migrate_patients(migration, old_conn, new_conn):
             patient.address1,
             patient.address2,
             patient.address3,
-            patient.postcode
+            patient.postcode,
+            a.unitcode as radar_unit_code,
+            a.dateReg as radar_date_registered
         FROM patient
         JOIN (
             SELECT
                 patient.nhsno,
-                patient.radarNo
+                patient.radarNo,
+                patient.dateReg,
+                patient.unitcode
             FROM patient
             WHERE patient.radarNo IS NOT NULL AND patient.sourceType = 'RADAR'
         ) AS a ON patient.nhsno = a.nhsno
@@ -66,8 +70,6 @@ def migrate_patients(migration, old_conn, new_conn):
     nhs_nos = set()
 
     for row in rows:
-        print dict(row)
-
         nhs_no = row['nhsno']
 
         # Use the first patient row for each nhsno
@@ -78,7 +80,7 @@ def migrate_patients(migration, old_conn, new_conn):
 
         patient_id = row['radarNo']
 
-        # Insert into patients
+        # Create a patient
         new_conn.execute(
             tables.patients.insert(),
             id=patient_id,
@@ -86,7 +88,20 @@ def migrate_patients(migration, old_conn, new_conn):
             modified_user_id=migration.user_id,
         )
 
-        # Insert into patient_demographics
+        organisation_id = migration.get_organisation_id('UNIT', row['radar_unit_code'])
+        recruited_date = row['radar_date_registered']
+
+        # Add the patient to the RaDaR cohort
+        new_conn.execute(
+            tables.cohort_patients.insert(),
+            cohort_id=migration.cohort_id,
+            patient_id=patient_id,
+            recruited_organisation_id=organisation_id,
+            created_date=recruited_date,
+            modified_date=recruited_date,
+        )
+
+        # Add RaDaR demographics
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=patient_id,
@@ -102,8 +117,9 @@ def migrate_patients(migration, old_conn, new_conn):
             modified_user_id=migration.user_id,
         )
 
+        # Check if the patient has an address
         if any(row[x] for x in ['address1', 'address2', 'address3', 'postcode']):
-            # Insert into patient_addresses
+            # Add the address
             new_conn.execute(
                 tables.patient_addresses.insert(),
                 patient_id=patient_id,
@@ -116,4 +132,15 @@ def migrate_patients(migration, old_conn, new_conn):
                 modified_user_id=migration.user_id,
             )
 
-        # TODO dateReg, unitcode, hospitalnumber, nhsno/nhsNoType
+        hospital_number = row['radar_hospital_number']
+
+        if hospital_number:
+            # Add the patient's hospital number
+            new_conn.execute(
+                tables.patient_numbers.insert(),
+                data_source_id=migration.data_source_id,
+                organisation_id=organisation_id,
+                number=hospital_number,
+            )
+
+        # TODO nhsno/nhsNoType

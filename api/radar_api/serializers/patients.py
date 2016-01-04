@@ -23,7 +23,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
     organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients', read_only=True)
     cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients', read_only=True)
-    recruited_by_organisation = OrganisationReferenceField(read_only=True)
+    recruited_organisation = OrganisationReferenceField(read_only=True)
     is_active = BooleanField()
     comments = StringField()
     recruited_date = DateTimeField(read_only=True)
