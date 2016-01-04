@@ -68,3 +68,22 @@ def migrate_patient_cohorts(m, old_conn, new_conn):
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
+
+
+def migrate_user_cohorts(m, old_conn, new_conn):
+    rows = old_conn.execute(text("""
+        SELECT
+            user.username,
+            unit.unitcode,
+            rdr_user_mapping.role
+        FROM usermapping
+        JOIN user ON usermapping.username = user.username
+        JOIN unit ON usermapping.unitcode = unit.unitcode
+        JOIN rdr_user_mapping ON user.id = rdr_user_mapping.userId
+        WHERE
+            unit.sourceType = 'radargroup' AND
+            rdr_user_mapping.role != 'ROLE_PATIENT'
+    """))
+
+    for username, cohort_code, role in rows:
+        print username, cohort_code, role
