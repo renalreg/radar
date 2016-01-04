@@ -58,9 +58,6 @@ def create_radar(conn):
         recruitment=True,
     )
 
-    print result
-    print result.inserted_primary_key
-
     organisation_id = result.inserted_primary_key[0]
 
     conn.execute(
@@ -68,6 +65,8 @@ def create_radar(conn):
         organisation_id=organisation_id,
         type='RADAR',
     )
+
+
 
 
 def migrate(old_engine, new_engine):
