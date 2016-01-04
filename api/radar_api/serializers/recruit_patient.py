@@ -38,5 +38,5 @@ class RecruitPatientSerializer(Serializer):
     gender = CodedIntegerSerializer(GENDERS)
     ethnicity = CodedStringSerializer(ETHNICITIES)
     patient_numbers = ListField(PatientNumberSerializer())
-    recruited_by_organisation = OrganisationReferenceField()
+    recruited_organisation = OrganisationReferenceField()
     cohort = CohortReferenceField()
