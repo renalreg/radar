@@ -141,4 +141,4 @@ def migrate_patients(migration, old_conn, new_conn):
                 number=hospital_number,
             )
 
-        # TODO nhsno/nhsNoType
+        # TODO nhsno
