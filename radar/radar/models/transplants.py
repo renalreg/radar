@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
-TYPES_OF_TRANSPLANT = OrderedDict([
+TRANSPLANT_MODALITIES = OrderedDict([
     (21, 'Live - Sibling'),
     (74, 'Live - Father'),
     (75, 'Live - Mother'),
@@ -37,8 +37,8 @@ class Transplant(db.Model, MetaModelMixin):
     organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
     organisation = relationship('Organisation')
 
-    date_of_transplant = Column(Date, nullable=False)
-    type_of_transplant = Column(Integer, nullable=False)
+    date = Column(Date, nullable=False)
+    modality = Column(Integer, nullable=False)
     date_of_failure = Column(Date)
 
 Index('transplants_patient_id_idx', Transplant.patient_id)

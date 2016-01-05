@@ -26,8 +26,8 @@
 
       self.load(firstPromise([
         store.findMany('transplants', {patient: $scope.patient.id}),
-        store.findMany('transplant-types').then(function(transplantTypes) {
-          $scope.transplantTypes = transplantTypes;
+        store.findMany('transplant-modalities').then(function(modalities) {
+          $scope.modalities = modalities;
         })
       ]));
 

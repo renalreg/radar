@@ -18,8 +18,8 @@
         </tr>
 
         <tr>
-          <th>Type of Dialysis</th>
-          <td>{{item.typeOfDialysis.label}}</td>
+          <th>Modality</th>
+          <td>{{item.modality.label}}</td>
         </tr>
 
         <tr>
@@ -54,11 +54,11 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Type of Dialysis</div>
+        <div frm-label>Modality</div>
 
         <div frm-control>
-          <div frm-select-field patient="patient" model="item.typeOfDialysis" required="true" options="dialysisTypes"></div>
-          <div frm-errors errors="item.errors.typeOfDialysis"></div>
+          <div frm-select-field patient="patient" model="item.modality" required="true" options="modalities"></div>
+          <div frm-errors errors="item.errors.modality"></div>
         </div>
       </div>
 
@@ -104,7 +104,7 @@
           <th></th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="typeOfDialysis.name">Type</th>
+          <th sort-helper="modality.label">Modality</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
@@ -119,7 +119,7 @@
 
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.typeOfDialysis.label}}</td>
+          <td>{{item.modality.label}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>

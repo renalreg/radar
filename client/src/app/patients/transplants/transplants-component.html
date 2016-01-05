@@ -17,13 +17,13 @@
       </tr>
 
       <tr>
-        <th>Date of Transplant</th>
-        <td>{{item.dateOfTransplant | dateFormat}}</td>
+        <th>Date</th>
+        <td>{{item.date | dateFormat}}</td>
       </tr>
 
       <tr>
-        <th>Type of Transplant</th>
-        <td>{{item.typeOfTransplant.label}}</td>
+        <th>Modality</th>
+        <td>{{item.modality.label}}</td>
       </tr>
 
       <tr>
@@ -82,20 +82,20 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Date of Transplant</div>
+        <div frm-label>Date</div>
 
         <div frm-control>
-          <div frm-date-field model="item.dateOfTransplant" required="true"></div>
-          <div frm-errors errors="item.errors.dateOfTransplant"></div>
+          <div frm-date-field model="item.date" required="true"></div>
+          <div frm-errors errors="item.errors.date"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Type of Transplant</div>
+        <div frm-label>Modality</div>
 
         <div frm-control>
-          <div frm-select-field model="item.typeOfTransplant" required="true" options="transplantTypes"></div>
-          <div frm-errors errors="item.errors.typeOfTransplant"></div>
+          <div frm-select-field model="item.modality" required="true" options="modalities"></div>
+          <div frm-errors errors="item.errors.modality"></div>
         </div>
       </div>
 
@@ -133,8 +133,8 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="dateOfTransplant">Date</th>
-          <th sort-helper="typeOfTransplant.label">Type</th>
+          <th sort-helper="date">Date</th>
+          <th sort-helper="modality.label">Modality</th>
           <th sort-helper="dateOfFailure.label">Date of Failure</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
@@ -148,8 +148,8 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.dateOfTransplant | dateFormat}}</td>
-          <td>{{item.typeOfTransplant.label}}</td>
+          <td>{{item.date | dateFormat}}</td>
+          <td>{{item.modality.label}}</td>
           <td>{{item.dateOfFailure | dateFormat | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 

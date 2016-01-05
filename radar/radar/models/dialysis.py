@@ -7,7 +7,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, \
     patient_id_column, patient_relationship
 
-TYPES_OF_DIALYSIS = OrderedDict([
+DIALYSIS_MODALITIES = OrderedDict([
     (1, 'Haemodialysis'),
     (2, 'Haemofiltration'),
     (3, 'Haemodiafiltration'),
@@ -37,6 +37,6 @@ class Dialysis(db.Model, MetaModelMixin):
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
 
-    type_of_dialysis = Column(Integer, nullable=False)
+    modality = Column(Integer, nullable=False)
 
 Index('dialysis_patient_id_idx', Dialysis.patient_id)
