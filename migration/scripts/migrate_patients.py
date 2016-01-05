@@ -1,7 +1,49 @@
-from sqlalchemy import text
+from sqlalchemy import text, create_engine
+import click
 
-from radar_migration.constants import ETHNICITY_MAP
-from radar_migration import tables
+from radar_migration import tables, Migration
+from radar_migration.cohorts import convert_cohort_code
+
+
+ETHNICITY_MAP = {
+    '9S1..': 'A',
+    '9S2..': 'M',
+    '9S3..': 'N',
+    '9S4..': 'P',
+    '9S41.': 'P',
+    '9S42.': 'M',
+    '9S43.': 'N',
+    '9S44.': 'N',
+    '9S45.': 'P',
+    '9S46.': 'P',
+    '9S47.': 'P',
+    '9S48.': 'P',
+    '9S5..': 'P',
+    '9S51.': 'P',
+    '9S52.': 'P',
+    '9S6..': 'H',
+    '9S7..': 'J',
+    '9S8..': 'K',
+    '9S9..': 'R',
+    '9SA..': 'S',
+    '9SA1.': 'S',
+    '9SA3.': 'M',
+    '9SA4.': 'S',
+    '9SA5.': 'S',
+    '9SA6.': 'L',
+    '9SA7.': 'L',
+    '9SA8.': 'L',
+    '9SA9.': 'B',
+    '9SAA.': 'C',
+    '9SAB.': 'C',
+    '9SAC.': 'C',
+    '9SAD.': 'S',
+    '9SB..': 'G',
+    '9SB1.': 'E',
+    '9SB2.': 'F',
+    '9SB3.': 'C',
+    '9SB4.': 'G',
+}
 
 
 def convert_ethnicity(old_value):
@@ -35,7 +77,9 @@ def number_to_organisation_code(value):
         return 'NHS'
 
 
-def migrate_patients(migration, old_conn, new_conn):
+def migrate_patients(old_conn, new_conn):
+    m = Migration(new_conn)
+
     rows = old_conn.execute(text("""
         SELECT
             r.radarNo AS 'radar_no',
@@ -92,28 +136,30 @@ def migrate_patients(migration, old_conn, new_conn):
 
         radar_no = row['radar_no']
 
+        print 'patient %d' % radar_no
+
         # Create a patient
         new_conn.execute(
             tables.patients.insert(),
             id=radar_no,
-            created_user_id=migration.user_id,
-            modified_user_id=migration.user_id,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
         )
 
-        organisation_id = migration.get_organisation_id('UNIT', row['unit_code'])
+        organisation_id = m.get_organisation_id('UNIT', row['unit_code'])
         recruited_date = row['date_registered']
 
         username = row['username']
 
         if username:
-            user_id = migration.get_user_id(username)
+            user_id = m.get_user_id(username)
         else:
-            user_id = migration.user_id
+            user_id = m.user_id
 
         # Add the patient to the RaDaR cohort
         new_conn.execute(
             tables.cohort_patients.insert(),
-            cohort_id=migration.cohort_id,
+            cohort_id=m.cohort_id,
             patient_id=radar_no,
             recruited_organisation_id=organisation_id,
             created_user_id=user_id,
@@ -126,7 +172,7 @@ def migrate_patients(migration, old_conn, new_conn):
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=radar_no,
-            data_source_id=migration.data_source_id,
+            data_source_id=m.data_source_id,
             first_name=row['forename'],
             last_name=row['surname'],
             date_of_birth=row['date_of_birth'],
@@ -134,8 +180,8 @@ def migrate_patients(migration, old_conn, new_conn):
             ethnicity=convert_ethnicity(row['ethnic_group']),
             home_number=row['telephone1'],
             mobile_number=row['mobile'],
-            created_user_id=migration.user_id,
-            modified_user_id=migration.user_id,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
         )
 
         # Check if the patient has an address
@@ -144,13 +190,13 @@ def migrate_patients(migration, old_conn, new_conn):
             new_conn.execute(
                 tables.patient_addresses.insert(),
                 patient_id=radar_no,
-                data_source_id=migration.data_source_id,
+                data_source_id=m.data_source_id,
                 address1=row['address1'],
                 address2=row['address2'],
                 address3=row['address3'],
                 postcode=row['postcode'],
-                created_user_id=migration.user_id,
-                modified_user_id=migration.user_id,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
             )
 
         hospital_no = row['hospital_number']
@@ -161,11 +207,11 @@ def migrate_patients(migration, old_conn, new_conn):
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
-                data_source_id=migration.data_source_id,
+                data_source_id=m.data_source_id,
                 organisation_id=organisation_id,
                 number=hospital_no,
-                created_user_id=migration.user_id,
-                modified_user_id=migration.user_id,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
             )
 
             seen_hospital_nos.add(hospital_no)
@@ -177,9 +223,86 @@ def migrate_patients(migration, old_conn, new_conn):
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
-                data_source_id=migration.data_source_id,
-                organisation_id=migration.get_organisation_id('OTHER', organisation_code),
+                data_source_id=m.data_source_id,
+                organisation_id=m.get_organisation_id('OTHER', organisation_code),
                 number=nhs_no,
-                created_user_id=migration.user_id,
-                modified_user_id=migration.user_id,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
             )
+
+
+def migrate_patient_cohorts(old_conn, new_conn):
+    m = Migration(new_conn)
+
+    rows = old_conn.execute(text("""
+        SELECT DISTINCT
+            patient.radarNo,
+            unit.unitcode
+        FROM usermapping
+        JOIN patient ON usermapping.nhsno = patient.nhsno
+        JOIN unit ON usermapping.unitcode = unit.unitcode
+        WHERE
+            patient.radarNo IS NOT NULL AND
+            patient.sourceType = 'RADAR' AND
+            unit.sourceType = 'radargroup'
+    """))
+
+    for radar_no, cohort_code in rows:
+        cohort_code = convert_cohort_code(cohort_code)
+        cohort_id = m.get_cohort_id(cohort_code)
+
+        new_conn.execute(
+            tables.cohort_patients.insert(),
+            patient_id=radar_no,
+            cohort_id=cohort_id,
+            recruited_organisation_id=m.organisation_id,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
+        )
+
+
+def migrate_patient_organisations(old_conn, new_conn):
+    m = Migration(new_conn)
+
+    rows = old_conn.execute(text("""
+        SELECT DISTINCT
+            patient.radarNo,
+            unit.unitcode
+        FROM usermapping
+        JOIN patient ON usermapping.nhsno = patient.nhsno
+        JOIN unit ON usermapping.unitcode = unit.unitcode
+        WHERE
+            patient.radarNo IS NOT NULL AND
+            patient.sourceType = 'RADAR' AND
+            unit.sourceType = 'renalunit'
+    """))
+
+    for radar_no, unit_code in rows:
+        organisation_id = m.get_organisation_id('UNIT', unit_code)
+
+        new_conn.execute(
+            tables.organisation_patients.insert(),
+            patient_id=radar_no,
+            organisation_id=organisation_id,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
+        )
+
+
+@click.command()
+@click.argument('src')
+@click.argument('dest')
+def cli(src, dest):
+    src_engine = create_engine(src)
+    dest_engine = create_engine(dest)
+
+    src_conn = src_engine.connect()
+    dest_conn = dest_engine.connect()
+
+    migrate_patients(src_conn, dest_conn)
+    migrate_patient_cohorts(src_conn, dest_conn)
+    migrate_patient_organisations(src_conn, dest_conn)
+
+
+if __name__ == '__main__':
+    cli()
