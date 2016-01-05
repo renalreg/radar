@@ -28,8 +28,8 @@ class Pathology(db.Model, MetaModelMixin):
     data_source = relationship('DataSource')
 
     date = Column(Date, nullable=False)
-    kidney_type = Column(String, nullable=False)
-    kidney_side = Column(String, nullable=False)
+    kidney_type = Column(String)
+    kidney_side = Column(String)
     laboratory_reference_number = Column(String)
     histological_summary = Column(String)
 
