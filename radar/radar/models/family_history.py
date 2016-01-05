@@ -39,8 +39,8 @@ class FamilyHistory(db.Model, MetaModelMixin):
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = orm.relationship('Cohort')
 
-    parental_consanguinity = Column(Boolean, nullable=False)
-    family_history = Column(Boolean, nullable=False)
+    parental_consanguinity = Column(Boolean)
+    family_history = Column(Boolean)
     other_family_history = Column(String)
 
 Index('family_history_patient_id_idx', FamilyHistory.patient_id)
