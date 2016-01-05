@@ -191,3 +191,16 @@ family_history_relatives = Table(
     Column('relationship', Integer),
     Column('patient_id', Integer),
 )
+
+plasmapheresis = Table(
+    'plasmapheresis', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('from_date', Date),
+    Column('to_date', Date),
+    Column('no_of_exchanges', String),
+    Column('response', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
