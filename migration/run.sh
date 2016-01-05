@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Usage: ./run.sh mysql+pymysql://radar:password@10.0.2.2:3306/radar?charset=utf8 postgresql+psycopg2://postgres:password@localhost:5432/radar
+
 set -e
 
 SRC=$1
@@ -19,4 +21,6 @@ echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
 echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
+echo 'migrate pathology...'
+python scripts/migrate_pathology.py "$SRC" "$DEST"
 echo 'done'

@@ -13,6 +13,7 @@ COHORTS = [
             'DIAGNOSES',
             'GENETICS',
             'FAMILY_HISTORY',
+            'ALPORT_CLINICAL_PICTURES',
             'RESULTS',
         ],
     },
@@ -70,6 +71,7 @@ COHORTS = [
             'DIAGNOSES',
             'COMORBIDITIES',
             'RESULTS',
+            'RENAL_IMAGING',
         ],
     },
     {
@@ -78,10 +80,12 @@ COHORTS = [
         'short_name': 'Cystinosis',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RENAL_IMAGING',
+            'RESULTS',
             'MEDICATIONS',
             'DIALYSIS',
             'TRANSPLANTS',
-            'HOSPITALISATIONS',
         ],
     },
     {
@@ -90,6 +94,9 @@ COHORTS = [
         'short_name': 'Cystinuria',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RENAL_IMAGING',
+            'RESULTS',
         ],
     },
     {
@@ -98,6 +105,9 @@ COHORTS = [
         'short_name': 'Dent & Lowe',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RENAL_IMAGING',
+            'RESULTS',
         ],
     },
     {
@@ -110,6 +120,8 @@ COHORTS = [
             'RENAL_IMAGING',
             'RESULTS',
             'MEDICATIONS',
+            'DIALYSIS',
+            'TRANSPLANTS',
         ],
     },
     {
@@ -118,13 +130,17 @@ COHORTS = [
         'short_name': 'HNF1b',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
             'FAMILY_HISTORY',
             'RENAL_IMAGING',
             'PATHOLOGY',
+            'RESULTS',
+            'MEDICATIONS',
+            'DIALYSIS',
         ],
     },
     {
-        'code': 'HYPERRDG',
+        'code': 'HYPOXAL',
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
         'features': [
@@ -178,6 +194,11 @@ COHORTS = [
         'short_name': 'IgA',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RESULTS',
+            'MEDICATIONS',
+            'DIALYSIS',
+            'TRANSPLANTS',
         ],
     },
     {
@@ -186,38 +207,43 @@ COHORTS = [
         'short_name': 'MPGN',
         'features': [
             'DIAGNOSES',
-            'MPGN_CLINICAL_PICTURES',
+            'GENETICS',
+            'FAMILY_HISTORY',
+            'COMORBIDITIES',
             'PATHOLOGY',
+            'MPGN_CLINICAL_PICTURES',
             'RESULTS',
             'MEDICATIONS',
             'DIALYSIS',
             'PLASMAPHERESIS',
             'TRANSPLANTS',
+            'HOSPITALISATIONS',
         ],
     },
     {
-        'code': 'MEMRDG',
+        'code': 'MEMNEPHRO',
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RESULTS',
+            'MEDICATIONS',
+            'DIALYSIS',
+            'TRANSPLANTS',
         ],
     },
     {
         'code': 'NEPHROS',
         'name': 'NephroS',
         'short_name': 'NephroS',
-        'features': [
-            'RESULTS',
-        ],
+        'features': [],
     },
     {
         'code': 'NSMPGNC3',
         'name': 'National Study of Membranoproliferative Glomerulonephritis (MPGN) and C3 Glomerulopathy (C3G)',
         'short_name': 'National Study of MPGN and C3',
-        'features': [
-            'RESULTS',
-        ],
+        'features': [],
     },
     {
         'code': 'OBS',
@@ -239,12 +265,15 @@ COHORTS = [
         'short_name': 'PRCA',
         'features': [
             'DIAGNOSES',
+            'GENETICS',
+            'RESULTS',
+            'MEDICATIONS',
         ],
     },
     {
         'code': 'STECHUS',
         'name': 'STEC-associated HUS',
-        'short_name': 'STEC-HUS',
+        'short_name': 'STEC HUS',
         'features': [
             'DIAGNOSES',
             'GENETICS',
@@ -257,7 +286,7 @@ COHORTS = [
         ],
     },
     {
-        'code': 'VASRDG',
+        'code': 'VAS',
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
         'features': [
@@ -267,6 +296,7 @@ COHORTS = [
             'PATHOLOGY',
             'RESULTS',
             'MEDICATIONS',
+            'DIALYSIS',
             'TRANSPLANTS',
         ],
     },

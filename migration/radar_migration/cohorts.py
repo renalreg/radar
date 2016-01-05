@@ -3,6 +3,9 @@ from radar_migration import tables
 
 COHORT_MAP = {
     'SRNS': 'INS',
+    'HYPERRDG': 'HYPOXAL',
+    'MEMRDG': 'MEMNEPHRO',
+    'VASRDG': 'VAS',
 }
 
 

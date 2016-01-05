@@ -23,17 +23,17 @@
 
       <tr>
         <th>Kidney Type</th>
-        <td>{{item.kidneyType.label}}</td>
+        <td>{{item.kidneyType.label | missing}}</td>
       </tr>
 
       <tr>
         <th>Kidney Side</th>
-        <td>{{item.kidneySide.label}}</td>
+        <td>{{item.kidneySide.label | missing}}</td>
       </tr>
 
       <tr>
         <th>Laboratory Reference Number</th>
-        <td>{{item.laboratoryReferenceNumber}}</td>
+        <td>{{item.laboratoryReferenceNumber | missing}}</td>
       </tr>
 
       <tr>
@@ -148,8 +148,8 @@
           </td>
 
           <td>{{item.date | dateFormat}}</td>
-          <td>{{item.kidneyType.label}}</td>
-          <td>{{item.kidneySide.label}}</td>
+          <td>{{item.kidneyType.label | missing}}</td>
+          <td>{{item.kidneySide.label | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
