@@ -43,18 +43,6 @@ COHORTS = [
         ],
     },
     {
-        'code': 'ADTKD',
-        'name': 'Autosomal Dominant Tubulointerstitial Kidney Disease',
-        'short_name': 'ADTKD',
-        'features': [
-            FEATURES.DIAGNOSES,
-            FEATURES.GENETICS,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-        ],
-    },
-    {
         'code': 'ARPKD',
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
@@ -119,6 +107,18 @@ COHORTS = [
         'short_name': 'Dent & Lowe',
         'features': [
             FEATURES.DIAGNOSES,
+        ],
+    },
+    {
+        'code': 'FUAN',
+        'name': 'Familial Urate Associated Nephropathy',
+        'short_name': 'FUAN',
+        'features': [
+            FEATURES.DIAGNOSES,
+            FEATURES.GENETICS,
+            FEATURES.RENAL_IMAGING,
+            FEATURES.RESULTS,
+            FEATURES.MEDICATIONS,
         ],
     },
     {
@@ -243,9 +243,9 @@ COHORTS = [
         ],
     },
     {
-        'code': 'PCRA',
+        'code': 'PRCA',
         'name': 'Pure Red Cell Aplasia',
-        'short_name': 'PCRA',
+        'short_name': 'PRCA',
         'features': [
             FEATURES.DIAGNOSES,
         ],
