@@ -1,5 +1,5 @@
 from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey,\
-    DateTime
+    DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
 metadata = MetaData()
@@ -170,4 +170,24 @@ dialysis = Table(
     Column('modality', Integer),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
+)
+
+family_history = Table(
+    'family_history', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('cohort_id', Integer),
+    Column('parental_consanguinity', Boolean),
+    Column('family_history', Boolean),
+    Column('other_family_history', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
+family_history_relatives = Table(
+    'family_history_relatives', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('family_history_id', Integer),
+    Column('relationship', Integer),
+    Column('patient_id', Integer),
 )
