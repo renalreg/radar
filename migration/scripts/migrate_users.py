@@ -18,14 +18,17 @@ def migrate_users(old_conn, new_conn):
         JOIN tbl_users ON rdr_user_mapping.radarUserId = tbl_users.uId
         WHERE
             rdr_user_mapping.role != 'ROLE_PATIENT'
+        ORDER BY username
     """))
 
     for row in rows:
-        print 'user %s' % row['username']
+        username = row['username'].lower()
+
+        print 'user %s' % username
 
         new_conn.execute(
             tables.users.insert(),
-            username=row['username'],
+            username=username,
             email=row['email'],
             first_name=row['firstName'],
             last_name=row['lastName'],

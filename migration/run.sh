@@ -17,4 +17,6 @@ echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
+echo 'migrate hospitalisations...'
+python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
 echo 'done'

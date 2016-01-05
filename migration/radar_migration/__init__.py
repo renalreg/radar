@@ -84,6 +84,8 @@ class Migration(object):
         return cohort_id
 
     def get_user_id(self, username):
+        username = username.lower()
+
         user_id = self._user_ids.get(username)
 
         if user_id is None:

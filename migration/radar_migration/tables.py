@@ -132,3 +132,16 @@ patient_numbers = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+hospitalisations = Table(
+    'hospitalisations', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('date_of_admission', DateTime),
+    Column('date_of_discharge', DateTime),
+    Column('reason_for_admission', String),
+    Column('comments', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
