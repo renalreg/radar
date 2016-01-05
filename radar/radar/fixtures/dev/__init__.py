@@ -20,7 +20,7 @@ from radar.models import Dialysis, Medication, Transplant, Hospitalisation, Plas
     RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
     PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser, \
     ResultGroupSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPE_CODED_INTEGER, \
-    RESULT_SPEC_TYPE_CODED_STRING, TYPES_OF_DIALYSIS, TYPES_OF_TRANSPLANT
+    RESULT_SPEC_TYPE_CODED_STRING, DIALYSIS_MODALITIES, TRANSPLANT_MODALITIES
 from radar.database import db
 from radar.models.cohorts import Cohort
 from radar.models.posts import Post
@@ -310,7 +310,7 @@ def create_dialysis_f():
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
 
-            dialysis.type_of_dialysis = random.choice(TYPES_OF_DIALYSIS.keys())
+            dialysis.modality = random.choice(DIALYSIS_MODALITIES.keys())
 
             validate_and_add(dialysis)
 
@@ -347,12 +347,12 @@ def create_transplants_f():
             transplant = Transplant()
             transplant.patient = patient
             transplant.data_source = data_source
-            transplant.date_of_transplant = random_date(patient.earliest_date_of_birth, date.today())
-            transplant.type_of_transplant = random.choice(TYPES_OF_TRANSPLANT.keys())
+            transplant.date = random_date(patient.earliest_date_of_birth, date.today())
+            transplant.modality = random.choice(TRANSPLANT_MODALITIES.keys())
             transplant.organisation = random.choice(organisations)
 
             if random.random() > 0.75:
-                transplant.date_of_failure = random_date(transplant.date_of_transplant, date.today())
+                transplant.date_of_failure = random_date(transplant.date, date.today())
 
             validate_and_add(transplant)
 

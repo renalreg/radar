@@ -1,6 +1,6 @@
 from radar_api.serializers.dialysis import DialysisSerializer
 from radar.validation.dialysis import DialysisValidation
-from radar.models import Dialysis, TYPES_OF_DIALYSIS
+from radar.models import Dialysis, DIALYSIS_MODALITIES
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.codes import CodedIntegerListView
@@ -18,11 +18,11 @@ class DialysisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
     model_class = Dialysis
 
 
-class DialysisTypeListView(CodedIntegerListView):
-    items = TYPES_OF_DIALYSIS
+class DialysisModalityListView(CodedIntegerListView):
+    items = DIALYSIS_MODALITIES
 
 
 def register_views(app):
     app.add_url_rule('/dialysis', view_func=DialysisListView.as_view('dialysis_list'))
     app.add_url_rule('/dialysis/<id>', view_func=DialysisDetailView.as_view('dialysis_detail'))
-    app.add_url_rule('/dialysis-types', view_func=DialysisTypeListView.as_view('dialysis_type_list'))
+    app.add_url_rule('/dialysis-modalities', view_func=DialysisModalityListView.as_view('dialysis_modality_list'))

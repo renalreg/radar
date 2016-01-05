@@ -22,16 +22,16 @@ def transplant(patient):
     obj = Transplant()
     obj.data_source = DataSource()
     obj.patient = patient
-    obj.date_of_transplant = date(2015, 1, 1)
-    obj.type_of_transplant = 29
+    obj.date = date(2015, 1, 1)
+    obj.modality = 29
     obj.date_of_failure = date(2015, 1, 2)
     return obj
 
 
 def test_valid(transplant):
     obj = valid(transplant)
-    assert obj.date_of_transplant == date(2015, 1, 1)
-    assert obj.type_of_transplant == 29
+    assert obj.date == date(2015, 1, 1)
+    assert obj.modality == 29
     assert obj.date_of_failure == date(2015, 1, 2)
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -49,28 +49,28 @@ def test_data_source_missing(transplant):
     invalid(transplant)
 
 
-def test_date_of_transplant_missing(transplant):
-    transplant.date_of_transplant = None
+def test_date_missing(transplant):
+    transplant.date = None
     invalid(transplant)
 
 
-def test_date_of_transplant_before_dob(transplant):
-    transplant.date_of_transplant = date(1999, 1, 1)
+def test_date_before_dob(transplant):
+    transplant.date = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_date_of_transplant_future(transplant):
-    transplant.date_of_transplant = date.today() + timedelta(days=1)
+def test_date_future(transplant):
+    transplant.date = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_type_of_transplant_missing(transplant):
-    transplant.type_of_transplant = None
+def test_modality_missing(transplant):
+    transplant.modality = None
     invalid(transplant)
 
 
-def test_type_of_transplant_invalid(transplant):
-    transplant.type_of_transplant = 0
+def test_modality_invalid(transplant):
+    transplant.modality = 0
     invalid(transplant)
 
 
@@ -90,7 +90,7 @@ def test_date_of_failure_future(transplant):
 
 
 def test_date_of_failure_before_transplant_date(transplant):
-    transplant.date_of_failure = transplant.date_of_transplant - timedelta(days=1)
+    transplant.date_of_failure = transplant.date - timedelta(days=1)
     invalid(transplant)
 
 
