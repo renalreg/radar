@@ -145,3 +145,17 @@ hospitalisations = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+pathology = Table(
+    'pathology', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('date', Date),
+    Column('kidney_type', String),
+    Column('kidney_side', String),
+    Column('laboratory_reference_number', String),
+    Column('histological_summary', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)

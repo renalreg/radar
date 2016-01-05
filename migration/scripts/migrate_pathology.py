@@ -43,6 +43,7 @@ def migrate_pathology(old_conn, new_conn):
             PATH_TXT
         FROM tbl_pathology
         JOIN patient ON tbl_pathology.RADAR_NO = patient.radarNo
+        WHERE BX_DATE IS NOT NULL
     """))
 
     for row in rows:
