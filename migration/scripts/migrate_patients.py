@@ -104,7 +104,7 @@ def migrate_patients(old_conn, new_conn):
             SELECT
                 *
             FROM patient
-            WHERE radarNo IS NOT NULL AND sourceType = 'RADAR'
+            WHERE radarNo IS NOT NULL
         ) AS r ON p.nhsno = r.nhsno
         LEFT JOIN (
             SELECT
