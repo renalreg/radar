@@ -3,7 +3,7 @@ from radar.validation.core import Field, Validation, ValidationError, pass_new_o
 from radar.validation.data_sources import DataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
-from radar.validation.validators import valid_date_for_patient, required, optional, not_empty, min_, in_, max_length
+from radar.validation.validators import valid_date_for_patient, required, optional, not_empty, min_, in_, max_length, none_if_blank
 
 
 class MedicationValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
@@ -14,6 +14,7 @@ class MedicationValidation(PatientValidationMixin, DataSourceValidationMixin, Me
     dose_unit = Field([optional(), in_(MEDICATION_DOSE_UNITS.keys())])
     frequency = Field([optional(), in_(MEDICATION_FREQUENCIES.keys())])
     route = Field([optional(), in_(MEDICATION_ROUTES.keys())])
+    unstructured = Field([none_if_blank(), optional(), max_length(10000)])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):
