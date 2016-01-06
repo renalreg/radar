@@ -23,6 +23,7 @@ script:
   - ( cd mock_ukrdc && tox )
   - ( cd packaging && tox )
   - ( cd migration && tox )
+  - ( cd fixtures && tox )
   - ( cd client && gulp sauce-labs || true )
 after_success:
   - coveralls-lcov --dry-run --verbose <(cat client/coverage/*/lcov.info) > client/coveralls.json

@@ -6,7 +6,6 @@ import click
 
 from radar.app import create_app
 from radar.database import db
-from radar.fixtures import dev, create_initial_data
 
 
 def app_context(f):
@@ -25,30 +24,10 @@ def cli(ctx, connection_string):
     config = {
         'SQLALCHEMY_DATABASE_URI': connection_string,
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-        'BASE_URL': 'http://localhost'
+        'BASE_URL': 'http://localhost',
     }
 
     ctx.obj['app'] = create_app(config)
-
-
-@cli.command('init')
-@app_context
-def init_command():
-    db.create_all()
-    create_initial_data()
-    db.session.commit()
-
-
-@cli.command('dev')
-@click.option('--patients', default=5)
-@click.option('--users', default=0)
-@click.option('--password', default='password')
-@app_context
-def dev_command(patients, users, password):
-    db.drop_all()
-    db.create_all()
-    dev.create_data(patients=patients, users=users, password=password)
-    db.session.commit()
 
 
 @cli.command('create')

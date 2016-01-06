@@ -1,4 +1,4 @@
-from radar.fixtures.validation import validate_and_add
+from radar_fixtures.validation import validate_and_add
 from radar.models import Disorder
 
 DISORDERS = [
