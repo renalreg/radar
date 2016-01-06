@@ -22,6 +22,7 @@ COHORTS = [
             FEATURES.DIAGNOSES,
             FEATURES.GENETICS,
             FEATURES.FAMILY_HISTORY,
+            FEATURES.ALPORT_CLINICAL_PICTURES,
             FEATURES.RESULTS,
         ],
     },
@@ -133,7 +134,7 @@ COHORTS = [
         ],
     },
     {
-        'code': 'HYPERRDG',
+        'code': 'HYPOXAL',
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
         'features': [
@@ -205,7 +206,7 @@ COHORTS = [
         ],
     },
     {
-        'code': 'MEMRDG',
+        'code': 'MEMNEPHRO',
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
         'features': [
@@ -266,7 +267,7 @@ COHORTS = [
         ],
     },
     {
-        'code': 'VASRDG',
+        'code': 'VAS',
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
         'features': [

@@ -52,6 +52,7 @@ from radar_api.views import hnf1b
 from radar_api.views import fetal_ultrasounds
 from radar_api.views import pregnancies
 from radar_api.views import mpgn
+from radar_api.views import alport
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -91,6 +92,7 @@ class RadarApi(Flask):
 
         register_template_filters(self)
 
+        alport.register_views(self)
         cohorts.register_views(self)
         cohort_patients.register_views(self)
         cohort_users.register_views(self)
