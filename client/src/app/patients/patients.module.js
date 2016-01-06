@@ -21,7 +21,7 @@
     'radar.patients.hospitalisations',
     'radar.patients.ins',
     'radar.patients.medications',
-    'radar.patients.meta',
+    'radar.patients.metadata',
     'radar.patients.mpgn',
     'radar.patients.navigation',
     'radar.patients.nephrectomies',
