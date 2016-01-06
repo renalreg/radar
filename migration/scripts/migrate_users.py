@@ -111,9 +111,10 @@ def cli(src, dest):
     src_conn = src_engine.connect()
     dest_conn = dest_engine.connect()
 
-    migrate_users(src_conn, dest_conn)
-    migrate_user_cohorts(src_conn, dest_conn)
-    migrate_user_organisations(src_conn, dest_conn)
+    with dest_conn.begin():
+        migrate_users(src_conn, dest_conn)
+        migrate_user_cohorts(src_conn, dest_conn)
+        migrate_user_organisations(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

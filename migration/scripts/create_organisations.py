@@ -35,13 +35,14 @@ def create_organisations(conn, units_filename):
 
 
 @click.command()
+@click.argument('db')
 @click.argument('units')
-@click.argument('dest')
-def cli(units, dest):
-    engine = create_engine(dest)
+def cli(db, units):
+    engine = create_engine(db)
     conn = engine.connect()
 
-    create_organisations(conn, units)
+    with conn.begin():
+        create_organisations(conn, units)
 
 
 if __name__ == '__main__':

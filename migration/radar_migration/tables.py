@@ -68,6 +68,13 @@ organisations = Table(
     Column('recruitment', String),
 )
 
+organisation_consultants = Table(
+    'organisation_consultants', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('organisation_id', Integer),
+    Column('consultant_id', Integer),
+)
+
 organisation_patients = Table(
     'organisation_patients', metadata,
     Column('id', Integer, primary_key=True),
@@ -94,6 +101,15 @@ data_sources = Table(
     Column('type', String),
 )
 
+consultants = Table(
+    'consultants', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('title', String),
+    Column('first_name', String),
+    Column('last_name', String),
+    Column('email', String),
+)
+
 patient_aliases = Table(
     'patient_aliases', metadata,
     Column('id', UUID, primary_key=True),
@@ -114,6 +130,16 @@ patient_addresses = Table(
     Column('address2', String),
     Column('address3', Integer),
     Column('postcode', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
+patient_consultants = Table(
+    'patient_consultants', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('consultant_id', Integer),
+    Column('from_date', Date),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )

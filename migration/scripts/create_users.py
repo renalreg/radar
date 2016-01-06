@@ -9,12 +9,13 @@ def create_migration_user(conn):
 
 
 @click.command()
-@click.argument('dest')
-def cli(dest):
-    engine = create_engine(dest)
+@click.argument('db')
+def cli(db):
+    engine = create_engine(db)
     conn = engine.connect()
 
-    create_migration_user(conn)
+    with conn.begin():
+        create_migration_user(conn)
 
 
 if __name__ == '__main__':

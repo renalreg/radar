@@ -75,7 +75,8 @@ def cli(src, dest):
     src_conn = src_engine.connect()
     dest_conn = dest_engine.connect()
 
-    migrate_pathology(src_conn, dest_conn)
+    with dest_conn.begin():
+        migrate_pathology(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

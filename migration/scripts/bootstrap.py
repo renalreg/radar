@@ -34,11 +34,13 @@ def bootstrap(conn):
 
 
 @click.command()
-@click.argument('dest')
-def cli(dest):
-    engine = create_engine(dest)
+@click.argument('db')
+def cli(db):
+    engine = create_engine(db)
     conn = engine.connect()
-    bootstrap(conn)
+
+    with conn.begin():
+        bootstrap(conn)
 
 
 if __name__ == '__main__':

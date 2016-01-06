@@ -81,7 +81,8 @@ def cli(src, dest):
     src_conn = src_engine.connect()
     dest_conn = dest_engine.connect()
 
-    migrate_plasmapheresis(src_conn, dest_conn)
+    with dest_conn.begin():
+        migrate_plasmapheresis(src_conn, dest_conn)
 
 
 if __name__ == '__main__':
