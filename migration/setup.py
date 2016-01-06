@@ -17,7 +17,4 @@ setup(
     url='https://www.radar.nhs.uk/',
     packages=find_packages(),
     zip_safe=True,
-    scripts=[
-        'scripts/migrate.py',
-    ],
 )

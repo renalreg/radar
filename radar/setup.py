@@ -35,5 +35,8 @@ setup(
         'SQLAlchemy',
         'Werkzeug',
         'zxcvbn',
-    ]
+    ],
+    scripts=[
+        'scripts/manage.py',
+    ],
 )
