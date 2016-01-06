@@ -22,6 +22,9 @@ def create_organisations(conn, units_filename):
     with open(units_filename, 'rb') as f:
         reader = csv.reader(f)
 
+        # Skip headers
+        next(reader)
+
         for code, name in reader:
             organisations.append({
                 'code': code,
