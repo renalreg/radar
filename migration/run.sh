@@ -1,15 +1,15 @@
 #!/bin/sh
 
+set -e
+
 usage() {
   echo "Usage: $0 mysql+pymysql://radar:password@10.0.2.2:3306/radar?charset=utf8 postgresql+psycopg2://postgres:password@localhost:5432/radar"
   exit 1
 }
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
   usage
 fi
-
-set -e
 
 SRC=$1
 DEST=$2
