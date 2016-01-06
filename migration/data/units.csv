@@ -1,109 +1,104 @@
 code,name
-SNC01,Aberdeen Royal Infirmary
-9RW402,Aintree -FDU
-RW402,Aintree University Hospital
-SLC01,Airdrie - Monklands
-45020,Altnagelvin Hospital
-24027,Antrim Area Hospital
-RQBAU,Bangor - Ysbyty Gwynedd
-RDDH0,Basildon Hospital
 11023,Belfast - Royal Hospital for Sick Children
 2020,Belfast City Hospital
-7021,Belfast Ulster Hospital
-RBL14,Birkenhead - Arrowe Park
-RL7,Birmingham - Heart of England NHS Foundation Trust
-RRK02,Birmingham - Queen Elizabeth Hospital
-RQ3,Birmingham Childrens Hospital
-RKGA1,Bodlewyddan - Glan Clwyd Hospital
-RMC00,Bolton
-RAE05,Bradford Renal Unit
-RGU01,Brighton -Sussex Kidney Unit
-REE01,Bristol - Southmead Hospital
-RA723,Bristol Royal Hospital for Sick Children
-RGT01,Cambridge Kidney Unit
-RRBBV,Cardiff - UHW (Adult and Paediatrics)
-RLGAY,Carlisle - Cumberland Infirmary
-RAZ,Carshalton - St Helier Renal Unit
-CCL,CCL Test Unit
-RQ8L0,Chelmsford- Broomfield Hospital
-RJR05,Chester - Countess of Chester
-CHI,CHI Test Unit
-RBL20,Clatterbridge
-RDEE4,Colchester General Hospital
-RKB01,Coventry and Warwickshire
-DEMO,Demonstration Entries
-RFPFG,Derby
-RP5,Doncaster Royal Infirmary
-RBD01,Dorset County Hospital
-RNA03,Dudley - Russells Hall Hospital
-SYC01,Dumfries Renal Unit
-DUMMY,Dummy
-STC01,Dundee
-SFC01,"Dunfermline, Queen Margaret's Hospital"
-ECS,ECS
-RSC02,Edinburgh Royal Infirmary
-CAIRO,Egypt - Cairo CPNT
-RH8,Exeter
-SGC02,Glasgow Royal Hospital for Sick Children n
-SGC05,Glasgow Royal Infirmary
-SGC04,Glasgow Western Infirmary
-RH641,Gloucester
-RBN63,Halton
-RF201,Hull
-NEWDEHLI,"India - All India Institute of Medical Science, New Dehli"
-VELLORE,"India - Christian Medical College, Vellore"
-BANGALORE,"India - St John's Medical College Hospital, Bangalore"
-SHC01,Inverness -Raigmore Hospital
-RGQ02,Ipswich Hospital
-TEHRAN,"Iran - Children Medical Centre Hospital,Tehran"
-GUNMA,Japan - Gunma University Hospital
-RVVKC,Kent and Canterbury Hospital
-SAC02,Kilmarnock - Crosshouse - John Stevenson Lynch Renal Unit
-99RQR13,Leeds - Childrens Hospital
-RQR00,Leeds - St James's Hospital
-RFBAK,Leicester
-RBS25,Liverpool - Alder Hey Childrens
-RQ617,Liverpool Royal UHT
-R1H00,London - Barts Health NHS Trust
-RJ100,London - Guy's and St. Thomas' Hospital
-RJZ,London - King's College Hospital
-RAL01,London - Royal Free Hospital
-RJ701,London - St George's Hospital
-RQN02,London - West
-RP4,London- Great Ormond Street Hospital for Children
-RW3RM,Manchester Royal -Childrens Hospital
-RM574,Manchester Royal Infirmary
-RCJAT,Middlesbrough
-RTD01,Newcastle upon Tyne Hospitals NHS Foundation Trust
+24027,Antrim Area Hospital
 33020,Newry - Daisy Hill Hospital
-RM102,Norfolk and Norwich University Hospital NHS Foundation Trust
-99RCSLB,Nottingham - QMC - Children's Kidney Unit
-RX1CC,Nottingham University Hospitals NHS Trust
+45020,Altnagelvin Hospital-Derry
 48021,Omagh - Tyrone County Hospital
-RNX02,Oxford
-RK950,Plymouth
-RHU02,Portsmouth - Wessex Renal and Transplant Service
-RMF01,Preston
-RHW01,Reading - Royal Berkshire NHS Foundation Trust
-RENALREG,Renal Registry
-RQ601,RLH - Broadgreen
-SALIBD,Salford IBD
-RM301,Salford Royal (Hope Hospital) Manchester
-RK7CC,Sheffield
-RLZ01,Shrewsbury Royal Hospital
+7021,Belfast Ulster Hospital
+99RCSLB,Nottingham - QMC - Children's Kidney Unit
 99RHM01,Southampton General hospital - Paediatrics
-RAJ01,Southend
-RVY01,Southport
+99RQR13,Leeds - Childrens Hospital
 9RBN01,St Helens and Knowlsley
-RAQ01,"Stevenage, Lister Hospital"
-RJE01,Stoke - University Hospital N Midlands
-RLNGH,Sunderland Royal Hospital
-RQHC7,"Swansea, Morriston Hospital"
-REF12,Truro Royal Cornwall Hospital
-UNKNOWN,Unknown
-RKC81,Warrington
-REM26,Waterloo
 9RM301,Wigan
-RL403,Wolverhampton - New Cross Hospital
-RKHA4,Wrexham Maelor Hospital
+9RW402,Aintree_FDU
+BANGALORE,"India - St John's Medical College Hospital, Bangalore"
+CAIRO,Egypt - Cairo CPNT
+DSF01,Salford Diabetes
+EDINHF1,Edinburgh Heart Failure
+GUNMA,Japan - Gunma University Hospital
+NEWDEHLI,"India - All India Institute of Medical Science, New Dehli"
+R1H00,London - Barts Health
+RA723,Bristol Royal Hospital for Sick Children
+RAE05,Bradford Renal Unit
+RAJ01,Southend
+RAL01,London - Royal Free Hospital
+RAQ01,"Stevenage, Lister Hospital"
+RAZ,Carshalton - St Helier Renal Unit
+RBD01,Dorset County Hospital
+RBL14,Birkenhead - Arrowe Park
+RBL20,Clatterbridge
+RBN63,Halton
+RBS25,Liverpool - Alder Hey Childrens
 RCB55,York
+RCJAT,Middlesbrough- James Cook
+RDDH0,Basildon Hospital
+RDEE4,Colchester General Hospital
+REE01,Bristol - Southmead Hospital
+REF12,Truro Royal Cornwall Hospital
+REM26,Waterloo
+RF201,Hull
+RFBAK,Leicester
+RFPFG,Derby
+RGQ02,Ipswich Hospital
+RGT01,Cambridge Kidney Unit
+RGU01,Brighton -Sussex Kidney Unit
+RH641,Gloucester
+RH8,Exeter
+RHU02,Portsmouth - Wessex Renal and Transplant Service
+RHW01,Reading - Royal Berkshire NHS Foundation Trust
+RJ100,London - Guy's and St. Thomas' Hospital
+RJ701,London - St George's Hospital
+RJE01,Stoke - University Hospital N Midlands
+RJR05,Chester - Countess of Chester
+RJZ,London - King's College Hospital
+RK7CC,Sheffield
+RK950,Plymouth
+RKB01,Coventry and Warwickshire
+RKC81,Warrington
+RKGA1,Bodlewyddan - Glan Clwyd Hospital
+RKHA4,Wrexham Maelor Hospital
+RL403,Wolverhampton - New Cross Hospital
+RL7,Birmingham - Heart of England NHS Foundation Trust
+RLGAY,Carlisle - Cumberland Infirmary
+RLNGH,Sunderland Royal Hospital
+RLZ01,Shrewsbury Royal Hospital
+RM102,Norfolk and Norwich University Hospital
+RM301,Salford Royal (Hope Hospital) Manchester
+RM574,Manchester Royal Infirmary
+RMC00,Bolton
+RMF01,Preston
+RNA03,Dudley - Russells Hall Hospital
+RNX02,Oxford
+RP4,London- Great Ormond Street Hospital for Children
+RP5,Doncaster Royal Infirmary
+RQ3,Birmingham Childrens Hospital
+RQ601,Liverpool - Broadgreen
+RQ617,Liverpool Royal UHT
+RQ8L0,Chelmsford- Broomfield Hospital
+RQBAU,Bangor - Ysbyty Gwynedd
+RQHC7,"Swansea, Morriston Hospital"
+RQN02,London - West
+RQR00,Leeds - St James's Hospital
+RRBBV,Cardiff - UHW (Adult and Paediatrics)
+RRK02,Birmingham - Queen Elizabeth Hospital
+RSC02,Edinburgh Royal Infirmary
+RTD01,Newcastle upon Tyne Hospitals NHS Foundation Trust
+RVVKC,Kent and Canterbury Hospital
+RVY01,Southport
+RW3RM,Manchester Royal -Childrens Hospital
+RW402,Aintree University Hospital
+RX1CC,Nottingham University Hospitals NHS Trust
+SAC02,Kilmarnock - Crosshouse - John Stevenson Lynch Renal Unit
+SALIBD,Salford IBD
+SFC01,"Dunfermline, Queen Margaret's Hospital"
+SGC02,"Glasgow - The Royal Hospital for Children,"
+SGC04,OLD-Glasgow Renal & Transplant Unit
+SGC05,Glasgow - Queen Elizabeth  University Hospital
+SHC01,Inverness -Raigmore Hospital
+SLC01,Airdrie - Monklands
+SNC01,Aberdeen Royal Infirmary
+STC01,Dundee
+SYC01,Dumfries Renal Unit
+TEHRAN,"Iran - Children Medical Centre Hospital, Tehran"
+VELLORE,"India - Christian Medical College, Vellore"
