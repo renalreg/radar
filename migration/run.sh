@@ -14,7 +14,7 @@ python scripts/create_users.py "$DEST"
 echo 'create cohorts...'
 python scripts/create_cohorts.py "$DEST"
 echo 'create organisations...'
-python scripts/create_organisations.py data/units.csv "$DEST"
+python scripts/create_organisations.py "$DEST" data/units.csv
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
