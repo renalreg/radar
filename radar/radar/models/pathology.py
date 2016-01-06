@@ -30,7 +30,7 @@ class Pathology(db.Model, MetaModelMixin):
     date = Column(Date, nullable=False)
     kidney_type = Column(String)
     kidney_side = Column(String)
-    laboratory_reference_number = Column(String)
+    reference_number = Column(String)
     histological_summary = Column(String)
 
 Index('pathology_patient_id_idx', Pathology.patient_id)

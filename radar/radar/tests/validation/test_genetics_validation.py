@@ -25,7 +25,7 @@ def genetics(patient):
     obj.cohort = Cohort(id=1)
     obj.date_sent = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
-    obj.laboratory_reference_number = '12345'
+    obj.reference_number = '12345'
     obj.karyotype = 1
     obj.results = 'foo\nbar\nbaz'
     obj.summary = 'hello\nworld'
@@ -36,7 +36,7 @@ def test_valid(genetics):
     obj = valid(genetics)
     assert obj.date_sent == datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     assert obj.laboratory == 'Test'
-    assert obj.laboratory_reference_number == '12345'
+    assert obj.reference_number == '12345'
     assert obj.karyotype == 1
     assert obj.results == 'foo\nbar\nbaz'
     assert obj.summary == 'hello\nworld'
@@ -77,10 +77,10 @@ def test_laboratory_blank(genetics):
     assert obj.laboratory is None
 
 
-def test_laboratory_reference_number_blank(genetics):
-    genetics.laboratory_reference_number = ''
+def test_reference_number_blank(genetics):
+    genetics.reference_number = ''
     obj = valid(genetics)
-    assert obj.laboratory_reference_number is None
+    assert obj.reference_number is None
 
 
 def test_karyotype_missing(genetics):
