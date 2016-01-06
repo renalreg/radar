@@ -44,5 +44,6 @@ class Medication(db.Model, MetaModelMixin):
     dose_unit = Column(String)
     frequency = Column(String)
     route = Column(String)
+    unstructured = Column(String)
 
 Index('medications_patient_id_idx', Medication.patient_id)
