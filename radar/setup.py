@@ -36,7 +36,4 @@ setup(
         'Werkzeug',
         'zxcvbn',
     ],
-    scripts=[
-        'scripts/manage.py',
-    ],
 )

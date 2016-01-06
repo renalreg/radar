@@ -5,102 +5,41 @@ from jinja2.utils import generate_lorem_ipsum
 import pytz
 from sqlalchemy import desc
 
-from radar.fixtures import create_initial_data
-from radar.fixtures.dev.constants import MEDICATION_NAMES
-from radar.fixtures.dev.utils import random_date, generate_gender, generate_first_name, generate_last_name, \
-    generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
-    generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
-    generate_chi_no, generate_nhs_no, generate_address1, generate_address2, generate_address3, \
-    generate_postcode, generate_title
-from radar.fixtures.validation import validate_and_add
 from radar.data_sources import get_radar_data_source, DATA_SOURCE_TYPE_RADAR
 from radar.models import Dialysis, Medication, Transplant, Hospitalisation, Plasmapheresis,\
     RenalImaging, ResultGroup, ETHNICITIES, MEDICATION_DOSE_UNITS, \
     MEDICATION_FREQUENCIES, MEDICATION_ROUTES, PLASMAPHERESIS_RESPONSES, RENAL_IMAGING_TYPES, \
     RENAL_IMAGING_KIDNEY_TYPES, ORGANISATION_TYPE_UNIT, Organisation, OrganisationPatient, CohortPatient, \
-    PLASMAPHERESIS_NO_OF_EXCHANGES, OrganisationUser, PatientAlias, PatientNumber, PatientAddress, CohortUser, \
+    PLASMAPHERESIS_NO_OF_EXCHANGES, PatientAlias, PatientNumber, PatientAddress, \
     ResultGroupSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPE_CODED_INTEGER, \
     RESULT_SPEC_TYPE_CODED_STRING, DIALYSIS_MODALITIES, TRANSPLANT_MODALITIES
 from radar.database import db
 from radar.models.cohorts import Cohort
 from radar.models.posts import Post
 from radar.models.patients import Patient, PatientDemographics, GENDER_FEMALE
-from radar.models.users import User
 from radar.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, \
     get_nhsbt_organisation, get_radar_organisation
-from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
 from radar.cohorts import get_radar_cohort
 from radar.models.consultants import Consultant
 from radar.models.organisations import OrganisationConsultant
-from radar.fixtures.users import DEFAULT_PASSWORD
+from radar_fixtures.constants import MEDICATION_NAMES
+from radar_fixtures.utils import random_date, generate_gender, generate_first_name, generate_last_name, \
+    generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
+    generate_email_address, random_datetime, random_bool, generate_first_name_alias, generate_nhsbt_no, generate_ukrr_no, \
+    generate_chi_no, generate_nhs_no, generate_address1, generate_address2, generate_address3, \
+    generate_postcode, generate_title
+from radar_fixtures.validation import validate_and_add
+from radar_fixtures.users import DEFAULT_PASSWORD
+from radar_fixtures.organisations import create_organisations
+from radar_fixtures.data_sources import create_data_sources
+from radar_fixtures.results import create_result_specs, create_result_group_specs
+from radar_fixtures.cohorts import create_cohorts
+from radar_fixtures.diagnoses import create_cohort_diagnoses
+from radar_fixtures.comorbidities import create_disorders
+from radar_fixtures.users import create_users, create_bot_user
 
 
-def create_users(n, password=DEFAULT_PASSWORD):
-    for x in range(n):
-        username = 'user%d' % (x + 1)
-
-        if User.query.filter(User.username == username).first() is not None:
-            continue
-
-        user = User()
-        user.first_name = generate_first_name(generate_gender()).capitalize()
-        user.last_name = generate_last_name().capitalize()
-        user.username = username
-        user.email = '%s@example.org' % username
-        user.password = password
-        user.is_admin = True
-        validate_and_add(user, {'allow_weak_passwords': True})
-
-
-def create_southmead_user(password=DEFAULT_PASSWORD):
-    user = User()
-    user.username = 'southmead_demo'
-    user.email = 'southmead_demo@example.org'
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
-    user.is_admin = False
-    user.password = password
-    user = validate_and_add(user, {'allow_weak_passwords': True})
-
-    organisation_user = OrganisationUser()
-    organisation_user.user = user
-    organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
-    organisation_user.role = ORGANISATION_ROLES.SENIOR_CLINICIAN
-    validate_and_add(organisation_user)
-
-
-def create_ins_user(password=DEFAULT_PASSWORD):
-    user = User()
-    user.username = 'ins_demo'
-    user.email = 'ins_demo@example.org'
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
-    user.is_admin = False
-    user.password = password
-    user = validate_and_add(user, {'allow_weak_passwords': True})
-
-    cohort_user = CohortUser()
-    cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_ROLES.RESEARCHER
-    validate_and_add(cohort_user)
-
-
-def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
-    user = User()
-    user.username = 'ins_demographics_demo'
-    user.email = 'ins_demographics_demo@example.org'
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
-    user.is_admin = False
-    user.password = password
-    user = validate_and_add(user, {'allow_weak_passwords': True})
-
-    cohort_user = CohortUser()
-    cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_ROLES.SENIOR_RESEARCHER
-    validate_and_add(cohort_user)
+__version__ = '0.1.0'
 
 
 def create_posts(n):
@@ -532,14 +471,15 @@ def create_data(patients=5, users=10, password=DEFAULT_PASSWORD):
     random.seed(0)
 
     with db.session.no_autoflush:
-        create_initial_data()
-
-        create_southmead_user(password=password)
-        create_ins_user(password=password)
-        create_ins_demograhics_user(password=password)
-
-        create_users(users, password=password)
-        create_patients(patients)
+        create_bot_user(password)
+        create_organisations()
+        create_data_sources()
+        create_cohorts()
+        create_cohort_diagnoses()
+        create_result_specs()
+        create_result_group_specs()
+        create_disorders()
         create_consultants()
-
         create_posts(10)
+        create_users(users, password)
+        create_patients(patients)
