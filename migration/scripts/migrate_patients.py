@@ -93,7 +93,9 @@ def migrate_patients(old_conn, new_conn):
             (CASE WHEN COALESCE(p.sex, '') != '' THEN p.sex ELSE r.sex END) AS 'sex',
             (CASE WHEN COALESCE(p.ethnicGp, '') != '' THEN p.ethnicGp ELSE r.ethnicGp END) AS 'ethnic_group',
             (CASE WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1 ELSE r.telephone1 END) AS 'telephone1',
-            (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile'
+            (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile',
+            r.comments,
+            r.otherClinicianAndContactInfo
         FROM patient AS p
         JOIN (
             SELECT
@@ -132,10 +134,19 @@ def migrate_patients(old_conn, new_conn):
 
         print 'patient %d' % radar_no
 
+        comments = [row['comments'], row['otherClinicianAndContactInfo']]
+        comments = [x for x in comments if x]
+
+        if comments:
+            comments = '\n'.join(comments)
+        else:
+            comments = None
+
         # Create a patient
         new_conn.execute(
             tables.patients.insert(),
             id=radar_no,
+            comments=comments,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )

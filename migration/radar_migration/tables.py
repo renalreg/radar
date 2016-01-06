@@ -7,6 +7,7 @@ metadata = MetaData()
 patients = Table(
     'patients', metadata,
     Column('id', Integer, primary_key=True),
+    Column('comments', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
