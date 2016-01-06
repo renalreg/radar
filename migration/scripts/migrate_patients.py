@@ -45,10 +45,24 @@ ETHNICITY_MAP = {
     '9SB4.': 'G',
 }
 
+STATUS_MAP = {
+    None: True,
+    0: True,
+    1: True,
+    2: False,
+    3: False,
+    4: False,
+    5: False,
+    6: False,
+}
+
 
 def convert_ethnicity(old_value):
     if old_value:
-        new_value = ETHNICITY_MAP[old_value.upper().ljust(5, '.')]
+        try:
+            new_value = ETHNICITY_MAP[old_value.upper().ljust(5, '.')]
+        except KeyError:
+            raise ValueError('Unknown ethnicity: %s' % old_value)
     else:
         new_value = None
 
@@ -62,6 +76,15 @@ def convert_gender(old_value):
         new_value = 2
     else:
         new_value = None
+
+    return new_value
+
+
+def convert_status(old_value):
+    try:
+        new_value = STATUS_MAP[old_value]
+    except KeyError:
+        raise ValueError('Unknown status: %s' % old_value)
 
     return new_value
 
@@ -95,7 +118,8 @@ def migrate_patients(old_conn, new_conn):
             (CASE WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1 ELSE r.telephone1 END) AS 'telephone1',
             (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile',
             r.comments,
-            r.otherClinicianAndContactInfo
+            r.otherClinicianAndContactInfo,
+            r.status
         FROM patient AS p
         JOIN (
             SELECT
@@ -142,11 +166,14 @@ def migrate_patients(old_conn, new_conn):
         else:
             comments = None
 
+        is_active = convert_status(row['status'])
+
         # Create a patient
         new_conn.execute(
             tables.patients.insert(),
             id=radar_no,
             comments=comments,
+            is_active=is_active,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
