@@ -45,6 +45,11 @@
         <th>Route</th>
         <td>{{item.route.label | missing}}</td>
       </tr>
+
+      <tr>
+        <th>Unstructured Data</th>
+        <td>{{item.unstructured | missing}}</td>
+      </tr>
     </table>
 
     <div item-meta item="item"></div>
@@ -157,6 +162,7 @@
           <th sort-helper="doseQuantity">Dose</th>
           <th sort-helper="frequency.label">Frequency</th>
           <th sort-helper="route.label">Route</th>
+          <th sort-helper="unstructured">Unstructured Data</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
         </tr>
@@ -175,6 +181,7 @@
           <td>{{item.doseQuantity | missing}} {{item.doseUnit.label}}</td>
           <td>{{item.frequency.label | missing}}</td>
           <td>{{item.route.label | missing}}</td>
+          <td>{{item.unstructured | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>
