@@ -86,7 +86,6 @@ def migrate_patients(old_conn, new_conn):
             r.nhsno AS 'nhs_no',
             r.unitcode AS 'unit_code',
             r.dateReg AS 'date_registered',
-            r.hospitalnumber AS 'hospital_number',
             user.username AS 'username',
             (CASE WHEN COALESCE(p.forename, '') != '' THEN p.forename ELSE r.forename END) AS 'forename',
             (CASE WHEN COALESCE(p.surname, '') != '' THEN p.surname ELSE r.forename END) AS 'surname',
@@ -94,11 +93,7 @@ def migrate_patients(old_conn, new_conn):
             (CASE WHEN COALESCE(p.sex, '') != '' THEN p.sex ELSE r.sex END) AS 'sex',
             (CASE WHEN COALESCE(p.ethnicGp, '') != '' THEN p.ethnicGp ELSE r.ethnicGp END) AS 'ethnic_group',
             (CASE WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1 ELSE r.telephone1 END) AS 'telephone1',
-            (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile',
-            (CASE WHEN COALESCE(p.address1, '') != '' OR COALESCE(p.postcode, '') != '' THEN p.address1 ELSE r.address1 END) AS 'address1',
-            (CASE WHEN COALESCE(p.address1, '') != '' OR COALESCE(p.postcode, '') != '' THEN p.address2 ELSE r.address2 END) AS 'address2',
-            (CASE WHEN COALESCE(p.address1, '') != '' OR COALESCE(p.postcode, '') != '' THEN p.address3 ELSE r.address3 END) AS 'address3',
-            (CASE WHEN COALESCE(p.address1, '') != '' OR COALESCE(p.postcode, '') != '' THEN p.postcode ELSE r.postcode END) AS 'postcode'
+            (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile'
         FROM patient AS p
         JOIN (
             SELECT
@@ -123,7 +118,6 @@ def migrate_patients(old_conn, new_conn):
     """))
 
     seen_nhs_nos = set()
-    seen_hospital_nos = set()
 
     for row in rows:
         nhs_no = row['nhs_no']
@@ -183,38 +177,6 @@ def migrate_patients(old_conn, new_conn):
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
-
-        # Check if the patient has an address
-        if any(row[x] for x in ['address1', 'address2', 'address3', 'postcode']):
-            # Add the address
-            new_conn.execute(
-                tables.patient_addresses.insert(),
-                patient_id=radar_no,
-                data_source_id=m.data_source_id,
-                address1=row['address1'],
-                address2=row['address2'],
-                address3=row['address3'],
-                postcode=row['postcode'],
-                created_user_id=m.user_id,
-                modified_user_id=m.user_id,
-            )
-
-        hospital_no = row['hospital_number']
-
-        # Note: if a hospital number is duplicated it will be assigned to the first patient (ordered by NHS no)
-        if hospital_no and hospital_no not in seen_hospital_nos:
-            # Add the patient's hospital number
-            new_conn.execute(
-                tables.patient_numbers.insert(),
-                patient_id=radar_no,
-                data_source_id=m.data_source_id,
-                organisation_id=organisation_id,
-                number=hospital_no,
-                created_user_id=m.user_id,
-                modified_user_id=m.user_id,
-            )
-
-            seen_hospital_nos.add(hospital_no)
 
         # Note: NHS, CHI, H&C... numbers are all stored in the nhsno column
         organisation_code = number_to_organisation_code(nhs_no)

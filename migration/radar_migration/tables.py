@@ -93,6 +93,17 @@ data_sources = Table(
     Column('type', String),
 )
 
+patient_aliases = Table(
+    'patient_aliases', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('first_name', String),
+    Column('last_name', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
 patient_addresses = Table(
     'patient_addresses', metadata,
     Column('id', UUID, primary_key=True),

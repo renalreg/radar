@@ -29,6 +29,12 @@ echo 'migrate medications...'
 python scripts/migrate_medications.py "$SRC" "$DEST"
 echo 'migrate pathology...'
 python scripts/migrate_pathology.py "$SRC" "$DEST"
+echo 'migrate patient addresses...'
+python scripts/migrate_patient_addresses.py "$SRC" "$DEST"
+echo 'migrate patient aliases...'
+python scripts/migrate_patient_aliases.py "$SRC" "$DEST"
+echo 'migrate patient numbers...'
+python scripts/migrate_patient_numbers.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
 echo 'done'
