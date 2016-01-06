@@ -11,7 +11,7 @@ class DiagnosisValidation(PatientValidationMixin, CohortValidationMixin, MetaVal
     date_of_onset = Field([required(), valid_date_for_patient()])
     date_of_diagnosis = Field([required(), valid_date_for_patient()])
     cohort_diagnosis = Field([required()])
-    diagnosis_text = Field([none_if_blank(), optional(), max_length(1000)])
+    diagnosis_text = Field([none_if_blank(), optional(), max_length(10000)])
     biopsy_diagnosis = Field([optional(), in_(DIAGNOSIS_BIOPSY_DIAGNOSES.keys())])
 
     @pass_new_obj

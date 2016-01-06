@@ -15,5 +15,5 @@ class FamilyHistoryRelativeValidation(Validation):
 class FamilyHistoryValidation(PatientValidationMixin, CohortValidationMixin, MetaValidationMixin, Validation):
     parental_consanguinity = Field([required()])
     family_history = Field([required()])
-    other_family_history = Field([none_if_blank(), optional(), max_length(1000)])
+    other_family_history = Field([none_if_blank(), optional(), max_length(10000)])
     relatives = ListField(FamilyHistoryRelativeValidation())

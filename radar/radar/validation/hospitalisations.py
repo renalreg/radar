@@ -8,7 +8,7 @@ from radar.validation.validators import required, optional, valid_date_for_patie
 class HospitalisationValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date_of_admission = Field([required(), valid_date_for_patient()])
     date_of_discharge = Field([optional(), valid_date_for_patient()])
-    reason_for_admission = Field([none_if_blank(), optional(), max_length(1000)])
+    reason_for_admission = Field([none_if_blank(), optional(), max_length(10000)])
     comments = Field([none_if_blank(), optional(), max_length(10000)])
 
     @pass_new_obj

@@ -66,7 +66,7 @@ class ResultsValidation(Validation):
                 if max_length_value is not None:
                     validators.append(max_length(max_length_value))
                 else:
-                    validators.append(max_length(1000))
+                    validators.append(max_length(10000))
 
             field = Field(validators)
             field.bind(result_spec.code)

@@ -37,8 +37,19 @@
       </tr>
 
       <tr>
+        <th>Image URL</th>
+        <!-- TODO link -->
+        <td>{{item.imageUrl | missing}}</td>
+      </tr>
+
+      <tr>
         <th>Histological Summary</th>
         <td class="newlines">{{item.histologicalSummary | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>EM Findings</th>
+        <td class="newlines">{{item.emFindings | missing}}</td>
       </tr>
     </table>
 
@@ -98,15 +109,31 @@
       </div>
 
       <div frm-field frm-group>
+        <div frm-label>Image URL</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.imageUrl"></div>
+          <div frm-errors errors="item.errors.imageUrl"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
         <div frm-label>Histological Summary</div>
 
         <div frm-control>
           <div frm-textarea-field model="item.histologicalSummary" rows="15"></div>
-          <div frm-help>
-            Copy and paste from the pathology report.<br />
-            Please update with EM findings when available.
-          </div>
+          <div frm-help>Copy and paste from the pathology report.</div>
           <div frm-errors errors="item.errors.histologicalSummary"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>EM Findings</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.emFindings" rows="15"></div>
+          <div frm-help>If not included in histological summary above.</div>
+          <div frm-errors errors="item.errors.emFindings"></div>
         </div>
       </div>
 

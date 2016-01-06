@@ -12,9 +12,9 @@ class MpgnClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin,
     urticaria = Field([optional()])
     partial_lipodystrophy = Field([optional()])
     recent_infection = Field([optional()])
-    recent_infection_details = Field([none_if_blank(), optional(), max_length(1000)])
+    recent_infection_details = Field([none_if_blank(), optional(), max_length(10000)])
     ophthalmoscopy = Field([optional()])
-    ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(1000)])
+    ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(10000)])
     comments = Field([none_if_blank(), optional(), max_length(5000)])
 
     def pre_validate(self, obj):
