@@ -20,6 +20,7 @@ users = Table(
     Column('first_name', String),
     Column('last_name', String),
     Column('email', String),
+    Column('is_admin', Boolean),
 )
 
 cohorts = Table(

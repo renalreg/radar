@@ -12,7 +12,8 @@ def migrate_users(old_conn, new_conn):
             username,
             email,
             firstName,
-            lastName
+            lastName,
+            role
         FROM user
         JOIN rdr_user_mapping ON user.id = rdr_user_mapping.userId
         JOIN tbl_users ON rdr_user_mapping.radarUserId = tbl_users.uId
@@ -26,12 +27,15 @@ def migrate_users(old_conn, new_conn):
 
         print 'user %s' % username
 
+        is_admin = row['role'] == 'ROLE_SUPER_USER'
+
         new_conn.execute(
             tables.users.insert(),
             username=username,
             email=row['email'],
             first_name=row['firstName'],
             last_name=row['lastName'],
+            is_admin=is_admin,
         )
 
 
