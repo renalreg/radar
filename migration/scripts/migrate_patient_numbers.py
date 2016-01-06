@@ -15,8 +15,9 @@ def migrate_patient_numbers(old_conn, new_conn):
         FROM patient AS a
         JOIN patient AS b ON a.nhsno = b.nhsno
         WHERE
-            b.radarNo is not NULL AND
-            a.hospitalnumber is not NULL
+            b.radarNo IS NOT NULL AND
+            b.unitcode NOT IN ('RENALREG', 'DEMO') AND
+            a.hospitalnumber iS NOT NULL
         ORDER BY b.radarNo
     """))
 

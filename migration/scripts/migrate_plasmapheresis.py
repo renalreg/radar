@@ -51,7 +51,10 @@ def migrate_plasmapheresis(old_conn, new_conn):
             NO_EXCH_PLASMAPH,
             RESPONSE_TO_PLASMA
         FROM tbl_rrt_plasma
-        JOIN patient ON tbl_rrt_plasma.RADAR_NO = patient.radarNo
+        JOIN patient ON (
+            tbl_rrt_plasma.RADAR_NO = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     for row in rows:

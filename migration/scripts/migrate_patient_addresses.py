@@ -9,20 +9,21 @@ def migrate_patient_addresses(old_conn, new_conn):
 
     rows = old_conn.execute(text("""
         SELECT
-          b.radarNo,
-          a.address1,
-          a.address2,
-          a.address3,
-          a.postcode
-        FROM patient AS a
-        JOIN patient AS b ON a.nhsno = b.nhsno
+          radarNo,
+          address1,
+          address2,
+          address3,
+          postcode
+        FROM patient
         WHERE
-            b.radarNo is not NULL AND
-            COALESCE(a.address1, '') != '' AND
-            COALESCE(a.address2, '') != '' AND
-            COALESCE(a.address3, '') != '' AND
-            COALESCE(a.postcode, '') != '' AND
-            a.sourceType = 'Radar'
+            radarNo is not NULL AND
+            unitcode NOT IN ('RENALREG', 'DEMO') AND
+            (
+                COALESCE(address1, '') != '' OR
+                COALESCE(address2, '') != '' OR
+                COALESCE(address3, '') != '' OR
+                COALESCE(postcode, '') != ''
+            )
     """))
 
     for row in rows:

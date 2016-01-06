@@ -15,7 +15,10 @@ def migrate_alport_clinical_pictures(old_conn, new_conn):
             dateStartedUsingHearingAid,
             patient.dateReg
         FROM rdr_alport_deafness
-        JOIN patient ON rdr_alport_deafness.radar_no = patient.radarNo
+        JOIN patient ON (
+            rdr_alport_deafness.radar_no = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     for row in rows:

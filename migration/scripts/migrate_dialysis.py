@@ -42,7 +42,10 @@ def migrate_dialysis(old_conn, new_conn):
             DATE_START,
             DATE_STOP
         FROM tbl_rrt_treatment
-        JOIN patient ON tbl_rrt_treatment.RADAR_NO = patient.radarNo
+        JOIN patient ON (
+            tbl_rrt_treatment.RADAR_NO = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     # TODO UNIT_CODE

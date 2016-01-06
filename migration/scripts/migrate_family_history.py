@@ -63,7 +63,10 @@ def migrate_family_history(old_conn, new_conn):
             REL6,
             REL6_RADAR
         FROM tbl_diagnosis
-        JOIN patient ON tbl_diagnosis.RADAR_NO = patient.radarNo
+        JOIN patient ON (
+            tbl_diagnosis.RADAR_NO = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     for row in rows:

@@ -18,6 +18,7 @@ def migrate_medications(old_conn, new_conn):
         JOIN patient ON medicine.nhsno = patient.nhsno
         WHERE
             patient.radarNo is not NULL AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO') AND
             startdate is not NULL AND
             startdate != '0000-00-00 00:00:00'
     """))

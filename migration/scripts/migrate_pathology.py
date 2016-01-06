@@ -42,7 +42,10 @@ def migrate_pathology(old_conn, new_conn):
             SAMPLE_LAB_NO,
             PATH_TXT
         FROM tbl_pathology
-        JOIN patient ON tbl_pathology.RADAR_NO = patient.radarNo
+        JOIN patient ON (
+            tbl_pathology.RADAR_NO = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
         WHERE BX_DATE IS NOT NULL
     """))
 

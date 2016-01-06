@@ -137,6 +137,8 @@ def migrate_patients(old_conn, new_conn):
             GROUP BY nhsno, unitcode
         ) AS l ON (p.nhsno = l.nhsno and p.unitcode = l.unitcode)
         LEFT JOIN user ON r.radarConsentConfirmedByUserId = user.id
+        WHERE
+            r.unitcode NOT IN ('DEMO', 'RENALREG')
         ORDER BY
             p.nhsno,
             (CASE WHEN p.sourceType = 'PatientView' THEN 0 ELSE 1 END), -- prefer PatientView patients
@@ -243,7 +245,7 @@ def migrate_patient_cohorts(old_conn, new_conn):
         JOIN unit ON usermapping.unitcode = unit.unitcode
         WHERE
             patient.radarNo IS NOT NULL AND
-            patient.sourceType = 'RADAR' AND
+            patient.unitcode NOT IN ('DEMO', 'RENALREG') AND
             unit.sourceType = 'radargroup'
     """))
 
@@ -273,7 +275,12 @@ def migrate_patient_organisations(old_conn, new_conn):
         JOIN unit ON usermapping.unitcode = unit.unitcode
         WHERE
             patient.radarNo IS NOT NULL AND
-            patient.sourceType = 'RADAR' AND
+            patient.unitcode NOT IN ('DEMO', 'RENALREG') AND
+            usermapping.unitcode NOT IN (
+                'RENALREG', 'DEMO', 'UNKNOWN',
+                'CHI', 'CCL', 'DUMMY',
+                'ECS'
+            ) AND
             unit.sourceType = 'renalunit'
     """))
 

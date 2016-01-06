@@ -84,6 +84,7 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
         LEFT JOIN user ON patient.consNeph = user.id
         WHERE
             radarNo IS NOT NULL AND
+            unitcode NOT IN ('RENALREG', 'DEMO') AND
             consNeph IS NOT NULL AND
             (
                 user.isclinician = 1 AND

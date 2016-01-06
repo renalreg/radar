@@ -9,15 +9,14 @@ def migrate_patient_aliases(old_conn, new_conn):
 
     rows = old_conn.execute(text("""
         SELECT
-          b.radarNo,
-          a.surnameAlias
-        FROM patient AS a
-        JOIN patient AS b ON a.nhsno = b.nhsno
+          radarNo,
+          surnameAlias
+        FROM patient
         WHERE
-            b.radarNo is not NULL AND
-            a.surnameAlias is not NULL AND
-            a.surnameAlias != '-' AND
-            a.sourceType = 'Radar'
+            radarNo is not NULL AND
+            unitcode NOT IN ('RENALREG', 'DEMO') AND
+            surnameAlias is not NULL AND
+            surnameAlias != '-'
     """))
 
     for row in rows:

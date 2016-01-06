@@ -17,7 +17,10 @@ def migrate_genetics(old_conn, new_conn):
             COALESCE(dateSent, '1900-01-01') as dateSent,
             testDoneOn
         FROM rdc_genetic_test
-        JOIN patient ON rdc_genetic_test.radar_no = patient.radarNo
+        JOIN patient ON (
+            rdc_genetic_test.radar_no = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     for row in rows:

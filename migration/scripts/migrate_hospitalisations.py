@@ -15,7 +15,10 @@ def migrate_hospitalisations(old_conn, new_conn):
             REASON_ADMIT,
             COMMENT
         FROM tbl_hospitalisation
-        JOIN patient ON tbl_hospitalisation.RADAR_NO = patient.radarNo
+        JOIN patient ON (
+            tbl_hospitalisation.RADAR_NO = patient.radarNo AND
+            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+        )
     """))
 
     for row in rows:
