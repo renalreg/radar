@@ -1,5 +1,6 @@
 # flake8: noqa
 
+from radar.models.alport import *
 from radar.models.cohorts import *
 from radar.models.common import *
 from radar.models.comorbidities import *

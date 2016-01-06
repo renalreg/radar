@@ -6,6 +6,7 @@
     'radar.store',
     'radar.patients.addresses',
     'radar.patients.aliases',
+    'radar.patients.alport',
     'radar.patients.cohorts',
     'radar.patients.comorbidities',
     'radar.patients.consultants',

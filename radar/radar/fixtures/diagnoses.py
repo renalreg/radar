@@ -11,9 +11,6 @@ COHORT_DIAGNOSES = {
     'APRT': [
         'Adenine Phosphoribosyltransferase (APRT) Deficiency',
     ],
-    'ADTKD': [
-        'Uromodulin-Associated Nephropathy (Familial Juvenile Hyperuricaemic Nephropathy)',
-    ],
     'ARPKD': [
         'Autosomal Recessive Polycystic Kidney Disease',
     ],
@@ -32,13 +29,16 @@ COHORT_DIAGNOSES = {
         'Dent Disease',
         'Other Primary Renal Fanconi Syndrome',
     ],
+    'FUAN': [
+        'Uromodulin-Associated Nephropathy (Familial Juvenile Hyperuricaemic Nephropathy)',
+    ],
     'HNF1B': [
         'Renal Cysts & Diabetes Syndrome',
         'Glomerulocystic Disease',
         'Multicystic Dysplastic Kidneys',
         'Inherited/Genetic Diabetes Mellitus Type II (MODY)',
     ],
-    'HYPERRDG': [
+    'HYPOXAL': [
         'Primary Hyperoxaluria',
         'Primary Hyperoxaluria Type I',
         'Primary Hyperoxaluria Type II',
@@ -66,17 +66,17 @@ COHORT_DIAGNOSES = {
     'MPGN': [
         'MPGN (Membranoproliferative Glomerulonephritis Type II - Dense Deposit Disease)',
     ],
-    'MEMRDG': [],
+    'MEMNEPHRO': [],
     'NEPHROS': [],
     'NSMPGNC3': [],
     'OBS': [
         'Pregnancy',
     ],
-    'PCRA': [],
+    'PRCA': [],
     'STECHUS': [
         'STEC Associated HUS (Diarrhoea Associated)',
     ],
-    'VASRDG': [
+    'VAS': [
         'Systemic Vasculitis - ANCA Positive - No Histology',
         'Systemic Vasculitis - ANCA Negative - Histologially Proven',
     ],

@@ -57,6 +57,7 @@
     return {
       ADDRESSES: patientFeature('Addresses', 'patient.addresses'),
       ALIASES: patientFeature('Aliases', 'patient.aliases'),
+      ALPORT_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.alportClinicalPictures'),
       DEMOGRAPHICS: patientFeature('Demographics', 'patient.demographics'),
       DIAGNOSES: patientFeature('Diagnosis', 'patient.diagnoses', true),
       DIALYSIS: patientFeature('Dialysis', 'patient.dialysis'),
