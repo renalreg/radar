@@ -26,6 +26,8 @@ echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
+echo 'migrate alport clinical pictures...'
+python scripts/migrate_alport_clinical_pictures.py "$SRC" "$DEST"
 #echo 'migrate consultants...'
 #python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'

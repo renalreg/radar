@@ -272,3 +272,15 @@ genetics = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+alport_clinical_pictures = Table(
+    'alport_clinical_pictures', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('date_of_picture', Date),
+    Column('deafness', Integer),
+    Column('deafness_date', Date),
+    Column('hearing_aid_date', Date),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
