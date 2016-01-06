@@ -14,4 +14,4 @@ class FetalUltrasoundValidation(PatientValidationMixin, DataSourceValidationMixi
     abdomen_centile = Field([optional(), range_(0, 100)])
     uterine_artery_notched = Field([optional()])
     liquor_volume = Field([optional(), in_(LIQUOR_VOLUMES.keys())])
-    comments = Field([none_if_blank(), optional(), max_length(1000)])
+    comments = Field([none_if_blank(), optional(), max_length(10000)])

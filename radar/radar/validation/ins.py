@@ -16,11 +16,11 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
     pulmonary_odemea = Field([optional()])
     hypertension = Field([optional()])
     rash = Field([optional()])
-    rash_details = Field([none_if_blank(), optional(), max_length(1000)])
+    rash_details = Field([none_if_blank(), optional(), max_length(10000)])
     possible_immunisation_trigger = Field([optional()])
     ophthalmoscopy = Field([optional()])
-    ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(1000)])
-    comments = Field([none_if_blank(), optional(), max_length(1000)])
+    ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(10000)])
+    comments = Field([none_if_blank(), optional(), max_length(10000)])
 
     def pre_validate(self, obj):
         # Remove rash details if the patient didn't have a rash
@@ -37,9 +37,9 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
 class InsRelapseValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     date_of_relapse = Field([required(), valid_date_for_patient()])
     type_of_kidney = Field([required(), in_(TYPES_OF_KIDNEY)])
-    viral_trigger = Field([none_if_blank(), optional(), max_length(1000)])
-    immunisation_trigger = Field([none_if_blank(), optional(), max_length(1000)])
-    other_trigger = Field([none_if_blank(), optional(), max_length(1000)])
+    viral_trigger = Field([none_if_blank(), optional(), max_length(10000)])
+    immunisation_trigger = Field([none_if_blank(), optional(), max_length(10000)])
+    other_trigger = Field([none_if_blank(), optional(), max_length(10000)])
     high_dose_oral_prednisolone = Field([optional()])
     iv_methyl_prednisolone = Field([optional()])
     date_of_remission = Field([optional(), valid_date_for_patient()])

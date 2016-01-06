@@ -19,7 +19,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     right_calcification = Field([optional()])
     right_nephrocalcinosis = Field([optional()])
     right_nephrolithiasis = Field([optional()])
-    right_other_malformation = Field([none_if_blank(), optional(), max_length(1000)])
+    right_other_malformation = Field([none_if_blank(), optional(), max_length(10000)])
 
     left_present = Field([optional()])
     left_type = Field([optional(), in_(RENAL_IMAGING_KIDNEY_TYPES.keys())])
@@ -29,7 +29,7 @@ class RenalImagingValidation(PatientValidationMixin, DataSourceValidationMixin, 
     left_calcification = Field([optional()])
     left_nephrocalcinosis = Field([optional()])
     left_nephrolithiasis = Field([optional()])
-    left_other_malformation = Field([none_if_blank(), optional(), max_length(1000)])
+    left_other_malformation = Field([none_if_blank(), optional(), max_length(10000)])
 
     def pre_validate(self, obj):
         if not obj.right_present:

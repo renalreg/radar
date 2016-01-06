@@ -9,7 +9,7 @@ from radar.validation.validators import valid_date_for_patient, required, option
 class MedicationValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
-    name = Field([not_empty(), max_length(1000)])
+    name = Field([not_empty(), max_length(10000)])
     dose_quantity = Field([optional(), min_(0)])
     dose_unit = Field([optional(), in_(MEDICATION_DOSE_UNITS.keys())])
     frequency = Field([optional(), in_(MEDICATION_FREQUENCIES.keys())])

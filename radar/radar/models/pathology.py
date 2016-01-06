@@ -31,6 +31,8 @@ class Pathology(db.Model, MetaModelMixin):
     kidney_type = Column(String)
     kidney_side = Column(String)
     reference_number = Column(String)
+    image_url = Column(String)
     histological_summary = Column(String)
+    em_findings = Column(String)
 
 Index('pathology_patient_id_idx', Pathology.patient_id)
