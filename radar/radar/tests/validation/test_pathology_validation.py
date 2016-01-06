@@ -25,7 +25,7 @@ def pathology(patient):
     obj.date = date(2015, 1, 1)
     obj.kidney_type = 'NATIVE'
     obj.kidney_side = 'RIGHT'
-    obj.laboratory_reference_number = '12345'
+    obj.reference_number = '12345'
     obj.histological_summary = 'foo bar baz'
     return obj
 
@@ -35,7 +35,7 @@ def test_valid(pathology):
     assert obj.date == date(2015, 1, 1)
     assert obj.kidney_type == 'NATIVE'
     assert obj.kidney_side == 'RIGHT'
-    assert obj.laboratory_reference_number == '12345'
+    assert obj.reference_number == '12345'
     assert obj.histological_summary == 'foo bar baz'
 
 
@@ -103,13 +103,13 @@ def test_kidney_side_invalid(pathology):
     invalid(pathology)
 
 
-def test_laboratory_reference_number_missing(pathology):
-    pathology.laboratory_reference_number = None
+def test_reference_number_missing(pathology):
+    pathology.reference_number = None
     valid(pathology)
 
 
-def test_laboratory_reference_number_blank(pathology):
-    pathology.laboratory_reference_number = ''
+def test_reference_number_blank(pathology):
+    pathology.reference_number = ''
     valid(pathology)
 
 

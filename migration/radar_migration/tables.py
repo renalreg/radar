@@ -193,7 +193,7 @@ pathology = Table(
     Column('date', Date),
     Column('kidney_type', String),
     Column('kidney_side', String),
-    Column('laboratory_reference_number', String),
+    Column('reference_number', String),
     Column('histological_summary', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
@@ -253,6 +253,21 @@ medications = Table(
     Column('to_date', Date),
     Column('name', String),
     Column('unstructured', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
+genetics = Table(
+    'genetics', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('cohort_id', Integer),
+    Column('date_sent', Date),
+    Column('laboratory', String),
+    Column('reference_number', String),
+    Column('karyotype', Integer),
+    Column('results', String),
+    Column('summary', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )

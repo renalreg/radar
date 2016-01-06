@@ -27,7 +27,7 @@ class Genetics(db.Model, MetaModelMixin):
 
     date_sent = Column(DateTime(timezone=True))
     laboratory = Column(String)
-    laboratory_reference_number = Column(String)
+    reference_number = Column(String)
     karyotype = Column(Integer)
     results = Column(Text)
     summary = Column(Text)

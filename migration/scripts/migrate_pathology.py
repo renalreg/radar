@@ -58,7 +58,7 @@ def migrate_pathology(old_conn, new_conn):
             date=row['BX_DATE'],
             kidney_type=kidney_type,
             kidney_side=kidney_side,
-            laboratory_reference_number=row['SAMPLE_LAB_NO'],
+            reference_number=row['SAMPLE_LAB_NO'],
             histological_summary=row['PATH_TXT'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,

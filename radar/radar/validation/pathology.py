@@ -11,5 +11,5 @@ class PathologyValidation(PatientValidationMixin, DataSourceValidationMixin, Met
     date = Field([required(), valid_date_for_patient()])
     kidney_type = Field([required(), in_(PATHOLOGY_KIDNEY_TYPES.keys())])
     kidney_side = Field([required(), in_(PATHOLOGY_KIDNEY_SIDES.keys())])
-    laboratory_reference_number = Field([none_if_blank(), optional(), max_length(100)])
+    reference_number = Field([none_if_blank(), optional(), max_length(100)])
     histological_summary = Field([none_if_blank(), optional(), max_length(1000)])
