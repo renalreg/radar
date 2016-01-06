@@ -23,7 +23,6 @@ def migrate_medications(old_conn, new_conn):
     """))
 
     # TODO unitcode
-    # TODO dose
     for row in rows:
         new_conn.execute(
             tables.medications.insert(),
@@ -32,6 +31,7 @@ def migrate_medications(old_conn, new_conn):
             from_date=row['startdate'],
             to_date=row['enddate'],
             name=row['name'],
+            unstructured=row['dose'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
