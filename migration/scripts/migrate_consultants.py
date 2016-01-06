@@ -15,6 +15,15 @@ def optional_int(old_value):
     return new_value
 
 
+def optional(old_value):
+    if old_value:
+        new_value = old_value
+    else:
+        new_value = None
+
+    return new_value
+
+
 def migrate_consultants(old_conn, new_conn, consultants_filename):
     m = Migration(new_conn)
 
@@ -34,7 +43,9 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             first_name = row[3]
             last_name = row[4]
             email = row[5]
-            unit_code = row[6]
+            telephone_number = optional(row[6])
+            gmc_number = optional_int(row[7])
+            unit_code = row[8]
 
             result = new_conn.execute(
                 tables.consultants.insert(),
@@ -42,6 +53,8 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
+                telephone_number=telephone_number,
+                gmc_number=gmc_number,
                 created_user_id=m.user_id,
                 modified_user_id=m.user_id,
             )
