@@ -1,4 +1,4 @@
-from sqlalchemy import text, create_engine, select, literal
+from sqlalchemy import text, create_engine, select
 import click
 
 from radar_migration import Migration, tables
@@ -83,8 +83,6 @@ def migrate_family_history(old_conn, new_conn):
         family_history_id = result.inserted_primary_key[0]
 
         for relationship, radar_no in [(row['REL%d' % x], row['REL%d_RADAR' % x]) for x in range(1, 7)]:
-            print relationship, radar_no
-
             if relationship is None:
                 continue
 

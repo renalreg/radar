@@ -204,3 +204,15 @@ plasmapheresis = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+medications = Table(
+    'medications', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('from_date', Date),
+    Column('to_date', Date),
+    Column('name', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
