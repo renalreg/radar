@@ -1,6 +1,6 @@
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.models import ModelSerializer
-from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPE, REMISSION_TYPE
+from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 from radar.serializers.codes import CodedStringSerializer
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 
@@ -11,8 +11,8 @@ class InsClinicalPictureSerializer(PatientSerializerMixin, MetaSerializerMixin, 
 
 
 class InsRelapseSerializer(PatientSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    kidney_type = CodedStringSerializer(KIDNEY_TYPE)
-    remission_type = CodedStringSerializer(REMISSION_TYPE)
+    kidney_type = CodedStringSerializer(KIDNEY_TYPES)
+    remission_type = CodedStringSerializer(REMISSION_TYPES)
 
     class Meta(object):
         model_class = InsRelapse
