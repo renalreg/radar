@@ -4,7 +4,6 @@ from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import text
 
 from radar.database import db
 
