@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 # TODO check
 MODALITY_MAP = {
@@ -44,9 +44,9 @@ def migrate_dialysis(old_conn, new_conn):
         FROM tbl_rrt_treatment
         JOIN patient ON (
             tbl_rrt_treatment.RADAR_NO = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     # TODO UNIT_CODE
     for row in rows:

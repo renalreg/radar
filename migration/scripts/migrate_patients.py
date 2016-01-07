@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import tables, Migration
+from radar_migration import tables, Migration, EXCLUDED_UNITS
 from radar_migration.cohorts import convert_cohort_code
 
 
@@ -138,7 +138,7 @@ def migrate_patients(old_conn, new_conn):
         ) AS l ON (p.nhsno = l.nhsno and p.unitcode = l.unitcode)
         LEFT JOIN user ON r.radarConsentConfirmedByUserId = user.id
         WHERE
-            r.unitcode NOT IN ('DEMO', 'RENALREG')
+            r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')
         ORDER BY
             p.nhsno,
             (CASE WHEN p.sourceType = 'PatientView' THEN 0 ELSE 1 END), -- prefer PatientView patients
@@ -245,9 +245,9 @@ def migrate_patient_cohorts(old_conn, new_conn):
         JOIN unit ON usermapping.unitcode = unit.unitcode
         WHERE
             patient.radarNo IS NOT NULL AND
-            patient.unitcode NOT IN ('DEMO', 'RENALREG') AND
+            patient.unitcode NOT IN %s AND
             unit.sourceType = 'radargroup'
-    """))
+    """ % EXCLUDED_UNITS))
 
     for radar_no, cohort_code in rows:
         cohort_code = convert_cohort_code(cohort_code)
@@ -275,14 +275,14 @@ def migrate_patient_organisations(old_conn, new_conn):
         JOIN unit ON usermapping.unitcode = unit.unitcode
         WHERE
             patient.radarNo IS NOT NULL AND
-            patient.unitcode NOT IN ('DEMO', 'RENALREG') AND
+            patient.unitcode NOT IN %s AND
             usermapping.unitcode NOT IN (
-                'RENALREG', 'DEMO', 'UNKNOWN',
-                'CHI', 'CCL', 'DUMMY',
-                'ECS'
+                'RENALREG', 'DEMO', 'UNKNOWN', 'DUMMY',
+                'CHI', 'CCL', 'ECS',
+                'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE'
             ) AND
             unit.sourceType = 'renalunit'
-    """))
+    """ % EXCLUDED_UNITS))
 
     for radar_no, unit_code in rows:
         organisation_id = m.get_organisation_id('UNIT', unit_code)

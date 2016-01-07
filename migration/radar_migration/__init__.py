@@ -4,6 +4,8 @@ from radar_migration import tables
 
 __version__ = '0.1.0'
 
+EXCLUDED_UNITS = "('RENALREG', 'DEMO', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')"
+
 
 class MigrationError(Exception):
     pass

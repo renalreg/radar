@@ -85,9 +85,9 @@ def migrate_user_organisations(old_conn, new_conn):
         JOIN tbl_users ON rdr_user_mapping.radarUserId = tbl_users.uId
         WHERE
             usermapping.unitcode NOT IN (
-                'RENALREG', 'DEMO', 'UNKNOWN',
-                'CHI', 'CCL', 'DUMMY',
-                'ECS'
+                'RENALREG', 'DEMO', 'UNKNOWN', 'DUMMY',
+                'CHI', 'CCL', 'ECS',
+                'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE'
             ) AND
             unit.sourceType = 'renalunit' AND
             rdr_user_mapping.role != 'ROLE_PATIENT'

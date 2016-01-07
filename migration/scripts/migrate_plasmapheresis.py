@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 NO_OF_EXCHANGES_MAP = {
@@ -53,9 +53,9 @@ def migrate_plasmapheresis(old_conn, new_conn):
         FROM tbl_rrt_plasma
         JOIN patient ON (
             tbl_rrt_plasma.RADAR_NO = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         no_of_exchanges = convert_no_of_exchanges(row['NO_EXCH_PLASMAPH'])

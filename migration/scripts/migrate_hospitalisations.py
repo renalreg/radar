@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def migrate_hospitalisations(old_conn, new_conn):
@@ -17,9 +17,9 @@ def migrate_hospitalisations(old_conn, new_conn):
         FROM tbl_hospitalisation
         JOIN patient ON (
             tbl_hospitalisation.RADAR_NO = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         new_conn.execute(

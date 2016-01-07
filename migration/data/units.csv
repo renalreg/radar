@@ -3,7 +3,7 @@ code,name
 2020,Belfast City Hospital
 24027,Antrim Area Hospital
 33020,Newry - Daisy Hill Hospital
-45020,Altnagelvin Hospital-Derry
+45020,Altnagelvin Hospital - Derry
 48021,Omagh - Tyrone County Hospital
 7021,Belfast Ulster Hospital
 99RCSLB,Nottingham - QMC - Children's Kidney Unit
@@ -11,19 +11,13 @@ code,name
 99RQR13,Leeds - Childrens Hospital
 9RBN01,St Helens and Knowlsley
 9RM301,Wigan
-9RW402,Aintree_FDU
-BANGALORE,"India - St John's Medical College Hospital, Bangalore"
-CAIRO,Egypt - Cairo CPNT
-DSF01,Salford Diabetes
-EDINHF1,Edinburgh Heart Failure
-GUNMA,Japan - Gunma University Hospital
-NEWDEHLI,"India - All India Institute of Medical Science, New Dehli"
+9RW402,Aintree - FDU
 R1H00,London - Barts Health
 RA723,Bristol Royal Hospital for Sick Children
 RAE05,Bradford Renal Unit
 RAJ01,Southend
 RAL01,London - Royal Free Hospital
-RAQ01,"Stevenage, Lister Hospital"
+RAQ01,Stevenage - Lister Hospital
 RAZ,Carshalton - St Helier Renal Unit
 RBD01,Dorset County Hospital
 RBL14,Birkenhead - Arrowe Park
@@ -31,7 +25,7 @@ RBL20,Clatterbridge
 RBN63,Halton
 RBS25,Liverpool - Alder Hey Childrens
 RCB55,York
-RCJAT,Middlesbrough- James Cook
+RCJAT,Middlesbrough - James Cook
 RDDH0,Basildon Hospital
 RDEE4,Colchester General Hospital
 REE01,Bristol - Southmead Hospital
@@ -77,7 +71,7 @@ RQ601,Liverpool - Broadgreen
 RQ617,Liverpool Royal UHT
 RQ8L0,Chelmsford- Broomfield Hospital
 RQBAU,Bangor - Ysbyty Gwynedd
-RQHC7,"Swansea, Morriston Hospital"
+RQHC7,Swansea - Morriston Hospital
 RQN02,London - West
 RQR00,Leeds - St James's Hospital
 RRBBV,Cardiff - UHW (Adult and Paediatrics)
@@ -90,15 +84,12 @@ RW3RM,Manchester Royal -Childrens Hospital
 RW402,Aintree University Hospital
 RX1CC,Nottingham University Hospitals NHS Trust
 SAC02,Kilmarnock - Crosshouse - John Stevenson Lynch Renal Unit
-SALIBD,Salford IBD
-SFC01,"Dunfermline, Queen Margaret's Hospital"
-SGC02,"Glasgow - The Royal Hospital for Children,"
-SGC04,OLD-Glasgow Renal & Transplant Unit
-SGC05,Glasgow - Queen Elizabeth  University Hospital
-SHC01,Inverness -Raigmore Hospital
+SFC01,Dunfermline - Queen Margaret's Hospital
+SGC02,Glasgow - The Royal Hospital for Children
+SGC04,Glasgow Renal & Transplant Unit (OLD)
+SGC05,Glasgow - Queen Elizabeth University Hospital
+SHC01,Inverness - Raigmore Hospital
 SLC01,Airdrie - Monklands
 SNC01,Aberdeen Royal Infirmary
 STC01,Dundee
 SYC01,Dumfries Renal Unit
-TEHRAN,"Iran - Children Medical Centre Hospital, Tehran"
-VELLORE,"India - Christian Medical College, Vellore"

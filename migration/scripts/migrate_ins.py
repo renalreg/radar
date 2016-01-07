@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine, text
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 KIDNEY_TYPE_MAP = {
     None: None,
-    0: 'NATIVE',
-    1: 'TRANSPLANT',
+    '\0': 'NATIVE',
+    '\1': 'TRANSPLANT',
 }
 
 REMISSION_TYPE_MAP = {
@@ -37,7 +37,7 @@ def convert_remission_type(old_value):
 
 
 # TODO clinical pictures
-def migrate_ins(old_conn, new_conn):
+def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -53,9 +53,9 @@ def migrate_ins(old_conn, new_conn):
         FROM tbl_relapse
         JOIN patient ON (
             tbl_relapse.radar_no = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     # TODO RELAP_DRUG_1, RELAP_DRUG_2, RELAP_DRUG_3
     for row in rows:
@@ -80,7 +80,8 @@ def migrate_ins(old_conn, new_conn):
 @click.command()
 @click.argument('src')
 @click.argument('dest')
-def cli(src, dest):
+@click.argument('relapse_drugs')
+def cli(src, dest, relapse_drugs):
     src_engine = create_engine(src)
     dest_engine = create_engine(dest)
 
@@ -88,7 +89,7 @@ def cli(src, dest):
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_ins(src_conn, dest_conn)
+        migrate_ins(src_conn, dest_conn, relapse_drugs)
 
 
 if __name__ == '__main__':

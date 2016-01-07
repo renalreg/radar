@@ -3,7 +3,7 @@ import csv
 from sqlalchemy import create_engine, text, func
 import click
 
-from radar_migration import tables, Migration
+from radar_migration import tables, Migration, EXCLUDED_UNITS
 
 
 def optional_int(old_value):
@@ -84,13 +84,13 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
         LEFT JOIN user ON patient.consNeph = user.id
         WHERE
             radarNo IS NOT NULL AND
-            unitcode NOT IN ('RENALREG', 'DEMO') AND
+            unitcode NOT IN %s AND
             consNeph IS NOT NULL AND
             (
                 user.isclinician = 1 AND
                 tbl_consultants.cID IS NOT NULL
             )
-    """))
+    """ % EXCLUDED_UNITS))
 
     for radar_no, old_user_id, old_consultant_id in rows:
         if old_user_id is not None:

@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def migrate_patient_numbers(old_conn, new_conn):
@@ -16,10 +16,10 @@ def migrate_patient_numbers(old_conn, new_conn):
         JOIN patient AS b ON a.nhsno = b.nhsno
         WHERE
             b.radarNo IS NOT NULL AND
-            b.unitcode NOT IN ('RENALREG', 'DEMO') AND
+            b.unitcode NOT IN %s AND
             a.hospitalnumber iS NOT NULL
         ORDER BY b.radarNo
-    """))
+    """ % EXCLUDED_UNITS))
 
     seen_numbers = set()
 

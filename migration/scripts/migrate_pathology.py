@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def convert_kidney_type(old_value):
@@ -44,10 +44,10 @@ def migrate_pathology(old_conn, new_conn):
         FROM tbl_pathology
         JOIN patient ON (
             tbl_pathology.RADAR_NO = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
         WHERE BX_DATE IS NOT NULL
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         kidney_type = convert_kidney_type(row['NAT_TRANSP_KID'])

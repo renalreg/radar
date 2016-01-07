@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine, select
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 PARENTAL_CONSANGUINITY_MAP = {
     None: None,
@@ -65,9 +65,9 @@ def migrate_family_history(old_conn, new_conn):
         FROM tbl_diagnosis
         JOIN patient ON (
             tbl_diagnosis.RADAR_NO = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         parental_consanguinity = convert_parental_consanguity(row['CONSANGUINITY'])

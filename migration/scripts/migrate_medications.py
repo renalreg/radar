@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def migrate_medications(old_conn, new_conn):
@@ -18,10 +18,10 @@ def migrate_medications(old_conn, new_conn):
         JOIN patient ON medicine.nhsno = patient.nhsno
         WHERE
             patient.radarNo is not NULL AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO') AND
+            patient.unitcode NOT IN %s AND
             startdate is not NULL AND
             startdate != '0000-00-00 00:00:00'
-    """))
+    """ % EXCLUDED_UNITS))
 
     # TODO unitcode
     for row in rows:

@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def migrate_patient_aliases(old_conn, new_conn):
@@ -14,10 +14,10 @@ def migrate_patient_aliases(old_conn, new_conn):
         FROM patient
         WHERE
             radarNo is not NULL AND
-            unitcode NOT IN ('RENALREG', 'DEMO') AND
+            unitcode NOT IN %s AND
             surnameAlias is not NULL AND
             surnameAlias != '-'
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         new_conn.execute(

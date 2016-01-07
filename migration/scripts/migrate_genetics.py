@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 def migrate_genetics(old_conn, new_conn):
@@ -19,9 +19,9 @@ def migrate_genetics(old_conn, new_conn):
         FROM rdc_genetic_test
         JOIN patient ON (
             rdc_genetic_test.radar_no = patient.radarNo AND
-            patient.unitcode NOT IN ('RENALREG', 'DEMO')
+            patient.unitcode NOT IN %s
         )
-    """))
+    """ % EXCLUDED_UNITS))
 
     for row in rows:
         summary = [row['testDoneOn'], row['keyEvidence']]
