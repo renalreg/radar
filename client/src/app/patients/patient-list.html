@@ -32,14 +32,14 @@
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.firstName !== undefined">{{patient.firstName}}</span>
+                  <span ng-if="patient.firstName !== undefined">{{patient.firstName | missing}}</span>
                   <span ng-if="patient.firstName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.lastName !== undefined">{{patient.lastName}}</span>
+                  <span ng-if="patient.lastName !== undefined">{{patient.lastName | missing}}</span>
                   <span ng-if="patient.lastName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
@@ -49,7 +49,7 @@
                 <span ng-if="patient.dateOfBirth === undefined">{{patient.yearOfBirth | missing}}</span>
               </td>
 
-              <td>{{patient.gender.label}}</td>
+              <td>{{patient.gender.label | missing}}</td>
 
               <td>{{patient.recruitedDate | dateFormat}}</td>
 

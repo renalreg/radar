@@ -219,12 +219,12 @@
           </td>
 
           <td>
-            <span ng-if="item.firstName !== undefined">{{item.firstName}}</span>
+            <span ng-if="item.firstName !== undefined">{{item.firstName | missing}}</span>
             <span ng-if="item.firstName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
           <td>
-            <span ng-if="item.lastName !== undefined">{{item.lastName}}</span>
+            <span ng-if="item.lastName !== undefined">{{item.lastName | missing}}</span>
             <span ng-if="item.lastName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
@@ -238,7 +238,7 @@
             <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath}}</span>
           </td>
 
-          <td>{{item.gender.label}}</td>
+          <td>{{item.gender.label | missing}}</td>
           <td>{{item.ethnicity.label | missing}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
         </tr>
