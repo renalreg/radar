@@ -18,6 +18,6 @@
   }]);
 
   app.config(['storeProvider', function(storeProvider) {
-    storeProvider.registerModel('family-history', 'FamilyHistoryModel');
+    storeProvider.registerModel('family-histories', 'FamilyHistoryModel');
   }]);
 })();

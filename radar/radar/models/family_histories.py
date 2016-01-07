@@ -29,12 +29,12 @@ RELATIONSHIPS = OrderedDict([
 
 
 class FamilyHistory(db.Model, MetaModelMixin):
-    __tablename__ = 'family_history'
+    __tablename__ = 'family_histories'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('family_history')
+    patient = patient_relationship('family_histories')
 
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = orm.relationship('Cohort')
@@ -43,8 +43,8 @@ class FamilyHistory(db.Model, MetaModelMixin):
     family_history = Column(Boolean)
     other_family_history = Column(String)
 
-Index('family_history_patient_id_idx', FamilyHistory.patient_id)
-Index('family_history_cohort_id_idx', FamilyHistory.cohort_id)
+Index('family_histories_patient_id_idx', FamilyHistory.patient_id)
+Index('family_histories_cohort_id_idx', FamilyHistory.cohort_id)
 
 
 class FamilyHistoryRelative(db.Model):
@@ -52,7 +52,7 @@ class FamilyHistoryRelative(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    family_history_id = Column(UUID, ForeignKey('family_history.id'), nullable=False)
+    family_history_id = Column(UUID, ForeignKey('family_histories.id'), nullable=False)
     family_history = orm.relationship('FamilyHistory', backref=orm.backref('relatives', cascade='all, delete-orphan', passive_deletes=True))
 
     relationship = Column(Integer, nullable=False)

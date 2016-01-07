@@ -1,23 +1,23 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.diagnoses');
+  var app = angular.module('radar.patients.diagnosis');
 
   app.factory('DiagnosisPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
   }]);
 
   function controllerFactory(
-    ModelListDetailController,
+    ModelDetailController,
     DiagnosisPermission,
     firstPromise,
     $injector,
     store
   ) {
-    function DiagnosesController($scope) {
+    function DiagnosisController($scope) {
       var self = this;
 
-      $injector.invoke(ModelListDetailController, self, {
+      $injector.invoke(ModelDetailController, self, {
         $scope: $scope,
         params: {
           permission: new DiagnosisPermission($scope.patient)
@@ -25,17 +25,16 @@
       });
 
       self.load(firstPromise([
-        store.findMany('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
-        store.findMany('medication-dose-units').then(function(doseUnits) {
-          $scope.doseUnits = doseUnits;
-        }),
+        store.findFirst('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
         store.findMany('diagnosis-cohort-diagnoses', {cohort: $scope.cohort.id}).then(function(cohortDiagnoses) {
           $scope.cohortDiagnoses = cohortDiagnoses;
         }),
         store.findMany('diagnosis-biopsy-diagnoses').then(function(biopsyDiagnoses) {
           $scope.biopsyDiagnoses = biopsyDiagnoses;
         })
-      ]));
+      ])).then(function() {
+        self.view();
+      });
 
       $scope.create = function() {
         var item = store.create('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort});
@@ -43,30 +42,30 @@
       };
     }
 
-    DiagnosesController.$inject = ['$scope'];
-    DiagnosesController.prototype = Object.create(ModelListDetailController.prototype);
+    DiagnosisController.$inject = ['$scope'];
+    DiagnosisController.prototype = Object.create(ModelDetailController.prototype);
 
-    return DiagnosesController;
+    return DiagnosisController;
   }
 
   controllerFactory.$inject = [
-    'ModelListDetailController',
+    'ModelDetailController',
     'DiagnosisPermission',
     'firstPromise',
     '$injector',
     'store'
   ];
 
-  app.factory('DiagnosesController', controllerFactory);
+  app.factory('DiagnosisController', controllerFactory);
 
-  app.directive('diagnosesComponent', ['DiagnosesController', function(DiagnosesController) {
+  app.directive('diagnosisComponent', ['DiagnosisController', function(DiagnosisController) {
     return {
       scope: {
         patient: '=',
         cohort: '='
       },
-      controller: DiagnosesController,
-      templateUrl: 'app/patients/diagnoses/diagnoses-component.html'
+      controller: DiagnosisController,
+      templateUrl: 'app/patients/diagnosis/diagnosis-component.html'
     };
   }]);
 })();

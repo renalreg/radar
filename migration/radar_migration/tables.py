@@ -215,8 +215,8 @@ dialysis = Table(
     Column('modified_user_id', Integer),
 )
 
-family_history = Table(
-    'family_history', metadata,
+family_histories = Table(
+    'family_histories', metadata,
     Column('id', UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('cohort_id', Integer),

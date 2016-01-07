@@ -27,8 +27,9 @@ class Diagnosis(db.Model, MetaModelMixin):
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')
 
-    date_of_onset = Column(Date, nullable=False)
+    date_of_symptoms = Column(Date, nullable=False)
     date_of_diagnosis = Column(Date, nullable=False)
+    date_of_renal_disease = Column(Date)
 
     cohort_diagnosis_id = Column(Integer, ForeignKey('cohort_diagnoses.id'), nullable=False)
     cohort_diagnosis = relationship('CohortDiagnosis')
@@ -37,13 +38,22 @@ class Diagnosis(db.Model, MetaModelMixin):
     biopsy_diagnosis = Column(Integer)
 
     @property
-    def age_at_onset(self):
-        x = to_age(self.patient, self.date_of_onset)
+    def age_of_symptoms(self):
+        x = to_age(self.patient, self.date_of_symptoms)
         return x
 
     @property
-    def age_at_diagnosis(self):
+    def age_of_diagnosis(self):
         return to_age(self.patient, self.date_of_diagnosis)
+
+    @property
+    def age_of_renal_disease(self):
+        if self.date_of_renal_disease is None:
+            r = None
+        else:
+            r = to_age(self.patient, self.date_of_renal_disease)
+
+        return r
 
 Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
 Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)

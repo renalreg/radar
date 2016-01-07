@@ -347,6 +347,7 @@ def create_renal_imaging_f():
                 renal_imaging.right_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES.keys())
                 renal_imaging.right_length = random.randint(11, 14)
                 renal_imaging.right_cysts = random_bool()
+                renal_imaging.right_stones = random_bool()
                 renal_imaging.right_calcification = random_bool()
 
                 if renal_imaging.right_calcification:
@@ -357,6 +358,7 @@ def create_renal_imaging_f():
                 renal_imaging.left_type = random.choice(RENAL_IMAGING_KIDNEY_TYPES.keys())
                 renal_imaging.left_length = random.randint(11, 14)
                 renal_imaging.left_cysts = random_bool()
+                renal_imaging.left_stones = random_bool()
                 renal_imaging.left_calcification = random_bool()
 
                 if renal_imaging.left_calcification:

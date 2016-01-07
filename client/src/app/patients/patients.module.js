@@ -11,7 +11,7 @@
     'radar.patients.comorbidities',
     'radar.patients.consultants',
     'radar.patients.demographics',
-    'radar.patients.diagnoses',
+    'radar.patients.diagnosis',
     'radar.patients.dialysis',
     'radar.patients.familyHistory',
     'radar.patients.fetalAnomalyScans',

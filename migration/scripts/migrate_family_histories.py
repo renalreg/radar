@@ -42,7 +42,7 @@ def check_patient_exists(conn, patient_id):
     return conn.execute(q).fetchone() is not None
 
 
-def migrate_family_history(old_conn, new_conn):
+def migrate_family_histories(old_conn, new_conn):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -74,7 +74,7 @@ def migrate_family_history(old_conn, new_conn):
         family_history = convert_family_history(row['FAM_HIST'])
 
         result = new_conn.execute(
-            tables.family_history.insert(),
+            tables.family_histories.insert(),
             patient_id=row['RADAR_NO'],
             cohort_id=m.cohort_id,  # TODO
             parental_consanguinity=parental_consanguinity,
@@ -111,7 +111,7 @@ def cli(src, dest):
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_family_history(src_conn, dest_conn)
+        migrate_family_histories(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

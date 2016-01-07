@@ -59,7 +59,7 @@
       ALIASES: patientFeature('Aliases', 'patient.aliases'),
       ALPORT_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.alportClinicalPictures'),
       DEMOGRAPHICS: patientFeature('Demographics', 'patient.demographics'),
-      DIAGNOSES: patientFeature('Diagnosis', 'patient.diagnoses', true),
+      DIAGNOSIS: patientFeature('Diagnosis', 'patient.diagnosis', true),
       DIALYSIS: patientFeature('Dialysis', 'patient.dialysis'),
       COHORTS: patientFeature('Cohorts', 'patient.cohorts'),
       COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),

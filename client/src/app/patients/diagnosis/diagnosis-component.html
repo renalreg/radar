@@ -1,11 +1,12 @@
 <div loading="loading" crud>
   <div ng-if="viewing">
     <p>
-      <span crud-list-button></span>
+      <span crud-create-button action="create()"></span>
       <span crud-edit-button item="item"></span>
+      <span crud-remove-button item="item"></span>
     </p>
 
-    <table class="table properties">
+    <table class="table properties" ng-if="item">
       <tr>
         <th>ID</th>
         <td>{{item.id}}</td>
@@ -13,12 +14,17 @@
 
       <tr>
         <th>Date of Onset of Symptoms</th>
-        <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
+        <td>{{item.dateOfSymptoms | dateFormat}} ({{item.ageOfSymptoms | ageFormat}})</td>
       </tr>
 
       <tr>
         <th>Date of Diagnosis</th>
-        <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
+        <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageOfDiagnosis | ageFormat}})</td>
+      </tr>
+
+      <tr>
+        <th>Date of Onset of Renal Disease</th>
+        <td>{{item.dateOfRenalDisease | dateFormat}} ({{item.ageOfRenalDisease | ageFormat}})</td>
       </tr>
 
       <tr>
@@ -37,13 +43,15 @@
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div ng-if="item" item-meta item="item"></div>
+
+    <p ng-if="!item">Not entered.</p>
   </div>
 
   <div ng-if="editing">
     <p>
-      <span crud-list-button></span>
       <span crud-view-button item="originalItem"></span>
+      <span crud-remove-button item="originalItem"></span>
     </p>
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
@@ -51,8 +59,8 @@
         <div frm-label>Date of Onset of Symptoms</div>
 
         <div frm-control>
-          <div frm-date-field model="item.dateOfOnset" required="true"></div>
-          <div frm-errors errors="item.errors.dateOfOnset"></div>
+          <div frm-date-field model="item.dateOfSymptoms" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfSymptoms"></div>
         </div>
       </div>
 
@@ -62,6 +70,15 @@
         <div frm-control>
           <div frm-date-field model="item.dateOfDiagnosis" required="true" min-date="item.dateOfOnset"></div>
           <div frm-errors errors="item.errors.dateOfDiagnosis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Onset of Renal Disease</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRenalDisease" required="false"></div>
+          <div frm-errors errors="item.errors.dateOfRenalDisease"></div>
         </div>
       </div>
 
@@ -94,51 +111,8 @@
 
       <div frm-buttons>
         <span crud-save-button></span>
-        <span crud-cancel-list-button></span>
+        <span crud-cancel-button action="view(originalItem)"></span>
       </div>
     </form>
-  </div>
-
-  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="dateOfDiagnosis" reverse="true">
-    <p>
-      <span crud-create-button action="create()"></span>
-    </p>
-
-    <div filter-helper></div>
-
-    <div ng-show="!page.getCount()">
-      <p>No results.</p>
-    </div>
-
-    <table class="table table-condensed table-striped" ng-if="page.getCount()">
-      <thead>
-        <tr>
-          <th></th>
-          <th sort-helper="dateOfOnset">Date of Onset of Symptoms</th>
-          <th sort-helper="dateOfDiagnosis">Date of Diagnosis</th>
-          <th sort-helper="cohortDiagnosis">Diagnosis</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr ng-repeat="item in page.getItems()">
-          <td>
-            <span crud-list-view-button item="item"></span>
-            <span crud-list-edit-button item="item"></span>
-          </td>
-
-          <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
-          <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
-          <td>{{item.cohortDiagnosis.label}}</td>
-
-          <td>
-            <span crud-list-remove-button item="item"></span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div pagination-helper></div>
   </div>
 </div>
