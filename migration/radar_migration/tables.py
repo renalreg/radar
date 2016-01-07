@@ -35,7 +35,7 @@ cohorts = Table(
 cohort_features = Table(
     'cohort_features', metadata,
     Column('id', Integer, primary_key=True),
-    Column('patient_id', Integer),
+    Column('cohort_id', Integer),
     Column('name', String),
     Column('weight', Integer),
 )
