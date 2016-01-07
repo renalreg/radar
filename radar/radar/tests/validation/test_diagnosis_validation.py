@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, Diagnosis, Cohort, \
     CohortDiagnosis
 from radar.validation.core import ValidationError
-from radar.validation.diagnosis import DiagnosisValidation
+from radar.validation.diagnoses import DiagnosisValidation
 from radar.tests.validation.helpers import validation_runner
 
 
