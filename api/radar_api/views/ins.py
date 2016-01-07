@@ -1,5 +1,5 @@
 from radar_api.serializers.ins import InsClinicalPictureSerializer, InsRelapseSerializer
-from radar.models.ins import InsClinicalPicture, InsRelapse, TYPES_OF_KIDNEY, TYPES_OF_REMISSION
+from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 from radar.validation.ins import InsClinicalPictureValidation, InsRelapseValidation
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar.views.codes import CodedStringListView
@@ -30,11 +30,11 @@ class InsRelapseDetailView(PatientObjectDetailView):
 
 
 class InsKidneyTypeListView(CodedStringListView):
-    items = TYPES_OF_KIDNEY
+    items = KIDNEY_TYPES
 
 
 class InsRemissionTypeListView(CodedStringListView):
-    items = TYPES_OF_REMISSION
+    items = REMISSION_TYPES
 
 
 def register_views(app):

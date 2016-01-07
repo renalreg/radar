@@ -284,3 +284,20 @@ alport_clinical_pictures = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+ins_relapses = Table(
+    'ins_relapses', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('date_of_relapse', Date),
+    Column('kidney_type', String),
+    Column('viral_trigger', String),
+    Column('immunisation_trigger', String),
+    Column('other_trigger', String),
+    Column('high_dose_oral_prednisolone', Boolean),
+    Column('iv_methyl_prednisolone', Boolean),
+    Column('date_of_remission', Date),
+    Column('remission_type', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)

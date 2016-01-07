@@ -17,8 +17,8 @@
       </tr>
 
       <tr>
-        <th>Type of Kidney</th>
-        <td>{{item.typeOfKidney.label}}</td>
+        <th>Kidney Type</th>
+        <td>{{item.kidneyType.label | missing}}</td>
       </tr>
 
       <tr>
@@ -52,8 +52,8 @@
       </tr>
 
       <tr ng-if="item.dateOfRemission">
-        <th>Type of Remission</th>
-        <td>{{item.typeOfRemission.label | missing}}</td>
+        <th>Remission Type</th>
+        <td>{{item.remissionType.label | missing}}</td>
       </tr>
     </table>
 
@@ -77,11 +77,11 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Type of Kidney</div>
+        <div frm-label>Kidney Type</div>
 
         <div frm-control>
-          <div frm-select-field model="item.typeOfKidney" required="true" options="kidneyTypes"></div>
-          <div frm-errors errors="item.errors.typeOfKidney"></div>
+          <div frm-select-field model="item.kidneyType" required="true" options="kidneyTypes"></div>
+          <div frm-errors errors="item.errors.kidneyType"></div>
         </div>
       </div>
 
@@ -144,11 +144,11 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Type of Remission</div>
+        <div frm-label>Remission Type</div>
 
         <div frm-control>
-          <div frm-select-field model="item.typeOfRemission" options="remissionTypes"></div>
-          <div frm-errors errors="item.errors.typeOfRemission"></div>
+          <div frm-select-field model="item.remissionType" options="remissionTypes"></div>
+          <div frm-errors errors="item.errors.remissionType"></div>
         </div>
       </div>
 
@@ -175,9 +175,9 @@
         <tr>
           <th></th>
           <th sort-helper="dateOfRelapse">Date of Relapse</th>
-          <th sort-helper="typeOfKidney.label">Type of Kidney</th>
+          <th sort-helper="kidneyType.label">Kidney Type</th>
           <th sort-helper="dateOfRemission">Date of Remission</th>
-          <th sort-helper="typeOfRemission.label">Type of Remission</th>
+          <th sort-helper="remissionType.label">Remission Type</th>
           <th></th>
         </tr>
       </thead>
@@ -190,9 +190,9 @@
           </td>
 
           <td>{{item.dateOfRelapse | dateFormat}}</td>
-          <td>{{item.typeOfKidney.label}}</td>
+          <td>{{item.kidneyType.label | missing}}</td>
           <td>{{item.dateOfRemission | dateFormat | missing}}</td>
-          <td>{{item.typeOfRemission.label | missing}}</td>
+          <td>{{item.remissionType.label | missing}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>
