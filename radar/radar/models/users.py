@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, f
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from radar.auth.passwords import check_password_hash, generate_password_hash
+from radar.auth.passwords import check_password_hash, generate_password_hash, HASH_METHOD
 from radar.database import db
 from radar.models import OrganisationUser, CohortUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
@@ -102,6 +102,17 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
             self.password_hash is not None and
             check_password_hash(self.password_hash, password)
         )
+
+    @property
+    def is_old_password_hash(self):
+        if self.password_hash is None:
+            r = False
+        else:
+            hash_method = self.password_hash.split('$')[0]
+            r = hash_method != HASH_METHOD
+            print r, hash_method, HASH_METHOD
+
+        return r
 
     @classmethod
     def is_authenticated(cls):
