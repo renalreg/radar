@@ -39,7 +39,7 @@ class CohortFeature(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    cohort_id = Column(Integer, ForeignKey('cohorts.id'))
+    cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')
 
     _name = Column('name', String, nullable=False)
