@@ -122,15 +122,15 @@ def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
         )
     """ % EXCLUDED_UNITS))
 
-    d = DrugConverter(relapse_drugs_filename)
+    dc = DrugConverter(relapse_drugs_filename)
 
     for row in rows:
         kidney_type = convert_kidney_type(row['RELAP_TX_NAT'])
         remission_type = convert_remission_type(row['REMISS_ACHIEVE'])
 
         old_drugs = [row['RELAP_DRUG_1'], row['RELAP_DRUG_2'], row['RELAP_DRUG_3']]
-        high_dose_oral_prednisolone = d.convert_high_dose_oral_prednisolone(old_drugs)
-        iv_methyl_prednisolone = d.convert_iv_methyl_prednisolone(old_drugs)
+        high_dose_oral_prednisolone = dc.convert_high_dose_oral_prednisolone(old_drugs)
+        iv_methyl_prednisolone = dc.convert_iv_methyl_prednisolone(old_drugs)
 
         new_conn.execute(
             tables.ins_relapses.insert(),
@@ -148,7 +148,7 @@ def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
             modified_user_id=m.user_id,
         )
 
-        new_drugs = d.convert_drugs(old_drugs)
+        new_drugs = dc.convert_drugs(old_drugs)
 
         for new_drug in new_drugs:
             new_conn.execute(
