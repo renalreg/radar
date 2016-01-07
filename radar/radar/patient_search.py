@@ -160,8 +160,11 @@ def filter_by_patient_number(number, exact=False):
     else:
         query = patient_number_sub_query(PatientNumber.number == number)
 
-    # Also search RaDaR IDs
-    query = or_(query, filter_by_patient_id(number))
+    try:
+        # Also search RaDaR IDs
+        query = or_(query, filter_by_patient_id(int(number)))
+    except ValueError:
+        pass
 
     return query
 
