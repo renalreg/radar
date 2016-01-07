@@ -27,8 +27,13 @@
       </tr>
 
       <tr>
+        <th>Date of Recurrence</th>
+        <td>{{item.dateOfRecurrence | dateFormat}}</td>
+      </tr>
+
+      <tr>
         <th>Date of Failure</th>
-        <td>{{item.dateOfFailure | dateFormat | missing}}</td>
+        <td>{{item.dateOfFailure | dateFormat}}</td>
       </tr>
     </table>
 
@@ -100,6 +105,15 @@
       </div>
 
       <div frm-field frm-group>
+        <div frm-label>Date of Recurrence</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRecurrence"></div>
+          <div frm-errors errors="item.errors.dateOfRecurrence"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
         <div frm-label>Date of Failure</div>
 
         <div frm-control>
@@ -135,6 +149,7 @@
           <th></th>
           <th sort-helper="date">Date</th>
           <th sort-helper="modality.label">Modality</th>
+          <th sort-helper="dateOfRecurrence.label">Date of Recurrence</th>
           <th sort-helper="dateOfFailure.label">Date of Failure</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
           <th></th>
@@ -150,7 +165,8 @@
 
           <td>{{item.date | dateFormat}}</td>
           <td>{{item.modality.label}}</td>
-          <td>{{item.dateOfFailure | dateFormat | missing}}</td>
+          <td>{{item.dateOfRecurrence | dateFormat}}</td>
+          <td>{{item.dateOfFailure | dateFormat}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>
 
           <td>

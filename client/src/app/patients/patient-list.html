@@ -51,7 +51,7 @@
 
               <td>{{patient.gender.label}}</td>
 
-              <td>{{patient.recruitedDate | dateFormat | missing}}</td>
+              <td>{{patient.recruitedDate | dateFormat}}</td>
 
               <td>
                 <span ng-if="!patient.getCohorts().length">-</span>

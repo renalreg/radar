@@ -39,6 +39,7 @@ class Transplant(db.Model, MetaModelMixin):
 
     date = Column(Date, nullable=False)
     modality = Column(Integer, nullable=False)
+    date_of_recurrence = Column(Date)
     date_of_failure = Column(Date)
 
 Index('transplants_patient_id_idx', Transplant.patient_id)
