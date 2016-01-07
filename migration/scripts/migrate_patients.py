@@ -112,55 +112,56 @@ def migrate_patients(old_conn, new_conn):
             user.username AS 'username',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.FNAME
                     WHEN COALESCE(p.forename, '') != '' THEN p.forename
-                    ELSE r.forename
+                    WHEN COALESCE(r.forename, '') != '' THEN r.forename
+                    ELSE d.FNAME
                 END
             ) AS 'forename',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.SNAME
                     WHEN COALESCE(p.surname, '') != '' THEN p.surname
-                    ELSE r.surname
+                    WHEN COALESCE(r.surname, '') != '' THEN r.surname
+                    ELSE d.SNAME
                 END
             ) AS 'surname',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.DOB
                     WHEN p.dateofbirth IS NOT NULL THEN p.dateofbirth
-                    ELSE r.dateofbirth
+                    WHEN r.dateofbirth IS NOT NULL THEN r.dateofbirth
+                    ELSE d.DOB
                 END
             ) AS 'date_of_birth',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.sex
                     WHEN COALESCE(p.sex, '') != '' THEN p.sex
-                    ELSE r.sex
+                    WHEN COALESCE(r.sex, '') != '' THEN r.sex
+                    ELSE d.sex
                 END
             ) AS 'sex',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.ETHNIC_GP
                     WHEN COALESCE(p.ethnicGp, '') != '' THEN p.ethnicGp
-                    ELSE r.ethnicGp
+                    WHEN COALESCE(r.ethnicGp, '') != '' THEN r.ethnicGp
+                    ELSE d.ETHNIC_GP
                 END
             ) AS 'ethnic_group',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN d.phone1
                     WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1
-                    ELSE r.telephone1
+                    WHEN COALESCE(p.telephone2, '') != '' THEN p.telephone2
+                    WHEN COALESCE(r.telephone1, '') != '' THEN r.telephone1
+                    WHEN COALESCE(r.telephone2, '') != '' THEN r.telephone2
+                    WHEN COALESCE(d.phone1, '') != '' THEN d.phone1
+                    WHEN COALESCE(d.phone2, '') != '' THEN d.phone2
+                    ELSE NULL
                 END
             ) AS 'telephone1',
             (
                 CASE
-                    WHEN r.dateofbirth IS NULL THEN
-                        CASE
-                            WHEN d.mobile = 'mobile' THEN NULL
-                            ELSE d.mobile
-                        END
                     WHEN COALESCE(p.mobile, '') != '' THEN p.mobile
-                    ELSE r.mobile
+                    WHEN COALESCE(r.mobile, '') != '' THEN r.mobile
+                    WHEN COALESCE(d.mobile, '') NOT IN ('', 'mobile') THEN d.mobile
+                    ELSE NULL
                 END
             ) AS 'mobile',
             r.comments,
@@ -249,13 +250,16 @@ def migrate_patients(old_conn, new_conn):
             modified_date=recruited_date,
         )
 
+        first_name = row['forename'].upper()
+        last_name = row['surname'].upper()
+
         # Add RaDaR demographics
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=radar_no,
             data_source_id=m.data_source_id,
-            first_name=row['forename'],
-            last_name=row['surname'],
+            first_name=first_name,
+            last_name=last_name,
             date_of_birth=row['date_of_birth'],
             gender=convert_gender(row['sex']),
             ethnicity=convert_ethnicity(row['ethnic_group']),
