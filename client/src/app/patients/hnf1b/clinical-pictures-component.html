@@ -17,28 +17,8 @@
       </tr>
 
       <tr>
-        <th>Renal Cysts</th>
-        <td><span tick="item.cysts"></span></td>
-      </tr>
-
-      <tr>
-        <th>Renal Stones</th>
-        <td><span tick="item.cysts"></span></td>
-      </tr>
-
-      <tr>
         <th>Single Kidney</th>
         <td><span tick="item.singleKidney"></span></td>
-      </tr>
-
-      <tr>
-        <th>Other Renal Malformation</th>
-        <td><span tick="item.otherMalformation"></span></td>
-      </tr>
-
-      <tr>
-        <th>Other Renal Malformation</th>
-        <td class="newlines">{{item.otherMalformationDetails | missing}}</td>
       </tr>
 
       <tr>
@@ -126,49 +106,11 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Renal Cysts</div>
-
-        <div frm-control>
-          <div frm-boolean-field model="item.cysts"></div>
-          <div frm-errors errors="item.errors.cysts"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Renal Stones</div>
-
-        <div frm-control>
-          <div frm-boolean-field model="item.stones"></div>
-          <div frm-errors errors="item.errors.stones"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
         <div frm-label>Single Kidney</div>
 
         <div frm-control>
           <div frm-boolean-field model="item.singleKidney"></div>
           <div frm-errors errors="item.errors.singleKidney"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Other Renal Malformation</div>
-
-        <div frm-control>
-          <div frm-boolean-field model="item.otherMalformation"></div>
-          <div frm-errors errors="item.errors.otherMalformation"></div>
-        </div>
-      </div>
-
-      <div ng-show="item.otherMalformation">
-        <div frm-field frm-group>
-          <div frm-label>Other Malformation Details</div>
-
-          <div frm-control>
-            <div frm-textarea-field model="item.otherMalformationDetails"></div>
-            <div frm-errors errors="item.errors.otherMalformationDetails"></div>
-          </div>
         </div>
       </div>
 
