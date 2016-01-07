@@ -4,7 +4,7 @@ import click
 from radar_migration import Migration, tables
 
 
-def migrate_alport_clinical_pictures(old_conn, new_conn):
+def migrate_alport(old_conn, new_conn):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -45,7 +45,7 @@ def cli(src, dest):
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_alport_clinical_pictures(src_conn, dest_conn)
+        migrate_alport(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

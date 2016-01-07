@@ -26,8 +26,8 @@ echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
-echo 'migrate alport clinical pictures...'
-python scripts/migrate_alport_clinical_pictures.py "$SRC" "$DEST"
+echo 'migrate alport...'
+python scripts/migrate_alport.py "$SRC" "$DEST"
 #echo 'migrate consultants...'
 #python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'
@@ -36,6 +36,8 @@ echo 'migrate family history...'
 python scripts/migrate_family_history.py "$SRC" "$DEST"
 echo 'migrate genetics...'
 python scripts/migrate_genetics.py "$SRC" "$DEST"
+echo 'migrate hnf1b...'
+python scripts/migrate_hnf1b.py "$SRC" "$DEST"
 echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
 echo 'migrate medications...'
