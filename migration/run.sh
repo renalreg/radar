@@ -46,6 +46,8 @@ echo 'migrate medications...'
 python scripts/migrate_medications.py "$SRC" "$DEST"
 echo 'migrate mpgn...'
 python scripts/migrate_mpgn.py "$SRC" "$DEST"
+echo 'migrate nephrectomies...'
+python scripts/migrate_nephrectomies.py "$SRC" "$DEST"
 echo 'migrate pathology...'
 python scripts/migrate_pathology.py "$SRC" "$DEST"
 echo 'migrate patient addresses...'
@@ -56,4 +58,6 @@ echo 'migrate patient numbers...'
 python scripts/migrate_patient_numbers.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
+echo 'migrate transplants...'
+python scripts/migrate_transplants.py "$SRC" "$DEST"
 echo 'done'
