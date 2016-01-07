@@ -57,6 +57,12 @@ class Diagnosis(db.Model, MetaModelMixin):
 
 Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
 Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)
+Index(
+    'diagnoses_patient_id_cohort_id_idx',
+    Diagnosis.patient_id,
+    Diagnosis.cohort_id,
+    unique=True
+)
 
 
 class CohortDiagnosis(db.Model):
