@@ -2,7 +2,7 @@ from radar.auth.passwords import check_password_hash, is_strong_password
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
     pass_call, pass_old_value
 from radar.validation.meta import MetaValidationMixin
-from radar.validation.validators import required, optional, email_address, not_empty, none_if_blank, default, max_length
+from radar.validation.validators import required, optional, email_address, not_empty, none_if_blank, default, max_length, lower
 
 
 class PasswordField(Field):
@@ -15,7 +15,7 @@ class PasswordField(Field):
 # TODO check username not already taken
 class UserValidation(MetaValidationMixin, Validation):
     id = Field([optional()])
-    username = Field([required()])
+    username = Field([not_empty(), lower()])
     password = PasswordField([optional()])
     password_hash = Field([optional()])
     email = Field([none_if_blank(), optional(), email_address()])
