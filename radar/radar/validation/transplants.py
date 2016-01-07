@@ -20,9 +20,17 @@ class TransplantBiopsyValidation(Validation):
 class TransplantValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
     date = Field([required(), valid_date_for_patient()])
     modality = Field([required(), in_(TRANSPLANT_MODALITIES.keys())])
+    date_of_recurrence = Field([optional(), valid_date_for_patient()])
     date_of_failure = Field([optional(), valid_date_for_patient()])
     rejections = ListField(TransplantRejectionValidation())
     biopsies = ListField(TransplantBiopsyValidation())
+
+    @pass_new_obj
+    def validate_date_of_recurrence(self, obj, date_of_recurrence):
+        if date_of_recurrence < obj.date:
+            raise ValidationError('Must be on or after transplant date.')
+
+        return date_of_recurrence
 
     @pass_new_obj
     def validate_date_of_failure(self, obj, date_of_failure):
