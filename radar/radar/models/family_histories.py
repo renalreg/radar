@@ -45,6 +45,12 @@ class FamilyHistory(db.Model, MetaModelMixin):
 
 Index('family_histories_patient_id_idx', FamilyHistory.patient_id)
 Index('family_histories_cohort_id_idx', FamilyHistory.cohort_id)
+Index(
+    'family_histories_patient_id_cohort_id_idx',
+    FamilyHistory.patient_id,
+    FamilyHistory.cohort_id,
+    unique=True
+)
 
 
 class FamilyHistoryRelative(db.Model):
