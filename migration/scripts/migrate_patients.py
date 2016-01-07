@@ -290,7 +290,8 @@ def migrate_patient_cohorts(old_conn, new_conn):
     rows = old_conn.execute(text("""
         SELECT DISTINCT
             patient.radarNo,
-            unit.unitcode
+            unit.unitcode,
+            patient.dateReg
         FROM usermapping
         JOIN patient ON usermapping.nhsno = patient.nhsno
         JOIN unit ON usermapping.unitcode = unit.unitcode
@@ -300,17 +301,19 @@ def migrate_patient_cohorts(old_conn, new_conn):
             unit.sourceType = 'radargroup'
     """ % EXCLUDED_UNITS))
 
-    for radar_no, cohort_code in rows:
-        cohort_code = convert_cohort_code(cohort_code)
+    for row in rows:
+        cohort_code = convert_cohort_code(row['unitcode'])
         cohort_id = m.get_cohort_id(cohort_code)
 
         new_conn.execute(
             tables.cohort_patients.insert(),
-            patient_id=radar_no,
+            patient_id=row['radarNo'],
             cohort_id=cohort_id,
             recruited_organisation_id=m.organisation_id,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
+            created_date=row['dateReg'],
+            modified_date=row['dateReg'],
         )
 
 
@@ -320,7 +323,8 @@ def migrate_patient_organisations(old_conn, new_conn):
     rows = old_conn.execute(text("""
         SELECT DISTINCT
             patient.radarNo,
-            unit.unitcode
+            unit.unitcode,
+            patient.dateReg
         FROM usermapping
         JOIN patient ON usermapping.nhsno = patient.nhsno
         JOIN unit ON usermapping.unitcode = unit.unitcode
@@ -335,15 +339,17 @@ def migrate_patient_organisations(old_conn, new_conn):
             unit.sourceType = 'renalunit'
     """ % EXCLUDED_UNITS))
 
-    for radar_no, unit_code in rows:
-        organisation_id = m.get_organisation_id('UNIT', unit_code)
+    for row in rows:
+        organisation_id = m.get_organisation_id('UNIT', row['unitcode'])
 
         new_conn.execute(
             tables.organisation_patients.insert(),
-            patient_id=radar_no,
+            patient_id=row['radarNo'],
             organisation_id=organisation_id,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
+            created_date=row['dateReg'],
+            modified_date=row['dateReg'],
         )
 
 

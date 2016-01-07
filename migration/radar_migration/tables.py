@@ -85,6 +85,8 @@ organisation_patients = Table(
     Column('patient_id', Integer),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
+    Column('created_date', DateTime),
+    Column('modified_date', DateTime),
 )
 
 organisation_users = Table(
