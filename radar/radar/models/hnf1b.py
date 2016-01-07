@@ -25,11 +25,7 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
 
     date_of_picture = Column(Date, nullable=False)
     date_of_renal_disease = Column(Date)
-    cysts = Column(Boolean)
-    stones = Column(Boolean)
     single_kidney = Column(Boolean)
-    other_malformation = Column(Boolean)
-    other_malformation_details = Column(String)
     hyperuricemia_gout = Column(Boolean)
     genital_malformation = Column(Boolean)
     genital_malformation_details = Column(String)

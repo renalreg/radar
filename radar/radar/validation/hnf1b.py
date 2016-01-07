@@ -8,11 +8,7 @@ from radar.validation.meta import MetaValidationMixin
 class Hnf1bClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     date_of_picture = Field([required(), valid_date_for_patient()])
     date_of_renal_disease = Field([optional(), valid_date_for_patient()])
-    cysts = Field([optional()])
-    stones = Field([optional()])
     single_kidney = Field([optional()])
-    other_malformation = Field([optional()])
-    other_malformation_details = Field([none_if_blank(), optional(), max_length(10000)])
     hyperuricemia_gout = Field([optional()])
     genital_malformation = Field([optional()])
     genital_malformation_details = Field([none_if_blank(), optional(), max_length(10000)])
