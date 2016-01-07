@@ -110,13 +110,59 @@ def migrate_patients(old_conn, new_conn):
             r.unitcode AS 'unit_code',
             r.dateReg AS 'date_registered',
             user.username AS 'username',
-            (CASE WHEN COALESCE(p.forename, '') != '' THEN p.forename ELSE r.forename END) AS 'forename',
-            (CASE WHEN COALESCE(p.surname, '') != '' THEN p.surname ELSE r.forename END) AS 'surname',
-            (CASE WHEN p.dateofbirth IS NOT NULL THEN p.dateofbirth ELSE r.dateofbirth END) AS 'date_of_birth',
-            (CASE WHEN COALESCE(p.sex, '') != '' THEN p.sex ELSE r.sex END) AS 'sex',
-            (CASE WHEN COALESCE(p.ethnicGp, '') != '' THEN p.ethnicGp ELSE r.ethnicGp END) AS 'ethnic_group',
-            (CASE WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1 ELSE r.telephone1 END) AS 'telephone1',
-            (CASE WHEN COALESCE(p.mobile, '') != '' THEN p.mobile ELSE r.mobile END) AS 'mobile',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.FNAME
+                    WHEN COALESCE(p.forename, '') != '' THEN p.forename
+                    ELSE r.forename
+                END
+            ) AS 'forename',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.SNAME
+                    WHEN COALESCE(p.surname, '') != '' THEN p.surname
+                    ELSE r.surname
+                END
+            ) AS 'surname',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.DOB
+                    WHEN p.dateofbirth IS NOT NULL THEN p.dateofbirth
+                    ELSE r.dateofbirth
+                END
+            ) AS 'date_of_birth',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.sex
+                    WHEN COALESCE(p.sex, '') != '' THEN p.sex
+                    ELSE r.sex
+                END
+            ) AS 'sex',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.ETHNIC_GP
+                    WHEN COALESCE(p.ethnicGp, '') != '' THEN p.ethnicGp
+                    ELSE r.ethnicGp
+                END
+            ) AS 'ethnic_group',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN d.phone1
+                    WHEN COALESCE(p.telephone1, '') != '' THEN p.telephone1
+                    ELSE r.telephone1
+                END
+            ) AS 'telephone1',
+            (
+                CASE
+                    WHEN r.dateofbirth IS NULL THEN
+                        CASE
+                            WHEN d.mobile = 'mobile' THEN NULL
+                            ELSE d.mobile
+                        END
+                    WHEN COALESCE(p.mobile, '') != '' THEN p.mobile
+                    ELSE r.mobile
+                END
+            ) AS 'mobile',
             r.comments,
             r.otherClinicianAndContactInfo,
             r.status
@@ -137,6 +183,7 @@ def migrate_patients(old_conn, new_conn):
             GROUP BY nhsno, unitcode
         ) AS l ON (p.nhsno = l.nhsno and p.unitcode = l.unitcode)
         LEFT JOIN user ON r.radarConsentConfirmedByUserId = user.id
+        LEFT JOIN tbl_demographics AS d ON r.radarNo = d.RADAR_NO
         WHERE
             r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')
         ORDER BY

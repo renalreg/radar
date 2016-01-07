@@ -41,7 +41,7 @@ python scripts/migrate_hnf1b.py "$SRC" "$DEST"
 echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
 echo 'migrate ins...'
-python scripts/migrate_ins.py "$SRC" "$DEST"
+python scripts/migrate_ins.py "$SRC" "$DEST" data/ins_relapse_drugs.csv
 echo 'migrate medications...'
 python scripts/migrate_medications.py "$SRC" "$DEST"
 echo 'migrate mpgn...'
@@ -57,5 +57,5 @@ python scripts/migrate_patient_numbers.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
 echo 'migrate transplants...'
-python scripts/migrate_transplants.py "$SRC" "$DEST"
+python scripts/migrate_transplants.py "$SRC" "$DEST" data/transplant_modalities.csv
 echo 'done'

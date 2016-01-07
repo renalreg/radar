@@ -8,11 +8,11 @@ from radar_migration import EXCLUDED_UNITS, tables, Migration
 
 class ModalityConverter(object):
     modality_map = {
-        20: 20,
-        23: 23,
-        24: 24,
-        25: 25,
-        26: 26,
+        '20': 20,
+        '23': 23,
+        '24': 24,
+        '25': 25,
+        '26': 26,
     }
 
     def __init__(self, filename):
@@ -39,13 +39,14 @@ class ModalityConverter(object):
 
 
 # TODO tbl_transplant_reject
-def migrate_transplants(old_conn, new_conn, modalities_filename):
+def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
     m = Migration(new_conn)
-    mc = ModalityConverter(modalities_filename)
+    mc = ModalityConverter(transplant_modalities_filename)
 
     # TODO the recurrence dates are probably failure dates
     rows = old_conn.execute(text("""
         SELECT
+            trID,
             RADAR_NO,
             DATE_TRANSPLANT,
             TRANS_TYPE,
@@ -53,13 +54,13 @@ def migrate_transplants(old_conn, new_conn, modalities_filename):
             (SELECT trFailureDate FROM tbl_transplant_reject WHERE tbl_transplant_reject.trId = tbl_transplant.trId LIMIT 1) AS DATE_FAILURE
         FROM tbl_transplant
         JOIN patient ON (
-            tbl_hospitalisation.RADAR_NO = patient.radarNo AND
+            tbl_transplant.RADAR_NO = patient.radarNo AND
             patient.unitcode NOT IN %s
         )
     """ % EXCLUDED_UNITS))
 
     for row in rows:
-        modality = mc.convert(row['TRANS_TYPE'])
+        modality = mc.convert(row['trID'], row['TRANS_TYPE'])
 
         new_conn.execute(
             tables.transplants.insert(),
@@ -77,7 +78,8 @@ def migrate_transplants(old_conn, new_conn, modalities_filename):
 @click.command()
 @click.argument('src')
 @click.argument('dest')
-def cli(src, dest):
+@click.argument('transplant_modalities')
+def cli(src, dest, transplant_modalities):
     src_engine = create_engine(src)
     dest_engine = create_engine(dest)
 
@@ -85,7 +87,7 @@ def cli(src, dest):
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_transplants(src_conn, dest_conn)
+        migrate_transplants(src_conn, dest_conn, transplant_modalities)
 
 
 if __name__ == '__main__':

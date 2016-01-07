@@ -301,3 +301,17 @@ ins_relapses = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+transplants = Table(
+    'transplants', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('data_source_id', Integer),
+    Column('organisation_id', Integer),
+    Column('date', Date),
+    Column('modality', Integer),
+    Column('date_of_recurrence', Date),
+    Column('date_of_failure', Date),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)

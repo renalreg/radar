@@ -99,8 +99,9 @@ class DrugConverter(object):
 
 
 # TODO clinical pictures
-def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
+def migrate_ins(old_conn, new_conn, ins_relapse_drugs_filename):
     m = Migration(new_conn)
+    dc = DrugConverter(ins_relapse_drugs_filename)
 
     rows = old_conn.execute(text("""
         SELECT
@@ -121,8 +122,6 @@ def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
             patient.unitcode NOT IN %s
         )
     """ % EXCLUDED_UNITS))
-
-    dc = DrugConverter(relapse_drugs_filename)
 
     for row in rows:
         kidney_type = convert_kidney_type(row['RELAP_TX_NAT'])
@@ -165,8 +164,8 @@ def migrate_ins(old_conn, new_conn, relapse_drugs_filename):
 @click.command()
 @click.argument('src')
 @click.argument('dest')
-@click.argument('relapse_drugs')
-def cli(src, dest, relapse_drugs):
+@click.argument('ins_relapse_drugs')
+def cli(src, dest, ins_relapse_drugs):
     src_engine = create_engine(src)
     dest_engine = create_engine(dest)
 
@@ -174,7 +173,7 @@ def cli(src, dest, relapse_drugs):
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_ins(src_conn, dest_conn, relapse_drugs)
+        migrate_ins(src_conn, dest_conn, ins_relapse_drugs)
 
 
 if __name__ == '__main__':
