@@ -40,8 +40,12 @@ echo 'migrate hnf1b...'
 python scripts/migrate_hnf1b.py "$SRC" "$DEST"
 echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
+echo 'migrate ins...'
+python scripts/migrate_ins.py "$SRC" "$DEST"
 echo 'migrate medications...'
 python scripts/migrate_medications.py "$SRC" "$DEST"
+echo 'migrate mpgn...'
+python scripts/migrate_mpgn.py "$SRC" "$DEST"
 echo 'migrate pathology...'
 python scripts/migrate_pathology.py "$SRC" "$DEST"
 echo 'migrate patient addresses...'
