@@ -34,7 +34,7 @@ class Transplant(db.Model, MetaModelMixin):
     data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
     data_source = relationship('DataSource')
 
-    organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
+    organisation_id = Column(Integer, ForeignKey('organisations.id'))
     organisation = relationship('Organisation')
 
     date = Column(Date, nullable=False)
