@@ -17,6 +17,7 @@ users = Table(
     'users', metadata,
     Column('id', Integer, primary_key=True),
     Column('username', String),
+    Column('password_hash', String),
     Column('first_name', String),
     Column('last_name', String),
     Column('email', String),
