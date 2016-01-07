@@ -19,7 +19,7 @@ COHORTS = [
         'name': 'Alport Syndrome',
         'short_name': 'Alport',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.FAMILY_HISTORY,
             FEATURES.ALPORT_CLINICAL_PICTURES,
@@ -31,7 +31,7 @@ COHORTS = [
         'name': 'APRT Deficiency',
         'short_name': 'APRT',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.FAMILY_HISTORY,
             FEATURES.COMORBIDITIES,
@@ -48,7 +48,7 @@ COHORTS = [
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.COMORBIDITIES,
             FEATURES.RENAL_IMAGING,
             FEATURES.PATHOLOGY,
@@ -63,7 +63,7 @@ COHORTS = [
         'name': 'Atypical Haemolytic Uraemic Syndrome',
         'short_name': 'AHUS',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.COMORBIDITIES,
             FEATURES.RESULTS,
             FEATURES.MEDICATIONS,
@@ -77,7 +77,7 @@ COHORTS = [
         'name': 'Calciphylaxis',
         'short_name': 'Calciphylaxis',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.COMORBIDITIES,
             FEATURES.RESULTS,
         ],
@@ -87,7 +87,7 @@ COHORTS = [
         'name': 'Cystinosis',
         'short_name': 'Cystinosis',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.MEDICATIONS,
             FEATURES.DIALYSIS,
             FEATURES.TRANSPLANTS,
@@ -99,7 +99,7 @@ COHORTS = [
         'name': 'Cystinuria',
         'short_name': 'Cystinuria',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
         ],
     },
     {
@@ -107,7 +107,7 @@ COHORTS = [
         'name': 'Dent Disease and Lowe Syndrome',
         'short_name': 'Dent & Lowe',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
         ],
     },
     {
@@ -115,7 +115,7 @@ COHORTS = [
         'name': 'Familial Urate Associated Nephropathy',
         'short_name': 'FUAN',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.RENAL_IMAGING,
             FEATURES.RESULTS,
@@ -127,7 +127,7 @@ COHORTS = [
         'name': 'HNF1b Mutations',
         'short_name': 'HNF1b',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.FAMILY_HISTORY,
             FEATURES.RENAL_IMAGING,
             FEATURES.PATHOLOGY,
@@ -138,7 +138,7 @@ COHORTS = [
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.RENAL_IMAGING,
             FEATURES.RESULTS,
@@ -152,7 +152,7 @@ COHORTS = [
         'name': 'Hypokalaemic Alkalosis',
         'short_name': 'Hypokalaemic Alkalosis',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.SALT_WASTING_CLINICAL_FEATURES,
             FEATURES.COMORBIDITIES,
@@ -167,7 +167,7 @@ COHORTS = [
         'name': 'Idiopathic Nephrotic Syndrome',
         'short_name': 'INS',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.FAMILY_HISTORY,
             FEATURES.COMORBIDITIES,
@@ -187,7 +187,7 @@ COHORTS = [
         'name': 'IgA Nephropathy',
         'short_name': 'IgA',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
         ],
     },
     {
@@ -195,7 +195,7 @@ COHORTS = [
         'name': 'Membranoproliferative Glomerulonephritis / Dense Deposit Disease',
         'short_name': 'MPGN',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.MPGN_CLINICAL_PICTURES,
             FEATURES.PATHOLOGY,
             FEATURES.RESULTS,
@@ -210,7 +210,7 @@ COHORTS = [
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
         ],
     },
     {
@@ -234,7 +234,7 @@ COHORTS = [
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.PREGNANCIES,
             FEATURES.FETAL_ULTRASOUNDS,
             FEATURES.RESULTS,
@@ -248,7 +248,7 @@ COHORTS = [
         'name': 'Pure Red Cell Aplasia',
         'short_name': 'PRCA',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
         ],
     },
     {
@@ -256,7 +256,7 @@ COHORTS = [
         'name': 'STEC-associated HUS',
         'short_name': 'STEC-HUS',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.GENETICS,
             FEATURES.FAMILY_HISTORY,
             FEATURES.COMORBIDITIES,
@@ -271,7 +271,7 @@ COHORTS = [
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
         'features': [
-            FEATURES.DIAGNOSES,
+            FEATURES.DIAGNOSIS,
             FEATURES.COMORBIDITIES,
             FEATURES.RENAL_IMAGING,
             FEATURES.PATHOLOGY,

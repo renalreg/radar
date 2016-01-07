@@ -1,7 +1,7 @@
 from radar_api.serializers.cohorts import CohortSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models.family_history import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
+from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
 from radar.serializers.core import Serializer
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.serializers.fields import ListField, IntegerField

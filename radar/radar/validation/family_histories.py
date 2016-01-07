@@ -4,7 +4,7 @@ from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, none_if_blank, optional, max_length, in_
 from radar.validation.core import ListField
-from radar.models.family_history import RELATIONSHIPS
+from radar.models.family_histories import RELATIONSHIPS
 
 
 class FamilyHistoryRelativeValidation(Validation):

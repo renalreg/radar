@@ -24,7 +24,6 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
     patient = patient_relationship('hnf1b_clinical_pictures')
 
     date_of_picture = Column(Date, nullable=False)
-    date_of_renal_disease = Column(Date)
     single_kidney = Column(Boolean)
     hyperuricemia_gout = Column(Boolean)
     genital_malformation = Column(Boolean)

@@ -15,7 +15,7 @@ from radar_api.views import recruitment_stats
 from radar_api.views import cohort_users
 from radar_api.views import comorbidities
 from radar_api.views import diagnoses
-from radar_api.views import family_history
+from radar_api.views import family_histories
 from radar_api.views import logout
 from radar_api.views import organisation_patients
 from radar_api.views import organisation_users
@@ -102,7 +102,7 @@ class RadarApi(Flask):
         diagnoses.register_views(self)
         dialysis.register_views(self)
         environment.register_views(self)
-        family_history.register_views(self)
+        family_histories.register_views(self)
         fetal_anomaly_scans.register_views(self)
         fetal_ultrasounds.register_views(self)
         forgot_password.register_views(self)

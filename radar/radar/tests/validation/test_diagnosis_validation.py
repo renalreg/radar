@@ -5,7 +5,7 @@ import pytest
 from radar.models import Patient, PatientDemographics, Diagnosis, Cohort, \
     CohortDiagnosis
 from radar.validation.core import ValidationError
-from radar.validation.diagnoses import DiagnosisValidation
+from radar.validation.diagnosis import DiagnosisValidation
 from radar.tests.validation.helpers import validation_runner
 
 
@@ -25,7 +25,7 @@ def diagnosis(patient):
     obj = Diagnosis()
     obj.patient = patient
     obj.cohort = cohort
-    obj.date_of_onset = date(2014, 1, 1)
+    obj.date_of_symptoms = date(2014, 1, 1)
     obj.date_of_diagnosis = date(2015, 1, 1)
     obj.cohort_diagnosis = CohortDiagnosis(cohort=cohort)
     obj.diagnosis_text = 'Foo Bar Baz'
@@ -38,7 +38,7 @@ def test_valid(diagnosis):
     obj = valid(diagnosis)
     assert obj.patient is not None
     assert obj.cohort is not None
-    assert obj.date_of_onset == date(2014, 1, 1)
+    assert obj.date_of_symptoms == date(2014, 1, 1)
     assert obj.date_of_diagnosis == date(2015, 1, 1)
     assert obj.cohort_diagnosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
@@ -59,18 +59,18 @@ def test_cohort_missing(diagnosis):
     invalid(diagnosis)
 
 
-def test_date_of_onset_missing(diagnosis):
-    diagnosis.date_of_onset = None
+def test_date_of_symptoms_missing(diagnosis):
+    diagnosis.date_of_symptoms = None
     invalid(diagnosis)
 
 
-def test_date_of_onset_before_dob(diagnosis):
-    diagnosis.date_of_onset = date(1999, 1, 1)
+def test_date_of_symptoms_before_dob(diagnosis):
+    diagnosis.date_of_symptoms = date(1999, 1, 1)
     invalid(diagnosis)
 
 
-def test_date_of_onset_in_future(diagnosis):
-    diagnosis.date_of_onset = date.today() + timedelta(days=1)
+def test_date_of_symptoms_in_future(diagnosis):
+    diagnosis.date_of_symptoms = date.today() + timedelta(days=1)
     invalid(diagnosis)
 
 
@@ -89,8 +89,8 @@ def test_date_of_diagnosis_in_future(diagnosis):
     invalid(diagnosis)
 
 
-def test_date_of_diagnosis_before_date_of_onset(diagnosis):
-    diagnosis.date_of_diagnosis = diagnosis.date_of_onset - timedelta(days=1)
+def test_date_of_diagnosis_before_date_of_symptoms(diagnosis):
+    diagnosis.date_of_diagnosis = diagnosis.date_of_symptoms - timedelta(days=1)
     invalid(diagnosis)
 
 

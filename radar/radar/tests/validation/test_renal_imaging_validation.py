@@ -29,6 +29,7 @@ def renal_imaging(patient):
     obj.right_length = 10
     obj.right_volume = 50
     obj.right_cysts = True
+    obj.right_stones = True
     obj.right_calcification = True
     obj.right_nephrocalcinosis = True
     obj.right_nephrolithiasis = True
@@ -38,6 +39,7 @@ def renal_imaging(patient):
     obj.left_length = 11
     obj.left_volume = 51
     obj.left_cysts = True
+    obj.left_stones = True
     obj.left_calcification = True
     obj.left_nephrocalcinosis = True
     obj.left_nephrolithiasis = True
@@ -54,6 +56,7 @@ def test_valid(renal_imaging):
     assert obj.right_length == 10
     assert obj.right_volume == 50
     assert obj.right_cysts is True
+    assert obj.right_stones is True
     assert obj.right_calcification is True
     assert obj.right_nephrocalcinosis is True
     assert obj.right_nephrolithiasis is True
@@ -63,6 +66,7 @@ def test_valid(renal_imaging):
     assert obj.left_length == 11
     assert obj.left_volume == 51
     assert obj.left_cysts is True
+    assert obj.left_stones is True
     assert obj.left_calcification is True
     assert obj.left_nephrocalcinosis is True
     assert obj.left_nephrolithiasis is True

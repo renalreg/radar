@@ -5,10 +5,10 @@ from radar.models.cohorts import *
 from radar.models.common import *
 from radar.models.comorbidities import *
 from radar.models.consultants import *
-from radar.models.diagnosis import *
+from radar.models.diagnoses import *
 from radar.models.dialysis import *
 from radar.models.data_sources import *
-from radar.models.family_history import *
+from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
 from radar.models.genetics import *
