@@ -318,3 +318,18 @@ transplants = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+transplant_rejections = Table(
+    'transplant_rejections', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('transplant_id', Integer),
+    Column('date_of_rejection', Date),
+)
+
+transplant_biopsies = Table(
+    'transplant_biopsies', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('transplant_id', Integer),
+    Column('date_of_biopsy', Date),
+    Column('recurrence', Boolean),
+)

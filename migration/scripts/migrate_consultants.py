@@ -59,7 +59,7 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
                 modified_user_id=m.user_id,
             )
 
-            consultant_id = result.last_inserted_key[0]
+            consultant_id = result.inserted_primary_key[0]
 
             if old_user_id is not None:
                 old_user_ids[old_user_id] = consultant_id

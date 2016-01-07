@@ -38,12 +38,10 @@ class ModalityConverter(object):
         return new_modality
 
 
-# TODO tbl_transplant_reject
 def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
     m = Migration(new_conn)
     mc = ModalityConverter(transplant_modalities_filename)
 
-    # TODO the recurrence dates are probably failure dates
     rows = old_conn.execute(text("""
         SELECT
             trID,
@@ -62,7 +60,7 @@ def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
     for row in rows:
         modality = mc.convert(row['trID'], row['TRANS_TYPE'])
 
-        new_conn.execute(
+        result = new_conn.execute(
             tables.transplants.insert(),
             patient_id=row['RADAR_NO'],
             data_source_id=m.data_source_id,  # TODO
@@ -73,6 +71,50 @@ def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
+
+        old_transplant_id = row['trID']
+        transplant_id = result.inserted_primary_key[0]
+
+        rejections = old_conn.execute(
+            text("""
+                SELECT DISTINCT
+                    trRejectDate
+                FROM tbl_transplant_reject
+                WHERE
+                    trID = :old_transplant_id AND
+                    trRejectDate IS NOT NULL
+            """),
+            old_transplant_id=old_transplant_id,
+        )
+
+        for rejection in rejections:
+            new_conn.execute(
+                tables.transplant_rejections.insert(),
+                transplant_id=transplant_id,
+                date_of_rejection=rejection['trRejectDate'],
+            )
+
+        biopsies = old_conn.execute(
+            text("""
+                SELECT DISTINCT
+                    trBiopsyDate,
+                    tbl_transplant.TRANS_RECURR
+                FROM tbl_transplant_reject
+                JOIN tbl_transplant ON tbl_transplant_reject.trID = tbl_transplant.trID
+                WHERE
+                    tbl_transplant_reject.trID = :old_transplant_id AND
+                    trBiopsyDate IS NOT NULL
+            """),
+            old_transplant_id=old_transplant_id,
+        )
+
+        for biopsy in biopsies:
+            new_conn.execute(
+                tables.transplant_biopsies.insert(),
+                transplant_id=transplant_id,
+                date_of_biopsy=biopsy['trBiopsyDate'],
+                recurrence=biopsy['TRANS_RECURR'] == '\1',
+            )
 
 
 @click.command()
