@@ -2,7 +2,7 @@ from radar.validation.core import Validation, Field, pass_new_obj, ValidationErr
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import optional, required, valid_date_for_patient, \
     max_length, none_if_blank, in_
-from radar.models.ins import TYPES_OF_KIDNEY, TYPES_OF_REMISSION
+from radar.models.ins import KIDNEY_TYPES, REMISSION_TYPES
 from radar.validation.meta import MetaValidationMixin
 
 
@@ -36,19 +36,19 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
 
 class InsRelapseValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     date_of_relapse = Field([required(), valid_date_for_patient()])
-    type_of_kidney = Field([required(), in_(TYPES_OF_KIDNEY)])
+    kidney_type = Field([required(), in_(KIDNEY_TYPES.keys())])
     viral_trigger = Field([none_if_blank(), optional(), max_length(10000)])
     immunisation_trigger = Field([none_if_blank(), optional(), max_length(10000)])
     other_trigger = Field([none_if_blank(), optional(), max_length(10000)])
     high_dose_oral_prednisolone = Field([optional()])
     iv_methyl_prednisolone = Field([optional()])
     date_of_remission = Field([optional(), valid_date_for_patient()])
-    type_of_remission = Field([optional(), in_(TYPES_OF_REMISSION)])
+    remission_type = Field([optional(), in_(REMISSION_TYPES.keys())])
 
     def pre_validate(self, obj):
         # Remove remission type if the date of remission is missing
         if not obj.date_of_remission:
-            obj.type_of_remission = None
+            obj.remission_type = None
 
         return obj
 

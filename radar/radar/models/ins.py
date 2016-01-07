@@ -5,12 +5,12 @@ from sqlalchemy import Column, Boolean, String, Index, Date
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 
-TYPES_OF_KIDNEY = OrderedDict([
+KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
     ('NATIVE', 'Native'),
 ])
 
-TYPES_OF_REMISSION = OrderedDict([
+REMISSION_TYPES = OrderedDict([
     ('COMPLETE', 'Complete'),
     ('PARTIAL', 'Partial'),
     ('NONE', 'None'),
@@ -52,13 +52,13 @@ class InsRelapse(db.Model, MetaModelMixin):
     patient = patient_relationship('ins_relapses')
 
     date_of_relapse = Column(Date, nullable=False)
-    type_of_kidney = Column(String, nullable=False)
+    kidney_type = Column(String)
     viral_trigger = Column(String)
     immunisation_trigger = Column(String)
     other_trigger = Column(String)
     high_dose_oral_prednisolone = Column(Boolean)
     iv_methyl_prednisolone = Column(Boolean)
     date_of_remission = Column(Date)
-    type_of_remission = Column(String)
+    remission_type = Column(String)
 
 Index('ins_relapses_patient_id_idx', InsRelapse.patient_id)
