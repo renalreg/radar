@@ -55,6 +55,11 @@ USER_INPUTS = [
     'ukrr'
 ]
 
+# Password hashing method to use
+# 50000 iterations
+# Note: updating this will cause passwords to be re-hashed when the user next logs in
+HASH_METHOD = 'pbkdf2:sha1:50000'
+
 
 def get_password_alphabet():
     return get_config_value('PASSWORD_ALPHABET')
@@ -75,8 +80,7 @@ def generate_password():
 
 
 def generate_password_hash(password):
-    # 50000 iterations
-    return werkzeug.security.generate_password_hash(password, 'pbkdf2:sha1:50000')
+    return werkzeug.security.generate_password_hash(password, HASH_METHOD)
 
 
 def check_password_hash(password_hash, password):

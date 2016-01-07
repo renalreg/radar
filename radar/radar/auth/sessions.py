@@ -37,6 +37,10 @@ def login(username, password):
     if not user.check_password(password):
         return None
 
+    # Update old password hashes
+    if user.is_old_password_hash:
+        user.password = password
+
     # Create a new session
     user_session = UserSession()
     user_session.user = user
@@ -45,6 +49,7 @@ def login(username, password):
     user_session.user_agent = request.headers.get('User-Agent')
     user_session.is_active = True
     db.session.add(user_session)
+
     db.session.commit()
 
     _request_ctx_stack.top.user_session = user_session
