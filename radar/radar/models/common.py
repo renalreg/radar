@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, Column, String, ForeignKey, DateTime
+from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
@@ -34,7 +34,7 @@ class CreatedUserMixin(object):
 class CreatedDateMixin(object):
     @declared_attr
     def created_date(cls):
-        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default='now()')
+        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default=text('now()'))
 
 
 class ModifiedUserMixin(object):
@@ -50,7 +50,7 @@ class ModifiedUserMixin(object):
 class ModifiedDateMixin(object):
     @declared_attr
     def modified_date(cls):
-        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default='now()')
+        return Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default=text('now()'))
 
 
 class CreatedMixin(CreatedUserMixin, CreatedDateMixin):

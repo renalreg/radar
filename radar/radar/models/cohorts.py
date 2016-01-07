@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index, text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -78,7 +78,7 @@ class CohortPatient(db.Model, MetaModelMixin):
     recruited_organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
     recruited_organisation = relationship('Organisation')
 
-    is_active = Column(Boolean, nullable=False, default=True, server_default='true')
+    is_active = Column(Boolean, nullable=False, default=True, server_default=text('true'))
 
     __table_args__ = (
         UniqueConstraint('cohort_id', 'patient_id'),

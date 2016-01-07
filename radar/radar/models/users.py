@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index, text
 
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -41,14 +41,14 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     first_name = Column(String)
     last_name = Column(String)
     telephone_number = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False, server_default='false')
-    is_bot = Column(Boolean, default=False, nullable=False, server_default='false')
-    is_enabled = Column(Boolean, default=True, nullable=False, server_default='true')
+    is_admin = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    is_bot = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    is_enabled = Column(Boolean, default=True, nullable=False, server_default=text('true'))
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False, server_default='false')
+    force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
     cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])
