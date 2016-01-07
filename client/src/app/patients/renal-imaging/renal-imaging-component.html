@@ -62,6 +62,11 @@
               </tr>
 
               <tr ng-show="item.rightPresent">
+                <th>Renal Stones</th>
+                <td><span tick="item.rightStones"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
                 <th>Calcification Present</th>
                 <td><span tick="item.rightCalcification"></span></td>
               </tr>
@@ -116,6 +121,11 @@
               <tr ng-show="item.leftPresent">
                 <th>Renal Cysts</th>
                 <td><span tick="item.leftCysts"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
+                <th>Renal Stones</th>
+                <td><span tick="item.leftStones"></span></td>
               </tr>
 
               <tr ng-show="item.leftPresent">
@@ -234,6 +244,15 @@
               </div>
 
               <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Renal Stones</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightStones" required="item.rightPresent"></div>
+                  <div frm-errors errors="item.errors.rightStones"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
                 <div frm-label>Calcification Present</div>
 
                 <div frm-control>
@@ -321,6 +340,15 @@
                 <div frm-control>
                   <div frm-yes-no-field model="item.leftCysts" required="item.leftPresent"></div>
                   <div frm-errors errors="item.errors.leftCysts"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Renal Stones</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftStones" required="item.leftPresent"></div>
+                  <div frm-errors errors="item.errors.leftStones"></div>
                 </div>
               </div>
 
