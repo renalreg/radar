@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, UniqueConstraint, Index, text
 from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
@@ -35,7 +35,7 @@ class OrganisationPatient(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('organisation_patients')
 
-    is_active = Column(Boolean, nullable=False, default=True, server_default='true')
+    is_active = Column(Boolean, nullable=False, default=True, server_default=text('true'))
 
     __table_args__ = (
         UniqueConstraint('organisation_id', 'patient_id'),
@@ -114,7 +114,7 @@ class Organisation(db.Model):
     type = Column(String, nullable=False)
     name = Column(String, nullable=False)
 
-    recruitment = Column(Boolean, nullable=False, default=False, server_default='false')
+    recruitment = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     data_sources = relationship('DataSource')
     organisation_patients = relationship('OrganisationPatient')
