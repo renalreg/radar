@@ -18,7 +18,7 @@ class UserValidation(MetaValidationMixin, Validation):
     username = Field([not_empty(), lower()])
     password = PasswordField([optional()])
     password_hash = Field([optional()])
-    email = Field([none_if_blank(), optional(), email_address()])
+    email = Field([none_if_blank(), optional(), lower(), email_address()])
     first_name = Field([none_if_blank(), optional()])
     last_name = Field([none_if_blank(), optional()])
     telephone_number = Field([none_if_blank(), optional(), max_length(100)])
