@@ -9,7 +9,6 @@ class Consultant(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
 
-    title = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String)
