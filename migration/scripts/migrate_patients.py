@@ -170,7 +170,19 @@ def migrate_patients(old_conn, new_conn):
             ) AS 'mobile',
             r.comments,
             r.otherClinicianAndContactInfo,
-            r.status
+            r.status,
+            (
+                SELECT
+                    email
+                FROM user
+                LEFT JOIN usermapping ON user.username = usermapping.username
+                WHERE
+                    usermapping.nhsno = r.nhsno AND
+                    usermapping.unitcode = 'PATIENT' AND
+                    user.email IS NOT NULL AND
+                    user.email != ''
+                LIMIT 1
+            ) as 'email'
         FROM patient AS p
         JOIN (
             SELECT
@@ -255,8 +267,20 @@ def migrate_patients(old_conn, new_conn):
             modified_date=recruited_date,
         )
 
-        first_name = row['forename'].upper()
-        last_name = row['surname'].upper()
+        first_name = row['forename']
+
+        if first_name:
+            first_name = first_name.upper()
+
+        last_name = row['surname']
+
+        if last_name:
+            last_name = last_name.upper()
+
+        email_address = row['email']
+
+        if email_address:
+            email_address = email_address.lower()
 
         # Add RaDaR demographics
         new_conn.execute(
@@ -270,6 +294,7 @@ def migrate_patients(old_conn, new_conn):
             ethnicity=convert_ethnicity(row['ethnic_group']),
             home_number=row['telephone1'],
             mobile_number=row['mobile'],
+            email_address=email_address,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )

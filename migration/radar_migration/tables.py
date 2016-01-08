@@ -170,6 +170,7 @@ patient_demographics = Table(
     Column('ethnicity', String),
     Column('home_number', String),
     Column('mobile_number', String),
+    Column('email_address', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
