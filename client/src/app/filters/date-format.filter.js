@@ -3,19 +3,21 @@
 
   var app = angular.module('radar.filters');
 
-  app.filter('dateFormat', ['moment', function(moment) {
-    return function(input) {
-      if (input) {
-        var date = moment(input, 'YYYY-MM-DD');
+  app.filter('dateFormat', function() {
+    return function(oldValue) {
+      var newValue;
 
-        if (date.isValid()) {
-          return date.format('DD/MM/YYYY');
-        } else {
-          return '-';
-        }
+      if (oldValue) {
+        var year = oldValue.substr(0, 4);
+        var month = oldValue.substr(5, 2);
+        var day = oldValue.substr(8, 2);
+
+        newValue = day + '/' + month + '/' + year;
       } else {
-        return '-';
+        newValue = '-';
       }
+
+      return newValue;
     };
-  }]);
+  });
 })();
