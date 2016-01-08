@@ -32,7 +32,7 @@ def clean_int(value):
     return value
 
 
-def validate_nhs_no(value):
+def check_nhs_format(value):
     if not isinstance(value, basestring):
         value = str(value)
 
@@ -57,35 +57,38 @@ def validate_nhs_no(value):
     return True
 
 
-def _nhs_no(value, number_type):
-    value = clean_int(value)
-
-    if not validate_nhs_no(value):
-        raise ValidationError('Not a valid %s number.' % number_type)
-
-    return value
-
-
-# TODO range
 def nhs_no():
     def nhs_no_f(value):
-        return _nhs_no(value, 'NHS')
+        value = clean_int(value)
+
+        if not check_nhs_format(value) or value < '4000000000':
+            raise ValidationError('Not a valid NHS number.')
+
+        return value
 
     return nhs_no_f
 
 
-# TODO range
 def chi_no():
     def chi_no_f(value):
-        return _nhs_no(value, 'CHI')
+        value = clean_int(value)
+
+        if not check_nhs_format(value) or value < '0101000000' or value > '3112999999':
+            raise ValidationError('Not a valid CHI number.')
+
+        return value
 
     return chi_no_f
 
 
-# TODO range
 def handc_no():
     def handc_no_f(value):
-        return _nhs_no(value, 'H&C')
+        value = clean_int(value)
+
+        if not check_nhs_format(value) or value < '3200000010' or value > '3999999999':
+            raise ValidationError('Not a valid H&C number.')
+
+        return value
 
     return handc_no_f
 
