@@ -1,6 +1,6 @@
 from sqlalchemy import or_, case, desc, extract
 
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, subqueryload
 from radar.models import PatientAlias, PatientNumber
 from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
 from radar.database import db
@@ -12,11 +12,15 @@ from radar.utils import sql_year_filter, sql_date_filter
 
 class PatientQueryBuilder(object):
     def __init__(self, current_user):
-        self.query = Patient.query
         self.current_user = current_user
 
         # True if the query is filtering on demographics
         self.filtering_by_demographics = False
+
+        self.query = Patient.query\
+            .options(subqueryload('patient_demographics'))\
+            .options(subqueryload('organisation_patients').joinedload('organisation'))\
+            .options(subqueryload('cohort_patients').joinedload('cohort'))
 
     def first_name(self, first_name):
         self.filtering_by_demographics = True
