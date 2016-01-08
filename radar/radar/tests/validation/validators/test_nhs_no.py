@@ -15,14 +15,6 @@ def test_valid_string():
     assert valid('9434765870') == '9434765870'
 
 
-def test_short_string():
-    assert valid('437631966') == '437631966'
-
-
-def test_short_int():
-    assert valid(437631966) == 437631966
-
-
 def test_invalid():
     invalid(9434765918)
     invalid(9434765871)
@@ -41,6 +33,14 @@ def test_remove_spaces():
 def test_remove_leading_zeros():
     value = valid('0009434765919')
     assert value == '9434765919'
+
+
+def test_chi_no():
+    invalid('101299877')
+
+
+def test_handc_no():
+    invalid('3232255825')
 
 
 def valid(value):
