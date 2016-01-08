@@ -21,6 +21,7 @@
       function Store(config) {
         this.config = config;
         this.store = {};
+        this.pristineStore = {};
         this.eventListeners = {};
         this.modelEventListeners = {};
       }
@@ -53,9 +54,26 @@
         return store[id] || null;
       };
 
+      Store.prototype.getPristineStore = function(modelName) {
+        if (this.pristineStore[modelName] === undefined) {
+          this.pristineStore[modelName] = {};
+        }
+
+        return this.pristineStore[modelName];
+      };
+
+      Store.prototype.getFromPristineStore = function(modelName, id) {
+        var store = this.getPristineStore(modelName);
+        return store[id] || null;
+      };
+
       Store.prototype.pushToStore = function(item) {
         var modelName = item.modelName;
         var id = item.getId();
+
+        var pristineStore = this.getPristineStore(modelName);
+        var pristineItem = angular.copy(item);
+        pristineStore[id] = pristineItem;
 
         var existingItem = this.getFromStore(modelName, id);
 
@@ -67,6 +85,19 @@
           existingItem.update(item.getData());
           return existingItem;
         }
+      };
+
+      Store.prototype.isPristine = function(item) {
+        var modelName = item.modelName;
+        var id = item.getId();
+
+        var pristineItem = this.getFromPristineStore(modelName, id);
+
+        return pristineItem !== null && angular.equals(item, pristineItem);
+      };
+
+      Store.prototype.isDirty = function(item) {
+        return !this.isPristine(item);
       };
 
       Store.prototype.findOne = function(modelName, id, useCache) {

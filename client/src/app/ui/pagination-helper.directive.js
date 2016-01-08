@@ -14,11 +14,6 @@
       scope: {},
       templateUrl: 'app/ui/pagination-helper.html',
       link: function(scope, element, attrs, listHelperCtrl) {
-        var leftEdge = 2;
-        var rightEdge = 2;
-        var leftCurrent = 2;
-        var rightCurrent = 5;
-
         scope.getPage = getPage;
         scope.setPage = setPage;
         scope.getPerPage = getPerPage;
@@ -122,7 +117,7 @@
               ) ||
               i > totalPages - RIGHT_EDGE
             ) {
-              if (last + 1 != i) {
+              if (last + 1 !== i) {
                 pages.push(null);
               }
 

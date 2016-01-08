@@ -9,6 +9,6 @@
         // Don't convert datetimes to UTC (causes BST issues)
         useUTC: false
       }
-    })
+    });
   }]);
 })();
