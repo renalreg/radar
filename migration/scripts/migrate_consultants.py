@@ -41,7 +41,7 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             old_consultant_id = optional_int(row[1])
             first_name = row[2].upper()
             last_name = row[3].upper()
-            email = row[4]
+            email = row[4].lower()
             telephone_number = optional(row[5])
             gmc_number = optional_int(row[6])
             unit_code = row[7]

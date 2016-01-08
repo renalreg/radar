@@ -4,7 +4,7 @@ from radar.validation.data_sources import RadarDataSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, not_empty, optional, not_in_future, max_length, in_, \
-    none_if_blank, email_address, normalise_whitespace, upper, after_day_zero
+    none_if_blank, email_address, normalise_whitespace, upper, after_day_zero, lower
 
 
 class PatientDemographicsValidation(PatientValidationMixin, RadarDataSourceValidationMixin, MetaValidationMixin, Validation):
@@ -17,7 +17,7 @@ class PatientDemographicsValidation(PatientValidationMixin, RadarDataSourceValid
     home_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     work_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     mobile_number = Field([none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
-    email_address = Field([none_if_blank(), optional(), email_address()])
+    email_address = Field([none_if_blank(), optional(), lower(), email_address()])
 
     @pass_new_obj
     def validate_date_of_death(self, obj, date_of_death):

@@ -25,6 +25,7 @@ def migrate_users(old_conn, new_conn):
 
     for row in rows:
         username = row['username'].lower()
+        email = row['email'].lower()
         password_hash = 'sha256$$' + row['password']
 
         print 'user %s' % username
@@ -35,7 +36,7 @@ def migrate_users(old_conn, new_conn):
             tables.users.insert(),
             username=username,
             password_hash=password_hash,
-            email=row['email'],
+            email=email,
             first_name=row['firstName'],
             last_name=row['lastName'],
             is_admin=is_admin,
