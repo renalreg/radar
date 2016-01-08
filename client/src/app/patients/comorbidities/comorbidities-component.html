@@ -18,7 +18,7 @@
 
       <tr>
         <th>Disorder</th>
-        <td>{{item.disorder.label}}</td>
+        <td>{{item.disorder.name}}</td>
       </tr>
 
       <tr>
@@ -55,7 +55,7 @@
         <div frm-label>Disorder</div>
 
         <div frm-control>
-          <div frm-select-field model="item.disorder" required="true" options="disorders"></div>
+          <div frm-select-field model="item.disorder" required="true" options="disorders" options-label="name"></div>
           <div frm-errors errors="item.errors.disorder"></div>
         </div>
       </div>
@@ -100,7 +100,7 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="disorder.label">Disorder</th>
+          <th sort-helper="disorder.name">Disorder</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="dataSource.getName()">Data Source</th>
@@ -115,7 +115,7 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.disorder.label}}</td>
+          <td>{{item.disorder.name}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
           <td class="data-source">{{item.dataSource.getName()}}</td>

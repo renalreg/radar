@@ -12,7 +12,8 @@
     DiagnosisPermission,
     firstPromise,
     $injector,
-    store
+    store,
+    _
   ) {
     function DiagnosisController($scope) {
       var self = this;
@@ -27,7 +28,7 @@
       self.load(firstPromise([
         store.findFirst('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
         store.findMany('diagnosis-cohort-diagnoses', {cohort: $scope.cohort.id}).then(function(cohortDiagnoses) {
-          $scope.cohortDiagnoses = cohortDiagnoses;
+          $scope.cohortDiagnoses = _.sortBy(cohortDiagnoses, 'displayOrder');
         }),
         store.findMany('diagnosis-biopsy-diagnoses').then(function(biopsyDiagnoses) {
           $scope.biopsyDiagnoses = biopsyDiagnoses;
@@ -53,7 +54,8 @@
     'DiagnosisPermission',
     'firstPromise',
     '$injector',
-    'store'
+    'store',
+    '_'
   ];
 
   app.factory('DiagnosisController', controllerFactory);

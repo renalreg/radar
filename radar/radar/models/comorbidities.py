@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models import MetaModelMixin, IntegerLookupTable
+from radar.models import MetaModelMixin
 from radar.models.common import uuid_pk_column, patient_id_column, patient_relationship
 
 
@@ -26,5 +26,8 @@ class Comorbidity(db.Model, MetaModelMixin):
 Index('comorbidities_patient_id_idx', Comorbidity.patient_id)
 
 
-class Disorder(IntegerLookupTable):
+class Disorder(db.Model):
     __tablename__ = 'disorders'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)

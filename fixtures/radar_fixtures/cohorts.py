@@ -295,5 +295,5 @@ def create_cohorts():
             cohort_feature = CohortFeature()
             cohort_feature.cohort = cohort
             cohort_feature.name = name
-            cohort_feature.weight = i * 100  # leave some gaps
+            cohort_feature.display_order = i
             validate_and_add(cohort_feature)

@@ -21,13 +21,13 @@ def create_cohort(conn, data):
 
     for i, name in enumerate(data['features']):
         # Leave gaps between features
-        weight = i * 100
+        display_order = 1000 + i * 100
 
         conn.execute(
             tables.cohort_features.insert(),
             cohort_id=cohort_id,
             name=name,
-            weight=weight,
+            display_order=display_order,
         )
 
 

@@ -29,7 +29,7 @@
 
       <tr>
         <th>Diagnosis</th>
-        <td>{{item.cohortDiagnosis.label}}</td>
+        <td>{{item.cohortDiagnosis.name}}</td>
       </tr>
 
       <tr>
@@ -86,7 +86,7 @@
         <div frm-label>Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.cohortDiagnosis" required="true" options="cohortDiagnoses"></div>
+          <div frm-select-field model="item.cohortDiagnosis" required="true" options="cohortDiagnoses" options-label="name"></div>
           <div frm-errors errors="item.errors.cohortDiagnosis"></div>
         </div>
       </div>

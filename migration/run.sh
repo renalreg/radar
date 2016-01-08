@@ -19,7 +19,7 @@ python scripts/bootstrap.py "$DEST"
 echo 'create users...'
 python scripts/create_users.py "$DEST"
 echo 'create cohorts...'
-python scripts/create_cohorts.py "$DEST"
+python scripts/create_cohorts.py "$DEST" data/cohort_diagnoses.csv
 echo 'create organisations...'
 python scripts/create_organisations.py "$DEST" data/units.csv
 echo 'migrate users...'

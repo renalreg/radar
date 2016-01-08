@@ -73,9 +73,7 @@ class CohortDiagnosis(db.Model):
     cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
     cohort = relationship('Cohort')
 
-    label = Column(String, nullable=False)
-
-    edta_code = Column(Integer)
-    snomed_code = Column(Integer)
+    name = Column(String, nullable=False)
+    display_order = Column(Integer, nullable=False)
 
 Index('cohort_diagnoses_cohort_id_idx', CohortDiagnosis.cohort_id)

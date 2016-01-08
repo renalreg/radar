@@ -1,6 +1,10 @@
+import csv
+from collections import defaultdict
+
 import click
 from sqlalchemy import create_engine
 
+from radar_migration import tables, Migration
 from radar_migration.cohorts import create_cohort
 
 
@@ -308,14 +312,47 @@ def create_cohorts(conn):
         create_cohort(conn, x)
 
 
+def create_cohort_diagnoses(conn, filename):
+    m = Migration(conn)
+
+    with open(filename, 'rb') as f:
+        reader = csv.reader(f)
+
+        cohort_diagnoses = defaultdict(list)
+
+        for row in reader:
+            cohort_diagnoses[row[0]].append(row[1])
+
+        for code, diagnoses in cohort_diagnoses.items():
+            cohort_id = m.get_cohort_id(code)
+            i = 0
+
+            for diagnosis in diagnoses:
+                # Leave gaps between diagnoses
+                display_order = 1000 + i * 100
+
+                conn.execute(
+                    tables.cohort_diagnoses.insert(),
+                    cohort_id=cohort_id,
+                    name=diagnosis,
+                    display_order=display_order,
+                )
+
+                i += 1
+
+    # TODO check all cohorts have diagnoses
+
+
 @click.command()
 @click.argument('db')
-def cli(db):
+@click.argument('cohort_diagnoses')
+def cli(db, cohort_diagnoses):
     engine = create_engine(db)
     conn = engine.connect()
 
     with conn.begin():
         create_cohorts(conn)
+        create_cohort_diagnoses(conn, cohort_diagnoses)
 
 
 if __name__ == '__main__':

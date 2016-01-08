@@ -27,9 +27,17 @@ users = Table(
 cohorts = Table(
     'cohorts', metadata,
     Column('id', Integer, primary_key=True),
-    Column('code', String, primary_key=True),
+    Column('code', String),
     Column('name', String),
     Column('short_name', String),
+)
+
+cohort_diagnoses = Table(
+    'cohort_diagnoses', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('cohort_id', Integer),
+    Column('name', String),
+    Column('display_order', String),
 )
 
 cohort_features = Table(
@@ -37,7 +45,7 @@ cohort_features = Table(
     Column('id', Integer, primary_key=True),
     Column('cohort_id', Integer),
     Column('name', String),
-    Column('weight', Integer),
+    Column('display_order', Integer),
 )
 
 cohort_patients = Table(

@@ -24,6 +24,7 @@ DISORDERS = [
 
 
 def create_disorders():
-    for v in DISORDERS:
-        disorder = Disorder(label=v)
+    for name in DISORDERS:
+        disorder = Disorder()
+        disorder.name = name
         validate_and_add(disorder)
