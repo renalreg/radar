@@ -92,9 +92,9 @@ def convert_status(old_value):
 def number_to_organisation_code(value):
     if len(value) != 10 or not value.isdigit():
         return None
-    elif value > '0101000000' and value < '3112999999':
+    elif value >= '0101000000' and value <= '3112999999':
         return 'CHI'
-    elif value > '3200000010' and value < '3999999999':
+    elif value >= '3200000010' and value <= '3999999999':
         return 'HANDC'
     else:
         return 'NHS'
