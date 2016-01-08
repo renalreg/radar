@@ -9,16 +9,22 @@ def migrate_alport(old_conn, new_conn):
 
     rows = old_conn.execute(text("""
         SELECT
-            radar_no,
+            rdr_alport_deafness.radar_no,
             evidenceOfDeafness,
             dateProblemFirstNoticed,
             dateStartedUsingHearingAid,
-            patient.dateReg
+            CAST(LEAST(
+                COALESCE(patient.dateReg, NOW()),
+                COALESCE(rdr_radar_number.creationDate, NOW()),
+                COALESCE(tbl_demographics.DATE_REG, NOW())
+            ) AS DATE) AS dateReg
         FROM rdr_alport_deafness
         JOIN patient ON (
             rdr_alport_deafness.radar_no = patient.radarNo AND
             patient.unitcode NOT IN %s
         )
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
     """ % EXCLUDED_UNITS))
 
     for row in rows:

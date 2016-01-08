@@ -108,7 +108,11 @@ def migrate_patients(old_conn, new_conn):
             r.radarNo AS 'radar_no',
             r.nhsno AS 'nhs_no',
             r.unitcode AS 'unit_code',
-            r.dateReg AS 'date_registered',
+            CAST(LEAST(
+                COALESCE(p.dateReg, NOW()),
+                COALESCE(rdr_radar_number.creationDate, NOW()),
+                COALESCE(d.DATE_REG, NOW())
+            ) AS DATE) AS 'date_registered',
             user.username AS 'username',
             (
                 CASE
@@ -185,6 +189,7 @@ def migrate_patients(old_conn, new_conn):
         ) AS l ON (p.nhsno = l.nhsno and p.unitcode = l.unitcode)
         LEFT JOIN user ON r.radarConsentConfirmedByUserId = user.id
         LEFT JOIN tbl_demographics AS d ON r.radarNo = d.RADAR_NO
+        LEFT JOIN rdr_radar_number ON r.radarNo = rdr_radar_number.id
         WHERE
             r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')
         ORDER BY
@@ -291,10 +296,16 @@ def migrate_patient_cohorts(old_conn, new_conn):
         SELECT DISTINCT
             patient.radarNo,
             unit.unitcode,
-            patient.dateReg
+            CAST(LEAST(
+                COALESCE(patient.dateReg, NOW()),
+                COALESCE(rdr_radar_number.creationDate, NOW()),
+                COALESCE(tbl_demographics.DATE_REG, NOW())
+            ) AS DATE) AS dateReg
         FROM usermapping
         JOIN patient ON usermapping.nhsno = patient.nhsno
         JOIN unit ON usermapping.unitcode = unit.unitcode
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
         WHERE
             patient.radarNo IS NOT NULL AND
             patient.unitcode NOT IN %s AND
@@ -324,10 +335,16 @@ def migrate_patient_organisations(old_conn, new_conn):
         SELECT DISTINCT
             patient.radarNo,
             unit.unitcode,
-            patient.dateReg
+            CAST(LEAST(
+                COALESCE(patient.dateReg, NOW()),
+                COALESCE(rdr_radar_number.creationDate, NOW()),
+                COALESCE(tbl_demographics.DATE_REG, NOW())
+            ) AS DATE) AS dateReg
         FROM usermapping
         JOIN patient ON usermapping.nhsno = patient.nhsno
         JOIN unit ON usermapping.unitcode = unit.unitcode
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
         WHERE
             patient.radarNo IS NOT NULL AND
             patient.unitcode NOT IN %s AND
