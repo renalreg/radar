@@ -62,10 +62,6 @@
           return x.cohort.code !== 'RADAR';
         });
       }
-
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
-      });
     };
 
     return PatientModel;
@@ -75,4 +71,3 @@
     storeProvider.registerModel('patients', 'PatientModel');
   }]);
 })();
-
