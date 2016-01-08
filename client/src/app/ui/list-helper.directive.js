@@ -3,6 +3,8 @@
 
   var app = angular.module('radar.ui');
 
+  var DEFAULT_PER_PAGE = 10;
+
   app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'dateSearch', 'anyValue', function($parse, _, escapeRegExp, dateSearch, anyValue) {
     return {
       scope: false,
@@ -39,7 +41,7 @@
           var reverse = false;
 
           var page = 1;
-          var perPage = 10;
+          var perPage = DEFAULT_PER_PAGE;
 
           var search = '';
 
@@ -190,14 +192,19 @@
           }
 
           function _paginate() {
-            var startIndex = (page - 1) * perPage;
-            var endIndex = page * perPage;
-            paginatedItems = _.slice(sortedItems, startIndex, endIndex);
+            if (perPage === null) {
+              paginatedItems = sortedItems;
+            } else {
+              var startIndex = (page - 1) * perPage;
+              var endIndex = page * perPage;
+              paginatedItems = _.slice(sortedItems, startIndex, endIndex);
+            }
+
           }
         }
 
         function server(apiGetter) {
-          var api;
+          var api = apiGetter($scope);
 
           $scope.$watch(function() {
             return apiGetter($scope);
@@ -246,7 +253,7 @@
           }
 
           function getPerPage() {
-            return api ? api.getPerPage() : 10;
+            return api ? api.getPerPage() : DEFAULT_PER_PAGE;
           }
 
           function setPerPage(perPage) {
@@ -277,7 +284,7 @@
       this.count = 0;
 
       this.page = 1;
-      this.perPage = 10;
+      this.perPage = DEFAULT_PER_PAGE;
 
       this.sortBy = 'id';
       this.reverse = false;

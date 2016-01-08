@@ -8,8 +8,9 @@
       <a href="" ng-click="previousPage()" ng-disabled="!hasPrevious()">Previous</a>
     </li>
 
-    <li ng-class="{active: page.active}" ng-repeat="page in pages">
-      <a href="" ng-click="setPage(page.number)">{{page.number}}</a>
+    <li ng-class="{active: isCurrentPage(x), disabled: isJump(x)}" ng-repeat="x in pages track by $index">
+      <a ng-if="isJump(x)" href="">...</a>
+      <a ng-if="!isJump(x)" href="" ng-click="setPage(x)">{{x}}</a>
     </li>
 
     <li ng-class="{disabled: !hasNext()}">
