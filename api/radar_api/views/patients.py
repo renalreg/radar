@@ -1,10 +1,10 @@
 from flask import request
 
-from radar_api.serializers.patients import PatientSerializer, PatientListRequestSerializer
+from radar_api.serializers.patients import PatientSerializer, PatientListRequestSerializer, TinyPatientSerializer
 from radar.patient_search import PatientQueryBuilder
 from radar.permissions import PatientPermission
 from radar.views.core import ListModelView, RetrieveUpdateModelView
-from radar.models import Patient
+from radar.models.patients import Patient
 from radar.auth.sessions import current_user
 
 
@@ -70,7 +70,7 @@ class PatientListView(ListModelView):
         return query
 
     def get_serializer(self):
-        return PatientSerializer(current_user)
+        return TinyPatientSerializer(current_user)
 
 
 class PatientDetailView(RetrieveUpdateModelView):

@@ -3,7 +3,7 @@ from radar.serializers.fields import StringField, IntegerField
 from radar.serializers.models import ModelSerializer
 
 
-class BasicUserSerializer(ModelSerializer):
+class TinyUserSerializer(ModelSerializer):
     id = IntegerField()
     username = StringField()
     email = StringField()
@@ -22,7 +22,7 @@ class BasicUserSerializer(ModelSerializer):
 
 
 class CreatedUserMixin(object):
-    created_user = BasicUserSerializer(read_only=True)
+    created_user = TinyUserSerializer(read_only=True)
 
     def get_model_exclude(self):
         model_exclude = super(CreatedUserMixin, self).get_model_exclude()
@@ -31,7 +31,7 @@ class CreatedUserMixin(object):
 
 
 class ModifiedUserMixin(object):
-    modified_user = BasicUserSerializer(read_only=True)
+    modified_user = TinyUserSerializer(read_only=True)
 
     def get_model_exclude(self):
         model_exclude = super(ModifiedUserMixin, self).get_model_exclude()
