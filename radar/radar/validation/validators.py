@@ -265,17 +265,6 @@ def username():
     return username_f
 
 
-# TODO
-def password():
-    def password_f(value):
-        if len(value) < PASSWORD_MIN_LENGTH:
-            raise ValidationError('Password too short (must be at least %d characters).' % PASSWORD_MIN_LENGTH)
-
-        return value
-
-    return password_f
-
-
 def postcode():
     def postcode_f(value):
         value = value.upper()
