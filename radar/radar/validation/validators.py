@@ -247,18 +247,14 @@ def username():
     def username_f(value):
         value = value.lower()
 
-        message = None
-
-        if not USERNAME_REGEX.match(value):
-            message = 'Not a valid username.'
-        elif len(value) < USERNAME_MIN_LENGTH:
-            message = 'Username too short.'
-        elif len(value) > USERNAME_MAX_LENGTH:
-            message = 'Username too long.'
-
         # Old usernames are email addresses
-        if message is not None and not EMAIL_REGEX.match(value):
-            raise ValidationError(message)
+        if not EMAIL_REGEX.match(value):
+            if not USERNAME_REGEX.match(value):
+                raise ValidationError('Not a valid username.')
+            elif len(value) < USERNAME_MIN_LENGTH:
+                raise ValidationError('Username too short.')
+            elif len(value) > USERNAME_MAX_LENGTH:
+                raise ValidationError('Username too long.')
 
         return value
 
