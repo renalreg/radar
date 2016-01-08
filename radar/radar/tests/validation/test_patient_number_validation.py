@@ -85,7 +85,7 @@ def test_nhs_no_invalid(number):
 
 def test_chi_no_valid(number):
     number.organisation = Organisation(code=ORGANISATION_CODE_CHI, type=ORGANISATION_TYPE_OTHER)
-    number.number = '9434765919'
+    number.number = '101299877'
     valid(number)
 
 
@@ -97,7 +97,7 @@ def test_chi_no_invalid(number):
 
 def test_handc_no_valid(number):
     number.organisation = Organisation(code=ORGANISATION_CODE_HANDC, type=ORGANISATION_TYPE_OTHER)
-    number.number = '9434765919'
+    number.number = '3232255825'
     valid(number)
 
 

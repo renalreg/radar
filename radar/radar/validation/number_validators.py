@@ -20,6 +20,14 @@ MAX_UKRDC_NO = 999999999
 MIN_GMC_NO = 0
 MAX_GMC_NO = 9999999
 
+MIN_NHS_NO = 4000000000
+
+MIN_CHI_NO = 0101000000
+MAX_CHI_NO = 3112999999
+
+MIN_HANDC_NO = 3200000010
+MAX_HANDC_NO = 3999999999
+
 
 def clean_int(value):
     if isinstance(value, basestring):
@@ -32,7 +40,17 @@ def clean_int(value):
     return value
 
 
-def check_nhs_format(value):
+def check_range(value, min_value=None, max_value=None):
+    if isinstance(value, basestring):
+        value = int(value)
+
+    return (
+        (min_value is None or value >= min_value) and
+        (max_value is None or value <= max_value)
+    )
+
+
+def check_number(value, min_value=None, max_value=None):
     if not isinstance(value, basestring):
         value = str(value)
 
@@ -54,6 +72,9 @@ def check_nhs_format(value):
     if check_digit != int(value[9]):
         return False
 
+    if not check_range(value, min_value, max_value):
+        return False
+
     return True
 
 
@@ -61,7 +82,7 @@ def nhs_no():
     def nhs_no_f(value):
         value = clean_int(value)
 
-        if not check_nhs_format(value) or value < '4000000000':
+        if not check_number(value, MIN_NHS_NO):
             raise ValidationError('Not a valid NHS number.')
 
         return value
@@ -73,7 +94,7 @@ def chi_no():
     def chi_no_f(value):
         value = clean_int(value)
 
-        if not check_nhs_format(value) or value < '0101000000' or value > '3112999999':
+        if not check_number(value, MIN_CHI_NO, MAX_CHI_NO):
             raise ValidationError('Not a valid CHI number.')
 
         return value
@@ -85,7 +106,7 @@ def handc_no():
     def handc_no_f(value):
         value = clean_int(value)
 
-        if not check_nhs_format(value) or value < '3200000010' or value > '3999999999':
+        if not check_number(value, MIN_HANDC_NO, MAX_HANDC_NO):
             raise ValidationError('Not a valid H&C number.')
 
         return value
