@@ -342,3 +342,24 @@ transplant_biopsies = Table(
     Column('date_of_biopsy', Date),
     Column('recurrence', Boolean),
 )
+
+hnf1b_clinical_pictures = Table(
+    'hnf1b_clinical_pictures', metadata,
+    Column('id', UUID, primary_key=True),
+    Column('patient_id', Integer),
+    Column('date_of_picture', Date),
+    Column('single_kidney', Boolean),
+    Column('hyperuricemia_gout', Boolean),
+    Column('genital_malformation', Boolean),
+    Column('genital_malformation_details', String),
+    Column('familial_cystic_disease', Boolean),
+    Column('hypertension', Boolean),
+    Column('type_of_diabetes', String),
+    Column('date_of_diabetes', Date),
+    Column('diabetic_nephropathy', Boolean),
+    Column('diabetic_retinopathy', Boolean),
+    Column('diabetic_neuropathy', Boolean),
+    Column('diabetic_pvd', Boolean),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
