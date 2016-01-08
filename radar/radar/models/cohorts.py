@@ -31,7 +31,7 @@ class Cohort(db.Model):
 
     @property
     def sorted_features(self):
-        return [x.name for x in sorted(self.cohort_features, key=lambda y: y.weight)]
+        return [x.name for x in sorted(self.cohort_features, key=lambda y: y.display_order)]
 
 
 class CohortFeature(db.Model):
@@ -43,7 +43,7 @@ class CohortFeature(db.Model):
     cohort = relationship('Cohort')
 
     _name = Column('name', String, nullable=False)
-    weight = Column(Integer, nullable=False)
+    display_order = Column(Integer, nullable=False)
 
     @property
     def name(self):

@@ -31,4 +31,5 @@ class DiagnosisValidation(PatientValidationMixin, CohortValidationMixin, MetaVal
 
 
 class CohortDiagnosisValidation(CohortValidationMixin, Validation):
-    label = Field([required()])
+    name = Field([required()])
+    display_order = Field([required()])

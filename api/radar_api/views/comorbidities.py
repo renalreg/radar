@@ -23,7 +23,7 @@ class DisorderListView(ListModelView):
     model_class = Disorder
 
     def sort_query(self, query):
-        return query.order_by(Disorder.label)
+        return query.order_by(Disorder.name)
 
 
 def register_views(app):

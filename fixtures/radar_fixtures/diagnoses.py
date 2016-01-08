@@ -84,11 +84,12 @@ COHORT_DIAGNOSES = {
 
 
 def create_cohort_diagnoses():
-    for cohort_code, cohort_diagnosis_labels in COHORT_DIAGNOSES.items():
-        cohort = Cohort.query.filter(Cohort.code == cohort_code).one()
+    for code, names in COHORT_DIAGNOSES.items():
+        cohort = Cohort.query.filter(Cohort.code == code).one()
 
-        for cohort_diagnosis_label in cohort_diagnosis_labels:
+        for i, name in enumerate(names):
             cohort_diagnosis = CohortDiagnosis()
             cohort_diagnosis.cohort = cohort
-            cohort_diagnosis.label = cohort_diagnosis_label
+            cohort_diagnosis.name = name
+            cohort_diagnosis.display_order = i
             validate_and_add(cohort_diagnosis)

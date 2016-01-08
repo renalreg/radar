@@ -19,4 +19,4 @@ class ComorbidityValidation(PatientValidationMixin, DataSourceValidationMixin, M
 
 
 class DisorderValidation(Validation):
-    label = Field([not_empty()])
+    name = Field([not_empty()])
