@@ -12,11 +12,6 @@
       </tr>
 
       <tr>
-        <th>Title</th>
-        <td>{{item.title}}</td>
-      </tr>
-
-      <tr>
         <th>First Name</th>
         <td>{{item.firstName}}</td>
       </tr>
@@ -63,15 +58,6 @@
     </p>
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
-      <div frm-field frm-group>
-        <div frm-label>Title</div>
-
-        <div frm-control>
-          <div frm-text-field model="item.title" required="true"></div>
-          <div frm-errors errors="item.errors.title"></div>
-        </div>
-      </div>
-
       <div frm-field frm-group>
         <div frm-label>First Name</div>
 
@@ -141,7 +127,6 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="title">Title</th>
           <th sort-helper="firstName">First Name</th>
           <th sort-helper="lastName">Last Name</th>
           <th sort-helper="email">Email</th>
@@ -159,7 +144,6 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.title}}</td>
           <td>{{item.firstName}}</td>
           <td>{{item.lastName}}</td>
           <td>{{item.email | missing}}</td>

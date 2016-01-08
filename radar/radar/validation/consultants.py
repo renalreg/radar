@@ -9,7 +9,6 @@ class OrganisationConsultantValidation(MetaValidationMixin, Validation):
 
 
 class ConsultantValidation(MetaValidationMixin, Validation):
-    title = Field([not_empty(), max_length(30)])
     first_name = Field([not_empty(), upper(), max_length(100)])
     last_name = Field([not_empty(), upper(), max_length(100)])
     email = Field([none_if_blank(), optional(), email_address()])

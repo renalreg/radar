@@ -117,10 +117,11 @@ data_sources = Table(
 consultants = Table(
     'consultants', metadata,
     Column('id', Integer, primary_key=True),
-    Column('title', String),
     Column('first_name', String),
     Column('last_name', String),
     Column('email', String),
+    Column('telephone_number', String),
+    Column('gmc_number', Integer),
 )
 
 patient_aliases = Table(

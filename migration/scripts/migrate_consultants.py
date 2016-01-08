@@ -39,17 +39,15 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
         for row in reader:
             old_user_id = optional_int(row[0])
             old_consultant_id = optional_int(row[1])
-            title = row[2]
-            first_name = row[3].upper()
-            last_name = row[4].upper()
-            email = row[5]
-            telephone_number = optional(row[6])
-            gmc_number = optional_int(row[7])
-            unit_code = row[8]
+            first_name = row[2].upper()
+            last_name = row[3].upper()
+            email = row[4]
+            telephone_number = optional(row[5])
+            gmc_number = optional_int(row[6])
+            unit_code = row[7]
 
             result = new_conn.execute(
                 tables.consultants.insert(),
-                title=title,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
