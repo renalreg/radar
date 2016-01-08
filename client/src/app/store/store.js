@@ -93,7 +93,7 @@
 
         var pristineItem = this.getFromPristineStore(modelName, id);
 
-        return pristineItem !== null && angular.equals(item, pristineItem);
+        return pristineItem !== null && angular.equals(item.getData(), pristineItem.getData());
       };
 
       Store.prototype.isDirty = function(item) {

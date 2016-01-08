@@ -40,5 +40,26 @@
       expect(x.isDirty()).toBe(false);
       expect(store.isDirty(x)).toBe(false);
     });
+
+    it('ignores changes to metadata', function() {
+      var x = store.pushToStore(new Model('foo', {
+        id: 1,
+        name: 'Foo'
+      }));
+
+      expect(x.isPristine()).toBe(true);
+      expect(store.isPristine(x)).toBe(true);
+
+      expect(x.isDirty()).toBe(false);
+      expect(store.isDirty(x)).toBe(false);
+
+      x.isSaving = true;
+
+      expect(x.isPristine()).toBe(true);
+      expect(store.isPristine(x)).toBe(true);
+
+      expect(x.isDirty()).toBe(false);
+      expect(store.isDirty(x)).toBe(false);
+    });
   });
 })();
