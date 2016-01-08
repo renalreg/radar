@@ -1,7 +1,14 @@
 from collections import OrderedDict
+from datetime import datetime
+import random
+
+import pytz
+
 from radar_fixtures.validation import validate_and_add
-from radar.models import ResultSpec, ResultGroupSpec, ResultGroupResultSpec, RESULT_SPEC_TYPE_CODED_STRING, \
-    RESULT_SPEC_TYPE_FLOAT
+from radar.models.results import ResultGroup, ResultSpec, ResultGroupSpec, ResultGroupResultSpec, RESULT_SPEC_TYPE_CODED_STRING, \
+    RESULT_SPEC_TYPE_FLOAT, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_CODED_INTEGER
+from radar_fixtures.utils import random_datetime
+
 
 # TODO ranges
 RESULT_SPECS = [
@@ -522,5 +529,34 @@ def create_result_group_specs():
             result_group_result_spec = ResultGroupResultSpec()
             result_group_result_spec.result_group_spec = result_group_spec
             result_group_result_spec.result_spec = result_spec
-            result_group_result_spec.weight = i * 100  # leave some gaps
+            result_group_result_spec.weight = i
             validate_and_add(result_group_result_spec)
+
+
+def create_result_groups_f():
+    result_group_specs = ResultGroupSpec.query.all()
+
+    def f(patient, data_source, n):
+        for result_group_spec in result_group_specs:
+            for _ in range(n):
+                result_group = ResultGroup()
+                result_group.patient = patient
+                result_group.data_source = data_source
+                result_group.result_group_spec = result_group_spec
+                result_group.date = random_datetime(patient.earliest_date_of_birth, datetime.now(pytz.utc))
+
+                result_group.results = results = {}
+
+                for result_spec in result_group_spec.result_specs:
+                    type = result_spec.type
+
+                    if type == RESULT_SPEC_TYPE_INTEGER or type == RESULT_SPEC_TYPE_FLOAT:
+                        min_value = result_spec.min_value or 0
+                        max_value = result_spec.max_value or 100
+                        results[result_spec.code] = random.randint(min_value, max_value)
+                    elif type == RESULT_SPEC_TYPE_CODED_STRING or type == RESULT_SPEC_TYPE_CODED_INTEGER:
+                        results[result_spec.code] = random.choice(result_spec.option_values)
+
+                validate_and_add(result_group)
+
+    return f
