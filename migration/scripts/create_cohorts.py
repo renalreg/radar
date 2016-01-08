@@ -2,7 +2,7 @@ import csv
 from collections import defaultdict
 
 import click
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 from radar_migration import tables, Migration
 from radar_migration.cohorts import create_cohort
@@ -340,7 +340,16 @@ def create_cohort_diagnoses(conn, filename):
 
                 i += 1
 
-    # TODO check all cohorts have diagnoses
+    rows = conn.execute(text("""
+        SELECT
+            code
+        FROM cohorts
+        WHERE
+            NOT EXISTS (SELECT 1 FROM cohort_diagnoses WHERE cohort_diagnoses.cohort_id = cohorts.id)
+    """))
+
+    for row in rows:
+        print '%s code is missing cohort diagnoses' % row[0]
 
 
 @click.command()
