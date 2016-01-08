@@ -4,6 +4,12 @@ from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.models import Cohort
 
 
+class TinyCohortSerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Cohort
+        fields = ['id', 'code', 'name', 'short_name']
+
+
 class CohortSerializer(MetaSerializerMixin, ModelSerializer):
     features = ListField(StringField(), source='sorted_features', read_only=True)
 
@@ -14,6 +20,11 @@ class CohortSerializer(MetaSerializerMixin, ModelSerializer):
 class CohortReferenceField(ReferenceField):
     model_class = Cohort
     serializer_class = CohortSerializer
+
+
+class TinyCohortReferenceField(ReferenceField):
+    model_class = Cohort
+    serializer_class = TinyCohortSerializer
 
 
 class CohortSerializerMixin(object):
