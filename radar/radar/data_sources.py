@@ -1,12 +1,5 @@
-from radar.models import DataSource, Organisation, ORGANISATION_CODE_RADAR, ORGANISATION_TYPE_OTHER
-
-DATA_SOURCE_TYPE_RADAR = 'RADAR'
-DATA_SOURCE_TYPE_PV = 'PV'
-
-DATA_SOURCE_TYPES = [
-    DATA_SOURCE_TYPE_RADAR,
-    DATA_SOURCE_TYPE_PV
-]
+from radar.models.data_sources import DataSource, DATA_SOURCE_TYPE_RADAR
+from radar.models.organisations import Organisation, ORGANISATION_CODE_RADAR, ORGANISATION_TYPE_OTHER
 
 
 def get_radar_data_source():
