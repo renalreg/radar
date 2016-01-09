@@ -88,9 +88,9 @@ def generate_mobile_number():
     return '07' + ''.join(str(random.randint(0, 9)) for _ in range(9))
 
 
-def generate_nhs_no():
+def generate_number(prefix=''):
     while True:
-        number = ''.join(str(random.randint(0, 9)) for _ in range(9))
+        number = prefix + ''.join(str(random.randint(0, 9)) for _ in range(9 - len(prefix)))
 
         check_digit = 0
 
@@ -109,8 +109,12 @@ def generate_nhs_no():
         return number
 
 
+def generate_nhs_no():
+    return generate_number('4')
+
+
 def generate_chi_no():
-    return generate_nhs_no()
+    return generate_number('01')
 
 
 def generate_ukrr_no():
