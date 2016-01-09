@@ -58,6 +58,45 @@ class Field(object):
     def get_data(self, data):
         return data.get(self.field_name, Empty)
 
+    def serialize(value):
+        if self.source is None:
+            field_value = value
+        else:
+            # Get the instance data
+            field_value = field.get_value(value)
+
+        if field_value is Empty:
+            field_data = Empty
+        elif field_value is None:
+            # This saves fields having to handle None themselves
+            field_data = None
+        else:
+            # Convert the data for output
+            field_data = field.to_data(field_value)
+
+        return field_data
+
+    def deserialize(self, data):
+        if self.field_name is None:
+            field_data = data
+        else:
+            # Get the input data
+            field_data = field.get_data(data)
+
+        if field_data is Empty:
+            # No value supplied so use default
+            field_value = field.get_default()
+        elif field_data is None:
+            field_value = None
+        else:
+            # Convert the input data
+            field_value = field.to_value(field_data)
+
+            if field_value is Empty:
+                field_value = field.get_default()
+
+        return field_value
+
     def to_value(self, data):
         raise NotImplementedError()
 
@@ -156,39 +195,6 @@ class Serializer(Field):
         data = {k: v for k, v in args.items() if len(v.strip()) > 0}
         return self.to_value(data)
 
-    def field_to_value(self, field, data):
-        # Get the input data
-        field_data = field.get_data(data)
-
-        if field_data is Empty:
-            # No value supplied so use default
-            field_value = field.get_default()
-        elif field_data is None:
-            field_value = None
-        else:
-            # Convert the input data
-            field_value = field.to_value(field_data)
-
-            if field_value is Empty:
-                field_value = field.get_default()
-
-        return field_value
-
-    def field_to_data(self, field, value):
-        # Get the instance data
-        field_value = field.get_value(value)
-
-        if field_value is Empty:
-            field_data = Empty
-        elif field_value is None:
-            # This saves fields having to handle None themselves
-            field_data = None
-        else:
-            # Convert the data for output
-            field_data = field.to_data(field_value)
-
-        return field_data
-
     def to_value(self, data):
         if data is None:
             return None
@@ -201,7 +207,7 @@ class Serializer(Field):
 
         for field in self.writeable_fields:
             try:
-                field_value = self.field_to_value(field, data)
+                field_value = field.deserialize(data)
             except ValidationError as e:
                 errors[field.field_name] = e.errors
                 continue
@@ -221,7 +227,7 @@ class Serializer(Field):
         data = OrderedDict()
 
         for field in self.readable_fields:
-            field_data = self.field_to_data(field, value)
+            field_data = field.serialize(value)
 
             if field_data is not Empty:
                 data[field.field_name] = field_data
