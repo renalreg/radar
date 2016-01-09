@@ -3,7 +3,7 @@ from radar.views.core import ListModelView, RetrieveModelView
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar_api.serializers.results import ResultSerializer, ObservationSerializer
-from radar_api.validation import ResultValidation
+from radar.validation.results import ResultValidation
 
 
 class ResultListView(DataSourceObjectViewMixin, PatientObjectListView):

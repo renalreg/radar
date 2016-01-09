@@ -4,7 +4,6 @@ from radar.database import db
 from radar_fixtures.users import DEFAULT_PASSWORD
 from radar_fixtures.organisations import create_organisations
 from radar_fixtures.data_sources import create_data_sources
-from radar_fixtures.results import create_result_specs, create_result_group_specs
 from radar_fixtures.cohorts import create_cohorts
 from radar_fixtures.diagnoses import create_cohort_diagnoses
 from radar_fixtures.comorbidities import create_disorders
@@ -26,8 +25,6 @@ def create_data(patients=5, users=10, password=DEFAULT_PASSWORD):
         create_data_sources()
         create_cohorts()
         create_cohort_diagnoses()
-        create_result_specs()
-        create_result_group_specs()
         create_disorders()
         create_consultants()
         create_posts(10)

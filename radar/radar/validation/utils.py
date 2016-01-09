@@ -1,7 +1,6 @@
 from radar.models import User, Post, PatientDemographics, Dialysis, Medication, Patient, Transplant, Hospitalisation, \
     Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
-    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultSpec, \
-    ResultGroupSpec, ResultGroupResultSpec, CohortFeature
+    DataSource, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, CohortFeature, Result
 from radar.models.consultants import Consultant
 from radar.validation.cohort_features import CohortFeatureValidation
 from radar.validation.cohort_patients import CohortPatientValidation
@@ -24,10 +23,7 @@ from radar.validation.patients import PatientValidation
 from radar.validation.plasmapheresis import PlasmapheresisValidation
 from radar.validation.posts import PostValidation
 from radar.validation.renal_imaging import RenalImagingValidation
-from radar.validation.result_group_result_specs import ResultGroupResultSpecValidation
-from radar.validation.result_group_specs import ResultGroupSpecValidation
-from radar.validation.result_specs import ResultSpecValidation
-from radar.validation.result_groups import ResultGroupValidation
+from radar.validation.results import ResultValidation
 from radar.validation.transplants import TransplantValidation
 from radar.validation.users import UserValidation
 from radar.validation.consultants import ConsultantValidation
@@ -37,7 +33,6 @@ from radar.auth.sessions import current_user
 VALIDATIONS = {
     User: UserValidation,
     Post: PostValidation,
-    ResultGroup: ResultGroupValidation,
     DataSource: DataSourceValidation,
     Cohort: CohortValidation,
     Organisation: OrganisationValidation,
@@ -58,9 +53,7 @@ VALIDATIONS = {
     PatientAddress: PatientAddressValidation,
     Disorder: DisorderValidation,
     CohortDiagnosis: CohortDiagnosisValidation,
-    ResultSpec: ResultSpecValidation,
-    ResultGroupSpec: ResultGroupSpecValidation,
-    ResultGroupResultSpec: ResultGroupResultSpecValidation,
+    Result: ResultValidation,
     CohortFeature: CohortFeatureValidation,
     Consultant: ConsultantValidation,
 }
