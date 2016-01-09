@@ -58,12 +58,12 @@ class Field(object):
     def get_data(self, data):
         return data.get(self.field_name, Empty)
 
-    def serialize(value):
+    def serialize(self, value):
         if self.source is None:
             field_value = value
         else:
             # Get the instance data
-            field_value = field.get_value(value)
+            field_value = self.get_value(value)
 
         if field_value is Empty:
             field_data = Empty
@@ -72,7 +72,7 @@ class Field(object):
             field_data = None
         else:
             # Convert the data for output
-            field_data = field.to_data(field_value)
+            field_data = self.to_data(field_value)
 
         return field_data
 
@@ -81,19 +81,19 @@ class Field(object):
             field_data = data
         else:
             # Get the input data
-            field_data = field.get_data(data)
+            field_data = self.get_data(data)
 
         if field_data is Empty:
             # No value supplied so use default
-            field_value = field.get_default()
+            field_value = self.get_default()
         elif field_data is None:
             field_value = None
         else:
             # Convert the input data
-            field_value = field.to_value(field_data)
+            field_value = self.to_value(field_data)
 
             if field_value is Empty:
-                field_value = field.get_default()
+                field_value = self.get_default()
 
         return field_value
 
