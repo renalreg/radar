@@ -29,7 +29,6 @@ from radar_fixtures.transplants import create_transplants_f
 from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
-from radar_fixtures.results import create_result_groups_f
 
 
 def create_demographics_f():
@@ -197,7 +196,6 @@ def create_patients(n):
     create_plasmapheresis = create_plasmapheresis_f()
     create_hospitalisations = create_hospitalisations_f()
     create_renal_imaging = create_renal_imaging_f()
-    create_result_groups = create_result_groups_f()
     create_patient_aliases = create_patient_aliases_f()
     create_patient_numbers = create_patient_numbers_f()
     create_patient_addresses = create_patient_addresses_f()
@@ -242,7 +240,6 @@ def create_patients(n):
                         create_patient_numbers(patient, data_source)
                         create_patient_addresses(patient, data_source)
 
-                    create_result_groups(patient, data_source, 10)
                     create_dialysis(patient, data_source, 5)
                     create_medications(patient, data_source, 5)
                     create_transplants(patient, data_source, 3)
