@@ -119,7 +119,8 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
         elif observation_type == OBSERVATION_TYPE_REAL:
             field = FloatField()
         elif observation_type == OBSERVATION_TYPE_LOOKUP:
-            options = OrderedDict(observation.options['options'])
+            options = [(x['key'], x['value']) for x in observation.options['options']]
+            options = OrderedDict(options)
             field = CodedStringSerializer(options)
         elif observation_type == OBSERVATION_TYPE_STRING:
             field = StringField()
@@ -132,7 +133,7 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
         data = super(ResultSerializer, self).to_data(result)
 
         # Serialize the result value
-        field = self.get_observation_field(result.observation)
+        field = self.get_value_field(result.observation)
         data['value'] = field.serialize(result.value)
 
         return data
