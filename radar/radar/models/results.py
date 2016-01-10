@@ -51,8 +51,8 @@ class Result(db.Model, MetaModelMixin):
     def value(self):
         x = self._value
 
-        if self.observation:
-            observation_type = self.observation
+        if x is not None and self.observation is not None:
+            observation_type = self.observation.type
 
             if observation_type == OBSERVATION_TYPE_INTEGER:
                 x = int(x)
