@@ -37,11 +37,9 @@ class UserListView(ListCreateModelView):
         if args.get('last_name'):
             builder.last_name(args['last_name'])
 
-        if args.get('cohort') is not None:
-            builder.cohort(args['cohort'])
-
-        if args.get('organisation') is not None:
-            builder.organisation(args['organisation'])
+        if args.get('groups') is not None:
+            for group in args.get('groups'):
+                builder.group(group)
 
         query = builder.build()
 

@@ -1,4 +1,4 @@
-from radar_api.serializers.cohorts import CohortSerializerMixin
+from radar_api.serializers.groups import CohortSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
