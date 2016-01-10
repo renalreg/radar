@@ -1,10 +1,12 @@
 from functools import wraps
+import uuid
 
 from flask import request, jsonify
 from flask.views import MethodView
-from sqlalchemy import desc
+from sqlalchemy import desc, inspect, Integer
 from sqlalchemy.orm.exc import NoResultFound
 from flask import abort
+from sqlalchemy.dialects.postgresql import UUID
 
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
@@ -175,9 +177,23 @@ class ModelView(SerializerViewMixin, ValidationViewMixin, PermissionViewMixin, A
         query = self.get_query()
         query = self.filter_query(query)
 
-        id = request.view_args['id']
         model_class = self.get_model_class()
-        query = query.filter(model_class.id == id)
+        id_type = inspect(model_class).columns['id'].type
+
+        obj_id = request.view_args['id']
+
+        if isinstance(id_type, Integer):
+            try:
+                obj_id = int(obj_id)
+            except ValueError:
+                raise NotFound()
+        elif isinstance(id_type, UUID):
+            try:
+                obj_id = uuid.UUID(obj_id)
+            except ValueError:
+                raise NotFound()
+
+        query = query.filter(model_class.id == obj_id)
 
         try:
             obj = query.one()
