@@ -45,6 +45,13 @@
         self.load(promise);
       });
 
+      // Reset the result value when the observation changes
+      $scope.$watch('item.observation', function() {
+        if ($scope.item) {
+          $scope.item.value = null;
+        }
+      });
+
       $scope.create = function() {
         var item = store.create('results', {patient: $scope.patient.id});
         self.edit(item);

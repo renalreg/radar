@@ -31,7 +31,7 @@ class ResultValidation(PatientValidationMixin, DataSourceValidationMixin, MetaVa
             if max_value is not None:
                 validators.append(max_(max_value))
         elif observation_type == OBSERVATION_TYPE_LOOKUP:
-            keys = [x['key'] for x in options['options']]
+            keys = [x['id'] for x in options['options']]
             validators.append(in_(keys))
         elif observation_type == OBSERVATION_TYPE_STRING:
             min_length_value = options.get('min_length')
