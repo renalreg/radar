@@ -5,7 +5,7 @@ from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
     OBSERVATION_TYPE_REAL, OBSERVATION_TYPE_LOOKUP, OBSERVATION_TYPE_STRING,\
-    ObservationSystem
+    ObservationSystem, Result
 from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
     DateTimeField, UUIDField, ListField
@@ -162,7 +162,7 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
             try:
                 value = field.deserialize(data)
             except ValidationError as e:
-                raise ValidationError({value: e.errors})
+                raise ValidationError({'value': e.errors})
 
             if value is not Empty:
                 result['value'] = value
@@ -176,3 +176,12 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
             transformed_errors['value'] = errors['value']
 
         return transformed_errors
+
+    def create(self):
+        return Result()
+
+    def update(self, obj, deserialized_data):
+        for attr, value in deserialized_data.items():
+            setattr(obj, attr, value)
+
+        return obj
