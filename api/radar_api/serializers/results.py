@@ -187,5 +187,11 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
         return obj
 
 
+class ObservationListRequestSerializer(Serializer):
+    type = StringField()
+    types = CommaSeparatedField(StringField())
+
+
 class ResultListRequestSerializer(Serializer):
+    observation_id = IntegerField()
     observation_ids = CommaSeparatedField(IntegerField())
