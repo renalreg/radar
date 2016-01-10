@@ -27,8 +27,8 @@ class RealObservationSerializer(Serializer):
 
 
 class OptionSerializer(Serializer):
-    key = StringField()
-    value = StringField()
+    id = StringField()
+    label = StringField()
 
 
 class LookupObservationSerializer(Serializer):
@@ -131,7 +131,7 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
         elif observation_type == OBSERVATION_TYPE_REAL:
             field = FloatField()
         elif observation_type == OBSERVATION_TYPE_LOOKUP:
-            options = [(x['key'], x['value']) for x in observation.options['options']]
+            options = [(x['id'], x['label']) for x in observation.options['options']]
             options = OrderedDict(options)
             field = CodedStringSerializer(options)
         elif observation_type == OBSERVATION_TYPE_STRING:
