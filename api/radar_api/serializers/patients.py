@@ -1,27 +1,18 @@
-from radar_api.serializers.cohort_patients import CohortPatientSerializer
-from radar_api.serializers.cohorts import CohortReferenceField, TinyCohortReferenceField
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar_api.serializers.organisation_patients import OrganisationPatientSerializer
-from radar_api.serializers.organisations import OrganisationReferenceField, TinyOrganisationReferenceField
+from radar_api.serializers.group_patients import GroupPatientSerializer
+from radar_api.serializers.groups import GroupReferenceField, TinyGroupReferenceField
 from radar.patients import PatientProxy
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
-    DateField, ListField, DateTimeField
+    DateField, ListField, DateTimeField, CommaSeparatedField
 from radar.serializers.models import ModelSerializer
 from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
 from radar.models.patients import Patient, GENDERS, ETHNICITIES
 
 
-class TinyOrganisationPatientSerializer(Serializer):
+class TinyGroupPatientSerializer(Serializer):
     id = IntegerField()
-    organisation = TinyOrganisationReferenceField()
-    is_active = BooleanField()
-
-
-class TinyCohortPatientSerializer(Serializer):
-    id = IntegerField()
-    cohort = TinyCohortReferenceField()
-    is_active = BooleanField()
+    group = TinyGroupReferenceField()
 
 
 class TinyPatientSerializer(Serializer):
@@ -34,9 +25,8 @@ class TinyPatientSerializer(Serializer):
     year_of_death = IntegerField(read_only=True)
     gender = CodedIntegerSerializer(GENDERS, read_only=True)
     ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
-    organisations = ListField(field=TinyOrganisationPatientSerializer(), source='organisation_patients', read_only=True)
-    cohorts = ListField(field=TinyCohortPatientSerializer(), source='cohort_patients', read_only=True)
-    recruited_organisation = TinyOrganisationReferenceField(read_only=True)
+    groups = ListField(field=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
+    recruited_group = TinyGroupReferenceField(read_only=True)
     is_active = BooleanField()
     comments = StringField()
     recruited_date = DateTimeField(read_only=True)
@@ -59,9 +49,8 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     year_of_death = IntegerField(read_only=True)
     gender = CodedIntegerSerializer(GENDERS, read_only=True)
     ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
-    organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients', read_only=True)
-    cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients', read_only=True)
-    recruited_organisation = OrganisationReferenceField(read_only=True)
+    groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
+    recruited_group = GroupReferenceField(read_only=True)
     is_active = BooleanField()
     comments = StringField()
     recruited_date = DateTimeField(read_only=True)
@@ -89,6 +78,6 @@ class PatientListRequestSerializer(Serializer):
     year_of_death = IntegerField()
     gender = StringField()
     patient_number = StringField()
-    organisation = OrganisationReferenceField()
-    cohort = CohortReferenceField()
+    group = GroupReferenceField()
+    groups = CommaSeparatedField(GroupReferenceField())
     is_active = BooleanField()

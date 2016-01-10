@@ -14,8 +14,10 @@ class PatientAlias(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('patient_aliases')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_id = Column(String, ForeignKey('sources.id'), nullable=False)
+    source = relationship('Source')
 
     first_name = Column(String)
     last_name = Column(String)

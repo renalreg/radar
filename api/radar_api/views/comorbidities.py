@@ -2,17 +2,17 @@ from radar_api.serializers.comorbidities import ComorbiditySerializer, DisorderS
 from radar.validation.comorbidities import ComorbidityValidation
 from radar.views.core import ListModelView
 from radar.models import Comorbidity, Disorder
-from radar.views.data_sources import DataSourceObjectViewMixin
+from radar.views.sources import SourceGroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class ComorbidityListView(DataSourceObjectViewMixin, PatientObjectListView):
+class ComorbidityListView(SourceGroupObjectViewMixin, PatientObjectListView):
     serializer_class = ComorbiditySerializer
     validation_class = ComorbidityValidation
     model_class = Comorbidity
 
 
-class ComorbidityDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
+class ComorbidityDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = ComorbiditySerializer
     validation_class = ComorbidityValidation
     model_class = Comorbidity

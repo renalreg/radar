@@ -1,18 +1,18 @@
 from radar_api.serializers.fetal_ultrasounds import FetalUltrasoundSerializer
 from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
 from radar.validation.fetal_ultrasounds import FetalUltrasoundValidation
-from radar.views.data_sources import DataSourceObjectViewMixin
+from radar.views.sources import SourceGroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.codes import CodedStringListView
 
 
-class FetalUltrasoundListView(DataSourceObjectViewMixin, PatientObjectListView):
+class FetalUltrasoundListView(SourceGroupObjectViewMixin, PatientObjectListView):
     serializer_class = FetalUltrasoundSerializer
     model_class = FetalUltrasound
     validation_class = FetalUltrasoundValidation
 
 
-class FetalUltrasoundDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
+class FetalUltrasoundDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = FetalUltrasoundSerializer
     model_class = FetalUltrasound
     validation_class = FetalUltrasoundValidation

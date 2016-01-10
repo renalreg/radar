@@ -1,4 +1,4 @@
-from radar_api.serializers.data_sources import DataSourceSerializerMixin
+from radar_api.serializers.sources import SourceGroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant, TransplantRejection, TransplantBiopsy
@@ -19,7 +19,7 @@ class TransplantBiopsySerializer(ModelSerializer):
         exclude = ['id']
 
 
-class TransplantSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
+class TransplantSerializer(PatientSerializerMixin, SourceGroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
     modality = CodedIntegerSerializer(TRANSPLANT_MODALITIES)
     rejections = ListField(TransplantRejectionSerializer())
     biopsies = ListField(TransplantBiopsySerializer())

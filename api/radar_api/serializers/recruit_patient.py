@@ -1,5 +1,4 @@
-from radar_api.serializers.cohorts import CohortReferenceField
-from radar_api.serializers.organisations import OrganisationReferenceField
+from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.codes import CodedIntegerSerializer, CodedStringSerializer
 from radar.models.patients import GENDERS, ETHNICITIES
 from radar.serializers.core import Serializer
@@ -11,12 +10,12 @@ class RecruitPatientSearchSerializer(Serializer):
     last_name = StringField()
     date_of_birth = DateField()
     number = StringField()
-    number_organisation = OrganisationReferenceField()
+    number_group = GroupReferenceField()
 
 
 class PatientNumberSerializer(Serializer):
     number = StringField()
-    organisation = OrganisationReferenceField()
+    group = GroupReferenceField()
 
 
 class RecruitPatientResultSerializer(Serializer):
@@ -38,5 +37,5 @@ class RecruitPatientSerializer(Serializer):
     gender = CodedIntegerSerializer(GENDERS)
     ethnicity = CodedStringSerializer(ETHNICITIES)
     patient_numbers = ListField(PatientNumberSerializer())
-    recruited_organisation = OrganisationReferenceField()
-    cohort = CohortReferenceField()
+    recruited_group = GroupReferenceField()
+    group = GroupReferenceField()

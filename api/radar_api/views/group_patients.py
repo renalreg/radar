@@ -1,6 +1,6 @@
 from radar_api.serializers.group_patients import GroupPatientSerializer
 from radar.models.groups import GroupPatient
-from radar.validation.cohort_patients import GroupPatientValidation
+from radar.validation.group_patients import GroupPatientValidation
 from radar.views.core import RetrieveUpdateDestroyModelView, ListCreateModelView
 from radar.permissions import GroupPatientPermission
 

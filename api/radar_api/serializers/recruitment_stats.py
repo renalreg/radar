@@ -1,5 +1,4 @@
-from radar_api.serializers.cohorts import CohortReferenceField
-from radar_api.serializers.organisations import OrganisationReferenceField
+from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.core import Serializer
 from radar.serializers.fields import DateField, IntegerField, ListField
 
@@ -14,35 +13,18 @@ class DataPointListSerializer(Serializer):
     points = ListField(DataPointSerializer())
 
 
-class CohortRecruitmentRequestSerializer(Serializer):
-    cohort = CohortReferenceField()
+class GroupRecruitmentRequestSerializer(Serializer):
+    group = GroupReferenceField()
 
 
-class OrganisationRecruitmentRequestSerializer(Serializer):
-    organisation = OrganisationReferenceField()
+class RecruitmentByGroupRequestSerializer(Serializer):
+    group = GroupReferenceField()
 
 
-class RecruitmentByCohortRequestSerializer(Serializer):
-    organisation = OrganisationReferenceField()
-
-
-class RecruitmentByOrganisationRequestSerializer(Serializer):
-    cohort = CohortReferenceField()
-
-
-class RecruitByCohortSerializer(Serializer):
-    cohort = CohortReferenceField()
+class RecruitmentByGroupSerializer(Serializer):
+    group = GroupReferenceField()
     patientCount = IntegerField()
 
 
-class RecruitByCohortListSerializer(Serializer):
-    counts = ListField(RecruitByCohortSerializer())
-
-
-class RecruitByOrganisationSerializer(Serializer):
-    organisation = OrganisationReferenceField()
-    patientCount = IntegerField()
-
-
-class RecruitByOrganisationListSerializer(Serializer):
-    counts = ListField(RecruitByOrganisationSerializer())
+class RecruitmentByGroupListSerializer(Serializer):
+    counts = ListField(RecruitmentByGroupSerializer())

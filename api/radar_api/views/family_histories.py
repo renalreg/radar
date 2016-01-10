@@ -1,18 +1,18 @@
 from radar_api.serializers.family_histories import FamilyHistorySerializer
 from radar.models.family_histories import FamilyHistory, RELATIONSHIPS
 from radar.validation.family_histories import FamilyHistoryValidation
-from radar.views.cohorts import CohortObjectViewMixin
+from radar.views.groups import GroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.codes import CodedIntegerListView
 
 
-class FamilyHistoryListView(CohortObjectViewMixin, PatientObjectListView):
+class FamilyHistoryListView(GroupObjectViewMixin, PatientObjectListView):
     serializer_class = FamilyHistorySerializer
     model_class = FamilyHistory
     validation_class = FamilyHistoryValidation
 
 
-class FamilyHistoryDetailView(CohortObjectViewMixin, PatientObjectDetailView):
+class FamilyHistoryDetailView(GroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = FamilyHistorySerializer
     model_class = FamilyHistory
     validation_class = FamilyHistoryValidation

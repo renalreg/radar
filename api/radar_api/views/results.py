@@ -2,7 +2,7 @@ from flask import request
 
 from radar.models.results import Result, Observation
 from radar.views.core import ListModelView, RetrieveModelView
-from radar.views.data_sources import DataSourceObjectViewMixin
+from radar.views.sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
     ResultListRequestSerializer, ObservationListRequestSerializer

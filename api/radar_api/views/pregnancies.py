@@ -2,7 +2,7 @@ from radar_api.serializers.pregnancies import PregnancySerializer
 from radar.models import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
 from radar.validation.pregnancies import PregnancyValidation
 from radar.views.codes import CodedStringListView
-from radar.views.data_sources import DataSourceObjectViewMixin
+from radar.views.sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 

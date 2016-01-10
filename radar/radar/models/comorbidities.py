@@ -14,8 +14,10 @@ class Comorbidity(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('comorbidities')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_id = Column(String, ForeignKey('sources.id'), nullable=False)
+    source = relationship('Source')
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
