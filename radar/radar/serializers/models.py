@@ -140,29 +140,25 @@ class ReferenceField(Field):
 
     def __init__(self, **kwargs):
         super(ReferenceField, self).__init__(**kwargs)
-        self.field = self.get_field(**kwargs)
-        self._serializer = None
+        self.field = self.get_field()
 
     def bind(self, field_name):
         super(ReferenceField, self).bind(field_name)
         self.field.bind(field_name)
 
-        serializer = self.get_serializer()
-
-        if serializer is not None:
-            serializer.bind(field_name)
-
     def get_serializer_class(self):
         return self.serializer_class
 
     def get_serializer(self):
-        if self._serializer is None:
-            serializer_class = self.serializer_class
+        serializer_class = self.serializer_class
 
-            if serializer_class is not None:
-                self._serializer = serializer_class()
+        if serializer_class is not None:
+            serializer = serializer_class(source=self.source)
+            serializer.bind(self.field_name)
+        else:
+            serializer = None
 
-        return self._serializer
+        return serializer
 
     def get_model_class(self):
         return self.model_class
@@ -181,15 +177,11 @@ class ReferenceField(Field):
 
         return StringField
 
-    def get_field(self, **kwargs):
-        field_kwargs = {}
-
-        if 'source' in kwargs:
-            field_kwargs['source'] = kwargs['source']
-
+    def get_field(self):
         field_class = self.get_field_class()
+        model_id = self.get_model_id()
 
-        return field_class(**field_kwargs)
+        return field_class(source=model_id)
 
     def get_object(self, id):
         obj = self.get_model_class().query.get(id)
@@ -200,13 +192,16 @@ class ReferenceField(Field):
         return obj
 
     def get_value(self, value):
+        value = super(ReferenceField, self).get_value(value)
+
         serializer = self.get_serializer()
 
         if serializer is not None:
-            return serializer.get_value(value)
+            value = serializer.get_value(value)
         else:
-            value = super(ReferenceField, self).get_value(value)
-            return self.field.get_value(value)
+            value = self.field.get_value(value)
+
+        return value
 
     def to_value(self, data):
         if isinstance(data, dict):
@@ -225,5 +220,4 @@ class ReferenceField(Field):
         if serializer is not None:
             return serializer.to_data(value)
         else:
-            # TODO broken
             return self.field.to_data(value)
