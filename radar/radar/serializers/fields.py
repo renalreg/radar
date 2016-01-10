@@ -260,15 +260,36 @@ class ListField(Field):
         return transformed_errors
 
 
-class CommaSeparatedStringField(Field):
+class CommaSeparatedField(Field):
+    default_error_messages = {
+        'invalid': 'A valid string is required.'
+    }
+
+    def __init__(self, field, **kwargs):
+        super(CommaSeparatedField, self).__init__(**kwargs)
+        self.field = field
+
     def to_value(self, data):
         if data is None:
             return None
 
-        return [x.strip() for x in data.split(',')]
+        if isinstance(data, dict) or isinstance(data, list) or isinstance(data, bool):
+            self.fail('invalid')
 
-    def to_data(self, value):
-        return ','.join(value)
+        parts = six.text_type(data).split(',')
+        values = []
+
+        for part in parts:
+            value = self.field.to_value(part)
+            values.append(value)
+
+        return values
+
+    def to_data(self, values):
+        if values is None:
+            return None
+
+        return ','.join(values)
 
 
 class UUIDField(Field):
