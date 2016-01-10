@@ -189,7 +189,7 @@ class ModelView(SerializerViewMixin, ValidationViewMixin, PermissionViewMixin, A
                 raise NotFound()
         elif isinstance(id_type, UUID):
             try:
-                obj_id = uuid.UUID(obj_id)
+                uuid.UUID(obj_id)
             except ValueError:
                 raise NotFound()
 
