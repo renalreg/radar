@@ -192,14 +192,15 @@ class ReferenceField(Field):
         return obj
 
     def get_value(self, value):
-        value = super(ReferenceField, self).get_value(value)
-
         serializer = self.get_serializer()
 
         if serializer is not None:
             value = serializer.get_value(value)
         else:
-            value = self.field.get_value(value)
+            value = super(ReferenceField, self).get_value(value)
+
+            if value is not None:
+                value = self.field.get_value(value)
 
         return value
 
