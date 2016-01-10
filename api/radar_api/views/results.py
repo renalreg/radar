@@ -4,7 +4,8 @@ from radar.models.results import Result, Observation
 from radar.views.core import ListModelView, RetrieveModelView
 from radar.views.data_sources import DataSourceObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
-from radar_api.serializers.results import ResultSerializer, ObservationSerializer, ResultListRequestSerializer
+from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
+    ResultListRequestSerializer, ObservationListRequestSerializer
 from radar.validation.results import ResultValidation
 
 
@@ -16,6 +17,9 @@ class ResultListView(DataSourceObjectViewMixin, PatientObjectListView):
     def filter_query(self, query):
         serializer = ResultListRequestSerializer()
         args = serializer.args_to_value(request.args)
+
+        if 'observation_id' in args:
+            query = query.filter(Result.observation_id == args['observation_id'])
 
         if 'observation_ids' in args:
             query = query.filter(Result.observation_id.in_(args['observation_ids']))
@@ -32,6 +36,18 @@ class ResultDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
 class ObservationListView(ListModelView):
     serializer_class = ObservationSerializer
     model_class = Observation
+
+    def filter_query(self, query):
+        serializer = ObservationListRequestSerializer()
+        args = serializer.args_to_value(request.args)
+
+        if 'type' in args:
+            query = query.filter(Observation.type == args['type'])
+
+        if 'types' in args:
+            query = query.filter(Observation.type.in_(args['types']))
+
+        return query
 
 
 class ObservationDetailView(RetrieveModelView):
