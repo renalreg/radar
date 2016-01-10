@@ -3,29 +3,29 @@
 
   <span class="btn-group">
     <button
-      ng-repeat="resultSpec in selectedResultSpecs"
+      ng-repeat="observation in selectedObservations"
       class="btn btn-xs btn-default"
-      ng-click="remove(resultSpec)">
-      {{resultSpec.name}} <i class="fa fa-times"></i>
+      ng-click="remove(observation)">
+      {{observation.name}} <i class="fa fa-times"></i>
     </button>
   </span>
 
   <span
-    ng-if="!selectedResultSpecs.length"
+    ng-if="!selectedObservations.length"
     class="no-columns-selected">
     No columns selected.
   </span>
 </p>
 
-<form class="form-inline columns" ng-show="selectedResultSpecs.length <= 8">
+<form class="form-inline columns" ng-show="selectedObservations.length <= 8">
   <div class="form-group">
-    <label for="resultSpecColumn">Add Column</label>
+    <label for="observationColumn">Add Column</label>
 
     <select
-      id="resultSpecColumn"
-      ng-model="selectedResultSpec"
+      id="observationColumn"
+      ng-model="selectedObservation"
       ng-change="change()"
-      ng-options="x as x.name for x in resultSpecs track by x.id"
+      ng-options="x as x.name for x in observations track by x.id"
       class="form-control">
       <option></option>
     </select>

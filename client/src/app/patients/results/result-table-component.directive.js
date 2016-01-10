@@ -25,43 +25,28 @@
         }
       });
 
-      $scope.resultSpecs = [];
+      $scope.selectedObservations = [];
 
-      var resultGroupSpecsPromise = store.findMany('result-group-specs').then(function(resultGroupSpecs) {
-        $scope.resultGroupSpecs = resultGroupSpecs;
-      });
-
-      var resultSpecsSelected = false;
-
-      $scope.$watchCollection('resultSpecs', function(resultSpecs) {
+      $scope.$watchCollection('selectedObservations', function(selectedObservations) {
         var promise;
 
-        if (resultSpecs.length) {
-          resultSpecsSelected = true;
-
-          var resultCodes = [];
-
-          _.forEach(resultSpecs, function(x) {
-            resultCodes.push(x.code);
+        if (selectedObservations.length) {
+          var observationIds = _.map(selectedObservations, function(x) {
+            return x.id;
           });
 
-          var resultCodesStr = resultCodes.join(',');
+          observationIds = observationIds.join(',');
 
-          promise = store.findMany('result-groups', {patient: $scope.patient.id, resultCodes: resultCodesStr});
+          promise = store.findMany('results', {patient: $scope.patient.id, observationIds: observationIds});
         } else {
           promise = [];
         }
 
-        if (resultSpecsSelected) {
-          self.load(firstPromise([
-            promise,
-            resultGroupSpecsPromise
-          ]));
-        }
+        self.load(promise);
       });
 
       $scope.create = function() {
-        var item = store.create('result-groups', {patient: $scope.patient.id});
+        var item = store.create('results', {patient: $scope.patient.id});
         self.edit(item);
       };
     }
@@ -73,19 +58,29 @@
       var self = this;
 
       var items = self.scope.items;
+
+      var observationIds = _.map(self.scope.selectedObservations, function(x) {
+        return x.id;
+      });
+
       var groupedItems = [];
       var currentKey = null;
       var current = null;
 
       _.forEach(items, function(x) {
-        var meta = _.any(self.scope.resultSpecs, function(x) {
-          return x.meta;
-        });
+        var observationId = x.observation.id;
+
+        if (_.indexOf(observationIds, observationId) === -1) {
+          return;
+        }
 
         var key = x.dataSource.id + '.' + x.date;
 
-        // Rows with metadata (e.g. pre/post dialysis) shouldn't be grouped with other result groups
-        if (key !== currentKey || current === null || meta) {
+        if (
+          key !== currentKey ||
+          current === null ||
+          current.results[observationId] !== undefined
+        ) {
           currentKey = key;
           current = {
             date: x.date,
@@ -95,30 +90,7 @@
           groupedItems.push(current);
         }
 
-        _.forEach(self.scope.resultSpecs, function(resultSpec) {
-          var code = resultSpec.code;
-          var value = x.results[code];
-
-          if (value === undefined) {
-            return;
-          }
-
-          if (current[code] !== undefined) {
-            current = {
-              date: x.date,
-              dataSource: x.dataSource,
-              results: {}
-            };
-            groupedItems.push(current);
-          }
-
-          current.results[code] = x;
-        });
-
-        // Force a new row
-        if (meta) {
-          current = null;
-        }
+        current.results[observationId] = x;
       });
 
       this.scope.groupedItems = groupedItems;

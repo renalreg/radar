@@ -4,11 +4,9 @@
   var app = angular.module('radar.patients.results');
 
   app.directive('resultTableSelector', ['store', '_', function(store, _) {
-    var INITIAL_RESULT_CODES = ['CREATININE'];
-
     return {
       scope: {
-        selectedResultSpecs: '=resultSpecs'
+        selectedObservations: '=observations'
       },
       templateUrl: 'app/patients/results/result-table-selector.html',
       link: function(scope) {
@@ -16,41 +14,23 @@
         scope.remove = remove;
         scope.change = change;
 
-        store.findMany('result-specs').then(function(resultSpecs) {
-          scope.resultSpecs = resultSpecs;
-
-          var resultCodeToSpec = {};
-
-          _.forEach(resultSpecs, function(x) {
-            resultCodeToSpec[x.code] = x;
-          });
-
-          _.forEach(INITIAL_RESULT_CODES, function(x) {
-            var resultSpec = resultCodeToSpec[x];
-
-            if (resultSpec !== undefined) {
-              add(resultSpec);
-            }
-          });
+        store.findMany('observations').then(function(observations) {
+          scope.observations = observations;
         });
 
         function change() {
-          add(scope.selectedResultSpec);
-          scope.selectedResultSpec = null;
+          add(scope.selectedObservation);
+          scope.selectedObservation = null;
         }
 
-        function add(resultSpec) {
-          var duplicate = _.any(scope.selectedResultSpecs, function(x) {
-            return x.code === resultSpec.code;
-          });
-
-          if (!duplicate) {
-            scope.selectedResultSpecs.push(resultSpec);
+        function add(observation) {
+          if (_.indexOf(scope.selectedObservation, observation) === -1) {
+            scope.selectedObservations.push(observation);
           }
         }
 
-        function remove(resultSpec) {
-          _.pull(scope.selectedResultSpecs, resultSpec);
+        function remove(observation) {
+          _.pull(scope.selectedObservations, observation);
         }
       }
     };

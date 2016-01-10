@@ -1,6 +1,6 @@
 <div crud>
   <div ng-show="!viewing && !editing">
-    <div result-table-selector result-specs="resultSpecs"></div>
+    <div result-table-selector observations="selectedObservations"></div>
   </div>
 
   <div loading="loading">
@@ -28,13 +28,8 @@
         </tr>
 
         <tr>
-          <th>Result Type</th>
-          <td>{{item.resultGroupSpec.name}}</td>
-        </tr>
-
-        <tr ng-repeat="resultSpec in item.resultGroupSpec.resultSpecs">
-          <th>{{resultSpec.name}} <span ng-if="resultSpec.units">({{resultSpec.units}})</span></th>
-          <td>{{item.getValue(resultSpec.code) | missing}}</td>
+          <th>Value <span ng-if="item.observstion.units">({{item.observstion.units}})</span></th>
+          <td>{{item.value | missing}}</td>
         </tr>
       </table>
 
@@ -115,8 +110,8 @@
           <tr>
             <th sort-helper="date">Date</th>
 
-            <th ng-repeat="resultSpec in resultSpecs" sort-helper="results[resultSpec.code].getValue(resultSpec.code)" sort-id="results.{{resultSpec.code}}">
-              {{resultSpec.shortName}}
+            <th ng-repeat="observation in selectedObservations" sort-helper="results[observation.id].value" sort-id="results.{{observation.id}}">
+              {{observation.shortName}}
             </th>
 
             <th sort-helper="dataSource.getName()">Data Source</th>
@@ -127,16 +122,16 @@
           <tr ng-repeat="item in page.getItems()">
             <td>{{item.date | dateTimeFormat}}</td>
 
-            <td ng-repeat="resultSpec in resultSpecs">
-              <span ng-if="item.results[resultSpec.code] !== undefined">
-                <!-- IE doesn't support ng-disabled on <a> -->
+            <td ng-repeat="observation in selectedObservations">
+              <span ng-if="item.results[observation.id] !== undefined">
+                <!-- Note: IE doesn't support ng-disabled on <a> -->
 
-                <span ng-if="viewEnabled(item.results[resultSpec.code])">
-                  <a href="" ng-click="view(item.results[resultSpec.code])">{{item.results[resultSpec.code].getValue(resultSpec.code) | missing}}</a>
+                <span ng-if="viewEnabled(item.results[observation.id])">
+                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].value | missing}}</a>
                 </span>
 
-                <span ng-if="!viewEnabled(item.results[resultSpec.code])">
-                  <a href="" ng-click="view(item.results[resultSpec.code])">{{item.results[resultSpec.code].getValue(resultSpec.code) | missing}}</a>
+                <span ng-if="!viewEnabled(item.results[observation.id])">
+                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].value | missing}}</a>
                 </span>
               </span>
             </td>
