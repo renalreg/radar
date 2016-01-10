@@ -6,25 +6,19 @@ import sys
 from flask import Flask
 
 from radar_api.auth import require_login, force_password_change
-from radar_api.views import cohort_patients
 from radar_api.views import consultants
 from radar_api.views import forgot_password
-from radar_api.views import organisation_consultants
 from radar_api.views import patient_consultants
 from radar_api.views import recruitment_stats
-from radar_api.views import cohort_users
 from radar_api.views import comorbidities
 from radar_api.views import diagnoses
 from radar_api.views import family_histories
 from radar_api.views import logout
-from radar_api.views import organisation_patients
-from radar_api.views import organisation_users
 from radar_api.views import pathology
 from radar_api.views import patient_addresses
 from radar_api.views import patient_aliases
 from radar_api.views import patient_demographics
 from radar_api.views import dialysis
-from radar_api.views import cohorts
 from radar_api.views import data_sources
 from radar_api.views import genetics
 from radar_api.views import hospitalisations
@@ -36,7 +30,6 @@ from radar_api.views import posts
 from radar_api.views import renal_imaging
 from radar_api.views import results
 from radar_api.views import salt_wasting_clinical_features
-from radar_api.views import organisations
 from radar_api.views import user_sessions
 from radar_api.views import transplants
 from radar_api.views import users
@@ -53,6 +46,11 @@ from radar_api.views import fetal_ultrasounds
 from radar_api.views import pregnancies
 from radar_api.views import mpgn
 from radar_api.views import alport
+from radar_api.views import groups
+from radar_api.views import group_patients
+from radar_api.views import group_users
+from radar_api.views import group_consultants
+from radar_api.views import roles
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -93,9 +91,6 @@ class RadarApi(Flask):
         register_template_filters(self)
 
         alport.register_views(self)
-        cohorts.register_views(self)
-        cohort_patients.register_views(self)
-        cohort_users.register_views(self)
         comorbidities.register_views(self)
         consultants.register_views(self)
         data_sources.register_views(self)
@@ -108,6 +103,10 @@ class RadarApi(Flask):
         forgot_password.register_views(self)
         forgot_username.register_views(self)
         genetics.register_views(self)
+        groups.register_views(self)
+        group_consultants.register_views(self)
+        group_patients.register_views(self)
+        group_users.register_views(self)
         hnf1b.register_views(self)
         hospitalisations.register_views(self)
         ins.register_views(self)
@@ -116,10 +115,6 @@ class RadarApi(Flask):
         medications.register_views(self)
         mpgn.register_views(self)
         nephrectomies.register_views(self)
-        organisations.register_views(self)
-        organisation_consultants.register_views(self)
-        organisation_patients.register_views(self)
-        organisation_users.register_views(self)
         pathology.register_views(self)
         patient_addresses.register_views(self)
         patient_aliases.register_views(self)
@@ -135,6 +130,7 @@ class RadarApi(Flask):
         renal_imaging.register_views(self)
         reset_password.register_views(self)
         results.register_views(self)
+        roles.register_views(self)
         salt_wasting_clinical_features.register_views(self)
         transplants.register_views(self)
         users.register_views(self)

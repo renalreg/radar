@@ -2,41 +2,26 @@ from collections import OrderedDict
 from enum import Enum
 
 
-class ORGANISATION_ROLES(Enum):
+class ROLES(Enum):
     IT = 'IT'
     ADMIN = 'ADMIN'
     CLINICIAN = 'CLINICIAN'
     SENIOR_CLINICIAN = 'SENIOR_CLINICIAN'
-    GOD = 'GOD'
-
-    def __str__(self):
-        return str(self.value)
-
-
-class COHORT_ROLES(Enum):
     SENIOR_RESEARCHER = 'SENIOR_RESEARCHER'
     RESEARCHER = 'RESEARCHER'
-    GOD = 'GOD'
 
     def __str__(self):
         return str(self.value)
 
 
-ORGANISATION_ROLE_NAMES = OrderedDict([
-    (ORGANISATION_ROLES.SENIOR_CLINICIAN, 'Senior Clinician'),
-    (ORGANISATION_ROLES.CLINICIAN, 'Clinician'),
-    (ORGANISATION_ROLES.ADMIN, 'Admin'),
-    (ORGANISATION_ROLES.IT, 'IT'),
+ROLE_NAMES = OrderedDict([
+    (ROLES.SENIOR_CLINICIAN, 'Senior Clinician'),
+    (ROLES.CLINICIAN, 'Clinician'),
+    (ROLES.ADMIN, 'Admin'),
+    (ROLES.IT, 'IT'),
+    (ROLES.RESEARCHER, 'Researcher'),
+    (ROLES.SENIOR_RESEARCHER, 'Senior Researcher'),
 ])
-
-COHORT_ROLE_NAMES = OrderedDict([
-    (COHORT_ROLES.RESEARCHER, 'Researcher'),
-    (COHORT_ROLES.SENIOR_RESEARCHER, 'Senior Researcher'),
-])
-
-# Special roles
-ORGANISATION_GOD = 'GOD'
-COHORT_GOD = 'GOD'
 
 
 class PERMISSIONS(Enum):
@@ -51,74 +36,54 @@ class PERMISSIONS(Enum):
         return str(self.value)
 
 
-ORGANISATION_PERMISSIONS = {
+PERMISSION_ROLES = {
     PERMISSIONS.VIEW_PATIENT: [
-        ORGANISATION_ROLES.GOD,
-        ORGANISATION_ROLES.CLINICIAN,
-        ORGANISATION_ROLES.SENIOR_CLINICIAN,
-        ORGANISATION_ROLES.ADMIN,
+        ROLES.CLINICIAN,
+        ROLES.SENIOR_CLINICIAN,
+        ROLES.ADMIN,
+        ROLES.SENIOR_RESEARCHER,
+        ROLES.RESEARCHER,
     ],
     PERMISSIONS.EDIT_PATIENT: [
-        ORGANISATION_ROLES.GOD,
-        ORGANISATION_ROLES.CLINICIAN,
-        ORGANISATION_ROLES.SENIOR_CLINICIAN,
+        ROLES.CLINICIAN,
+        ROLES.SENIOR_CLINICIAN,
     ],
     PERMISSIONS.RECRUIT_PATIENT: [
-        ORGANISATION_ROLES.GOD,
-        ORGANISATION_ROLES.CLINICIAN,
-        ORGANISATION_ROLES.SENIOR_CLINICIAN,
+        ROLES.CLINICIAN,
+        ROLES.SENIOR_CLINICIAN,
     ],
     PERMISSIONS.VIEW_DEMOGRAPHICS: [
-        ORGANISATION_ROLES.GOD,
-        ORGANISATION_ROLES.CLINICIAN,
-        ORGANISATION_ROLES.SENIOR_CLINICIAN,
-        ORGANISATION_ROLES.ADMIN,
+        ROLES.CLINICIAN,
+        ROLES.SENIOR_CLINICIAN,
+        ROLES.ADMIN,
+        ROLES.SENIOR_RESEARCHER,
     ],
     PERMISSIONS.VIEW_USER: [
-        ORGANISATION_ROLES.GOD,
-        ORGANISATION_ROLES.IT,
-        ORGANISATION_ROLES.ADMIN,
-        ORGANISATION_ROLES.SENIOR_CLINICIAN,
+        ROLES.IT,
+        ROLES.ADMIN,
+        ROLES.SENIOR_CLINICIAN,
     ],
 }
 
-ORGANISATION_MANAGED_ROLES = {
-    ORGANISATION_ROLES.IT: [
-        ORGANISATION_ROLES.CLINICIAN,
+MANAGED_ROLES = {
+    ROLES.IT: [
+        ROLES.CLINICIAN,
     ],
-    ORGANISATION_ROLES.ADMIN: [
-        ORGANISATION_ROLES.CLINICIAN,
+    ROLES.ADMIN: [
+        ROLES.CLINICIAN,
     ],
-    ORGANISATION_ROLES.SENIOR_CLINICIAN: [
-        ORGANISATION_ROLES.CLINICIAN,
+    ROLES.SENIOR_CLINICIAN: [
+        ROLES.CLINICIAN,
     ],
-}
-
-COHORT_PERMISSIONS = {
-    PERMISSIONS.VIEW_PATIENT: [
-        COHORT_ROLES.SENIOR_RESEARCHER,
-        COHORT_ROLES.RESEARCHER,
-        COHORT_ROLES.GOD
-    ],
-    PERMISSIONS.VIEW_DEMOGRAPHICS: [
-        COHORT_ROLES.SENIOR_RESEARCHER,
-        COHORT_ROLES.GOD,
-    ],
-    PERMISSIONS.VIEW_USER: [
-        COHORT_ROLES.GOD
-    ],
-}
-
-COHORT_MANAGED_ROLES = {
-    COHORT_ROLES.SENIOR_RESEARCHER: [
-        COHORT_ROLES.RESEARCHER
+    ROLES.SENIOR_RESEARCHER: [
+        ROLES.RESEARCHER,
     ]
 }
 
 
-def get_cohort_roles_with_permission(permission):
-    return COHORT_PERMISSIONS.get(permission, [])
+def get_roles_managed_by_role(role):
+    return MANAGED_ROLES.get(role, [])
 
 
-def get_organisation_roles_with_permission(permission):
-    return ORGANISATION_PERMISSIONS.get(permission, [])
+def get_roles_with_permission(permission):
+    return PERMISSION_ROLES.get(permission, [])
