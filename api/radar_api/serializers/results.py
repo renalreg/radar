@@ -8,7 +8,7 @@ from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
     ObservationSystem, Result
 from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
-    DateTimeField, UUIDField, ListField
+    DateTimeField, UUIDField, ListField, CommaSeparatedField
 from radar.serializers.models import ReferenceField
 from radar.serializers.codes import CodedStringSerializer
 from radar.validation.core import ValidationError
@@ -185,3 +185,7 @@ class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSe
             setattr(obj, attr, value)
 
         return obj
+
+
+class ResultListRequestSerializer(Serializer):
+    observation_ids = CommaSeparatedField(IntegerField())
