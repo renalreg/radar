@@ -4,7 +4,8 @@ from radar_api.serializers.data_sources import DataSourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
-    OBSERVATION_TYPE_REAL, OBSERVATION_TYPE_LOOKUP, OBSERVATION_TYPE_STRING
+    OBSERVATION_TYPE_REAL, OBSERVATION_TYPE_LOOKUP, OBSERVATION_TYPE_STRING,\
+    ObservationSystem
 from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
     DateTimeField, UUIDField, ListField
@@ -39,6 +40,16 @@ class StringObservationSerializer(Serializer):
     max_length = IntegerField()
 
 
+class ObservationSystemSerializer(Serializer):
+    id = IntegerField()
+    name = StringField()
+
+
+class ObservationSystemReferenceField(ReferenceField):
+    model_class = ObservationSystem
+    serializer_class = ObservationSystemSerializer
+
+
 class ObservationSerializer(Serializer):
     SERIALIZER_CLASSES = {
         OBSERVATION_TYPE_INTEGER: IntegerObservationSerializer,
@@ -51,6 +62,7 @@ class ObservationSerializer(Serializer):
     type = StringField()
     name = StringField()
     short_name = StringField()
+    system = ObservationSystemReferenceField()
 
     def to_data(self, observation):
         data = super(ObservationSerializer, self).to_data(observation)
