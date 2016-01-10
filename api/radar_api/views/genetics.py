@@ -1,18 +1,18 @@
 from radar_api.serializers.genetics import GeneticsSerializer
 from radar.models import Genetics
 from radar.validation.genetics import GeneticsValidation, GENETICS_KARYOTYPES
-from radar.views.cohorts import CohortObjectViewMixin
+from radar.views.groups import GroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.codes import CodedIntegerListView
 
 
-class GeneticsListView(CohortObjectViewMixin, PatientObjectListView):
+class GeneticsListView(GroupObjectViewMixin, PatientObjectListView):
     serializer_class = GeneticsSerializer
     model_class = Genetics
     validation_class = GeneticsValidation
 
 
-class GeneticsDetailView(CohortObjectViewMixin, PatientObjectDetailView):
+class GeneticsDetailView(GroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = GeneticsSerializer
     model_class = Genetics
     validation_class = GeneticsValidation

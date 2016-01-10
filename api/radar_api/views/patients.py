@@ -27,17 +27,11 @@ class PatientListView(ListModelView):
         if args.get('last_name'):
             builder.last_name(args['last_name'])
 
-        if args.get('organisation') is not None:
-            if args.get('is_active') is not None:
-                builder.organisation(args['organisation'], args['is_active'])
-            else:
-                builder.organisation(args['organisation'])
+        if args.get('groups') is not None:
+            is_active = args.get('is_active')
 
-        if args.get('cohort') is not None:
-            if args.get('is_active') is not None:
-                builder.cohort(args['cohort'], args['is_active'])
-            else:
-                builder.cohort(args['cohort'])
+            for group in args.get('groups'):
+                builder.group(group, is_active)
 
         if args.get('patient_number'):
             builder.patient_number(args['patient_number'])

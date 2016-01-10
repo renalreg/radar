@@ -19,7 +19,6 @@ from radar_api.views import patient_addresses
 from radar_api.views import patient_aliases
 from radar_api.views import patient_demographics
 from radar_api.views import dialysis
-from radar_api.views import data_sources
 from radar_api.views import genetics
 from radar_api.views import hospitalisations
 from radar_api.views import medications
@@ -51,6 +50,7 @@ from radar_api.views import group_patients
 from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
+from radar_api.views import sources
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -93,7 +93,6 @@ class RadarApi(Flask):
         alport.register_views(self)
         comorbidities.register_views(self)
         consultants.register_views(self)
-        data_sources.register_views(self)
         diagnoses.register_views(self)
         dialysis.register_views(self)
         environment.register_views(self)
@@ -132,6 +131,7 @@ class RadarApi(Flask):
         results.register_views(self)
         roles.register_views(self)
         salt_wasting_clinical_features.register_views(self)
+        sources.register_views(self)
         transplants.register_views(self)
         users.register_views(self)
         user_sessions.register_views(self)

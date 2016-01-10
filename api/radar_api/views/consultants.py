@@ -8,21 +8,21 @@ from radar.models import Consultant
 from radar.permissions import AdminPermission
 from radar.validation.consultants import ConsultantValidation
 from radar.database import db
-from radar.models.organisations import OrganisationConsultant, Organisation, OrganisationPatient
+from radar.models.groups import GroupConsultant, Group, GroupPatient
 from radar.patient_search import PatientQueryBuilder
 from radar.auth.sessions import current_user
 from radar.models.patients import Patient
 
 
 def filter_consultants_by_patient_id(query, patient_id):
-    # Only return consultants that work at one of the organisations the patient belongs to
+    # Only return consultants that belong to one of the groups the patient also belongs to
     consultant_alias = aliased(Consultant)
     consultants_for_patient_query = db.session.query(consultant_alias)\
-        .join(consultant_alias.organisation_consultants)\
-        .join(OrganisationConsultant.organisation)\
-        .join(Organisation.organisation_patients)\
+        .join(consultant_alias.group_consultants)\
+        .join(GroupConsultant.group)\
+        .join(Group.group_patients)\
         .filter(
-            OrganisationPatient.patient_id == patient_id,
+            GroupPatient.patient_id == patient_id,
             Consultant.id == consultant_alias.id
         )
     query = query.filter(consultants_for_patient_query.exists())
@@ -38,7 +38,6 @@ def filter_consultants_by_patient_id(query, patient_id):
 class ConsultantListView(ListModelView):
     serializer_class = ConsultantSerializer
     model_class = Consultant
-    validation_class = ConsultantValidation
 
     def filter_query(self, query):
         query = super(ConsultantListView, self).filter_query(query)

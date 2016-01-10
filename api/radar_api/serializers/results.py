@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from radar_api.serializers.data_sources import DataSourceSerializerMixin
+from radar_api.serializers.sources import SourceGroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
@@ -116,7 +116,7 @@ class ObservationReferenceField(ReferenceField):
     serializer_class = ObservationSerializer
 
 
-class ResultSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, Serializer):
+class ResultSerializer(PatientSerializerMixin, SourceGroupSerializerMixin, MetaSerializerMixin, Serializer):
     id = UUIDField()
     observation = ObservationReferenceField()
     date = DateTimeField()

@@ -21,8 +21,10 @@ class FetalUltrasound(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('fetal_ultrasounds')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_id = Column(String, ForeignKey('sources.id'), nullable=False)
+    source = relationship('Source')
 
     date_of_scan = Column(Date, nullable=False)
     fetal_identifier = Column(String)

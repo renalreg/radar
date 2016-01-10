@@ -5,21 +5,21 @@ from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.serializers.codes import CodedIntegerSerializer
-from radar.models import Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, CohortDiagnosis
+from radar.models.diagnoses import Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, GroupDiagnosis
 
 
-class CohortDiagnosisSerializer(CohortSerializerMixin, ModelSerializer):
+class GroupDiagnosisSerializer(CohortSerializerMixin, ModelSerializer):
     class Meta(object):
-        model_class = CohortDiagnosis
+        model_class = GroupDiagnosis
 
 
-class CohortDiagnosisReferenceField(ReferenceField):
-    model_class = CohortDiagnosis
-    serializer_class = CohortDiagnosisSerializer
+class GroupDiagnosisReferenceField(ReferenceField):
+    model_class = GroupDiagnosis
+    serializer_class = GroupDiagnosisSerializer
 
 
 class DiagnosisSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    cohort_diagnosis = CohortDiagnosisReferenceField()
+    group_diagnosis = GroupDiagnosisReferenceField()
     biopsy_diagnosis = CodedIntegerSerializer(DIAGNOSIS_BIOPSY_DIAGNOSES)
     age_of_symptoms = IntegerField(read_only=True)
     age_of_diagnosis = IntegerField(read_only=True)
@@ -27,8 +27,8 @@ class DiagnosisSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSer
 
     class Meta(object):
         model_class = Diagnosis
-        exclude = ['cohort_diagnosis_id']
+        exclude = ['group_diagnosis_id']
 
 
-class CohortDiagnosisRequestSerializer(Serializer):
-    cohort = IntegerField()
+class GroupDiagnosisRequestSerializer(Serializer):
+    group = IntegerField()

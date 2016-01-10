@@ -1,17 +1,17 @@
 from radar_api.serializers.fetal_anomaly_scans import FetalAnomalyScanSerializer
 from radar.models.fetal_anomaly_scans import FetalAnomalyScan
 from radar.validation.fetal_anomaly_scans import FetalAnomalyScanValidation
-from radar.views.data_sources import DataSourceObjectViewMixin
+from radar.views.sources import SourceGroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class FetalAnomalyScanListView(DataSourceObjectViewMixin, PatientObjectListView):
+class FetalAnomalyScanListView(SourceGroupObjectViewMixin, PatientObjectListView):
     serializer_class = FetalAnomalyScanSerializer
     model_class = FetalAnomalyScan
     validation_class = FetalAnomalyScanValidation
 
 
-class FetalAnomalyScanDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
+class FetalAnomalyScanDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = FetalAnomalyScanSerializer
     model_class = FetalAnomalyScan
     validation_class = FetalAnomalyScanValidation

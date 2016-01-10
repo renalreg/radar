@@ -1,4 +1,4 @@
-from radar_api.serializers.data_sources import DataSourceSerializerMixin
+from radar_api.serializers.sources import SourceGroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.patient_demographics import PatientDemographicsProxy
 from radar.serializers.fields import IntegerField
@@ -8,7 +8,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import GENDERS, ETHNICITIES
 
 
-class PatientDemographicsSerializer(MetaSerializerMixin, DataSourceSerializerMixin, ModelSerializer):
+class PatientDemographicsSerializer(MetaSerializerMixin, SourceGroupSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     year_of_death = IntegerField(read_only=True)
     ethnicity = CodedStringSerializer(ETHNICITIES)
