@@ -1,0 +1,99 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Name</th>
+        <td>{{item.name}}</td>
+      </tr>
+
+      <tr>
+        <th>Short Name</th>
+        <td>{{item.shortName}}</td>
+      </tr>
+
+      <tr>
+        <th>System</th>
+        <td>{{item.system.name}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+        <th>Units</th>
+        <td>{{item.units | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+        <th>Min Value</th>
+        <td>{{item.minValue | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+        <th>Max Value</th>
+        <td>{{item.maxValue | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'String'">
+        <th>Min Length</th>
+        <td>{{item.minLength | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'STRING'">
+        <th>Max Length</th>
+        <td>{{item.maxLength | missing}}</td>
+      </tr>
+
+      <tr ng-if="item.type === 'LOOKUP'">
+        <th>Options</th>
+        <td>
+          <table class="table properties">
+            <tr ng-repeat="option in item.options">
+              <th>{{option.key}}</th>
+              <td>{{option.value}}</td>
+            </tr>
+          </table>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-if="!viewing" list-helper="items as page" per-page="50" sort-by="resultSpec.name">
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="name">Name</th>
+          <th sort-helper="shortName">Short Name</th>
+          <th sort-helper="system">System</th>
+          <th sort-helper="units">Units</th>
+          <th sort-helper="minValue">Min Value</th>
+          <th sort-helper="maxValue">Max Value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+          </td>
+
+          <td>{{item.name}}</td>
+          <td>{{item.shortName}}</td>
+          <td>{{item.system.name}}</td>
+          <td>{{item.units | missing}}</td>
+          <td>{{item.minValue | missing}}</td>
+          <td>{{item.maxValue | missing}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>
