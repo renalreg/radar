@@ -10,17 +10,22 @@
       },
       templateUrl: 'app/patients/results/result-graphs-component.html',
       link: function(scope) {
-        scope.resultSpec = null;
-        scope.resultGroups = [];
+        scope.selectedObservation = null;
+        scope.results = [];
         scope.loading = true;
 
-        scope.$watch('resultSpec', function(resultSpec) {
-          if (resultSpec) {
+        scope.$watch('selectedObservation', function(selectedObservation) {
+          if (selectedObservation) {
             scope.loading = true;
 
-            store.findMany('result-groups', {patient: scope.patient.id, resultCodes: resultSpec.code}).then(function(resultGroups) {
+            var params = {
+              patient: scope.patient.id,
+              observationId: selectedObservation.id
+            };
+
+            store.findMany('results', params).then(function(results) {
               scope.loading = false;
-              scope.resultGroups = resultGroups;
+              scope.results = results;
             });
           }
         });

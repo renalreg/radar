@@ -23,13 +23,18 @@
         </tr>
 
         <tr>
+          <th>Observation</th>
+          <td>{{item.observation.name}}</td>
+        </tr>
+
+        <tr>
           <th>Date</th>
           <td>{{item.date | dateTimeFormat}}</td>
         </tr>
 
         <tr>
           <th>Value <span ng-if="item.observstion.units">({{item.observstion.units}})</span></th>
-          <td>{{item.value | missing}}</td>
+          <td>{{item.getDisplayValue() | missing}}</td>
         </tr>
       </table>
 
@@ -110,7 +115,7 @@
           <tr>
             <th sort-helper="date">Date</th>
 
-            <th ng-repeat="observation in selectedObservations" sort-helper="results[observation.id].value" sort-id="results.{{observation.id}}">
+            <th ng-repeat="observation in selectedObservations" sort-helper="results[observation.id]..getDisplayValue()" sort-id="results.{{observation.id}}">
               {{observation.shortName}}
             </th>
 
@@ -127,11 +132,11 @@
                 <!-- Note: IE doesn't support ng-disabled on <a> -->
 
                 <span ng-if="viewEnabled(item.results[observation.id])">
-                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].value | missing}}</a>
+                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].getDisplayValue() | missing}}</a>
                 </span>
 
                 <span ng-if="!viewEnabled(item.results[observation.id])">
-                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].value | missing}}</a>
+                  <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].getDisplayValue() | missing}}</a>
                 </span>
               </span>
             </td>

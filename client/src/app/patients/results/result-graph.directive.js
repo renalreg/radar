@@ -6,32 +6,34 @@
   app.directive('resultGraph', ['Highcharts', '_', function(Highcharts, _) {
     return {
       scope: {
-        resultSpec: '=',
-        resultGroups: '='
+        observation: '=',
+        results: '='
       },
       link: function(scope, element) {
-        scope.$watch('resultSpec', load);
-        scope.$watch('resultGroups', load);
+        scope.$watch('observation', load);
+        scope.$watch('results', load);
 
         function load() {
-          var resultSpec = scope.resultSpec;
-          var resultGroups = scope.resultGroups;
+          var observation = scope.observation;
+          var results = scope.results;
 
-          if (!resultSpec || !resultGroups) {
+          if (!observation || !results) {
             return;
           }
 
           var data = [];
 
-          _.forEach(resultGroups, function(x) {
+          _.forEach(results, function(x) {
             data.push({
               x: Date.parse(x.date),
-              y: x.getValue(resultSpec.code),
+              y: x.value,
               dataSource: x.dataSource.getName()
             });
           });
 
           data = _.sortBy(data, 'x');
+
+          console.log(data);
 
           var options = {
             chart: {
@@ -39,18 +41,18 @@
               renderTo: element.get(0)
             },
             title: {
-              text: resultSpec.name
+              text: observation.name
             },
             xAxis: {
               type: 'datetime'
             },
             yAxis: {
               title: {
-                text: resultSpec.units
+                text: observation.units
               }
             },
             series: [{
-              name: resultSpec.shortName,
+              name: observation.shortName,
               data: data
             }],
             plotOptions: {
