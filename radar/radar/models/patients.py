@@ -1,14 +1,14 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, Boolean, join, String, text
+from sqlalchemy import Column, Integer, select, join, String, func
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.cohorts import Cohort, CohortPatient
-from radar.cohorts import is_radar_cohort
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE_OTHER, OTHER_RADAR
+from radar.groups import is_radar_group
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -47,33 +47,23 @@ class Patient(db.Model, MetaModelMixin):
     __tablename__ = 'patients'
 
     id = Column(Integer, primary_key=True)
-
-    is_active = Column(Boolean, nullable=False, default=True, server_default=text('true'))
     comments = Column(String)
 
     @property
-    def organisations(self):
-        return [x.organisation for x in self.organisation_patients]
-
-    @property
-    def cohorts(self):
-        return [x.cohort for x in self.cohort_patients]
+    def groups(self):
+        return [x.group for x in self.group_patients]
 
     @hybrid_property
     def recruited_date(self):
-        for x in self.cohort_patients:
-            if is_radar_cohort(x.cohort):
-                return x.recruited_date
-
-        return None
+        return max([x.group.from_date for x in self.group_patients if is_radar_group(x.group)])
 
     @recruited_date.expression
     def recruited_date(cls):
-        return select([CohortPatient.recruited_date])\
-            .select_from(join(CohortPatient, Cohort))\
-            .where(CohortPatient.patient_id == cls.id)\
-            .where(Cohort.code == 'RADAR')\
-            .limit(1)\
+        return select([func.max(GroupPatient.from_date)])\
+            .select_from(join(GroupPatient, Group))\
+            .where(GroupPatient.patient_id == cls.id)\
+            .where(Group.code == OTHER_RADAR)\
+            .where(Group.type == GROUP_TYPE_OTHER)\
             .as_scalar()
 
     def latest_demographics_attr(self, attr):
@@ -175,9 +165,5 @@ class Patient(db.Model, MetaModelMixin):
 
         return earliest_date_of_birth
 
-    def in_cohort(self, cohort):
-        print self.cohort_patients
-        return any(x == cohort for x in self.cohorts)
-
-    def in_organisation(self, organisation):
-        return any(x == organisation for x in self.organisations)
+    def in_group(self, group):
+        return any(x == group for x in self.groups)

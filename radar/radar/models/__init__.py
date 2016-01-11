@@ -1,7 +1,6 @@
 # flake8: noqa
 
 from radar.models.alport import *
-from radar.models.cohorts import *
 from radar.models.common import *
 from radar.models.comorbidities import *
 from radar.models.consultants import *
@@ -12,6 +11,7 @@ from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
 from radar.models.genetics import *
+from radar.models.groups import *
 from radar.models.hnf1b import *
 from radar.models.hospitalisations import *
 from radar.models.ins import *
@@ -19,7 +19,6 @@ from radar.models.results import *
 from radar.models.medications import *
 from radar.models.mpgn import *
 from radar.models.nephrectomies import *
-from radar.models.organisations import *
 from radar.models.posts import *
 from radar.models.pathology import *
 from radar.models.patients import *

@@ -22,8 +22,8 @@ class Genetics(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('genetics')
 
-    cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
-    cohort = relationship('Cohort')
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
 
     date_sent = Column(DateTime(timezone=True))
     laboratory = Column(String)
@@ -33,4 +33,4 @@ class Genetics(db.Model, MetaModelMixin):
     summary = Column(Text)
 
 Index('genetics_patient_id_idx', Genetics.patient_id)
-Index('genetics_cohort_id_idx', Genetics.cohort_id)
+Index('genetics_group_id_idx', Genetics.group_id)

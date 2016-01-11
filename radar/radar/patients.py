@@ -30,24 +30,6 @@ class PatientProxy(object):
             return Empty
 
     @property
-    def cohorts(self):
-        return [x.cohort for x in self.cohort_patients]
-
-    @property
-    def cohort_patients(self):
-        # if self.user.is_admin:
-        #     return self.patient.cohort_patients
-        #
-        # organisations = intersect_patient_and_user_organisations(self.patient, self.user)
-        #
-        # if organisations:
-        #     return self.patient.cohort_patients
-        # else:
-        #     return intersect_patient_and_user_cohorts(self.patient, self.user, patient_membership=True)
-
-        return self.patient.cohort_patients
-
-    @property
     def year_of_birth(self):
         if self.patient.date_of_birth is not None:
             return self.patient.date_of_birth.year

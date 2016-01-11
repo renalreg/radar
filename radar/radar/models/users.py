@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from radar.auth.passwords import check_password_hash, generate_password_hash, HASH_METHOD
 from radar.database import db
-from radar.models import OrganisationUser, CohortUser
+from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
 
 
@@ -50,8 +50,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
-    organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
-    cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])
+    group_users = relationship('GroupUser', back_populates='user', foreign_keys=[GroupUser.user_id])
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
@@ -80,12 +79,8 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self._email = email
 
     @property
-    def organisations(self):
-        return [x.organisation for x in self.organisation_users]
-
-    @property
-    def cohorts(self):
-        return [x.cohort for x in self.cohort_users]
+    def groups(self):
+        return [x.group for x in self.group_users]
 
     @property
     def password(self):

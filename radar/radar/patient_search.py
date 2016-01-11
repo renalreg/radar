@@ -2,10 +2,9 @@ from sqlalchemy import or_, case, desc, extract
 
 from sqlalchemy.orm import aliased, subqueryload
 from radar.models import PatientAlias, PatientNumber
-from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
+from radar.roles import get_roles_with_permission, PERMISSIONS
 from radar.database import db
-from radar.models.organisations import OrganisationPatient, Organisation, OrganisationUser
-from radar.models.cohorts import Cohort, CohortPatient, CohortUser
+from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.patients import Patient, PatientDemographics
 from radar.utils import sql_year_filter, sql_date_filter
 
@@ -19,8 +18,7 @@ class PatientQueryBuilder(object):
 
         self.query = Patient.query\
             .options(subqueryload('patient_demographics'))\
-            .options(subqueryload('organisation_patients').joinedload('organisation'))\
-            .options(subqueryload('cohort_patients').joinedload('cohort'))
+            .options(subqueryload('group_patients').joinedload('group'))
 
     def first_name(self, first_name):
         self.filtering_by_demographics = True
@@ -63,29 +61,14 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def organisation(self, organisation, is_active=None):
-        self.query = self.query\
-            .join(OrganisationPatient)\
-            .filter(OrganisationPatient.organisation == organisation)
+    def group(self, group):
+        # Filter by group
+        sub_query = db.session.query(GroupPatient)\
+            .filter(GroupPatient.group == group)\
+            .exists()
 
-        if is_active is not None:
-            self.query = self.query.filter(OrganisationPatient.is_active == is_active)
+        self.query = self.query.filter(sub_query)
 
-        return self
-
-    def cohort(self, cohort, is_active=None):
-        # Filter by cohort
-        self.query = self.query\
-            .join(CohortPatient)\
-            .filter(CohortPatient.cohort == cohort)
-
-        if is_active is not None:
-            self.query = self.query.filter(CohortPatient.is_active == is_active)
-
-        return self
-
-    def is_active(self, is_active):
-        self.query = self.query.filter(Patient.is_active == is_active)
         return self
 
     def sort(self, column, reverse=False):
@@ -93,8 +76,6 @@ class PatientQueryBuilder(object):
 
     def build(self, apply_permissions=True):
         query = self.query
-
-        # TODO check is_active here
 
         if apply_permissions and not self.current_user.is_admin:
             # Filter the patients based on the user's permissions and the type of query
@@ -173,11 +154,11 @@ def filter_by_patient_number(number, exact=False):
     return query
 
 
-def filter_by_patient_number_at_organisation(number, organisation, exact=False):
+def filter_by_patient_number_at_group(number, group, exact=False):
     if exact:
-        query = patient_number_sub_query(PatientNumber.number.like(number + '%'), PatientNumber.organisation == organisation)
+        query = patient_number_sub_query(PatientNumber.number.like(number + '%'), PatientNumber.group == group)
     else:
-        query = patient_number_sub_query(PatientNumber.number == number, PatientNumber.organisation == organisation)
+        query = patient_number_sub_query(PatientNumber.number == number, PatientNumber.group == group)
 
     return query
 
@@ -198,31 +179,16 @@ def filter_by_year_of_death(year):
     return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
 
 
-def filter_by_organisation_roles(current_user, roles):
+def filter_by_group_roles(current_user, roles):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.organisation_patients)\
-        .join(OrganisationPatient.organisation)\
-        .join(Organisation.organisation_users)\
+        .join(patient_alias.group_patients)\
+        .join(GroupPatient.group)\
+        .join(Group.group_users)\
         .filter(
             patient_alias.id == Patient.id,
-            OrganisationUser.user_id == current_user.id,
-            OrganisationUser.role.in_(roles)
-        )\
-        .exists()
-    return sub_query
-
-
-def filter_by_cohort_roles(current_user, roles):
-    patient_alias = aliased(Patient)
-    sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.cohort_patients)\
-        .join(CohortPatient.cohort)\
-        .join(Cohort.cohort_users)\
-        .filter(
-            patient_alias.id == Patient.id,
-            CohortUser.user_id == current_user.id,
-            CohortUser.role.in_(roles)
+            GroupUser.user_id == current_user.id,
+            GroupUser.role.in_(roles)
         )\
         .exists()
     return sub_query
@@ -230,26 +196,17 @@ def filter_by_cohort_roles(current_user, roles):
 
 def filter_by_permissions(current_user, demographics):
     if demographics:
-        return or_(
-            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
-            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
-        )
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS))
     else:
-        return or_(
-            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_PATIENT)),
-            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_PATIENT)),
-        )
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_PATIENT))
 
 
 def sort_by_demographics_field(current_user, field, reverse, else_=None):
     if current_user.is_admin:
         expression = field
     else:
-        demographics_permission_sub_query = or_(
-            filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
-            filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS)),
-        )
-        expression = case([(demographics_permission_sub_query, field)], else_=else_)
+        sub_query = filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS))
+        expression = case([(sub_query, field)], else_=else_)
 
     if reverse:
         expression = desc(expression)
