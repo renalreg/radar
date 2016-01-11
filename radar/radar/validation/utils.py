@@ -13,10 +13,9 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_addresses import PatientAddress
 from radar.models.comorbidities import Disorder
 from radar.models.diagnoses import GroupDiagnosis
-from radar.models.groups import Group, GroupPatient, GroupUser, GroupPage
+from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.results import Result
 from radar.models.consultants import Consultant
-from radar.validation.group_pages import GroupPageValidation
 from radar.validation.comorbidities import DisorderValidation
 from radar.validation.dialysis import DialysisValidation
 from radar.validation.hospitalisations import HospitalisationValidation
@@ -57,7 +56,6 @@ VALIDATIONS = {
     Disorder: DisorderValidation,
     GroupDiagnosis: GroupDiagnosisValidation,
     Result: ResultValidation,
-    GroupPage: GroupPageValidation,
     Consultant: ConsultantValidation,
     Group: GroupValidation,
     GroupUser: GroupUserValidation,

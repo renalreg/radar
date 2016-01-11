@@ -1,4 +1,4 @@
-from radar_api.serializers.groups import CohortSerializerMixin
+from radar_api.serializers.groups import GroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
@@ -8,7 +8,7 @@ from radar.serializers.codes import CodedIntegerSerializer
 from radar.models.diagnoses import Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, GroupDiagnosis
 
 
-class GroupDiagnosisSerializer(CohortSerializerMixin, ModelSerializer):
+class GroupDiagnosisSerializer(GroupSerializerMixin, ModelSerializer):
     class Meta(object):
         model_class = GroupDiagnosis
 
@@ -18,7 +18,7 @@ class GroupDiagnosisReferenceField(ReferenceField):
     serializer_class = GroupDiagnosisSerializer
 
 
-class DiagnosisSerializer(PatientSerializerMixin, CohortSerializerMixin, MetaSerializerMixin, ModelSerializer):
+class DiagnosisSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
     group_diagnosis = GroupDiagnosisReferenceField()
     biopsy_diagnosis = CodedIntegerSerializer(DIAGNOSIS_BIOPSY_DIAGNOSES)
     age_of_symptoms = IntegerField(read_only=True)

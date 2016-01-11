@@ -50,7 +50,7 @@ from radar_api.views import group_patients
 from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
-from radar_api.views import sources
+from radar_api.views import source_types
 from radar.auth.cors import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -131,7 +131,7 @@ class RadarApi(Flask):
         results.register_views(self)
         roles.register_views(self)
         salt_wasting_clinical_features.register_views(self)
-        sources.register_views(self)
+        source_types.register_views(self)
         transplants.register_views(self)
         users.register_views(self)
         user_sessions.register_views(self)

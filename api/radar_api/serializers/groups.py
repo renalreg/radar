@@ -11,7 +11,7 @@ class TinyGroupSerializer(ModelSerializer):
 
 
 class GroupSerializer(MetaSerializerMixin, ModelSerializer):
-    pages = ListField(StringField(), source='sorted_pages', read_only=True)
+    pages = ListField(StringField(), read_only=True)
 
     class Meta(object):
         model_class = Group

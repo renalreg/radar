@@ -1,4 +1,4 @@
-from radar_api.serializers.groups import GroupObjectViewMixin
+from radar_api.serializers.groups import GroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
@@ -27,7 +27,7 @@ class FamilyHistoryRelativeSerializer(ModelSerializer):
         exclude = ['id']
 
 
-class FamilyHistorySerializer(PatientSerializerMixin, GroupObjectViewMixin, MetaSerializerMixin, ModelSerializer):
+class FamilyHistorySerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
     relatives = ListField(FamilyHistoryRelativeSerializer())
 
     class Meta(object):
