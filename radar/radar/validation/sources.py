@@ -4,7 +4,7 @@ from radar.validation.validators import required
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSIONS
 from radar.groups import is_radar_group
-from radar.source_types import is_radar_source_type
+from radar.source_types import is_radar_source_type, get_radar_source_type
 
 
 class SourceGroupField(Field):
@@ -34,7 +34,9 @@ class SourceTypeField(Field):
     def validate(self, ctx, source_type):
         user = ctx['user']
 
-        if not user.is_admin and not is_radar_source_type(source_type):
+        if source_type is None:
+            source_type = get_radar_source_type()
+        elif not user.is_admin and not is_radar_source_type(source_type):
             raise ValidationError('Permission denied!')
 
         return source_type

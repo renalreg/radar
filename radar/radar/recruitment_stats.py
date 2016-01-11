@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import cast, extract, Integer, func
 from sqlalchemy.sql.expression import null, distinct
+from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.groups import GroupPatient, Group
@@ -47,21 +48,36 @@ def recruitment_by_month(date_column, filters=None):
     return results
 
 
-def recruitment_by_group(filters=None):
+def recruitment_by_group(group=None, group_type=None):
     count_query = db.session.query(GroupPatient.group_id.label('group_id'), func.count(distinct(Patient.id)).label('patient_count'))\
         .select_from(Patient)\
-        .join(GroupPatient)\
+        .join(Patient.group_patients)\
+        .join(GroupPatient.group)\
         .group_by(GroupPatient.group_id)
 
-    if filters is not None:
-        count_query = count_query.filter(*filters)
+    # Filter by patients belonging to the specified group
+    if group is not None:
+        patient_alias = aliased(Patient)
+        group_subquery = db.session.query(patient_alias)\
+            .join(patient_alias.group_patients)\
+            .filter(
+                patient_alias.id == Patient.id,
+                GroupPatient.group == group,
+            )\
+            .exists()
+
+        count_query = count_query.filter(group_subquery)
+        count_query = count_query.filter(GroupPatient.group != group)
+
+    # Filter by groups of a particular type
+    if group_type is not None:
+        count_query = count_query.filter(Group.type == group_type)
 
     count_subquery = count_query.subquery()
 
     query = db.session\
         .query(Group, count_subquery.c.patient_count)\
-        .outerjoin(count_subquery, Group.id == count_subquery.c.group_id)\
-        .filter(count_subquery.c.patient_count > 0)\
+        .join(count_subquery, Group.id == count_subquery.c.group_id)\
         .order_by(Group.id)
 
     return query.all()

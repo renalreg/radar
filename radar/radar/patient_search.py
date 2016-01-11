@@ -65,6 +65,7 @@ class PatientQueryBuilder(object):
         # Filter by group
         sub_query = db.session.query(GroupPatient)\
             .filter(GroupPatient.group == group)\
+            .correlate(Patient)\
             .exists()
 
         self.query = self.query.filter(sub_query)

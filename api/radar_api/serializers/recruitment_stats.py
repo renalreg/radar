@@ -1,6 +1,6 @@
 from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.core import Serializer
-from radar.serializers.fields import DateField, IntegerField, ListField
+from radar.serializers.fields import DateField, IntegerField, ListField, StringField
 
 
 class DataPointSerializer(Serializer):
@@ -13,14 +13,6 @@ class DataPointListSerializer(Serializer):
     points = ListField(DataPointSerializer())
 
 
-class GroupRecruitmentRequestSerializer(Serializer):
-    group = GroupReferenceField()
-
-
-class RecruitmentByGroupRequestSerializer(Serializer):
-    group = GroupReferenceField()
-
-
 class RecruitmentByGroupSerializer(Serializer):
     group = GroupReferenceField()
     patientCount = IntegerField()
@@ -28,3 +20,12 @@ class RecruitmentByGroupSerializer(Serializer):
 
 class RecruitmentByGroupListSerializer(Serializer):
     counts = ListField(RecruitmentByGroupSerializer())
+
+
+class RecruitmentTimelineRequestSerializer(Serializer):
+    group = GroupReferenceField()
+
+
+class RecruitmentByGroupRequestSerializer(Serializer):
+    group = GroupReferenceField()
+    group_type = StringField()

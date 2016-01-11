@@ -1,3 +1,4 @@
+from radar.serializers.core import Serializer
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.fields import ListField, StringField
 from radar.serializers.models import ModelSerializer, ReferenceField
@@ -34,3 +35,8 @@ class GroupSerializerMixin(object):
         attrs = super(GroupSerializerMixin, self).get_model_exclude()
         attrs.add('group_id')
         return attrs
+
+
+class GroupListRequestSerializer(Serializer):
+    code = StringField()
+    type = StringField()

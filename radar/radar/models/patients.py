@@ -55,16 +55,26 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def recruited_date(self):
-        return max([x.group.from_date for x in self.group_patients if is_radar_group(x.group)])
+        x = max([x.from_date for x in self.group_patients if is_radar_group(x.group)])
+        return x
 
     @recruited_date.expression
     def recruited_date(cls):
         return select([func.max(GroupPatient.from_date)])\
-            .select_from(join(GroupPatient, Group))\
+            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
             .where(GroupPatient.patient_id == cls.id)\
             .where(Group.code == GROUP_CODE_RADAR)\
             .where(Group.type == GROUP_TYPE_OTHER)\
             .as_scalar()
+
+    @property
+    def recruited_group(self):
+        # TODO only current groups
+        for x in self.group_patients:
+            if is_radar_group(x.group):
+                return x.created_group
+
+        return None
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics

@@ -226,6 +226,7 @@ def create_patients(n):
             hospital_group_patient.group = hospital_group
             hospital_group_patient.patient = patient
             hospital_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+            hospital_group_patient.created_group = radar_group
             validate_and_add(hospital_group_patient)
 
             if i < 5:
