@@ -6,7 +6,7 @@ from flask.views import MethodView
 from sqlalchemy import desc, inspect, Integer
 from sqlalchemy.orm.exc import NoResultFound
 from flask import abort
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
@@ -187,7 +187,7 @@ class ModelView(SerializerViewMixin, ValidationViewMixin, PermissionViewMixin, A
                 obj_id = int(obj_id)
             except ValueError:
                 raise NotFound()
-        elif isinstance(id_type, UUID):
+        elif isinstance(id_type, postgresql.UUID):
             try:
                 uuid.UUID(obj_id)
             except ValueError:

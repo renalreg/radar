@@ -1,7 +1,7 @@
 import pytest
 from radar.models import DataSource, Organisation, ORGANISATION_TYPE_OTHER, ORGANISATION_CODE_RADAR, \
     DATA_SOURCE_TYPE_RADAR, DATA_SOURCE_TYPE_PV, Medication, ORGANISATION_TYPE_UNIT
-from radar.permissions import RadarObjectPermission
+from radar.permissions import RadarSourceGroupObjectPermission
 from radar.tests.permissions.helpers import MockRequest, make_user
 
 
@@ -58,7 +58,7 @@ def make_obj(source):
     (ADMIN, WRITE, EXTERNAL, GRANT),
 ])
 def test_has_object_permission(is_admin, action, source, expected):
-    permission = RadarObjectPermission()
+    permission = RadarSourceGroupObjectPermission()
     request = make_request(action)
     user = make_user()
     user.is_admin = is_admin

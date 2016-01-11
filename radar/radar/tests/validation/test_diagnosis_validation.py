@@ -2,8 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, Diagnosis, Cohort, \
-    CohortDiagnosis
+from radar.models.patients import Patient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis
+from radar.models.groups import Group, GROUP_TYPE_COHORT, GROUP_TYPE_OTHER
 from radar.validation.core import ValidationError
 from radar.validation.diagnoses import DiagnosisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,14 +22,14 @@ def patient():
 
 @pytest.fixture
 def diagnosis(patient):
-    cohort = Cohort(id=1)
+    group = Group(type=GROUP_TYPE_COHORT)
 
     obj = Diagnosis()
     obj.patient = patient
-    obj.cohort = cohort
+    obj.group = group
     obj.date_of_symptoms = date(2014, 1, 1)
     obj.date_of_diagnosis = date(2015, 1, 1)
-    obj.cohort_diagnosis = CohortDiagnosis(cohort=cohort)
+    obj.group_diganosis = GroupDiagnosis(group=group)
     obj.diagnosis_text = 'Foo Bar Baz'
     obj.biopsy_diagnosis = 1
 
@@ -37,10 +39,10 @@ def diagnosis(patient):
 def test_valid(diagnosis):
     obj = valid(diagnosis)
     assert obj.patient is not None
-    assert obj.cohort is not None
+    assert obj.group is not None
     assert obj.date_of_symptoms == date(2014, 1, 1)
     assert obj.date_of_diagnosis == date(2015, 1, 1)
-    assert obj.cohort_diagnosis is not None
+    assert obj.group_diganosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
     assert obj.biopsy_diagnosis == 1
     assert obj.created_user is not None
@@ -54,8 +56,13 @@ def test_patient_missing(diagnosis):
     invalid(diagnosis)
 
 
-def test_cohort_missing(diagnosis):
-    diagnosis.cohort = None
+def test_group_missing(diagnosis):
+    diagnosis.group = None
+    invalid(diagnosis)
+
+
+def test_group_not_cohort(diagnosis):
+    diagnosis.group.type == GROUP_TYPE_OTHER
     invalid(diagnosis)
 
 
@@ -94,13 +101,13 @@ def test_date_of_diagnosis_before_date_of_symptoms(diagnosis):
     invalid(diagnosis)
 
 
-def test_cohort_diagnosis_missing(diagnosis):
-    diagnosis.cohort_diagnosis = None
+def test_group_diagnosis_missing(diagnosis):
+    diagnosis.group_diagnosis = None
     invalid(diagnosis)
 
 
-def test_cohort_diagnosis_from_another_cohort(diagnosis):
-    diagnosis.cohort_diagnosis = CohortDiagnosis(cohort=Cohort(id=2))
+def test_group_diagnosis_from_another_cohort(diagnosis):
+    diagnosis.group_diagnosis = GroupDiagnosis(group=Group(type=GROUP_TYPE_COHORT))
     invalid(diagnosis)
 
 

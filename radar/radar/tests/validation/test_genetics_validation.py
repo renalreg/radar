@@ -3,7 +3,10 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.models import Patient, PatientDemographics, Cohort, Genetics
+from radar.models.patients import Patient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.groups import Group, GROUP_TYPE_COHORT, GROUP_TYPE_OTHER
+from radar.models.genetics import Genetics
 from radar.validation.core import ValidationError
 from radar.validation.genetics import GeneticsValidation
 from radar.tests.validation.helpers import validation_runner
@@ -22,7 +25,7 @@ def patient():
 def genetics(patient):
     obj = Genetics()
     obj.patient = patient
-    obj.cohort = Cohort(id=1)
+    obj.group = Group(type=GROUP_TYPE_COHORT)
     obj.date_sent = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.reference_number = '12345'
@@ -51,8 +54,13 @@ def test_patient_missing(genetics):
     invalid(genetics)
 
 
-def test_cohort_missing(genetics):
-    genetics.cohort = None
+def test_group_missing(genetics):
+    genetics.group = None
+    invalid(genetics)
+
+
+def test_group_not_cohort(genetics):
+    genetics.group.type = GROUP_TYPE_OTHER
     invalid(genetics)
 
 

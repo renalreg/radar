@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Index, DateTime
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_managed_roles_for_role
@@ -34,13 +35,29 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    notes = Column(String)
+    _pages = Column('pages', postgresql.ARRAY(String))
+    instructions = Column(String)
 
     group_patients = relationship('GroupPatient')
     group_users = relationship('GroupUser')
-    group_pages = relationship('GroupPage')
 
     # TODO recruitment
+
+    @property
+    def pages(self):
+        value = self._pages
+
+        if value is not None:
+            value = [PAGES(x) for x in self.pages]
+
+        return value
+
+    @pages.setter
+    def pages(self, value):
+        if value is not None:
+            value = [x.value for x in value]
+
+        self._pages = value
 
     @property
     def patients(self):
@@ -137,36 +154,6 @@ class GroupUser(db.Model, MetaModelMixin):
 
 Index('group_users_group_id_idx', GroupUser.group_id)
 Index('group_users_patient_id_idx', GroupUser.patient_id)
-
-
-class GroupPage(db.Model):
-    __tablename__ = 'group_pages'
-
-    id = Column(Integer, primary_key=True)
-
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
-
-    _name = Column('name', String, nullable=False)
-    display_order = Column(Integer, nullable=False)
-
-    @property
-    def name(self):
-        value = self._name
-
-        if value is not None:
-            value = PAGES(value)
-
-        return value
-
-    @name.setter
-    def name(self, value):
-        if value is not None:
-            value = value.value
-
-        self._name = value
-
-Index('group_pages_group_id_idx', GroupPage.group_id)
 
 
 class GroupConsultant(db.Model, MetaModelMixin):
