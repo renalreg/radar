@@ -24,15 +24,15 @@ class Diagnosis(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('diagnoses')
 
-    cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
-    cohort = relationship('Cohort')
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
 
     date_of_symptoms = Column(Date, nullable=False)
     date_of_diagnosis = Column(Date, nullable=False)
     date_of_renal_disease = Column(Date)
 
-    cohort_diagnosis_id = Column(Integer, ForeignKey('cohort_diagnoses.id'), nullable=False)
-    cohort_diagnosis = relationship('CohortDiagnosis')
+    group_diagnosis_id = Column(Integer, ForeignKey('group_diagnoses.id'), nullable=False)
+    group_diagnosis = relationship('GroupDiagnosis')
 
     diagnosis_text = Column(String)
     biopsy_diagnosis = Column(Integer)
@@ -56,24 +56,24 @@ class Diagnosis(db.Model, MetaModelMixin):
         return r
 
 Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
-Index('diagnoses_cohort_id_idx', Diagnosis.cohort_id)
+Index('diagnoses_group_id_idx', Diagnosis.group_id)
 Index(
-    'diagnoses_patient_id_cohort_id_idx',
+    'diagnoses_patient_id_group_id_idx',
     Diagnosis.patient_id,
-    Diagnosis.cohort_id,
+    Diagnosis.group_id,
     unique=True
 )
 
 
-class CohortDiagnosis(db.Model):
-    __tablename__ = 'cohort_diagnoses'
+class GroupDiagnosis(db.Model):
+    __tablename__ = 'group_diagnoses'
 
     id = Column(Integer, primary_key=True)
 
-    cohort_id = Column(Integer, ForeignKey('cohorts.id'), nullable=False)
-    cohort = relationship('Cohort')
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    grouo = relationship('Group')
 
     name = Column(String, nullable=False)
     display_order = Column(Integer, nullable=False)
 
-Index('cohort_diagnoses_cohort_id_idx', CohortDiagnosis.cohort_id)
+Index('group_diagnoses_group_id_idx', GroupDiagnosis.group_id)
