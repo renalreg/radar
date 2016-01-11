@@ -4,7 +4,7 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_CODE_NHS,\
     GROUP_CODE_CHI, GROUP_CODE_HANDC, GROUP_CODE_RADAR, GROUP_CODE_UKRR
-from radar.models.sources import Source, SOURCE_RADAR
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_numbers import PatientNumberValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,7 +20,7 @@ def patient():
 def number(patient):
     obj = PatientNumber()
     obj.source_group = Group()
-    obj.source = Source(id=SOURCE_RADAR)
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.group = Group(code='FOO', type=GROUP_TYPE_OTHER)
     obj.number = '123'
@@ -43,8 +43,13 @@ def test_patient_missing(number):
     invalid(number)
 
 
-def test_data_source_missing(number):
-    number.data_source = None
+def test_source_group_missing(number):
+    number.source_group = None
+    invalid(number)
+
+
+def test_source_type_missing(number):
+    number.source_type = None
     invalid(number)
 
 

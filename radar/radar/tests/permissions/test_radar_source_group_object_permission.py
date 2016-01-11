@@ -1,15 +1,14 @@
 import pytest
-from radar.models import DataSource, Organisation, ORGANISATION_TYPE_OTHER, ORGANISATION_CODE_RADAR, \
-    DATA_SOURCE_TYPE_RADAR, DATA_SOURCE_TYPE_PV, Medication, ORGANISATION_TYPE_UNIT
+
+from radar.models.medications import Medication
+from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_TYPE_HOSPITAL, GROUP_CODE_RADAR
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.permissions import RadarSourceGroupObjectPermission
 from radar.tests.permissions.helpers import MockRequest, make_user
 
 
 READ = 0
 WRITE = 1
-
-EXTERNAL = 0
-RADAR = 1
 
 DENY = False
 GRANT = True
@@ -27,41 +26,36 @@ def make_request(action):
     return MockRequest(method)
 
 
-def make_obj(source):
-    data_source = DataSource()
-    organisation = Organisation()
-    data_source.organisation = organisation
+def make_obj(source_type_id):
+    source_type = SourceType(id=source_type_id)
 
-    if source == RADAR:
-        data_source.type = DATA_SOURCE_TYPE_RADAR
-        organisation.code = ORGANISATION_CODE_RADAR
-        organisation.type = ORGANISATION_TYPE_OTHER
+    if source_type_id == SOURCE_TYPE_RADAR:
+        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE_OTHER)
     else:
-        data_source.type = DATA_SOURCE_TYPE_PV
-        organisation.code = 'REE01'
-        organisation.type = ORGANISATION_TYPE_UNIT
+        source_group = Group(code='REE01', type=GROUP_TYPE_HOSPITAL)
 
     obj = Medication()
-    obj.data_source = data_source
+    obj.source_group = source_group
+    obj.source_type = source_type
 
     return obj
 
 
-@pytest.mark.parametrize(['is_admin', 'action', 'source', 'expected'], [
-    (NOT_ADMIN, READ, RADAR, GRANT),
-    (NOT_ADMIN, READ, EXTERNAL, GRANT),
-    (NOT_ADMIN, WRITE, RADAR, GRANT),
-    (NOT_ADMIN, WRITE, EXTERNAL, DENY),
-    (ADMIN, READ, RADAR, GRANT),
-    (ADMIN, READ, EXTERNAL, GRANT),
-    (ADMIN, WRITE, RADAR, GRANT),
-    (ADMIN, WRITE, EXTERNAL, GRANT),
+@pytest.mark.parametrize(['is_admin', 'action', 'source_type_id', 'expected'], [
+    (NOT_ADMIN, READ, SOURCE_TYPE_RADAR, GRANT),
+    (NOT_ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
+    (NOT_ADMIN, WRITE, SOURCE_TYPE_RADAR, GRANT),
+    (NOT_ADMIN, WRITE, SOURCE_TYPE_UKRDC, DENY),
+    (ADMIN, READ, SOURCE_TYPE_RADAR, GRANT),
+    (ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
+    (ADMIN, WRITE, SOURCE_TYPE_RADAR, GRANT),
+    (ADMIN, WRITE, SOURCE_TYPE_UKRDC, GRANT),
 ])
-def test_has_object_permission(is_admin, action, source, expected):
+def test_has_object_permission(is_admin, action, source_type_id, expected):
     permission = RadarSourceGroupObjectPermission()
     request = make_request(action)
     user = make_user()
     user.is_admin = is_admin
-    obj = make_obj(source)
+    obj = make_obj(source_type_id)
 
     assert permission.has_object_permission(request, user, obj) == expected

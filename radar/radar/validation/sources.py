@@ -4,7 +4,7 @@ from radar.validation.validators import required
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSIONS
 from radar.groups import is_radar_group
-from radar.sources import is_radar_source
+from radar.source_types import is_radar_source_type
 
 
 class SourceGroupField(Field):
@@ -29,22 +29,22 @@ class RadarSourceGroupField(Field):
         return group
 
 
-class SourceField(Field):
+class SourceTypeField(Field):
     @pass_context
-    def validate(self, ctx, source):
+    def validate(self, ctx, source_type):
         user = ctx['user']
 
-        if not user.is_admin and not is_radar_source(source):
+        if not user.is_admin and not is_radar_source_type(source_type):
             raise ValidationError('Permission denied!')
 
-        return source
+        return source_type
 
 
 class SourceGroupValidationMixin(object):
     source_group = SourceGroupField([required()])
-    source = SourceField()
+    source_type = SourceTypeField()
 
 
 class RadarSourceGroupValidationMixin(object):
     source_group = RadarSourceGroupField([required()])
-    source = SourceField()
+    source_type = SourceTypeField()

@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Dialysis, Patient, PatientDemographics, DataSource
+from radar.models import Dialysis, Patient, PatientDemographics
+from radar.models.groups import Group
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.dialysis import DialysisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,7 +22,8 @@ def patient():
 @pytest.fixture
 def dialysis(patient):
     obj = Dialysis()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
@@ -44,8 +47,13 @@ def test_patient_missing(dialysis):
     invalid(dialysis)
 
 
-def test_data_source_missing(dialysis):
-    dialysis.data_source = None
+def test_source_group_missing(dialysis):
+    dialysis.source_group = None
+    invalid(dialysis)
+
+
+def test_source_type_missing(dialysis):
+    dialysis.source_type = None
     invalid(dialysis)
 
 

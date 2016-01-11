@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, DataSource
+from radar.models import Patient, PatientDemographics
+from radar.models.groups import Group
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.models.patient_addresses import PatientAddress
 from radar.validation.core import ValidationError
 from radar.validation.patient_addresses import PatientAddressValidation
@@ -21,7 +23,8 @@ def patient():
 @pytest.fixture
 def address(patient):
     obj = PatientAddress()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.from_date = date(2014, 1, 1)
     obj.to_date = date(2015, 1, 1)
@@ -51,8 +54,13 @@ def test_patient_missing(address):
     invalid(address)
 
 
-def test_data_source_missing(address):
-    address.data_source = None
+def test_source_group_missing(address):
+    address.source_group = None
+    invalid(address)
+
+
+def test_source_type_missing(address):
+    address.source_type = None
     invalid(address)
 
 

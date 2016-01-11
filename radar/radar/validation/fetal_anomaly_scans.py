@@ -1,11 +1,11 @@
-from radar.validation.data_sources import DataSourceValidationMixin
+from radar.validation.sources import SourceGroupValidationMixin
 from radar.validation.core import Field, Validation
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, optional, range_, none_if_blank, max_length, not_in_future
 
 
-class FetalAnomalyScanValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
+class FetalAnomalyScanValidation(PatientValidationMixin, SourceGroupValidationMixin, MetaValidationMixin, Validation):
     date_of_scan = Field([required(), not_in_future()])
     gestational_age = Field([required(), range_(8 * 7, 42 * 7, 'days')])
     oligohydramnios = Field([optional()])

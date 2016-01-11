@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean, String
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 
@@ -31,11 +31,13 @@ class Transplant(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('transplants')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
+    source_type = relationship('SourceType')
 
-    organisation_id = Column(Integer, ForeignKey('organisations.id'))
-    organisation = relationship('Organisation')
+    transplant_group_id = Column(Integer, ForeignKey('groups.id'))
+    transplant_group = relationship('Group')
 
     date = Column(Date, nullable=False)
     modality = Column(Integer, nullable=False)
