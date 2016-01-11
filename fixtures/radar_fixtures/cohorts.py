@@ -1,283 +1,283 @@
 from radar_fixtures.validation import validate_and_add
-from radar.models import Cohort, CohortFeature
-from radar.features import FEATURES
+from radar.models.groups import Group, GROUP_TYPE_COHORT
+from radar.pages import PAGES
 
 COHORTS = [
     {
         'code': 'RADAR',
         'name': 'RaDaR',
         'short_name': 'RaDaR',
-        'features': [
-            FEATURES.DEMOGRAPHICS,
-            FEATURES.CONSULTANTS,
-            FEATURES.COHORTS,
-            FEATURES.UNITS
+        'pages': [
+            PAGES.DEMOGRAPHICS,
+            PAGES.CONSULTANTS,
+            PAGES.COHORTS,
+            PAGES.UNITS
         ],
     },
     {
         'code': 'ALPORT',
         'name': 'Alport Syndrome',
         'short_name': 'Alport',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.FAMILY_HISTORY,
-            FEATURES.ALPORT_CLINICAL_PICTURES,
-            FEATURES.RESULTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.FAMILY_HISTORY,
+            PAGES.ALPORT_CLINICAL_PICTURES,
+            PAGES.RESULTS,
         ],
     },
     {
         'code': 'APRT',
         'name': 'APRT Deficiency',
         'short_name': 'APRT',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.FAMILY_HISTORY,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.PATHOLOGY,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.FAMILY_HISTORY,
+            PAGES.COMORBIDITIES,
+            PAGES.RENAL_IMAGING,
+            PAGES.PATHOLOGY,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'ARPKD',
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.PATHOLOGY,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.COMORBIDITIES,
+            PAGES.RENAL_IMAGING,
+            PAGES.PATHOLOGY,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'AHUS',
         'name': 'Atypical Haemolytic Uraemic Syndrome',
         'short_name': 'AHUS',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.PLASMAPHERESIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.COMORBIDITIES,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.PLASMAPHERESIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'CALCIP',
         'name': 'Calciphylaxis',
         'short_name': 'Calciphylaxis',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RESULTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.COMORBIDITIES,
+            PAGES.RESULTS,
         ],
     },
     {
         'code': 'CYSTIN',
         'name': 'Cystinosis',
         'short_name': 'Cystinosis',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.TRANSPLANTS,
-            FEATURES.HOSPITALISATIONS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.TRANSPLANTS,
+            PAGES.HOSPITALISATIONS,
         ],
     },
     {
         'code': 'CYSURIA',
         'name': 'Cystinuria',
         'short_name': 'Cystinuria',
-        'features': [
-            FEATURES.DIAGNOSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
         ],
     },
     {
         'code': 'DENTLOWE',
         'name': 'Dent Disease and Lowe Syndrome',
         'short_name': 'Dent & Lowe',
-        'features': [
-            FEATURES.DIAGNOSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
         ],
     },
     {
         'code': 'FUAN',
         'name': 'Familial Urate Associated Nephropathy',
         'short_name': 'FUAN',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.RENAL_IMAGING,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
         ],
     },
     {
         'code': 'HNF1B',
         'name': 'HNF1b Mutations',
         'short_name': 'HNF1b',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.FAMILY_HISTORY,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.PATHOLOGY,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.FAMILY_HISTORY,
+            PAGES.RENAL_IMAGING,
+            PAGES.PATHOLOGY,
         ],
     },
     {
         'code': 'HYPOXAL',
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.RENAL_IMAGING,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'HYPALK',
         'name': 'Hypokalaemic Alkalosis',
         'short_name': 'Hypokalaemic Alkalosis',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.SALT_WASTING_CLINICAL_FEATURES,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.SALT_WASTING_CLINICAL_FEATURES,
+            PAGES.COMORBIDITIES,
+            PAGES.RENAL_IMAGING,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
         ],
     },
     {
         'code': 'INS',
         'name': 'Idiopathic Nephrotic Syndrome',
         'short_name': 'INS',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.FAMILY_HISTORY,
-            FEATURES.COMORBIDITIES,
-            FEATURES.PATHOLOGY,
-            FEATURES.INS_CLINICAL_PICTURES,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.INS_RELAPSES,
-            FEATURES.DIALYSIS,
-            FEATURES.PLASMAPHERESIS,
-            FEATURES.TRANSPLANTS,
-            FEATURES.HOSPITALISATIONS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.FAMILY_HISTORY,
+            PAGES.COMORBIDITIES,
+            PAGES.PATHOLOGY,
+            PAGES.INS_CLINICAL_PICTURES,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.INS_RELAPSES,
+            PAGES.DIALYSIS,
+            PAGES.PLASMAPHERESIS,
+            PAGES.TRANSPLANTS,
+            PAGES.HOSPITALISATIONS,
         ],
     },
     {
         'code': 'IGANEPHRO',
         'name': 'IgA Nephropathy',
         'short_name': 'IgA',
-        'features': [
-            FEATURES.DIAGNOSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
         ],
     },
     {
         'code': 'MPGN',
         'name': 'Membranoproliferative Glomerulonephritis / Dense Deposit Disease',
         'short_name': 'MPGN',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.MPGN_CLINICAL_PICTURES,
-            FEATURES.PATHOLOGY,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.PLASMAPHERESIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.MPGN_CLINICAL_PICTURES,
+            PAGES.PATHOLOGY,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.PLASMAPHERESIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'MEMNEPHRO',
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
-        'features': [
-            FEATURES.DIAGNOSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
         ],
     },
     {
         'code': 'NEPHROS',
         'name': 'NephroS',
         'short_name': 'NephroS',
-        'features': [
-            FEATURES.RESULTS,
+        'pages': [
+            PAGES.RESULTS,
         ],
     },
     {
         'code': 'NSMPGNC3',
         'name': 'National Study of Membranoproliferative Glomerulonephritis (MPGN) and C3 Glomerulopathy (C3G)',
         'short_name': 'National Study of MPGN and C3',
-        'features': [
-            FEATURES.RESULTS,
+        'pages': [
+            PAGES.RESULTS,
         ],
     },
     {
         'code': 'OBS',
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.PREGNANCIES,
-            FEATURES.FETAL_ULTRASOUNDS,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.DIALYSIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.PREGNANCIES,
+            PAGES.FETAL_ULTRASOUNDS,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.DIALYSIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'PRCA',
         'name': 'Pure Red Cell Aplasia',
         'short_name': 'PRCA',
-        'features': [
-            FEATURES.DIAGNOSIS,
+        'pages': [
+            PAGES.DIAGNOSIS,
         ],
     },
     {
         'code': 'STECHUS',
         'name': 'STEC-associated HUS',
         'short_name': 'STEC-HUS',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.GENETICS,
-            FEATURES.FAMILY_HISTORY,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RESULTS,
-            FEATURES.DIALYSIS,
-            FEATURES.PLASMAPHERESIS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.GENETICS,
+            PAGES.FAMILY_HISTORY,
+            PAGES.COMORBIDITIES,
+            PAGES.RESULTS,
+            PAGES.DIALYSIS,
+            PAGES.PLASMAPHERESIS,
+            PAGES.TRANSPLANTS,
         ],
     },
     {
         'code': 'VAS',
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
-        'features': [
-            FEATURES.DIAGNOSIS,
-            FEATURES.COMORBIDITIES,
-            FEATURES.RENAL_IMAGING,
-            FEATURES.PATHOLOGY,
-            FEATURES.RESULTS,
-            FEATURES.MEDICATIONS,
-            FEATURES.TRANSPLANTS,
+        'pages': [
+            PAGES.DIAGNOSIS,
+            PAGES.COMORBIDITIES,
+            PAGES.RENAL_IMAGING,
+            PAGES.PATHOLOGY,
+            PAGES.RESULTS,
+            PAGES.MEDICATIONS,
+            PAGES.TRANSPLANTS,
         ],
     },
 ]
@@ -285,15 +285,10 @@ COHORTS = [
 
 def create_cohorts():
     for x in COHORTS:
-        cohort = Cohort()
-        cohort.code = x['code']
-        cohort.name = x['name']
-        cohort.short_name = x['short_name']
-        cohort = validate_and_add(cohort)
-
-        for i, name in enumerate(x['features']):
-            cohort_feature = CohortFeature()
-            cohort_feature.cohort = cohort
-            cohort_feature.name = name
-            cohort_feature.display_order = i
-            validate_and_add(cohort_feature)
+        group = Group()
+        group.type = GROUP_TYPE_COHORT
+        group.code = x['code']
+        group.name = x['name']
+        group.short_name = x['short_name']
+        group.pages = x['pages']
+        group = validate_and_add(group)

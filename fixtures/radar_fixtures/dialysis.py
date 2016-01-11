@@ -7,11 +7,12 @@ from radar_fixtures.validation import validate_and_add
 
 
 def create_dialysis_f():
-    def create_dialysis(patient, data_source, n):
+    def create_dialysis(patient, source_group, source_type, n):
         for _ in range(n):
             dialysis = Dialysis()
             dialysis.patient = patient
-            dialysis.data_source = data_source
+            dialysis.source_group = source_group
+            dialysis.source_type = source_type
             dialysis.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:

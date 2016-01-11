@@ -7,11 +7,12 @@ from radar_fixtures.validation import validate_and_add
 
 
 def create_renal_imaging_f():
-    def create_renal_imaging(patient, data_source, n):
+    def create_renal_imaging(patient, source_group, source_type, n):
         for _ in range(n):
             renal_imaging = RenalImaging()
             renal_imaging.patient = patient
-            renal_imaging.data_source = data_source
+            renal_imaging.source_group = source_group
+            renal_imaging.source_type = source_type
             renal_imaging.date = random_date(patient.earliest_date_of_birth, date.today())
             renal_imaging.imaging_type = random.choice(RENAL_IMAGING_TYPES.keys())
             renal_imaging.right_present = random_bool()

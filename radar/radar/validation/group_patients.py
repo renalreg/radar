@@ -11,7 +11,7 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
     patient = Field([required()])
     from_date = Field([required()])
     to_date = Field([optional()])
-    recruited_group = Field([required()])  # TODO validate
+    created_group = Field([optional()])  # TODO validate
 
     @classmethod
     def has_permission(cls, user, obj):

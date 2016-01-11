@@ -9,10 +9,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
-from radar.models.cohorts import Cohort, CohortPatient
-from radar.models.organisations import Organisation, OrganisationPatient, ORGANISATION_TYPE_UNIT
 from radar.models.patients import Patient
-from radar.models.data_sources import DATA_SOURCE_TYPE_RADAR
 from radar_fixtures.utils import generate_first_name, generate_last_name, generate_first_name_alias, \
     generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
     generate_email_address, generate_nhs_no, generate_chi_no, generate_ukrr_no, generate_nhsbt_no, \
@@ -20,23 +17,26 @@ from radar_fixtures.utils import generate_first_name, generate_last_name, genera
     random_datetime, generate_gender
 from radar_fixtures.constants import GENDER_FEMALE
 from radar_fixtures.validation import validate_and_add
-from radar.organisations import get_nhs_organisation, get_chi_organisation, get_ukrr_organisation, get_nhsbt_organisation, get_radar_organisation
-from radar.cohorts import get_radar_cohort
-from radar.data_sources import get_radar_data_source
 from radar_fixtures.dialysis import create_dialysis_f
 from radar_fixtures.medications import create_medications_f
 from radar_fixtures.transplants import create_transplants_f
 from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL,\
+    GROUP_CODE_NHS, GROUP_CODE_CHI, GROUP_CODE_UKRR, GROUP_CODE_NHSBT, GROUP_TYPE_OTHER
+from radar.source_types import get_radar_source_type
+from radar.groups import get_radar_group
 
 
 def create_demographics_f():
-    def create_demographics(patient, data_source, gender):
+    def create_demographics(patient, source_group, source_type, gender):
         old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
         new_d = PatientDemographics()
         new_d.patient = patient
-        new_d.data_source = data_source
+        new_d.source_group = source_group
+        new_d.source_type = source_type
 
         if old_d is None:
             new_d.first_name = generate_first_name(gender)
@@ -86,12 +86,13 @@ def create_demographics_f():
 
 
 def create_patient_aliases_f():
-    def create_patient_aliases(patient, data_source):
+    def create_patient_aliases(patient, source_group, source_type):
         d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
 
         alias = PatientAlias()
         alias.patient = patient
-        alias.data_source = data_source
+        alias.source_group = source_group
+        alias.source_type = source_type
 
         # 50% chance of mutating the first name
         if random.random() > 0.5:
@@ -111,25 +112,21 @@ def create_patient_aliases_f():
 
 
 def create_patient_numbers_f():
-    nhs_organisation = get_nhs_organisation()
-    chi_organisation = get_chi_organisation()
-    ukrr_organisation = get_ukrr_organisation()
-    nhsbt_organisation = get_nhsbt_organisation()
-
-    organisations = [
-        (nhs_organisation, generate_nhs_no),
-        (chi_organisation, generate_chi_no),
-        (ukrr_organisation, generate_ukrr_no),
-        (nhsbt_organisation, generate_nhsbt_no),
+    number_groups = [
+        (Group.query.filter(Group.code == GROUP_CODE_NHS, Group.type == GROUP_TYPE_OTHER).one(), generate_nhs_no),
+        (Group.query.filter(Group.code == GROUP_CODE_CHI, Group.type == GROUP_TYPE_OTHER).one(), generate_chi_no),
+        (Group.query.filter(Group.code == GROUP_CODE_UKRR, Group.type == GROUP_TYPE_OTHER).one(), generate_ukrr_no),
+        (Group.query.filter(Group.code == GROUP_CODE_NHSBT, Group.type == GROUP_TYPE_OTHER).one(), generate_nhsbt_no),
     ]
 
-    def create_patient_numbers(patient, data_source):
-        for organisation, f in organisations:
-            old_n = PatientNumber.query.filter(PatientNumber.patient == patient, PatientNumber.organisation == organisation).first()
+    def create_patient_numbers(patient, source_group, source_type):
+        for number_group, f in number_groups:
+            old_n = PatientNumber.query.filter(PatientNumber.patient == patient, PatientNumber.number_group == number_group).first()
             new_n = PatientNumber()
             new_n.patient = patient
-            new_n.data_source = data_source
-            new_n.organisation = organisation
+            new_n.source_group = source_group
+            new_n.source_type = source_type
+            new_n.number_group = number_group
 
             if old_n is None:
                 new_n.number = f()
@@ -142,7 +139,7 @@ def create_patient_numbers_f():
 
 
 def create_patient_addresses_f():
-    def create_patient_addresses(patient, data_source):
+    def create_patient_addresses(patient, source_group, source_type):
         old_a = PatientAddress.query\
             .filter(PatientAddress.patient == patient)\
             .order_by(desc(PatientAddress.from_date), desc(PatientAddress.to_date))\
@@ -150,7 +147,8 @@ def create_patient_addresses_f():
 
         new_a = PatientAddress()
         new_a.patient = patient
-        new_a.data_source = data_source
+        new_a.source_group = source_group
+        new_a.source_type = source_type
 
         if old_a is None:
             new_a.from_date = patient.earliest_date_of_birth
@@ -181,13 +179,13 @@ def create_patient_addresses_f():
 
 
 def create_patients(n):
-    radar_data_source = get_radar_data_source()
-    organisations = Organisation.query\
-        .filter(Organisation.type == ORGANISATION_TYPE_UNIT)\
-        .all()
-    cohorts = Cohort.query.filter(Cohort.code != 'RADAR').all()
-    radar_organisation = get_radar_organisation()
-    radar_cohort = get_radar_cohort()
+    radar_group = get_radar_group()
+    radar_source_type = get_radar_source_type()
+
+    hospital_groups = Group.query.filter(Group.type == GROUP_TYPE_HOSPITAL).all()
+    cohort_groups = Group.query.filter(Group.type == GROUP_TYPE_COHORT).all()
+
+    source_types = SourceType.query.all()
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -209,53 +207,50 @@ def create_patients(n):
 
         gender = generate_gender()
 
-        create_demographics(patient, radar_data_source, gender)
-        create_patient_aliases(patient, radar_data_source)
-        create_patient_numbers(patient, radar_data_source)
-        create_patient_addresses(patient, radar_data_source)
+        create_demographics(patient, radar_group, radar_source_type, gender)
+        create_patient_aliases(patient, radar_group, radar_source_type)
+        create_patient_numbers(patient, radar_group, radar_source_type)
+        create_patient_addresses(patient, radar_group, radar_source_type)
 
         recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
 
-        radar_cohort_patient = CohortPatient()
-        radar_cohort_patient.patient = patient
-        radar_cohort_patient.cohort = radar_cohort
-        radar_cohort_patient.recruited_date = recruited_date
-        radar_cohort_patient.recruited_organisation = radar_organisation
-        radar_cohort_patient.is_active = True
-        validate_and_add(radar_cohort_patient)
+        radar_group_patient = GroupPatient()
+        radar_group_patient.patient = patient
+        radar_group_patient.group = radar_group
+        radar_group_patient.from_date = recruited_date
+        radar_group_patient.created_group = radar_group
+        validate_and_add(radar_group_patient)
 
-        for organisation in random.sample(organisations, random.randint(1, 3)):
-            organisation_patient = OrganisationPatient()
-            organisation_patient.organisation = organisation
-            organisation_patient.patient = patient
-            organisation_patient.is_active = True
-            validate_and_add(organisation_patient)
-            organisation_patient.created_date = random_datetime(patient.created_date, datetime.now(tz=pytz.UTC))
+        for hospital_group in random.sample(hospital_groups, random.randint(1, 3)):
+            hospital_group_patient = GroupPatient()
+            hospital_group_patient.group = hospital_group
+            hospital_group_patient.patient = patient
+            hospital_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+            validate_and_add(hospital_group_patient)
 
             if i < 5:
-                for data_source in organisation.data_sources:
-                    if data_source.type != DATA_SOURCE_TYPE_RADAR:
-                        create_demographics(patient, data_source, gender)
-                        create_patient_aliases(patient, data_source)
-                        create_patient_numbers(patient, data_source)
-                        create_patient_addresses(patient, data_source)
+                for source_type in source_types:
+                    if source_type.id != SOURCE_TYPE_RADAR:
+                        create_demographics(patient, hospital_group, source_type, gender)
+                        create_patient_aliases(patient, hospital_group, source_type)
+                        create_patient_numbers(patient, hospital_group, source_type)
+                        create_patient_addresses(patient, hospital_group, source_type)
 
-                    create_dialysis(patient, data_source, 5)
-                    create_medications(patient, data_source, 5)
-                    create_transplants(patient, data_source, 3)
-                    create_hospitalisations(patient, data_source, 3)
-                    create_plasmapheresis(patient, data_source, 3)
-                    create_renal_imaging(patient, data_source, 3)
+                    create_dialysis(patient, hospital_group, source_type, 5)
+                    create_medications(patient, hospital_group, source_type, 5)
+                    create_transplants(patient, hospital_group, source_type, 3)
+                    create_hospitalisations(patient, hospital_group, source_type, 3)
+                    create_plasmapheresis(patient, hospital_group, source_type, 3)
+                    create_renal_imaging(patient, hospital_group, source_type, 3)
 
-        cohort_patient = CohortPatient()
+        cohort_group_patient = GroupPatient()
 
         if i == 0:
-            cohort_patient.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
+            cohort_group_patient.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
         else:
-            cohort_patient.cohort = random.choice(cohorts)
+            cohort_group_patient.group = random.choice(cohort_groups)
 
-        cohort_patient.patient = patient
-        cohort_patient.recruited_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
-        cohort_patient.recruited_organisation = radar_organisation
-        cohort_patient.is_active = True
-        validate_and_add(cohort_patient)
+        cohort_group_patient.patient = patient
+        cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+        cohort_group_patient.created_group = radar_group
+        validate_and_add(cohort_group_patient)
