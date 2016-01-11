@@ -1,4 +1,4 @@
-from radar.validation.cohorts import CohortValidationMixin
+from radar.validation.groups import CohortGroupValidationMixin
 from radar.validation.core import Field, Validation
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
@@ -12,7 +12,7 @@ class FamilyHistoryRelativeValidation(Validation):
     patient = Field([optional()])
 
 
-class FamilyHistoryValidation(PatientValidationMixin, CohortValidationMixin, MetaValidationMixin, Validation):
+class FamilyHistoryValidation(PatientValidationMixin, CohortGroupValidationMixin, MetaValidationMixin, Validation):
     parental_consanguinity = Field([required()])
     family_history = Field([required()])
     other_family_history = Field([none_if_blank(), optional(), max_length(10000)])

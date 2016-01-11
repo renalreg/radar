@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import current_app
 import requests
 
@@ -5,16 +7,14 @@ from radar.database import db
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
 from radar.patient_search import filter_by_patient_number_at_organisation
-from radar.models.cohorts import CohortPatient
+from radar.models.groups import GroupPatient, Group, GROUP_TYPE_HOSPITAL
 from radar.models.patient_numbers import PatientNumber
-from radar.organisations import get_radar_organisation, is_radar_organisation
-from radar.cohorts import get_radar_cohort
-from radar.data_sources import get_radar_data_source
+from radar.groups import get_radar_group, is_radar_group
+from radar.sources import get_radar_source
 from radar.models.organisations import OrganisationPatient
 from radar.validation.utils import validate
 from radar.validation.core import ValidationError
 from radar.serializers.ukrdc import SearchSerializer, ResultListSerializer
-from radar.models.organisations import Organisation
 
 
 def is_ukrdc_search_enabled():
@@ -83,14 +83,15 @@ def search_ukrdc_patients(params):
 
         for patient_number in patient['patient_numbers']:
             number = patient_number['number']
-            organisation_code = patient_number['code_system']
-            organisation_code = organisation_code.upper()
-            number_organisation = Organisation.query.filter(Organisation.code == organisation_code).one()
+            group_code = patient_number['code_system']
+            group_code = group_code.upper()
+            group = Group.query.filter(Group.code == group_code, Group.type == GROUP_TYPE_HOSPITAL).first()
 
-            result['patient_numbers'].append({
-                'number': number,
-                'organisation': number_organisation,
-            })
+            if group is not None:
+                result['patient_numbers'].append({
+                    'number': number,
+                    'group': group,
+                })
 
         results.append(result)
 
@@ -132,11 +133,11 @@ def search_radar_patients(params):
             'patient_numbers': [
                 {
                     'number': patient.id,
-                    'organisation': get_radar_organisation(),
+                    'group': get_radar_group(),
                 },
                 {
                     'number': params['number'],
-                    'organisation': params['number_organisation'],
+                    'group': params['number_group'],
                 }
             ]
         }
@@ -166,7 +167,7 @@ def merge_patient_lists(a, b):
 def get_radar_id(patient):
     # Look for a RaDaR ID
     for x in patient['patient_numbers']:
-        if is_radar_organisation(x['organisation']):
+        if is_radar_group(x['group']):
             return int(x['number'])
 
     return None
@@ -174,31 +175,33 @@ def get_radar_id(patient):
 
 def recruit_patient(params):
     radar_id = get_radar_id(params)
-    cohort = params['cohort']
-    organisation = params['recruited_organisation']
+    cohort_group = params['cohort_group']
+    hospital_group = params['hospital_group']
+    recruited_group = params['recruited_group']
 
     if radar_id:
         patient = Patient.query.get(radar_id)
     else:
-        radar_data_source = get_radar_data_source()
-        radar_cohort = get_radar_cohort()
+        radar_group = get_radar_group()
+        radar_source = get_radar_source()
 
         patient = Patient()
         patient.is_active = True
         patient = validate(patient)
         db.session.add(patient)
 
-        radar_cohort_patient = CohortPatient()
-        radar_cohort_patient.patient = patient
-        radar_cohort_patient.cohort = radar_cohort
-        radar_cohort_patient.recruited_organisation = organisation
-        radar_cohort_patient.is_active = True
-        radar_cohort_patient = validate(radar_cohort_patient)
-        db.session.add(radar_cohort_patient)
+        radar_group_patient = GroupPatient()
+        radar_group_patient.patient = patient
+        radar_group_patient.group = radar_group
+        radar_group_patient.created_group = recruited_group
+        radar_group_patient.from_date = datetime.utcnow()
+        radar_group_patient = validate(radar_group_patient)
+        db.session.add(radar_group_patient)
 
         patient_demographics = PatientDemographics()
         patient_demographics.patient = patient
-        patient_demographics.data_source = radar_data_source
+        patient_demographics.source_group = radar_group
+        patient_demographics.source = radar_source
         patient_demographics.first_name = params['first_name']
         patient_demographics.last_name = params['last_name']
         patient_demographics.date_of_birth = params['date_of_birth']
@@ -211,30 +214,31 @@ def recruit_patient(params):
         for x in params['patient_numbers']:
             patient_number = PatientNumber()
             patient_number.patient = patient
-            patient_number.data_source = radar_data_source
+            patient_number.source_group = radar_group
+            patient_number.source = radar_source
             patient_number.organisation = x['organisation']
             patient_number.number = x['number']
             patient_number = validate(patient_number)
             db.session.add(patient_number)
 
-    # Add the patient to the cohort
-    if not patient.in_cohort(cohort):
-        cohort_patient = CohortPatient()
-        cohort_patient.patient = patient
-        cohort_patient.cohort = cohort
-        cohort_patient.recruited_organisation = organisation
-        cohort_patient.is_active = True
-        cohort_patient = validate(cohort_patient)
-        db.session.add(cohort_patient)
+    # Add the patient to the cohort group
+    if not patient.in_group(cohort_group):
+        cohort_group_patient = GroupPatient()
+        cohort_group_patient.patient = patient
+        cohort_group_patient.group = cohort_group
+        cohort_group_patient.created_group = hospital_group
+        cohort_group_patient.from_date = datetime.utcnow()
+        cohort_group_patient = validate(cohort_group_patient)
+        db.session.add(cohort_group_patient)
 
-    # Add the patient to the organisation
-    if not patient.in_organisation(organisation):
-        organisation_patient = OrganisationPatient()
-        organisation_patient.patient = patient
-        organisation_patient.organisation = organisation
-        organisation_patient.is_active = True
-        organisation_patient = validate(organisation_patient)
-        db.session.add(organisation_patient)
+    # Add the patient to the hospital group
+    if not patient.in_organisation(hospital_group):
+        hospital_group_patient = OrganisationPatient()
+        hospital_group_patient.patient = patient
+        hospital_group_patient.group = hospital_group
+        hospital_group_patient.from_date = datetime.utcnow()
+        hospital_group_patient = validate(hospital_group_patient)
+        db.session.add(hospital_group_patient)
 
     db.session.commit()
 

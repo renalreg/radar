@@ -9,7 +9,7 @@ def has_permission_for_patient(user, patient, permission, group_type=None):
     they share with the patient."""
 
     if user.is_admin:
-        return True
+        grant = True
     else:
         # Groups in common with the patient
         group_users = intersect_patient_and_user_groups(patient, user, user_membership=True)
@@ -18,16 +18,25 @@ def has_permission_for_patient(user, patient, permission, group_type=None):
             group_users = [x for x in group_users if x.group.type == group_type]
 
         # Check the user has the required permission
-        return any(x.has_permission(permission) for x in group_users)
+        grant = any(x.has_permission(permission) for x in group_users)
+
+    return grant
 
 
-def has_permission_for_any_group(user, permission):
+def has_permission_for_any_group(user, permission, group_type=None):
     """Check that the user has a permission on any group."""
 
-    return (
-        user.is_admin or
-        any(x.has_permission(permission) for x in user.group_users)
-    )
+    if user.is_admin:
+        grant = True
+    else:
+        group_users = user.group_users
+
+        if group_type is not None:
+            group_users = [x for x in group_users if x.group_type == group_type]
+
+        grant = any(x.has_permission(permission) for x in group_users)
+
+    return grant
 
 
 def has_permission_for_group(user, group, permission):
@@ -45,31 +54,18 @@ def has_permission_for_group(user, group, permission):
         return False
 
 
-def can_view_demographics(user, patient):
-    """Check that the user can view the patient's demographics."""
+def has_permission_for_group_role(user, group, role):
+    if user.is_admin:
+        grant = True
+    else:
+        grant = False
 
-    return (
-        user.is_admin or
-        has_permission_for_patient(user, patient, PERMISSIONS.VIEW_DEMOGRAPHICS)
-    )
+        for group_user in user.group_users:
+            if group_user.group == group and role in group_user.managed_roles:
+                grant = True
+                break
 
-
-def can_view_patient(user, patient):
-    """Check that the user can view the patient."""
-
-    return (
-        user.is_admin or
-        has_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT)
-    )
-
-
-def can_edit_patient(user, patient):
-    """Check that the user can edit the patient."""
-
-    return (
-        user.is_admin or
-        has_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT)
-    )
+    return grant
 
 
 def can_view_patient_object(user, patient, group=None):
@@ -99,7 +95,7 @@ def can_edit_patient_object(user, patient, source_group=None):
     if user.is_admin:
         return True
 
-    if not can_edit_patient(user, patient):
+    if not has_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT):
         return False
 
     # If the object has a source group we also need to check permissions for the source group
@@ -198,9 +194,9 @@ class PatientPermission(Permission):
             return True
 
         if is_safe_method(request):
-            return can_view_patient(user, obj)
+            return has_permission_for_patient(user, obj, PERMISSIONS.VIEW_PATIENT)
         else:
-            return can_edit_patient(user, obj)
+            return has_permission_for_patient(user, obj, PERMISSIONS.EDIT_PATIENT)
 
 
 class PatientObjectPermission(PatientPermission):
@@ -304,7 +300,7 @@ class GroupObjectPermission(Permission):
             patient = obj.patient
 
             # User isn't allowed to view this patient
-            if not can_view_patient(user, patient):
+            if not has_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT):
                 return False
 
             group = obj.group
