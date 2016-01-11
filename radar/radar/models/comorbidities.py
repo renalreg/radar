@@ -25,7 +25,7 @@ class Comorbidity(db.Model, MetaModelMixin):
     disorder_id = Column(Integer, ForeignKey('disorders.id'), nullable=False)
     disorder = relationship('Disorder')
 
-Index('comorbidities_patient_id_idx', Comorbidity.patient_id)
+Index('comorbidities_patient_idx', Comorbidity.patient_id)
 
 
 class Disorder(db.Model):

@@ -32,19 +32,19 @@ class Transplant(db.Model, MetaModelMixin):
     patient = patient_relationship('transplants')
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group = relationship('Group', foreign_keys=[source_group_id])
     source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
     source_type = relationship('SourceType')
 
     transplant_group_id = Column(Integer, ForeignKey('groups.id'))
-    transplant_group = relationship('Group')
+    transplant_group = relationship('Group', foreign_keys=[transplant_group_id])
 
     date = Column(Date, nullable=False)
     modality = Column(Integer, nullable=False)
     date_of_recurrence = Column(Date)
     date_of_failure = Column(Date)
 
-Index('transplants_patient_id_idx', Transplant.patient_id)
+Index('transplants_patient_idx', Transplant.patient_id)
 
 
 class TransplantRejection(db.Model):
@@ -57,7 +57,7 @@ class TransplantRejection(db.Model):
 
     date_of_rejection = Column(Date, nullable=False)
 
-Index('transplant_rejections_transplant_id_idx', TransplantRejection.transplant_id)
+Index('transplant_rejections_transplant_idx', TransplantRejection.transplant_id)
 
 
 class TransplantBiopsy(db.Model):
@@ -71,4 +71,4 @@ class TransplantBiopsy(db.Model):
     date_of_biopsy = Column(Date, nullable=False)
     recurrence = Column(Boolean, nullable=False)
 
-Index('transplant_biopsies_transplant_id_idx', TransplantBiopsy.transplant_id)
+Index('transplant_biopsies_transplant_idx', TransplantBiopsy.transplant_id)

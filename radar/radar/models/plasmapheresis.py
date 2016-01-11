@@ -42,4 +42,4 @@ class Plasmapheresis(db.Model, MetaModelMixin):
     no_of_exchanges = Column(String)
     response = Column(String)
 
-Index('plasmapheresis_patient_id_idx', Plasmapheresis.patient_id)
+Index('plasmapheresis_patient_idx', Plasmapheresis.patient_id)

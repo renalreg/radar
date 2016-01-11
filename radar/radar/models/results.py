@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
 
@@ -69,3 +69,5 @@ class Result(db.Model, MetaModelMixin):
             x = str(x)
 
         self._value = x
+
+Index('results_patient_idx', Result.patient_id)

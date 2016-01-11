@@ -7,5 +7,7 @@ SOURCE_TYPE_UKRDC = 'UKRDC'
 
 
 class SourceType(db.Model):
+    __tablename__ = 'source_types'
+
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)

@@ -26,4 +26,4 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     left_anomaly_details = Column(String)
     left_ultrasound_details = Column(String)
 
-Index('fetal_anomaly_scans_patient_id_idx', FetalAnomalyScan.patient_id)
+Index('fetal_anomaly_scans_patient_idx', FetalAnomalyScan.patient_id)

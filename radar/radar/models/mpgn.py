@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Boolean, String, Date
+from sqlalchemy import Column, Boolean, String, Date, Index
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -22,3 +22,5 @@ class MpgnClinicalPicture(db.Model, MetaModelMixin):
     ophthalmoscopy = Column(Boolean)
     ophthalmoscopy_details = Column(String)
     comments = Column(String)
+
+Index('mpgn_clinical_pictures_patient_idx', MpgnClinicalPicture.patient_id)

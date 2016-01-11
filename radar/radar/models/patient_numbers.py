@@ -15,23 +15,22 @@ class PatientNumber(db.Model, MetaModelMixin):
     patient = patient_relationship('patient_numbers')
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group = relationship('Group', foreign_keys=[source_group_id])
     source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
     source_type = relationship('SourceType')
 
     number_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    number_group = relationship('Group')
+    number_group = relationship('Group', foreign_keys=[number_group_id])
     number = Column(String, nullable=False)
 
-# Source group, number group and number must be unique
 Index(
-    'patient_numbers_source_group_id_number_group_id_number_idx',
+    'patient_numbers_source_number_idx',
     PatientNumber.source_group_id,
     PatientNumber.number_group_id,
     PatientNumber.number,
     unique=True
 )
 
-Index('patient_numbers_patient_id_idx', PatientNumber.patient_id)
-Index('patient_numbers_source_group_id_idx', PatientNumber.source_group_id)
-Index('patient_numbers_number_group_id_idx', PatientNumber.number_group_id)
+Index('patient_numbers_patient_idx', PatientNumber.patient_id)
+Index('patient_numbers_source_group_idx', PatientNumber.source_group_id)
+Index('patient_numbers_number_group_idx', PatientNumber.number_group_id)

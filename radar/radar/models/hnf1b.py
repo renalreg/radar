@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Boolean, String, Date
+from sqlalchemy import Column, Boolean, String, Date, Index
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -36,3 +36,5 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
     diabetic_retinopathy = Column(Boolean)
     diabetic_neuropathy = Column(Boolean)
     diabetic_pvd = Column(Boolean)
+
+Index('hnf1b_clinical_pictures_patient_idx', Hnf1bClinicalPicture.patient_id)
