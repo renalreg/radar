@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.dialysis');
 
-  app.factory('DialysisPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('DialysisPermission', ['PatientSourceGroupObjectPermission', function(PatientSourceGroupObjectPermission) {
+    return PatientSourceGroupObjectPermission;
   }]);
 
   function controllerFactory(

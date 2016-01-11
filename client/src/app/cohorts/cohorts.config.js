@@ -15,8 +15,14 @@
       templateUrl: 'app/cohorts/cohort-detail.html',
       controller: 'CohortDetailController',
       resolve: {
-        cohort: ['$stateParams', 'store', function($stateParams, store) {
-          return store.findOne('cohorts', $stateParams.cohortId, true);
+        cohort: ['$stateParams', 'store', '$q', function($stateParams, store, $q) {
+          return store.findOne('groups', $stateParams.cohortId, true).then(function(group) {
+            if (group.type === 'COHORT') {
+              return group;
+            } else {
+              return $q.reject();
+            }
+          });
         }]
       }
     });

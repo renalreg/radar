@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
@@ -79,7 +79,7 @@
           <th></th>
           <th sort-helper="firstName">First Name</th>
           <th sort-helper="lastName">Last Name</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -93,7 +93,7 @@
 
           <td>{{item.firstName}}</td>
           <td>{{item.lastName}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

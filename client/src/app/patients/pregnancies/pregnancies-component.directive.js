@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.pregnancies');
 
-  app.factory('PregnancyPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('PregnancyPermission', ['PatientSourceGroupObjectPermission', function(PatientSourceGroupObjectPermission) {
+    return PatientSourceGroupObjectPermission;
   }]);
 
   function controllerFactory(

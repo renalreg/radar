@@ -22,7 +22,7 @@
               <th sort-helper="gender">Gender</th>
               <th sort-helper="recruitedDate">Date Recruited</th>
               <th>Cohorts</th>
-              <th>Units</th>
+              <th>Hospitals</th>
             </tr>
           </thead>
 
@@ -55,16 +55,16 @@
 
               <td>
                 <span ng-if="!patient.getCohorts().length">-</span>
-                <span ng-repeat="cohort in patient.getCohorts() | orderBy: 'cohort.name'" ng-if="cohort.isActive">
-                  {{cohort.cohort.shortName}}
+                <span ng-repeat="x in patient.getCohorts() | orderBy: 'group.shortName'">
+                  {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!patient.getUnits().length">-</span>
-                <span ng-repeat="organisation in patient.getUnits() | orderBy: 'organisation.name'" ng-if="organisation.isActive">
-                  {{organisation.organisation.name}}
+                <span ng-if="!patient.getHospitals().length">-</span>
+                <span ng-repeat="x in patient.getHospitals() | orderBy: 'group.shortName'">
+                  {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>

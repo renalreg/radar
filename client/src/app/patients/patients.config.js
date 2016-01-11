@@ -30,8 +30,8 @@
     });
   }]);
 
-  app.factory('patientFeatures', ['_', function(_) {
-    function patientFeature(name, state, cohort) {
+  app.factory('patientPages', ['_', function(_) {
+    function patientPage(name, state, cohort) {
       if (cohort === undefined) {
         cohort = false;
       }
@@ -55,36 +55,36 @@
     }
 
     return {
-      ADDRESSES: patientFeature('Addresses', 'patient.addresses'),
-      ALIASES: patientFeature('Aliases', 'patient.aliases'),
-      ALPORT_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.alportClinicalPictures'),
-      DEMOGRAPHICS: patientFeature('Demographics', 'patient.demographics'),
-      DIAGNOSIS: patientFeature('Diagnosis', 'patient.diagnosis', true),
-      DIALYSIS: patientFeature('Dialysis', 'patient.dialysis'),
-      COHORTS: patientFeature('Cohorts', 'patient.cohorts'),
-      COMORBIDITIES: patientFeature('Comorbidities', 'patient.comorbidities'),
-      CONSULTANTS: patientFeature('Consultants', 'patient.consultants'),
-      FAMILY_HISTORY: patientFeature('Family History', 'patient.familyHistory', true),
-      FETAL_ANOMALY_SCANS: patientFeature('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
-      FETAL_ULTRASOUNDS: patientFeature('Fetal Ultrasounds', 'patient.fetalUltrasounds'),
-      GENETICS: patientFeature('Genetics', 'patient.genetics', true),
-      HNF1B_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.hnf1bClinicalPictures'),
-      HOSPITALISATIONS: patientFeature('Hospitalisations', 'patient.hospitalisations'),
-      INS_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.insClinicalPictures'),
-      INS_RELAPSES: patientFeature('Relapses', 'patient.insRelapses'),
-      MEDICATIONS: patientFeature('Medications', 'patient.medications'),
-      META: patientFeature('Metadata', 'patient.metadata'),
-      MPGN_CLINICAL_PICTURES: patientFeature('Clinical Pictures', 'patient.mpgnClinicalPictures'),
-      NEPHRECTOMIES: patientFeature('Nephrectomies', 'patient.nephrectomies'),
-      NUMBERS: patientFeature('Numbers', 'patient.numbers'),
-      PATHOLOGY: patientFeature('Pathology', 'patient.pathology'),
-      PLASMAPHERESIS: patientFeature('Plasmapheresis', 'patient.plasmapheresis'),
-      PREGNANCIES: patientFeature('Pregnancies', 'patient.pregnancies'),
-      RENAL_IMAGING: patientFeature('Renal Imaging', 'patient.renalImaging'),
-      RESULTS: patientFeature('Results', 'patient.results.table'),
-      SALT_WASTING_CLINICAL_FEATURES: patientFeature('Clinical Features', 'patient.saltWastingClinicalFeatures'),
-      TRANSPLANTS: patientFeature('Transplants', 'patient.transplants'),
-      UNITS: patientFeature('Units', 'patient.units')
+      ADDRESSES: patientPage('Addresses', 'patient.addresses'),
+      ALIASES: patientPage('Aliases', 'patient.aliases'),
+      ALPORT_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.alportClinicalPictures'),
+      DEMOGRAPHICS: patientPage('Demographics', 'patient.demographics'),
+      DIAGNOSIS: patientPage('Diagnosis', 'patient.diagnosis', true),
+      DIALYSIS: patientPage('Dialysis', 'patient.dialysis'),
+      COHORTS: patientPage('Cohorts', 'patient.cohorts'),
+      COMORBIDITIES: patientPage('Comorbidities', 'patient.comorbidities'),
+      CONSULTANTS: patientPage('Consultants', 'patient.consultants'),
+      FAMILY_HISTORY: patientPage('Family History', 'patient.familyHistory', true),
+      FETAL_ANOMALY_SCANS: patientPage('Fetal Anomaly Scans', 'patient.fetalAnomalyScans'),
+      FETAL_ULTRASOUNDS: patientPage('Fetal Ultrasounds', 'patient.fetalUltrasounds'),
+      GENETICS: patientPage('Genetics', 'patient.genetics', true),
+      HNF1B_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.hnf1bClinicalPictures'),
+      HOSPITALISATIONS: patientPage('Hospitalisations', 'patient.hospitalisations'),
+      INS_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.insClinicalPictures'),
+      INS_RELAPSES: patientPage('Relapses', 'patient.insRelapses'),
+      MEDICATIONS: patientPage('Medications', 'patient.medications'),
+      META: patientPage('Metadata', 'patient.metadata'),
+      MPGN_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.mpgnClinicalPictures'),
+      NEPHRECTOMIES: patientPage('Nephrectomies', 'patient.nephrectomies'),
+      NUMBERS: patientPage('Numbers', 'patient.numbers'),
+      PATHOLOGY: patientPage('Pathology', 'patient.pathology'),
+      PLASMAPHERESIS: patientPage('Plasmapheresis', 'patient.plasmapheresis'),
+      PREGNANCIES: patientPage('Pregnancies', 'patient.pregnancies'),
+      RENAL_IMAGING: patientPage('Renal Imaging', 'patient.renalImaging'),
+      RESULTS: patientPage('Results', 'patient.results.table'),
+      SALT_WASTING_CLINICAL_FEATURES: patientPage('Clinical Features', 'patient.saltWastingClinicalFeatures'),
+      TRANSPLANTS: patientPage('Transplants', 'patient.transplants'),
+      UNITS: patientPage('Units', 'patient.units')
     };
   }]);
 })();

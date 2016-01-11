@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.plasmapheresis');
 
-  app.factory('PlasmapheresisPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('PlasmapheresisPermission', ['PatientSourceGroupObjectPermission', function(PatientSourceGroupObjectPermission) {
+    return PatientSourceGroupObjectPermission;
   }]);
 
   function controllerFactory(

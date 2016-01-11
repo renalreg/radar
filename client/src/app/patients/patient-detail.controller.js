@@ -7,17 +7,17 @@
     $scope,
     patient,
     session,
-    hasGroupPermissionForPatient
+    hasPermissionForPatient
   ) {
     $scope.patient = patient;
-    $scope.showDemographics = hasGroupPermissionForPatient(session.user, patient, 'VIEW_DEMOGRAPHICS');
+    $scope.showDemographics = hasPermissionForPatient(session.user, patient, 'VIEW_DEMOGRAPHICS');
   }
 
   PatientDetailController.$inject = [
     '$scope',
     'patient',
     'session',
-    'hasGroupPermissionForPatient'
+    'hasPermissionForPatient'
   ];
 
   app.controller('PatientDetailController', PatientDetailController);

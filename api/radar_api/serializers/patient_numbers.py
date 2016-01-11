@@ -7,7 +7,7 @@ from radar.models import PatientNumber
 
 
 class PatientNumberSerializer(PatientSerializerMixin, SourceGroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    group = GroupReferenceField()
+    number_group = GroupReferenceField()
 
     class Meta(object):
         model_class = PatientNumber

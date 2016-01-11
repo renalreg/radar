@@ -26,10 +26,9 @@ class TinyPatientSerializer(Serializer):
     gender = CodedIntegerSerializer(GENDERS, read_only=True)
     ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
     groups = ListField(field=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
-    recruited_group = TinyGroupReferenceField(read_only=True)
-    is_active = BooleanField()
-    comments = StringField()
     recruited_date = DateTimeField(read_only=True)
+    recruited_group = TinyGroupReferenceField(read_only=True)
+    comments = StringField()
 
     def __init__(self, current_user, **kwargs):
         super(TinyPatientSerializer, self).__init__(**kwargs)
@@ -50,10 +49,9 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     gender = CodedIntegerSerializer(GENDERS, read_only=True)
     ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
     groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
-    recruited_group = GroupReferenceField(read_only=True)
-    is_active = BooleanField()
-    comments = StringField()
     recruited_date = DateTimeField(read_only=True)
+    recruited_group = GroupReferenceField(read_only=True)
+    comments = StringField()
 
     class Meta(object):
         model_class = Patient

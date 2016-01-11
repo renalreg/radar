@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.navigation');
 
-  app.directive('cohortNavigation', ['patientFeatures', '_', function(patientFeatures, _) {
+  app.directive('cohortNavigation', ['patientPages', '_', function(patientPages, _) {
     return {
       scope: {
         patient: '=',
@@ -13,10 +13,10 @@
       link: function(scope) {
         scope.items = [];
 
-        var features = scope.cohort.features;
+        var pages = scope.cohort.pages;
 
-        _.forEach(features, function(x) {
-          var item = patientFeatures[x];
+        _.forEach(pages, function(x) {
+          var item = patientPages[x];
 
           if (item !== undefined) {
             scope.items.push(item);

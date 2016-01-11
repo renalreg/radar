@@ -11,30 +11,17 @@
         data = {};
       }
 
-      if (data.cohorts === undefined) {
-        data.cohorts = [];
+      if (data.groups === undefined) {
+        data.groups = [];
       } else {
-        var cohorts = [];
+        var groups = [];
 
-        for (i = 0; i < data.cohorts.length; i++) {
-          var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(store.create('cohort-users', rawCohort)));
+        for (i = 0; i < data.groups.length; i++) {
+          var rawGroup = data.groups[i];
+          groups.push(store.pushToStore(store.create('group-users', rawGroup)));
         }
 
-        data.cohorts = cohorts;
-      }
-
-      if (data.organisations === undefined) {
-        data.organisations = [];
-      } else {
-        var organisations = [];
-
-        for (i = 0; i < data.organisations.length; i++) {
-          var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(store.create('organisation-users', rawOrganisation)));
-        }
-
-        data.organisations = organisations;
+        data.groups = groups;
       }
 
       Model.call(this, modelName, data);
@@ -42,9 +29,15 @@
 
     UserModel.prototype = Object.create(Model.prototype);
 
-    UserModel.prototype.getUnits = function() {
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
+    UserModel.prototype.getCohorts = function() {
+      return _.filter(this.groups, function(x) {
+        return x.group.type === 'COHORT';
+      });
+    };
+
+    UserModel.prototype.getHospitals = function() {
+      return _.filter(this.groups, function(x) {
+        return x.group.type === 'HOSPITAL';
       });
     };
 

@@ -7,26 +7,15 @@
     function PatientModel(modelName, data) {
       var i;
 
-      if (data.cohorts !== undefined) {
-        var cohorts = [];
+      if (data.groups !== undefined) {
+        var groups = [];
 
-        for (i = 0; i < data.cohorts.length; i++) {
-          var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(new Model('cohort-patients', rawCohort)));
+        for (i = 0; i < data.groups.length; i++) {
+          var rawGroup = data.groups[i];
+          groups.push(store.pushToStore(new Model('group-patients', rawGroup)));
         }
 
-        data.cohorts = cohorts;
-      }
-
-      if (data.organisations !== undefined) {
-        var organisations = [];
-
-        for (i = 0; i < data.organisations.length; i++) {
-          var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(new Model('organisation-patients', rawOrganisation)));
-        }
-
-        data.organisations = organisations;
+        data.groups = groups;
       }
 
       Model.call(this, modelName, data);
@@ -44,24 +33,16 @@
       }
     };
 
-    PatientModel.prototype.getUnits = function() {
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
+    PatientModel.prototype.getHospitals = function() {
+      return _.filter(this.groups, function(x) {
+        return x.group.type === 'HOSPITAL';
       });
     };
 
     PatientModel.prototype.getCohorts = function(all) {
-      if (all === undefined) {
-        all = false;
-      }
-
-      if (all) {
-        return this.cohorts;
-      } else {
-        return _.filter(this.cohorts, function(x) {
-          return x.cohort.code !== 'RADAR';
-        });
-      }
+      return _.filter(this.groups, function(x) {
+        return x.group.type === 'COHORT';
+      });
     };
 
     return PatientModel;

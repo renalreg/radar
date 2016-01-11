@@ -36,7 +36,7 @@ class Group(db.Model):
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
     _pages = Column('pages', postgresql.ARRAY(String))
-    instructions = Column(String)
+    notes = Column(String)
 
     # TODO recruitment
 
@@ -45,7 +45,7 @@ class Group(db.Model):
         value = self._pages
 
         if value is not None:
-            value = [PAGES(x) for x in self.pages]
+            value = [PAGES(x) for x in value]
 
         return value
 

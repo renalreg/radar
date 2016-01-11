@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
@@ -63,11 +63,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
           <th sort-helper="frequency.label">Frequency</th>
           <th sort-helper="route.label">Route</th>
           <th sort-helper="unstructured">Unstructured Data</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -182,7 +182,7 @@
           <td>{{item.frequency.label | missing}}</td>
           <td>{{item.route.label | missing}}</td>
           <td>{{item.unstructured | missing}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

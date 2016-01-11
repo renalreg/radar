@@ -42,6 +42,6 @@ class SourceGroupObjectViewMixin(SourceGroupFilterMixin):
 
 class RadarObjectViewMixin(SourceGroupFilterMixin):
     def get_permission_classes(self):
-        permission_classes = super(RadarSourceGroupObjectPermission, self).get_permission_classes()
+        permission_classes = super(RadarObjectViewMixin, self).get_permission_classes()
         permission_classes.append(RadarSourceGroupObjectPermission)
         return permission_classes

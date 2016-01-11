@@ -28,10 +28,8 @@ class PatientListView(ListModelView):
             builder.last_name(args['last_name'])
 
         if args.get('groups') is not None:
-            is_active = args.get('is_active')
-
             for group in args.get('groups'):
-                builder.group(group, is_active)
+                builder.group(group)
 
         if args.get('patient_number'):
             builder.patient_number(args['patient_number'])
@@ -50,9 +48,6 @@ class PatientListView(ListModelView):
 
         if args.get('year_of_death') is not None:
             builder.year_of_death(args['year_of_death'])
-
-        if args.get('is_active') is not None:
-            builder.is_active(args['is_active'])
 
         sort, reverse = self.get_sort_args()
 

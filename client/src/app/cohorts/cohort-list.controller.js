@@ -18,13 +18,15 @@
 
       if (user.isAdmin) {
         // Admins can see all cohorts
-        store.findMany('cohorts').then(function(cohorts) {
+        store.findMany('groups', {type: 'COHORT'}).then(function(cohorts) {
           setCohorts(cohorts);
         });
       } else {
-        setCohorts(_.map(user.cohorts, function(x) {
+        var cohorts = _.map(user.getCohorts(), function(x) {
           return x.cohort;
-        }));
+        });
+
+        setCohorts(cohorts);
       }
     }
   }]);

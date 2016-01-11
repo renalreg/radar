@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr ng-if="item.firstName">
@@ -207,7 +207,7 @@
           <th sort-helper="dateOfDeath || yearOfDeath">DOD</th>
           <th sort-helper="gender">Gender</th>
           <th sort-helper="ethnicity.label">Ethnicity</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
         </tr>
       </thead>
 
@@ -240,7 +240,7 @@
 
           <td>{{item.gender.label | missing}}</td>
           <td>{{item.ethnicity.label | missing}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
         </tr>
       </tbody>
     </table>

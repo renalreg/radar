@@ -3,26 +3,16 @@
 
   var app = angular.module('radar.permissions');
 
-  function factory(
-    hasPermissionForAnyCohort,
-    hasPermissionForAnyOrganisation
-  ) {
+  app.factory('hasPermissionForAnyGroup', ['_', function(_) {
     return function hasPermissionForAnyGroup(user, permission) {
       return (
-        user !== null &&
-        (
+        user !== null && (
           user.isAdmin ||
-          hasPermissionForAnyCohort(user, permission) ||
-          hasPermissionForAnyOrganisation(user, permission)
+          _.any(user.groups, function(x) {
+            return x.hasPermission(permission);
+          })
         )
       );
     };
-  }
-
-  factory.$inject = [
-    'hasPermissionForAnyCohort',
-    'hasPermissionForAnyOrganisation'
-  ];
-
-  app.factory('hasPermissionForAnyGroup', factory);
+  }]);
 })();

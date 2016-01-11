@@ -1,0 +1,22 @@
+<div loading="loading">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>
+          <span ng-switch="groupType">
+            <span ng-switch-when="HOSPITAL">Hospital</span>
+            <span ng-switch-when="COHORT">Cohort</span>
+          </span>
+        </th>
+        <th>Patients</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="count in counts">
+        <td>{{count.group.shortName}}</td>
+        <td>{{count.patientCount}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

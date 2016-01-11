@@ -6,7 +6,8 @@
   app.provider('store', function() {
     var config = {
       models: {},
-      childModels: {}
+      childModels: {},
+      mixins: {}
     };
 
     this.registerModel = function(name, constructorName) {
@@ -15,6 +16,14 @@
 
     this.registerChildModel = function(key, name) {
       config.childModels[key] = name;
+    };
+
+    this.registerMixin = function(key, name) {
+      if (config.mixins[key] === undefined) {
+        config.mixins[key] = [];
+      }
+
+      config.mixins[key].push(name);
     };
 
     this.$get = ['_', '$injector', 'adapter', '$q', function(_, $injector, adapter, $q) {
@@ -28,7 +37,18 @@
 
       Store.prototype.getModelConstructor = function(modelName) {
         var modelConstructorName = this.config.models[modelName] || 'Model';
-        return $injector.get(modelConstructorName);
+        var Model = $injector.get(modelConstructorName);
+
+        var mixinNames = this.config.mixins[modelName];
+
+        if (mixinNames) {
+          _.forEach(mixinNames, function(mixinName) {
+            var mixin = $injector.get(mixinName);
+            angular.extend(Model.prototype, mixin);
+          });
+        }
+
+        return Model;
       };
 
       Store.prototype.create = function(modelName, data) {
