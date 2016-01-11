@@ -42,9 +42,9 @@ class SourceTypeField(Field):
 
 class SourceGroupValidationMixin(object):
     source_group = SourceGroupField([required()])
-    source_type = SourceTypeField()
+    source_type = SourceTypeField([required()])
 
 
 class RadarSourceGroupValidationMixin(object):
     source_group = RadarSourceGroupField([required()])
-    source_type = SourceTypeField()
+    source_type = SourceTypeField([required()])

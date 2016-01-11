@@ -29,7 +29,7 @@ def diagnosis(patient):
     obj.group = group
     obj.date_of_symptoms = date(2014, 1, 1)
     obj.date_of_diagnosis = date(2015, 1, 1)
-    obj.group_diganosis = GroupDiagnosis(group=group)
+    obj.group_diagnosis = GroupDiagnosis(group=group)
     obj.diagnosis_text = 'Foo Bar Baz'
     obj.biopsy_diagnosis = 1
 
@@ -42,7 +42,7 @@ def test_valid(diagnosis):
     assert obj.group is not None
     assert obj.date_of_symptoms == date(2014, 1, 1)
     assert obj.date_of_diagnosis == date(2015, 1, 1)
-    assert obj.group_diganosis is not None
+    assert obj.group_diagnosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
     assert obj.biopsy_diagnosis == 1
     assert obj.created_user is not None
@@ -62,7 +62,7 @@ def test_group_missing(diagnosis):
 
 
 def test_group_not_cohort(diagnosis):
-    diagnosis.group.type == GROUP_TYPE_OTHER
+    diagnosis.group.type = GROUP_TYPE_OTHER
     invalid(diagnosis)
 
 

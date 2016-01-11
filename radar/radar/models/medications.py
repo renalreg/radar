@@ -48,4 +48,4 @@ class Medication(db.Model, MetaModelMixin):
     route = Column(String)
     unstructured = Column(String)
 
-Index('medications_patient_id_idx', Medication.patient_id)
+Index('medications_patient_idx', Medication.patient_id)

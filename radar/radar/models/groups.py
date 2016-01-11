@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
-from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_managed_roles_for_role
+from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_roles_managed_by_role
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.pages import PAGES
 
@@ -37,9 +37,6 @@ class Group(db.Model):
     short_name = Column(String, nullable=False)
     _pages = Column('pages', postgresql.ARRAY(String))
     instructions = Column(String)
-
-    group_patients = relationship('GroupPatient')
-    group_users = relationship('GroupUser')
 
     # TODO recruitment
 
@@ -78,7 +75,7 @@ class GroupPatient(db.Model, MetaModelMixin):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    group = relationship('Group')
+    group = relationship('Group', foreign_keys=[group_id], backref=backref('group_patients', cascade='all, delete-orphan', passive_deletes=True))
 
     patient_id = patient_id_column()
     patient = patient_relationship('group_patients')
@@ -87,14 +84,10 @@ class GroupPatient(db.Model, MetaModelMixin):
     to_date = Column(DateTime(timezone=True))
 
     created_group_id = Column(Integer, ForeignKey('groups.id'))
-    created_group = relationship('Group')
+    created_group = relationship('Group', foreign_keys=[created_group_id])
 
-    __table_args__ = (
-        UniqueConstraint('group_id', 'patient_id'),
-    )
-
-Index('group_patients_group_id_idx', GroupPatient.group_id)
-Index('group_patients_patient_id_idx', GroupPatient.patient_id)
+Index('group_patients_group_idx', GroupPatient.group_id)
+Index('group_patients_patient_idx', GroupPatient.patient_id)
 
 
 class GroupUser(db.Model, MetaModelMixin):
@@ -103,7 +96,7 @@ class GroupUser(db.Model, MetaModelMixin):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group = relationship('Group', backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id])
@@ -150,10 +143,11 @@ class GroupUser(db.Model, MetaModelMixin):
 
     @property
     def managed_roles(self):
-        return get_managed_roles_for_role(self.role)
+        return get_roles_managed_by_role(self.role)
 
-Index('group_users_group_id_idx', GroupUser.group_id)
-Index('group_users_patient_id_idx', GroupUser.patient_id)
+Index('group_users_group_idx', GroupUser.group_id)
+Index('group_users_user_idx', GroupUser.user_id)
+Index('group_patients_group_user_idx', GroupUser.group_id, GroupUser.user_id, unique=True)
 
 
 class GroupConsultant(db.Model, MetaModelMixin):
@@ -168,7 +162,7 @@ class GroupConsultant(db.Model, MetaModelMixin):
     consultant = relationship('Consultant', backref=backref('group_consultants', cascade='all, delete-orphan', passive_deletes=True))
 
 Index(
-    'group_consultants_group_id_consultant_id_idx',
+    'group_consultants_group_consultant_idx',
     GroupConsultant.group_id,
     GroupConsultant.consultant_id,
     unique=True

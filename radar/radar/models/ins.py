@@ -40,7 +40,7 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     ophthalmoscopy_details = Column(String)
     comments = Column(String)
 
-Index('ins_clinical_pictures_patient_id_idx', InsClinicalPicture.patient_id)
+Index('ins_clinical_pictures_patient_idx', InsClinicalPicture.patient_id)
 
 
 class InsRelapse(db.Model, MetaModelMixin):
@@ -61,4 +61,4 @@ class InsRelapse(db.Model, MetaModelMixin):
     date_of_remission = Column(Date)
     remission_type = Column(String)
 
-Index('ins_relapses_patient_id_idx', InsRelapse.patient_id)
+Index('ins_relapses_patient_idx', InsRelapse.patient_id)

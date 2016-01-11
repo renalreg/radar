@@ -35,4 +35,4 @@ class FetalUltrasound(db.Model, MetaModelMixin):
     liquor_volume = Column(String)
     comments = Column(String)
 
-Index('fetal_ultrasounds_patient_id_idx', FetalUltrasound.patient_id)
+Index('fetal_ultrasounds_patient_idx', FetalUltrasound.patient_id)

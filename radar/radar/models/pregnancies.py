@@ -49,4 +49,4 @@ class Pregnancy(db.Model, MetaModelMixin):
     neonatal_intensive_care = Column(Boolean)
     pre_eclampsia = Column(Integer)
 
-Index('pregnancies_patient_id', Pregnancy.patient_id)
+Index('pregnancies_patient_idx', Pregnancy.patient_id)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Date, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, ForeignKey, String, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -30,9 +30,9 @@ class PatientDemographics(db.Model, MetaModelMixin):
     mobile_number = Column(String)
     email_address = Column(String)
 
-Index('patient_demographics_patient_id_idx', PatientDemographics.patient_id)
+Index('patient_demographics_patient_idx', PatientDemographics.patient_id)
 Index(
-    'patient_demographics_patient_id_source_group_id_source_type_id_idx',
+    'patient_demographics_patient_source_idx',
     PatientDemographics.patient_id,
     PatientDemographics.source_group_id,
     PatientDemographics.source_type_id,

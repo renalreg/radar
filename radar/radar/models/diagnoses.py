@@ -55,10 +55,10 @@ class Diagnosis(db.Model, MetaModelMixin):
 
         return r
 
-Index('diagnoses_patient_id_idx', Diagnosis.patient_id)
-Index('diagnoses_group_id_idx', Diagnosis.group_id)
+Index('diagnoses_patient_idx', Diagnosis.patient_id)
+Index('diagnoses_group_idx', Diagnosis.group_id)
 Index(
-    'diagnoses_patient_id_group_id_idx',
+    'diagnoses_patient_group_idx',
     Diagnosis.patient_id,
     Diagnosis.group_id,
     unique=True
@@ -71,9 +71,9 @@ class GroupDiagnosis(db.Model):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    grouo = relationship('Group')
+    group = relationship('Group')
 
     name = Column(String, nullable=False)
     display_order = Column(Integer, nullable=False)
 
-Index('group_diagnoses_group_id_idx', GroupDiagnosis.group_id)
+Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)

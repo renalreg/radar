@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey, Date
+from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -23,3 +23,10 @@ class PatientConsultant(db.Model, MetaModelMixin):
     __table_args__ = (
         UniqueConstraint('patient_id', 'consultant_id'),
     )
+
+Index(
+    'patient_consultants_patient_consultant_idx',
+    PatientConsultant.patient_id,
+    PatientConsultant.consultant_id,
+    unique=True
+)

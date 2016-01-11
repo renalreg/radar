@@ -23,7 +23,7 @@ class UserSession(db.Model):
     def is_authenticated(cls):
         return True
 
-Index('user_sessions_user_id_idx', UserSession.user_id)
+Index('user_sessions_user_idx', UserSession.user_id)
 
 
 class AnonymousSession(object):

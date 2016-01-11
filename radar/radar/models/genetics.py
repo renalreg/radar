@@ -32,5 +32,5 @@ class Genetics(db.Model, MetaModelMixin):
     results = Column(Text)
     summary = Column(Text)
 
-Index('genetics_patient_id_idx', Genetics.patient_id)
-Index('genetics_group_id_idx', Genetics.group_id)
+Index('genetics_patient_idx', Genetics.patient_id)
+Index('genetics_group_idx', Genetics.group_id)

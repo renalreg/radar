@@ -43,10 +43,10 @@ class FamilyHistory(db.Model, MetaModelMixin):
     family_history = Column(Boolean)
     other_family_history = Column(String)
 
-Index('family_histories_patient_id_idx', FamilyHistory.patient_id)
-Index('family_histories_group_id_idx', FamilyHistory.group_id)
+Index('family_histories_patient_idx', FamilyHistory.patient_id)
+Index('family_histories_group_idx', FamilyHistory.group_id)
 Index(
-    'family_histories_patient_id_group_id_idx',
+    'family_histories_patient_group_idx',
     FamilyHistory.patient_id,
     FamilyHistory.group_id,
     unique=True

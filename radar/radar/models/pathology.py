@@ -37,4 +37,4 @@ class Pathology(db.Model, MetaModelMixin):
     histological_summary = Column(String)
     em_findings = Column(String)
 
-Index('pathology_patient_id_idx', Pathology.patient_id)
+Index('pathology_patient_idx', Pathology.patient_id)

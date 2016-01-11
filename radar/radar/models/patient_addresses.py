@@ -40,4 +40,4 @@ class PatientAddress(db.Model, MetaModelMixin):
 
         return "\n".join(x for x in parts if x)
 
-Index('patient_addresses_patient_id_idx', PatientAddress.patient_id)
+Index('patient_addresses_patient_idx', PatientAddress.patient_id)

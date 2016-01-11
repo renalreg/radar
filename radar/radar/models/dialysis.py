@@ -41,4 +41,4 @@ class Dialysis(db.Model, MetaModelMixin):
 
     modality = Column(Integer, nullable=False)
 
-Index('dialysis_patient_id_idx', Dialysis.patient_id)
+Index('dialysis_patient_idx', Dialysis.patient_id)

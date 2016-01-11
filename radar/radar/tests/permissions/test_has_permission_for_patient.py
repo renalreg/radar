@@ -1,15 +1,15 @@
-from radar.permissions import has_group_permission_for_patient
+from radar.permissions import has_permission_for_patient
 from radar.tests.permissions.helpers import make_user, make_patient, make_groups
 from radar.models.groups import Group
 from radar.roles import ROLES, PERMISSIONS
 
 
 def should_grant(user, patient, permission):
-    assert has_group_permission_for_patient(user, patient, permission)
+    assert has_permission_for_patient(user, patient, permission)
 
 
 def should_deny(user, patient, permission):
-    assert not has_group_permission_for_patient(user, patient, permission)
+    assert not has_permission_for_patient(user, patient, permission)
 
 
 def test_admin():

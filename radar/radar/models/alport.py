@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Date, Integer
+from sqlalchemy import Column, Date, Integer, Index
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -28,3 +28,5 @@ class AlportClinicalPicture(db.Model, MetaModelMixin):
     deafness = Column(Integer, nullable=False)
     deafness_date = Column(Date)
     hearing_aid_date = Column(Date)
+
+Index('alport_clinical_pictures_patient_idx', AlportClinicalPicture.patient_id)
