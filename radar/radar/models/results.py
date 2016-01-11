@@ -18,7 +18,7 @@ class Observation(db.Model):
     type = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    system_id = Column(Integer, ForeignKey('observation_systems.id'), nullable=False)
+    system_id = Column(String, ForeignKey('observation_systems.id'), nullable=False)
     system = relationship('ObservationSystem')
     options = Column(postgresql.JSONB, nullable=False)
 
@@ -26,7 +26,7 @@ class Observation(db.Model):
 class ObservationSystem(db.Model):
     __tablename__ = 'observation_systems'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
 
 
