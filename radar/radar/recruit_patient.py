@@ -6,12 +6,11 @@ import requests
 from radar.database import db
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
-from radar.patient_search import filter_by_patient_number_at_organisation
+from radar.patient_search import filter_by_patient_number_at_group
 from radar.models.groups import GroupPatient, Group, GROUP_TYPE_HOSPITAL
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import get_radar_group, is_radar_group
 from radar.sources import get_radar_source
-from radar.models.organisations import OrganisationPatient
 from radar.validation.utils import validate
 from radar.validation.core import ValidationError
 from radar.serializers.ukrdc import SearchSerializer, ResultListSerializer
@@ -51,7 +50,7 @@ def search_ukrdc_patients(params):
         'birth_time': params['date_of_birth'],
         'patient_number': {
             'number': params['number'],
-            'code_system': params['number_organisation'].code
+            'code_system': params['number_group'].code
         }
     }
     request_serializer = SearchSerializer()
@@ -99,7 +98,7 @@ def search_ukrdc_patients(params):
 
 
 def search_radar_patients(params):
-    number_filter = filter_by_patient_number_at_organisation(params['number'], params['number_organisation'])
+    number_filter = filter_by_patient_number_at_group(params['number'], params['number_group'])
     patients = Patient.query.filter(number_filter).all()
 
     results = []
@@ -216,7 +215,7 @@ def recruit_patient(params):
             patient_number.patient = patient
             patient_number.source_group = radar_group
             patient_number.source = radar_source
-            patient_number.organisation = x['organisation']
+            patient_number.group = x['group']
             patient_number.number = x['number']
             patient_number = validate(patient_number)
             db.session.add(patient_number)
@@ -232,8 +231,8 @@ def recruit_patient(params):
         db.session.add(cohort_group_patient)
 
     # Add the patient to the hospital group
-    if not patient.in_organisation(hospital_group):
-        hospital_group_patient = OrganisationPatient()
+    if not patient.in_group(hospital_group):
+        hospital_group_patient = GroupPatient()
         hospital_group_patient.patient = patient
         hospital_group_patient.group = hospital_group
         hospital_group_patient.from_date = datetime.utcnow()

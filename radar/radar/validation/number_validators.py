@@ -1,8 +1,8 @@
 import re
 
 from radar.validation.core import ValidationError
-from radar.models import ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, \
-    ORGANISATION_CODE_UKRR, ORGANISATION_CODE_UKRDC, ORGANISATION_CODE_BAPN
+from radar.models.groups import GROUP_CODE_NHS, GROUP_CODE_CHI, GROUP_CODE_HANDC, \
+    GROUP_CODE_UKRR, GROUP_CODE_UKRDC, GROUP_CODE_BAPN
 
 WHITESPACE_REGEX = re.compile('\s')
 LEADING_ZERO_REGEX = re.compile('^0+')
@@ -194,10 +194,10 @@ def gmc_number():
 
 
 NUMBER_VALIDATORS = {
-    ORGANISATION_CODE_NHS: [nhs_no()],
-    ORGANISATION_CODE_CHI: [chi_no()],
-    ORGANISATION_CODE_HANDC: [handc_no()],
-    ORGANISATION_CODE_UKRR: [ukrr_no()],
-    ORGANISATION_CODE_UKRDC: [ukrdc_no()],
-    ORGANISATION_CODE_BAPN: [bapn_no()]
+    GROUP_CODE_NHS: [nhs_no()],
+    GROUP_CODE_CHI: [chi_no()],
+    GROUP_CODE_HANDC: [handc_no()],
+    GROUP_CODE_UKRR: [ukrr_no()],
+    GROUP_CODE_UKRDC: [ukrdc_no()],
+    GROUP_CODE_BAPN: [bapn_no()]
 }

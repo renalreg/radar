@@ -16,5 +16,5 @@ class Consultant(db.Model, MetaModelMixin):
     gmc_number = Column(Integer)  # TODO unique
 
     @property
-    def organisations(self):
-        return [x.organisation for x in self.organisation_consultants]
+    def groups(self):
+        return [x.group for x in self.group_consultants]
