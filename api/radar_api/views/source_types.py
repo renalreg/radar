@@ -1,4 +1,4 @@
-from radar_api.serializers.sources import SourceTypeSerializer
+from radar_api.serializers.source_types import SourceTypeSerializer
 from radar.views.core import ListModelView, RetrieveModelView
 from radar.models.source_types import SourceType
 
