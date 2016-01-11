@@ -1,7 +1,7 @@
 from flask import request
 from radar_api.serializers.diagnoses import GroupDiagnosisSerializer, DiagnosisSerializer, \
     GroupDiagnosisRequestSerializer
-from radar.models.diagnosis import GroupDiagnosis, Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES
+from radar.models.diagnoses import GroupDiagnosis, Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES
 from radar.validation.diagnoses import DiagnosisValidation
 from radar.views.codes import CodedIntegerListView
 from radar.views.groups import GroupObjectViewMixin

@@ -11,7 +11,8 @@ from radar.models.groups import GroupPatient, Group, GROUP_TYPE_HOSPITAL
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import get_radar_group, is_radar_group
 from radar.source_types import get_radar_source_type
-from radar.validation.core import ValidationError, validate
+from radar.validation.core import ValidationError
+from radar.validation.utils import validate
 from radar.serializers.ukrdc import SearchSerializer, ResultListSerializer
 
 

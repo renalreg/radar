@@ -1,4 +1,4 @@
-from radar.validation.core import Field, ValidationError
+from radar.validation.core import Field, ValidationError, Validation
 from radar.validation.validators import required
 from radar.models.groups import GROUP_TYPE_COHORT
 
@@ -11,3 +11,8 @@ class CohortGroupValidationMixin(object):
             raise ValidationError('Must be a cohort.')
 
         return group
+
+
+# TODO
+class GroupValidation(Validation):
+    pass

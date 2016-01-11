@@ -2,17 +2,17 @@ from radar_api.serializers.plasmapheresis import PlasmapheresisSerializer
 from radar.models import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
 from radar.validation.plasmapheresis import PlasmapheresisValidation
 from radar.views.codes import CodedStringListView
-from radar.views.sources import DataSourceObjectViewMixin
+from radar.views.sources import SourceGroupObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 
 
-class PlasmapheresisListView(DataSourceObjectViewMixin, PatientObjectListView):
+class PlasmapheresisListView(SourceGroupObjectViewMixin, PatientObjectListView):
     serializer_class = PlasmapheresisSerializer
     model_class = Plasmapheresis
     validation_class = PlasmapheresisValidation
 
 
-class PlasmapheresisDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
+class PlasmapheresisDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
     serializer_class = PlasmapheresisSerializer
     model_class = Plasmapheresis
     validation_class = PlasmapheresisValidation

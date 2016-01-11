@@ -1,4 +1,5 @@
-from sqlalchemy import or_, and_, aliased
+from sqlalchemy import or_, and_
+from sqlalchemy.orm import aliased
 from flask import request
 
 from radar.database import db
