@@ -1,51 +1,25 @@
-from radar.models.organisations import Organisation
+from radar.models.groups import Group
 from radar.permissions import can_edit_patient_object
-from radar.roles import ORGANISATION_ROLES
-from radar.tests.permissions.helpers import make_patient, make_user, make_organisations
+from radar.roles import ROLES
+from radar.tests.permissions.helpers import make_patient, make_user, make_groups
 
 
 def test_admin():
-    organisation = Organisation()
+    group = Group()
     patient = make_patient()
     user = make_user()
 
-    assert not can_edit_patient_object(user, patient, organisation)
+    assert not can_edit_patient_object(user, patient, group)
 
     user.is_admin = True
 
-    assert can_edit_patient_object(user, patient, organisation)
+    assert can_edit_patient_object(user, patient, group)
 
 
-def test_no_permissions():
-    organisation_a, organisation_b = make_organisations(2)
-    patient = make_patient(organisations=[organisation_a])
-    user = make_user(organisations=[organisation_b, ORGANISATION_ROLES.CLINICIAN])
+def test_groups():
+    group_a, group_b = make_groups(2)
+    patient = make_patient([group_a])
+    user = make_user([[group_a, ROLES.CLINICIAN]])
 
-    assert not can_edit_patient_object(user, patient, organisation_a)
-
-
-def test_patient_and_organisation_permissions():
-    organisation = Organisation()
-    patient = make_patient(organisations=[organisation])
-    user = make_user(organisations=[[organisation, ORGANISATION_ROLES.CLINICIAN]])
-
-    assert can_edit_patient_object(user, patient, organisation)
-
-
-def test_patient_and_no_organisation_permissions():
-    organisation_a, organisation_b = make_organisations(2)
-    patient = make_patient(organisations=[organisation_a])
-    user = make_user(organisations=[[organisation_a, ORGANISATION_ROLES.CLINICIAN]])
-
-    assert can_edit_patient_object(user, patient, organisation_a)
-    assert not can_edit_patient_object(user, patient, organisation_b)
-
-
-def test_no_patient_and_organisation_permissions():
-    organisation_a, organisation_b = make_organisations(2)
-    patient_a = make_patient(organisations=[organisation_a])
-    patient_b = make_patient(organisations=[organisation_b])
-    user = make_user(organisations=[[organisation_b, ORGANISATION_ROLES.CLINICIAN]])
-
-    assert not can_edit_patient_object(user, patient_a, organisation_b)
-    assert can_edit_patient_object(user, patient_b, organisation_b)
+    assert can_edit_patient_object(user, patient, group_a)
+    assert not can_edit_patient_object(user, patient, group_b)

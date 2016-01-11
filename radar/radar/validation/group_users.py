@@ -17,7 +17,7 @@ class GroupUserValidation(MetaValidationMixin, Validation):
         if user == obj.user and not user.is_admin:
             raise ValidationError({'group': 'Permission denied!'})
 
-        # Check the user has permission for the cohort and role
+        # Check the user has permission for the group and role
         if not has_permission_for_group_role(user, obj.group, obj.role):
             raise ValidationError({'role': 'Permission denied!'})
 

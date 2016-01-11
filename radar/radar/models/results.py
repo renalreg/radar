@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -20,7 +20,7 @@ class Observation(db.Model):
     short_name = Column(String, nullable=False)
     system_id = Column(Integer, ForeignKey('observation_systems.id'), nullable=False)
     system = relationship('ObservationSystem')
-    options = Column(JSONB, nullable=False)
+    options = Column(postgresql.JSONB, nullable=False)
 
 
 class ObservationSystem(db.Model):

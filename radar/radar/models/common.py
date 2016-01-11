@@ -3,13 +3,13 @@ from datetime import datetime
 from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 
 
 def uuid_pk_column():
-    return Column(UUID, primary_key=True, server_default=text('uuid_generate_v4()'))
+    return Column(postgresql.UUID, primary_key=True, server_default=text('uuid_generate_v4()'))
 
 
 def patient_id_column():
