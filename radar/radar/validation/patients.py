@@ -1,4 +1,4 @@
-from radar.permissions import has_organisation_permission_for_patient
+from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSIONS
 from radar.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj, Validation
 from radar.validation.meta import MetaValidationMixin
@@ -15,7 +15,7 @@ class PatientField(Field):
     def validate(self, ctx, patient):
         user = ctx['user']
 
-        if not user.is_admin and not has_organisation_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT):
+        if not user.is_admin and not has_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT):
             raise ValidationError('Permission denied!')
 
         return patient

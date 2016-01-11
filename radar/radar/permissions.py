@@ -106,7 +106,7 @@ def can_edit_patient_object(user, patient, source_group=None):
 
 
 def intersect_patient_and_user_groups(patient, user, patient_membership=False, user_membership=False):
-    """Find the intersection of the organisations the patient and user belong to."""
+    """Find the intersection of the groups the patient and user belong to."""
 
     group_patients = {x.group: x for x in patient.group_patients}
 
@@ -205,7 +205,7 @@ class PatientObjectPermission(PatientPermission):
     Permission is granted if:
     * The user is an admin.
     * The user is updating the object and has the edit patient permission
-      through their organisation membership.
+      through their group membership.
     * The user is viewing the object and has the view patient permission through
       their group membership.
     """
@@ -220,8 +220,7 @@ class SourceGroupObjectPermission(Permission):
     Permission is granted if:
     * The user is an admin.
     * The user is updating the object and the object was entered on RaDaR and
-      the user has permission to edit objects belonging to this data source
-      (through their organisation membership).
+      the user has permission to edit objects belonging to this group.
     * The user is only viewing the object. Permissions for this are handled in
       PatientObjectPermission.
     """

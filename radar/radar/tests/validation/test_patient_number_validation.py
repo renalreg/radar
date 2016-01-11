@@ -1,8 +1,10 @@
 import pytest
 
-from radar.models import DataSource, PatientNumber, ORGANISATION_TYPE_OTHER, Patient, Organisation, \
-    ORGANISATION_CODE_NHS, ORGANISATION_CODE_CHI, ORGANISATION_CODE_HANDC, ORGANISATION_CODE_RADAR, \
-    ORGANISATION_CODE_UKRR
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient
+from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_CODE_NHS,\
+    GROUP_CODE_CHI, GROUP_CODE_HANDC, GROUP_CODE_RADAR, GROUP_CODE_UKRR
+from radar.models.sources import Source, SOURCE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_numbers import PatientNumberValidation
 from radar.tests.validation.helpers import validation_runner
@@ -17,17 +19,18 @@ def patient():
 @pytest.fixture
 def number(patient):
     obj = PatientNumber()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source = Source(id=SOURCE_RADAR)
     obj.patient = patient
-    obj.organisation = Organisation(code='FOO', type=ORGANISATION_TYPE_OTHER)
+    obj.group = Group(code='FOO', type=GROUP_TYPE_OTHER)
     obj.number = '123'
     return obj
 
 
 def test_valid(number):
-    organisation = number.organisation
+    group = number.group
     obj = valid(number)
-    assert obj.organisation == organisation
+    assert obj.group == group
     assert obj.number == '123'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -45,13 +48,13 @@ def test_data_source_missing(number):
     invalid(number)
 
 
-def test_organisation_missing(number):
-    number.organisation = None
+def test_group_missing(number):
+    number.group = None
     invalid(number)
 
 
-def test_organisation_radar(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_RADAR, type=ORGANISATION_TYPE_OTHER)
+def test_group_radar(number):
+    number.group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE_OTHER)
     invalid(number)
 
 
@@ -72,49 +75,49 @@ def test_number_remove_extra_spaces(number):
 
 
 def test_nhs_no_valid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_NHS, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE_OTHER)
     number.number = '9434765919'
     valid(number)
 
 
 def test_nhs_no_invalid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_NHS, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE_OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_chi_no_valid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_CHI, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE_OTHER)
     number.number = '101299877'
     valid(number)
 
 
 def test_chi_no_invalid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_CHI, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE_OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_handc_no_valid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_HANDC, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE_OTHER)
     number.number = '3232255825'
     valid(number)
 
 
 def test_handc_no_invalid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_HANDC, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE_OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_ukrr_no_valid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_UKRR, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE_OTHER)
     number.number = '200012345'
     valid(number)
 
 
 def test_ukrr_no_invalid(number):
-    number.organisation = Organisation(code=ORGANISATION_CODE_UKRR, type=ORGANISATION_TYPE_OTHER)
+    number.group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE_OTHER)
     number.number = '2000123456'
     invalid(number)
 

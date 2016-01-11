@@ -4,8 +4,8 @@ from radar.validation.validators import not_empty, none_if_blank, optional, emai
 from radar.validation.number_validators import gmc_number
 
 
-class OrganisationConsultantValidation(MetaValidationMixin, Validation):
-    organisation = Field([required()])
+class GroupConsultantValidation(MetaValidationMixin, Validation):
+    group = Field([required()])
 
 
 class ConsultantValidation(MetaValidationMixin, Validation):
@@ -14,4 +14,4 @@ class ConsultantValidation(MetaValidationMixin, Validation):
     email = Field([none_if_blank(), optional(), lower(), email_address()])
     telephone_number = Field([none_if_blank(), optional(), max_length(100)])
     gmc_number = Field([optional(), gmc_number()])
-    organisation_consultants = ListField(OrganisationConsultantValidation())
+    group_consultants = ListField(GroupConsultantValidation())
