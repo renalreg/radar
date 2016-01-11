@@ -8,11 +8,12 @@ from radar_fixtures.validation import validate_and_add
 
 
 def create_medications_f():
-    def create_medications(patient, data_source, n):
+    def create_medications(patient, source_group, source_type, n):
         for _ in range(n):
             medication = Medication()
             medication.patient = patient
-            medication.data_source = data_source
+            medication.source_group = source_group
+            medication.source_type = source_type
             medication.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:

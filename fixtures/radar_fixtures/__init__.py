@@ -2,10 +2,9 @@ import random
 
 from radar.database import db
 from radar_fixtures.users import DEFAULT_PASSWORD
-from radar_fixtures.organisations import create_organisations
-from radar_fixtures.data_sources import create_data_sources
-from radar_fixtures.cohorts import create_cohorts
-from radar_fixtures.diagnoses import create_cohort_diagnoses
+from radar_fixtures.groups import create_groups
+from radar_fixtures.source_types import create_source_types
+from radar_fixtures.diagnoses import create_group_diagnoses
 from radar_fixtures.comorbidities import create_disorders
 from radar_fixtures.users import create_users, create_bot_user
 from radar_fixtures.consultants import create_consultants
@@ -21,10 +20,9 @@ def create_data(patients=5, users=10, password=DEFAULT_PASSWORD):
 
     with db.session.no_autoflush:
         create_bot_user(password)
-        create_organisations()
-        create_data_sources()
-        create_cohorts()
-        create_cohort_diagnoses()
+        create_groups()
+        create_source_types()
+        create_group_diagnoses()
         create_disorders()
         create_consultants()
         create_posts(10)

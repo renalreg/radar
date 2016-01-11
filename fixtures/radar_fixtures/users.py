@@ -4,9 +4,8 @@ from radar.models.users import User
 from radar_fixtures.validation import validate_and_add
 from radar.database import db
 from radar_fixtures.utils import generate_gender, generate_first_name, generate_last_name
-from radar.models.organisations import OrganisationUser, Organisation
-from radar.roles import ORGANISATION_ROLES, COHORT_ROLES
-from radar.models.cohorts import CohortUser, Cohort
+from radar.roles import ROLES
+from radar.models.groups import Group, GroupUser, GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
 
 DEFAULT_PASSWORD = 'password'
 
@@ -65,11 +64,11 @@ def create_southmead_user(password=DEFAULT_PASSWORD):
     user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
-    organisation_user = OrganisationUser()
-    organisation_user.user = user
-    organisation_user.organisation = Organisation.query.filter(Organisation.code == 'REE01').one()
-    organisation_user.role = ORGANISATION_ROLES.SENIOR_CLINICIAN
-    validate_and_add(organisation_user)
+    group_user = GroupUser()
+    group_user.user = user
+    group_user.group = Group.query.filter(Group.code == 'REE01', Group.type == GROUP_TYPE_HOSPITAL).one()
+    group_user.role = ROLES.SENIOR_CLINICIAN
+    validate_and_add(group_user)
 
 
 def create_ins_user(password=DEFAULT_PASSWORD):
@@ -82,11 +81,11 @@ def create_ins_user(password=DEFAULT_PASSWORD):
     user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
-    cohort_user = CohortUser()
-    cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_ROLES.RESEARCHER
-    validate_and_add(cohort_user)
+    group_user = GroupUser()
+    group_user.user = user
+    group_user.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
+    group_user.role = ROLES.RESEARCHER
+    validate_and_add(group_user)
 
 
 def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
@@ -99,8 +98,8 @@ def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
     user.password = password
     user = validate_and_add(user, {'allow_weak_passwords': True})
 
-    cohort_user = CohortUser()
-    cohort_user.user = user
-    cohort_user.cohort = Cohort.query.filter(Cohort.code == 'INS').one()
-    cohort_user.role = COHORT_ROLES.SENIOR_RESEARCHER
-    validate_and_add(cohort_user)
+    group_user = GroupUser()
+    group_user.user = user
+    group_user.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
+    group_user.role = ROLES.SENIOR_RESEARCHER
+    validate_and_add(group_user)

@@ -1,23 +1,24 @@
 from datetime import date
 import random
 
-from radar.models.organisations import Organisation
+from radar.models.groups import Group, GROUP_TYPE_HOSPITAL
 from radar.models.transplants import Transplant, TRANSPLANT_MODALITIES
 from radar_fixtures.utils import random_date
 from radar_fixtures.validation import validate_and_add
 
 
 def create_transplants_f():
-    organisations = Organisation.query.all()
+    hospitals = Group.query.filter(Group.type == GROUP_TYPE_HOSPITAL).all()
 
-    def create_transplants(patient, data_source, n):
+    def create_transplants(patient, source_group, source_type, n):
         for _ in range(n):
             transplant = Transplant()
             transplant.patient = patient
-            transplant.data_source = data_source
+            transplant.source_group = source_group
+            transplant.source_type = source_type
             transplant.date = random_date(patient.earliest_date_of_birth, date.today())
             transplant.modality = random.choice(TRANSPLANT_MODALITIES.keys())
-            transplant.organisation = random.choice(organisations)
+            transplant.transplant_group = random.choice(hospitals)
 
             if random.random() > 0.75:
                 transplant.date_of_failure = random_date(transplant.date, date.today())

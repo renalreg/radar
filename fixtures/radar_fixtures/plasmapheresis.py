@@ -7,11 +7,12 @@ from radar_fixtures.validation import validate_and_add
 
 
 def create_plasmapheresis_f():
-    def create_plasmapheresis(patient, data_source, n):
+    def create_plasmapheresis(patient, source_group, source_type, n):
         for _ in range(n):
             plasmapheresis = Plasmapheresis()
             plasmapheresis.patient = patient
-            plasmapheresis.data_source = data_source
+            plasmapheresis.source_group = source_group
+            plasmapheresis.source_type = source_type
             plasmapheresis.from_date = random_date(patient.earliest_date_of_birth, date.today())
 
             if random.random() > 0.5:

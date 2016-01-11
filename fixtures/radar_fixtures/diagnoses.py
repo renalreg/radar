@@ -1,8 +1,9 @@
 from radar_fixtures.validation import validate_and_add
-from radar.models import CohortDiagnosis, Cohort
+from radar.models.diagnoses import GroupDiagnosis
+from radar.models.groups import Group, GROUP_TYPE_COHORT
 
 # TODO
-COHORT_DIAGNOSES = {
+GROUP_DIAGNOSES = {
     'ALPORT': [
         'Alport Syndrome - No Histology',
         'Alport Syndrome - Histologically Proven',
@@ -83,13 +84,13 @@ COHORT_DIAGNOSES = {
 }
 
 
-def create_cohort_diagnoses():
-    for code, names in COHORT_DIAGNOSES.items():
-        cohort = Cohort.query.filter(Cohort.code == code).one()
+def create_group_diagnoses():
+    for code, names in GROUP_DIAGNOSES.items():
+        group = Group.query.filter(Group.code == code, Group.type == GROUP_TYPE_COHORT).one()
 
         for i, name in enumerate(names):
-            cohort_diagnosis = CohortDiagnosis()
-            cohort_diagnosis.cohort = cohort
-            cohort_diagnosis.name = name
-            cohort_diagnosis.display_order = i
-            validate_and_add(cohort_diagnosis)
+            group_diagnosis = GroupDiagnosis()
+            group_diagnosis.group = group
+            group_diagnosis.name = name
+            group_diagnosis.display_order = i
+            validate_and_add(group_diagnosis)
