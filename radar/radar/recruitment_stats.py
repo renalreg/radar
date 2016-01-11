@@ -4,9 +4,8 @@ from sqlalchemy import cast, extract, Integer, func
 from sqlalchemy.sql.expression import null, distinct
 
 from radar.database import db
-from radar.models.cohorts import CohortPatient, Cohort
+from radar.models.groups import GroupPatient, Group
 from radar.models.patients import Patient
-from radar.models.organisations import OrganisationPatient, Organisation
 
 
 def recruitment_by_month(date_column, filters=None):
@@ -48,20 +47,11 @@ def recruitment_by_month(date_column, filters=None):
     return results
 
 
-def recruitment_by_cohort(filters=None):
-    return recruitment_by_group(Cohort, CohortPatient.cohort_id, filters)
-
-
-def recruitment_by_organisation(filters=None):
-    return recruitment_by_group(Organisation, OrganisationPatient.organisation_id, filters)
-
-
-def recruitment_by_group(model, group_column, filters=None):
-    count_query = db.session.query(group_column.label('id'), func.count(distinct(Patient.id)).label('patient_count'))\
+def recruitment_by_group(filters=None):
+    count_query = db.session.query(GroupPatient.group_id.label('group_id'), func.count(distinct(Patient.id)).label('patient_count'))\
         .select_from(Patient)\
-        .join(CohortPatient)\
-        .join(OrganisationPatient)\
-        .group_by(group_column)
+        .join(GroupPatient)\
+        .group_by(GroupPatient.group_id)
 
     if filters is not None:
         count_query = count_query.filter(*filters)
@@ -69,9 +59,9 @@ def recruitment_by_group(model, group_column, filters=None):
     count_subquery = count_query.subquery()
 
     query = db.session\
-        .query(model, count_subquery.c.patient_count)\
-        .outerjoin(count_subquery, model.id == count_subquery.c.id)\
+        .query(Group, count_subquery.c.patient_count)\
+        .outerjoin(count_subquery, Group.id == count_subquery.c.group_id)\
         .filter(count_subquery.c.patient_count > 0)\
-        .order_by(model.id)
+        .order_by(Group.id)
 
     return query.all()

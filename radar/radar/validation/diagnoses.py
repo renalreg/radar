@@ -1,5 +1,5 @@
 from radar.models import DIAGNOSIS_BIOPSY_DIAGNOSES
-from radar.validation.cohorts import CohortValidationMixin
+from radar.validation.groups import CohortGroupValidationMixin
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
@@ -7,11 +7,11 @@ from radar.validation.validators import required, optional, \
     valid_date_for_patient, max_length, none_if_blank, in_
 
 
-class DiagnosisValidation(PatientValidationMixin, CohortValidationMixin, MetaValidationMixin, Validation):
+class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, MetaValidationMixin, Validation):
     date_of_symptoms = Field([required(), valid_date_for_patient()])
     date_of_diagnosis = Field([required(), valid_date_for_patient()])
     date_of_renal_disease = Field([optional(), valid_date_for_patient()])
-    cohort_diagnosis = Field([required()])
+    group_diagnosis = Field([required()])
     diagnosis_text = Field([none_if_blank(), optional(), max_length(10000)])
     biopsy_diagnosis = Field([optional(), in_(DIAGNOSIS_BIOPSY_DIAGNOSES.keys())])
 
@@ -23,13 +23,13 @@ class DiagnosisValidation(PatientValidationMixin, CohortValidationMixin, MetaVal
         return date_of_diagnosis
 
     @pass_new_obj
-    def validate_cohort_diagnosis(self, obj, cohort_diagnosis):
-        if cohort_diagnosis.cohort != obj.cohort:
+    def validate_group_diagnosis(self, obj, group_diagnosis):
+        if group_diagnosis.group != obj.group:
             raise ValidationError('Not a valid diagnosis for this cohort.')
 
-        return cohort_diagnosis
+        return group_diagnosis
 
 
-class CohortDiagnosisValidation(CohortValidationMixin, Validation):
+class GroupDiagnosisValidation(CohortGroupValidationMixin, Validation):
     name = Field([required()])
     display_order = Field([required()])

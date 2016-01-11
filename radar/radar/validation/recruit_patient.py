@@ -48,8 +48,8 @@ class RecruitPatientValidation(Validation):
     date_of_birth = Field([optional(), not_in_future()])
     gender = Field([optional(), in_(GENDERS.keys())])
     ethnicities = Field([optional(), in_(ETHNICITIES.keys())])
-    recruited_organisation = Field([required()])
-    cohort = Field([required()])
+    created_group = Field([required()])
+    group = Field([required()])
 
     @pass_context
     def validate_recruited_organisation(self, ctx, recruited_organisation):
