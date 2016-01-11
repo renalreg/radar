@@ -6,7 +6,6 @@ from radar.models.comorbidities import *
 from radar.models.consultants import *
 from radar.models.diagnoses import *
 from radar.models.dialysis import *
-from radar.models.data_sources import *
 from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
@@ -31,6 +30,7 @@ from radar.models.plasmapheresis import *
 from radar.models.pregnancies import *
 from radar.models.renal_imaging import *
 from radar.models.salt_wasting import *
+from radar.models.source_types import *
 from radar.models.transplants import *
 from radar.models.users import *
 from radar.models.user_sessions import *

@@ -1,5 +1,5 @@
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
-from radar.validation.data_sources import DataSourceValidationMixin
+from radar.validation.sources import SourceGroupValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, optional, \
@@ -7,7 +7,7 @@ from radar.validation.validators import required, optional, \
 from radar.models.dialysis import DIALYSIS_MODALITIES
 
 
-class DialysisValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
+class DialysisValidation(PatientValidationMixin, SourceGroupValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
     modality = Field([required(), in_(DIALYSIS_MODALITIES.keys())])

@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, DataSource, Comorbidity, Disorder
+from radar.models import Patient, PatientDemographics, Comorbidity, Disorder
+from radar.models.groups import Group
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.validation.comorbidities import ComorbidityValidation
 from radar.validation.core import ValidationError
 from radar.tests.validation.helpers import validation_runner
@@ -20,7 +22,8 @@ def patient():
 @pytest.fixture
 def comorbidity(patient):
     obj = Comorbidity()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
@@ -45,8 +48,13 @@ def test_patient_missing(comorbidity):
     invalid(comorbidity)
 
 
-def test_data_source_missing(comorbidity):
-    comorbidity.data_source = None
+def test_source_group_missing(comorbidity):
+    comorbidity.source_group = None
+    invalid(comorbidity)
+
+
+def test_source_type_missing(comorbidity):
+    comorbidity.source_type = None
     invalid(comorbidity)
 
 

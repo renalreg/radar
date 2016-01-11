@@ -2,7 +2,9 @@ from datetime import date
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, DataSource, Pathology
+from radar.models import Patient, PatientDemographics, Pathology
+from radar.models.groups import Group
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.pathology import PathologyValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,7 +22,8 @@ def patient():
 @pytest.fixture
 def pathology(patient):
     obj = Pathology()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.kidney_type = 'NATIVE'
@@ -44,8 +47,13 @@ def test_patient_missing(pathology):
     invalid(pathology)
 
 
-def test_data_source_missing(pathology):
-    pathology.data_source = None
+def test_source_group_missing(pathology):
+    pathology.source_group = None
+    invalid(pathology)
+
+
+def test_source_type_missing(pathology):
+    pathology.source_type = None
     invalid(pathology)
 
 

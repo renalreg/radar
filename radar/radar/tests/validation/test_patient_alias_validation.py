@@ -2,7 +2,9 @@ from datetime import date
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, DataSource, PatientAlias
+from radar.models import Patient, PatientDemographics, PatientAlias
+from radar.models.groups import Group
+from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_aliases import PatientAliasValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,7 +22,8 @@ def patient():
 @pytest.fixture
 def alias(patient):
     obj = PatientAlias()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
     obj.patient = patient
     obj.first_name = 'JOHN'
     obj.last_name = 'SMITH'
@@ -42,8 +45,13 @@ def test_patient_missing(alias):
     invalid(alias)
 
 
-def test_data_source_missing(alias):
-    alias.data_source = None
+def test_source_group_missing(alias):
+    alias.source_group = None
+    invalid(alias)
+
+
+def test_source_type_missing(alias):
+    alias.source_type = None
     invalid(alias)
 
 

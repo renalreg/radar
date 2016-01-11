@@ -1,12 +1,12 @@
 from radar.models import MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj, pass_call
-from radar.validation.data_sources import DataSourceValidationMixin
+from radar.validation.sources import SourceGroupValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import valid_date_for_patient, required, optional, not_empty, min_, in_, max_length, none_if_blank
 
 
-class MedicationValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
+class MedicationValidation(PatientValidationMixin, SourceGroupValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
     name = Field([not_empty(), max_length(10000)])

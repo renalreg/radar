@@ -16,22 +16,22 @@ class PatientNumber(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')
-    source_id = Column(String, ForeignKey('sources.id'), nullable=False)
-    source = relationship('Source')
+    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
+    source_type = relationship('SourceType')
 
-    organisation_id = Column(Integer, ForeignKey('organisations.id'), nullable=False)
-    organisation = relationship('Organisation')
-
+    number_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    number_group = relationship('Group')
     number = Column(String, nullable=False)
 
-# Data source, organisation and number must be unique
+# Source group, number group and number must be unique
 Index(
-    'patient_numbers_data_source_id_organisation_id_number_idx',
-    PatientNumber.data_source_id,
-    PatientNumber.organisation_id,
+    'patient_numbers_source_group_id_number_group_id_number_idx',
+    PatientNumber.source_group_id,
+    PatientNumber.number_group_id,
     PatientNumber.number,
     unique=True
 )
 
 Index('patient_numbers_patient_id_idx', PatientNumber.patient_id)
-Index('patient_numbers_organisation_id_idx', PatientNumber.organisation_id)
+Index('patient_numbers_source_group_id_idx', PatientNumber.source_group_id)
+Index('patient_numbers_number_group_id_idx', PatientNumber.number_group_id)

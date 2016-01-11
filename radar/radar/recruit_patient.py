@@ -10,9 +10,8 @@ from radar.patient_search import filter_by_patient_number_at_group
 from radar.models.groups import GroupPatient, Group, GROUP_TYPE_HOSPITAL
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import get_radar_group, is_radar_group
-from radar.sources import get_radar_source
-from radar.validation.utils import validate
-from radar.validation.core import ValidationError
+from radar.source_types import get_radar_source_type
+from radar.validation.core import ValidationError, validate
 from radar.serializers.ukrdc import SearchSerializer, ResultListSerializer
 
 
@@ -182,7 +181,7 @@ def recruit_patient(params):
         patient = Patient.query.get(radar_id)
     else:
         radar_group = get_radar_group()
-        radar_source = get_radar_source()
+        radar_source_type = get_radar_source_type()
 
         patient = Patient()
         patient.is_active = True
@@ -200,7 +199,7 @@ def recruit_patient(params):
         patient_demographics = PatientDemographics()
         patient_demographics.patient = patient
         patient_demographics.source_group = radar_group
-        patient_demographics.source = radar_source
+        patient_demographics.source_type = radar_source_type
         patient_demographics.first_name = params['first_name']
         patient_demographics.last_name = params['last_name']
         patient_demographics.date_of_birth = params['date_of_birth']
@@ -214,7 +213,7 @@ def recruit_patient(params):
             patient_number = PatientNumber()
             patient_number.patient = patient
             patient_number.source_group = radar_group
-            patient_number.source = radar_source
+            patient_number.source_type = radar_source_type
             patient_number.group = x['group']
             patient_number.number = x['number']
             patient_number = validate(patient_number)
