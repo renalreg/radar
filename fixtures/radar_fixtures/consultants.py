@@ -1,7 +1,8 @@
 from radar.models.consultants import Consultant
 from radar_fixtures.utils import generate_gender, generate_first_name, generate_last_name
 from radar_fixtures.validation import validate_and_add
-from radar.models.groups import Group, GroupConsultant, GROUP_TYPE_HOSPITAL
+from radar.models.groups import Group, GROUP_TYPE_HOSPITAL
+from radar.models.consultants import GroupConsultant
 
 
 def create_consultants():
