@@ -1,2 +1,2 @@
-<div class="well" ng-show="isLoading()"><strong>Loading</strong> <i class="fa fa-spinner fa-spin"></i></div>
-<div ng-show="!isLoading()" ng-transclude></div>
+<div class="well" ng-show="loading"><strong>{{message}}</strong> <i class="fa fa-spinner fa-spin"></i></div>
+<div ng-show="!loading" ng-transclude></div>
