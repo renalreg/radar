@@ -56,7 +56,8 @@ def test_source_group_missing(nephrectomy):
 
 def test_source_type_missing(nephrectomy):
     nephrectomy.source_type = None
-    invalid(nephrectomy)
+    nephrectomy = valid(nephrectomy)
+    assert nephrectomy.source_type.id == 'RADAR'
 
 
 def test_date_missing(nephrectomy):

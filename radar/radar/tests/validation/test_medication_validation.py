@@ -62,7 +62,8 @@ def test_source_group_missing(medication):
 
 def test_source_type_missing(medication):
     medication.source_type = None
-    invalid(medication)
+    medication = valid(medication)
+    assert medication.source_type.id == 'RADAR'
 
 
 def test_from_date_missing(medication):

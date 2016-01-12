@@ -62,12 +62,14 @@ def test_patient_missing(demographics):
 
 def test_source_group_missing(demographics):
     demographics.source_group = None
-    invalid(demographics)
+    demographics = valid(demographics)
+    assert demographics.source_type.id == 'RADAR'
 
 
 def test_source_type_missing(demographics):
     demographics.source_type = None
-    invalid(demographics)
+    demographics = valid(demographics)
+    assert demographics.source_type.id == 'RADAR'
 
 
 def test_first_name_blank(demographics):

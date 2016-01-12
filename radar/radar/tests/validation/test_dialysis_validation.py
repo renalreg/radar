@@ -54,7 +54,8 @@ def test_source_group_missing(dialysis):
 
 def test_source_type_missing(dialysis):
     dialysis.source_type = None
-    invalid(dialysis)
+    dialysis = valid(dialysis)
+    assert dialysis.source_type.id == 'RADAR'
 
 
 def test_from_date_missing(dialysis):

@@ -49,12 +49,14 @@ def test_patient_missing(pathology):
 
 def test_source_group_missing(pathology):
     pathology.source_group = None
-    invalid(pathology)
+    pathology = valid(pathology)
+    assert pathology.source_type.id == 'RADAR'
 
 
 def test_source_type_missing(pathology):
     pathology.source_type = None
-    invalid(pathology)
+    pathology = valid(pathology)
+    assert pathology.source_type.id == 'RADAR'
 
 
 def test_kidney_type_missing(pathology):
