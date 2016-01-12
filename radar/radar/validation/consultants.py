@@ -14,10 +14,30 @@ class GroupConsultantValidation(MetaValidationMixin, Validation):
         return group
 
 
+class GroupConsultantListField(ListField):
+    def __init__(self, chain=None):
+        super(GroupConsultantListField, self).__init__(GroupConsultantValidation(), chain=chain)
+
+    def validate(self, group_consultants):
+        print 'hello!'
+
+        group_ids = set()
+
+        for i, group_consultant in enumerate(group_consultants):
+            group_id = group_consultant.group.id
+
+            if group_id in group_ids:
+                raise ValidationError({i: {'group': 'Consultant already in group.'}})
+            else:
+                group_ids.add(group_id)
+
+        return group_consultants
+
+
 class ConsultantValidation(MetaValidationMixin, Validation):
     first_name = Field([not_empty(), upper(), max_length(100)])
     last_name = Field([not_empty(), upper(), max_length(100)])
     email = Field([none_if_blank(), optional(), lower(), email_address()])
     telephone_number = Field([none_if_blank(), optional(), max_length(100)])
     gmc_number = Field([optional(), gmc_number()])
-    group_consultants = ListField(GroupConsultantValidation())
+    group_consultants = GroupConsultantListField()
