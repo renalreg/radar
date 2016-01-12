@@ -4,17 +4,6 @@ from radar.pages import PAGES
 
 COHORTS = [
     {
-        'code': 'RADAR',
-        'name': 'RaDaR',
-        'short_name': 'RaDaR',
-        'pages': [
-            PAGES.DEMOGRAPHICS,
-            PAGES.CONSULTANTS,
-            PAGES.COHORTS,
-            PAGES.UNITS
-        ],
-    },
-    {
         'code': 'ALPORT',
         'name': 'Alport Syndrome',
         'short_name': 'Alport',

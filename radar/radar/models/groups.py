@@ -1,6 +1,10 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.hybrid import hybrid_property
+import pytz
 
 from radar.database import db
 from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_roles_managed_by_role
@@ -85,6 +89,16 @@ class GroupPatient(db.Model, MetaModelMixin):
 
     created_group_id = Column(Integer, ForeignKey('groups.id'))
     created_group = relationship('Group', foreign_keys=[created_group_id])
+
+    @hybrid_property
+    def current(self):
+        now = datetime.now(pytz.UTC)
+        print now, self.from_date, self.to_date
+        return (self.from_date <= now and (self.to_date is None or self.to_date >= now))
+
+    @current.expression
+    def current(cls):
+        return and_(cls.from_date <= func.now(), or_(cls.to_date == null(), cls.to_date >= func.now()))
 
 Index('group_patients_group_idx', GroupPatient.group_id)
 Index('group_patients_patient_idx', GroupPatient.patient_id)

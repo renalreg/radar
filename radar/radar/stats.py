@@ -9,18 +9,18 @@ from radar.models.groups import GroupPatient, Group
 from radar.models.patients import Patient
 
 
-def recruitment_by_month(date_column, filters=None):
-    year_column = cast(extract('year', date_column), Integer)
-    month_column = cast(extract('month', date_column), Integer)
+def recruitment_by_month(group):
+    year_column = cast(extract('year', GroupPatient.from_date), Integer)
+    month_column = cast(extract('month', GroupPatient.from_date), Integer)
 
     query = db.session\
         .query(year_column, month_column, func.count())\
-        .filter(date_column != null())\
+        .filter(
+            GroupPatient.from_date != null(),
+            GroupPatient.group == group,
+        )\
         .group_by(year_column, month_column)\
         .order_by(year_column, month_column)
-
-    if filters is not None:
-        query = query.filter(*filters)
 
     data = {(year, month): count for year, month, count in query.all()}
 
@@ -48,7 +48,7 @@ def recruitment_by_month(date_column, filters=None):
     return results
 
 
-def recruitment_by_group(group=None, group_type=None):
+def patients_by_group(group=None, group_type=None):
     count_query = db.session.query(GroupPatient.group_id.label('group_id'), func.count(distinct(Patient.id)).label('patient_count'))\
         .select_from(Patient)\
         .join(Patient.group_patients)\
@@ -69,15 +69,15 @@ def recruitment_by_group(group=None, group_type=None):
         count_query = count_query.filter(group_subquery)
         count_query = count_query.filter(GroupPatient.group != group)
 
-    # Filter by groups of a particular type
-    if group_type is not None:
-        count_query = count_query.filter(Group.type == group_type)
-
     count_subquery = count_query.subquery()
 
     query = db.session\
         .query(Group, count_subquery.c.patient_count)\
         .join(count_subquery, Group.id == count_subquery.c.group_id)\
         .order_by(Group.id)
+
+    # Filter by groups of a particular type
+    if group_type is not None:
+        query = query.filter(Group.type == group_type)
 
     return query.all()
