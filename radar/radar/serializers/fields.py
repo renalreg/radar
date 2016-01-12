@@ -349,7 +349,10 @@ class EnumField(Field):
         if value is None:
             return None
 
-        data = value.value
+        try:
+            data = value.value
+        except AttributeError:
+            data = value
 
         return data
 
