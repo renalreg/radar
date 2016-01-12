@@ -6,14 +6,9 @@
   template: src=systemd dest={{ mock_ukrdc_dev_systemd_path }} owner=root group=root mode=0755
   notify:
     - reload systemd
-    - restart radar-mock-ukrdc-dev
 
 - name: create settings.py
   template: src=settings.py dest={{ mock_ukrdc_dev_settings_path }} owner=root group=root mode=0644
-  notify:
-    - restart radar-mock-ukrdc-dev
 
 - name: create uwsgi.ini
   template: src=uwsgi.ini dest={{ mock_ukrdc_dev_uwsgi_path }} owner=root group=root mode=0644
-  notify:
-    - restart radar-mock-ukrdc-dev
