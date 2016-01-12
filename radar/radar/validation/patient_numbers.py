@@ -1,13 +1,13 @@
 from radar.groups import is_radar_group
 from radar.validation.core import Validation, pass_call, ValidationError, Field
-from radar.validation.sources import RadarSourceGroupValidationMixin
+from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, max_length, not_empty, normalise_whitespace
 from radar.validation.number_validators import NUMBER_VALIDATORS
 
 
-class PatientNumberValidation(PatientValidationMixin, RadarSourceGroupValidationMixin, MetaValidationMixin, Validation):
+class PatientNumberValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     number = Field([not_empty(), normalise_whitespace(), max_length(50)])
     number_group = Field([required()])
 

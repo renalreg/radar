@@ -41,17 +41,17 @@
               <td>{{user.telephoneNumber | missing}}</td>
 
               <td>
-                <span ng-if="!user.cohorts.length">-</span>
-                <span ng-repeat="cohort in user.cohorts | orderBy: 'cohort.name'">
-                  {{cohort.cohort.shortName}}
+                <span ng-if="!user.getCohorts().length">-</span>
+                <span ng-repeat="x in user.getCohorts() | orderBy: 'group.name'">
+                  {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!user.getUnits().length">-</span>
-                <span ng-repeat="organisation in user.getUnits() | orderBy: 'organisation.name'">
-                  {{organisation.organisation.name}}
+                <span ng-if="!user.getHospitals().length">-</span>
+                <span ng-repeat="x in user.getHospitals() | orderBy: 'group.name'">
+                  {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
@@ -121,7 +121,7 @@
           <div frm-label>Unit</div>
 
           <div frm-control>
-            <div frm-unit-field model="filters.organisation"></div>
+            <div frm-hospital-field model="filters.organisation"></div>
             <div frm-errors></div>
           </div>
         </div>

@@ -74,9 +74,7 @@
             }
           });
 
-          $scope.$watch(function() {
-            return items;
-          }, function() {
+          $scope.$watch('items', function() {
             _filter();
           }, true);
 
@@ -179,8 +177,10 @@
 
             if (sortBy !== null) {
               var getter = $parse(sortBy);
+
               sortedItems = _.sortBy(sortedItems, function(item) {
-                return getter(sortScope, item);
+                // Note: AngularJS doesn't check the prototype of the locals argument
+                return getter(item, sortScope);
               });
             }
 

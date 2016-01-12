@@ -33,8 +33,6 @@
 
           data = _.sortBy(data, 'x');
 
-          console.log(data);
-
           var options = {
             chart: {
               zoomType: 'x',

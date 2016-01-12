@@ -70,6 +70,7 @@
       GENETICS: patientPage('Genetics', 'patient.genetics', true),
       HNF1B_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.hnf1bClinicalPictures'),
       HOSPITALISATIONS: patientPage('Hospitalisations', 'patient.hospitalisations'),
+      HOSPITALS: patientPage('Hospitals', 'patient.hospitals'),
       INS_CLINICAL_PICTURES: patientPage('Clinical Pictures', 'patient.insClinicalPictures'),
       INS_RELAPSES: patientPage('Relapses', 'patient.insRelapses'),
       MEDICATIONS: patientPage('Medications', 'patient.medications'),
@@ -83,8 +84,7 @@
       RENAL_IMAGING: patientPage('Renal Imaging', 'patient.renalImaging'),
       RESULTS: patientPage('Results', 'patient.results.table'),
       SALT_WASTING_CLINICAL_FEATURES: patientPage('Clinical Features', 'patient.saltWastingClinicalFeatures'),
-      TRANSPLANTS: patientPage('Transplants', 'patient.transplants'),
-      UNITS: patientPage('Units', 'patient.units')
+      TRANSPLANTS: patientPage('Transplants', 'patient.transplants')
     };
   }]);
 })();

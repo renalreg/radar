@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Index, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 
@@ -103,10 +103,6 @@ class GroupUser(db.Model, MetaModelMixin):
 
     _role = Column('role', String, nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint('group_id', 'user_id'),
-    )
-
     @property
     def role(self):
         value = self._role
@@ -119,6 +115,7 @@ class GroupUser(db.Model, MetaModelMixin):
     @role.setter
     def role(self, value):
         if value is not None:
+            value = ROLES(value)
             value = value.value
 
         self._role = value

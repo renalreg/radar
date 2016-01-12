@@ -1,4 +1,4 @@
-from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
+from radar.serializers.fields import LabelledStringField, LabelledIntegerField
 from radar.views.core import ListView
 
 
@@ -9,7 +9,7 @@ class CodedStringListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return CodedStringSerializer(self.get_items())
+        return LabelledStringField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()
@@ -22,7 +22,7 @@ class CodedIntegerListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return CodedIntegerSerializer(self.get_items())
+        return LabelledIntegerField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()

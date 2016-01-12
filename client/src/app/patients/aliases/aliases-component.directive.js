@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.aliases');
 
-  app.factory('PatientAliasPermission', ['PatientRadarSourceGroupObjectPermission', function(PatientRadarSourceGroupObjectPermission) {
-    return PatientRadarSourceGroupObjectPermission;
+  app.factory('PatientAliasPermission', ['PatientRadarObjectPermission', function(PatientRadarObjectPermission) {
+    return PatientRadarObjectPermission;
   }]);
 
   function controllerFactory(

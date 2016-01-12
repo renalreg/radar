@@ -2,17 +2,17 @@ from radar_api.serializers.pregnancies import PregnancySerializer
 from radar.models import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
 from radar.validation.pregnancies import PregnancyValidation
 from radar.views.codes import CodedStringListView
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class PregnancyListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class PregnancyListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = PregnancySerializer
     model_class = Pregnancy
     validation_class = PregnancyValidation
 
 
-class PregnancyDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class PregnancyDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = PregnancySerializer
     model_class = Pregnancy
     validation_class = PregnancyValidation

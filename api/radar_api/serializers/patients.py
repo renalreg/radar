@@ -6,7 +6,7 @@ from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
     DateField, ListField, DateTimeField, CommaSeparatedField
 from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
+from radar.serializers.fields import LabelledStringField, LabelledIntegerField
 from radar.models.patients import Patient, GENDERS, ETHNICITIES
 
 
@@ -23,8 +23,8 @@ class TinyPatientSerializer(Serializer):
     year_of_birth = IntegerField(read_only=True)
     date_of_death = DateField(read_only=True)
     year_of_death = IntegerField(read_only=True)
-    gender = CodedIntegerSerializer(GENDERS, read_only=True)
-    ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
+    gender = LabelledIntegerField(GENDERS, read_only=True)
+    ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
     groups = ListField(field=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
     recruited_group = TinyGroupReferenceField(read_only=True)
@@ -46,8 +46,8 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     date_of_death = DateField(read_only=True)
     year_of_death = IntegerField(read_only=True)
-    gender = CodedIntegerSerializer(GENDERS, read_only=True)
-    ethnicity = CodedStringSerializer(ETHNICITIES, read_only=True)
+    gender = LabelledIntegerField(GENDERS, read_only=True)
+    ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
     groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
     recruited_group = GroupReferenceField(read_only=True)

@@ -1,4 +1,4 @@
-from radar_api.serializers.sources import SourceGroupSerializerMixin
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.models import ModelSerializer, ReferenceField
@@ -15,7 +15,7 @@ class DisorderReferenceField(ReferenceField):
     serializer_class = DisorderSerializer
 
 
-class ComorbiditySerializer(MetaSerializerMixin, PatientSerializerMixin, SourceGroupSerializerMixin, ModelSerializer):
+class ComorbiditySerializer(MetaSerializerMixin, PatientSerializerMixin, SourceSerializerMixin, ModelSerializer):
     disorder = DisorderReferenceField()
 
     class Meta(object):

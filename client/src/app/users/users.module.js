@@ -1,8 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.users', [
-    'radar.users.cohorts',
-    'radar.users.units'
-  ]);
+  angular.module('radar.users', ['radar.users.groups']);
 })();

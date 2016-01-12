@@ -2,17 +2,17 @@ from radar_api.serializers.pathology import PathologySerializer
 from radar.models import PATHOLOGY_KIDNEY_TYPES, PATHOLOGY_KIDNEY_SIDES, Pathology
 from radar.validation.pathology import PathologyValidation
 from radar.views.codes import CodedStringListView
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class PathologyListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class PathologyListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = PathologySerializer
     model_class = Pathology
     validation_class = PathologyValidation
 
 
-class PathologyDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class PathologyDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = PathologySerializer
     model_class = Pathology
     validation_class = PathologyValidation

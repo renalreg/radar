@@ -3,15 +3,15 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('RadarSourceGroupObjectPermission', ['session', function(session) {
-    function RadarSourceGroupObjectPermission() {
+  app.factory('RadarObjectPermission', ['session', function(session) {
+    function RadarObjectPermission() {
     }
 
-    RadarSourceGroupObjectPermission.prototype.hasPermission = function() {
+    RadarObjectPermission.prototype.hasPermission = function() {
       return true;
     };
 
-    RadarSourceGroupObjectPermission.prototype.hasObjectPermission = function(obj) {
+    RadarObjectPermission.prototype.hasObjectPermission = function(obj) {
       if (!session.isAuthenticated) {
         return false;
       }
@@ -22,6 +22,6 @@
       return sourceGroup.code === 'RADAR' && sourceGroup.type === 'OTHER' && sourceType.id === 'RADAR';
     };
 
-    return RadarSourceGroupObjectPermission;
+    return RadarObjectPermission;
   }]);
 })();

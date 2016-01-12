@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.fetalUltrasounds');
 
-  app.factory('FetalUltrasoundPermission', ['PatientSourceGroupObjectPermission', function(PatientSourceGroupObjectPermission) {
-    return PatientSourceGroupObjectPermission;
+  app.factory('FetalUltrasoundPermission', ['PatientSourceObjectPermission', function(PatientSourceObjectPermission) {
+    return PatientSourceObjectPermission;
   }]);
 
   function controllerFactory(

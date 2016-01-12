@@ -1,18 +1,18 @@
 from radar_api.serializers.dialysis import DialysisSerializer
 from radar.validation.dialysis import DialysisValidation
 from radar.models import Dialysis, DIALYSIS_MODALITIES
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.codes import CodedIntegerListView
 
 
-class DialysisListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class DialysisListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = DialysisSerializer
     validation_class = DialysisValidation
     model_class = Dialysis
 
 
-class DialysisDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class DialysisDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = DialysisSerializer
     validation_class = DialysisValidation
     model_class = Dialysis

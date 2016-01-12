@@ -1,13 +1,13 @@
 from radar.models.patients import GENDERS, ETHNICITIES
 from radar.validation.core import Validation, Field, pass_new_obj, ValidationError
-from radar.validation.sources import RadarSourceGroupValidationMixin
+from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, not_empty, optional, not_in_future, max_length, in_, \
     none_if_blank, email_address, normalise_whitespace, upper, after_day_zero, lower
 
 
-class PatientDemographicsValidation(PatientValidationMixin, RadarSourceGroupValidationMixin, MetaValidationMixin, Validation):
+class PatientDemographicsValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     first_name = Field([not_empty(), upper(), normalise_whitespace(), max_length(100)])
     last_name = Field([not_empty(), upper(), normalise_whitespace(), max_length(100)])
     date_of_birth = Field([required(), after_day_zero(), not_in_future()])

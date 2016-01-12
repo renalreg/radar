@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Cohort</th>
-        <td>{{item.cohort.name}}</td>
+        <th>Group</th>
+        <td>{{item.group.name}}</td>
       </tr>
 
       <tr>
@@ -31,11 +31,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Cohort</div>
+        <div frm-label>Group</div>
 
         <div frm-control>
-          <div frm-cohort-field model="item.cohort" required="true"></div>
-          <div frm-errors errors="item.errors.cohort"></div>
+          <div frm-group-field model="item.group" required="true"></div>
+          <div frm-errors errors="item.errors.group"></div>
         </div>
       </div>
 
@@ -55,7 +55,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="cohort.name">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="group.shortName">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -68,28 +68,28 @@
 
     <table class="table" ng-if="page.getCount()">
       <thead>
-        <tr>
-          <th></th>
-          <th sort-helper="cohort.name">Cohort</th>
-          <th sort-helper="role.label">Role</th>
-          <th></th>
-        </tr>
+      <tr>
+        <th></th>
+        <th sort-helper="group.shortName">Group</th>
+        <th sort-helper="role.label">Role</th>
+        <th></th>
+      </tr>
       </thead>
 
       <tbody>
-        <tr ng-repeat="item in page.getItems()">
-          <td>
-            <span crud-list-view-button item="item"></span>
-            <span crud-list-edit-button item="item"></span>
-          </td>
+      <tr ng-repeat="item in page.getItems()">
+        <td>
+          <span crud-list-view-button item="item"></span>
+          <span crud-list-edit-button item="item"></span>
+        </td>
 
-          <td>{{item.cohort.name}}</td>
-          <td>{{item.role.label}}</td>
+        <td>{{item.group.shortName}}</td>
+        <td>{{item.role.label}}</td>
 
-          <td>
-            <span crud-list-remove-button item="item"></span>
-          </td>
-        </tr>
+        <td>
+          <span crud-list-remove-button item="item"></span>
+        </td>
+      </tr>
       </tbody>
     </table>
 

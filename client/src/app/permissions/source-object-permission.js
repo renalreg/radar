@@ -3,15 +3,15 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('SourceGroupObjectPermission', ['session', 'hasPermissionForGroup', function(session, hasPermissionForGroup) {
-    function SourceGroupObjectPermission() {
+  app.factory('SourceObjectPermission', ['session', 'hasPermissionForGroup', function(session, hasPermissionForGroup) {
+    function SourceObjectPermission() {
     }
 
-    SourceGroupObjectPermission.prototype.hasPermission = function() {
+    SourceObjectPermission.prototype.hasPermission = function() {
       return true;
     };
 
-    SourceGroupObjectPermission.prototype.hasObjectPermission = function(obj) {
+    SourceObjectPermission.prototype.hasObjectPermission = function(obj) {
       if (!session.isAuthenticated) {
         return false;
       }
@@ -33,6 +33,6 @@
       return hasPermissionForGroup(user, sourceGroup, 'EDIT_PATIENT');
     };
 
-    return SourceGroupObjectPermission;
+    return SourceObjectPermission;
   }]);
 })();

@@ -37,5 +37,6 @@
 
   app.config(['storeProvider', function(storeProvider) {
     storeProvider.registerModel('patient-addresses', 'PatientAddressModel');
+    storeProvider.registerMixin('patient-addresses', 'SourceModelMixin');
   }]);
 })();

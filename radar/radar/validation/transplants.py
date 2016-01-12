@@ -1,6 +1,6 @@
 from radar.models.transplants import TRANSPLANT_MODALITIES
 from radar.validation.core import Validation, Field, pass_new_obj, ValidationError, ListField
-from radar.validation.sources import SourceGroupValidationMixin
+from radar.validation.sources import SourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, valid_date_for_patient, optional, in_
@@ -17,7 +17,7 @@ class TransplantBiopsyValidation(Validation):
     recurrence = Field([optional()])
 
 
-class TransplantValidation(PatientValidationMixin, SourceGroupValidationMixin, MetaValidationMixin, Validation):
+class TransplantValidation(PatientValidationMixin, SourceValidationMixin, MetaValidationMixin, Validation):
     date = Field([required(), valid_date_for_patient()])
     modality = Field([required(), in_(TRANSPLANT_MODALITIES.keys())])
     date_of_recurrence = Field([optional(), valid_date_for_patient()])

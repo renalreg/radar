@@ -1,17 +1,17 @@
 from radar_api.serializers.hospitalisations import HospitalisationSerializer
 from radar.models import Hospitalisation
 from radar.validation.hospitalisations import HospitalisationValidation
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class HospitalisationListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class HospitalisationListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = HospitalisationSerializer
     model_class = Hospitalisation
     validation_class = HospitalisationValidation
 
 
-class HospitalisationDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class HospitalisationDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = HospitalisationSerializer
     model_class = Hospitalisation
     validation_class = HospitalisationValidation

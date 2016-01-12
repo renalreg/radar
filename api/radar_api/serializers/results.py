@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from radar_api.serializers.sources import SourceGroupSerializerMixin
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
@@ -10,7 +10,7 @@ from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
     DateTimeField, UUIDField, ListField, CommaSeparatedField
 from radar.serializers.models import ReferenceField
-from radar.serializers.codes import CodedStringSerializer
+from radar.serializers.fields import LabelledStringField
 from radar.validation.core import ValidationError
 
 
@@ -116,7 +116,7 @@ class ObservationReferenceField(ReferenceField):
     serializer_class = ObservationSerializer
 
 
-class ResultSerializer(PatientSerializerMixin, SourceGroupSerializerMixin, MetaSerializerMixin, Serializer):
+class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, Serializer):
     id = UUIDField()
     observation = ObservationReferenceField()
     date = DateTimeField()
@@ -133,7 +133,7 @@ class ResultSerializer(PatientSerializerMixin, SourceGroupSerializerMixin, MetaS
         elif observation_type == OBSERVATION_TYPE_LOOKUP:
             options = [(x['id'], x['label']) for x in observation.options['options']]
             options = OrderedDict(options)
-            field = CodedStringSerializer(options)
+            field = LabelledStringField(options)
         elif observation_type == OBSERVATION_TYPE_STRING:
             field = StringField()
         else:

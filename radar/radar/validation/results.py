@@ -1,5 +1,5 @@
 from radar.validation.core import Validation, Field, pass_new_obj, pass_call
-from radar.validation.sources import SourceGroupValidationMixin
+from radar.validation.sources import SourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, min_, max_, min_length, max_length, in_
@@ -7,7 +7,7 @@ from radar.models.results import OBSERVATION_TYPE_INTEGER, OBSERVATION_TYPE_REAL
     OBSERVATION_TYPE_LOOKUP, OBSERVATION_TYPE_STRING
 
 
-class ResultValidation(PatientValidationMixin, SourceGroupValidationMixin, MetaValidationMixin, Validation):
+class ResultValidation(PatientValidationMixin, SourceValidationMixin, MetaValidationMixin, Validation):
     observation = Field([required()])
     date = Field([required()])  # TODO valid_date_for_patient()
     value = Field([required()])

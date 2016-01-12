@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmCohortField', ['sortCohorts', 'session', 'store', function(sortCohorts, session, store) {
+  app.directive('frmCohortField', ['sortCohorts', 'session', 'cohortStore', function(sortCohorts, session, cohortStore) {
     return {
       restrict: 'A',
       scope: {
@@ -12,11 +12,10 @@
       },
       templateUrl: 'app/forms/fields/cohort-field.html',
       link: function(scope) {
-        store.findMany('cohorts').then(function(cohorts) {
+        cohortStore.findMany().then(function(cohorts) {
           scope.cohorts = sortCohorts(cohorts);
         });
       }
     };
   }]);
 })();
-

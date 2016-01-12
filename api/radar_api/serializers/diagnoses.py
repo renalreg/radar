@@ -4,7 +4,7 @@ from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField
 from radar.serializers.models import ModelSerializer, ReferenceField
-from radar.serializers.codes import CodedIntegerSerializer
+from radar.serializers.fields import LabelledIntegerField
 from radar.models.diagnoses import Diagnosis, DIAGNOSIS_BIOPSY_DIAGNOSES, GroupDiagnosis
 
 
@@ -20,7 +20,7 @@ class GroupDiagnosisReferenceField(ReferenceField):
 
 class DiagnosisSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
     group_diagnosis = GroupDiagnosisReferenceField()
-    biopsy_diagnosis = CodedIntegerSerializer(DIAGNOSIS_BIOPSY_DIAGNOSES)
+    biopsy_diagnosis = LabelledIntegerField(DIAGNOSIS_BIOPSY_DIAGNOSES)
     age_of_symptoms = IntegerField(read_only=True)
     age_of_diagnosis = IntegerField(read_only=True)
     age_of_renal_disease = IntegerField(read_only=True)

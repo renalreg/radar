@@ -2,17 +2,17 @@ from radar_api.serializers.nephrectomies import NephrectomySerializer
 from radar.models.nephrectomies import Nephrectomy, NEPHRECTOMY_KIDNEY_SIDES, NEPHRECTOMY_KIDNEY_TYPES, NEPHRECTOMY_ENTRY_TYPES
 from radar.validation.nephrectomies import NephrectomyValidation
 from radar.views.codes import CodedStringListView
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class NephrectomyListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class NephrectomyListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = NephrectomySerializer
     model_class = Nephrectomy
     validation_class = NephrectomyValidation
 
 
-class NephrectomyDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class NephrectomyDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = NephrectomySerializer
     model_class = Nephrectomy
     validation_class = NephrectomyValidation

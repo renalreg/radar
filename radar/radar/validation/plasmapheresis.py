@@ -1,12 +1,12 @@
 from radar.models import PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
-from radar.validation.sources import RadarSourceGroupValidationMixin
+from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import valid_date_for_patient, required, optional, in_
 
 
-class PlasmapheresisValidation(PatientValidationMixin, RadarSourceGroupValidationMixin, MetaValidationMixin, Validation):
+class PlasmapheresisValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
     no_of_exchanges = Field([optional(), in_(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())])
