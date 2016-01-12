@@ -6,17 +6,12 @@
   template: src=systemd dest={{ api_dev_systemd_path }} owner=root group=root mode=0755
   notify:
     - reload systemd
-    - restart radar-api-dev
 
 - name: create settings.py
   template: src=settings.py dest={{ api_dev_settings_path }} owner=root group=root mode=0644
-  notify:
-    - restart radar-api-dev
 
 - name: create uwsgi.ini
   template: src=uwsgi.ini dest={{ api_dev_uwsgi_path }} owner=root group=root mode=0644
-  notify:
-    - restart radar-api-dev
 
 - name: create secret key
   shell: dd if=/dev/urandom bs=1 count=32 | base64 > {{ api_dev_secret_key_path }}
