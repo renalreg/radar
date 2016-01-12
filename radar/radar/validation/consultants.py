@@ -1,4 +1,4 @@
-from radar.validation.core import Field, Validation, ListField
+from radar.validation.core import Field, Validation, ListField, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import not_empty, none_if_blank, optional, email_address, max_length, required, upper, lower
 from radar.validation.number_validators import gmc_number
@@ -6,6 +6,12 @@ from radar.validation.number_validators import gmc_number
 
 class GroupConsultantValidation(MetaValidationMixin, Validation):
     group = Field([required()])
+
+    def validate_group(self, group):
+        if group.type != 'HOSPITAL':
+            raise ValidationError('Must be a hospital.')
+
+        return group
 
 
 class ConsultantValidation(MetaValidationMixin, Validation):

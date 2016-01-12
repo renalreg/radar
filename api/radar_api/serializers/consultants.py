@@ -13,21 +13,23 @@ class GroupConsultantSerializer(MetaSerializerMixin, ModelSerializer):
 
     class Meta(object):
         model_class = GroupConsultant
-        exclude = ['id', 'consultant_id']
+        exclude = ['id', 'consultant_id', 'group_id']
 
 
 class ConsultantSerializer(MetaSerializerMixin, ModelSerializer):
-    group_consultants = ListField(field=GroupConsultantSerializer())
+    groups = ListField(field=GroupConsultantSerializer(), source='group_consultants')
 
     class Meta(object):
         model_class = Consultant
 
     def create_group_consultant(self, deserialized_data):
         group_consultant = GroupConsultant()
-        self.group_consultants.field.update(group_consultant, deserialized_data)
+        self.groups.field.update(group_consultant, deserialized_data)
         return group_consultant
 
     def update(self, obj, deserialized_data):
+        print deserialized_data
+
         for attr, value in deserialized_data.items():
             if attr == 'group_consultants':
                 obj.group_consultants = []
