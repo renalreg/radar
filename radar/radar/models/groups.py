@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
 import pytz
+from sqlalchemy_enum34 import EnumType
 
 from radar.database import db
 from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_roles_managed_by_role
@@ -39,26 +40,8 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    _pages = Column('pages', postgresql.ARRAY(String))
+    pages = Column('pages', postgresql.ARRAY(EnumType(PAGES)))
     notes = Column(String)
-
-    # TODO recruitment
-
-    @property
-    def pages(self):
-        value = self._pages
-
-        if value is not None:
-            value = [PAGES(x) for x in value]
-
-        return value
-
-    @pages.setter
-    def pages(self, value):
-        if value is not None:
-            value = [x.value for x in value]
-
-        self._pages = value
 
     @property
     def patients(self):
@@ -115,25 +98,7 @@ class GroupUser(db.Model, MetaModelMixin):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id])
-
-    _role = Column('role', String, nullable=False)
-
-    @property
-    def role(self):
-        value = self._role
-
-        if value is not None:
-            value = ROLES(value)
-
-        return value
-
-    @role.setter
-    def role(self, value):
-        if value is not None:
-            value = ROLES(value)
-            value = value.value
-
-        self._role = value
+    role = Column('role', EnumType(ROLES), nullable=False)
 
     def has_permission(self, permission):
         permission_method = permission.value.lower()
