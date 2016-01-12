@@ -1,23 +1,23 @@
 from flask import request
 
-from radar.permissions import RadarSourceGroupObjectPermission, SourceGroupObjectPermission
+from radar.permissions import RadarSourceObjectPermission, SourceObjectPermission
 from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField, StringField
 
 
-class SourceGroupRequestSerializer(Serializer):
+class SourceRequestSerializer(Serializer):
     source_group = IntegerField()
-    source = StringField()
+    source_type = StringField()
 
 
-class SourceGroupFilterMixin(object):
+class SourceFilterMixin(object):
     def filter_query(self, query):
-        query = super(SourceGroupFilterMixin, self).filter_query(query)
+        query = super(SourceFilterMixin, self).filter_query(query)
 
         # Note: if a user can view the patient (see PatientObjectViewMixin.filter_query) they can *view* the patient's
         # data from any data source.
 
-        serializer = SourceGroupRequestSerializer()
+        serializer = SourceRequestSerializer()
         args = serializer.to_value(request.args)
 
         # Filter by source group
@@ -25,23 +25,23 @@ class SourceGroupFilterMixin(object):
             model_class = self.get_model_class()
             query = query.filter(model_class.source_group_id == args['source_group'])
 
-        # Filter by source
-        if 'source' in args:
+        # Filter by source type
+        if 'source_type' in args:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_id == args['source'])
+            query = query.filter(model_class.source_type_id == args['source_type'])
 
         return query
 
 
-class SourceGroupObjectViewMixin(SourceGroupFilterMixin):
+class SourceObjectViewMixin(SourceFilterMixin):
     def get_permission_classes(self):
-        permission_classes = super(SourceGroupObjectViewMixin, self).get_permission_classes()
-        permission_classes.append(SourceGroupObjectPermission)
+        permission_classes = super(SourceObjectViewMixin, self).get_permission_classes()
+        permission_classes.append(SourceObjectPermission)
         return permission_classes
 
 
-class RadarObjectViewMixin(SourceGroupFilterMixin):
+class RadarObjectViewMixin(SourceFilterMixin):
     def get_permission_classes(self):
         permission_classes = super(RadarObjectViewMixin, self).get_permission_classes()
-        permission_classes.append(RadarSourceGroupObjectPermission)
+        permission_classes.append(RadarSourceObjectPermission)
         return permission_classes

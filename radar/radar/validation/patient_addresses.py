@@ -1,12 +1,12 @@
 from radar.validation.core import Validation, Field, ValidationError, pass_new_obj
-from radar.validation.sources import RadarSourceGroupValidationMixin
+from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, after_date_of_birth, max_length, optional, none_if_blank, postcode, \
     not_empty, remove_trailing_comma, normalise_whitespace
 
 
-class PatientAddressValidation(PatientValidationMixin, RadarSourceGroupValidationMixin, MetaValidationMixin, Validation):
+class PatientAddressValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([optional(), after_date_of_birth()])
     to_date = Field([optional(), after_date_of_birth()])
     address1 = Field([

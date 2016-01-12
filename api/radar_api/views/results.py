@@ -2,14 +2,14 @@ from flask import request
 
 from radar.models.results import Result, Observation
 from radar.views.core import ListModelView, RetrieveModelView
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
     ResultListRequestSerializer, ObservationListRequestSerializer
 from radar.validation.results import ResultValidation
 
 
-class ResultListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class ResultListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = ResultSerializer
     model_class = Result
     validation_class = ResultValidation
@@ -27,7 +27,7 @@ class ResultListView(SourceGroupObjectViewMixin, PatientObjectListView):
         return query
 
 
-class ResultDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = ResultSerializer
     model_class = Result
     validation_class = ResultValidation

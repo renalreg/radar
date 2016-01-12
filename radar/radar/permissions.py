@@ -214,7 +214,7 @@ class PatientObjectPermission(PatientPermission):
         return super(PatientObjectPermission, self).has_object_permission(request, user, obj.patient)
 
 
-class SourceGroupObjectPermission(Permission):
+class SourceObjectPermission(Permission):
     """Checks that the user has permission to edit an object belonging to a data source.
 
     Permission is granted if:
@@ -226,7 +226,7 @@ class SourceGroupObjectPermission(Permission):
     """
 
     def has_object_permission(self, request, user, obj):
-        if not super(SourceGroupObjectPermission, self).has_object_permission(request, user, obj):
+        if not super(SourceObjectPermission, self).has_object_permission(request, user, obj):
             return False
 
         if user.is_admin:
@@ -243,7 +243,7 @@ class SourceGroupObjectPermission(Permission):
             return can_edit_patient_object(user, obj.patient, source_group=obj.source_group)
 
 
-class RadarSourceGroupObjectPermission(Permission):
+class RadarSourceObjectPermission(Permission):
     """Ensures that only objects from RaDaR can be edited.
 
     Permission is granted:
@@ -254,7 +254,7 @@ class RadarSourceGroupObjectPermission(Permission):
     """
 
     def has_object_permission(self, request, user, obj):
-        if not super(RadarSourceGroupObjectPermission, self).has_object_permission(request, user, obj):
+        if not super(RadarSourceObjectPermission, self).has_object_permission(request, user, obj):
             return False
 
         if user.is_admin:
@@ -315,11 +315,11 @@ class GroupObjectPermission(Permission):
             return True
 
 
-class PatientSourceGroupObjectPermission(PatientObjectPermission, SourceGroupObjectPermission):
+class PatientSourceObjectPermission(PatientObjectPermission, SourceObjectPermission):
     pass
 
 
-class PatientRadarSourceGroupObjectPermission(PatientObjectPermission, RadarSourceGroupObjectPermission):
+class PatientRadarSourceObjectPermission(PatientObjectPermission, RadarSourceObjectPermission):
     pass
 
 

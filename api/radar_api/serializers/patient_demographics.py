@@ -1,18 +1,18 @@
-from radar_api.serializers.sources import SourceGroupSerializerMixin
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.patient_demographics import PatientDemographicsProxy
 from radar.serializers.fields import IntegerField
 from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedIntegerSerializer, CodedStringSerializer
+from radar.serializers.fields import LabelledIntegerField, LabelledStringField
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import GENDERS, ETHNICITIES
 
 
-class PatientDemographicsSerializer(MetaSerializerMixin, SourceGroupSerializerMixin, ModelSerializer):
+class PatientDemographicsSerializer(MetaSerializerMixin, SourceSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     year_of_death = IntegerField(read_only=True)
-    ethnicity = CodedStringSerializer(ETHNICITIES)
-    gender = CodedIntegerSerializer(GENDERS)
+    ethnicity = LabelledStringField(ETHNICITIES)
+    gender = LabelledIntegerField(GENDERS)
 
     class Meta(object):
         model_class = PatientDemographics

@@ -4,7 +4,7 @@ from uuid import UUID
 
 import delorean
 
-from radar.serializers.core import Field
+from radar.serializers.core import Field, Serializer
 from radar.validation.core import ValidationError
 
 
@@ -331,7 +331,7 @@ class EnumField(Field):
     }
 
     def __init__(self, enum, **kwargs):
-        super(EnumField, self).__init__(self, **kwargs)
+        super(EnumField, self).__init__(**kwargs)
         self.enum = enum
 
     def to_value(self, data):
@@ -349,6 +349,69 @@ class EnumField(Field):
         if value is None:
             return None
 
-        data = six.text_type(value)
+        data = value.value
 
         return data
+
+
+class LabelledValueField(Serializer):
+    def __init__(self, field_f, items, **kwargs):
+        super(LabelledValueField, self).__init__(**kwargs)
+        self.field_f = field_f
+        self.items = items
+
+    def transform_errors(self, errors):
+        return errors
+
+    def get_fields(self):
+        fields = {
+            'id': self.field_f(),
+            'label': StringField(read_only=True)
+        }
+
+        for field_name, field in fields.items():
+            field.bind(field_name)
+
+        return fields
+
+    def to_value(self, data):
+        if isinstance(data, dict):
+            try:
+                value = super(LabelledValueField, self).to_value(data)
+            except ValidationError as e:
+                raise ValidationError(e.errors['id'])
+
+            value = value.get('id')
+        else:
+            value = self.fields['id'].to_value(data)
+
+        return value
+
+    def to_data(self, value):
+        if value is None:
+            return None
+
+        label = self.items[value]
+
+        return super(LabelledValueField, self).to_data({
+            'id': value,
+            'label': label,
+        })
+
+
+class LabelledStringField(LabelledValueField):
+    def __init__(self, items, **kwargs):
+        super(LabelledStringField, self).__init__(StringField, items, **kwargs)
+
+
+class LabelledIntegerField(LabelledValueField):
+    def __init__(self, items, **kwargs):
+        super(LabelledIntegerField, self).__init__(IntegerField, items, **kwargs)
+
+
+class LabelledEnumField(LabelledValueField):
+    def __init__(self, enum, items, **kwargs):
+        def f(**kwargs):
+            return EnumField(enum, **kwargs)
+
+        super(LabelledEnumField, self).__init__(f, items, **kwargs)

@@ -2,17 +2,17 @@ from radar_api.serializers.medications import MedicationSerializer
 from radar.models import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, MEDICATION_FREQUENCIES
 from radar.validation.medications import MedicationValidation
 from radar.views.codes import CodedStringListView
-from radar.views.sources import SourceGroupObjectViewMixin
+from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
 
-class MedicationListView(SourceGroupObjectViewMixin, PatientObjectListView):
+class MedicationListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = MedicationSerializer
     model_class = Medication
     validation_class = MedicationValidation
 
 
-class MedicationDetailView(SourceGroupObjectViewMixin, PatientObjectDetailView):
+class MedicationDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = MedicationSerializer
     model_class = Medication
     validation_class = MedicationValidation

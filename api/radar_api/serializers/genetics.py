@@ -3,11 +3,11 @@ from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.models import ModelSerializer
 from radar.models import Genetics, GENETICS_KARYOTYPES
-from radar.serializers.codes import CodedIntegerSerializer
+from radar.serializers.fields import LabelledIntegerField
 
 
 class GeneticsSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    karyotype = CodedIntegerSerializer(GENETICS_KARYOTYPES)
+    karyotype = LabelledIntegerField(GENETICS_KARYOTYPES)
 
     class Meta(object):
         model_class = Genetics

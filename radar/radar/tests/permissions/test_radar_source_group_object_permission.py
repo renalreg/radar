@@ -3,7 +3,7 @@ import pytest
 from radar.models.medications import Medication
 from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_TYPE_HOSPITAL, GROUP_CODE_RADAR
 from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.permissions import RadarSourceGroupObjectPermission
+from radar.permissions import RadarSourceObjectPermission
 from radar.tests.permissions.helpers import MockRequest, make_user
 
 
@@ -52,7 +52,7 @@ def make_obj(source_type_id):
     (ADMIN, WRITE, SOURCE_TYPE_UKRDC, GRANT),
 ])
 def test_has_object_permission(is_admin, action, source_type_id, expected):
-    permission = RadarSourceGroupObjectPermission()
+    permission = RadarSourceObjectPermission()
     request = make_request(action)
     user = make_user()
     user.is_admin = is_admin
