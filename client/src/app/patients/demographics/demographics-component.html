@@ -230,12 +230,12 @@
 
           <td>
             <span ng-if="item.dateOfBirth !== undefined">{{item.dateOfBirth | dateFormat}}</span>
-            <span ng-if="item.dateOfBirth === undefined">{{item.yearOfBirth}}</span>
+            <span ng-if="item.dateOfBirth === undefined">{{item.yearOfBirth | missing}}</span>
           </td>
 
           <td>
             <span ng-if="item.dateOfDeath !== undefined">{{item.dateOfDeath | dateFormat}}</span>
-            <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath}}</span>
+            <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath | missing}}</span>
           </td>
 
           <td>{{item.gender.label | missing}}</td>
