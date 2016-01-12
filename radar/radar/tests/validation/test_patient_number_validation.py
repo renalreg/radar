@@ -50,7 +50,8 @@ def test_source_group_missing(number):
 
 def test_source_type_missing(number):
     number.source_type = None
-    invalid(number)
+    number = valid(number)
+    assert number.source_type.id == 'RADAR'
 
 
 def test_number_group_missing(number):

@@ -55,7 +55,8 @@ def test_source_group_missing(comorbidity):
 
 def test_source_type_missing(comorbidity):
     comorbidity.source_type = None
-    invalid(comorbidity)
+    comorbidity = valid(comorbidity)
+    assert comorbidity.source_type.id == 'RADAR'
 
 
 def test_from_date_missing(comorbidity):

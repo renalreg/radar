@@ -54,7 +54,8 @@ def test_source_group_missing(transplant):
 
 def test_source_type_missing(transplant):
     transplant.source_type = None
-    invalid(transplant)
+    transplant = valid(transplant)
+    assert transplant.source_type.id == 'RADAR'
 
 
 def test_date_missing(transplant):

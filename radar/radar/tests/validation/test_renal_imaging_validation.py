@@ -92,7 +92,8 @@ def test_source_group_missing(renal_imaging):
 
 def test_source_type_missing(renal_imaging):
     renal_imaging.source_type = None
-    invalid(renal_imaging)
+    renal_imaging = valid(renal_imaging)
+    assert renal_imaging.source_type.id == 'RADAR'
 
 
 def test_date_missing(renal_imaging):

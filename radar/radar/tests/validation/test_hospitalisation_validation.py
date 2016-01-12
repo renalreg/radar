@@ -56,7 +56,8 @@ def test_source_group_missing(hospitalisation):
 
 def test_source_type_missing(hospitalisation):
     hospitalisation.source_type = None
-    invalid(hospitalisation)
+    hospitalisation = valid(hospitalisation)
+    assert hospitalisation.source_type.id == 'RADAR'
 
 
 def test_date_of_admission_missing(hospitalisation):
