@@ -22,5 +22,6 @@ setup(
         'radar',
         'six',
         'SQLAlchemy',
+        'SQLAlchemy-Enum34',
     ],
 )

@@ -33,6 +33,7 @@ setup(
         'requests',
         'six',
         'SQLAlchemy',
+        'SQLAlchemy-Enum34',
         'Werkzeug',
         'zxcvbn',
     ],
