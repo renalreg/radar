@@ -9,4 +9,5 @@ class SourceSerializerMixin(object):
     def get_model_exclude(self):
         attrs = super(SourceSerializerMixin, self).get_model_exclude()
         attrs.add('source_group_id')
+        attrs.add('source_type_id')
         return attrs
