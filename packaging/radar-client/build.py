@@ -8,7 +8,7 @@ import logging
 import os
 import click
 
-from build_tools import run_command, heading, success, Package, get_version_from_package_json, info, error, \
+radar_packaging import run_command, heading, success, Package, get_version_from_package_json, info, error, \
     get_client_src_path, get_release
 
 NAME = 'radar-client'

@@ -9,7 +9,7 @@ import logging
 import click
 import os
 
-from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
+radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
     get_api_src_path, get_release
 
 NAME = 'radar-api'
