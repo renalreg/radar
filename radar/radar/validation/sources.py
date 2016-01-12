@@ -4,7 +4,7 @@ from radar.validation.validators import required
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSIONS
 from radar.groups import is_radar_group
-from radar.source_types import is_radar_source_type, get_radar_source_type
+from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
 class SourceGroupField(Field):
@@ -33,7 +33,7 @@ class SourceTypeField(Field):
     def pre_validate(self, source_type):
         # Default to the RaDaR source type if missing
         if source_type is None:
-            source_type = get_radar_source_type()
+            source_type = SOURCE_TYPE_RADAR
 
         return source_type
 
@@ -42,7 +42,7 @@ class SourceTypeField(Field):
         user = ctx['user']
 
         # Only admins can enter data for a non-RaDaR source type
-        if not user.is_admin and not is_radar_source_type(source_type):
+        if not user.is_admin and source_type != SOURCE_TYPE_RADAR:
             raise ValidationError('Permission denied!')
 
         return source_type

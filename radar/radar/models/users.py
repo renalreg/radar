@@ -105,7 +105,6 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         else:
             hash_method = self.password_hash.split('$')[0]
             r = hash_method != HASH_METHOD
-            print r, hash_method, HASH_METHOD
 
         return r
 

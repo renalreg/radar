@@ -28,7 +28,7 @@ class SourceFilterMixin(object):
         # Filter by source type
         if 'source_type' in args:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_type_id == args['source_type'])
+            query = query.filter(model_class.source_type == args['source_type'])
 
         return query
 

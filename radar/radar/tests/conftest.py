@@ -5,7 +5,6 @@ import pytest
 
 from radar.app import create_app
 from radar.database import db
-from radar.models.source_types import SourceType
 
 
 @pytest.fixture(scope='session')
@@ -29,9 +28,6 @@ def app_context(app):
 def test_db(request, app_context):
     db.drop_all()
     db.create_all()
-
-    db.session.add(SourceType(id='RADAR', name='RaDaR'))
-    db.session.commit()
 
     def teardown():
         db.session.close()

@@ -19,8 +19,6 @@ class GroupConsultantListField(ListField):
         super(GroupConsultantListField, self).__init__(GroupConsultantValidation(), chain=chain)
 
     def validate(self, group_consultants):
-        print 'hello!'
-
         group_ids = set()
 
         for i, group_consultant in enumerate(group_consultants):

@@ -1,13 +1,12 @@
 from radar_api.serializers.groups import TinyGroupReferenceField
-from radar_api.serializers.source_types import SourceTypeReferenceField
+from radar.serializers.fields import StringField
 
 
 class SourceSerializerMixin(object):
     source_group = TinyGroupReferenceField()
-    source_type = SourceTypeReferenceField()
+    source_type = StringField()  # TODO
 
     def get_model_exclude(self):
         attrs = super(SourceSerializerMixin, self).get_model_exclude()
         attrs.add('source_group_id')
-        attrs.add('source_type_id')
         return attrs

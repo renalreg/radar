@@ -4,11 +4,11 @@ from sqlalchemy.orm import aliased
 
 from radar_api.serializers.consultants import ConsultantSerializer, ConsultantRequestSerializer
 from radar.views.core import ListModelView, RetrieveModelView, UpdateModelView, DestroyModelView, CreateModelView
-from radar.models import Consultant
+from radar.models.consultants import Consultant, GroupConsultant
 from radar.permissions import AdminPermission
 from radar.validation.consultants import ConsultantValidation
 from radar.database import db
-from radar.models.groups import GroupConsultant, Group, GroupPatient
+from radar.models.groups import Group, GroupPatient
 from radar.patient_search import PatientQueryBuilder
 from radar.auth.sessions import current_user
 from radar.models.patients import Patient

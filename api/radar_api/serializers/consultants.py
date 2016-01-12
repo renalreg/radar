@@ -3,8 +3,7 @@ from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.fields import ListField, IntegerField
 from radar.serializers.models import ModelSerializer
 from radar.serializers.core import Serializer
-from radar.models.consultants import Consultant
-from radar.models.groups import GroupConsultant
+from radar.models.consultants import Consultant, GroupConsultant
 from radar.database import db
 
 

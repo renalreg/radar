@@ -18,16 +18,8 @@ class Observation(db.Model):
     type = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    system_id = Column(String, ForeignKey('observation_systems.id'), nullable=False)
-    system = relationship('ObservationSystem')
+    system = Column(String, nullable=False)
     options = Column(postgresql.JSONB, nullable=False)
-
-
-class ObservationSystem(db.Model):
-    __tablename__ = 'observation_systems'
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
 
 
 class Result(db.Model, MetaModelMixin):
@@ -40,8 +32,7 @@ class Result(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')
-    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
-    source_type = relationship('SourceType')
+    source_type = Column(String, nullable=False)
 
     observation_id = Column(Integer, ForeignKey('observations.id'), nullable=False)
     observation = relationship('Observation')

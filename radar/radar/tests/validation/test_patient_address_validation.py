@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.models.patient_addresses import PatientAddress
 from radar.validation.core import ValidationError
 from radar.validation.patient_addresses import PatientAddressValidation
@@ -24,7 +24,7 @@ def patient():
 def address(patient):
     obj = PatientAddress()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.from_date = date(2014, 1, 1)
     obj.to_date = date(2015, 1, 1)
@@ -62,7 +62,7 @@ def test_source_group_missing(address):
 def test_source_type_missing(address):
     address.source_type = None
     address = valid(address)
-    assert address.source_type.id == 'RADAR'
+    assert address.source_type == 'RADAR'
 
 
 def test_from_date_missing(address):

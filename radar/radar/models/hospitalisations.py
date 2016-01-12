@@ -15,8 +15,7 @@ class Hospitalisation(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')
-    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
-    source_type = relationship('SourceType')
+    source_type = Column(String, nullable=False)
 
     date_of_admission = Column(DateTime(timezone=True), nullable=False)
     date_of_discharge = Column(DateTime(timezone=True))

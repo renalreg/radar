@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, Plasmapheresis
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.plasmapheresis import PlasmapheresisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def plasmapheresis(patient):
     obj = Plasmapheresis()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
@@ -57,7 +57,7 @@ def test_source_group_missing(plasmapheresis):
 def test_source_type_missing(plasmapheresis):
     plasmapheresis.source_type = None
     plasmapheresis = valid(plasmapheresis)
-    assert plasmapheresis.source_type.id == 'RADAR'
+    assert plasmapheresis.source_type == 'RADAR'
 
 
 def test_from_date_missing(plasmapheresis):

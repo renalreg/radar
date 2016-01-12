@@ -1,7 +1,7 @@
 from radar.models.groups import GROUP_TYPE_HOSPITAL
 from radar.groups import is_radar_group
 from radar.roles import PERMISSIONS
-from radar.source_types import is_radar_source_type
+from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
 def has_permission_for_patient(user, patient, permission, group_type=None):
@@ -237,7 +237,7 @@ class SourceObjectPermission(Permission):
             return True
         else:
             # Can only modify data entered on RaDaR
-            if not is_radar_source_type(obj.source):
+            if obj.source_type != SOURCE_TYPE_RADAR:
                 return False
 
             return can_edit_patient_object(user, obj.patient, source_group=obj.source_group)
@@ -267,7 +267,7 @@ class RadarSourceObjectPermission(Permission):
             # Can only modify RaDaR data
             return (
                 is_radar_group(obj.source_group) and
-                is_radar_source_type(obj.source_type)
+                obj.source_type == SOURCE_TYPE_RADAR
             )
 
 
