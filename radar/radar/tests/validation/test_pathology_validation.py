@@ -49,8 +49,7 @@ def test_patient_missing(pathology):
 
 def test_source_group_missing(pathology):
     pathology.source_group = None
-    pathology = valid(pathology)
-    assert pathology.source_type.id == 'RADAR'
+    invalid(pathology)
 
 
 def test_source_type_missing(pathology):

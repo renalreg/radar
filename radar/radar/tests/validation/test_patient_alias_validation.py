@@ -47,13 +47,13 @@ def test_patient_missing(alias):
 
 def test_source_group_missing(alias):
     alias.source_group = None
-    alias = valid(alias)
-    assert alias.source_type.id == 'RADAR'
+    invalid(alias)
 
 
 def test_source_type_missing(alias):
     alias.source_type = None
-    invalid(alias)
+    alias = valid(alias)
+    assert alias.source_type.id == 'RADAR'
 
 
 def test_first_name_blank(alias):
