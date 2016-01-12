@@ -39,6 +39,21 @@ COHORTS = [
         ],
     },
     {
+        'code': 'ADPKD',
+        'name': 'Autosomal Dominant Polycystic Kidney Disease',
+        'short_name': 'ADPKD',
+        'features': [
+            'DIAGNOSIS',
+            'COMORBIDITIES',
+            'RENAL_IMAGING',
+            'PATHOLOGY',
+            'RESULTS',
+            'MEDICATIONS',
+            'DIALYSIS',
+            'TRANSPLANTS',
+        ],
+    },
+    {
         'code': 'ARPKD',
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
