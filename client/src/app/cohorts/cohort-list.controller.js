@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.cohorts');
 
-  app.controller('CohortListController', ['$scope', 'session', 'store', '_', 'sortCohorts', function($scope, session, store, _, sortCohorts) {
+  app.controller('CohortListController', ['$scope', 'session', 'cohortStore', '_', 'sortCohorts', function($scope, session, cohortStore, _, sortCohorts) {
     $scope.loading = true;
 
     init();
@@ -18,7 +18,7 @@
 
       if (user.isAdmin) {
         // Admins can see all cohorts
-        store.findMany('groups', {type: 'COHORT'}).then(function(cohorts) {
+        cohortStore.findMany().then(function(cohorts) {
           setCohorts(cohorts);
         });
       } else {

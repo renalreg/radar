@@ -5,8 +5,8 @@
 
   app.factory('ConsultantModel', ['Model', function(Model) {
     function ConsultantModel(modelName, data) {
-      if (data.organisationConsultants === undefined) {
-        data.organisationConsultants = [];
+      if (data.groups === undefined) {
+        data.groups = [];
       }
 
       Model.call(this, modelName, data);

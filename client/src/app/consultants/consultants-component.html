@@ -37,11 +37,11 @@
       </tr>
 
       <tr>
-        <th>Organisations</th>
+        <th>Hospitals</th>
         <td>
-          <span ng-if="!item.organisationConsultants.length">-</span>
-          <span ng-repeat="organisationConsultant in item.organisationConsultants | orderBy: 'organisation.name'">
-            {{organisationConsultant.organisation.name}}
+          <span ng-if="!item.groups.length">-</span>
+          <span ng-repeat="x in item.groups | orderBy: 'group.name'">
+            {{x.group.name}}
             <br ng-if="!$last" />
           </span>
         </td>
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <div consultant-organisations-component consultant="item"></div>
+      <div consultant-hospitals-component consultant="item"></div>
 
       <div frm-buttons>
         <span crud-save-button></span>
@@ -151,9 +151,10 @@
           <td>{{item.gmcNumber | missing}}</td>
 
           <td>
-            <span ng-if="!item.organisationConsultants.length">-</span>
-            <span ng-repeat="organisationConsultant in item.organisationConsultants | orderBy: 'organisation.name'">
-              {{organisationConsultant.organisation.name}}
+            <ul>
+            <span ng-if="!item.groups.length">-</span>
+            <span ng-repeat="x in item.groups | orderBy: 'group.name'">
+              {{x.group.name}}
               <br ng-if="!$last" />
             </span>
           </td>

@@ -246,6 +246,6 @@ class Serializer(Field):
 
             if field_errors is not None:
                 transformed_field_errors = field.transform_errors(field_errors)
-                transformed_errors[field.source] = transformed_field_errors
+                transformed_errors[field.field_name] = transformed_field_errors
 
         return transformed_errors

@@ -1,17 +1,17 @@
 <div loading="loading" crud>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Organisations</h3>
+      <h3 class="panel-title">Hospitals</h3>
     </div>
 
     <div class="panel-body">
       <div ng-repeat="item in items track by $index">
         <div frm-field frm-group>
-          <div frm-label>Organisation</div>
+          <div frm-label>Hospital</div>
 
           <div frm-control>
-            <div frm-group-field model="item.organisation" required="true"></div>
-            <div frm-errors errors="parent.errors.organisationConsultants[$index].organisation"></div>
+            <div frm-hospital-field model="item.group" required="true"></div>
+            <div frm-errors errors="parent.errors.groupConsultants[$index].group"></div>
           </div>
         </div>
 
