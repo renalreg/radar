@@ -51,8 +51,7 @@ def test_patient_missing(plasmapheresis):
 
 def test_source_group_missing(plasmapheresis):
     plasmapheresis.source_group = None
-    plasmapheresis = valid(plasmapheresis)
-    assert plasmapheresis.source_type.id == 'RADAR'
+    invalid(plasmapheresis)
 
 
 def test_source_type_missing(plasmapheresis):

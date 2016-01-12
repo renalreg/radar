@@ -56,8 +56,7 @@ def test_patient_missing(address):
 
 def test_source_group_missing(address):
     address.source_group = None
-    address = valid(address)
-    assert address.source_type.id == 'RADAR'
+    invalid(address)
 
 
 def test_source_type_missing(address):
