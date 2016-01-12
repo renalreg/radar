@@ -19,6 +19,7 @@
     'radar.patients.genetics',
     'radar.patients.hnf1b',
     'radar.patients.hospitalisations',
+    'radar.patients.hospitals',
     'radar.patients.ins',
     'radar.patients.medications',
     'radar.patients.metadata',
@@ -32,7 +33,6 @@
     'radar.patients.renalImaging',
     'radar.patients.results',
     'radar.patients.saltWasting',
-    'radar.patients.transplants',
-    'radar.patients.units'
+    'radar.patients.transplants'
   ]);
 })();

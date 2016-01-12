@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.auth', ['zxcvbn']);
+  angular.module('radar.auth', []);
 })();

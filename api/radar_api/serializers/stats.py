@@ -13,19 +13,19 @@ class DataPointListSerializer(Serializer):
     points = ListField(DataPointSerializer())
 
 
-class RecruitmentByGroupSerializer(Serializer):
+class PatientsByGroupSerializer(Serializer):
     group = GroupReferenceField()
     patientCount = IntegerField()
 
 
-class RecruitmentByGroupListSerializer(Serializer):
-    counts = ListField(RecruitmentByGroupSerializer())
+class PatientsByGroupListSerializer(Serializer):
+    counts = ListField(PatientsByGroupSerializer())
 
 
-class RecruitmentTimelineRequestSerializer(Serializer):
+class RecruitmentByMonthRequestSerializer(Serializer):
     group = GroupReferenceField()
 
 
-class RecruitmentByGroupRequestSerializer(Serializer):
+class PatientsByGroupRequestSerializer(Serializer):
     group = GroupReferenceField()
     group_type = StringField()

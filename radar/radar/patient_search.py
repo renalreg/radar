@@ -1,4 +1,4 @@
-from sqlalchemy import or_, case, desc, extract
+from sqlalchemy import or_, case, desc, extract, null, func
 
 from sqlalchemy.orm import aliased, subqueryload
 from radar.models import PatientAlias, PatientNumber
@@ -61,14 +61,24 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def group(self, group):
+    def group(self, group, only_current=True):
         # Filter by group
         sub_query = db.session.query(GroupPatient)\
-            .filter(GroupPatient.group == group)\
-            .correlate(Patient)\
-            .exists()
+            .filter(
+                GroupPatient.group == group,
+                GroupPatient.patient_id == Patient.id,
+            )
 
-        self.query = self.query.filter(sub_query)
+        if only_current:
+            sub_query = sub_query.filter(
+                GroupPatient.from_date <= func.now(),
+                or_(
+                    GroupPatient.to_date == null(),
+                    GroupPatient.to_date >= func.now(),
+                )
+            )
+
+        self.query = self.query.filter(sub_query.exists())
 
         return self
 

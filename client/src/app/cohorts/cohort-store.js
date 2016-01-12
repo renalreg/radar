@@ -7,7 +7,7 @@
     return {
       findOne: function(id) {
         return store.findOne('groups', id, true).then(function(group) {
-          if (group.type == 'COHORT') {
+          if (group.type === 'COHORT') {
             return group;
           } else {
             $q.reject();

@@ -1,3 +1,31 @@
+<div class="patient-nav">
+  <ul>
+    <li class="radar">
+      RaDaR
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="patient.demographics({patientId: patient.id})">Demographics</a>
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="patient.consultants({patientId: patient.id})">Consultants</a>
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="patient.cohorts({patientId: patient.id})">Cohorts</a>
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="patient.hospitals({patientId: patient.id})">Hospitals</a>
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="patient.all({patientId: patient.id})">More&hellip;</a>
+    </li>
+  </ul>
+</div>
+
 <div
   ng-repeat="cohort in cohorts"
   cohort-navigation

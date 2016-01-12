@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.stats');
 
-  app.directive('groupRecruitmentTimeline', ['adapter', function(adapter) {
+  app.directive('groupRecruitmentGraph', ['adapter', function(adapter) {
     return {
       scope: {
         group: '='
       },
-      template: '<div loading="loading"><div recruitment-timeline title="{{group.name}}" data="data" class="graph"></div></div>',
+      template: '<div loading="loading"><div recruitment-graph title="{{group.name}}" data="data" class="graph"></div></div>',
       link: function(scope) {
 
         scope.loading = true;
@@ -20,7 +20,7 @@
 
           scope.loading = true;
 
-          adapter.get('/recruitment-timeline', {group: group.id}).then(function(response) {
+          adapter.get('/recruitment-by-month', {group: group.id}).then(function(response) {
             scope.loading = false;
             scope.data = response.data.points;
           });

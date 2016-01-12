@@ -53,6 +53,14 @@ class Patient(db.Model, MetaModelMixin):
     def groups(self):
         return [x.group for x in self.group_patients]
 
+    @property
+    def current_groups(self):
+        return [x.group for x in self.current_group_patients]
+
+    @property
+    def current_group_patients(self):
+        return [x for x in self.current_group_patients if x.current]
+
     @hybrid_property
     def recruited_date(self):
         x = max([x.from_date for x in self.group_patients if is_radar_group(x.group)])

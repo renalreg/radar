@@ -13,6 +13,9 @@ from radar.models.patients import Patient, GENDERS, ETHNICITIES
 class TinyGroupPatientSerializer(Serializer):
     id = IntegerField()
     group = TinyGroupReferenceField()
+    from_date = DateTimeField()
+    to_date = DateTimeField()
+    current = BooleanField(read_only=True)
 
 
 class TinyPatientSerializer(Serializer):

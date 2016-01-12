@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.stats');
 
-  app.directive('recruitmentTimeline', ['Highcharts', '_', function(Highcharts, _) {
+  app.directive('recruitmentGraph', ['Highcharts', '_', function(Highcharts, _) {
     return {
       scope: {
         title: '@',

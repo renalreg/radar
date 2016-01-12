@@ -11,7 +11,7 @@
       templateUrl: 'app/patients/navigation/patient-navigation.html',
       link: function(scope) {
         scope.$watchCollection(function() {
-          return scope.patient.getCohorts();
+          return scope.patient.getCurrentCohorts();
         }, function(cohorts) {
           scope.cohorts = sortCohorts(_.map(cohorts, function(x) {
             return x.group;

@@ -9,7 +9,7 @@ from radar_api.auth import require_login, force_password_change
 from radar_api.views import consultants
 from radar_api.views import forgot_password
 from radar_api.views import patient_consultants
-from radar_api.views import recruitment_stats
+from radar_api.views import stats
 from radar_api.views import comorbidities
 from radar_api.views import diagnoses
 from radar_api.views import family_histories
@@ -125,13 +125,13 @@ class RadarApi(Flask):
         posts.register_views(self)
         pregnancies.register_views(self)
         recruit_patient.register_views(self)
-        recruitment_stats.register_views(self)
         renal_imaging.register_views(self)
         reset_password.register_views(self)
         results.register_views(self)
         roles.register_views(self)
         salt_wasting_clinical_features.register_views(self)
         source_types.register_views(self)
+        stats.register_views(self)
         transplants.register_views(self)
         users.register_views(self)
         user_sessions.register_views(self)

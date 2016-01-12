@@ -12,18 +12,18 @@
       </tr>
 
       <tr>
-        <th>Organisation</th>
-        <td>{{item.organisation.name}}</td>
+        <th>Hospital</th>
+        <td>{{item.group.name}}</td>
       </tr>
 
       <tr>
-        <th>Added</th>
-        <td>{{item.createdDate | dateTimeFormat}}</td>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}}</td>
       </tr>
 
       <tr>
-        <th>Active</th>
-        <td><span tick="item.isActive"></span></td>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}}</td>
       </tr>
     </table>
 
@@ -38,20 +38,29 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Unit</div>
+        <div frm-label>Hospital</div>
 
         <div frm-control>
-          <div frm-hospital-field model="item.organisation" required="true"></div>
-          <div frm-errors errors="item.errors.organisation"></div>
+          <div frm-hospital-field model="item.group" required="true"></div>
+          <div frm-errors errors="item.errors.group"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Active</div>
+        <div frm-label>From Date</div>
 
         <div frm-control>
-          <div frm-checkbox-field model="item.isActive"></div>
-          <div frm-errors errors="item.errors.isActive"></div>
+          <div frm-date-field model="item.fromDate"></div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
         </div>
       </div>
 
@@ -77,9 +86,9 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="organisation.name">Unit</th>
-          <th sort-helper="createdDate">Added</th>
-          <th sort-helper="isActive">Active</th>
+          <th sort-helper="group.name">Hospital</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
           <th></th>
         </tr>
       </thead>
@@ -91,9 +100,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.organisation.name}}</td>
-          <td>{{item.createdDate | dateFormat}}</td>
-          <td><span tick="item.isActive"></span></td>
+          <td>{{item.group.name}}</td>
+          <td>{{item.fromDate | dateFormat}}</td>
+          <td>{{item.toDate | dateFormat}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('radar.patients.units', []);
+  angular.module('radar.patients.hospitals', []);
 })();

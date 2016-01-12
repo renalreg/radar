@@ -1,57 +1,81 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.cohorts');
+  var app = angular.module('radar.patients.hospitals');
 
-  app.factory('PatientUnitPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
+  app.factory('PatientHospitalPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
   }]);
 
   function controllerFactory(
     ModelListDetailController,
-    PatientUnitPermission,
+    PatientHospitalPermission,
     $injector,
-    store
+    store,
+    _
   ) {
-    function PatientUnitsController($scope) {
+    function PatientHospitalsController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: new PatientUnitPermission($scope.patient)
+          permission: new PatientHospitalPermission($scope.patient)
         }
       });
 
-      self.load($scope.patient.organisations);
+      self.load($scope.patient.getHospitals());
 
       $scope.create = function() {
-        self.edit(store.create('organisation-patients', {patient: $scope.patient.id, isActive: true}));
+        self.edit(store.create('group-patients', {patient: $scope.patient.id}));
       };
     }
 
-    PatientUnitsController.$inject = ['$scope'];
-    PatientUnitsController.prototype = Object.create(ModelListDetailController.prototype);
+    PatientHospitalsController.$inject = ['$scope'];
+    PatientHospitalsController.prototype = Object.create(ModelListDetailController.prototype);
 
-    return PatientUnitsController;
+    PatientHospitalsController.prototype.save = function() {
+      var self = this;
+
+      return ModelListDetailController.prototype.save.call(self).then(function(groupPatient) {
+        // Add the group to the patient's groups
+        if (!_.contains(self.scope.patient.groups, groupPatient)) {
+          self.scope.patient.groups.push(groupPatient);
+        }
+
+        return groupPatient;
+      });
+    };
+
+    PatientHospitalsController.prototype.remove = function(groupPatient) {
+      var self = this;
+
+      return ModelListDetailController.prototype.remove.call(self, groupPatient).then(function() {
+        // Remove the group from the patient's groups
+        _.pull(self.scope.patient.groups, groupPatient);
+      });
+    };
+
+    return PatientHospitalsController;
   }
 
   controllerFactory.$inject = [
     'ModelListDetailController',
-    'PatientUnitPermission',
+    'PatientHospitalPermission',
     '$injector',
-    'store'
+    'store',
+    '_'
   ];
 
-  app.factory('PatientUnitsController', controllerFactory);
+  app.factory('PatientHospitalsController', controllerFactory);
 
-  app.directive('patientUnitsComponent', ['PatientUnitsController', function(PatientUnitsController) {
+  app.directive('patientHospitalsComponent', ['PatientHospitalsController', function(PatientHospitalsController) {
     return {
       scope: {
         patient: '='
       },
-      controller: PatientUnitsController,
-      templateUrl: 'app/patients/units/units-component.html'
+      controller: PatientHospitalsController,
+      templateUrl: 'app/patients/hospitals/hospitals-component.html'
     };
   }]);
 })();

@@ -54,16 +54,16 @@
               <td>{{patient.recruitedDate | dateFormat}}</td>
 
               <td>
-                <span ng-if="!patient.getCohorts().length">-</span>
-                <span ng-repeat="x in patient.getCohorts() | orderBy: 'group.shortName'">
+                <span ng-if="!patient.getCurrentCohorts().length">-</span>
+                <span ng-repeat="x in patient.getCurrentCohorts() | orderBy: 'group.shortName'">
                   {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!patient.getHospitals().length">-</span>
-                <span ng-repeat="x in patient.getHospitals() | orderBy: 'group.shortName'">
+                <span ng-if="!patient.getCurrentHospitals().length">-</span>
+                <span ng-repeat="x in patient.getCurrentHospitals() | orderBy: 'group.shortName'">
                   {{x.group.shortName}}
                   <br ng-if="!$last" />
                 </span>
@@ -176,10 +176,10 @@
         </div>
 
         <div frm-field frm-group>
-          <div frm-label>Unit</div>
+          <div frm-label>Hospital</div>
 
           <div frm-control>
-            <div frm-hospital-field model="filters.organisation"></div>
+            <div frm-hospital-field model="filters.hospital"></div>
             <div frm-errors></div>
           </div>
         </div>

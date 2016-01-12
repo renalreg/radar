@@ -13,22 +13,17 @@
 
       <tr>
         <th>Cohort</th>
-        <td>{{item.cohort.name}}</td>
+        <td>{{item.group.name}}</td>
       </tr>
 
       <tr>
-        <th>Recruited Unit</th>
-        <td>{{item.recruitedOrganisation.name}}</td>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}}</td>
       </tr>
 
       <tr>
-        <th>Recruited Date</th>
-        <td>{{item.createdDate | dateTimeFormat}}</td>
-      </tr>
-
-      <tr>
-        <th>Active</th>
-        <td><span tick="item.isActive"></span></td>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}}</td>
       </tr>
     </table>
 
@@ -46,26 +41,26 @@
         <div frm-label>Cohort</div>
 
         <div frm-control>
-          <div frm-cohort-field model="item.cohort" required="true"></div>
-          <div frm-help>By adding this patient to the cohort you confirm that the patient has given their consent.</div>
-          <div frm-errors errors="item.errors.cohort"></div>
+          <div frm-cohort-field model="item.group" required="true"></div>
+          <div frm-errors errors="item.errors.group"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Recruited Unit</div>
+        <div frm-label>From Date</div>
 
         <div frm-control>
-          <div frm-hospital-field model="item.recruitedOrganisation" required="true"></div>
+          <div frm-date-field model="item.fromDate"></div>
+          <div frm-errors errors="item.errors.fromDate"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Active</div>
+        <div frm-label>To Date</div>
 
         <div frm-control>
-          <div frm-checkbox-field model="item.isActive"></div>
-          <div frm-errors errors="item.errors.isActive"></div>
+          <div frm-date-field model="item.toDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
         </div>
       </div>
 
@@ -76,7 +71,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="cohort.name">
+  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="organisation.name">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -91,10 +86,9 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="cohort.name">Cohort</th>
-          <th sort-helper="recruitedOrganisation.name">Recruited Unit</th>
-          <th sort-helper="createdDate">Recruited Date</th>
-          <th sort-helper="isActive">Active</th>
+          <th sort-helper="group.name">Cohort</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
           <th></th>
         </tr>
       </thead>
@@ -106,10 +100,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.cohort.name}}</td>
-          <td>{{item.recruitedOrganisation.name}}</td>
-          <td>{{item.createdDate | dateFormat}}</td>
-          <td><span tick="item.isActive"></span></td>
+          <td>{{item.group.name}}</td>
+          <td>{{item.fromDate | dateFormat}}</td>
+          <td>{{item.toDate | dateFormat}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

@@ -35,8 +35,10 @@ class UserQueryBuilder(object):
 
     def group(self, group):
         sub_query = db.session.query(GroupUser)\
-            .filter(GroupUser.group == group)\
-            .correlate(User)\
+            .filter(
+                GroupUser.group == group,
+                GroupUser.user_id == User.id,
+            )\
             .exists()
 
         # Include admins even though they don't have explicit group membership

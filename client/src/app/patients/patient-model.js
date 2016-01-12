@@ -4,6 +4,18 @@
   var app = angular.module('radar.patients');
 
   app.factory('PatientModel', ['Model', 'store', '_', function(Model, store, _) {
+    function filterByCurrent(groups) {
+      return _.filter(groups, function(x) {
+        return x.current;
+      });
+    }
+
+    function filterByType(groups, type) {
+      return _.filter(groups, function(x) {
+        return x.group.type === type;
+      });
+    }
+
     function PatientModel(modelName, data) {
       var i;
 
@@ -34,15 +46,19 @@
     };
 
     PatientModel.prototype.getHospitals = function() {
-      return _.filter(this.groups, function(x) {
-        return x.group.type === 'HOSPITAL';
-      });
+      return filterByType(this.groups, 'HOSPITAL');
+    };
+
+    PatientModel.prototype.getCurrentHospitals = function(all) {
+      return filterByCurrent(this.getHospitals());
     };
 
     PatientModel.prototype.getCohorts = function(all) {
-      return _.filter(this.groups, function(x) {
-        return x.group.type === 'COHORT';
-      });
+      return filterByType(this.groups, 'COHORT');
+    };
+
+    PatientModel.prototype.getCurrentCohorts = function(all) {
+      return filterByCurrent(this.getCohorts());
     };
 
     return PatientModel;

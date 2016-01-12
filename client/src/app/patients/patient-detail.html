@@ -31,17 +31,17 @@
         </span>
       </li>
 
-      <li ng-repeat="cohort in patient.getCohorts()" ng-if="cohort.isActive" class="info">
+      <li ng-repeat="x in patient.getCurrentCohorts()" class="info">
         <span>
           <span class="key">Cohort</span>
-          <span class="value">{{cohort.cohort.shortName}}</span>
+          <span class="value">{{x.group.shortName}}</span>
         </span>
       </li>
 
-      <li ng-repeat="organisation in patient.getUnits()" ng-if="organisation.isActive" class="info">
+      <li ng-repeat="x in patient.getCurrentHospitals()" class="info">
         <span>
-          <span class="key">Unit</span>
-          <span class="value">{{organisation.organisation.name}}</span>
+          <span class="key">Hospital</span>
+          <span class="value">{{x.group.shortName}}</span>
         </span>
       </li>
     </ul>

@@ -145,7 +145,7 @@
         self.scope.item = null;
       }
 
-      item.remove().then(function() {
+      return item.remove().then(function() {
         _.pull(self.scope.items, item);
       });
     };

@@ -13,6 +13,10 @@
     </thead>
 
     <tbody>
+      <tr ng-if="counts.length === 0">
+        <td colspan="2">No patients.</td>
+      </tr>
+
       <tr ng-repeat="count in counts">
         <td>{{count.group.shortName}}</td>
         <td>{{count.patientCount}}</td>
