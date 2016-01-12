@@ -14,7 +14,7 @@ import tox.session
 import virtualenv_tools
 import delorean
 
-__VERSION__ = '0.1.0'
+__version__ = '0.1.0'
 
 PURPLE = '\033[95m'
 CYAN = '\033[96m'
