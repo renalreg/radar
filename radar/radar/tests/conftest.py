@@ -25,7 +25,7 @@ def app_context(app):
         yield app_context
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def test_db(request, app_context):
     db.drop_all()
     db.create_all()
@@ -42,7 +42,7 @@ def test_db(request, app_context):
     return db
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def transaction(request, app_context, test_db):
     db.session.begin_nested()
 
