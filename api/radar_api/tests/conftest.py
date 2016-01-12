@@ -12,6 +12,7 @@ def app():
     return create_app({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'SECRET_KEY': ''.join(random.sample(string.printable, 32)),
         'BASE_URL': 'http://localhost',
         'UKRDC_SEARCH_ENABLED': True,
