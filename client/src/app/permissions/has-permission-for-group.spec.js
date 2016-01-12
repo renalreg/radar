@@ -35,7 +35,7 @@
 
     it('grants when the user is the group with the permission', function() {
       var group = store.create('groups', {id: 1});
-      var user = store.create('users', {cohorts: [
+      var user = store.create('users', {groups: [
         {
           group: group,
           permissions: ['VIEW_PATIENT']
