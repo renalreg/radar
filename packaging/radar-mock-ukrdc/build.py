@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-import sys
-sys.path.append('../')
-
 import tempfile
 import logging
 
 import click
 import os
 
-radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
+from radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
     get_mock_ukrdc_src_path, get_release
 
 NAME = 'radar-mock-ukrdc'
