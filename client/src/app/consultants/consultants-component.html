@@ -132,7 +132,7 @@
           <th sort-helper="email">Email</th>
           <th sort-helper="telephoneNumber">Telephone Number</th>
           <th sort-helper="gmcNumber">GMC Number</th>
-          <th>Organisations</th>
+          <th>Hospitals</th>
           <th></th>
         </tr>
       </thead>
@@ -151,7 +151,6 @@
           <td>{{item.gmcNumber | missing}}</td>
 
           <td>
-            <ul>
             <span ng-if="!item.groups.length">-</span>
             <span ng-repeat="x in item.groups | orderBy: 'group.name'">
               {{x.group.name}}
