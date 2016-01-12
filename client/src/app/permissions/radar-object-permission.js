@@ -19,7 +19,7 @@
       var sourceGroup = obj.sourceGroup;
       var sourceType = obj.sourceType;
 
-      return sourceGroup.code === 'RADAR' && sourceGroup.type === 'OTHER' && sourceType.id === 'RADAR';
+      return sourceGroup.code === 'RADAR' && sourceGroup.type === 'OTHER' && sourceType === 'RADAR';
     };
 
     return RadarObjectPermission;

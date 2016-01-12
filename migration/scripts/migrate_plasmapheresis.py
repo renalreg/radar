@@ -64,7 +64,8 @@ def migrate_plasmapheresis(old_conn, new_conn):
         new_conn.execute(
             tables.plasmapheresis.insert(),
             patient_id=row['RADAR_NO'],
-            data_source_id=m.data_source_id,  # TODO
+            source_group_id=m.group_id,  # TODO
+            source_type=m.source_type,
             from_date=row['DATE_START_PLASMAPH'],
             to_date=row['DATE_STOP_PLASMAPH'],
             no_of_exchanges=no_of_exchanges,

@@ -1,7 +1,7 @@
 from radar_api.serializers.consultant_fields import ConsultantReferenceField
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.groups import GroupReferenceField
-from radar.models.groups import GroupConsultant
+from radar.models.consultants import GroupConsultant
 from radar.serializers.models import ModelSerializer
 
 

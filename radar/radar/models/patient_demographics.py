@@ -16,8 +16,7 @@ class PatientDemographics(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')
-    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
-    source_type = relationship('SourceType')
+    source_type = Column(String, nullable=False)
 
     first_name = Column(String)
     last_name = Column(String)
@@ -35,6 +34,6 @@ Index(
     'patient_demographics_patient_source_idx',
     PatientDemographics.patient_id,
     PatientDemographics.source_group_id,
-    PatientDemographics.source_type_id,
+    PatientDemographics.source_type,
     unique=True
 )

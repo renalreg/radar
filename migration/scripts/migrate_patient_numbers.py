@@ -24,7 +24,7 @@ def migrate_patient_numbers(old_conn, new_conn):
     seen_numbers = set()
 
     for row in rows:
-        organisation_id = m.get_organisation_id('UNIT', row['unitcode'])
+        hospital_id = m.get_hospital_id(row['unitcode'])
         number = row['hospitalnumber']
 
         if number in seen_numbers:
@@ -35,8 +35,9 @@ def migrate_patient_numbers(old_conn, new_conn):
         new_conn.execute(
             tables.patient_numbers.insert(),
             patient_id=row['radarNo'],
-            data_source_id=m.data_source_id,
-            organisation_id=organisation_id,
+            source_group_id=m.group_id,
+            source_type=m.source_type,
+            number_group_id=hospital_id,
             number=number,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,

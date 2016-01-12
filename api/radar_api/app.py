@@ -50,12 +50,13 @@ from radar_api.views import group_patients
 from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
-from radar_api.views import source_types
-from radar.auth.cors import set_cors_headers
+from radar_api.views import group_diagnoses
+from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
 from radar.config import check_config, InvalidConfig
+from radar_api.debug import foo, bar
 
 
 class RadarApi(Flask):
@@ -77,6 +78,9 @@ class RadarApi(Flask):
 
         if self.debug:
             self.after_request(set_cors_headers)
+
+            self.before_request(foo)
+            self.teardown_request(bar)
 
         if not self.debug:
             stream_handler = logging.StreamHandler()
@@ -104,6 +108,7 @@ class RadarApi(Flask):
         genetics.register_views(self)
         groups.register_views(self)
         group_consultants.register_views(self)
+        group_diagnoses.register_views(self)
         group_patients.register_views(self)
         group_users.register_views(self)
         hnf1b.register_views(self)
@@ -130,7 +135,6 @@ class RadarApi(Flask):
         results.register_views(self)
         roles.register_views(self)
         salt_wasting_clinical_features.register_views(self)
-        source_types.register_views(self)
         stats.register_views(self)
         transplants.register_views(self)
         users.register_views(self)

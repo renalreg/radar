@@ -35,8 +35,7 @@ class Nephrectomy(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')
-    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
-    source_type = relationship('SourceType')
+    source_type = Column(String, nullable=False)
 
     date = Column(Date, nullable=False)
     kidney_side = Column(String, nullable=False)

@@ -55,7 +55,8 @@ def migrate_dialysis(old_conn, new_conn):
         new_conn.execute(
             tables.dialysis.insert(),
             patient_id=row['RADAR_NO'],
-            data_source_id=m.data_source_id,  # TODO
+            source_group_id=m.group_id,  # TODO
+            source_type=m.source_type,
             from_date=row['DATE_START'],
             to_date=row['DATE_STOP'],
             modality=modality,

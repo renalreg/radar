@@ -21,12 +21,12 @@ class DiagnosisDetailView(GroupObjectViewMixin, PatientObjectDetailView):
     model_class = Diagnosis
 
 
-class CohortDiagnosisListView(ListModelView):
+class GroupDiagnosisListView(ListModelView):
     serializer_class = GroupDiagnosisSerializer
     model_class = GroupDiagnosis
 
     def filter_query(self, query):
-        query = super(CohortDiagnosisListView, self).filter_query(query)
+        query = super(GroupDiagnosisListView, self).filter_query(query)
 
         serializer = GroupDiagnosisRequestSerializer()
         args = serializer.args_to_value(request.args)
@@ -46,5 +46,4 @@ class DiagnosisBiopsyDiagnosesListView(CodedIntegerListView):
 def register_views(app):
     app.add_url_rule('/diagnoses', view_func=DiagnosisListView.as_view('diagnosis_list'))
     app.add_url_rule('/diagnoses/<id>', view_func=DiagnosisDetailView.as_view('diagnosis_detail'))
-    app.add_url_rule('/diagnosis-group-diagnoses', view_func=CohortDiagnosisListView.as_view('diagnosis_group_diagnosis_list'))
     app.add_url_rule('/diagnosis-biopsy-diagnoses', view_func=DiagnosisBiopsyDiagnosesListView.as_view('diagnosis_biopsy_diagnosis_list'))

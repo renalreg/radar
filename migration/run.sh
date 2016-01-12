@@ -14,14 +14,18 @@ fi
 SRC=$1
 DEST=$2
 
-echo 'bootstrap...'
-python scripts/bootstrap.py "$DEST"
 echo 'create users...'
 python scripts/create_users.py "$DEST"
 echo 'create cohorts...'
-python scripts/create_cohorts.py "$DEST" data/cohort_diagnoses.csv
-echo 'create organisations...'
-python scripts/create_organisations.py "$DEST" data/units.csv
+python scripts/create_cohorts.py "$DEST"
+echo 'create hospitals...'
+python scripts/create_hospitals.py "$DEST" data/hospitals.csv
+echo 'create other groups...'
+python scripts/create_other_groups.py "$DEST"
+echo 'create source types...'
+python scripts/create_source_types.py "$DEST"
+echo 'create group diagnoses...'
+python scripts/create_group_diagnoses.py "$DEST" data/group_diagnoses.csv
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'

@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, Pathology
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.pathology import PathologyValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def pathology(patient):
     obj = Pathology()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.kidney_type = 'NATIVE'
@@ -55,7 +55,7 @@ def test_source_group_missing(pathology):
 def test_source_type_missing(pathology):
     pathology.source_type = None
     pathology = valid(pathology)
-    assert pathology.source_type.id == 'RADAR'
+    assert pathology.source_type == 'RADAR'
 
 
 def test_kidney_type_missing(pathology):

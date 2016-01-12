@@ -25,7 +25,8 @@ def migrate_hospitalisations(old_conn, new_conn):
         new_conn.execute(
             tables.hospitalisations.insert(),
             patient_id=row['RADAR_NO'],
-            data_source_id=m.data_source_id,  # TODO
+            source_group_id=m.group_id,  # TODO
+            source_type=m.source_type,
             date_of_admission=row['DATE_ADMIT'],
             date_of_discharge=row['DATE_DISCHARGE'],
             reason_for_admission=row['REASON_ADMIT'],

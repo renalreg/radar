@@ -1,6 +1,6 @@
 from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey,\
     DateTime, Boolean
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects import postgresql
 
 metadata = MetaData()
 
@@ -8,7 +8,6 @@ patients = Table(
     'patients', metadata,
     Column('id', Integer, primary_key=True),
     Column('comments', String),
-    Column('is_active', Boolean),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
@@ -24,65 +23,50 @@ users = Table(
     Column('is_admin', Boolean),
 )
 
-cohorts = Table(
-    'cohorts', metadata,
+groups = Table(
+    'groups', metadata,
     Column('id', Integer, primary_key=True),
+    Column('type', String),
     Column('code', String),
     Column('name', String),
     Column('short_name', String),
+    Column('pages', postgresql.ARRAY(String)),
 )
 
-cohort_diagnoses = Table(
-    'cohort_diagnoses', metadata,
+group_diagnoses = Table(
+    'group_diagnoses', metadata,
     Column('id', Integer, primary_key=True),
-    Column('cohort_id', Integer),
+    Column('group_id', Integer),
     Column('name', String),
     Column('display_order', String),
 )
 
-cohort_features = Table(
-    'cohort_features', metadata,
+group_patients = Table(
+    'group_patients', metadata,
     Column('id', Integer, primary_key=True),
-    Column('cohort_id', Integer),
-    Column('name', String),
-    Column('display_order', Integer),
-)
-
-cohort_patients = Table(
-    'cohort_patients', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('cohort_id', Integer),
+    Column('group_id', Integer),
     Column('patient_id', Integer),
-    Column('recruited_organisation_id', Integer),
+    Column('created_group_id', Integer),
+    Column('from_date', DateTime),
+    Column('to_date', DateTime),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
-    Column('created_date', DateTime),
-    Column('modified_date', DateTime),
 )
 
-cohort_users = Table(
-    'cohort_users', metadata,
+group_users = Table(
+    'group_users', metadata,
     Column('id', Integer, primary_key=True),
-    Column('cohort_id', Integer),
+    Column('group_id', Integer),
     Column('user_id', Integer),
     Column('role', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
 
-organisations = Table(
-    'organisations', metadata,
+group_consultants = Table(
+    'group_consultants', metadata,
     Column('id', Integer, primary_key=True),
-    Column('code', String),
-    Column('type', String),
-    Column('name', String),
-    Column('recruitment', String),
-)
-
-organisation_consultants = Table(
-    'organisation_consultants', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('organisation_id', Integer),
+    Column('group_id', Integer),
     Column('consultant_id', Integer),
 )
 
@@ -107,11 +91,10 @@ organisation_users = Table(
     Column('modified_user_id', Integer),
 )
 
-data_sources = Table(
-    'data_sources', metadata,
-    Column('id', Integer, primary_key=True),
-    Column('organisation_id', Integer, ForeignKey('organisations.id')),
-    Column('type', String),
+source_types = Table(
+    'source_types', metadata,
+    Column('id', String, primary_key=True),
+    Column('name', String),
 )
 
 consultants = Table(
@@ -126,9 +109,10 @@ consultants = Table(
 
 patient_aliases = Table(
     'patient_aliases', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('first_name', String),
     Column('last_name', String),
     Column('created_user_id', Integer),
@@ -137,9 +121,10 @@ patient_aliases = Table(
 
 patient_addresses = Table(
     'patient_addresses', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('address1', String),
     Column('address2', String),
     Column('address3', Integer),
@@ -150,7 +135,7 @@ patient_addresses = Table(
 
 patient_consultants = Table(
     'patient_consultants', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('consultant_id', Integer),
     Column('from_date', Date),
@@ -160,9 +145,10 @@ patient_consultants = Table(
 
 patient_demographics = Table(
     'patient_demographics', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('first_name', String),
     Column('last_name', String),
     Column('date_of_birth', Date),
@@ -177,10 +163,11 @@ patient_demographics = Table(
 
 patient_numbers = Table(
     'patient_numbers', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
-    Column('organisation_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
+    Column('number_group_id', Integer),
     Column('number', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
@@ -188,9 +175,10 @@ patient_numbers = Table(
 
 hospitalisations = Table(
     'hospitalisations', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('date_of_admission', DateTime),
     Column('date_of_discharge', DateTime),
     Column('reason_for_admission', String),
@@ -201,9 +189,10 @@ hospitalisations = Table(
 
 pathology = Table(
     'pathology', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('date', Date),
     Column('kidney_type', String),
     Column('kidney_side', String),
@@ -215,9 +204,10 @@ pathology = Table(
 
 dialysis = Table(
     'dialysis', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('from_date', Date),
     Column('to_date', Date),
     Column('modality', Integer),
@@ -227,9 +217,9 @@ dialysis = Table(
 
 family_histories = Table(
     'family_histories', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('cohort_id', Integer),
+    Column('group_id', Integer),
     Column('parental_consanguinity', Boolean),
     Column('family_history', Boolean),
     Column('other_family_history', String),
@@ -247,9 +237,10 @@ family_history_relatives = Table(
 
 plasmapheresis = Table(
     'plasmapheresis', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('from_date', Date),
     Column('to_date', Date),
     Column('no_of_exchanges', String),
@@ -260,9 +251,10 @@ plasmapheresis = Table(
 
 medications = Table(
     'medications', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
     Column('from_date', Date),
     Column('to_date', Date),
     Column('name', String),
@@ -273,9 +265,9 @@ medications = Table(
 
 genetics = Table(
     'genetics', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('cohort_id', Integer),
+    Column('group_id', Integer),
     Column('date_sent', Date),
     Column('laboratory', String),
     Column('reference_number', String),
@@ -288,7 +280,7 @@ genetics = Table(
 
 alport_clinical_pictures = Table(
     'alport_clinical_pictures', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('date_of_picture', Date),
     Column('deafness', Integer),
@@ -300,7 +292,7 @@ alport_clinical_pictures = Table(
 
 ins_relapses = Table(
     'ins_relapses', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('date_of_relapse', Date),
     Column('kidney_type', String),
@@ -317,10 +309,11 @@ ins_relapses = Table(
 
 transplants = Table(
     'transplants', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
-    Column('data_source_id', Integer),
-    Column('organisation_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
+    Column('transplant_group_id', Integer),
     Column('date', Date),
     Column('modality', Integer),
     Column('date_of_recurrence', Date),
@@ -346,7 +339,7 @@ transplant_biopsies = Table(
 
 hnf1b_clinical_pictures = Table(
     'hnf1b_clinical_pictures', metadata,
-    Column('id', UUID, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('date_of_picture', Date),
     Column('single_kidney', Boolean),

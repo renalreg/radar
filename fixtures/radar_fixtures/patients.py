@@ -23,10 +23,9 @@ from radar_fixtures.transplants import create_transplants_f
 from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL,\
     GROUP_CODE_NHS, GROUP_CODE_CHI, GROUP_CODE_UKRR, GROUP_CODE_NHSBT, GROUP_TYPE_OTHER
-from radar.source_types import get_radar_source_type
 from radar.groups import get_radar_group
 
 
@@ -180,12 +179,11 @@ def create_patient_addresses_f():
 
 def create_patients(n):
     radar_group = get_radar_group()
-    radar_source_type = get_radar_source_type()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE_HOSPITAL).all()
     cohort_groups = Group.query.filter(Group.type == GROUP_TYPE_COHORT).all()
 
-    source_types = SourceType.query.all()
+    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -207,10 +205,10 @@ def create_patients(n):
 
         gender = generate_gender()
 
-        create_demographics(patient, radar_group, radar_source_type, gender)
-        create_patient_aliases(patient, radar_group, radar_source_type)
-        create_patient_numbers(patient, radar_group, radar_source_type)
-        create_patient_addresses(patient, radar_group, radar_source_type)
+        create_demographics(patient, radar_group, SOURCE_TYPE_RADAR, gender)
+        create_patient_aliases(patient, radar_group, SOURCE_TYPE_RADAR)
+        create_patient_numbers(patient, radar_group, SOURCE_TYPE_RADAR)
+        create_patient_addresses(patient, radar_group, SOURCE_TYPE_RADAR)
 
         recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
 
@@ -231,7 +229,7 @@ def create_patients(n):
 
             if i < 5:
                 for source_type in source_types:
-                    if source_type.id != SOURCE_TYPE_RADAR:
+                    if source_type != SOURCE_TYPE_RADAR:
                         create_demographics(patient, hospital_group, source_type, gender)
                         create_patient_aliases(patient, hospital_group, source_type)
                         create_patient_numbers(patient, hospital_group, source_type)

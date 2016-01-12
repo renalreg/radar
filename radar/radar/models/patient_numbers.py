@@ -16,8 +16,7 @@ class PatientNumber(db.Model, MetaModelMixin):
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group', foreign_keys=[source_group_id])
-    source_type_id = Column(String, ForeignKey('source_types.id'), nullable=False)
-    source_type = relationship('SourceType')
+    source_type = Column(String, nullable=False)
 
     number_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     number_group = relationship('Group', foreign_keys=[number_group_id])

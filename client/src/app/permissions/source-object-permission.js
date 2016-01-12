@@ -18,7 +18,7 @@
 
       var sourceType = obj.sourceType;
 
-      if (sourceType.id !== 'RADAR') {
+      if (sourceType !== 'RADAR') {
         return false;
       }
 

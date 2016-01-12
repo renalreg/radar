@@ -304,6 +304,8 @@
           this.reverse = params.reverse;
         }
       }
+
+      this.lastParams = null;
     }
 
     ListHelperProxy.prototype.sort = function(sortBy, reverse) {
@@ -376,7 +378,12 @@
 
     ListHelperProxy.prototype.load = function() {
       var params = this.getParams();
-      this.callback(this, params);
+
+      // Params have changed
+      if (!angular.equals(params, this.lastParams)) {
+        this.callback(this, params);
+        this.lastParams = angular.copy(params);
+      }
     };
 
     return ListHelperProxy;

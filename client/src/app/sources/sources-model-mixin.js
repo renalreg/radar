@@ -6,7 +6,7 @@
   app.factory('SourceModelMixin', ['_', function(_) {
     return {
       getSource: function() {
-        return this.sourceGroup.shortName + ' (' + this.sourceType.id + ')';
+        return this.sourceGroup.shortName + ' (' + this.sourceType + ')';
       }
     };
   }]);

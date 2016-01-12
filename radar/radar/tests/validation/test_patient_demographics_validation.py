@@ -5,7 +5,7 @@ import pytz
 
 from radar.models import PatientDemographics, Patient, GENDER_MALE, GENDER_FEMALE
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_demographics import PatientDemographicsValidation
 from radar.validation.validators import DAY_ZERO
@@ -22,7 +22,7 @@ def patient():
 def demographics(patient):
     obj = PatientDemographics()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.first_name = 'JOHN'
     obj.last_name = 'SMITH'
@@ -68,7 +68,7 @@ def test_source_group_missing(demographics):
 def test_source_type_missing(demographics):
     demographics.source_type = None
     demographics = valid(demographics)
-    assert demographics.source_type.id == 'RADAR'
+    assert demographics.source_type == 'RADAR'
 
 
 def test_first_name_blank(demographics):

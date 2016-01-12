@@ -76,7 +76,7 @@ def migrate_family_histories(old_conn, new_conn):
         result = new_conn.execute(
             tables.family_histories.insert(),
             patient_id=row['RADAR_NO'],
-            cohort_id=m.cohort_id,  # TODO
+            group_id=m.group_id,  # TODO
             parental_consanguinity=parental_consanguinity,
             family_history=family_history,
             created_user_id=m.user_id,

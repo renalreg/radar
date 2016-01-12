@@ -16,7 +16,6 @@ from radar.models.diagnoses import GroupDiagnosis
 from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.results import Result
 from radar.models.consultants import Consultant
-from radar.models.source_types import SourceType
 from radar.validation.comorbidities import DisorderValidation
 from radar.validation.dialysis import DialysisValidation
 from radar.validation.hospitalisations import HospitalisationValidation
@@ -37,7 +36,6 @@ from radar.validation.groups import GroupValidation
 from radar.validation.group_users import GroupUserValidation
 from radar.validation.group_patients import GroupPatientValidation
 from radar.validation.group_diagnoses import GroupDiagnosisValidation
-from radar.validation.source_types import SourceTypeValidation
 from radar.database import db
 from radar.auth.sessions import current_user
 
@@ -62,7 +60,6 @@ VALIDATIONS = {
     Group: GroupValidation,
     GroupUser: GroupUserValidation,
     GroupPatient: GroupPatientValidation,
-    SourceType: SourceTypeValidation,
 }
 
 

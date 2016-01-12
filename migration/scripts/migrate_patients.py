@@ -2,7 +2,7 @@ from sqlalchemy import text, create_engine
 import click
 
 from radar_migration import tables, Migration, EXCLUDED_UNITS
-from radar_migration.cohorts import convert_cohort_code
+from radar_migration.groups import convert_cohort_code
 
 
 ETHNICITY_MAP = {
@@ -89,7 +89,7 @@ def convert_status(old_value):
     return new_value
 
 
-def number_to_organisation_code(value):
+def number_to_group_code(value):
     if len(value) != 10 or not value.isdigit():
         return None
     elif value >= '0101000000' and value <= '3112999999':
@@ -194,7 +194,7 @@ def migrate_patients(old_conn, new_conn):
             SELECT
                 nhsno,
                 unitcode,
-                max(date) as load_date
+                max(date) as updated_date
             FROM log
             WHERE action = 'patient data load'
             GROUP BY nhsno, unitcode
@@ -205,9 +205,9 @@ def migrate_patients(old_conn, new_conn):
         WHERE
             r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')
         ORDER BY
-            p.nhsno,
+            r.radarNo,
             (CASE WHEN p.sourceType = 'PatientView' THEN 0 ELSE 1 END), -- prefer PatientView patients
-            l.load_date DESC -- newer data first
+            l.updated_date DESC -- newer data first
     """))
 
     seen_nhs_nos = set()
@@ -233,20 +233,18 @@ def migrate_patients(old_conn, new_conn):
         else:
             comments = None
 
-        is_active = convert_status(row['status'])
+        # is_active = convert_status(row['status'])
 
         # Create a patient
         new_conn.execute(
             tables.patients.insert(),
             id=radar_no,
             comments=comments,
-            is_active=is_active,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
 
-        organisation_id = m.get_organisation_id('UNIT', row['unit_code'])
-        recruited_date = row['date_registered']
+        hospital_id = m.get_hospital_id(row['unit_code'])
 
         username = row['username']
 
@@ -257,14 +255,13 @@ def migrate_patients(old_conn, new_conn):
 
         # Add the patient to the RaDaR cohort
         new_conn.execute(
-            tables.cohort_patients.insert(),
-            cohort_id=m.cohort_id,
+            tables.group_patients.insert(),
+            group_id=m.group_id,
             patient_id=radar_no,
-            recruited_organisation_id=organisation_id,
+            created_group_id=hospital_id,
+            from_date=row['date_registered'],
             created_user_id=user_id,
             modified_user_id=user_id,
-            created_date=recruited_date,
-            modified_date=recruited_date,
         )
 
         first_name = row['forename']
@@ -286,7 +283,8 @@ def migrate_patients(old_conn, new_conn):
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=radar_no,
-            data_source_id=m.data_source_id,
+            source_group_id=m.group_id,
+            source_type=m.source_type,
             first_name=first_name,
             last_name=last_name,
             date_of_birth=row['date_of_birth'],
@@ -300,14 +298,15 @@ def migrate_patients(old_conn, new_conn):
         )
 
         # Note: NHS, CHI, H&C... numbers are all stored in the nhsno column
-        organisation_code = number_to_organisation_code(nhs_no)
+        group_code = number_to_group_code(nhs_no)
 
-        if organisation_code is not None:
+        if group_code is not None:
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
-                data_source_id=m.data_source_id,
-                organisation_id=m.get_organisation_id('OTHER', organisation_code),
+                source_group_id=m.group_id,
+                source_type=m.source_type,
+                number_group_id=m.get_group_id('OTHER', group_code),
                 number=nhs_no,
                 created_user_id=m.user_id,
                 modified_user_id=m.user_id,
@@ -342,18 +341,17 @@ def migrate_patient_cohorts(old_conn, new_conn):
         cohort_id = m.get_cohort_id(cohort_code)
 
         new_conn.execute(
-            tables.cohort_patients.insert(),
+            tables.group_patients.insert(),
             patient_id=row['radarNo'],
-            cohort_id=cohort_id,
-            recruited_organisation_id=m.organisation_id,
+            group_id=cohort_id,
+            created_group_id=m.group_id,
+            from_date=row['dateReg'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
-            created_date=row['dateReg'],
-            modified_date=row['dateReg'],
         )
 
 
-def migrate_patient_organisations(old_conn, new_conn):
+def migrate_patient_hospitals(old_conn, new_conn):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -382,16 +380,16 @@ def migrate_patient_organisations(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
-        organisation_id = m.get_organisation_id('UNIT', row['unitcode'])
+        hospital_id = m.get_hospital_id(row['unitcode'])
 
         new_conn.execute(
-            tables.organisation_patients.insert(),
+            tables.group_patients.insert(),
             patient_id=row['radarNo'],
-            organisation_id=organisation_id,
+            group_id=hospital_id,
+            created_group_id=m.group_id,
+            from_date=row['dateReg'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
-            created_date=row['dateReg'],
-            modified_date=row['dateReg'],
         )
 
 
@@ -408,7 +406,7 @@ def cli(src, dest):
     with dest_conn.begin():
         migrate_patients(src_conn, dest_conn)
         migrate_patient_cohorts(src_conn, dest_conn)
-        migrate_patient_organisations(src_conn, dest_conn)
+        migrate_patient_hospitals(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

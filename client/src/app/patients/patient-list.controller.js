@@ -32,6 +32,10 @@
       $scope.clear = clear;
       $scope.count = 0;
 
+      var genderPromise = store.findMany('genders').then(function(genders) {
+        $scope.genders = genders;
+      });
+
       function search() {
         var proxyParams = proxy.getParams();
         var params = angular.extend({}, proxyParams, $scope.filters);
@@ -43,9 +47,7 @@
             $scope.count = data.pagination.count;
             return data.data;
           }),
-          store.findMany('genders').then(function(genders) {
-            $scope.genders = genders;
-          })
+          genderPromise
         ]));
       }
 

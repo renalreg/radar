@@ -72,6 +72,8 @@ class Group(db.Model):
     def sorted_pages(self):
         return [x.name for x in sorted(self.group_pages, key=lambda y: y.display_order)]
 
+Index('groups_code_type_idx', Group.code, Group.type, unique=True)
+
 
 class GroupPatient(db.Model, MetaModelMixin):
     __tablename__ = 'group_patients'
@@ -93,7 +95,6 @@ class GroupPatient(db.Model, MetaModelMixin):
     @hybrid_property
     def current(self):
         now = datetime.now(pytz.UTC)
-        print now, self.from_date, self.to_date
         return (self.from_date <= now and (self.to_date is None or self.to_date >= now))
 
     @current.expression
@@ -159,22 +160,3 @@ class GroupUser(db.Model, MetaModelMixin):
 Index('group_users_group_idx', GroupUser.group_id)
 Index('group_users_user_idx', GroupUser.user_id)
 Index('group_patients_group_user_idx', GroupUser.group_id, GroupUser.user_id, unique=True)
-
-
-class GroupConsultant(db.Model, MetaModelMixin):
-    __tablename__ = 'group_consultants'
-
-    id = Column(Integer, primary_key=True)
-
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
-
-    consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
-    consultant = relationship('Consultant', backref=backref('group_consultants', cascade='all, delete-orphan', passive_deletes=True))
-
-Index(
-    'group_consultants_group_consultant_idx',
-    GroupConsultant.group_id,
-    GroupConsultant.consultant_id,
-    unique=True
-)

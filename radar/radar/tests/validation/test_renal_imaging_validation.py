@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import RenalImaging, Patient, PatientDemographics
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.renal_imaging import RenalImagingValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def renal_imaging(patient):
     obj = RenalImaging()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.imaging_type = 'USS'
@@ -93,7 +93,7 @@ def test_source_group_missing(renal_imaging):
 def test_source_type_missing(renal_imaging):
     renal_imaging.source_type = None
     renal_imaging = valid(renal_imaging)
-    assert renal_imaging.source_type.id == 'RADAR'
+    assert renal_imaging.source_type == 'RADAR'
 
 
 def test_date_missing(renal_imaging):

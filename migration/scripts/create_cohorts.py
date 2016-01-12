@@ -1,11 +1,9 @@
-import csv
-from collections import defaultdict
+import copy
 
 import click
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 
-from radar_migration import tables, Migration
-from radar_migration.cohorts import create_cohort
+from radar_migration.groups import create_group
 
 
 COHORTS = [
@@ -13,7 +11,7 @@ COHORTS = [
         'code': 'ALPORT',
         'name': 'Alport Syndrome',
         'short_name': 'Alport',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -25,7 +23,7 @@ COHORTS = [
         'code': 'APRT',
         'name': 'APRT Deficiency',
         'short_name': 'APRT',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -42,7 +40,7 @@ COHORTS = [
         'code': 'ADPKD',
         'name': 'Autosomal Dominant Polycystic Kidney Disease',
         'short_name': 'ADPKD',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'COMORBIDITIES',
             'RENAL_IMAGING',
@@ -51,13 +49,14 @@ COHORTS = [
             'MEDICATIONS',
             'DIALYSIS',
             'TRANSPLANTS',
+            'NEPHRECTOMIES',
         ],
     },
     {
         'code': 'ARPKD',
         'name': 'Autosomal Recessive Polycystic Kidney Disease',
         'short_name': 'ARPKD',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'COMORBIDITIES',
             'RENAL_IMAGING',
@@ -72,7 +71,7 @@ COHORTS = [
         'code': 'AHUS',
         'name': 'Atypical Haemolytic Uraemic Syndrome',
         'short_name': 'AHUS',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'COMORBIDITIES',
             'RESULTS',
@@ -86,7 +85,7 @@ COHORTS = [
         'code': 'CALCIP',
         'name': 'Calciphylaxis',
         'short_name': 'Calciphylaxis',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'COMORBIDITIES',
             'RESULTS',
@@ -97,7 +96,7 @@ COHORTS = [
         'code': 'CYSTIN',
         'name': 'Cystinosis',
         'short_name': 'Cystinosis',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RENAL_IMAGING',
@@ -111,7 +110,7 @@ COHORTS = [
         'code': 'CYSURIA',
         'name': 'Cystinuria',
         'short_name': 'Cystinuria',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RENAL_IMAGING',
@@ -122,7 +121,7 @@ COHORTS = [
         'code': 'DENTLOWE',
         'name': 'Dent Disease and Lowe Syndrome',
         'short_name': 'Dent & Lowe',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RENAL_IMAGING',
@@ -133,7 +132,7 @@ COHORTS = [
         'code': 'FUAN',
         'name': 'Familial Urate Associated Nephropathy',
         'short_name': 'FUAN',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RENAL_IMAGING',
@@ -147,7 +146,7 @@ COHORTS = [
         'code': 'HNF1B',
         'name': 'HNF1b Mutations',
         'short_name': 'HNF1b',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -162,7 +161,7 @@ COHORTS = [
         'code': 'HYPOXAL',
         'name': 'Hyperoxaluria',
         'short_name': 'Hyperoxaluria',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RENAL_IMAGING',
@@ -176,7 +175,7 @@ COHORTS = [
         'code': 'HYPALK',
         'name': 'Hypokalaemic Alkalosis',
         'short_name': 'Hypokalaemic Alkalosis',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'SALT_WASTING_CLINICAL_FEATURES',
@@ -191,7 +190,7 @@ COHORTS = [
         'code': 'INS',
         'name': 'Idiopathic Nephrotic Syndrome',
         'short_name': 'INS',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -211,7 +210,7 @@ COHORTS = [
         'code': 'IGANEPHRO',
         'name': 'IgA Nephropathy',
         'short_name': 'IgA',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RESULTS',
@@ -224,7 +223,7 @@ COHORTS = [
         'code': 'MPGN',
         'name': 'Membranoproliferative Glomerulonephritis / Dense Deposit Disease',
         'short_name': 'MPGN',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -243,7 +242,7 @@ COHORTS = [
         'code': 'MEMNEPHRO',
         'name': 'Membranous Nephropathy',
         'short_name': 'Membranous Nephropathy',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RESULTS',
@@ -256,19 +255,19 @@ COHORTS = [
         'code': 'NEPHROS',
         'name': 'NephroS',
         'short_name': 'NephroS',
-        'features': [],
+        'pages': [],
     },
     {
         'code': 'NSMPGNC3',
         'name': 'National Study of Membranoproliferative Glomerulonephritis (MPGN) and C3 Glomerulopathy (C3G)',
         'short_name': 'National Study of MPGN and C3',
-        'features': [],
+        'pages': [],
     },
     {
         'code': 'OBS',
         'name': 'Pregnancy',
         'short_name': 'Pregnancy',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'PREGNANCIES',
             'FETAL_ULTRASOUNDS',
@@ -282,7 +281,7 @@ COHORTS = [
         'code': 'PRCA',
         'name': 'Pure Red Cell Aplasia',
         'short_name': 'PRCA',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'RESULTS',
@@ -293,7 +292,7 @@ COHORTS = [
         'code': 'STECHUS',
         'name': 'STEC-associated HUS',
         'short_name': 'STEC HUS',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
@@ -308,7 +307,7 @@ COHORTS = [
         'code': 'VAS',
         'name': 'Vasculitis',
         'short_name': 'Vasculitis',
-        'features': [
+        'pages': [
             'DIAGNOSIS',
             'COMORBIDITIES',
             'RENAL_IMAGING',
@@ -323,60 +322,20 @@ COHORTS = [
 
 
 def create_cohorts(conn):
-    for x in COHORTS:
-        create_cohort(conn, x)
-
-
-def create_cohort_diagnoses(conn, filename):
-    m = Migration(conn)
-
-    with open(filename, 'rb') as f:
-        reader = csv.reader(f)
-
-        cohort_diagnoses = defaultdict(list)
-
-        for row in reader:
-            cohort_diagnoses[row[0]].append(row[1])
-
-        for code, diagnoses in cohort_diagnoses.items():
-            cohort_id = m.get_cohort_id(code)
-            i = 0
-
-            for diagnosis in diagnoses:
-                # Leave gaps between diagnoses
-                display_order = 1000 + i * 100
-
-                conn.execute(
-                    tables.cohort_diagnoses.insert(),
-                    cohort_id=cohort_id,
-                    name=diagnosis,
-                    display_order=display_order,
-                )
-
-                i += 1
-
-    rows = conn.execute(text("""
-        SELECT
-            code
-        FROM cohorts
-        WHERE
-            NOT EXISTS (SELECT 1 FROM cohort_diagnoses WHERE cohort_diagnoses.cohort_id = cohorts.id)
-    """))
-
-    for row in rows:
-        print '%s code is missing cohort diagnoses' % row[0]
+    for cohort in COHORTS:
+        cohort = copy.deepcopy(cohort)
+        cohort['type'] = 'COHORT'
+        create_group(conn, cohort)
 
 
 @click.command()
 @click.argument('db')
-@click.argument('cohort_diagnoses')
-def cli(db, cohort_diagnoses):
+def cli(db):
     engine = create_engine(db)
     conn = engine.connect()
 
     with conn.begin():
         create_cohorts(conn)
-        create_cohort_diagnoses(conn, cohort_diagnoses)
 
 
 if __name__ == '__main__':

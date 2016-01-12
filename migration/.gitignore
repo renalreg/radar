@@ -1,3 +1,5 @@
 *.csv
-!data/*.csv
-data/consultants.csv
+!data/group_diagnoses.csv
+!data/hospitals.csv
+!data/ins_relapse_drugs.csv
+!data/transplant_modalities.csv

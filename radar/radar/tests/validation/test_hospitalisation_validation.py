@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, Hospitalisation
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.hospitalisations import HospitalisationValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def hospitalisation(patient):
     obj = Hospitalisation()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date_of_admission = date(2015, 1, 1)
     obj.date_of_discharge = date(2015, 1, 2)
@@ -57,7 +57,7 @@ def test_source_group_missing(hospitalisation):
 def test_source_type_missing(hospitalisation):
     hospitalisation.source_type = None
     hospitalisation = valid(hospitalisation)
-    assert hospitalisation.source_type.id == 'RADAR'
+    assert hospitalisation.source_type == 'RADAR'
 
 
 def test_date_of_admission_missing(hospitalisation):

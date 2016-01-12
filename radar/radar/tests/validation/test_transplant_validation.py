@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, Transplant
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.transplants import TransplantValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def transplant(patient):
     obj = Transplant()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.modality = 29
@@ -55,7 +55,7 @@ def test_source_group_missing(transplant):
 def test_source_type_missing(transplant):
     transplant.source_type = None
     transplant = valid(transplant)
-    assert transplant.source_type.id == 'RADAR'
+    assert transplant.source_type == 'RADAR'
 
 
 def test_date_missing(transplant):

@@ -57,7 +57,8 @@ def migrate_pathology(old_conn, new_conn):
         new_conn.execute(
             tables.pathology.insert(),
             patient_id=row['RADAR_NO'],
-            data_source_id=m.data_source_id,  # TODO
+            source_group_id=m.group_id,  # TODO
+            source_type=m.source_type,
             date=row['BX_DATE'],
             kidney_type=kidney_type,
             kidney_side=kidney_side,

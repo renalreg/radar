@@ -44,7 +44,7 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             email = row[4].lower()
             telephone_number = optional(row[5])
             gmc_number = optional_int(row[6])
-            unit_code = row[7]
+            hospital_code = row[7]
 
             result = new_conn.execute(
                 tables.consultants.insert(),
@@ -64,11 +64,11 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             elif old_consultant_id is not None:
                 old_consultant_ids[old_consultant_id] = consultant_id
 
-            organisation_id = m.get_organisation_id('UNIT', unit_code)
+            hospital_id = m.get_hospital_id(hospital_code)
 
             new_conn.execute(
-                tables.organisation_consultants.insert(),
-                organisation_id=organisation_id,
+                tables.group_consultants.insert(),
+                group_id=hospital_id,
                 consultant_id=consultant_id,
             )
 

@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, text
 import click
 
 from radar_migration import tables, Migration
-from radar_migration.cohorts import convert_cohort_code
+from radar_migration.groups import convert_cohort_code
 
 
 def migrate_users(old_conn, new_conn):
@@ -66,8 +66,8 @@ def migrate_user_cohorts(old_conn, new_conn):
         user_id = m.get_user_id(username)
 
         new_conn.execute(
-            tables.cohort_users.insert(),
-            cohort_id=cohort_id,
+            tables.group_users.insert(),
+            group_id=cohort_id,
             user_id=user_id,
             role='RESEARCHER',
             created_user_id=m.user_id,
@@ -75,7 +75,7 @@ def migrate_user_cohorts(old_conn, new_conn):
         )
 
 
-def migrate_user_organisations(old_conn, new_conn):
+def migrate_user_hospitals(old_conn, new_conn):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -97,13 +97,13 @@ def migrate_user_organisations(old_conn, new_conn):
             rdr_user_mapping.role != 'ROLE_PATIENT'
     """))
 
-    for username, unit_code in rows:
-        organisation_id = m.get_organisation_id('UNIT', unit_code)
+    for username, hospital_code in rows:
+        hospital_id = m.get_hospital_id(hospital_code)
         user_id = m.get_user_id(username)
 
         new_conn.execute(
-            tables.organisation_users.insert(),
-            organisation_id=organisation_id,
+            tables.group_users.insert(),
+            group_id=hospital_id,
             user_id=user_id,
             role='CLINICIAN',
             created_user_id=m.user_id,
@@ -124,7 +124,7 @@ def cli(src, dest):
     with dest_conn.begin():
         migrate_users(src_conn, dest_conn)
         migrate_user_cohorts(src_conn, dest_conn)
-        migrate_user_organisations(src_conn, dest_conn)
+        migrate_user_hospitals(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

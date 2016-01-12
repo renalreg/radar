@@ -4,7 +4,7 @@ import pytest
 
 from radar.models import Patient, PatientDemographics, PatientAlias
 from radar.models.groups import Group
-from radar.models.source_types import SourceType, SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_aliases import PatientAliasValidation
 from radar.tests.validation.helpers import validation_runner
@@ -23,7 +23,7 @@ def patient():
 def alias(patient):
     obj = PatientAlias()
     obj.source_group = Group()
-    obj.source_type = SourceType(id=SOURCE_TYPE_RADAR)
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.first_name = 'JOHN'
     obj.last_name = 'SMITH'
@@ -53,7 +53,7 @@ def test_source_group_missing(alias):
 def test_source_type_missing(alias):
     alias.source_type = None
     alias = valid(alias)
-    assert alias.source_type.id == 'RADAR'
+    assert alias.source_type == 'RADAR'
 
 
 def test_first_name_blank(alias):
