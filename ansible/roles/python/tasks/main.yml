@@ -22,7 +22,7 @@
 - name: install virtualenv
   yum: name=python-virtualenv state=present
 
-- name: install packaging dev-requirements.txt
+- name: install radar-packaging dev-requirements.txt
   pip: virtualenv={{ virtualenv_path }} requirements=dev-requirements.txt chdir={{ src_path }}/packaging
   become: yes
   become_user: vagrant
@@ -46,6 +46,11 @@
   become: yes
   become_user: vagrant
 
+- name: install radar-migration dev-requirements.txt
+  pip: virtualenv={{ virtualenv_path }} requirements=dev-requirements.txt chdir={{ src_path }}/migration
+  become: yes
+  become_user: vagrant
+
 - name: install radar
   pip: virtualenv={{ virtualenv_path }} name=. extra_args="--no-deps --editable" chdir={{ src_path }}/radar
   become: yes
@@ -58,5 +63,20 @@
 
 - name: install radar-mock-ukrdc
   pip: virtualenv={{ virtualenv_path }} name=. extra_args="--no-deps --editable" chdir={{ src_path }}/mock_ukrdc
+  become: yes
+  become_user: vagrant
+
+- name: install radar-fixtures
+  pip: virtualenv={{ virtualenv_path }} name=. extra_args="--no-deps --editable" chdir={{ src_path }}/fixtures
+  become: yes
+  become_user: vagrant
+
+- name: install radar-migration
+  pip: virtualenv={{ virtualenv_path }} name=. extra_args="--no-deps --editable" chdir={{ src_path }}/migration
+  become: yes
+  become_user: vagrant
+
+- name: install radar-packaging
+  pip: virtualenv={{ virtualenv_path }} name=. extra_args="--no-deps --editable" chdir={{ src_path }}/packaging
   become: yes
   become_user: vagrant
