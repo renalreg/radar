@@ -1,5 +1,4 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey,\
-    DateTime, Boolean
+from sqlalchemy import MetaData, Table, Column, Integer, String, Date, DateTime, Boolean
 from sqlalchemy.dialects import postgresql
 
 metadata = MetaData()
@@ -125,9 +124,9 @@ patient_addresses = Table(
     Column('patient_id', Integer),
     Column('source_group_id', Integer),
     Column('source_type', String),
-    Column('address1', String),
-    Column('address2', String),
-    Column('address3', Integer),
+    Column('address_1', String),
+    Column('address_2', String),
+    Column('address_3', Integer),
     Column('postcode', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),

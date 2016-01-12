@@ -35,7 +35,7 @@
       $scope.create = function() {
         var item = store.create('patient-aliases', {
           patient: $scope.patient.id,
-          dataSource: $scope.dataSource
+          sourceGroup: $scope.sourceGroup
         });
         self.edit(item);
       };

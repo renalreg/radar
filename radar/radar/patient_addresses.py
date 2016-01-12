@@ -10,23 +10,23 @@ class PatientAddressProxy(object):
         self.demographics_permission = has_permission_for_patient(user, address.patient, PERMISSIONS.VIEW_DEMOGRAPHICS)
 
     @property
-    def address1(self):
+    def address_1(self):
         if self.demographics_permission:
-            return self.address.address1
+            return self.address.address_1
         else:
             return Empty
 
     @property
-    def address2(self):
+    def address_2(self):
         if self.demographics_permission:
-            return self.address.address2
+            return self.address.address_2
         else:
             return Empty
 
     @property
-    def address3(self):
+    def address_3(self):
         if self.demographics_permission:
-            return self.address.address3
+            return self.address.address_3
         else:
             return Empty
 

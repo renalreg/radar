@@ -9,14 +9,14 @@ from radar.validation.validators import required, after_date_of_birth, max_lengt
 class PatientAddressValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([optional(), after_date_of_birth()])
     to_date = Field([optional(), after_date_of_birth()])
-    address1 = Field([
+    address_1 = Field([
         not_empty(),
         remove_trailing_comma(),
         not_empty(),
         normalise_whitespace(),
         max_length(100)
     ])
-    address2 = Field([
+    address_2 = Field([
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -25,7 +25,7 @@ class PatientAddressValidation(PatientValidationMixin, RadarSourceValidationMixi
         normalise_whitespace(),
         max_length(100)
     ])
-    address3 = Field([
+    address_3 = Field([
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
