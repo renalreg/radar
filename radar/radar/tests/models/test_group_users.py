@@ -14,4 +14,3 @@ def test_role():
     obj = GroupUser()
     obj.role = ROLE.RESEARCHER
     assert obj.role is ROLE.RESEARCHER
-    assert obj._role is ROLE.RESEARCHER.value
