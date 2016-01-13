@@ -3,9 +3,7 @@ from collections import OrderedDict
 from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models.results import Observation, OBSERVATION_TYPE_INTEGER,\
-    OBSERVATION_TYPE_REAL, OBSERVATION_TYPE_LOOKUP, OBSERVATION_TYPE_STRING,\
-    Result
+from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result
 from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
     DateTimeField, UUIDField, ListField, CommaSeparatedField
@@ -42,61 +40,61 @@ class StringObservationSerializer(Serializer):
 
 class ObservationSerializer(Serializer):
     SERIALIZER_CLASSES = {
-        OBSERVATION_TYPE_INTEGER: IntegerObservationSerializer,
-        OBSERVATION_TYPE_REAL: RealObservationSerializer,
-        OBSERVATION_TYPE_LOOKUP: LookupObservationSerializer,
-        OBSERVATION_TYPE_STRING: StringObservationSerializer,
+        OBSERVATION_VALUE_TYPE.INTEGER: IntegerObservationSerializer,
+        OBSERVATION_VALUE_TYPE.REAL: RealObservationSerializer,
+        OBSERVATION_VALUE_TYPE.ENUM: LookupObservationSerializer,
+        OBSERVATION_VALUE_TYPE.STRING: StringObservationSerializer,
     }
 
     id = IntegerField()
-    type = StringField()
     name = StringField()
     short_name = StringField()
-    system = StringField()
+    value_type = StringField()
+    sample_type = StringField()
 
     def to_data(self, observation):
         data = super(ObservationSerializer, self).to_data(observation)
 
-        observation_type = observation.type
+        value_type = observation.value_type
 
         try:
-            serializer_class = self.SERIALIZER_CLASSES[observation_type]
+            serializer_class = self.SERIALIZER_CLASSES[value_type]
         except KeyError:
-            raise ValueError('Unknown observation type: %s' % observation_type)
+            raise ValueError('Unknown value type: %s' % value_type)
 
         serializer = serializer_class()
-        options_data = serializer.serialize(observation.options)
-        data.update(options_data)
+        properties_data = serializer.serialize(observation.properties)
+        data.update(properties_data)
 
         return data
 
     def to_value(self, data):
         observation = super(ObservationSerializer, self).to_value(data)
 
-        if 'type' in observation:
-            observation_type = observation['type']
+        if 'value_type' in observation:
+            value_type = observation['value_type']
 
             try:
-                serializer_class = self.SERIALIZER_CLASSES[observation_type]
+                serializer_class = self.SERIALIZER_CLASSES[value_type]
             except ValueError:
-                raise ValidationError({'type': 'Unknown observation type.'})
+                raise ValidationError({'value_type': 'Unknown value type.'})
 
             serializer = serializer_class()
 
             try:
-                options = serializer.deserialize(data)
+                properties = serializer.deserialize(data)
             except ValidationError as e:
-                raise ValidationError({'options': e.errors})
+                raise ValidationError({'properties': e.errors})
 
-            observation['options'] = options
+            observation['properties'] = properties
 
         return observation
 
     def transform_errors(self, errors):
         transformed_errors = super(ObservationSerializer, self).transform_errors(errors)
 
-        if 'options' in errors:
-            transformed_errors['options'] = errors['options']
+        if 'properties' in errors:
+            transformed_errors['properties'] = errors['properties']
 
         return transformed_errors
 
@@ -114,20 +112,20 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
     modified_date = DateTimeField()
 
     def get_value_field(self, observation):
-        observation_type = observation.type
+        value_type = observation.value_type
 
-        if observation_type == OBSERVATION_TYPE_INTEGER:
+        if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
             field = IntegerField()
-        elif observation_type == OBSERVATION_TYPE_REAL:
+        elif value_type == OBSERVATION_VALUE_TYPE.REAL:
             field = FloatField()
-        elif observation_type == OBSERVATION_TYPE_LOOKUP:
-            options = [(x['id'], x['label']) for x in observation.options['options']]
+        elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
+            options = [(x['code'], x['description']) for x in observation.options['options']]
             options = OrderedDict(options)
             field = LabelledStringField(options)
-        elif observation_type == OBSERVATION_TYPE_STRING:
+        elif value_type == OBSERVATION_VALUE_TYPE.STRING:
             field = StringField()
         else:
-            raise ValueError('Unknown observation type: %s' % observation_type)
+            raise ValueError('Unknown value type: %s' % value_type)
 
         return field
 

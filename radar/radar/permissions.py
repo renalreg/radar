@@ -1,6 +1,6 @@
 from radar.models.groups import GROUP_TYPE_HOSPITAL
 from radar.groups import is_radar_group
-from radar.roles import PERMISSIONS
+from radar.roles import PERMISSION
 from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
@@ -76,14 +76,14 @@ def can_view_patient_object(user, patient, group=None):
 
     # Shortcut if the user has permission through their hospital
     # We don't need to check group permissions as they can view data from any group
-    if has_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT, group_type=GROUP_TYPE_HOSPITAL):
+    if has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT, group_type=GROUP_TYPE_HOSPITAL):
         return True
 
-    if not has_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT):
+    if not has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT):
         return False
 
     # If the object belongs to a group we also need to check group permissions
-    if group is not None and not has_permission_for_group(user, group, PERMISSIONS.VIEW_PATIENT):
+    if group is not None and not has_permission_for_group(user, group, PERMISSION.VIEW_PATIENT):
         return False
 
     return True
@@ -95,11 +95,11 @@ def can_edit_patient_object(user, patient, source_group=None):
     if user.is_admin:
         return True
 
-    if not has_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT):
+    if not has_permission_for_patient(user, patient, PERMISSION.EDIT_PATIENT):
         return False
 
     # If the object has a source group we also need to check permissions for the source group
-    if source_group is not None and not has_permission_for_group(user, source_group, PERMISSIONS.VIEW_PATIENT):
+    if source_group is not None and not has_permission_for_group(user, source_group, PERMISSION.VIEW_PATIENT):
         return False
 
     return True
@@ -194,9 +194,9 @@ class PatientPermission(Permission):
             return True
 
         if is_safe_method(request):
-            return has_permission_for_patient(user, obj, PERMISSIONS.VIEW_PATIENT)
+            return has_permission_for_patient(user, obj, PERMISSION.VIEW_PATIENT)
         else:
-            return has_permission_for_patient(user, obj, PERMISSIONS.EDIT_PATIENT)
+            return has_permission_for_patient(user, obj, PERMISSION.EDIT_PATIENT)
 
 
 class PatientObjectPermission(PatientPermission):
@@ -299,7 +299,7 @@ class GroupObjectPermission(Permission):
             patient = obj.patient
 
             # User isn't allowed to view this patient
-            if not has_permission_for_patient(user, patient, PERMISSIONS.VIEW_PATIENT):
+            if not has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT):
                 return False
 
             group = obj.group
@@ -337,7 +337,7 @@ class UserListPermission(Permission):
         else:
             return (
                 user.is_admin or
-                has_permission_for_any_group(user, PERMISSIONS.EDIT_USER_MEMBERSHIP)
+                has_permission_for_any_group(user, PERMISSION.EDIT_USER_MEMBERSHIP)
             )
 
 
@@ -349,7 +349,7 @@ class UserDetailPermission(Permission):
         return (
             user.is_admin or
             user == obj or
-            has_permission_for_any_group(user, PERMISSIONS.EDIT_USER_MEMBERSHIP)
+            has_permission_for_any_group(user, PERMISSION.EDIT_USER_MEMBERSHIP)
         )
 
 
@@ -360,7 +360,7 @@ class RecruitPatientPermission(Permission):
 
         return (
             user.is_admin or
-            has_permission_for_any_group(user, PERMISSIONS.RECRUIT_PATIENT)
+            has_permission_for_any_group(user, PERMISSION.RECRUIT_PATIENT)
         )
 
 

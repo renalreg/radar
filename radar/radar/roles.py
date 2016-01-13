@@ -2,7 +2,7 @@ from collections import OrderedDict
 from enum import Enum
 
 
-class ROLES(Enum):
+class ROLE(Enum):
     IT = 'IT'
     ADMIN = 'ADMIN'
     CLINICIAN = 'CLINICIAN'
@@ -15,16 +15,16 @@ class ROLES(Enum):
 
 
 ROLE_NAMES = OrderedDict([
-    (ROLES.SENIOR_CLINICIAN, 'Senior Clinician'),
-    (ROLES.CLINICIAN, 'Clinician'),
-    (ROLES.ADMIN, 'Admin'),
-    (ROLES.IT, 'IT'),
-    (ROLES.RESEARCHER, 'Researcher'),
-    (ROLES.SENIOR_RESEARCHER, 'Senior Researcher'),
+    (ROLE.SENIOR_CLINICIAN, 'Senior Clinician'),
+    (ROLE.CLINICIAN, 'Clinician'),
+    (ROLE.ADMIN, 'Admin'),
+    (ROLE.IT, 'IT'),
+    (ROLE.RESEARCHER, 'Researcher'),
+    (ROLE.SENIOR_RESEARCHER, 'Senior Researcher'),
 ])
 
 
-class PERMISSIONS(Enum):
+class PERMISSION(Enum):
     VIEW_PATIENT = 'VIEW_PATIENT'
     EDIT_PATIENT = 'EDIT_PATIENT'
     RECRUIT_PATIENT = 'RECRUIT_PATIENT'
@@ -37,46 +37,46 @@ class PERMISSIONS(Enum):
 
 
 PERMISSION_ROLES = {
-    PERMISSIONS.VIEW_PATIENT: [
-        ROLES.CLINICIAN,
-        ROLES.SENIOR_CLINICIAN,
-        ROLES.ADMIN,
-        ROLES.SENIOR_RESEARCHER,
-        ROLES.RESEARCHER,
+    PERMISSION.VIEW_PATIENT: [
+        ROLE.CLINICIAN,
+        ROLE.SENIOR_CLINICIAN,
+        ROLE.ADMIN,
+        ROLE.SENIOR_RESEARCHER,
+        ROLE.RESEARCHER,
     ],
-    PERMISSIONS.EDIT_PATIENT: [
-        ROLES.CLINICIAN,
-        ROLES.SENIOR_CLINICIAN,
+    PERMISSION.EDIT_PATIENT: [
+        ROLE.CLINICIAN,
+        ROLE.SENIOR_CLINICIAN,
     ],
-    PERMISSIONS.RECRUIT_PATIENT: [
-        ROLES.CLINICIAN,
-        ROLES.SENIOR_CLINICIAN,
+    PERMISSION.RECRUIT_PATIENT: [
+        ROLE.CLINICIAN,
+        ROLE.SENIOR_CLINICIAN,
     ],
-    PERMISSIONS.VIEW_DEMOGRAPHICS: [
-        ROLES.CLINICIAN,
-        ROLES.SENIOR_CLINICIAN,
-        ROLES.ADMIN,
-        ROLES.SENIOR_RESEARCHER,
+    PERMISSION.VIEW_DEMOGRAPHICS: [
+        ROLE.CLINICIAN,
+        ROLE.SENIOR_CLINICIAN,
+        ROLE.ADMIN,
+        ROLE.SENIOR_RESEARCHER,
     ],
-    PERMISSIONS.VIEW_USER: [
-        ROLES.IT,
-        ROLES.ADMIN,
-        ROLES.SENIOR_CLINICIAN,
+    PERMISSION.VIEW_USER: [
+        ROLE.IT,
+        ROLE.ADMIN,
+        ROLE.SENIOR_CLINICIAN,
     ],
 }
 
 MANAGED_ROLES = {
-    ROLES.IT: [
-        ROLES.CLINICIAN,
+    ROLE.IT: [
+        ROLE.CLINICIAN,
     ],
-    ROLES.ADMIN: [
-        ROLES.CLINICIAN,
+    ROLE.ADMIN: [
+        ROLE.CLINICIAN,
     ],
-    ROLES.SENIOR_CLINICIAN: [
-        ROLES.CLINICIAN,
+    ROLE.SENIOR_CLINICIAN: [
+        ROLE.CLINICIAN,
     ],
-    ROLES.SENIOR_RESEARCHER: [
-        ROLES.RESEARCHER,
+    ROLE.SENIOR_RESEARCHER: [
+        ROLE.RESEARCHER,
     ]
 }
 

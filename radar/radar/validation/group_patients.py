@@ -1,7 +1,7 @@
 from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional
-from radar.permissions import has_permission_for_group, has_permission_for_any_group, PERMISSIONS, has_permission_for_patient
+from radar.permissions import has_permission_for_group, has_permission_for_any_group, PERMISSION, has_permission_for_patient
 from radar.models.groups import GROUP_TYPE_HOSPITAL
 
 
@@ -16,11 +16,11 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
     @classmethod
     def has_permission(cls, user, obj):
         return (
-            has_permission_for_patient(user, obj.patient, PERMISSIONS.EDIT_PATIENT) and
-            has_permission_for_group(user, obj.group, PERMISSIONS.EDIT_PATIENT) or
+            has_permission_for_patient(user, obj.patient, PERMISSION.EDIT_PATIENT) and
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT) or
             (
                 obj.group.type != GROUP_TYPE_HOSPITAL and
-                has_permission_for_any_group(user, PERMISSIONS.EDIT_PATIENT, group_type=GROUP_TYPE_HOSPITAL)
+                has_permission_for_any_group(user, PERMISSION.EDIT_PATIENT, group_type=GROUP_TYPE_HOSPITAL)
             )
         )
 

@@ -4,7 +4,7 @@ from radar.models.users import User
 from radar_fixtures.validation import validate_and_add
 from radar.database import db
 from radar_fixtures.utils import generate_gender, generate_first_name, generate_last_name
-from radar.roles import ROLES
+from radar.roles import ROLE
 from radar.models.groups import Group, GroupUser, GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
 
 DEFAULT_PASSWORD = 'password'
@@ -67,7 +67,7 @@ def create_southmead_user(password=DEFAULT_PASSWORD):
     group_user = GroupUser()
     group_user.user = user
     group_user.group = Group.query.filter(Group.code == 'REE01', Group.type == GROUP_TYPE_HOSPITAL).one()
-    group_user.role = ROLES.SENIOR_CLINICIAN
+    group_user.role = ROLE.SENIOR_CLINICIAN
     validate_and_add(group_user)
 
 
@@ -84,7 +84,7 @@ def create_ins_user(password=DEFAULT_PASSWORD):
     group_user = GroupUser()
     group_user.user = user
     group_user.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
-    group_user.role = ROLES.RESEARCHER
+    group_user.role = ROLE.RESEARCHER
     validate_and_add(group_user)
 
 
@@ -101,5 +101,5 @@ def create_ins_demograhics_user(password=DEFAULT_PASSWORD):
     group_user = GroupUser()
     group_user.user = user
     group_user.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
-    group_user.role = ROLES.SENIOR_RESEARCHER
+    group_user.role = ROLE.SENIOR_RESEARCHER
     validate_and_add(group_user)

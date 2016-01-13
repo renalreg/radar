@@ -5,12 +5,12 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
 import pytz
-from sqlalchemy_enum34 import EnumType
 
 from radar.database import db
-from radar.roles import ROLES, PERMISSIONS, get_roles_with_permission, get_roles_managed_by_role
+from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
-from radar.pages import PAGES
+from radar.pages import PAGE
+from radar.models.types import EnumType, EnumToStringType
 
 GROUP_TYPE_HOSPITAL = 'HOSPITAL'
 GROUP_TYPE_COHORT = 'COHORT'
@@ -40,7 +40,10 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    pages = Column('pages', postgresql.ARRAY(EnumType(PAGES)))
+
+    # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
+    pages = Column('pages', postgresql.ARRAY(EnumToStringType(PAGE)))
+
     notes = Column(String)
 
     @property
@@ -98,7 +101,7 @@ class GroupUser(db.Model, MetaModelMixin):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id])
-    role = Column('role', EnumType(ROLES), nullable=False)
+    role = Column('role', EnumType(ROLE, name='role'), nullable=False)
 
     def has_permission(self, permission):
         permission_method = permission.value.lower()
@@ -112,7 +115,7 @@ class GroupUser(db.Model, MetaModelMixin):
 
     @property
     def permissions(self):
-        return [x for x in PERMISSIONS if self.has_permission(x)]
+        return [x for x in PERMISSION if self.has_permission(x)]
 
     @property
     def has_edit_user_membership_permission(self):

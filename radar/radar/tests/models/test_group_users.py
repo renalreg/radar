@@ -1,17 +1,17 @@
-from radar.roles import ROLES, PERMISSIONS
+from radar.roles import ROLE, PERMISSION
 from radar.models.groups import GroupUser
 
 
 def test_permissions():
     obj = GroupUser()
-    obj.role = ROLES.RESEARCHER
+    obj.role = ROLE.RESEARCHER
     assert obj.permissions == [
-        PERMISSIONS.VIEW_PATIENT,
+        PERMISSION.VIEW_PATIENT,
     ]
 
 
 def test_role():
     obj = GroupUser()
-    obj.role = ROLES.RESEARCHER
-    assert obj.role is ROLES.RESEARCHER
-    assert obj._role is ROLES.RESEARCHER.value
+    obj.role = ROLE.RESEARCHER
+    assert obj.role is ROLE.RESEARCHER
+    assert obj._role is ROLE.RESEARCHER.value

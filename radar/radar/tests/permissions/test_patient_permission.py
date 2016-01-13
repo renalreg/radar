@@ -1,6 +1,6 @@
 from radar.models.groups import Group
 from radar.permissions import PatientPermission, PatientObjectPermission
-from radar.roles import ROLES
+from radar.roles import ROLE
 from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_groups
 
 
@@ -53,7 +53,7 @@ def test_admin():
 def test_intersecting_groups():
     group = Group()
     patient = make_patient([group])
-    user = make_user([(group, ROLES.RESEARCHER)])
+    user = make_user([(group, ROLE.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -64,8 +64,8 @@ def test_intersecting_groups():
 def test_disjoint_groups():
     group_a, group_b = make_groups(2)
     patient = make_patient([group_a])
-    user_a = make_user([(group_a, ROLES.RESEARCHER)])
-    user_b = make_user([(group_b, ROLES.RESEARCHER)])
+    user_a = make_user([(group_a, ROLE.RESEARCHER)])
+    user_b = make_user([(group_b, ROLE.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 

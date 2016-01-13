@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PAGES(Enum):
+class PAGE(Enum):
     ADDRESSES = 'ADDRESSES'
     ALIASES = 'ALIASES'
     ALPORT_CLINICAL_PICTURES = 'ALPORT_CLINICAL_PICTURES'
