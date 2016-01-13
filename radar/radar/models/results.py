@@ -33,10 +33,10 @@ class OBSERVATION_SAMPLE_TYPE(Enum):
 
 
 OBSERVATION_SAMPLE_TYPE_NAMES = OrderedDict([
-    (OBSERVATION_SAMPLE_TYPE.BLOOD, 'BLOOD'),
-    (OBSERVATION_SAMPLE_TYPE.URINE, 'URINE'),
-    (OBSERVATION_SAMPLE_TYPE.URINE_DIPSTICK, 'URINE_DIPSTICK'),
-    (OBSERVATION_SAMPLE_TYPE.OBSERVATION, 'OBSERVATION'),
+    (OBSERVATION_SAMPLE_TYPE.BLOOD, 'Blood'),
+    (OBSERVATION_SAMPLE_TYPE.URINE, 'Urine'),
+    (OBSERVATION_SAMPLE_TYPE.URINE_DIPSTICK, 'Urine Dipstick'),
+    (OBSERVATION_SAMPLE_TYPE.OBSERVATION, 'Observation'),
 ])
 
 
@@ -67,7 +67,7 @@ class Result(db.Model, MetaModelMixin):
     observation_id = Column(Integer, ForeignKey('observations.id'), nullable=False)
     observation = relationship('Observation')
 
-    date = Column(DateTime(timezone=False), nullable=False)
+    date = Column(DateTime(timezone=True), nullable=False)
     _value = Column('value', String, nullable=False)
 
     @property

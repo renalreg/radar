@@ -358,18 +358,20 @@ class EnumField(Field):
 
 
 class LabelledValueField(Serializer):
-    def __init__(self, field_f, items, **kwargs):
+    def __init__(self, field_f, items, id_key='id', label_key='label', **kwargs):
         super(LabelledValueField, self).__init__(**kwargs)
         self.field_f = field_f
         self.items = items
+        self.id_key = id_key
+        self.label_key = label_key
 
     def transform_errors(self, errors):
         return errors
 
     def get_fields(self):
         fields = {
-            'id': self.field_f(),
-            'label': StringField(read_only=True)
+            self.id_key: self.field_f(),
+            self.label_key: StringField(read_only=True)
         }
 
         for field_name, field in fields.items():
@@ -382,11 +384,11 @@ class LabelledValueField(Serializer):
             try:
                 value = super(LabelledValueField, self).to_value(data)
             except ValidationError as e:
-                raise ValidationError(e.errors['id'])
+                raise ValidationError(e.errors[self.id_key])
 
-            value = value.get('id')
+            value = value.get(self.id_key)
         else:
-            value = self.fields['id'].to_value(data)
+            value = self.fields[self.id_key].to_value(data)
 
         return value
 
@@ -397,8 +399,8 @@ class LabelledValueField(Serializer):
         label = self.items[value]
 
         return super(LabelledValueField, self).to_data({
-            'id': value,
-            'label': label,
+            self.id_key: value,
+            self.label_key: label,
         })
 
 

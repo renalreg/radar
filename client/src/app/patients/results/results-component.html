@@ -1,0 +1,204 @@
+<div crud>
+  <div ng-if="viewing || editing">
+    <div loading="loading">
+      <div ng-if="viewing">
+        <p>
+          <span crud-list-button></span>
+          <span crud-edit-button item="item"></span>
+          <span crud-remove-button item="item"></span>
+        </p>
+
+        <table class="table properties">
+          <tr>
+            <th>ID</th>
+            <td>{{item.id}}</td>
+          </tr>
+
+          <tr>
+            <th>Source</th>
+            <td>{{item.getSource()}}</td>
+          </tr>
+
+          <tr>
+            <th>Observation</th>
+            <td>{{item.observation.name}}</td>
+          </tr>
+
+          <tr>
+            <th>Date</th>
+            <td>{{item.date | dateTimeFormat}}</td>
+          </tr>
+
+          <tr>
+            <th>Value <span ng-if="item.observation.units">({{item.observation.units}})</span></th>
+            <td>{{item.getDisplayValue() | missing}}</td>
+          </tr>
+        </table>
+
+        <div item-meta item="item"></div>
+      </div>
+
+      <div ng-if="editing">
+        <p>
+          <span crud-list-button></span>
+          <span crud-view-button item="originalItem"></span>
+        </p>
+
+        <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+          <div frm-field frm-group>
+            <div frm-label>Source</div>
+
+            <div frm-control>
+              <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+              <div frm-errors errors="item.errors.sourceGroup"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Date</div>
+
+            <div frm-control>
+              <div frm-date-field model="item.date" required="true"></div>
+              <div frm-errors errors="item.errors.date"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Observation</div>
+
+            <div frm-control>
+              <div frm-observation-field model="item.observation" required="true"></div>
+              <div frm-help>See the <a ui-sref="observations" target="_blank">observations</a> guide.</div>
+              <div frm-errors errors="item.errors.observation"></div>
+            </div>
+          </div>
+
+          <div ng-if="item.observation" frm-field frm-group>
+            <div frm-label>Value</div>
+
+            <div frm-control>
+              <div ng-switch="item.observation.valueType.id">
+                <div
+                  ng-switch-when="INTEGER"
+                  frm-integer-field model="item.value"
+                  units="{{item.observation.units}}"
+                  required="true"></div>
+
+                <div
+                  ng-switch-when="REAL"
+                  frm-number-field model="item.value"
+                  units="{{item.observation.units}}"
+                  required="true"></div>
+
+                <div
+                  ng-switch-when="ENUM"
+                  frm-select-field model="item.value"
+                  options="item.observation.options"
+                  options-id="code"
+                  options-label="description"
+                  required="true"></div>
+
+                <div
+                  ng-switch-when="STRING"
+                  frm-text-field model="item.value"
+                  required="true"></div>
+              </div>
+
+              <div frm-errors errors="item.errors.value"></div>
+            </div>
+          </div>
+
+          <div frm-buttons>
+            <span crud-save-button></span>
+            <span crud-cancel-list-button></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="!viewing && !editing">
+    <p ng-show="!loading">
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div select-observation-list observations="selectedObservations"></div>
+
+    <div ng-show="selectedObservations.length">
+      <ul class="tabs-radar">
+        <li ng-class="{active: viewingTable()}"><a href="" ng-click="viewTable()"><i class="fa fa-table"></i> Table</a></li>
+        <li ng-class="{active: viewingGraph()}"><a href="" ng-click="viewGraph()"><i class="fa fa-line-chart"></i> Graphs</a></li>
+      </ul>
+
+      <div loading="loading">
+        <div ng-show="viewingTable()">
+          <div list-helper="groupedResults as page" per-page="50" sort-by="date" reverse="true">
+            <p>
+              <span crud-create-button action="create()"></span>
+            </p>
+
+            <div ng-if="!page.getCount()">
+              <p>No results for the selected observations.</p>
+            </div>
+
+            <table class="table table-condensed table-striped" ng-show="page.getCount()">
+              <thead>
+                <tr>
+                  <th sort-helper="date">Date</th>
+
+                  <th ng-repeat="observation in selectedObservations" sort-helper="results[observation.id].getDisplayValue()" sort-id="results.{{observation.id}}">
+                    {{observation.shortName}}<span ng-if="observation.units"> ({{observation.units}})</span>
+                  </th>
+
+                  <th sort-helper="source">Source</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat="item in page.getItems()">
+                  <td>{{item.date | dateTimeFormat}}</td>
+
+                  <td ng-repeat="observation in selectedObservations">
+                    <span ng-if="item.results[observation.id] === undefined">-</span>
+
+                    <span ng-if="item.results[observation.id] !== undefined">
+                      <!-- Note: IE doesn't support ng-disabled on <a> -->
+
+                      <span ng-if="viewEnabled(item.results[observation.id])">
+                        <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].getDisplayValue() | missing}}</a>
+                      </span>
+
+                      <span ng-if="!viewEnabled(item.results[observation.id])">
+                        <a href="" ng-click="view(item.results[observation.id])">{{item.results[observation.id].getDisplayValue() | missing}}</a>
+                      </span>
+                    </span>
+                  </td>
+
+                  <td class="source">{{item.source}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div pagination-helper></div>
+          </div>
+        </div>
+
+        <div ng-if="viewingGraph()">
+          <p>
+            <span crud-create-button action="create()"></span>
+          </p>
+
+          <p ng-if="!graphs.length">
+            No plottable observations selected.
+          </p>
+
+          <div class="row" ng-if="graphs.length">
+            <div ng-repeat="graph in graphs" class="col-lg-6">
+              <div results-graph observation="graph.observation" results="graph.results"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -104,6 +104,7 @@
 
           function filter(newSearch) {
             search = newSearch;
+            page = 1;
             _filter();
           }
 

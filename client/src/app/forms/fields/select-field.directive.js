@@ -18,7 +18,7 @@
         scope.data = {};
 
         scope.$watch('model', function(value) {
-          scope.data.model = toSelectView(value, scope.idPath, scope.labelPath);
+          scope.data.model = toSelectView(value, scope.optionsId, scope.optionsLabel);
         });
 
         scope.$watch('data.model', function(value) {

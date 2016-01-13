@@ -1,0 +1,87 @@
+<div class="panel panel-primary observations-selector">
+  <div class="panel-heading">
+    <h3 class="panel-title">Select Observations</h3>
+  </div>
+
+  <div class="panel-body">
+    <div list-helper="observations as page" per-page="5" sort-by="name">
+      <table class="table table-condensed table-striped observations">
+        <thead>
+          <tr>
+            <th></th>
+            <th sort-helper="name">Name</th>
+            <th sort-helper="shortName">Short Name</th>
+            <th sort-helper="valueType.label">Value Type</th>
+            <th sort-helper="sampleType.label">Sample Type</th>
+            <th sort-helper="units">Units</th>
+            <th sort-helper="minValue">Min Value</th>
+            <th sort-helper="maxValue">Max Value</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <th colspan="9">Selected</th>
+          </tr>
+
+          <tr ng-if="selectedObservations.length === 0">
+            <td colspan="9" class="empty">No observations selected.</td>
+          </tr>
+
+          <tr ng-repeat="observation in selectedObservations">
+            <td>
+              <button type="button" ng-click="remove(observation)" class="btn btn-primary btn-xs"><i class="fa fa-minus"></i></button>
+            </td>
+
+            <td>{{observation.name}}</td>
+            <td>{{observation.shortName}}</td>
+            <td>{{observation.valueType.label}}</td>
+            <td>{{observation.sampleType.label}}</td>
+            <td>{{observation.units | missing}}</td>
+            <td>{{observation.minValue | missing}}</td>
+            <td>{{observation.maxValue | missing}}</td>
+
+            <td>
+              <div class="btn-group">
+                <button type="button" ng-click="up(observation)" class="btn btn-primary btn-xs"><i class="fa fa-arrow-up"></i></button>
+                <button type="button" ng-click="down(observation)" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <th colspan="9">Available</th>
+          </tr>
+
+          <tr>
+            <td colspan="9">
+              <div filter-helper></div>
+            </td>
+          </tr>
+
+          <tr ng-show="!page.getCount()">
+            <td colspan="9" class="empty">No matching observations.</td>
+          </tr>
+
+          <tr ng-repeat="observation in page.getItems()">
+            <td>
+              <button type="button" ng-click="add(observation)" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></button>
+            </td>
+
+            <td>{{observation.name}}</td>
+            <td>{{observation.shortName}}</td>
+            <td>{{observation.valueType.label}}</td>
+            <td>{{observation.sampleType.label}}</td>
+            <td>{{observation.units | missing}}</td>
+            <td>{{observation.minValue | missing}}</td>
+            <td>{{observation.maxValue | missing}}</td>
+
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div pagination-helper></div>
+    </div>
+  </div>
+</div>

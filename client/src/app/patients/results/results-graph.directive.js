@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('resultGraph', ['Highcharts', '_', function(Highcharts, _) {
+  app.directive('resultsGraph', ['Highcharts', '_', function(Highcharts, _) {
     return {
       scope: {
         observation: '=',

@@ -169,6 +169,11 @@ a .hidden-demographics {
   font-style: italic;
 }
 
+.empty {
+  color: #777;
+  font-style: italic;
+}
+
 .about {
   font-size: 16px;
 }
@@ -251,4 +256,20 @@ table.item-meta {
 
 .navbar-brand {
   padding: 10px 15px;
+}
+
+.filter-helper {
+  margin: 0 0 9px 0;
+}
+
+.observations-selector .pagination {
+  margin: 9px 0 0 0;
+}
+
+.observations-selector .filter-helper {
+  margin: 0;
+}
+
+.observations-selector table.observations {
+  margin: 0;
 }

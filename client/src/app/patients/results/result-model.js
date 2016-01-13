@@ -17,7 +17,7 @@
     ResultModel.prototype = Object.create(Model.prototype);
 
     ResultModel.prototype.getDisplayValue = function() {
-      return this.value.label || this.value;
+      return this.value.description || this.value;
     };
 
     return ResultModel;

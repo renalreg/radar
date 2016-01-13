@@ -26,8 +26,8 @@ class RealObservationSerializer(Serializer):
 
 
 class OptionSerializer(Serializer):
-    id = StringField()
-    label = StringField()
+    code = StringField()
+    description = StringField()
 
 
 class LookupObservationSerializer(Serializer):
@@ -120,9 +120,9 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
         elif value_type == OBSERVATION_VALUE_TYPE.REAL:
             field = FloatField()
         elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-            options = [(x['code'], x['description']) for x in observation.options['options']]
+            options = [(x['code'], x['description']) for x in observation.properties['options']]
             options = OrderedDict(options)
-            field = LabelledStringField(options)
+            field = LabelledStringField(options, id_key='code', label_key='description')
         elif value_type == OBSERVATION_VALUE_TYPE.STRING:
             field = StringField()
         else:
@@ -170,6 +170,9 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
         return Result()
 
     def update(self, obj, deserialized_data):
+        print type(obj.date), obj.date
+        print type(deserialized_data['date']), deserialized_data['date']
+
         for attr, value in deserialized_data.items():
             setattr(obj, attr, value)
 

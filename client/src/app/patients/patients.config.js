@@ -82,7 +82,7 @@
       PLASMAPHERESIS: patientPage('Plasmapheresis', 'patient.plasmapheresis'),
       PREGNANCIES: patientPage('Pregnancies', 'patient.pregnancies'),
       RENAL_IMAGING: patientPage('Renal Imaging', 'patient.renalImaging'),
-      RESULTS: patientPage('Results', 'patient.results.table'),
+      RESULTS: patientPage('Results', 'patient.results'),
       SALT_WASTING_CLINICAL_FEATURES: patientPage('Clinical Features', 'patient.saltWastingClinicalFeatures'),
       TRANSPLANTS: patientPage('Transplants', 'patient.transplants')
     };
