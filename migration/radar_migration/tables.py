@@ -356,3 +356,14 @@ hnf1b_clinical_pictures = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+observations = Table(
+    'observations', metadata,
+    Column('id', Integer),
+    Column('name', String),
+    Column('short_name', String),
+    Column('value_type', String),
+    Column('sample_type', String),
+    Column('pv_code', String),
+    Column('properties', postgresql.JSONB),
+)
