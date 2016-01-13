@@ -63,8 +63,6 @@ def create_observations(conn, observations_filename):
                 if max_length is not None:
                     properties['max_length'] = max_length
 
-            print name, properties
-
             conn.execute(
                 tables.observations.insert(),
                 name=name,
