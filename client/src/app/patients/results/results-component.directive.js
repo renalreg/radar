@@ -14,8 +14,8 @@
     $injector,
     store,
     _,
-    filterSelectedResults,
-    filterNumericResults,
+    filterResultsByObservations,
+    filterObservationsByNumeric,
     groupResults,
     groupResultsByObservation
   ) {
@@ -23,11 +23,16 @@
     var GRAPH = 1;
 
     function transformResultsForTable(results, observations) {
-      return groupResults(filterSelectedResults(results, observations));
+      var filteredResults = filterResultsByObservations(results, observations);
+      var groups = groupResults(filteredResults);
+      return groups;
     }
 
     function transformResultsForGraph(results, observations) {
-      return groupResultsByObservation(filterNumericResults(results), observations);
+      var filteredObservations = filterObservationsByNumeric(observations);
+      var filteredResults = filterResultsByObservations(results, filteredObservations);
+      var groups = groupResultsByObservation(filteredResults, filteredObservations);
+      return groups;
     }
 
     function ResultsController($scope) {
@@ -139,8 +144,8 @@
     '$injector',
     'store',
     '_',
-    'filterSelectedResults',
-    'filterNumericResults',
+    'filterResultsByObservations',
+    'filterObservationsByNumeric',
     'groupResults',
     'groupResultsByObservation'
   ];

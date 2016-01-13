@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.factory('filterSelectedResults', ['_', function(_) {
-      return function filterSelectedResults(results, observations) {
+  app.factory('filterResultsByObservations', ['_', function(_) {
+      return function filterResultsByObservations(results, observations) {
         var observationIds = _.map(observations, function(x) {
           return x.id;
         });
