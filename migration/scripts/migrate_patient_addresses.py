@@ -10,18 +10,18 @@ def migrate_patient_addresses(old_conn, new_conn):
     rows = old_conn.execute(text("""
         SELECT
           radarNo,
-          address_1,
-          address_2,
-          address_3,
+          address1,
+          address2,
+          address3,
           postcode
         FROM patient
         WHERE
             radarNo is not NULL AND
             unitcode NOT IN %s AND
             (
-                COALESCE(address_1, '') != '' OR
-                COALESCE(address_2, '') != '' OR
-                COALESCE(address_3, '') != '' OR
+                COALESCE(address1, '') != '' OR
+                COALESCE(address2, '') != '' OR
+                COALESCE(address3, '') != '' OR
                 COALESCE(postcode, '') != ''
             )
     """ % EXCLUDED_UNITS))
@@ -32,9 +32,9 @@ def migrate_patient_addresses(old_conn, new_conn):
             patient_id=row['radarNo'],
             source_group_id=m.group_id,
             source_type=m.source_type,
-            address_1=row['address_1'],
-            address_2=row['address_2'],
-            address_3=row['address_3'],
+            address_1=row['address1'],
+            address_2=row['address2'],
+            address_3=row['address3'],
             postcode=row['postcode'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
