@@ -27,7 +27,7 @@
             data.push({
               x: Date.parse(x.date),
               y: x.value,
-              dataSource: x.dataSource.getName()
+              source: x.getSource()
             });
           });
 
@@ -61,7 +61,7 @@
               }
             },
             tooltip: {
-              pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b> ({point.dataSource})<br/>',
+              pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b> ({point.source})<br/>',
             }
           };
 

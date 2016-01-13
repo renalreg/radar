@@ -11,7 +11,7 @@
       templateUrl: 'app/patients/results/result-graph-selector.html',
       link: function(scope) {
         store.findMany('observations', {types: 'INTEGER,REAL'}).then(function(observations) {
-          scope.observations = observations;
+          scope.observations = _.sortBy(observations, 'name');
         });
       }
     };

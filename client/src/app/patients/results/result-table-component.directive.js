@@ -81,7 +81,7 @@
           return;
         }
 
-        var key = x.dataSource.id + '.' + x.date;
+        var key = x.sourceGroup.id + '.' + x.sourceType + '.' + x.date;
 
         if (
           key !== currentKey ||
@@ -91,7 +91,7 @@
           currentKey = key;
           current = {
             date: x.date,
-            dataSource: x.dataSource,
+            source: x.getSource(),
             results: {}
           };
           groupedItems.push(current);

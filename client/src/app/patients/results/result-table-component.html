@@ -71,7 +71,7 @@
 
           <div frm-control>
             <div frm-observation-field model="item.observation" required="true"></div>
-            <div frm-help>See the <a ui-sref="observations" target="_blank">result types</a> guide.</div>
+            <div frm-help>See the <a ui-sref="observations" target="_blank">observations</a> guide.</div>
             <div frm-errors errors="item.errors.observation"></div>
           </div>
         </div>
@@ -80,7 +80,7 @@
           <div frm-label>Value</div>
 
           <div frm-control>
-            <div ng-switch="item.observation.type">
+            <div ng-switch="item.observation.valueType.id">
               <div
                 ng-switch-when="INTEGER"
                 frm-integer-field model="item.value"
@@ -130,7 +130,7 @@
               {{observation.shortName}}
             </th>
 
-            <th sort-helper="getSource()">Source</th>
+            <th sort-helper="source">Source</th>
           </tr>
         </thead>
 
@@ -152,7 +152,7 @@
               </span>
             </td>
 
-            <td class="source">{{item.getSource()}}</td>
+            <td class="source">{{item.source}}</td>
           </tr>
         </tbody>
       </table>

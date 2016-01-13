@@ -8,9 +8,7 @@ class EnumType(TypeDecorator, SchemaType):
 
     def __init__(self, enum_class, **options):
         enumerants = [x.value for x in enum_class]
-
         super(EnumType, self).__init__(*enumerants, **options)
-
         self.enum_class = enum_class
 
     def process_bind_param(self, value, dialect):
@@ -21,7 +19,7 @@ class EnumType(TypeDecorator, SchemaType):
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            value = self.enum(value)
+            value = self.enum_class(value)
 
         return value
 
@@ -48,7 +46,7 @@ class EnumToStringType(TypeDecorator, SchemaType):
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            value = self.enum(value)
+            value = self.enum_class(value)
 
         return value
 

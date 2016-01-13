@@ -15,7 +15,7 @@
         scope.change = change;
 
         store.findMany('observations').then(function(observations) {
-          scope.observations = observations;
+          scope.observations = _.sortBy(observations, 'name');;
         });
 
         function change() {

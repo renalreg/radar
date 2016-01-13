@@ -16,36 +16,41 @@
       </tr>
 
       <tr>
-        <th>System</th>
-        <td>{{item.system.name}}</td>
+        <th>Value Type</th>
+        <td>{{item.valueType.label}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+      <tr>
+        <th>Sample Type</th>
+        <td>{{item.sampleType.label}}</td>
+      </tr>
+
+      <tr ng-if="item.valueType.id === 'INTEGER' || item.valueType.id === 'REAL'">
         <th>Units</th>
         <td>{{item.units | missing}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+      <tr ng-if="item.valueType.id === 'INTEGER' || item.valueType.id === 'REAL'">
         <th>Min Value</th>
         <td>{{item.minValue | missing}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'INTEGER' || item.type === 'REAL'">
+      <tr ng-if="item.valueType.id === 'INTEGER' || item.valueType.id === 'REAL'">
         <th>Max Value</th>
         <td>{{item.maxValue | missing}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'String'">
+      <tr ng-if="item.valueType.id === 'String'">
         <th>Min Length</th>
         <td>{{item.minLength | missing}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'STRING'">
+      <tr ng-if="item.valueType.id === 'STRING'">
         <th>Max Length</th>
         <td>{{item.maxLength | missing}}</td>
       </tr>
 
-      <tr ng-if="item.type === 'ENUM'">
+      <tr ng-if="item.valueType.id === 'ENUM'">
         <th>Options</th>
         <td>
           <table class="table properties">
@@ -71,7 +76,8 @@
           <th></th>
           <th sort-helper="name">Name</th>
           <th sort-helper="shortName">Short Name</th>
-          <th sort-helper="system">System</th>
+          <th sort-helper="valueType.label">Value Type</th>
+          <th sort-helper="sampleType.label">Sample Type</th>
           <th sort-helper="units">Units</th>
           <th sort-helper="minValue">Min Value</th>
           <th sort-helper="maxValue">Max Value</th>
@@ -86,7 +92,8 @@
 
           <td>{{item.name}}</td>
           <td>{{item.shortName}}</td>
-          <td>{{item.system.name}}</td>
+          <td>{{item.valueType.label}}</td>
+          <td>{{item.sampleType.label}}</td>
           <td>{{item.units | missing}}</td>
           <td>{{item.minValue | missing}}</td>
           <td>{{item.maxValue | missing}}</td>

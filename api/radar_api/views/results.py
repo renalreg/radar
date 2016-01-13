@@ -41,11 +41,11 @@ class ObservationListView(ListModelView):
         serializer = ObservationListRequestSerializer()
         args = serializer.args_to_value(request.args)
 
-        if 'type' in args:
-            query = query.filter(Observation.type == args['type'])
+        if 'value_type' in args:
+            query = query.filter(Observation.type == args['value_type'])
 
-        if 'types' in args:
-            query = query.filter(Observation.type.in_(args['types']))
+        if 'value_types' in args:
+            query = query.filter(Observation.type.in_(args['value_types']))
 
         return query
 
