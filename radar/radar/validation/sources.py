@@ -5,12 +5,16 @@ from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
 from radar.groups import is_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.groups import GROUP_TYPE_HOSPITAL
 
 
 class SourceGroupField(Field):
     @pass_context
     def validate(self, ctx, group):
         user = ctx['user']
+
+        if group.type != GROUP_TYPE_HOSPITAL:
+            raise ValidationError('Must be a hospital.')
 
         if not user.is_admin or not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
             raise ValidationError('Permission denied!')
