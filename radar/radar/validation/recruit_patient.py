@@ -4,7 +4,7 @@ from radar.models.patients import GENDERS, ETHNICITIES
 from radar.permissions import has_permission_for_group
 from radar.groups import is_radar_group
 from radar.validation.number_validators import NUMBER_VALIDATORS
-from radar.roles import PERMISSIONS
+from radar.roles import PERMISSION
 from radar.models.groups import GROUP_TYPE_HOSPITAL
 
 
@@ -55,8 +55,8 @@ class RecruitPatientValidation(Validation):
     def validate_recruited_group(self, ctx, recruited_group):
         current_user = ctx['user']
 
-        if not has_permission_for_group(current_user, recruited_group, PERMISSIONS.RECRUIT_PATIENT):
-            raise ValidationError('Permission denied!')
+        if not has_permission_for_group(current_user, recruited_group, PERMISSION.RECRUIT_PATIENT):
+            raise ValidationError('PERMISSION denied!')
 
         if recruited_group.type != GROUP_TYPE_HOSPITAL:
             raise ValidationError('Must be a hospital.')

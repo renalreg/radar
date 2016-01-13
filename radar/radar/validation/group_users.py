@@ -1,4 +1,4 @@
-from radar.roles import ROLES
+from radar.roles import ROLE
 from radar.validation.core import Validation, Field, pass_old_obj, ValidationError, pass_context
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, in_
@@ -9,7 +9,7 @@ class GroupUserValidation(MetaValidationMixin, Validation):
     id = Field()
     group = Field([required()])
     user = Field([required()])
-    role = Field([required(), in_(ROLES)])
+    role = Field([required(), in_(ROLE)])
 
     @classmethod
     def check_permissions(cls, user, obj):

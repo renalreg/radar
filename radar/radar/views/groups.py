@@ -5,7 +5,7 @@ from flask import request
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL
 from radar.permissions import GroupObjectPermission
-from radar.roles import get_roles_with_permission, PERMISSIONS
+from radar.roles import get_roles_with_permission, PERMISSION
 from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField
 from radar.auth.sessions import current_user
@@ -42,7 +42,7 @@ class GroupObjectViewMixin(object):
                 .filter(
                     GroupPatient.patient_id == model_class.patient_id,
                     GroupUser.user == current_user,
-                    GroupUser.role.in_(get_roles_with_permission(PERMISSIONS.VIEW_PATIENT)),
+                    GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
                     or_(
                         GroupPatient.group_id == model_class.group_id,
                         and_(

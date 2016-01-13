@@ -2,7 +2,7 @@ from sqlalchemy import or_, case, desc, extract, null, func
 
 from sqlalchemy.orm import aliased, subqueryload
 from radar.models import PatientAlias, PatientNumber
-from radar.roles import get_roles_with_permission, PERMISSIONS
+from radar.roles import get_roles_with_permission, PERMISSION
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.patients import Patient, PatientDemographics
@@ -207,16 +207,16 @@ def filter_by_group_roles(current_user, roles):
 
 def filter_by_permissions(current_user, demographics):
     if demographics:
-        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS))
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS))
     else:
-        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_PATIENT))
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_PATIENT))
 
 
 def sort_by_demographics_field(current_user, field, reverse, else_=None):
     if current_user.is_admin:
         expression = field
     else:
-        sub_query = filter_by_group_roles(current_user, get_roles_with_permission(PERMISSIONS.VIEW_DEMOGRAPHICS))
+        sub_query = filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS))
         expression = case([(sub_query, field)], else_=else_)
 
     if reverse:

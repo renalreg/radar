@@ -62,17 +62,3 @@ class ModifiedMixin(ModifiedUserMixin, ModifiedDateMixin):
 
 class MetaModelMixin(CreatedMixin, ModifiedMixin):
     pass
-
-
-class IntegerLookupTable(db.Model):
-    __abstract__ = True
-
-    id = Column(Integer, primary_key=True)
-    label = Column(String, nullable=False)
-
-
-class StringLookupTable(db.Model):
-    __abstract__ = True
-
-    id = Column(String, primary_key=True)
-    label = Column(String, nullable=False)
