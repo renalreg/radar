@@ -61,6 +61,7 @@
         self.load(promise);
       });
 
+      // TODO
       // Reset the result value when the observation changes
       // $scope.$watch('item.observation', function() {
       //   if ($scope.item) {
