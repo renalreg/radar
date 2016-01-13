@@ -3,12 +3,13 @@ from collections import OrderedDict
 from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result
+from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result, \
+    OBSERVATION_SAMPLE_TYPE, OBSERVATION_VALUE_TYPE_NAMES, OBSERVATION_SAMPLE_TYPE_NAMES
 from radar.serializers.core import Serializer, Empty
 from radar.serializers.fields import StringField, IntegerField, FloatField,\
     DateTimeField, UUIDField, ListField, CommaSeparatedField
 from radar.serializers.models import ReferenceField
-from radar.serializers.fields import LabelledStringField
+from radar.serializers.fields import LabelledStringField, LabelledEnumField
 from radar.validation.core import ValidationError
 
 
@@ -49,8 +50,8 @@ class ObservationSerializer(Serializer):
     id = IntegerField()
     name = StringField()
     short_name = StringField()
-    value_type = StringField()
-    sample_type = StringField()
+    value_type = LabelledEnumField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
+    sample_type = LabelledEnumField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
 
     def to_data(self, observation):
         data = super(ObservationSerializer, self).to_data(observation)
@@ -176,8 +177,8 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
 
 
 class ObservationListRequestSerializer(Serializer):
-    type = StringField()
-    types = CommaSeparatedField(StringField())
+    value_type = StringField()
+    value_types = CommaSeparatedField(StringField())
 
 
 class ResultListRequestSerializer(Serializer):

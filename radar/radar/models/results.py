@@ -17,13 +17,22 @@ class OBSERVATION_VALUE_TYPE(Enum):
     STRING = 'STRING'
 
 
+OBSERVATION_VALUE_TYPE_NAMES = OrderedDict([
+    (OBSERVATION_VALUE_TYPE.INTEGER, 'Integer'),
+    (OBSERVATION_VALUE_TYPE.REAL, 'Real'),
+    (OBSERVATION_VALUE_TYPE.ENUM, 'Enum'),
+    (OBSERVATION_VALUE_TYPE.STRING, 'String'),
+])
+
+
 class OBSERVATION_SAMPLE_TYPE(Enum):
     URINE = 'URINE'
     BLOOD = 'BLOOD'
     URINE_DIPSTICK = 'URINE_DIPSTICK'
     OBSERVATION = 'OBSERVATION'
 
-SAMPLE_TYPE_NAMES = OrderedDict([
+
+OBSERVATION_SAMPLE_TYPE_NAMES = OrderedDict([
     (OBSERVATION_SAMPLE_TYPE.BLOOD, 'BLOOD'),
     (OBSERVATION_SAMPLE_TYPE.URINE, 'URINE'),
     (OBSERVATION_SAMPLE_TYPE.URINE_DIPSTICK, 'URINE_DIPSTICK'),
@@ -66,11 +75,11 @@ class Result(db.Model, MetaModelMixin):
         x = self._value
 
         if x is not None and self.observation is not None:
-            observation_type = self.observation.type
+            value_type = self.observation.value_type
 
-            if observation_type == OBSERVATION_VALUE_TYPE.INTEGER:
+            if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
                 x = int(x)
-            elif observation_type == OBSERVATION_VALUE_TYPE.REAL:
+            elif value_type == OBSERVATION_VALUE_TYPE.REAL:
                 x = float(x)
 
         return x
