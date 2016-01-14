@@ -28,8 +28,7 @@ class PatientListView(ListModelView):
         date_of_death = args.get('date_of_death')
         year_of_death = args.get('year_of_death')
         groups = args.get('group') or []
-        current_groups = args.get('current_group') or []
-        is_active = args.get('is_active')
+        current = args.get('historic') is False
 
         if patient_id is not None:
             builder.patient_id(patient_id)
@@ -59,20 +58,14 @@ class PatientListView(ListModelView):
             builder.year_of_death(year_of_death)
 
         for group in groups:
-            builder.group(group, current=False)
-
-        for group in current_groups:
-            builder.group(group, current=True)
-
-        if is_active is not None:
-            builder.is_active(is_active)
+            builder.group(group, current=current)
 
         sort, reverse = self.get_sort_args()
 
         if sort is not None:
             builder.sort(sort, reverse)
 
-        query = builder.build()
+        query = builder.build(current=current)
 
         return query
 

@@ -200,7 +200,6 @@ def create_patients(n):
         print 'patient #%d' % (i + 1)
 
         patient = Patient()
-        patient.is_active = True
         validate_and_add(patient)
 
         gender = generate_gender()

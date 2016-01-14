@@ -6,7 +6,6 @@ from radar.validation.validators import required, none_if_blank, max_length, opt
 
 
 class PatientValidation(MetaValidationMixin, Validation):
-    is_active = Field([required()])
     comments = Field([none_if_blank(), optional(), max_length(10000)])
 
 

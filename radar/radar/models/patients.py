@@ -48,7 +48,6 @@ class Patient(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
     comments = Column(String)
-    is_active = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
     def groups(self):
