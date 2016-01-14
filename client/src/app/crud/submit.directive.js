@@ -68,7 +68,6 @@
         });
 
         crudSubmitCtrl.on('success', function() {
-          console.log('pristine!');
           formCtrl.$setPristine(true);
         });
       }

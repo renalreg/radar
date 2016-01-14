@@ -63,7 +63,7 @@
     </table>
   </div>
 
-  <div ng-if="!viewing" list-helper="items as page" per-page="50" sort-by="name">
+  <div ng-if="!viewing" list-helper="items as page" list-helper-options="{perPage: 50, sortBy: 'name'}">
     <div filter-helper></div>
 
     <div ng-show="!page.getCount()">

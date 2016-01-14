@@ -57,7 +57,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>

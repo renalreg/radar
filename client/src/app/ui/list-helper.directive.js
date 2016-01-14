@@ -3,6 +3,7 @@
 
   var app = angular.module('radar.ui');
 
+  var DEFAULT_SORT_BY = 'id'
   var DEFAULT_PER_PAGE = 10;
 
   app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'dateSearch', 'anyValue', function($parse, _, escapeRegExp, dateSearch, anyValue) {
@@ -30,27 +31,20 @@
         function client(collectionGetter, aliasSetter) {
           aliasSetter($scope, self);
 
+          var options = $parse($attrs.listHelperOptions)($scope) || {};
+          var deep = options.deep !== false;
+          var perPage = options.perPage || DEFAULT_PER_PAGE;
+          var reverse = options.reverse === true;
+          var sortBy = options.sortBy || DEFAULT_SORT_BY;
+          var sortId = options.sortId || sortBy;
+
           var items = [];
           var filteredItems = [];
           var sortedItems = [];
           var paginatedItems = [];
-
-          var sortBy = 'id';
           var sortScope = $scope;
-          var sortId = null;
-          var reverse = false;
-
-          var page = 1;
-          var perPage = DEFAULT_PER_PAGE;
-
           var search = '';
-
-          // TODO move other options here
-          var options = $parse($attrs.listHelperOptions)($scope) || {};
-
-          if (options.deep === undefined) {
-            options.deep = true;
-          }
+          var page = 1;
 
           $scope.$watchCollection(function() {
             return collectionGetter($scope) || [];
@@ -59,31 +53,9 @@
             _filter();
           });
 
-          $attrs.$observe('perPage', function(value) {
-            if (value) {
-              perPage = parseInt(value);
-              _paginate();
-            }
-          });
-
-          $attrs.$observe('sortBy', function(value) {
-            if (value) {
-              sortBy = value;
-              _sort();
-              sortId = value;
-            }
-          });
-
-          $attrs.$observe('reverse', function(value) {
-            if (value) {
-              reverse = value === 'true';
-              _sort();
-            }
-          });
-
           $scope.$watch('items', function() {
             _filter();
-          }, options.deep);
+          }, deep);
 
           _filter();
 

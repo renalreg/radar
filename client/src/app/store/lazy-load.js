@@ -13,7 +13,6 @@
         var item = store.getFromStore(modelName, id);
 
         if (item === null) {
-          console.log('loading ' + modelName + '#' + id);
           var item = store.create(modelName, {id: id});
           item = store.pushToStore(item);
           item.reload();
