@@ -28,7 +28,7 @@ class PatientListView(ListModelView):
         date_of_death = args.get('date_of_death')
         year_of_death = args.get('year_of_death')
         groups = args.get('group') or []
-        current = args.get('historic') is False
+        current = args.get('current')
 
         if patient_id is not None:
             builder.patient_id(patient_id)

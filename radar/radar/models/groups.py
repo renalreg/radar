@@ -12,15 +12,10 @@ from radar.models.common import MetaModelMixin, patient_id_column, patient_relat
 from radar.pages import PAGE
 from radar.models.types import EnumType, EnumToStringType
 
+# TODO enum
 GROUP_TYPE_HOSPITAL = 'HOSPITAL'
 GROUP_TYPE_COHORT = 'COHORT'
 GROUP_TYPE_OTHER = 'OTHER'
-
-GROUP_TYES = [
-    GROUP_TYPE_HOSPITAL,
-    GROUP_TYPE_COHORT,
-    GROUP_TYPE_OTHER,
-]
 
 GROUP_CODE_UKRDC = 'UKRDC'
 GROUP_CODE_UKRR = 'UKRR'

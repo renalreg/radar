@@ -1,4 +1,4 @@
-from sqlalchemy import or_, case, desc, extract, null, func
+from sqlalchemy import or_, case, desc, extract, null, func, and_
 
 from sqlalchemy.orm import aliased, subqueryload
 from radar.models import PatientAlias, PatientNumber
@@ -61,7 +61,7 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def group(self, group, current=False):
+    def group(self, group, current=None):
         # Filter by group
         sub_query = db.session.query(GroupPatient)\
             .filter(
@@ -69,14 +69,25 @@ class PatientQueryBuilder(object):
                 GroupPatient.patient_id == Patient.id,
             )
 
-        if current:
-            sub_query = sub_query.filter(
-                GroupPatient.from_date <= func.now(),
-                or_(
-                    GroupPatient.to_date == null(),
-                    GroupPatient.to_date >= func.now(),
+        if current is not None:
+            if current:
+                # Between from and to date
+                sub_query = sub_query.filter(
+                    GroupPatient.from_date <= func.now(),
+                    or_(
+                        GroupPatient.to_date == null(),
+                        GroupPatient.to_date >= func.now(),
+                    )
                 )
-            )
+            else:
+                # Outside from or to date
+                sub_query = sub_query.filter(or_(
+                    GroupPatient.from_date > func.now(),
+                    and_(
+                        GroupPatient.to_date != null(),
+                        GroupPatient.to_date < func.now()
+                    )
+                ))
 
         self.query = self.query.filter(sub_query.exists())
 
@@ -85,7 +96,7 @@ class PatientQueryBuilder(object):
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
 
-    def build(self, permissions=True, current=False):
+    def build(self, permissions=True, current=None):
         query = self.query
 
         if permissions and not self.current_user.is_admin:
@@ -93,7 +104,13 @@ class PatientQueryBuilder(object):
             permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics, current=current)
             query = query.filter(permission_filter)
 
-        # TODO only show current RaDaR users
+        # Admins can choose to show/hide historic patients
+        if self.current_user.is_admin:
+            if current is not None:
+                query = query.filter(Patient.current == current)
+        else:
+            # Regular users can only see current RaDaR users
+            query = query.filter(Patient.current == True)  # noqa
 
         return query
 
