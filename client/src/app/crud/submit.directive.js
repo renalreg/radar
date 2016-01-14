@@ -37,10 +37,10 @@
 
           broadcast('submitting', true);
 
-          if (action === undefined) {
-            promise = $parse($attrs.crudSubmit)($scope);
-          } else {
+          if (action) {
             promise = action();
+          } else {
+            promise = $parse($attrs.crudSubmit)($scope);
           }
 
           promise
@@ -66,6 +66,7 @@
         });
 
         crudSubmitCtrl.on('success', function() {
+          console.log('pristine!');
           formCtrl.$setPristine(true);
         });
       }

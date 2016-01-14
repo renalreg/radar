@@ -6,6 +6,10 @@
   app.directive('crudSaveButton', ['$parse', function($parse) {
     return {
       require: ['^crud', '^form', '?^crudSubmit'],
+      scope: {
+        action: '&',
+        text: '@'
+      },
       templateUrl: function(element, attrs) {
         return attrs.action ? 'app/crud/save-button.html' : 'app/crud/save-submit-button.html';
       },
@@ -36,7 +40,7 @@
 
         scope.click = function() {
           crudSubmitCtrl.submit(function() {
-            return $parse(attrs.action)(scope);
+            return scope.action();
           });
         };
       }
