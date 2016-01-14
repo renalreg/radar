@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, join, String, func, text, Boolean
+from sqlalchemy import Column, Integer, select, join, String, func, exists
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
@@ -59,7 +59,7 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def current_group_patients(self):
-        return [x for x in self.current_group_patients if x.current]
+        return [x for x in self.group_patients if x.current]
 
     @hybrid_property
     def recruited_date(self):
@@ -68,16 +68,29 @@ class Patient(db.Model, MetaModelMixin):
 
     @recruited_date.expression
     def recruited_date(cls):
-        return select([func.max(GroupPatient.from_date)])\
+        return select([func.min(GroupPatient.from_date)])\
             .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
             .where(GroupPatient.patient_id == cls.id)\
             .where(Group.code == GROUP_CODE_RADAR)\
             .where(Group.type == GROUP_TYPE_OTHER)\
             .as_scalar()
 
+    @hybrid_property
+    def current(self):
+        return any(is_radar_group(x) for x in self.current_groups)
+
+    @current.expression
+    def current(cls):
+        q = exists()
+        q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
+        q = q.where(GroupPatient.patient_id == cls.id)
+        q = q.where(GroupPatient.current == True)  # noqa
+        q = q.where(Group.code == GROUP_CODE_RADAR)
+        q = q.where(Group.type == GROUP_TYPE_OTHER)
+        return q
+
     @property
     def recruited_group(self):
-        # TODO only current groups
         for x in self.group_patients:
             if is_radar_group(x.group):
                 return x.created_group

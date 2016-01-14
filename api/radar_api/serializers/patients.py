@@ -28,10 +28,11 @@ class TinyPatientSerializer(Serializer):
     year_of_death = IntegerField(read_only=True)
     gender = LabelledIntegerField(GENDERS, read_only=True)
     ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
-    groups = ListField(field=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
+    groups = ListField(TinyGroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
     recruited_group = TinyGroupReferenceField(read_only=True)
     comments = StringField()
+    current = BooleanField(read_only=True)
 
     def __init__(self, current_user, **kwargs):
         super(TinyPatientSerializer, self).__init__(**kwargs)
@@ -55,6 +56,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     recruited_date = DateTimeField(read_only=True)
     recruited_group = GroupReferenceField(read_only=True)
     comments = StringField()
+    current = BooleanField(read_only=True)
 
     class Meta(object):
         model_class = Patient
@@ -80,4 +82,4 @@ class PatientListRequestSerializer(Serializer):
     gender = StringField()
     patient_number = StringField()
     group = CommaSeparatedField(GroupReferenceField())
-    historic = BooleanField()
+    current = BooleanField()
