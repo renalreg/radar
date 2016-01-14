@@ -20,6 +20,9 @@
     var TABLE = 0;
     var GRAPH = 1;
 
+    // Remember selected observations
+    var selectedObservations = [];
+
     function ResultsController($scope) {
       var self = this;
 
@@ -31,7 +34,7 @@
       });
 
       var currentView = TABLE;
-      $scope.selectedObservations = [];
+      $scope.selectedObservations = selectedObservations;
 
       $scope.$watchCollection('selectedObservations', function(selectedObservations) {
         var promise;
