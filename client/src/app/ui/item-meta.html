@@ -1,13 +1,26 @@
 <table class="item-meta">
   <tr>
-    <th>Created</th>
+    <th>ID</th>
+    <td>{{item.id}}</td>
+  </tr>
+
+  <tr>
+    <th>Created User</th>
     <td>{{item.createdUser.username}}</td>
+  </tr>
+
+  <tr>
+    <th>Created Date</th>
     <td>{{item.createdDate | dateTimeFormat}}</td>
   </tr>
 
   <tr>
-    <th>Modified</th>
+    <th>Modified User</th>
     <td>{{item.modifiedUser.username}}</td>
+  </tr>
+
+  <tr>
+    <th>Modified Date</th>
     <td>{{item.modifiedDate | dateTimeFormat}}</td>
   </tr>
 </table>
