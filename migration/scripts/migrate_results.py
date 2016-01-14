@@ -1,12 +1,17 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, EXCLUDED_UNITS, tables
+from radar_migration import Migration, EXCLUDED_UNITS, tables, ObservationNotFound
 
 CODE_MAP = {
     'ADJUSTEDCA': 'ADJUSTEDCALCIUM',
     'CHOLESTERO': 'CHOLESTEROL',
     'TRANSFERRI': 'TRANSFERRIN',
+    'ALKALINE PHOSPHATASE': 'ALP',
+    'FERR': 'FERRITIN',
+    'HBA1C (IFCC)': 'HBA1C',
+    'RANDOM PLASMA GLUCOSE': 'GLUCOSE',
+    'RANDOM PLASMA GLUCOSE:': 'GLUCOSE',
 }
 
 
@@ -34,8 +39,14 @@ def migrate_results(old_conn, new_conn):
             patient.unitcode NOT IN {0} AND
             unit.sourceType = 'renalunit' AND
             unit.unitcode NOT IN {0} AND
-            testcode NOT REGEXP '^[0-9]+$'
-        LIMIT 100000
+            testcode NOT REGEXP '^[0-9]+$' and
+            testcode NOT IN (
+                '4258.', '426..', '428..', '429..', '42A..',
+                '42J..', '42K..', '42L..', '42M..', '42N..',
+                '42Z5.', '42Z7', '44EC.', '44F..', '44G3.',
+                '44I9.', '44IC.', '44M3.', '44M5.', '451E.',
+                '46I..'
+            )
     """.format(EXCLUDED_UNITS)))
 
     for i, row in enumerate(rows):
@@ -43,7 +54,11 @@ def migrate_results(old_conn, new_conn):
             print i
 
         code = convert_code(row['testcode'])
-        observation_id = m.get_observation_id(code)
+
+        try:
+            observation_id = m.get_observation_id(code)
+        except ObservationNotFound:
+            print code, 'not found'
 
         try:
             value = float(row['value'])

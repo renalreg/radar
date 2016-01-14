@@ -7,7 +7,15 @@ __version__ = '0.1.0'
 EXCLUDED_UNITS = "('RENALREG', 'DEMO', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')"
 
 
-class MigrationError(Exception):
+class ObservationNotFound(Exception):
+    pass
+
+
+class GroupNotFound(Exception):
+    pass
+
+
+class UserNotFound(Exception):
     pass
 
 
@@ -44,10 +52,14 @@ class Migration(object):
             row = results.fetchone()
 
             if row is None:
-                raise MigrationError('Group not found: %s (%s)' % (code, type))
+                group_id = None
+            else:
+                group_id = row[0]
 
-            group_id = row[0]
             self._group_ids[key] = group_id
+
+        if group_id is None:
+            raise GroupNotFound('Group not found: %s (%s)' % (code, type))
 
         return group_id
 
@@ -67,10 +79,14 @@ class Migration(object):
             row = results.fetchone()
 
             if row is None:
-                raise MigrationError('User not found: %s' % username)
+                user_id = None
+            else:
+                user_id = row[0]
 
-            user_id = row[0]
             self._user_ids[username] = user_id
+
+        if user_id is None:
+            raise UserNotFound('User not found: %s' % username)
 
         return user_id
 
@@ -88,9 +104,13 @@ class Migration(object):
             row = results.fetchone()
 
             if row is None:
-                raise MigrationError('Observation not found: %s' % pv_code)
+                observation_id = None
+            else:
+                observation_id = row[0]
 
-            observation_id = row[0]
             self._observation_ids[pv_code] = observation_id
+
+        if observation_id is None:
+            raise ObservationNotFound('Observation not found: %s' % pv_code)
 
         return observation_id
