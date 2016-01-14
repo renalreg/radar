@@ -6,7 +6,7 @@
   app.directive('selectObservation', ['store', '_', function(store, _) {
     return {
       require: 'ngModel',
-      templateUrl: 'app/patients/results/select-observation.html',
+      templateUrl: 'app/patients/results/observation-selector.html',
       link: function(scope, element, attrs, ngModel) {
         scope.selectedObservation = null;
 

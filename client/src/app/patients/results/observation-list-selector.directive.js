@@ -8,7 +8,7 @@
       scope: {
         selectedObservations: '=observations'
       },
-      templateUrl: 'app/patients/results/select-observation-list.html',
+      templateUrl: 'app/patients/results/observation-list-selector.html',
       link: function(scope) {
         store.findMany('observations').then(function(observations) {
           scope.observations = observations;
