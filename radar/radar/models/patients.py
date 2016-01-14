@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, join, String, func
+from sqlalchemy import Column, Integer, select, join, String, func, text, Boolean
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
@@ -48,6 +48,7 @@ class Patient(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
     comments = Column(String)
+    is_active = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
     def groups(self):

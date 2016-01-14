@@ -61,7 +61,7 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def group(self, group, only_current=True):
+    def group(self, group, current=True):
         # Filter by group
         sub_query = db.session.query(GroupPatient)\
             .filter(
@@ -69,7 +69,7 @@ class PatientQueryBuilder(object):
                 GroupPatient.patient_id == Patient.id,
             )
 
-        if only_current:
+        if current:
             sub_query = sub_query.filter(
                 GroupPatient.from_date <= func.now(),
                 or_(
@@ -79,6 +79,11 @@ class PatientQueryBuilder(object):
             )
 
         self.query = self.query.filter(sub_query.exists())
+
+        return self
+
+    def is_active(self, is_active):
+        self.query = self.query.filter(Patient.is_active == is_active)
 
         return self
 

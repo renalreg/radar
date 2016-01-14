@@ -20,11 +20,10 @@ class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelVie
         serializer = ResultListRequestSerializer()
         args = serializer.args_to_value(request.args)
 
-        if 'observation_id' in args:
-            query = query.filter(Result.observation_id == args['observation_id'])
+        observation_ids = args.get('observation_ids')
 
-        if 'observation_ids' in args:
-            query = query.filter(Result.observation_id.in_(args['observation_ids']))
+        if observation_ids:
+            query = query.filter(Result.observation_id.in_(observation_ids))
 
         return query
 

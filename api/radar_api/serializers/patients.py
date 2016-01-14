@@ -31,6 +31,7 @@ class TinyPatientSerializer(Serializer):
     groups = ListField(field=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
     recruited_group = TinyGroupReferenceField(read_only=True)
+    is_active = BooleanField()
     comments = StringField()
 
     def __init__(self, current_user, **kwargs):
@@ -54,6 +55,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
     recruited_group = GroupReferenceField(read_only=True)
+    is_active = BooleanField()
     comments = StringField()
 
     class Meta(object):
@@ -79,6 +81,6 @@ class PatientListRequestSerializer(Serializer):
     year_of_death = IntegerField()
     gender = StringField()
     patient_number = StringField()
-    group = GroupReferenceField()
-    groups = CommaSeparatedField(GroupReferenceField())
+    group = CommaSeparatedField(GroupReferenceField())
+    current_group = CommaSeparatedField(GroupReferenceField())
     is_active = BooleanField()
