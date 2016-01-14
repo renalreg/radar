@@ -183,7 +183,8 @@
           </div>
         </div>
 
-        <div ng-if="viewingGraph()">
+        <!-- Note: use ng-if so graphs will be re-rendered -->
+        <div ng-if="viewingGraph() && !viewing && !editing">
           <p>
             <span crud-create-button action="create()"></span>
           </p>
