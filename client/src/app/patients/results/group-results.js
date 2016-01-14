@@ -17,7 +17,8 @@
       results = _.sortBy(results, getKey);
 
       _.forEach(results, function(result) {
-        var observationId = result.observation.id;
+        var observation = result.observation;
+        var observationId = observation.id;
 
         var key = getKey(result);
 
@@ -29,7 +30,9 @@
           currentKey = key;
           currentGroup = {
             date: result.date,
-            source: result.getSource(),
+            getSource: function() {
+              return result.getSource();
+            },
             results: {}
           };
           groups.push(currentGroup);

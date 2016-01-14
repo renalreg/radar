@@ -151,7 +151,7 @@
                     {{observation.shortName}}<span ng-if="observation.units"> ({{observation.units}})</span>
                   </th>
 
-                  <th sort-helper="source">Source</th>
+                  <th sort-helper="getSource()">Source</th>
                 </tr>
               </thead>
 
@@ -175,7 +175,7 @@
                     </span>
                   </td>
 
-                  <td class="source">{{item.source}}</td>
+                  <td class="source">{{item.getSource()}}</td>
                 </tr>
               </tbody>
             </table>
