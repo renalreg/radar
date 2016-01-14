@@ -11,7 +11,7 @@
     "html5shiv": "~3.7.3",
     "jquery": "1",
     "jquery-ui": "~1.11.4",
-    "lodash": "~3.10.1",
+    "lodash": "~4.0.0",
     "moment": "~2.10.6",
     "quill": "~0.20.1",
     "respond": "~1.4.2",
