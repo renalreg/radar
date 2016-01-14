@@ -6,11 +6,6 @@
 
     <table class="table properties" ng-if="item">
       <tr>
-        <th>Active</th>
-        <td><span tick="item.isActive"></span></td>
-      </tr>
-
-      <tr>
         <th>Comments</th>
         <td class="newlines">{{item.comments | missing}}</td>
       </tr>
@@ -25,15 +20,6 @@
     </p>
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
-      <div frm-field frm-group>
-        <div frm-label>Active</div>
-
-        <div frm-control>
-          <div frm-checkbox-field model="item.isActive"></div>
-          <div frm-errors errors="item.errors.isActive"></div>
-        </div>
-      </div>
-
       <div frm-field frm-group>
         <div frm-label>Comments</div>
 

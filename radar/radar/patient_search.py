@@ -61,7 +61,7 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_year_of_death(value))
         return self
 
-    def group(self, group, current=True):
+    def group(self, group, current=False):
         # Filter by group
         sub_query = db.session.query(GroupPatient)\
             .filter(
@@ -82,20 +82,15 @@ class PatientQueryBuilder(object):
 
         return self
 
-    def is_active(self, is_active):
-        self.query = self.query.filter(Patient.is_active == is_active)
-
-        return self
-
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
 
-    def build(self, apply_permissions=True):
+    def build(self, permissions=True, current=False):
         query = self.query
 
-        if apply_permissions and not self.current_user.is_admin:
+        if permissions and not self.current_user.is_admin:
             # Filter the patients based on the user's permissions and the type of query
-            permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics)
+            permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics, current=current)
             query = query.filter(permission_filter)
 
         return query
@@ -195,7 +190,7 @@ def filter_by_year_of_death(year):
     return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
 
 
-def filter_by_group_roles(current_user, roles):
+def filter_by_group_roles(current_user, roles, current):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
         .join(patient_alias.group_patients)\
@@ -205,16 +200,19 @@ def filter_by_group_roles(current_user, roles):
             patient_alias.id == Patient.id,
             GroupUser.user_id == current_user.id,
             GroupUser.role.in_(roles)
-        )\
-        .exists()
-    return sub_query
+        )
+
+    if current:
+        sub_query = sub_query.filter(GroupPatient.current == True)  # noqa
+
+    return sub_query.exists()
 
 
-def filter_by_permissions(current_user, demographics):
+def filter_by_permissions(current_user, demographics, current):
     if demographics:
-        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS))
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS), current)
     else:
-        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_PATIENT))
+        return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_PATIENT), current)
 
 
 def sort_by_demographics_field(current_user, field, reverse, else_=None):

@@ -15,9 +15,7 @@
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      var defaultFilters = {
-        isActive: true
-      };
+      var defaultFilters = {};
       $scope.filters = angular.copy(defaultFilters);
 
       var proxy = new ListHelperProxy(search, {

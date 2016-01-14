@@ -184,7 +184,6 @@ def recruit_patient(params):
         radar_group = get_radar_group()
 
         patient = Patient()
-        patient.is_active = True
         patient = validate(patient)
         db.session.add(patient)
 

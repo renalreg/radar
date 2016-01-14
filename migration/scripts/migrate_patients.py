@@ -45,17 +45,6 @@ ETHNICITY_MAP = {
     '9SB4.': 'G',
 }
 
-STATUS_MAP = {
-    None: True,
-    0: True,
-    1: True,
-    2: False,
-    3: False,
-    4: False,
-    5: False,
-    6: False,
-}
-
 
 def convert_ethnicity(old_value):
     if old_value:
@@ -76,15 +65,6 @@ def convert_gender(old_value):
         new_value = 2
     else:
         new_value = None
-
-    return new_value
-
-
-def convert_status(old_value):
-    try:
-        new_value = STATUS_MAP[old_value]
-    except KeyError:
-        raise ValueError('Unknown status: %s' % old_value)
 
     return new_value
 
@@ -232,8 +212,6 @@ def migrate_patients(old_conn, new_conn):
             comments = '\n'.join(comments)
         else:
             comments = None
-
-        # is_active = convert_status(row['status'])
 
         # Create a patient
         new_conn.execute(
