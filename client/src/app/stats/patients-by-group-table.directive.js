@@ -26,7 +26,7 @@
 
           adapter.get('/patients-by-group', params).then(function(response) {
             scope.loading = false;
-            scope.counts = _.sortByOrder(response.data.counts, ['patientCount'], ['desc']);
+            scope.counts = _.sortBy(response.data.counts, 'patientCount').reverse();
           });
         });
       }
