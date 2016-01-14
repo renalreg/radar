@@ -74,11 +74,17 @@
       this.update(this.originalData);
     };
 
-    Model.prototype.reload = function() {
-      var id = this.getId();
+    Model.prototype.reload = function(force) {
+      if (force === undefined) {
+        force = false;
+      }
 
-      if (id !== null) {
-        store.findOne(this.modelName, id);
+      if (force || !this.isLoading) {
+        var id = this.getId();
+
+        if (id !== null) {
+          store.findOne(this.modelName, id);
+        }
       }
     };
 
