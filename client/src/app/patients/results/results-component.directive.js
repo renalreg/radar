@@ -68,6 +68,7 @@
           patient: $scope.patient.id,
           observation: $scope.selectedObservation
         });
+
         self.edit(item);
       };
 

@@ -15,13 +15,13 @@
           </tr>
 
           <tr>
-            <th>Source</th>
-            <td>{{item.getSource()}}</td>
+            <th>Observation</th>
+            <td>{{item.observation.name}}</td>
           </tr>
 
           <tr>
-            <th>Observation</th>
-            <td>{{item.observation.name}}</td>
+            <th>Source</th>
+            <td>{{item.getSource()}}</td>
           </tr>
 
           <tr>
@@ -46,20 +46,20 @@
 
         <form class="form-horizontal form-container" crud-submit="saveAndAddAnother()" novalidate>
           <div frm-field frm-group>
-            <div frm-label>Source</div>
-
-            <div frm-control>
-              <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
-              <div frm-errors errors="item.errors.sourceGroup"></div>
-            </div>
-          </div>
-
-          <div frm-field frm-group>
             <div frm-label>Observation</div>
 
             <div frm-control>
               <div frm-observation-field model="item.observation" required="true"></div>
               <div frm-errors errors="item.errors.observation"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
+            <div frm-label>Source</div>
+
+            <div frm-control>
+              <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+              <div frm-errors errors="item.errors.sourceGroup"></div>
             </div>
           </div>
 
@@ -109,6 +109,7 @@
 
           <div frm-buttons>
             <span crud-save-button></span>
+            <span crud-save-button action="saveAndView()"></span>
             <span crud-cancel-list-button></span>
           </div>
         </form>
