@@ -6,7 +6,7 @@
 
   <tr>
     <th>Created User</th>
-    <td>{{item.createdUser.username}}</td>
+    <td>{{item.createdUser.username | missing}}</td>
   </tr>
 
   <tr>
@@ -16,7 +16,7 @@
 
   <tr>
     <th>Modified User</th>
-    <td>{{item.modifiedUser.username}}</td>
+    <td>{{item.modifiedUser.username | missing}}</td>
   </tr>
 
   <tr>
