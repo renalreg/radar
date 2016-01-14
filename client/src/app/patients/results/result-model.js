@@ -3,14 +3,12 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.factory('ResultModel', ['Model', 'store', function(Model, store) {
+  app.factory('ResultModel', ['Model', 'lazyLoad', function(Model, lazyLoad) {
     function ResultModel(modelName, data) {
-      if (data.observation) {
-        // Save space by only keeping one copy
-        var ObservationModel = store.getModelConstructor('observations');
-        data.observation = store.pushToStore(new ObservationModel('observations', data.observation));
-      }
-
+      data.observation = lazyLoad('observations', data.observation);
+      data.sourceGroup = lazyLoad('groups', data.sourceGroup);
+      data.createdUser = lazyLoad('users', data.createdUser);
+      data.modifiedUser = lazyLoad('users', data.modifiedUser);
       Model.call(this, modelName, data);
     }
 
