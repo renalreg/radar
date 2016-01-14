@@ -45,6 +45,13 @@
 
           var search = '';
 
+          // TODO move other options here
+          var options = $parse($attrs.listHelperOptions)($scope) || {};
+
+          if (options.deep === undefined) {
+            options.deep = true;
+          }
+
           $scope.$watchCollection(function() {
             return collectionGetter($scope) || [];
           }, function(value) {
@@ -76,7 +83,7 @@
 
           $scope.$watch('items', function() {
             _filter();
-          }, true);
+          }, options.deep);
 
           _filter();
 

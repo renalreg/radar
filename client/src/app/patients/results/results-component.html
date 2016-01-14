@@ -128,7 +128,7 @@
 
       <div loading="loading">
         <div ng-show="viewingTable()">
-          <div list-helper="groupedResults as page" per-page="50" sort-by="date" reverse="true">
+          <div list-helper="groupedResults as page" per-page="50" sort-by="date" reverse="true" list-helper-options="{deep: false}">
             <p>
               <span crud-create-button action="create()"></span>
             </p>
