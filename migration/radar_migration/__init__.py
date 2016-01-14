@@ -17,6 +17,7 @@ class Migration(object):
 
         self._user_ids = {}
         self._group_ids = {}
+        self._observation_ids = {}
 
     @property
     def user_id(self):
@@ -72,3 +73,24 @@ class Migration(object):
             self._user_ids[username] = user_id
 
         return user_id
+
+    def get_observation_id(self, pv_code):
+        pv_code = pv_code.upper()
+
+        observation_id = self._observation_ids.get(pv_code)
+
+        if observation_id is None:
+            q = select([tables.observations.c.id])\
+                .where(tables.observations.c.value_type == 'REAL')\
+                .where(tables.observations.c.pv_code == pv_code)
+
+            results = self.conn.execute(q)
+            row = results.fetchone()
+
+            if row is None:
+                raise MigrationError('Observation not found: %s' % pv_code)
+
+            observation_id = row[0]
+            self._observation_ids[pv_code] = observation_id
+
+        return observation_id

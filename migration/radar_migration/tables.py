@@ -367,3 +367,16 @@ observations = Table(
     Column('pv_code', String),
     Column('properties', postgresql.JSONB),
 )
+
+results = Table(
+    'results', metadata,
+    Column('id', postgresql.UUID),
+    Column('patient_id', Integer),
+    Column('source_group_id', Integer),
+    Column('source_type', String),
+    Column('observation_id', Integer),
+    Column('date', DateTime),
+    Column('value', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
