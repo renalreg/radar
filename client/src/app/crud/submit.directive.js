@@ -7,11 +7,13 @@
     return {
       require: ['form', 'crudSubmit'],
       controller: ['$scope', '$attrs', function($scope, $attrs) {
+        var self = this;
+
         var listeners = {};
 
-        this.on = on;
-        this.broadcast = broadcast;
-        this.submit = submit;
+        self.on = on;
+        self.broadcast = broadcast;
+        self.submit = submit;
 
         function on(name, callback) {
           if (listeners[name] === undefined) {
@@ -28,7 +30,7 @@
 
           for (var i = 0; i < callbacks.length; i++) {
             var callback = callbacks[i];
-            callback.apply(this, args);
+            callback.apply(self, args);
           }
         }
 
