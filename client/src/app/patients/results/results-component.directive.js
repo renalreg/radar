@@ -71,6 +71,18 @@
         self.edit(item);
       };
 
+      $scope.saveAndAddAnother = function() {
+        return self.save().then(function(item) {
+          self.edit(store.create('results', {
+            patient: item.patient,
+            sourceGroup: item.sourceGroup,
+            observation: item.observation
+          }));
+
+          return item;
+        });
+      };
+
       $scope.viewTable = function() {
         currentView = TABLE;
       };
