@@ -24,9 +24,15 @@
 
           return authService.login(credentials)
             .then(function() {
-              // Redirect to the patients list
-              // TODO not all users will have access to this
-              $state.go('patients');
+              var state;
+
+              if (hasPermissionForAnyGroup(session.user, 'VIEW_PATIENT')) {
+                state = 'patients';
+              } else {
+                state = 'home';
+              }
+
+              $state.go(state);
             })
             ['catch'](function(errors) {
               if (errors) {
