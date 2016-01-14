@@ -93,6 +93,8 @@ class PatientQueryBuilder(object):
             permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics, current=current)
             query = query.filter(permission_filter)
 
+        # TODO only show current RaDaR users
+
         return query
 
 
