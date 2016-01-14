@@ -209,9 +209,6 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
         return Result()
 
     def update(self, obj, deserialized_data):
-        print type(obj.date), obj.date
-        print type(deserialized_data['date']), deserialized_data['date']
-
         for attr, value in deserialized_data.items():
             setattr(obj, attr, value)
 
