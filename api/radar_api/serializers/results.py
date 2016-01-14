@@ -105,6 +105,45 @@ class ObservationReferenceField(ReferenceField):
     serializer_class = ObservationSerializer
 
 
+class TinyResultSerializer(PatientSerializerMixin, Serializer):
+    id = UUIDField()
+    observation = IntegerField(source='observation_id')
+    source_type = StringField()
+    source_group = IntegerField(source='source_group_id')
+    date = DateTimeField()
+    created_user = IntegerField(source='created_user_id')
+    modified_user = IntegerField(source='modified_user_id')
+    created_date = DateTimeField()
+    modified_date = DateTimeField()
+
+    def get_value_field(self, observation):
+        value_type = observation.value_type
+
+        if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
+            field = IntegerField()
+        elif value_type == OBSERVATION_VALUE_TYPE.REAL:
+            field = FloatField()
+        elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
+            options = [(x['code'], x['description']) for x in observation.properties['options']]
+            options = OrderedDict(options)
+            field = LabelledStringField(options, id_key='code', label_key='description')
+        elif value_type == OBSERVATION_VALUE_TYPE.STRING:
+            field = StringField()
+        else:
+            raise ValueError('Unknown value type: %s' % value_type)
+
+        return field
+
+    def to_data(self, result):
+        data = super(TinyResultSerializer, self).to_data(result)
+
+        # Serialize the result value
+        field = self.get_value_field(result.observation)
+        data['value'] = field.serialize(result.value)
+
+        return data
+
+
 class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, Serializer):
     id = UUIDField()
     observation = ObservationReferenceField()
