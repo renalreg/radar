@@ -47,7 +47,7 @@
 
           observationIds = observationIds.join(',');
 
-          promise = store.findMany('results', {observationIds: observationIds});
+          promise = store.findMany('results', {patient: $scope.patient.id, observationIds: observationIds});
         } else {
           promise = [];
         }
