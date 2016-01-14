@@ -55,21 +55,20 @@
           </div>
 
           <div frm-field frm-group>
+            <div frm-label>Observation</div>
+
+            <div frm-control>
+              <div frm-observation-field model="item.observation" required="true"></div>
+              <div frm-errors errors="item.errors.observation"></div>
+            </div>
+          </div>
+
+          <div frm-field frm-group>
             <div frm-label>Date</div>
 
             <div frm-control>
               <div frm-date-field model="item.date" required="true"></div>
               <div frm-errors errors="item.errors.date"></div>
-            </div>
-          </div>
-
-          <div frm-field frm-group>
-            <div frm-label>Observation</div>
-
-            <div frm-control>
-              <div frm-observation-field model="item.observation" required="true"></div>
-              <div frm-help>See the <a ui-sref="observations" target="_blank">observations</a> guide.</div>
-              <div frm-errors errors="item.errors.observation"></div>
             </div>
           </div>
 

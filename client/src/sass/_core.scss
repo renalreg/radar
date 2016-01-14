@@ -262,14 +262,26 @@ table.item-meta {
   margin: 0 0 9px 0;
 }
 
-.observations-selector .pagination {
+.select-observation-list .pagination {
   margin: 9px 0 0 0;
 }
 
-.observations-selector .filter-helper {
+.select-observation-list .filter-helper {
   margin: 0;
 }
 
-.observations-selector table.observations {
+.select-observation-list table.observations {
+  margin: 0;
+}
+
+.select-observation .pagination {
+  margin: 9px 0 0 0;
+}
+
+.select-observation .filter-helper {
+  margin: 0;
+}
+
+.select-observation table.observations {
   margin: 0;
 }

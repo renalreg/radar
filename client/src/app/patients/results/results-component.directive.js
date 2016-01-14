@@ -35,6 +35,7 @@
 
       var currentView = TABLE;
       $scope.selectedObservations = selectedObservations;
+      $scope.selectedObservation = null;
 
       $scope.$watchCollection('selectedObservations', function(selectedObservations) {
         var promise;
@@ -63,7 +64,10 @@
       // });
 
       $scope.create = function() {
-        var item = store.create('results', {patient: $scope.patient.id});
+        var item = store.create('results', {
+          patient: $scope.patient.id,
+          observation: $scope.selectedObservation
+        });
         self.edit(item);
       };
 

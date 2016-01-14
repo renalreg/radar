@@ -1,6 +1,6 @@
-<div class="panel panel-primary observations-selector">
+<div class="panel panel-primary select-observation-list">
   <div class="panel-heading">
-    <h3 class="panel-title">Select Observations</h3>
+    <h3 class="panel-title">Observations to Display</h3>
   </div>
 
   <div class="panel-body">
@@ -59,7 +59,7 @@
             </td>
           </tr>
 
-          <tr ng-show="!page.getCount()">
+          <tr ng-if="!page.getCount()">
             <td colspan="9" class="empty">No matching observations.</td>
           </tr>
 

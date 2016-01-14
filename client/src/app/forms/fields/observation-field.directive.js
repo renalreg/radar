@@ -10,12 +10,7 @@
         model: '=',
         required: '&'
       },
-      templateUrl: 'app/forms/fields/observation-field.html',
-      link: function(scope) {
-        store.findMany('observations').then(function(observations) {
-          scope.observations = _.sortBy(observations, 'name');
-        });
-      }
+      templateUrl: 'app/forms/fields/observation-field.html'
     };
   }]);
 })();

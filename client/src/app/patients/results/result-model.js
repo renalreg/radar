@@ -5,7 +5,7 @@
 
   app.factory('ResultModel', ['Model', 'store', function(Model, store) {
     function ResultModel(modelName, data) {
-      if (data.observation !== undefined) {
+      if (data.observation) {
         // Save space by only keeping one copy
         var ObservationModel = store.getModelConstructor('observations');
         data.observation = store.pushToStore(new ObservationModel('observations', data.observation));

@@ -1,0 +1,67 @@
+<div list-helper="observations as page" per-page="5" sort-by="name" class="select-observation">
+  <table class="table table-condensed table-striped observations">
+    <thead>
+      <tr>
+        <th></th>
+        <th sort-helper="name">Name</th>
+        <th sort-helper="shortName">Short Name</th>
+        <th sort-helper="valueType.label">Value Type</th>
+        <th sort-helper="sampleType.label">Sample Type</th>
+        <th sort-helper="units">Units</th>
+        <th sort-helper="minValue">Min Value</th>
+        <th sort-helper="maxValue">Max Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <th colspan="8">Selected</th>
+      </tr>
+
+      <tr ng-if="!selectedObservation">
+        <td colspan="8" class="empty">No observation selected.</td>
+      </tr>
+
+      <tr ng-if="selectedObservation">
+        <td></td>
+        <td>{{selectedObservation.name}}</td>
+        <td>{{selectedObservation.shortName}}</td>
+        <td>{{selectedObservation.valueType.label}}</td>
+        <td>{{selectedObservation.sampleType.label}}</td>
+        <td>{{selectedObservation.units | missing}}</td>
+        <td>{{selectedObservation.minValue | missing}}</td>
+        <td>{{selectedObservation.maxValue | missing}}</td>
+      </tr>
+
+      <tr>
+        <th colspan="8">Available</th>
+      </tr>
+
+      <tr>
+        <td colspan="8">
+          <div filter-helper></div>
+        </td>
+      </tr>
+
+      <tr ng-if="!page.getCount()">
+        <td colspan="8" class="empty">No matching observations.</td>
+      </tr>
+
+      <tr ng-repeat="observation in page.getItems()">
+        <td>
+          <button type="button" ng-click="use(observation)" class="btn btn-primary btn-xs">Use</button>
+        </td>
+
+        <td>{{observation.name}}</td>
+        <td>{{observation.shortName}}</td>
+        <td>{{observation.valueType.label}}</td>
+        <td>{{observation.sampleType.label}}</td>
+        <td>{{observation.units | missing}}</td>
+        <td>{{observation.minValue | missing}}</td>
+        <td>{{observation.maxValue | missing}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div pagination-helper></div>
+</div>
