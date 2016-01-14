@@ -216,10 +216,8 @@ class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerial
 
 
 class ObservationListRequestSerializer(Serializer):
-    value_type = StringField()
-    value_types = CommaSeparatedField(StringField())
+    value_type = CommaSeparatedField(StringField())
 
 
 class ResultListRequestSerializer(Serializer):
-    observation_id = IntegerField()
-    observation_ids = CommaSeparatedField(IntegerField())
+    observation_id = CommaSeparatedField(IntegerField())

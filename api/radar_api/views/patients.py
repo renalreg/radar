@@ -18,36 +18,54 @@ class PatientListView(ListModelView):
 
         builder = PatientQueryBuilder(current_user)
 
-        if args.get('id') is not None:
-            builder.patient_id(args['id'])
+        patient_id = args.get('id')
+        first_name = args.get('first_name') or None
+        last_name = args.get('last_name') or None
+        patient_number = args.get('patient_number') or None
+        gender = args.get('gender') or None
+        date_of_birth = args.get('date_of_birth')
+        year_of_birth = args.get('year_of_birth')
+        date_of_death = args.get('date_of_death')
+        year_of_death = args.get('year_of_death')
+        groups = args.get('group') or []
+        current_groups = args.get('current_group') or []
+        is_active = args.get('is_active')
 
-        if args.get('first_name'):
-            builder.first_name(args['first_name'])
+        if patient_id is not None:
+            builder.patient_id(patient_id)
 
-        if args.get('last_name'):
-            builder.last_name(args['last_name'])
+        if first_name is not None:
+            builder.first_name(first_name)
 
-        if args.get('groups') is not None:
-            for group in args.get('groups'):
-                builder.group(group)
+        if last_name is not None:
+            builder.last_name(last_name)
 
-        if args.get('patient_number'):
-            builder.patient_number(args['patient_number'])
+        if patient_number is not None:
+            builder.patient_number(patient_number)
 
-        if args.get('gender'):
-            builder.gender(args['gender'])
+        if gender is not None:
+            builder.gender(gender)
 
-        if args.get('date_of_birth') is not None:
-            builder.date_of_birth(args['date_of_birth'])
+        if date_of_birth is not None:
+            builder.date_of_birth(date_of_birth)
 
-        if args.get('year_of_birth') is not None:
-            builder.year_of_birth(args['year_of_birth'])
+        if year_of_birth is not None:
+            builder.year_of_birth(year_of_birth)
 
-        if args.get('date_of_death') is not None:
-            builder.date_of_death(args['date_of_death'])
+        if date_of_death is not None:
+            builder.date_of_death(date_of_death)
 
-        if args.get('year_of_death') is not None:
-            builder.year_of_death(args['year_of_death'])
+        if year_of_death is not None:
+            builder.year_of_death(year_of_death)
+
+        for group in groups:
+            builder.group(group, current=False)
+
+        for group in current_groups:
+            builder.group(group, current=True)
+
+        if is_active is not None:
+            builder.is_active(is_active)
 
         sort, reverse = self.get_sort_args()
 
