@@ -40,11 +40,21 @@ class Medication(db.Model, MetaModelMixin):
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
-    name = Column(String, nullable=False)
+    drug_id = Column(Integer, ForeignKey('drugs.id'))
+    drug = relationship('Drug')
     dose_quantity = Column(Numeric)
     dose_unit = Column(String)
     frequency = Column(String)
     route = Column(String)
-    unstructured = Column(String)
+
+    drug_text = Column(String)
+    dose_text = Column(String)
 
 Index('medications_patient_idx', Medication.patient_id)
+
+
+class Drug(db.Model):
+    __tablename__ = 'drugs'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
