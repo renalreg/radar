@@ -7,7 +7,7 @@
     return {
       require: ['^crud', '^form', '?^crudSubmit'],
       scope: {
-        action: '&',
+        //action: '&',
         text: '@'
       },
       templateUrl: function(element, attrs) {

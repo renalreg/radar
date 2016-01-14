@@ -7,9 +7,9 @@
     return {
       getSource: function() {
         if (this.sourceGroup.shortName) {
-            return this.sourceGroup.shortName + ' (' + this.sourceType + ')';
+          return this.sourceGroup.shortName + ' (' + this.sourceType + ')';
         } else {
-            return this.sourceType;
+          return this.sourceType;
         }
       }
     };

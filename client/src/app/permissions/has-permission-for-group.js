@@ -8,7 +8,7 @@
       return (
         user !== null && (
           user.isAdmin ||
-          _.any(user.groups, function(x) {
+          _.some(user.groups, function(x) {
             return x.group.id === group.id && x.hasPermission(permission);
           })
         )

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.ui');
 
-  var DEFAULT_SORT_BY = 'id'
+  var DEFAULT_SORT_BY = 'id';
   var DEFAULT_PER_PAGE = 10;
 
   app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'dateSearch', 'anyValue', function($parse, _, escapeRegExp, dateSearch, anyValue) {

@@ -10,10 +10,10 @@
       if (_.isInteger(data)) {
         var id = data;
 
-        var item = store.getFromStore(modelName, id);
+        item = store.getFromStore(modelName, id);
 
         if (item === null) {
-          var item = store.create(modelName, {id: id});
+          item = store.create(modelName, {id: id});
           item = store.pushToStore(item);
           item.reload();
         }
