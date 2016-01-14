@@ -6,7 +6,11 @@
   app.factory('SourceModelMixin', ['_', function(_) {
     return {
       getSource: function() {
-        return this.sourceGroup.shortName + ' (' + this.sourceType + ')';
+        if (this.sourceGroup.shortName) {
+            return this.sourceGroup.shortName + ' (' + this.sourceType + ')';
+        } else {
+            return this.sourceType;
+        }
       }
     };
   }]);
