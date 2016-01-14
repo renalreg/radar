@@ -65,6 +65,7 @@ class ObservationDetailView(RetrieveModelView):
 
 def register_views(app):
     app.add_url_rule('/results', view_func=ResultListView.as_view('result_list'))
+    app.add_url_rule('/results', view_func=ResultCreateView.as_view('result_create'))
     app.add_url_rule('/results/<id>', view_func=ResultDetailView.as_view('result_detail'))
     app.add_url_rule('/observations', view_func=ObservationListView.as_view('observation_list'))
     app.add_url_rule('/observations/<id>', view_func=ObservationDetailView.as_view('observation_detail'))
