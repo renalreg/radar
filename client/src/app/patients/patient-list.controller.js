@@ -41,6 +41,7 @@
         var params = {};
 
         var keys = [
+            'id',
             'firstName', 'lastName',
             'dateOfBirth', 'yearOfBirth',
             'dateOfDeath', 'yearOfDeath',
