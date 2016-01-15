@@ -33,6 +33,12 @@ class Disorder(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
 
+    group_disorders = relationship('GroupDisorder')
+
+    @property
+    def groups(self):
+        return [x.group for x in self.group_disorders]
+
 
 class GroupDisorder(db.Model):
     __tablename__ = 'group_disorders'
