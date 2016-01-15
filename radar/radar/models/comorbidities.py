@@ -32,3 +32,17 @@ class Disorder(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+
+
+class GroupDisorder(db.Model):
+    __tablename__ = 'group_disorders'
+
+    id = Column(Integer, primary_key=True)
+
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
+
+    disorder_id = Column(Integer, ForeignKey('disorders.id'), nullable=False)
+    disorder = relationship('Disorder')
+
+Index('group_disorders_group_disorder_idx', GroupDisorder.group_id, GroupDisorder.disorder_id, unique=True)
