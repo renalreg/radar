@@ -1,16 +1,9 @@
 ALPORT,Alport Syndrome - No Histology
 ALPORT,Alport Syndrome - Histologically Proven
 ALPORT,Thin Basement Membrane Disease
-APRT,Adenine Phosphoribosyltransferase (APRT) Deficiency
-ARPKD,Autosomal Recessive Polycystic Kidney Disease
-AHUS,Atypical Haemolytic Uraemic Syndrome
-CALCIP,Calciphylaxis
-CYSTIN,Cystinosis
-CYSURIA,Cystinuria
 DENTLOWE,Lowe Syndrome (Oculocerebrorenal Syndrome)
 DENTLOWE,Dent Disease
 DENTLOWE,Other Primary Renal Fanconi Syndrome
-FUAN,Uromodulin-Associated Nephropathy (Familial Juvenile Hyperuricaemic Nephropathy)
 HNF1B,Renal Cysts & Diabetes Syndrome
 HNF1B,Glomerulocystic Disease
 HNF1B,Multicystic Dysplastic Kidneys
@@ -26,7 +19,6 @@ HYPALK,Type 4a Bartter Syndrome
 HYPALK,Type 4b Bartter Syndrome
 HYPALK,EAST Syndrome
 HYPALK,Liddle Syndrome
-IGANEPHRO,IgA Nephropathy
 INS,SRNS - Primary Steroid Resistance
 INS,SRNS - Secondary Steroid Resistance
 INS,SRNS - Presumed Steroid Resistance
@@ -34,12 +26,5 @@ INS,SSNS - Steroid Sensitive
 INS,SSNS - Steroid Dependant
 INS,SSNS - Frequently Relapsing
 INS,SSNS - Partial Steroid Resistance
-MEMNEPHRO,Membranous Nephropathy
-MPGN,MPGN (Membranoproliferative Glomerulonephritis Type II - Dense Deposit Disease)
-NEPHROS,NephroS
-NSMPGNC3,National Study of MPGN and C3
-OBS,Pregnancy
-PRCA,Pure Red Cell Aplasia
-STECHUS,STEC Associated HUS (Diarrhoea Associated)
 VAS,Systemic Vasculitis - ANCA Positive - No Histology
 VAS,Systemic Vasculitis - ANCA Negative - Histologially Proven
