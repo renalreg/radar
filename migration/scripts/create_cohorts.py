@@ -150,6 +150,7 @@ COHORTS = [
             'DIAGNOSIS',
             'GENETICS',
             'FAMILY_HISTORY',
+            'FETAL_ANOMALY_SCANS',
             'RENAL_IMAGING',
             'PATHOLOGY',
             'RESULTS',
