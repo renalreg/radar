@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('selectObservationList', ['store', '_', function(store, _) {
+  app.directive('observationListSelector', ['store', '_', function(store, _) {
     return {
       scope: {
         selectedObservations: '=observations'

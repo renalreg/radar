@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.results');
 
-  app.directive('selectObservation', ['store', '_', function(store, _) {
+  app.directive('observationSelector', ['store', '_', function(store, _) {
     return {
       require: 'ngModel',
       templateUrl: 'app/patients/results/observation-selector.html',
