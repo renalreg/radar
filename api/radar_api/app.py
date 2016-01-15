@@ -51,6 +51,7 @@ from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
 from radar_api.views import group_diagnoses
+from radar_api.views import group_biopsy_diagnoses
 from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -108,6 +109,7 @@ class RadarApi(Flask):
         genetics.register_views(self)
         groups.register_views(self)
         group_consultants.register_views(self)
+        group_biopsy_diagnoses.register_views(self)
         group_diagnoses.register_views(self)
         group_patients.register_views(self)
         group_users.register_views(self)
