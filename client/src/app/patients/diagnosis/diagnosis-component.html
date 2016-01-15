@@ -28,13 +28,33 @@
       </tr>
 
       <tr>
-        <th>Diagnosis Text</th>
-        <td class="newlines">{{item.diagnosisText | missing}}</td>
+        <th>Confirmed by Gene Test</th>
+        <td><span tick="item.geneTest"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Biochemistry</th>
+        <td><span tick="item.biochemistry"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Clinical Picture</th>
+        <td><span tick="item.clinicalPicture"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Biopsy</th>
+        <td><span tick="item.biopsy"></span></td>
       </tr>
 
       <tr ng-if="biopsyDiagnoses.length">
         <th>Biopsy Diagnosis</th>
         <td>{{item.biopsyDiagnosis.name | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Diagnosis Text</th>
+        <td class="newlines">{{item.diagnosisText | missing}}</td>
       </tr>
     </table>
 
@@ -87,11 +107,38 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Diagnosis Text</div>
+        <div frm-label>Confirmed by Gene Test</div>
 
         <div frm-control>
-          <div frm-textarea-field model="item.diagnosisText"></div>
-          <div frm-errors errors="item.errors.diagnosisText"></div>
+          <div frm-boolean-field model="item.geneTest"></div>
+          <div frm-errors errors="item.errors.geneTest"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Biochemistry</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.biochemistry"></div>
+          <div frm-errors errors="item.errors.biochemistry"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Clinical Picture</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.clinicalPicture"></div>
+          <div frm-errors errors="item.errors.clinicalPicture"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Biopsy</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.biopsy"></div>
+          <div frm-errors errors="item.errors.biopsy"></div>
         </div>
       </div>
 
@@ -101,6 +148,15 @@
         <div frm-control>
           <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses" options-label="name"></div>
           <div frm-errors errors="item.errors.biopsyDiagnosis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Diagnosis Text</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.diagnosisText"></div>
+          <div frm-errors errors="item.errors.diagnosisText"></div>
         </div>
       </div>
 

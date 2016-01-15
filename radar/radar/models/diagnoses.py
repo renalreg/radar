@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -24,10 +24,15 @@ class Diagnosis(db.Model, MetaModelMixin):
     group_diagnosis_id = Column(Integer, ForeignKey('group_diagnoses.id'))
     group_diagnosis = relationship('GroupDiagnosis')
 
-    diagnosis_text = Column(String)
+    gene_test = Column(Boolean)
+    biochemistry = Column(Boolean)
+    clinical_picture = Column(Boolean)
+    biopsy = Column(Boolean)
 
     biopsy_diagnosis_id = Column(Integer, ForeignKey('biopsy_diagnoses.id'))
     biopsy_diagnosis = relationship('BiopsyDiagnosis')
+
+    diagnosis_text = Column(String)
 
     @property
     def age_of_symptoms(self):

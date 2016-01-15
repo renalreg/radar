@@ -11,8 +11,12 @@ class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, Me
     date_of_diagnosis = Field([required(), valid_date_for_patient()])
     date_of_renal_disease = Field([optional(), valid_date_for_patient()])
     group_diagnosis = Field([optional()])  # TODO
-    diagnosis_text = Field([none_if_blank(), optional(), max_length(10000)])
+    gene_test = Field([optional()])
+    biochemistry = Field([optional()])
+    clinical_picture = Field([optional()])
+    biopsy = Field([optional()])
     biopsy_diagnosis = Field([optional()])  # TODO
+    diagnosis_text = Field([none_if_blank(), optional(), max_length(10000)])
 
     @pass_new_obj
     def validate_date_of_diagnosis(self, obj, date_of_diagnosis):
