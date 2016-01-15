@@ -14,7 +14,7 @@ def migrate_genetics(old_conn, new_conn):
             referenceNumber,
             whatResultsShowed,
             keyEvidence,
-            COALESCE(dateSent, '1900-01-01') as dateSent,
+            COALESCE(dateSent, '1900-01-01') as dateSent,  # TODO use dateReg
             testDoneOn
         FROM rdc_genetic_test
         JOIN patient ON (
