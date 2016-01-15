@@ -66,4 +66,8 @@ echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
 echo 'migrate transplants...'
 python scripts/migrate_transplants.py "$SRC" "$DEST" data/transplant_modalities.csv
+echo 'add patients to NEPHROS...'
+python scripts/add_patients_to_group.py "$DEST" COHORT NEPHROS data/nephros.csv
+echo 'add patients to NSMPGNC3...'
+python scripts/add_patients_to_group.py "$DEST" COHORT NSMPGNC3 data/nsmpgnc3.csv
 echo 'done'

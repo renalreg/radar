@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from sqlalchemy import select
+import pytz
 
 from radar_migration import tables
 
@@ -27,6 +30,8 @@ class Migration(object):
         self._group_ids = {}
         self._observation_ids = {}
 
+        self.now = datetime.now(pytz.UTC)
+
     @property
     def user_id(self):
         return self.get_user_id('migration')
@@ -39,14 +44,17 @@ class Migration(object):
     def source_type(self):
         return 'RADAR'
 
-    def get_group_id(self, type, code):
-        key = (type, code)
+    def get_group_id(self, group_type, group_code):
+        group_type = group_type.upper()
+        group_code = group_code.upper()
+
+        key = (group_type, group_code)
         group_id = self._group_ids.get(key)
 
         if group_id is None:
             q = select([tables.groups.c.id])\
-                .where(tables.groups.c.type == type)\
-                .where(tables.groups.c.code == code)
+                .where(tables.groups.c.type == group_type)\
+                .where(tables.groups.c.code == group_code)
 
             results = self.conn.execute(q)
             row = results.fetchone()
@@ -59,7 +67,7 @@ class Migration(object):
             self._group_ids[key] = group_id
 
         if group_id is None:
-            raise GroupNotFound('Group not found: %s (%s)' % (code, type))
+            raise GroupNotFound('Group not found: %s (%s)' % (group_code, group_type))
 
         return group_id
 
