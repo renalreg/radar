@@ -1,7 +1,9 @@
-from radar_api.serializers.comorbidities import ComorbiditySerializer, DisorderSerializer
+from flask import request
+
+from radar_api.serializers.comorbidities import ComorbiditySerializer, DisorderSerializer, DisorderRequestSerializer
 from radar.validation.comorbidities import ComorbidityValidation
 from radar.views.core import ListModelView
-from radar.models import Comorbidity, Disorder
+from radar.models.comorbidities import Comorbidity, Disorder, GroupDisorder
 from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 
@@ -22,6 +24,20 @@ class DisorderListView(ListModelView):
     serializer_class = DisorderSerializer
     model_class = Disorder
 
+    def filter_query(self, query):
+        query = super(DisorderListView, self).filter_query(query)
+
+        serializer = DisorderRequestSerializer()
+        args = serializer.args_to_value(request.args)
+
+        group_id = args.get('group')
+
+        if group_id is not None:
+            query = query.join(Disorder.group_disorders)
+            query = query.filter(GroupDisorder.group_id == group_id)
+
+        return query
+
     def sort_query(self, query):
         return query.order_by(Disorder.name)
 
@@ -29,4 +45,4 @@ class DisorderListView(ListModelView):
 def register_views(app):
     app.add_url_rule('/comorbidities', view_func=ComorbidityListView.as_view('comorbidity_list'))
     app.add_url_rule('/comorbidities/<id>', view_func=ComorbidityDetailView.as_view('comorbidity_detail'))
-    app.add_url_rule('/comorbidity-disorders', view_func=DisorderListView.as_view('disorder_list'))
+    app.add_url_rule('/disorders', view_func=DisorderListView.as_view('disorder_list'))
