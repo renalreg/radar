@@ -3,7 +3,6 @@ import click
 
 from radar_migration import Migration, tables, EXCLUDED_UNITS
 
-# TODO check
 MODALITY_MAP = {
     1: 1,
     2: 2,
