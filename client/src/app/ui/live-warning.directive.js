@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('notLive', ['adapter', function(adapter) {
+  app.directive('liveWarning', ['adapter', function(adapter) {
     return {
       restrict: 'A',
       scope: true,
-      templateUrl: 'app/ui/not-live.html',
+      templateUrl: 'app/ui/live-warning.html',
       link: function(scope) {
         scope.live = true;
 
