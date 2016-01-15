@@ -32,46 +32,6 @@
       </tr>
     </table>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Diabetes</h3>
-      </div>
-
-      <div class="panel-body">
-        <table class="table properties">
-          <tr>
-            <th>Diabetes</th>
-            <td>{{item.typeOfDiabetes.label | missing}}</td>
-          </tr>
-
-          <tr>
-            <th>Date of Diagnosis</th>
-            <td>{{item.dateOfDiabetes | dateFormat}}</td>
-          </tr>
-
-          <tr>
-            <th>Nephropathy</th>
-            <td><span tick="item.diabeticNephropathy"></span></td>
-          </tr>
-
-          <tr>
-            <th>Retinopathy</th>
-            <td><span tick="item.diabeticRetinopathy"></span></td>
-          </tr>
-
-          <tr>
-            <th>Neuropathy</th>
-            <td><span tick="item.diabeticNeuropathy"></span></td>
-          </tr>
-
-          <tr>
-            <th>PVD</th>
-            <td><span tick="item.diabeticPvd"></span></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
     <div item-meta item="item"></div>
   </div>
 
@@ -135,70 +95,6 @@
         <div frm-control>
           <div frm-boolean-field model="item.familialCysticDisease"></div>
           <div frm-errors errors="item.errors.familialCysticDisease"></div>
-        </div>
-      </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Diabetes</h3>
-        </div>
-
-        <div class="panel-body">
-          <div frm-field frm-group>
-            <div frm-label>Diabetes</div>
-
-            <div frm-control>
-              <div frm-select-field model="item.typeOfDiabetes" options="diabetesTypes"></div>
-              <div frm-errors errors="item.errors.typeOfDiabetes"></div>
-            </div>
-          </div>
-
-          <div ng-if="item.typeOfDiabetes !== null && item.typeOfDiabetes !== undefined && item.typeOfDiabetes.id !== 'NO'">
-            <div frm-field frm-group>
-              <div frm-label>Date of Diagnosis</div>
-
-              <div frm-control>
-                <div frm-date-field model="item.dateOfDiabetes" required="item.typeOfDiabetes !== null && item.typeOfDiabetes !== undefined && item.typeOfDiabetes.id !== 'NO'"></div>
-                <div frm-errors errors="item.errors.dateOfDiabetes"></div>
-              </div>
-            </div>
-
-            <div frm-field frm-group>
-              <div frm-label>Nephropathy</div>
-
-              <div frm-control>
-                <div frm-boolean-field model="item.diabeticNephropathy"></div>
-                <div frm-errors errors="item.errors.diabeticNephropathy"></div>
-              </div>
-            </div>
-
-            <div frm-field frm-group>
-              <div frm-label>Retinopathy</div>
-
-              <div frm-control>
-                <div frm-boolean-field model="item.diabeticRetinopathy"></div>
-                <div frm-errors errors="item.errors.diabeticRetinopathy"></div>
-              </div>
-            </div>
-
-            <div frm-field frm-group>
-              <div frm-label>Neuropathy</div>
-
-              <div frm-control>
-                <div frm-boolean-field model="item.diabeticNeuropathy"></div>
-                <div frm-errors errors="item.errors.diabeticNeuropathy"></div>
-              </div>
-            </div>
-
-            <div frm-field frm-group>
-              <div frm-label>PVD</div>
-
-              <div frm-control>
-                <div frm-boolean-field model="item.diabeticPvd"></div>
-                <div frm-errors errors="item.errors.diabeticPvd"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
