@@ -9,12 +9,13 @@ from radar.validation.validators import valid_date_for_patient, required, option
 class MedicationValidation(PatientValidationMixin, SourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
-    name = Field([not_empty(), max_length(10000)])
+    drug = Field([optional()])
     dose_quantity = Field([optional(), min_(0)])
     dose_unit = Field([optional(), in_(MEDICATION_DOSE_UNITS.keys())])
     frequency = Field([optional(), in_(MEDICATION_FREQUENCIES.keys())])
     route = Field([optional(), in_(MEDICATION_ROUTES.keys())])
-    unstructured = Field([none_if_blank(), optional(), max_length(10000)])
+    drug_text = Field([none_if_blank(), optional(), max_length(10000)])
+    dose_text = Field([none_if_blank(), optional(), max_length(10000)])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):
