@@ -30,6 +30,7 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     hypovalaemia = Column(Boolean)
     fever = Column(Boolean)
     thrombosis = Column(Boolean)
+    # TODO complications
     peritonitis = Column(Boolean)
     pulmonary_odemea = Column(Boolean)
     hypertension = Column(Boolean)
