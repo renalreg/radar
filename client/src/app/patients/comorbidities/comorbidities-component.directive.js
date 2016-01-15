@@ -26,7 +26,7 @@
 
       self.load(firstPromise([
         store.findMany('comorbidities', {patient: $scope.patient.id}),
-        store.findMany('comorbidity-disorders').then(function(disorders) {
+        store.findMany('disorders').then(function(disorders) {
           $scope.disorders = disorders;
         })
       ]));
