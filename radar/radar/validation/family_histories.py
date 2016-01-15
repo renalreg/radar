@@ -17,3 +17,9 @@ class FamilyHistoryValidation(PatientValidationMixin, CohortGroupValidationMixin
     family_history = Field([required()])
     other_family_history = Field([none_if_blank(), optional(), max_length(10000)])
     relatives = ListField(FamilyHistoryRelativeValidation())
+
+    def pre_validate(self, obj):
+        if not obj.family_history:
+            obj.relatives = []
+
+        return obj
