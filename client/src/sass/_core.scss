@@ -284,18 +284,18 @@ table.metadata {
   margin: 0 0 9px 0;
 }
 
-.observation-selector {
+.observation-selector, .drug-selector {
   margin: 0 0 18px 0;
-}
 
-.observation-selector .pagination {
-  margin: 9px 0 0 0;
-}
+  .pagination {
+    margin: 9px 0 0 0;
+  }
 
-.observation-selector .filter-helper {
-  margin: 0;
-}
+  .filter-helper {
+    margin: 0;
+  }
 
-.observation-selector table.observations {
-  margin: 0;
+  .table {
+    margin: 0;
+  }
 }

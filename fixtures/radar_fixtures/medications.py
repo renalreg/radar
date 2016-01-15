@@ -19,7 +19,7 @@ def create_medications_f():
             if random.random() > 0.5:
                 medication.to_date = random_date(medication.from_date, date.today())
 
-            medication.name = random.choice(MEDICATION_NAMES)
+            medication.drug_text = random.choice(MEDICATION_NAMES)
             medication.dose_quantity = random.randint(1, 10)
             medication.dose_unit = random.choice(MEDICATION_DOSE_UNITS.keys())
             medication.frequency = random.choice(MEDICATION_FREQUENCIES.keys())

@@ -1,5 +1,5 @@
 <div list-helper="observations as page" list-helper-options="{perPage: 5, sortBy: 'name'}" class="observation-selector">
-  <table class="table table-condensed table-striped observations">
+  <table class="table table-condensed table-striped">
     <thead>
       <tr>
         <th></th>
@@ -49,7 +49,7 @@
 
       <tr ng-repeat="observation in page.getItems()">
         <td>
-          <button type="button" ng-click="use(observation)" class="btn btn-primary btn-xs">Use</button>
+          <button type="button" ng-click="use(observation)" class="btn btn-primary btn-xs">Select</button>
         </td>
 
         <td>{{observation.name}}</td>

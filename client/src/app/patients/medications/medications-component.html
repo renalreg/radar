@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Drug Text</th>
-        <td>{{item.drugText | missing}}</td>
+        <th>Drug</th>
+        <td>{{item.getDrug()}}</td>
       </tr>
 
       <tr>
@@ -28,12 +28,7 @@
 
       <tr>
         <th>Dose</th>
-        <td>{{item.doseQuantity | missing}} {{item.doseUnit.label}}</td>
-      </tr>
-
-      <tr>
-        <th>Dose Text</th>
-        <td>{{item.doseText | missing}}</td>
+        <td>{{item.getDose() | missing}}</td>
       </tr>
 
       <tr>
@@ -85,6 +80,15 @@
       </div>
 
       <div frm-field frm-group>
+        <div frm-label>Drug</div>
+
+        <div frm-control>
+          <div frm-drug-field model="item.drug"></div>
+          <div frm-errors errors="item.errors.drug"></div>
+        </div>
+      </div>
+
+      <div ng-if="!item.drug" frm-field frm-group>
         <div frm-label>Drug Text</div>
 
         <div frm-control>
@@ -111,11 +115,12 @@
         </div>
       </div>
 
-      <div frm-field frm-group>
+      <div ng-if="!item.doseQuantity" frm-field frm-group>
         <div frm-label>Dose Text</div>
 
         <div frm-control>
           <div frm-text-field model="item.doseText"></div>
+          <div frm-help>Please use dose quantity and dose unit for new medications.</div>
           <div frm-errors errors="item.errors.doseText"></div>
         </div>
       </div>
@@ -160,10 +165,10 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="drugText">Drug</th>
+          <th sort-helper="getDrug()">Drug</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="doseQuantity">Dose</th>
+          <th sort-helper="getDose()">Dose</th>
           <th sort-helper="frequency.label">Frequency</th>
           <th sort-helper="route.label">Route</th>
           <th sort-helper="getSource()">Source</th>
@@ -178,10 +183,10 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.name}}</td>
+          <td>{{item.getDrug()}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.doseQuantity | missing}} {{item.doseUnit.label}}</td>
+          <td>{{item.getDose()}}</td>
           <td>{{item.frequency.label | missing}}</td>
           <td>{{item.route.label | missing}}</td>
           <td>{{item.unstructured | missing}}</td>
