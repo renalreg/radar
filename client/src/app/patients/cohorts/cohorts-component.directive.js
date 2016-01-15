@@ -39,7 +39,7 @@
 
       return ModelListDetailController.prototype.save.call(self).then(function(groupPatient) {
         // Add the group to the patient's groups
-        if (!_.contains(self.scope.patient.groups, groupPatient)) {
+        if (!_.includes(self.scope.patient.groups, groupPatient)) {
           self.scope.patient.groups.push(groupPatient);
         }
 
