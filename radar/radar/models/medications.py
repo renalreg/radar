@@ -13,10 +13,9 @@ MEDICATION_ROUTES = OrderedDict([
 
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
-    ('L', 'l'),
     ('MG', 'mg'),
     ('G', 'g'),
-    ('KG', 'kg'),
+    ('IU', 'IU'),
 ])
 
 MEDICATION_FREQUENCIES = OrderedDict([
