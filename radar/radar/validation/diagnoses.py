@@ -1,19 +1,18 @@
-from radar.models import DIAGNOSIS_BIOPSY_DIAGNOSES
 from radar.validation.groups import CohortGroupValidationMixin
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, optional, \
-    valid_date_for_patient, max_length, none_if_blank, in_
+    valid_date_for_patient, max_length, none_if_blank
 
 
 class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, MetaValidationMixin, Validation):
     date_of_symptoms = Field([required(), valid_date_for_patient()])
     date_of_diagnosis = Field([required(), valid_date_for_patient()])
     date_of_renal_disease = Field([optional(), valid_date_for_patient()])
-    group_diagnosis = Field([required()])
+    group_diagnosis = Field([optional()])  # TODO
     diagnosis_text = Field([none_if_blank(), optional(), max_length(10000)])
-    biopsy_diagnosis = Field([optional(), in_(DIAGNOSIS_BIOPSY_DIAGNOSES.keys())])
+    biopsy_diagnosis = Field([optional()])  # TODO
 
     @pass_new_obj
     def validate_date_of_diagnosis(self, obj, date_of_diagnosis):
@@ -28,6 +27,13 @@ class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, Me
             raise ValidationError('Not a valid diagnosis for this cohort.')
 
         return group_diagnosis
+
+    @pass_new_obj
+    def validate_biopsy_diagnosis(self, obj, biopsy_diagnosis):
+        if obj.group not in biopsy_diagnosis.groups:
+            raise ValidationError('Not a valid biopsy diagnosis for this cohort.')
+
+        return biopsy_diagnosis
 
 
 class GroupDiagnosisValidation(CohortGroupValidationMixin, Validation):

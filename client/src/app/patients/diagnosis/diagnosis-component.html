@@ -19,12 +19,12 @@
 
       <tr>
         <th>Date of Onset of Renal Disease</th>
-        <td>{{item.dateOfRenalDisease | dateFormat}} ({{item.ageOfRenalDisease | ageFormat}})</td>
+        <td>{{item.dateOfRenalDisease | dateFormat}} <span ng-if="item.dateOfRenalDisease">({{item.ageOfRenalDisease | ageFormat}})</span></td>
       </tr>
 
-      <tr>
+      <tr ng-if="groupDiagnoses.length">
         <th>Diagnosis</th>
-        <td>{{item.cohortDiagnosis.name}}</td>
+        <td>{{item.groupDiagnosis.name}}</td>
       </tr>
 
       <tr>
@@ -32,9 +32,9 @@
         <td class="newlines">{{item.diagnosisText | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="biopsyDiagnoses.length">
         <th>Biopsy Diagnosis</th>
-        <td>{{item.biopsyDiagnosis.label | missing}}</td>
+        <td>{{item.biopsyDiagnosis.name | missing}}</td>
       </tr>
     </table>
 
@@ -77,12 +77,12 @@
         </div>
       </div>
 
-      <div frm-field frm-group>
+      <div ng-if="groupDiagnoses.length" frm-field frm-group>
         <div frm-label>Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.cohortDiagnosis" required="true" options="groupDiagnoses" options-label="name"></div>
-          <div frm-errors errors="item.errors.cohortDiagnosis"></div>
+          <div frm-select-field model="item.groupDiagnosis" required="true" options="groupDiagnoses" options-label="name"></div>
+          <div frm-errors errors="item.errors.groupDiagnosis"></div>
         </div>
       </div>
 
@@ -95,11 +95,11 @@
         </div>
       </div>
 
-      <div frm-field frm-group>
+      <div ng-if="biopsyDiagnoses.length" frm-field frm-group>
         <div frm-label>Biopsy Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses"></div>
+          <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses" options-label="name"></div>
           <div frm-errors errors="item.errors.biopsyDiagnosis"></div>
         </div>
       </div>

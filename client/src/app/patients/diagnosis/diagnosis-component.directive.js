@@ -26,11 +26,15 @@
       });
 
       self.load(firstPromise([
-        store.findFirst('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
+        store.findFirst('diagnoses', {patient: $scope.patient.id, group: $scope.cohort.id}),
         store.findMany('group-diagnoses', {group: $scope.cohort.id}).then(function(groupDiagnoses) {
           $scope.groupDiagnoses = _.sortBy(groupDiagnoses, 'displayOrder');
         }),
-        store.findMany('diagnosis-biopsy-diagnoses').then(function(biopsyDiagnoses) {
+        store.findMany('group-biopsy-diagnoses', {group: $scope.cohort.id}).then(function(groupBiopsyDiagnoses) {
+          groupBiopsyDiagnoses = _.sortBy(groupBiopsyDiagnoses, 'displayOrder');
+          var biopsyDiagnoses = _.map(groupBiopsyDiagnoses, function(x) {
+            return x.biopsyDiagnosis;
+          });
           $scope.biopsyDiagnoses = biopsyDiagnoses;
         })
       ])).then(function() {
@@ -38,7 +42,7 @@
       });
 
       $scope.create = function() {
-        var item = store.create('diagnoses', {patient: $scope.patient.id, cohort: $scope.cohort});
+        var item = store.create('diagnoses', {patient: $scope.patient.id, group: $scope.cohort});
         self.edit(item);
       };
     }

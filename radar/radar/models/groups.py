@@ -49,10 +49,6 @@ class Group(db.Model):
     def users(self):
         return [x.user for x in self.group_users]
 
-    @property
-    def sorted_pages(self):
-        return [x.name for x in sorted(self.group_pages, key=lambda y: y.display_order)]
-
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
 
