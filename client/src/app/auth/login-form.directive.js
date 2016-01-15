@@ -3,7 +3,9 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('loginForm', ['session', 'authService', '$state', function(session, authService, $state) {
+  function directive(
+    session, authService, $state, hasPermissionForAnyGroup, notificationService
+  ) {
     return {
       restrict: 'A',
       scope: {},
@@ -32,6 +34,8 @@
                 state = 'home';
               }
 
+              notificationService.success('Logged in successfully.');
+
               $state.go(state);
             })
             ['catch'](function(errors) {
@@ -42,5 +46,11 @@
         };
       }
     };
-  }]);
+  }
+
+  directive.$inject = [
+    'session', 'authService', '$state', 'hasPermissionForAnyGroup', 'notificationService'
+  ];
+
+  app.directive('loginForm', directive);
 })();
