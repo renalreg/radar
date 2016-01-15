@@ -12,8 +12,8 @@
       </tr>
 
       <tr>
-        <th>Name</th>
-        <td>{{item.name}}</td>
+        <th>Drug Text</th>
+        <td>{{item.drugText | missing}}</td>
       </tr>
 
       <tr>
@@ -32,6 +32,11 @@
       </tr>
 
       <tr>
+        <th>Dose Text</th>
+        <td>{{item.doseText | missing}}</td>
+      </tr>
+
+      <tr>
         <th>Frequency</th>
         <td>{{item.frequency.label | missing}}</td>
       </tr>
@@ -39,11 +44,6 @@
       <tr>
         <th>Route</th>
         <td>{{item.route.label | missing}}</td>
-      </tr>
-
-      <tr>
-        <th>Unstructured Data</th>
-        <td>{{item.unstructured | missing}}</td>
       </tr>
     </table>
 
@@ -85,11 +85,11 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Name</div>
+        <div frm-label>Drug Text</div>
 
         <div frm-control>
-          <div frm-text-field model="item.name" required="true"></div>
-          <div frm-errors errors="item.errors.name"></div>
+          <div frm-text-field model="item.drugText"></div>
+          <div frm-errors errors="item.errors.drugText"></div>
         </div>
       </div>
 
@@ -108,6 +108,15 @@
         <div frm-control>
           <div frm-select-field model="item.doseUnit" options="doseUnits"></div>
           <div frm-errors errors="item.errors.doseUnit"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Dose Text</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.doseText"></div>
+          <div frm-errors errors="item.errors.doseText"></div>
         </div>
       </div>
 
@@ -151,13 +160,12 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="name">Name</th>
+          <th sort-helper="drugText">Drug</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="doseQuantity">Dose</th>
           <th sort-helper="frequency.label">Frequency</th>
           <th sort-helper="route.label">Route</th>
-          <th sort-helper="unstructured">Unstructured Data</th>
           <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>

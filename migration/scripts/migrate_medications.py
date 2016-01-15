@@ -32,8 +32,8 @@ def migrate_medications(old_conn, new_conn):
             source_type=m.source_type,
             from_date=row['startdate'],
             to_date=row['enddate'],
-            name=row['name'],
-            unstructured=row['dose'],
+            drug_text=row['name'],
+            dose_text=row['dose'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )

@@ -256,8 +256,8 @@ medications = Table(
     Column('source_type', String),
     Column('from_date', Date),
     Column('to_date', Date),
-    Column('name', String),
-    Column('unstructured', String),
+    Column('drug_text', String),
+    Column('dose_text', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
