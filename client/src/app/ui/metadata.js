@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.ui');
 
-  app.directive('itemMeta', function() {
+  app.directive('metadata', function() {
     return {
       scope: {
         item: '='
       },
-      templateUrl: 'app/ui/item-meta.html'
+      templateUrl: 'app/ui/metadata.html'
     };
   });
 })();
