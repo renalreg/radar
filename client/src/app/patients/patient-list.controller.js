@@ -69,8 +69,6 @@
           params.group = groupIds.join(',');
         }
 
-        console.log(params);
-
         return params;
       }
 
