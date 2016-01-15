@@ -183,7 +183,8 @@ def migrate_patients(old_conn, new_conn):
         LEFT JOIN tbl_demographics AS d ON r.radarNo = d.RADAR_NO
         LEFT JOIN rdr_radar_number ON r.radarNo = rdr_radar_number.id
         WHERE
-            r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE')
+            r.unitcode NOT IN ('DEMO', 'RENALREG', 'BANGALORE', 'CAIRO', 'GUNMA', 'NEWDEHLI', 'TEHRAN', 'VELLORE') AND
+            p.unitcode != 'ECS'
         ORDER BY
             r.radarNo,
             (CASE WHEN p.sourceType = 'PatientView' THEN 0 ELSE 1 END), -- prefer PatientView patients
