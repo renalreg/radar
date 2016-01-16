@@ -1,0 +1,106 @@
+Albumin : Creatinine Ratio,ACR,REAL,URINE,mg/mmol,1,3000,,ACR
+Protein : Creatinine Ratio,PCR,REAL,URINE,mg/mmol,0,15000,,PCR
+Volume of 12 Hour Urine,UVOL12,REAL,URINE,ml ,1,3000,,
+Volume of 24 Hour Urine,UVOL24,REAL,URINE,ml,1,3000,,
+Calcium : Creatinine Ratio,CCR,REAL,URINE,mg/mmol,0,15000,,
+Urine Osmolality,UOSMOLAL,REAL,URINE,mOsm/L,20,350,,
+Bacteria in Urine > 10⁵/ml,UBACT,REAL,URINE,,,,"0 - No, 1 - Yes",
+Urine Calcium,UCA,REAL,URINE,mmol/L,1,10,,
+Urine Choride,UCL,REAL,URINE,mmol/L,,,,
+Urine Potassium,UPOT,REAL,URINE,mmol/L,25,100,,
+Urine Creatinine,UCREAT,REAL,URINE,mmol/L,9,18,,
+Urine Protein,UPROT,REAL,URINE,g/L,0,1,,
+Dysmorphic Red Cells in Urine,UDRC,REAL,URINE,,,,"0 - Not Present, 1 - Present",
+Red Cell Casts in Urine,URC,REAL,URINE,,,,"0 - Not Present, 1 - Present",
+White Cell Casts in Urine,UWC,REAL,URINE,,,,"0 - Not Present, 1 - Present",
+Haematuria,UDHAEM,REAL,URINE_DIPSTICK,,,,"1 - Microscopic, 2 - Macroscopic, 3 - Negative",
+Proteinuria,UDPROT,REAL,URINE_DIPSTICK,,,,"0 - Negative, 1 - One+, 2 - Two+, 3 - Three+, 4 - Four+, 9 - Trace",
+Leucocytes in Urine > 50,UDLEUC,REAL,URINE_DIPSTICK,,,,"0 - No, 1 - Yes",
+Nitrites,UDNIT,REAL,URINE_DIPSTICK,,,,"0 - No, 1 - Yes",
+Glucose in Urine,UDGLUC,REAL,URINE_DIPSTICK,,,,"0 - No, 1 - Yes",
+Weight,Weight,REAL,OBSERVATION,kg,1.5,250,,WEIGHT
+Height,Height,REAL,OBSERVATION,cm,20,240,,HEIGHT
+BMI,BMI,REAL,OBSERVATION,%,,,,BMI
+Diastolic Blood Pressure,BPdia,REAL,OBSERVATION,mmHg,40,299,,BPDIA
+Systolic Blood Pressure,BPsys,REAL,OBSERVATION,mmHg,20,199,,BPSYS
+Adjusted Calcium,AdjCa,REAL,BLOOD,mmol/L,1,4.9,,ADJUSTEDCALCIUM
+Albumin,Alb,REAL,BLOOD,g/L,10,60,,ALBUMIN
+AlkP,AlkP,REAL,BLOOD,IU/L,20,699,,ALP
+ALT,ALT,REAL,BLOOD,IU/L,0,20000,,ALT
+Bilirubin,Bili,REAL,BLOOD,μmol/L,2,17,,BILI
+GGT,GGT,REAL,BLOOD,IU/L,,,,GGT
+AST,AST,REAL,BLOOD,IU/L,,,,AST
+Cholesterol,Cholest,REAL,BLOOD,mmol/L,1,22,,CHOLESTEROL
+Triglycerides,TG,REAL,BLOOD,mmol/L,0.1,39.9,,TG
+HDL Cholesterol,hdl,REAL,BLOOD,mmol/L,0.1,8,,HDL
+LDL Cholesterol,ldl,REAL,BLOOD,mmol/L,0.1,8,,LDL
+LDL to HDL Cholesterol Ratio,lhratio,REAL,BLOOD,,0.1,3,,LHRATIO
+Ciclosporin (Cyclosporine),Ciclo,REAL,BLOOD,ng/mL,50,500,,CICLOSPORIN
+Sirolimus,Siro,REAL,BLOOD,ng/mL,0,50,,SIROLIMUS
+Tacrolimus,Tacro,REAL,BLOOD,ng/mL,0,50,,TACROLIMUS
+Lithium,Lith,REAL,BLOOD,mmol/L,0.1,2,,LITHIUM
+Sodium,Sodium,REAL,BLOOD,mmol/L,90,170,,SODIUM
+Potassium,Potassium,REAL,BLOOD,mmol/L,2,8.9,,POTASSIUM
+Bicarbonate,Bicarb,REAL,BLOOD,mmol/L,5,49,,HCO3
+Urea,Urea,REAL,BLOOD,mmol/L,1,199,,UREA
+Creatinine,Creatinine,REAL,BLOOD,μmol/L,20,2500,,CREATININE
+Estimated GFR,eGFR,REAL,BLOOD,ml/min/1.73m²,1,81,,EGFR
+Uric Acid,Urate,REAL,BLOOD,mmol/L,0.1,1.19,,URATE
+C-Reactive Protein,CRP,REAL,BLOOD,mg/L,0,501,,CRP
+Urea Reduction Ratio,URR,REAL,BLOOD,,,,,URR
+Kt/V,KTV,REAL,BLOOD,,,,,KTV
+Creatinine Clearance,CCL,REAL,BLOOD,ml/min/1.73m²,,,,
+Renin,RENIN,REAL,BLOOD,ng/ml/hour,,,,
+Aldosterone,ALDOS,REAL,BLOOD,nmol/L,,,,
+Chloride,CHLOR,REAL,BLOOD,nmol/L,,,,
+Ferritin,Ferr,REAL,BLOOD,μg/L = ng/ml,1,8000,,FERRITIN
+Iron,Iron,REAL,BLOOD,μmol/L,1,200,,IRON
+Iron Saturation,IRONSat,REAL,BLOOD,%,,,,IRONSAT
+Transferrin,Tferrin,REAL,BLOOD,g/L,,,,TRANSFERRIN
+INR,INR,REAL,BLOOD,INR,,,,INR
+Glucose,Gluc,REAL,BLOOD,mmol/L,1,40,,GLUCOSE
+HbA1c,HbA1c,REAL,BLOOD,mmol/mol,5,299,,HBA1C
+GAD,GAD,REAL,BLOOD,U/ml,,,,
+Glucose Fasting,GLUC_FAST,REAL,BLOOD,mmol/L,1,40,,
+HB,Hb,REAL,BLOOD,g/L,30,200,,HB
+White Blood Cell Count,WBC,REAL,BLOOD,10⁹/L,0.1,30,,WBC
+Platelets,Plats,REAL,BLOOD,10⁹/L,100,600,,PLATELETS
+Neutrophils,NEUTRO,REAL,BLOOD,10⁹/L,0.1,50,,
+Protein,PROTEIN,REAL,BLOOD,g/L,5,99,,
+Calcium Uncorrected,Ca,REAL,BLOOD,mmol/l,1,4.9,,
+Calcium Corrected,Ca_Corr,REAL,BLOOD,mmol/l,1,4.9,,CALCIUM
+Magnesium,Mg,REAL,BLOOD,mmol/l,0.3,3,,MAGNESIUM
+Phosphate,Phos,REAL,BLOOD,mmol/l,0.2,5.5,,PHOSPHATE
+Vitamin D,Vit D,REAL,BLOOD,,,,,VITD
+Parathyroid Hormone,PTH,REAL,BLOOD,pmol/L,0.1,500,,PTH
+PSA,PSA,REAL,BLOOD,ng/ml,,,,PSA
+Serum Testosterone,Testosterone,REAL,BLOOD,nmol/L,,,,TESTOSTERONE
+Total Thyroxine,t4,REAL,BLOOD,pmol/L,,,,T4
+Thyroid stimulating hormone,tsh,REAL,BLOOD,mU/L,,,,TSH
+ANCA,ANCA,REAL,BLOOD,,,,"1 - C(PR3), 2 - P(MPO), 3 - C+P, 4 - CANCA, 5 - PANCA, 6 - Negative",
+ENA,ENA,REAL,BLOOD,,,,"0 - Negative, 1 - Positive",
+ANA,ANA,REAL,BLOOD,,,,"0 - Negative, 1 - Positive",
+Anti-dsDNA,Anti_dsDNA,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive",
+Anti C1q antibodies,Anti_c1q,REAL,BLOOD,IU/L,,,,
+Anti Pla2R,Anti_Pla2R,REAL,BLOOD,,,,,
+Cryoglobins,Cryoglob,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive",
+Anti GBM,Anti_GBM,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive",
+IgG,IGG,REAL,BLOOD,g/L,,,,
+IgA,IGA,REAL,BLOOD,g/L,,,,
+IgM,IGM,REAL,BLOOD,g/L,,,,
+Complement C3,Comp_C3,REAL,BLOOD,g/L,,,,
+Complement C4,Comp_C4,REAL,BLOOD,g/L,,,,
+C3 Nephritic Factor,C3_Neph,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive, 9 - Unknown",
+Hepatitis B Antibody,HBV,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive, 9 - Unknown",
+Hepatitis C Antibody,HCV,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive, 9 - Unknown",
+HIV Antibody,HIV,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive, 9 - Unknown",
+Parvovirus Antibody,Parvo,ENUM,BLOOD,,,,"0 - Negative, 1 - Positive",
+EBV,EBV,ENUM,BLOOD,,,,"1 - Neg, 2 - IgG Pos, 3 - IgM Pos, 4 - IgG + IgM Pos",
+CMV Serology,CMV,ENUM,BLOOD,,,,"1 - Neg, 2 - IgG Pos, 3 - IgM Pos, 4 - IgG + IgM Pos",
+Antistreptolysin 0 Titre IU,Anti_Strep,REAL,BLOOD,IU/mL,,,,
+Free T3,ft3,REAL,BLOOD,pmol/L,,,,FT3
+Free T4,ft4,REAL,BLOOD,pmol/L,,,,FT4
+Hematocrit,Ht,REAL,BLOOD,,,,,HCT
+Vitamin B12,Vit B12,REAL,BLOOD,,,,,VITB12
+Amylase,Amylase,REAL,BLOOD,,,,,AMY
+Lipase,Lipase,REAL,BLOOD,,,,,LIPASE
