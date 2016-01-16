@@ -1,33 +1,7 @@
 from sqlalchemy import create_engine, text
 import click
 
-from radar_migration import Migration, EXCLUDED_UNITS, tables
-
-
-def bit_to_bool(value):
-    if value is None:
-        r = None
-    elif value == '\0':
-        r = False
-    elif value == '\1':
-        r = True
-    else:
-        raise ValueError('Not a bit')
-
-    return r
-
-
-def int_to_bool(value):
-    if value is None:
-        r = None
-    elif value == 0:
-        r = False
-    elif value == 1:
-        r = True
-    else:
-        raise ValueError('Not 0 or 1')
-
-    return r
+from radar_migration import Migration, EXCLUDED_UNITS, tables, int_to_bool, bit_to_bool
 
 
 def migrate_mpgn(old_conn, new_conn):

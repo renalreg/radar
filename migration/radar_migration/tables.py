@@ -443,4 +443,6 @@ ins_clinical_pictures = Table(
     Column('ophthalmoscopy', Boolean),
     Column('ophthalmoscopy_details', String),
     Column('comments', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
 )

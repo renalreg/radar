@@ -161,3 +161,29 @@ class Migration(object):
 def check_patient_exists(conn, patient_id):
     q = select().where(tables.patients.c.id == patient_id)
     return conn.execute(q).fetchone() is not None
+
+
+def bit_to_bool(value):
+    if value is None:
+        r = None
+    elif value == '\0':
+        r = False
+    elif value == '\1':
+        r = True
+    else:
+        raise ValueError('Not a bit')
+
+    return r
+
+
+def int_to_bool(value):
+    if value is None:
+        r = None
+    elif value == 0:
+        r = False
+    elif value == 1:
+        r = True
+    else:
+        raise ValueError('Not 0 or 1')
+
+    return r
