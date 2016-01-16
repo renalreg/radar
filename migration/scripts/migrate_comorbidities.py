@@ -40,6 +40,24 @@ def migrate_comorbidities(old_conn, new_conn):
                 FROM rdr_hnf1b_misc
                 WHERE gout = 1
             )
+            UNION
+            (
+                SELECT
+                    radar_no,
+                    date_clin_pic,
+                    'Diabetes Type I',
+                FROM tbl_clinicaldata
+                WHERE diabetes = 1
+            )
+            UNION
+            (
+                SELECT
+                    radar_no,
+                    date_clin_pic,
+                    'Diabetes Type II',
+                FROM tbl_clinicaldata
+                WHERE diabetes = 2
+            )
         ) AS comorbidities
         JOIN patient ON (
             comorbidities.radar_no = patient.radarNo AND
