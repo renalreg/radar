@@ -1,9 +1,9 @@
 import csv
 
-from sqlalchemy import create_engine, text, func
+from sqlalchemy import create_engine, text
 import click
 
-from radar_migration import tables, Migration, EXCLUDED_UNITS
+from radar_migration import tables, Migration, EXCLUDED_UNITS, GroupNotFound
 
 
 def optional_int(old_value):
@@ -29,9 +29,6 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
 
     with open(consultants_filename, 'rb') as f:
         reader = csv.reader(f)
-
-        # Skip header
-        next(reader)
 
         old_user_ids = {}
         old_consultant_ids = {}
@@ -61,22 +58,30 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
 
             if old_user_id is not None:
                 old_user_ids[old_user_id] = consultant_id
-            elif old_consultant_id is not None:
+
+            if old_consultant_id is not None:
                 old_consultant_ids[old_consultant_id] = consultant_id
 
-            hospital_id = m.get_hospital_id(hospital_code)
+            # TODO some hospital codes are satellite codes
+            try:
+                hospital_id = m.get_hospital_id(hospital_code)
+            except GroupNotFound:
+                print hospital_code, 'not found'
+                continue
 
             new_conn.execute(
                 tables.group_consultants.insert(),
                 group_id=hospital_id,
                 consultant_id=consultant_id,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
             )
 
     rows = old_conn.execute(text("""
         SELECT
             radarNo,
             user.id,
-            tbl_consultants.cId,
+            tbl_consultants.cId
         FROM patient
         LEFT JOIN tbl_consultants ON patient.consNeph = tbl_consultants.cId
         LEFT JOIN user ON patient.consNeph = user.id
@@ -85,29 +90,28 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             unitcode NOT IN %s AND
             consNeph IS NOT NULL AND
             (
-                user.isclinician = 1 AND
+                user.isclinician = 1 OR
                 tbl_consultants.cID IS NOT NULL
             )
     """ % EXCLUDED_UNITS))
 
     for radar_no, old_user_id, old_consultant_id in rows:
         if old_user_id is not None:
-            old_id = old_user_id
-            old_ids = old_user_ids
-        else:
-            old_id = old_consultant_id
-            old_ids = old_consultant_ids
+            consultant_id = old_user_ids.get(old_user_id)
 
-        try:
-            consultant_id = old_ids[old_id]
-        except KeyError:
-            raise ValueError('Consultant not found: %s' % old_id)
+        if consultant_id is None and old_consultant_id is not None:
+            consultant_id = old_consultant_ids.get(old_consultant_id)
+
+        if consultant_id is None:
+            raise ValueError('Consultant not found: %s / %s' % (old_user_id, old_consultant_id))
 
         new_conn.execute(
             tables.patient_consultants.insert(),
             patient_id=radar_no,
             consultant_id=consultant_id,
-            from_date=func.now()
+            from_date=m.now,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
         )
 
 

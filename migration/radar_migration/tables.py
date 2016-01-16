@@ -67,6 +67,8 @@ group_consultants = Table(
     Column('id', Integer, primary_key=True),
     Column('group_id', Integer),
     Column('consultant_id', Integer),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
 )
 
 organisation_patients = Table(
@@ -90,12 +92,6 @@ organisation_users = Table(
     Column('modified_user_id', Integer),
 )
 
-source_types = Table(
-    'source_types', metadata,
-    Column('id', String, primary_key=True),
-    Column('name', String),
-)
-
 consultants = Table(
     'consultants', metadata,
     Column('id', Integer, primary_key=True),
@@ -104,6 +100,8 @@ consultants = Table(
     Column('email', String),
     Column('telephone_number', String),
     Column('gmc_number', Integer),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
 )
 
 patient_aliases = Table(

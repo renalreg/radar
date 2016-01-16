@@ -38,8 +38,8 @@ echo 'migrate radar results...'
 python scripts/migrate_radar_results.py "$SRC" "$DEST"
 echo 'migrate alport...'
 python scripts/migrate_alport.py "$SRC" "$DEST"
-#echo 'migrate consultants...'
-#python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
+echo 'migrate consultants...'
+python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'
 python scripts/migrate_dialysis.py "$SRC" "$DEST"
 echo 'migrate diagnosis...'
