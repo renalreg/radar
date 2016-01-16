@@ -7,7 +7,7 @@ from radar.validation.validators import required, optional, \
 
 
 class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, MetaValidationMixin, Validation):
-    date_of_symptoms = Field([required(), valid_date_for_patient()])
+    date_of_symptoms = Field([optional(), valid_date_for_patient()])
     date_of_diagnosis = Field([required(), valid_date_for_patient()])
     date_of_renal_disease = Field([optional(), valid_date_for_patient()])
     group_diagnosis = Field([optional()])  # TODO
