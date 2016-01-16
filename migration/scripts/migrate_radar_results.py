@@ -111,6 +111,15 @@ def migrate_radar_results(old_conn, new_conn):
         FROM tbl_clinicaldata
     """)
 
+    qs.append("""
+        SELECT
+            radar_no as radar_no,
+            date_diag as result_date,
+            'Height' as result_code,
+            height_first_visit as result_value
+        FROM tbl_diagnosis
+    """)
+
     q = '\nUNION\n'.join(qs)
     q = """
         SELECT
