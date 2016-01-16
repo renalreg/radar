@@ -66,6 +66,8 @@ echo 'migrate patient aliases...'
 python scripts/migrate_patient_aliases.py "$SRC" "$DEST"
 echo 'migrate patient numbers...'
 python scripts/migrate_patient_numbers.py "$SRC" "$DEST"
+echo 'migrate phenotypes...'
+python scripts/migrate_phenotypes.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
 echo 'migrate transplants...'
