@@ -8,7 +8,8 @@
     $injector,
     ListHelperProxy,
     firstPromise,
-    store
+    store,
+    _
   ) {
     var DEFAULT_FILTERS = {
       current: true
@@ -104,7 +105,8 @@
     '$injector',
     'ListHelperProxy',
     'firstPromise',
-    'store'
+    'store',
+    '_'
   ];
 
   app.factory('PatientListController', controllerFactory);
