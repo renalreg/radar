@@ -62,10 +62,10 @@ OBSERVATIONS = [
 
 TEMPLATE = """
     SELECT
-        radar_no as radar_no,
-        date_lab_res as result_date,
-        '{0}' as result_code,
-        {1} as result_value
+        radar_no AS radar_no,
+        date_lab_res AS result_date,
+        '{0}' AS result_code,
+        {1} AS result_value
     FROM tbl_labdata
 """
 
@@ -73,8 +73,45 @@ TEMPLATE = """
 def migrate_radar_results(old_conn, new_conn):
     m = Migration(new_conn)
 
-    q = '\nUNION\n'.join(TEMPLATE.format(*x) for x in OBSERVATIONS)
+    qs = [TEMPLATE.format(*x) for x in OBSERVATIONS]
 
+    qs.append("""
+        SELECT
+            radar_no AS radar_no,
+            date_clin_pic AS result_date,
+            'Height' as result_code,
+            height as result_value
+        FROM tbl_clinicaldata
+    """)
+
+    qs.append("""
+        SELECT
+            radar_no AS radar_no,
+            date_clin_pic AS result_date,
+            'Weight' as result_code,
+            weight as result_value
+        FROM tbl_clinicaldata
+    """)
+
+    qs.append("""
+        SELECT
+            radar_no AS radar_no,
+            date_clin_pic AS result_date,
+            'BPsys' as result_code,
+            sys_bp as result_value
+        FROM tbl_clinicaldata
+    """)
+
+    qs.append("""
+        SELECT
+            radar_no AS radar_no,
+            date_clin_pic AS result_date,
+            'BPdia' as result_code,
+            dia_bp as result_value
+        FROM tbl_clinicaldata
+    """)
+
+    q = '\nUNION\n'.join(qs)
     q = """
         SELECT
             results.radar_no,
