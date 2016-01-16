@@ -63,6 +63,14 @@ def migrate_mpgn(old_conn, new_conn):
         )
         LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
         LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
+        WHERE
+            -- Only MPGN patients
+            EXISTS (
+                SELECT 1 FROM usermapping
+                WHERE
+                    usermapping.nhsno = patient.nhsno AND
+                    usermapping.unitcode = 'MPGN'
+            )
     """.format(EXCLUDED_UNITS)))
 
     for row in rows:
