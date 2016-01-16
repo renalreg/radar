@@ -3,7 +3,7 @@ import click
 
 from radar_migration import Migration, EXCLUDED_UNITS, tables, ObservationNotFound
 
-CODE_MAP = {
+PV_CODE_MAP = {
     'ADJUSTEDCA': 'ADJUSTEDCALCIUM',
     'CHOLESTERO': 'CHOLESTEROL',
     'TRANSFERRI': 'TRANSFERRIN',
@@ -15,13 +15,13 @@ CODE_MAP = {
 }
 
 
-def convert_code(value):
+def convert_pv_code(value):
     value = value.upper()
-    value = CODE_MAP.get(value, value)
+    value = PV_CODE_MAP.get(value, value)
     return value
 
 
-def migrate_results(old_conn, new_conn):
+def migrate_pv_results(old_conn, new_conn):
     m = Migration(new_conn)
 
     rows = old_conn.execute(text("""
@@ -53,12 +53,12 @@ def migrate_results(old_conn, new_conn):
         if i % 10000 == 0:
             print i
 
-        code = convert_code(row['testcode'])
+        pv_code = convert_pv_code(row['testcode'])
 
         try:
-            observation_id = m.get_observation_id(code)
+            observation_id = m.get_observation_id(pv_code=pv_code)
         except ObservationNotFound:
-            print code, 'not found'
+            print pv_code, 'not found'
 
         try:
             value = float(row['value'])
@@ -84,14 +84,14 @@ def migrate_results(old_conn, new_conn):
 @click.argument('src')
 @click.argument('dest')
 def cli(src, dest):
-    src_engine = create_engine(src, echo=True)
+    src_engine = create_engine(src)
     dest_engine = create_engine(dest)
 
     src_conn = src_engine.connect()
     dest_conn = dest_engine.connect()
 
     with dest_conn.begin():
-        migrate_results(src_conn, dest_conn)
+        migrate_pv_results(src_conn, dest_conn)
 
 
 if __name__ == '__main__':

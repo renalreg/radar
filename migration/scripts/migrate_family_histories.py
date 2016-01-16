@@ -1,7 +1,7 @@
-from sqlalchemy import text, create_engine, select
+from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables, EXCLUDED_UNITS
+from radar_migration import Migration, tables, EXCLUDED_UNITS, check_patient_exists
 
 PARENTAL_CONSANGUINITY_MAP = {
     None: None,
@@ -35,11 +35,6 @@ def convert_family_history(old_value):
         raise ValueError('Unknown family history: %s' % old_value)
 
     return new_value
-
-
-def check_patient_exists(conn, patient_id):
-    q = select().where(tables.patients.c.id == patient_id)
-    return conn.execute(q).fetchone() is not None
 
 
 def migrate_family_histories(old_conn, new_conn):

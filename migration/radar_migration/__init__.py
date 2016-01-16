@@ -22,6 +22,10 @@ class UserNotFound(Exception):
     pass
 
 
+OBSERVATION_PV_CODE = 0
+OBSERVATION_SHORT_NAME = 1
+
+
 class Migration(object):
     def __init__(self, conn):
         self.conn = conn
@@ -98,16 +102,22 @@ class Migration(object):
 
         return user_id
 
-    def get_observation_id(self, pv_code):
-        pv_code = pv_code.upper()
+    def get_observation_id(self, pv_code=None, short_name=None):
+        q = select([tables.observations.c.id])
 
-        observation_id = self._observation_ids.get(pv_code)
+        if pv_code is not None:
+            pv_code = pv_code.upper()
+            key = (OBSERVATION_PV_CODE, pv_code)
+            q = q.where(tables.observations.c.pv_code == pv_code)
+        elif short_name is not None:
+            key = (OBSERVATION_SHORT_NAME, short_name)
+            q = q.where(tables.observations.c.short_name == short_name)
+        else:
+            raise ValueError('Must supply a pv_code or shortname')
+
+        observation_id = self._observation_ids.get(key)
 
         if observation_id is None:
-            q = select([tables.observations.c.id])\
-                .where(tables.observations.c.value_type == 'REAL')\
-                .where(tables.observations.c.pv_code == pv_code)
-
             results = self.conn.execute(q)
             row = results.fetchone()
 
@@ -116,9 +126,14 @@ class Migration(object):
             else:
                 observation_id = row[0]
 
-            self._observation_ids[pv_code] = observation_id
+            self._observation_ids[key] = observation_id
 
         if observation_id is None:
-            raise ObservationNotFound('Observation not found: %s' % pv_code)
+            raise ObservationNotFound('Observation not found: %s' % key[1])
 
         return observation_id
+
+
+def check_patient_exists(conn, patient_id):
+    q = select().where(tables.patients.c.id == patient_id)
+    return conn.execute(q).fetchone() is not None

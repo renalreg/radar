@@ -32,8 +32,10 @@ echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
-echo 'migrate results...'
-python scripts/migrate_results.py "$SRC" "$DEST"
+echo 'migrate pv results...'
+python scripts/migrate_pv_results.py "$SRC" "$DEST"
+echo 'migrate radar results...'
+python scripts/migrate_radar_results.py "$SRC" "$DEST"
 echo 'migrate alport...'
 python scripts/migrate_alport.py "$SRC" "$DEST"
 #echo 'migrate consultants...'
