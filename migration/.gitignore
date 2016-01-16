@@ -1,4 +1,5 @@
 *.csv
+!data/disorders.csv
 !data/group_diagnoses.csv
 !data/hospitals.csv
 !data/ins_relapse_drugs.csv
