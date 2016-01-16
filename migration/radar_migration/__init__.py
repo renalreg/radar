@@ -22,6 +22,10 @@ class UserNotFound(Exception):
     pass
 
 
+class DisorderNotFound(Exception):
+    pass
+
+
 OBSERVATION_PV_CODE = 0
 OBSERVATION_SHORT_NAME = 1
 
@@ -33,6 +37,7 @@ class Migration(object):
         self._user_ids = {}
         self._group_ids = {}
         self._observation_ids = {}
+        self._disorder_ids = {}
 
         self.now = datetime.now(pytz.UTC)
 
@@ -132,6 +137,25 @@ class Migration(object):
             raise ObservationNotFound('Observation not found: %s' % key[1])
 
         return observation_id
+
+    def get_disorder_id(self, name):
+        disorder_id = self._disorder_ids.get(name)
+
+        if disorder_id is None:
+            results = self.conn.execute(select([tables.disorders.c.id]).where(tables.disorders.c.name == name))
+            row = results.fetchone()
+
+            if row is None:
+                disorder_id = None
+            else:
+                disorder_id = row[0]
+
+            self._disorder_ids[name] = disorder_id
+
+        if disorder_id is None:
+            raise DisorderNotFound('Disorder not found: %s' % name)
+
+        return disorder_id
 
 
 def check_patient_exists(conn, patient_id):
