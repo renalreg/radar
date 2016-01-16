@@ -76,12 +76,29 @@ def migrate_radar_results(old_conn, new_conn):
     q = '\nUNION\n'.join(TEMPLATE.format(*x) for x in OBSERVATIONS)
 
     q = """
-        SELECT * FROM ({0}) AS results
+        SELECT
+            results.radar_no,
+            CASE
+                WHEN result_date IS NOT NULL THEN
+                    result_date
+                ELSE
+                    -- Use registration date if result date is missing
+                    CAST(LEAST(
+                        COALESCE(patient.dateReg, NOW()),
+                        COALESCE(rdr_radar_number.creationDate, NOW()),
+                        COALESCE(tbl_demographics.DATE_REG, NOW())
+                    ) AS DATE)
+            END as result_date,
+            result_code,
+            result_value
+        FROM ({0}) AS results
         JOIN patient ON (
             results.radar_no = patient.radarNo AND
             patient.unitcode NOT IN {1}
         )
-        WHERE result_date IS NOT NULL AND result_value IS NOT NULL
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
+        WHERE result_value IS NOT NULL
     """.format(q, EXCLUDED_UNITS)
 
     rows = old_conn.execute(text(q))
