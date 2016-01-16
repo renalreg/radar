@@ -380,3 +380,14 @@ results = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+diagnoses = Table(
+    'diagnoses', metadata,
+    Column('id', postgresql.UUID),
+    Column('patient_id', Integer),
+    Column('group_id', Integer),
+    Column('date_of_diagnosis', Integer),
+    Column('group_diagnosis_id', Integer),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)

@@ -9,7 +9,7 @@
     <table class="table properties" ng-if="item">
       <tr>
         <th>Date of Onset of Symptoms</th>
-        <td>{{item.dateOfSymptoms | dateFormat}} ({{item.ageOfSymptoms | ageFormat}})</td>
+        <td>{{item.dateOfSymptoms | dateFormat}} <span ng-if="item.ageOfSymptoms">({{item.ageOfSymptoms | ageFormat}})</span></td>
       </tr>
 
       <tr>
@@ -19,7 +19,7 @@
 
       <tr>
         <th>Date of Onset of Renal Disease</th>
-        <td>{{item.dateOfRenalDisease | dateFormat}} <span ng-if="item.dateOfRenalDisease">({{item.ageOfRenalDisease | ageFormat}})</span></td>
+        <td>{{item.dateOfRenalDisease | dateFormat}} <span ng-if="item.ageOfRenalDisease">({{item.ageOfRenalDisease | ageFormat}})</span></td>
       </tr>
 
       <tr ng-if="groupDiagnoses.length">
@@ -74,7 +74,7 @@
         <div frm-label>Date of Onset of Symptoms</div>
 
         <div frm-control>
-          <div frm-date-field model="item.dateOfSymptoms" required="true"></div>
+          <div frm-date-field model="item.dateOfSymptoms"></div>
           <div frm-errors errors="item.errors.dateOfSymptoms"></div>
         </div>
       </div>

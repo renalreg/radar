@@ -17,7 +17,7 @@ class Diagnosis(db.Model, MetaModelMixin):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    date_of_symptoms = Column(Date, nullable=False)
+    date_of_symptoms = Column(Date)
     date_of_diagnosis = Column(Date, nullable=False)
     date_of_renal_disease = Column(Date)
 

@@ -16,20 +16,21 @@ def create_group_diagnoses(conn, filename):
         group_diagnoses = defaultdict(list)
 
         for row in reader:
-            group_diagnoses[row[0]].append(row[1])
+            group_diagnoses[row[1]].append((row[0], row[2]))
 
         for code, diagnoses in group_diagnoses.items():
             cohort_id = m.get_cohort_id(code)
             i = 0
 
-            for diagnosis in diagnoses:
+            for group_diagnosis_id, name in diagnoses:
                 # Leave gaps between diagnoses
                 display_order = 1000 + i * 100
 
                 conn.execute(
                     tables.group_diagnoses.insert(),
+                    id=group_diagnosis_id,
                     group_id=cohort_id,
-                    name=diagnosis,
+                    name=name,
                     display_order=display_order,
                 )
 

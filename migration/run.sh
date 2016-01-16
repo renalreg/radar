@@ -42,6 +42,8 @@ python scripts/migrate_alport.py "$SRC" "$DEST"
 #python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'
 python scripts/migrate_dialysis.py "$SRC" "$DEST"
+echo 'migrate diagnosis...'
+python scripts/migrate_diagnosis.py "$SRC" "$DEST"
 echo 'migrate family histories...'
 python scripts/migrate_family_histories.py "$SRC" "$DEST"
 echo 'migrate genetics...'
