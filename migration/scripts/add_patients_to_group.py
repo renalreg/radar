@@ -3,7 +3,7 @@ import csv
 from sqlalchemy import create_engine, exists, select
 import click
 
-from radar_migration import Migration, tables
+from radar_migration import Migration, tables, check_patient_exists
 
 
 def add_patients_to_group(conn, group_type, group_code, patients_filename):
@@ -17,6 +17,10 @@ def add_patients_to_group(conn, group_type, group_code, patients_filename):
         for row in reader:
             patient_id = int(row[0])
 
+            if not check_patient_exists(conn, patient_id):
+                print '%d not found' % patient_id
+                continue
+
             q = exists()
             q = q.where(tables.group_patients.c.patient_id == patient_id)
             q = q.where(tables.group_patients.c.group_id == group_id)
@@ -24,8 +28,10 @@ def add_patients_to_group(conn, group_type, group_code, patients_filename):
 
             in_group = conn.execute(q).fetchone()[0]
 
-            # Patient is not already in the group
-            if not in_group:
+            # Patient is already in the group
+            if in_group:
+                print '%d already in group' % patient_id
+            else:
                 conn.execute(
                     tables.group_patients.insert(),
                     patient_id=patient_id,
