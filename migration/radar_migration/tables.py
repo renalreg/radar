@@ -357,7 +357,7 @@ hnf1b_clinical_pictures = Table(
 
 observations = Table(
     'observations', metadata,
-    Column('id', Integer),
+    Column('id', Integer, primary_key=True),
     Column('name', String),
     Column('short_name', String),
     Column('value_type', String),
@@ -368,7 +368,7 @@ observations = Table(
 
 results = Table(
     'results', metadata,
-    Column('id', postgresql.UUID),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('source_group_id', Integer),
     Column('source_type', String),
@@ -381,7 +381,7 @@ results = Table(
 
 diagnoses = Table(
     'diagnoses', metadata,
-    Column('id', postgresql.UUID),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('group_id', Integer),
     Column('date_of_diagnosis', Integer),
@@ -392,7 +392,7 @@ diagnoses = Table(
 
 comorbidities = Table(
     'comorbidities', metadata,
-    Column('id', postgresql.UUID),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('source_group_id', Integer),
     Column('source_type', String),
@@ -404,6 +404,43 @@ comorbidities = Table(
 
 disorders = Table(
     'disorders', metadata,
-    Column('id', Integer),
+    Column('id', Integer, primary_key=True),
     Column('name', String),
+)
+
+mpgn_clinical_pictures = Table(
+    'mpgn_clinical_pictures', metadata,
+    Column('patient_id', Integer),
+    Column('date_of_picture', Date),
+    Column('oedema', Boolean),
+    Column('hypertension', Boolean),
+    Column('urticaria', Boolean),
+    Column('partial_lipodystrophy', Boolean),
+    Column('recent_infection', Boolean),
+    Column('recent_infection_details', String),
+    Column('ophthalmoscopy', Boolean),
+    Column('ophthalmoscopy_details', String),
+    Column('comments', String),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
+)
+
+ins_clinical_pictures = Table(
+    'ins_clinical_pictures', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('patient_id', Integer),
+    Column('date_of_picture', Integer),
+    Column('oedema', Boolean),
+    Column('hypovalaemia', Boolean),
+    Column('fever', Boolean),
+    Column('thrombosis', Boolean),
+    Column('peritonitis', Boolean),
+    Column('pulmonary_odemea', Boolean),
+    Column('hypertension', Boolean),
+    Column('rash', Boolean),
+    Column('rash_details', String),
+    Column('possible_immunisation_trigger', Boolean),
+    Column('ophthalmoscopy', Boolean),
+    Column('ophthalmoscopy_details', String),
+    Column('comments', String),
 )
