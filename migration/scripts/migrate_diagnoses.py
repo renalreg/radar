@@ -84,8 +84,6 @@ def migrate_diagnoses(old_conn, new_conn):
     """.format(EXCLUDED_UNITS)))
 
     for row in rows:
-        print row
-
         patient_id, date_of_diagnosis, diagnosis_code, cohort_code = row
 
         group_diagnosis_id = convert_diagnosis(diagnosis_code)
