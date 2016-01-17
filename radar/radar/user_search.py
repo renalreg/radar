@@ -5,7 +5,7 @@ from radar.database import db
 from radar.models.groups import GroupUser, Group
 from radar.models.users import User
 from radar.roles import get_roles_with_permission, PERMISSION
-from radar.permissions import has_permission_for_any_group
+from radar.permissions import has_permission
 
 
 class UserQueryBuilder(object):
@@ -53,12 +53,7 @@ class UserQueryBuilder(object):
         query = self.query
 
         # Show all users if the user is an admin or if the user can manage group membership
-        all_users = (
-            self.current_user.is_admin or
-            has_permission_for_any_group(self.current_user, PERMISSION.EDIT_USER_MEMBERSHIP)
-        )
-
-        if not all_users:
+        if not has_permission(self.current_user, PERMISSION.EDIT_USER_MEMBERSHIP):
             query = query.filter(filter_by_permissions(self.current_user))
 
         return query

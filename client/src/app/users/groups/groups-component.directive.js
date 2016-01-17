@@ -3,18 +3,37 @@
 
   var app = angular.module('radar.users.groups');
 
+  app.factory('UserGroupPermission', ['hasPermission', 'hasPermissionForGroup', 'session', function(hasPermission, hasPermissionForGroup, session) {
+    function UserGroupPermission() {
+    }
+
+    UserGroupPermission.prototype.hasPermission = function() {
+      return hasPermission(session.user, 'EDIT_USER_MEMBERSHIP');
+    };
+
+    UserGroupPermission.prototype.hasObjectPermission = function(obj) {
+      console.log(obj);
+      return hasPermissionForGroup(session.user, obj.group, 'EDIT_USER_MEMBERSHIP');
+    };
+
+    return UserGroupPermission;
+  }]);
+
   function controllerFactory(
     ModelListDetailController,
     $injector,
     store,
-    firstPromise
+    firstPromise,
+    UserGroupPermission
   ) {
     function UserGroupsController($scope) {
       var self = this;
 
       $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
-        params: {}
+        params: {
+          permission: new UserGroupPermission()
+        }
       });
 
       self.load(firstPromise([
@@ -39,7 +58,8 @@
     'ModelListDetailController',
     '$injector',
     'store',
-    'firstPromise'
+    'firstPromise',
+    'UserGroupPermission'
   ];
 
   app.factory('UserGroupsController', controllerFactory);

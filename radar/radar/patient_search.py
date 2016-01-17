@@ -101,7 +101,7 @@ class PatientQueryBuilder(object):
 
         if permissions and not self.current_user.is_admin:
             # Filter the patients based on the user's permissions and the type of query
-            permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics, current=current)
+            permission_filter = filter_by_permissions(self.current_user, self.filtering_by_demographics, current)
             query = query.filter(permission_filter)
 
         # Admins can choose to show/hide historic patients
@@ -227,7 +227,7 @@ def filter_by_group_roles(current_user, roles, current):
     return sub_query.exists()
 
 
-def filter_by_permissions(current_user, demographics, current):
+def filter_by_permissions(current_user, demographics, current=None):
     if demographics:
         return filter_by_group_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS), current)
     else:

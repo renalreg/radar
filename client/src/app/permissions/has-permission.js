@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('hasPermissionForAnyGroup', ['_', function(_) {
-    return function hasPermissionForAnyGroup(user, permission) {
+  app.factory('hasPermission', ['_', function(_) {
+    return function hasPermission(user, permission) {
       return (
         user !== null && (
           user.isAdmin ||

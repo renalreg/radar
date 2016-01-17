@@ -32,7 +32,10 @@
         var sourceGroups = [];
 
         _.forEach(patientGroups, function(patientGroup) {
-          if (patientGroup.group.type === 'HOSPITAL' && (isAdmin || groupIds.indexOf(patientGroup.group.id) >= 0)) {
+          if (
+            (patientGroup.group.code === 'RADAR' && patientGroup.group.type === 'OTHER') ||
+            (patientGroup.group.type === 'HOSPITAL' && (isAdmin || groupIds.indexOf(patientGroup.group.id) >= 0))
+          ) {
             sourceGroups.push(patientGroup.group);
           }
         });

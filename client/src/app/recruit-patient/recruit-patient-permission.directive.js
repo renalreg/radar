@@ -4,7 +4,7 @@
   var app = angular.module('radar.recruitPatient');
 
   function recruitPatientPermission(
-    hasPermissionForAnyGroup,
+    hasPermission,
     $compile,
     session
   ) {
@@ -12,7 +12,7 @@
       scope: true,
       link: function(scope, element, attrs) {
         scope.$watch(function() {
-          return hasPermissionForAnyGroup(session.user, 'RECRUIT_PATIENT');
+          return hasPermission(session.user, 'RECRUIT_PATIENT');
         }, function(hasPermission) {
           scope.hasPermission = hasPermission;
         });
@@ -26,7 +26,7 @@
   }
 
   recruitPatientPermission.$inject = [
-    'hasPermissionForAnyGroup',
+    'hasPermission',
     '$compile',
     'session'
   ];

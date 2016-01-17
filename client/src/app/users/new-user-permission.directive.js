@@ -3,12 +3,12 @@
 
   var app = angular.module('radar.users');
 
-  app.directive('newUserPermission', ['hasPermissionForAnyGroup', '$compile', 'session', function(hasPermissionForAnyGroup, $compile, session) {
+  app.directive('newUserPermission', ['hasPermission', '$compile', 'session', function(hasPermission, $compile, session) {
     return {
       scope: true,
       link: function(scope, element, attrs) {
         scope.$watch(function() {
-          return hasPermissionForAnyGroup(session.user, 'EDIT_USER_MEMBERSHIP');
+          return hasPermission(session.user, 'EDIT_USER_MEMBERSHIP');
         }, function(hasPermission) {
           scope.hasPermission = hasPermission;
         });

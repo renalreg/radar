@@ -1,14 +1,14 @@
 (function() {
   'use strict';
 
-  describe('hasPermissionForAnyGroup', function() {
+  describe('hasPermission', function() {
     beforeEach(module('radar'));
 
-    var hasPermissionForAnyGroup;
+    var hasPermission;
     var store;
 
-    beforeEach(inject(function(_hasPermissionForAnyGroup_, _store_) {
-      hasPermissionForAnyGroup = _hasPermissionForAnyGroup_;
+    beforeEach(inject(function(_hasPermission_, _store_) {
+      hasPermission = _hasPermission_;
       store = _store_;
     }));
 
@@ -20,12 +20,12 @@
           permissions: []
         }
       ]});
-      expect(hasPermissionForAnyGroup(user, 'VIEW_PATIENT')).toBe(false);
+      expect(hasPermission(user, 'VIEW_PATIENT')).toBe(false);
     });
 
     it('grants when the user is an admin', function() {
       var user = store.create('users', {isAdmin: true});
-      expect(hasPermissionForAnyGroup(user, 'VIEW_PATIENT')).toBe(true);
+      expect(hasPermission(user, 'VIEW_PATIENT')).toBe(true);
     });
 
     it('grants when the user belongs to a group with the permission', function() {
@@ -36,7 +36,7 @@
           permissions: ['VIEW_PATIENT']
         }
       ]});
-      expect(hasPermissionForAnyGroup(user, 'VIEW_PATIENT')).toBe(true);
+      expect(hasPermission(user, 'VIEW_PATIENT')).toBe(true);
     });
   });
 })();

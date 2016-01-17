@@ -4,7 +4,7 @@
   var app = angular.module('radar.auth');
 
   function directive(
-    session, authService, $state, hasPermissionForAnyGroup, notificationService
+    session, authService, $state, hasPermission, notificationService
   ) {
     return {
       restrict: 'A',
@@ -28,7 +28,7 @@
             .then(function() {
               var state;
 
-              if (hasPermissionForAnyGroup(session.user, 'VIEW_PATIENT')) {
+              if (hasPermission(session.user, 'VIEW_PATIENT')) {
                 state = 'patients';
               } else {
                 state = 'home';
@@ -49,7 +49,7 @@
   }
 
   directive.$inject = [
-    'session', 'authService', '$state', 'hasPermissionForAnyGroup', 'notificationService'
+    'session', 'authService', '$state', 'hasPermission', 'notificationService'
   ];
 
   app.directive('loginForm', directive);

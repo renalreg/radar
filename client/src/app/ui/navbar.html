@@ -31,7 +31,7 @@
           </ul>
         </li>
 
-        <li ng-if="user.isAdmin || user.getHospitals()().length > 5" ui-sref-active="active">
+        <li ng-if="user.isAdmin || user.getHospitals().length > 5" ui-sref-active="active">
           <a ui-sref="hospitals">Hospitals</a>
         </li>
 
