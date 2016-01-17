@@ -15,7 +15,7 @@ class RecruitPatientSearchSerializer(Serializer):
 
 class PatientNumberSerializer(Serializer):
     number = StringField()
-    group = GroupReferenceField()
+    number_group = GroupReferenceField()
 
 
 class RecruitPatientResultSerializer(Serializer):
@@ -37,5 +37,5 @@ class RecruitPatientSerializer(Serializer):
     gender = LabelledIntegerField(GENDERS)
     ethnicity = LabelledStringField(ETHNICITIES)
     patient_numbers = ListField(PatientNumberSerializer())
-    recruited_group = GroupReferenceField()
-    group = GroupReferenceField()
+    cohort_group = GroupReferenceField()
+    hospital_group = GroupReferenceField()

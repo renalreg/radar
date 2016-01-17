@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -35,10 +35,10 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
+    recruitment = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
     pages = Column('pages', postgresql.ARRAY(EnumToStringType(PAGE)))
-
     notes = Column(String)
 
     @property

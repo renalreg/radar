@@ -1,6 +1,6 @@
 from radar.serializers.core import Serializer
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar.serializers.fields import ListField, StringField
+from radar.serializers.fields import ListField, StringField, BooleanField
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.models.groups import Group
 
@@ -40,3 +40,4 @@ class GroupSerializerMixin(object):
 class GroupListRequestSerializer(Serializer):
     code = StringField()
     type = StringField()
+    recruitment = BooleanField()

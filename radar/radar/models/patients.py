@@ -196,5 +196,34 @@ class Patient(db.Model, MetaModelMixin):
 
         return earliest_date_of_birth
 
-    def in_group(self, group):
-        return any(x == group for x in self.groups)
+    def in_group(self, group, current=None):
+        if current is None:
+            return any(x == group for x in self.groups)
+        elif current:
+            return any(x == group for x in self.current_groups)
+        else:
+            # TODO search historic groups
+            raise NotImplementedError()
+
+    @property
+    def first_names(self):
+        # TODO unique
+        values = [x.first_name for x in self.patient_demographics]
+        values.extend(x.first_name for x in self.patient_aliases)
+        values = [x.upper() for x in values if x]
+        return values
+
+    @property
+    def last_names(self):
+        # TODO unique
+        values = [x.last_name for x in self.patient_demographics]
+        values.extend(x.last_name for x in self.patient_aliases)
+        values = [x.upper() for x in values if x]
+        return values
+
+    @property
+    def date_of_births(self):
+        # TODO unique
+        values = [x.date_of_birth for x in self.patient_demographics]
+        values = [x for x in values if x]
+        return values
