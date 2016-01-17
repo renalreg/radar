@@ -42,5 +42,4 @@ class UserListRequestSerializer(Serializer):
     email = StringField()
     first_name = StringField()
     last_name = StringField()
-    group = GroupReferenceField()
-    groups = CommaSeparatedField(GroupReferenceField())
+    group = CommaSeparatedField(GroupReferenceField())

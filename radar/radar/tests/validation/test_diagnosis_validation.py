@@ -4,7 +4,7 @@ import pytest
 
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.diagnoses import Diagnosis, GroupDiagnosis
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis, BiopsyDiagnosis, GroupBiopsyDiagnosis
 from radar.models.groups import Group, GROUP_TYPE_COHORT, GROUP_TYPE_OTHER
 from radar.validation.core import ValidationError
 from radar.validation.diagnoses import DiagnosisValidation
@@ -23,15 +23,22 @@ def patient():
 @pytest.fixture
 def diagnosis(patient):
     group = Group(type=GROUP_TYPE_COHORT)
+    group_diagnosis = GroupDiagnosis(group=group)
+    biopsy_diagnosis = BiopsyDiagnosis()
+
+    group_biopsy_diagnosis = GroupBiopsyDiagnosis()
+    group_biopsy_diagnosis.group = group
+    group_biopsy_diagnosis.biopsy_diagnosis = biopsy_diagnosis
+    biopsy_diagnosis.group_biopsy_diagnoses.append(group_biopsy_diagnosis)
 
     obj = Diagnosis()
     obj.patient = patient
     obj.group = group
     obj.date_of_symptoms = date(2014, 1, 1)
     obj.date_of_diagnosis = date(2015, 1, 1)
-    obj.group_diagnosis = GroupDiagnosis(group=group)
+    obj.group_diagnosis = group_diagnosis
     obj.diagnosis_text = 'Foo Bar Baz'
-    obj.biopsy_diagnosis = 1
+    obj.biopsy_diagnosis = biopsy_diagnosis
 
     return obj
 
@@ -44,7 +51,7 @@ def test_valid(diagnosis):
     assert obj.date_of_diagnosis == date(2015, 1, 1)
     assert obj.group_diagnosis is not None
     assert obj.diagnosis_text == 'Foo Bar Baz'
-    assert obj.biopsy_diagnosis == 1
+    assert obj.biopsy_diagnosis is not None
     assert obj.created_user is not None
     assert obj.created_date is not None
     assert obj.modified_user is not None
@@ -68,7 +75,7 @@ def test_group_not_cohort(diagnosis):
 
 def test_date_of_symptoms_missing(diagnosis):
     diagnosis.date_of_symptoms = None
-    invalid(diagnosis)
+    valid(diagnosis)
 
 
 def test_date_of_symptoms_before_dob(diagnosis):
@@ -103,7 +110,7 @@ def test_date_of_diagnosis_before_date_of_symptoms(diagnosis):
 
 def test_group_diagnosis_missing(diagnosis):
     diagnosis.group_diagnosis = None
-    invalid(diagnosis)
+    valid(diagnosis)
 
 
 def test_group_diagnosis_from_another_cohort(diagnosis):
@@ -127,11 +134,6 @@ def test_biopsy_diagnosis_missing(diagnosis):
     diagnosis.biopsy_diagnosis = None
     obj = valid(diagnosis)
     assert obj.biopsy_diagnosis is None
-
-
-def test_biopsy_diagnosis_invalid(diagnosis):
-    diagnosis.biopsy_diagnosis = 99999
-    invalid(diagnosis)
 
 
 def invalid(obj, **kwargs):

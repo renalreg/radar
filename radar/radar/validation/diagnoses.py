@@ -20,7 +20,9 @@ class DiagnosisValidation(PatientValidationMixin, CohortGroupValidationMixin, Me
 
     @pass_new_obj
     def validate_date_of_diagnosis(self, obj, date_of_diagnosis):
-        if date_of_diagnosis < obj.date_of_symptoms:
+        date_of_symptoms = obj.date_of_symptoms
+
+        if date_of_symptoms is not None and date_of_diagnosis < date_of_symptoms:
             raise ValidationError('Must be on or after date of onset of symptoms.')
 
         return date_of_diagnosis

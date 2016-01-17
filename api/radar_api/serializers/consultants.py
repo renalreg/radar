@@ -16,7 +16,7 @@ class GroupConsultantSerializer(MetaSerializerMixin, ModelSerializer):
 
 
 class ConsultantSerializer(MetaSerializerMixin, ModelSerializer):
-    groups = ListField(field=GroupConsultantSerializer(), source='group_consultants')
+    groups = ListField(GroupConsultantSerializer(), source='group_consultants')
 
     class Meta(object):
         model_class = Consultant
