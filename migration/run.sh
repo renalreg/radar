@@ -28,6 +28,8 @@ echo 'create group diagnoses...'
 python scripts/create_group_diagnoses.py "$DEST" data/group_diagnoses.csv
 echo 'create observations...'
 python scripts/create_observations.py "$DEST" data/observations.csv
+echo 'create drugs...'
+python scripts/create_drugs.py "$DEST" data/drug_types.csv data/drugs.csv
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'

@@ -252,6 +252,7 @@ medications = Table(
     Column('patient_id', Integer),
     Column('source_group_id', Integer),
     Column('source_type', String),
+    Column('drug_id', Integer),
     Column('from_date', Date),
     Column('to_date', Date),
     Column('drug_text', String),
@@ -446,7 +447,6 @@ ins_clinical_pictures = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
-
 
 drugs = Table(
     'drugs', metadata,
