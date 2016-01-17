@@ -11,7 +11,6 @@
             <th></th>
             <th sort-helper="name">Name</th>
             <th sort-helper="shortName">Short Name</th>
-            <th sort-helper="valueType.label">Value Type</th>
             <th sort-helper="sampleType.label">Sample Type</th>
             <th sort-helper="units">Units</th>
             <th sort-helper="minValue">Min Value</th>
@@ -21,11 +20,11 @@
 
         <tbody>
           <tr>
-            <th colspan="9">Selected</th>
+            <th colspan="8">Selected</th>
           </tr>
 
           <tr ng-if="selectedObservations.length === 0">
-            <td colspan="9" class="empty">No observations selected.</td>
+            <td colspan="8" class="empty">No observations selected.</td>
           </tr>
 
           <tr ng-repeat="observation in selectedObservations">
@@ -35,7 +34,6 @@
 
             <td>{{observation.name}}</td>
             <td>{{observation.shortName}}</td>
-            <td>{{observation.valueType.label}}</td>
             <td>{{observation.sampleType.label}}</td>
             <td>{{observation.units | missing}}</td>
             <td>{{observation.minValue | missing}}</td>
@@ -50,17 +48,17 @@
           </tr>
 
           <tr>
-            <th colspan="9">Available</th>
+            <th colspan="8">Available</th>
           </tr>
 
           <tr>
-            <td colspan="9">
+            <td colspan="8">
               <div filter-helper></div>
             </td>
           </tr>
 
           <tr ng-if="!page.getCount()">
-            <td colspan="9" class="empty">No matching observations.</td>
+            <td colspan="8" class="empty">No matching observations.</td>
           </tr>
 
           <tr ng-repeat="observation in page.getItems()">
@@ -70,7 +68,6 @@
 
             <td>{{observation.name}}</td>
             <td>{{observation.shortName}}</td>
-            <td>{{observation.valueType.label}}</td>
             <td>{{observation.sampleType.label}}</td>
             <td>{{observation.units | missing}}</td>
             <td>{{observation.minValue | missing}}</td>
