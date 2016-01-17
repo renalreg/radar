@@ -26,6 +26,10 @@ class DisorderNotFound(Exception):
     pass
 
 
+class DrugNotFound(Exception):
+    pass
+
+
 OBSERVATION_PV_CODE = 0
 OBSERVATION_SHORT_NAME = 1
 
@@ -38,6 +42,7 @@ class Migration(object):
         self._group_ids = {}
         self._observation_ids = {}
         self._disorder_ids = {}
+        self._drug_ids = {}
 
         self.now = datetime.now(pytz.UTC)
 
@@ -156,6 +161,25 @@ class Migration(object):
             raise DisorderNotFound('Disorder not found: %s' % name)
 
         return disorder_id
+
+    def get_drug_id(self, name):
+        drug_id = self._drug_ids.get(name)
+
+        if drug_id is None:
+            results = self.conn.execute(select([tables.drugs.c.id]).where(tables.drugs.c.name == name))
+            row = results.fetchone()
+
+            if row is None:
+                drug_id = None
+            else:
+                drug_id = row[0]
+
+            self._drug_ids[name] = drug_id
+
+        if drug_id is None:
+            raise DrugNotFound('Drug not found: %s' % name)
+
+        return drug_id
 
 
 def check_patient_exists(conn, patient_id):
