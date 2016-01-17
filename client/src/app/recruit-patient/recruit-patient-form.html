@@ -1,64 +1,64 @@
 <ol class="breadcrumb">
   <li><a href="" ng-click="backToSearch()">Search</a></li>
-  <li ng-if="results.length"><a href="" ng-click="backToResults()">Results</a></li>
   <li class="active">Patient Details</li>
 </ol>
 
 <h2>Patient Details</h2>
 
-<table class="table table-condensed table-striped">
-  <thead>
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>DOB</th>
-      <th>Gender</th>
-      <th>Patient Numbers</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>{{patient.firstName | missing}}</td>
-      <td>{{patient.lastName | missing}}</td>
-      <td>{{patient.dateOfBirth | dateFormat}}</td>
-      <td>{{patient.gender.label | missing}}</td>
-      <td>
-        <div ng-repeat="patientNumber in patient.patientNumbers">
-          {{patientNumber.number}} ({{patientNumber.organisation.name}})
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
 <form class="form-horizontal form-container" submit-if-valid="recruit()" novalidate>
-  <div ng-if="!patient.radarId">
-    <div frm-field frm-group>
-      <div frm-label>Gender</div>
+  <div frm-field frm-group>
+    <div frm-label>First Name</div>
 
-      <div frm-control>
-        <div frm-select-field model="patient.gender" required="true" options="genders"></div>
-        <div frm-errors errors="patientErrors.gender"></div>
-      </div>
-    </div>
-
-    <div frm-field frm-group>
-      <div frm-label>Ethnicity</div>
-
-      <div frm-control>
-        <div frm-select-field model="patient.ethnicity" options="ethnicities"></div>
-        <div frm-errors errors="patientErrors.ethnicity"></div>
-      </div>
+    <div frm-control>
+      <p class="form-control-static">{{patient.firstName | missing}}</p>
     </div>
   </div>
 
   <div frm-field frm-group>
-    <div frm-label>Recruited Unit</div>
+    <div frm-label>Last Name</div>
 
     <div frm-control>
-      <div frm-hospital-field model="patient.recruitedOrganisation" required="true"></div>
-      <div frm-errors errors="patientErrors.recruitedOrganisation"></div>
+      <p class="form-control-static">{{patient.lastName | missing}}</p>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Date of Birth</div>
+
+    <div frm-control>
+      <p class="form-control-static">{{patient.dateOfBirth | dateFormat}}</p>
+    </div>
+  </div>
+
+  <div ng-repeat="x in patient.patientNumbers track by $index" frm-field frm-group>
+    <div frm-label>{{x.numberGroup.shortName}}</div>
+
+    <div frm-control>
+      <p class="form-control-static">{{x.number}}</p>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Gender</div>
+
+    <div frm-control>
+      <div ng-if="patient.existing">
+        <p class="form-control-static">{{patient.gender.label | missing}}</p>
+      </div>
+
+      <div ng-if="!patient.existing">
+        <div frm-select-field model="patient.gender" required="true" options="genders"></div>
+        <div frm-errors errors="patientErrors.gender"></div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="!patient.existing" frm-field frm-group>
+    <div frm-label>Ethnicity</div>
+
+    <div frm-control>
+      <div frm-select-field model="patient.ethnicity" options="ethnicities"></div>
+      <div frm-errors errors="patientErrors.ethnicity"></div>
     </div>
   </div>
 
@@ -66,8 +66,17 @@
     <div frm-label>Cohort</div>
 
     <div frm-control>
-      <div frm-cohort-field model="patient.cohort" required="true"></div>
-      <div frm-errors errors="patientErrors.cohort"></div>
+      <div frm-cohort-field model="patient.cohortGroup" required="true"></div>
+      <div frm-errors errors="patientErrors.cohortGroup"></div>
+    </div>
+  </div>
+
+  <div frm-field frm-group>
+    <div frm-label>Hospital</div>
+
+    <div frm-control>
+      <div frm-hospital-field model="patient.hospitalGroup" required="true"></div>
+      <div frm-errors errors="patientErrors.hospitalGroup"></div>
     </div>
   </div>
 

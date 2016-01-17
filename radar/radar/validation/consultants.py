@@ -19,15 +19,15 @@ class GroupConsultantListField(ListField):
         super(GroupConsultantListField, self).__init__(GroupConsultantValidation(), chain=chain)
 
     def validate(self, group_consultants):
-        group_ids = set()
+        groups = set()
 
         for i, group_consultant in enumerate(group_consultants):
-            group_id = group_consultant.group.id
+            group = group_consultant.group
 
-            if group_id in group_ids:
+            if group in groups:
                 raise ValidationError({i: {'group': 'Consultant already in group.'}})
             else:
-                group_ids.add(group_id)
+                groups.add(group)
 
         return group_consultants
 

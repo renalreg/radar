@@ -25,12 +25,11 @@
     $scope.recruit = recruit;
 
     $scope.backToSearch = backToSearch;
-    $scope.backToResults = backToResults;
 
     init();
 
     function init() {
-      $q.all([loadGenders(), loadEthnicities(), loadNumberOrganisations()]).then(function() {
+      $q.all([loadGenders(), loadEthnicities(), loadRecruitmentGroups()]).then(function() {
         $scope.loading = false;
       });
     }
@@ -46,10 +45,12 @@
           $scope.searchErrors = {};
 
           if (patients.length) {
-            $state.go('recruitPatient.results');
+            patientFound(patients[0]);
           } else {
             patientNotFound();
           }
+
+          $state.go('recruitPatient.form');
         })
         ['catch'](function(response) {
           if (response.status === 422) {
@@ -63,30 +64,28 @@
 
     function patientFound(patient) {
       $scope.patient = {
+        existing: true,
         firstName: patient.firstName,
         lastName: patient.lastName,
         dateOfBirth: patient.dateOfBirth,
         gender: patient.gender,
         patientNumbers: patient.patientNumbers
       };
-
-      $state.go('recruitPatient.form');
     }
 
     function patientNotFound() {
       $scope.patient = {
+        existing: false,
         firstName: $scope.searchParams.firstName,
         lastName: $scope.searchParams.lastName,
         dateOfBirth: $scope.searchParams.dateOfBirth,
         patientNumbers: [
           {
             number: $scope.searchParams.number,
-            organisation: $scope.searchParams.numberOrganisation
+            numberGroup: $scope.searchParams.numberGroup
           }
         ]
       };
-
-      $state.go('recruitPatient.form');
     }
 
     function recruit() {
@@ -111,10 +110,6 @@
       $state.go('recruitPatient.search');
     }
 
-    function backToResults() {
-      $state.go('recruitPatient.results');
-    }
-
     function loadGenders() {
       return store.findMany('genders').then(function(genders) {
         $scope.genders = genders;
@@ -127,18 +122,13 @@
       });
     }
 
-    function loadNumberOrganisations() {
-      return store.findMany('organisations', {recruitment: true}).then(function(organisations) {
+    function loadRecruitmentGroups() {
+      return store.findMany('groups', {recruitment: true}).then(function(groups) {
         // Sort by name
-        organisations = _.sortBy(organisations, 'name');
-
-        // Default to a NHS number
-        $scope.searchParams.numberOrganisation = _.find(organisations, function(x) {
-          return x.code === 'NHS' && x.type === 'OTHER';
-        });
+        groups = _.sortBy(groups, 'name');
 
         // Set the options
-        $scope.numberOrganisations = organisations;
+        $scope.recruitmentGroups = groups;
       });
     }
   }

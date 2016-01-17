@@ -15,7 +15,7 @@ class PatientField(Field):
         user = ctx['user']
 
         if not user.is_admin and not has_permission_for_patient(user, patient, PERMISSION.EDIT_PATIENT):
-            raise ValidationError('PERMISSION denied!')
+            raise ValidationError('Permission denied!')
 
         return patient
 

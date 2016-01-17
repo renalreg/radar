@@ -36,17 +36,15 @@
     <div frm-label>Patient Number</div>
 
     <div frm-control>
-      <div frm-text-field model="searchParams.number" required="true"></div>
-      <div frm-errors errors="searchErrors.number"></div>
+      <div frm-select-field model="searchParams.numberGroup" options="recruitmentGroups" options-label="shortName" required="true"></div>
+      <div frm-errors errors="searchErrors.numberGroup"></div>
     </div>
   </div>
 
   <div frm-field frm-group>
-    <div frm-label>Patient Number Type</div>
-
     <div frm-control>
-      <div frm-select-field model="searchParams.numberOrganisation" options="numberOrganisations" options-label="name" required="true"></div>
-      <div frm-errors errors="searchErrors.numberOrganisation"></div>
+      <div frm-text-field model="searchParams.number" required="true"></div>
+      <div frm-errors errors="searchErrors.number"></div>
     </div>
   </div>
 

@@ -16,11 +16,6 @@
       templateUrl: 'app/recruit-patient/recruit-patient-search.html'
     });
 
-    $stateProvider.state('recruitPatient.results', {
-      url: '',
-      templateUrl: 'app/recruit-patient/recruit-patient-results.html'
-    });
-
     $stateProvider.state('recruitPatient.form', {
       url: '',
       templateUrl: 'app/recruit-patient/recruit-patient-form.html'
