@@ -30,6 +30,8 @@ echo 'create observations...'
 python scripts/create_observations.py "$DEST" data/observations.csv
 echo 'create drugs...'
 python scripts/create_drugs.py "$DEST" data/drug_types.csv data/drugs.csv
+echo 'create disorders...'
+python scripts/create_disorders.py "$DEST" data/disorders.csv
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
@@ -44,7 +46,7 @@ echo 'migrate consultants...'
 python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'
 python scripts/migrate_dialysis.py "$SRC" "$DEST"
-echo 'migrate diagnosis...'
+echo 'migrate diagnoses...'
 python scripts/migrate_diagnoses.py "$SRC" "$DEST"
 echo 'migrate family histories...'
 python scripts/migrate_family_histories.py "$SRC" "$DEST"
