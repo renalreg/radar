@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Medication, Patient, PatientDemographics
+from radar.models import Medication, Patient, PatientDemographics, Drug
 from radar.models.groups import Group
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
@@ -27,7 +27,8 @@ def medication(patient):
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
-    obj.name = 'Paracetamol'
+    obj.drug = Drug(name='Paracetamol')
+    obj.drug_text = 'Paracetamol'
     obj.dose_quantity = 100
     obj.dose_unit = 'MG'
     obj.frequency = 'DAILY'
@@ -39,7 +40,8 @@ def test_valid(medication):
     obj = valid(medication)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.name == 'Paracetamol'
+    assert obj.drug is not None
+    assert obj.drug_text is None
     assert obj.dose_quantity == 100
     assert obj.dose_unit == 'MG'
     assert obj.frequency == 'DAILY'
@@ -101,13 +103,26 @@ def test_to_date_before_from_date(medication):
     invalid(medication)
 
 
-def test_name_missing(medication):
-    medication.name = None
-    invalid(medication)
+def test_drug_missing(medication):
+    medication.drug = None
+    medication = valid(medication)
+    assert medication.drug_text == 'Paracetamol'
 
 
-def test_name_empty(medication):
-    medication.name = ''
+def test_drug_text_missing(medication):
+    medication.drug_text = None
+    valid(medication)
+
+
+def test_drug_text_empty(medication):
+    medication.drug_text = ''
+    medication = valid(medication)
+    assert medication.drug_text is None
+
+
+def test_drug_and_drug_text_missing(medication):
+    medication.drug = None
+    medication.drug_text = None
     invalid(medication)
 
 

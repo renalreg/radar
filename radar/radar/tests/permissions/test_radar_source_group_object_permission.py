@@ -5,6 +5,7 @@ from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_TYPE_HOSPITAL, GR
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.permissions import RadarSourceObjectPermission
 from radar.tests.permissions.helpers import MockRequest, make_user
+from radar.roles import ROLE
 
 
 READ = 0
@@ -52,7 +53,7 @@ def make_obj(source_type):
 def test_has_object_permission(is_admin, action, source_type, expected):
     permission = RadarSourceObjectPermission()
     request = make_request(action)
-    user = make_user()
+    user = make_user([(Group(), ROLE.CLINICIAN)])
     user.is_admin = is_admin
     obj = make_obj(source_type)
 

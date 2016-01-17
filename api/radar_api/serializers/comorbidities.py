@@ -20,7 +20,7 @@ class DisorderReferenceField(ReferenceField):
     serializer_class = DisorderSerializer
 
 
-class ComorbiditySerializer(MetaSerializerMixin, PatientSerializerMixin, SourceSerializerMixin, ModelSerializer):
+class ComorbiditySerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
     disorder = DisorderReferenceField()
 
     class Meta(object):

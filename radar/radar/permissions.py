@@ -250,7 +250,7 @@ class SourceObjectPermission(Permission):
             source_group = obj.source_group
 
             # Can only modify data entered on RaDaR
-            if source_type != SOURCE_TYPE_RADAR:
+            if not user.is_admin and source_type != SOURCE_TYPE_RADAR:
                 return False
 
             # Check permissions
@@ -279,13 +279,14 @@ class RadarSourceObjectPermission(Permission):
             source_type = obj.source_type
             source_group = obj.source_group
 
-            # Can only modify data entered on RaDaR
-            if source_type != SOURCE_TYPE_RADAR:
-                return False
+            if not user.is_admin:
+                # Can only modify data entered on RaDaR
+                if source_type != SOURCE_TYPE_RADAR:
+                    return False
 
-            # Can only modify data from the RaDaR group
-            if not is_radar_group(source_group):
-                return False
+                # Can only modify data from the RaDaR group
+                if not is_radar_group(source_group):
+                    return False
 
             # Check permissions
             if not has_permission_for_group(user, source_group, PERMISSION.EDIT_PATIENT):

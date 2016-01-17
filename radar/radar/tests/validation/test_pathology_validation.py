@@ -60,7 +60,7 @@ def test_source_type_missing(pathology):
 
 def test_kidney_type_missing(pathology):
     pathology.kidney_type = None
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_kidney_type_blank(pathology):
@@ -87,7 +87,7 @@ def test_kidney_type_invalid(pathology):
 
 def test_kidney_side_missing(pathology):
     pathology.kidney_side = None
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_kidney_side_blank(pathology):
