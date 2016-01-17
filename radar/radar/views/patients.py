@@ -6,6 +6,24 @@ from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField
 from radar.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.auth.sessions import current_user
+from radar.models.patients import Patient
+
+
+def filter_query_by_patient_permissions(query, model_class):
+    patients_query = PatientQueryBuilder(current_user).build()
+    patients_query = patients_query.filter(Patient.id == model_class.patient_id)
+    query = query.filter(patients_query.exists())
+    return query
+
+
+def filter_query_by_patient(query, model_class):
+    serializer = PatientRequestSerializer()
+    args = serializer.to_value(request.args)
+
+    if 'patient' in args:
+        query = query.filter(model_class.patient_id == args['patient'])
+
+    return query
 
 
 class PatientRequestSerializer(Serializer):
@@ -20,17 +38,9 @@ class PatientObjectViewMixin(object):
 
     def filter_query(self, query):
         query = super(PatientObjectViewMixin, self).filter_query(query)
-
-        patients_query = PatientQueryBuilder(current_user).build().subquery()
-        query = query.join(patients_query)
-
-        serializer = PatientRequestSerializer()
-        args = serializer.to_value(request.args)
-
-        if 'patient' in args:
-            model_class = self.get_model_class()
-            query = query.filter(model_class.patient_id == args['patient'])
-
+        model_class = self.get_model_class()
+        query = filter_query_by_patient_permissions(query, model_class)
+        query = filter_query_by_patient(query, model_class)
         return query
 
 

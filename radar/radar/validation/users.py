@@ -47,7 +47,7 @@ class UserValidation(MetaValidationMixin, Validation):
         if password is not None:
             # Can't change other user's passwords
             if old_obj.id is not None and new_obj != current_user and not current_user.is_admin:
-                raise ValidationError('Permission denied!')
+                raise ValidationError("Can't change other user's passwords.")
 
             allow_weak_passwords = ctx.get('allow_weak_passwords', False)
 
@@ -88,14 +88,20 @@ class UserValidation(MetaValidationMixin, Validation):
     def validate_is_admin(self, ctx, obj, old_is_admin, new_is_admin):
         current_user = ctx['user']
 
+        print current_user.username
+        print obj.username
+        print current_user.is_admin
+        print obj.is_admin
+        print ctx, obj, old_is_admin, new_is_admin
+
         if new_is_admin:
             # Must be an admin to grant admin rights
-            if not old_is_admin and not current_user.is_admin:
-                raise ValidationError('Permission denied!')
+            if not old_is_admin and (current_user == obj or not current_user.is_admin):
+                raise ValidationError('Must be an admin to grant admin rights.')
         else:
             # Can't revoke your own admin rights
             if old_is_admin and current_user == obj:
-                raise ValidationError('Permission denied!')
+                raise ValidationError("Can't revoke your own admin rights.")
 
         return new_is_admin
 
@@ -104,16 +110,6 @@ class UserValidation(MetaValidationMixin, Validation):
     @pass_old_obj
     def validate(self, ctx, call, old_obj, new_obj):
         current_user = ctx['user']
-
-        for x in ['first_name', 'last_name', 'email', 'telephone_number']:
-            # Regular user trying to change another user's details
-            if (
-                old_obj.id is not None and
-                getattr(old_obj, x) != getattr(new_obj, x) and
-                new_obj != current_user and
-                not current_user.is_admin
-            ):
-                raise ValidationError({x: 'Permission denied!'})
 
         # Password is required when creating a new user
         if old_obj.id is None:

@@ -1,8 +1,7 @@
 from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional
-from radar.permissions import has_permission_for_group, has_permission_for_any_group, PERMISSION, has_permission_for_patient
-from radar.models.groups import GROUP_TYPE_HOSPITAL
+from radar.permissions import has_permission_for_group, PERMISSION, has_permission_for_patient
 
 
 class GroupPatientValidation(MetaValidationMixin, Validation):
@@ -17,18 +16,13 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
     def has_permission(cls, user, obj):
         return (
             has_permission_for_patient(user, obj.patient, PERMISSION.EDIT_PATIENT) and
-            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT) or
-            (
-                obj.group.type != GROUP_TYPE_HOSPITAL and
-                has_permission_for_any_group(user, PERMISSION.EDIT_PATIENT, group_type=GROUP_TYPE_HOSPITAL)
-            )
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT)
         )
 
     @classmethod
     def is_duplicate(cls, obj):
-        # TODO check from_date and to_date
         group = obj.group
-        duplicate = any(x != obj and x.group == group for x in obj.patient.group_patients)
+        duplicate = any(x != obj and x.group == group for x in obj.patient.current_group_patients)
         return duplicate
 
     @pass_context
@@ -47,7 +41,7 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
             raise ValidationError({'group': 'Permission denied!'})
 
         # Check that the patient doesn't already belong to this group
-        # Note: it's important this check happens after the permission Checks to prevent membership enumeration
+        # Note: it's important this check happens after the permission checks to prevent membership enumeration
         if self.is_duplicate(new_obj):
             raise ValidationError({'group': 'Patient already belongs to this group.'})
 
