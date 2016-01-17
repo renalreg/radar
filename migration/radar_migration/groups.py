@@ -15,7 +15,8 @@ def create_group(conn, data):
         code=data['code'],
         type=data['type'],
         name=data['name'],
-        short_name=data['short_name'],
+        short_name=data.get('short_name', data['name']),
+        recruitment=data.get('recruitment', False),
         pages=data.get('pages'),
     )
 

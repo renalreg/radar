@@ -29,6 +29,7 @@ groups = Table(
     Column('code', String),
     Column('name', String),
     Column('short_name', String),
+    Column('recruitment', Boolean),
     Column('pages', postgresql.ARRAY(String)),
 )
 
