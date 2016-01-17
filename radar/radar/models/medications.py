@@ -56,4 +56,14 @@ class Drug(db.Model):
     __tablename__ = 'drugs'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+
+    drug_type_id = Column(Integer, ForeignKey('drug_types.id'), nullable=False)
+    type = relationship('DrugType')
+
+
+class DrugType(db.Model):
+    __tablename__ = 'drug_types'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)

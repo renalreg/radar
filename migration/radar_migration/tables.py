@@ -446,3 +446,17 @@ ins_clinical_pictures = Table(
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
+
+
+drugs = Table(
+    'drugs', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('name', String),
+    Column('drug_type_id', Integer),
+)
+
+drug_types = Table(
+    'drug_types', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('name', String),
+)
