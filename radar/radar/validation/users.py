@@ -88,12 +88,6 @@ class UserValidation(MetaValidationMixin, Validation):
     def validate_is_admin(self, ctx, obj, old_is_admin, new_is_admin):
         current_user = ctx['user']
 
-        print current_user.username
-        print obj.username
-        print current_user.is_admin
-        print obj.is_admin
-        print ctx, obj, old_is_admin, new_is_admin
-
         if new_is_admin:
             # Must be an admin to grant admin rights
             if not old_is_admin and (current_user == obj or not current_user.is_admin):
@@ -115,8 +109,8 @@ class UserValidation(MetaValidationMixin, Validation):
         if old_obj.id is None:
             call.validators_for_field([required()], new_obj, self.password)
 
-        # Humans need a name and email
-        if not new_obj.is_bot:
+        # New humans need a name and email
+        if not new_obj.is_bot and old_obj.id is None:
             call.validators_for_field([not_empty()], new_obj, self.first_name)
             call.validators_for_field([not_empty()], new_obj, self.last_name)
             call.validators_for_field([required()], new_obj, self.email)
