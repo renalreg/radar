@@ -12,6 +12,9 @@ from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
 def create_user(username, **kwargs):
+    kwargs.setdefault('first_name', 'Foo')
+    kwargs.setdefault('last_name', 'Bar')
+    kwargs.setdefault('email', 'foo@example.org')
     kwargs.setdefault('password', 'password')
 
     u = User(
