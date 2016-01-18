@@ -8,10 +8,8 @@ def get_session_count(user):
     return UserSession.query.filter(UserSession.user == user, UserSession.is_active == True).count()  # noqa
 
 
-def test_change_password(app):
+def test_change_email(app):
     user = get_user('admin')
-    old_password = 'password'
-    new_password = 'qzm5zuLVgL1t'
 
     client1 = app.test_client()
     client1.login(user)
@@ -26,8 +24,8 @@ def test_change_password(app):
     assert get_session_count(user) == 2
 
     assert client1.post('/users/%s' % user.id, data={
-        'current_password': old_password,
-        'password': new_password
+        'current_password': 'password',
+        'email': 'bar@example.org'
     }).status_code == 200
 
     assert get_session_count(user) == 1
@@ -36,7 +34,7 @@ def test_change_password(app):
     assert client1.get('/patients').status_code == 200
     assert client2.get('/patients').status_code == 401
 
-    client2.login(user, password=new_password)
+    client2.login(user)
 
     assert get_session_count(user) == 2
 
@@ -60,7 +58,7 @@ def test_incorrect_password(app):
 
     response = client1.post('/users/%s' % user.id, data={
         'current_password': 'foobarbaz',
-        'password': 'qzm5zuLVgL1t'
+        'email': 'bar@example.org'
     })
 
     assert response.status_code == 422
@@ -78,28 +76,3 @@ def test_incorrect_password(app):
     # Check both clients are still logged in
     assert client1.get('/patients').status_code == 200
     assert client2.get('/patients').status_code == 200
-
-
-def test_weak_password(app):
-    user = get_user('admin')
-
-    client1 = app.test_client()
-    client1.login(user)
-
-    client2 = app.test_client()
-    client2.login(user)
-
-    response = client1.post('/users/%s' % user.id, data={
-        'current_password': 'password',
-        'password': 'password123'
-    })
-
-    assert response.status_code == 422
-
-    data = json.loads(response.data)
-
-    assert data == {
-        'errors': {
-            'password': ['Password is too weak.']
-        }
-    }

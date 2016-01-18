@@ -27,8 +27,6 @@ class ConsultantSerializer(MetaSerializerMixin, ModelSerializer):
         return group_consultant
 
     def update(self, obj, deserialized_data):
-        print deserialized_data
-
         for attr, value in deserialized_data.items():
             if attr == 'group_consultants':
                 obj.group_consultants = []

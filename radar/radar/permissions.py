@@ -24,8 +24,6 @@ def has_permission_for_user(user, other_user, permission):
     """Check that the the user has a permission on any of the groups
     they share with the user."""
 
-    print user, other_user, permission
-
     if user.is_admin:
         grant = True
     elif user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):

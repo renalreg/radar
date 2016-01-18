@@ -101,8 +101,6 @@ def test_genetics_read_list(app, username, group_type, group_code, expected):
     create_genetics(patient, group)
     db.session.commit()
 
-    print Genetics.query.all()
-
     client = app.test_client()
     client.login(user)
 

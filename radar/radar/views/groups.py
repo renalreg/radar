@@ -69,5 +69,4 @@ class GroupObjectViewMixin(object):
         model_class = self.get_model_class()
         query = filter_query_by_group_permissions(query, model_class)
         query = filter_query_by_group(query, model_class)
-        print query
         return query
