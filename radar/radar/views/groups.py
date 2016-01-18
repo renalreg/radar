@@ -18,11 +18,9 @@ def filter_query_by_group_permissions(query, model_class):
         group_a = aliased(Group)
         group_b = aliased(Group)
 
-        query = query.join(group_a, model_class.group)
-
         # Check if the user has permission through their group membership (requires the VIEW_PATIENT permission)
         # If the user has the VIEW_PATIENT permission on one of the patient's hospitals they can view all cohort data
-        sub_query = db.session.query(GroupPatient)\
+        sub_query = db.session.query(Group)\
             .join(group_b, GroupPatient.group)\
             .join(Group.group_users)\
             .filter(
@@ -71,4 +69,5 @@ class GroupObjectViewMixin(object):
         model_class = self.get_model_class()
         query = filter_query_by_group_permissions(query, model_class)
         query = filter_query_by_group(query, model_class)
+        print query
         return query
