@@ -4,7 +4,7 @@ click==5.1
 Delorean==0.6.0
 enum34==1.1.1
 Flask==0.10.1
-Flask-SQLAlchemy==2.1
+-e git://github.com/renalreg/flask-sqlalchemy.git#egg=Flask-SQLAlchemy
 html5lib==0.9999999
 humanize==0.5.1
 itsdangerous==0.24

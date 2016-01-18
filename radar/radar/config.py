@@ -47,6 +47,7 @@ class ConfigSerializer(Serializer):
     DEBUG = BooleanField()
     SECRET_KEY = StringField()
     SQLALCHEMY_DATABASE_URI = StringField()
+    SQLALCHEMY_TRACK_MODIFICATIONS = BooleanField()
 
     BASE_URL = StringField()
 
@@ -71,6 +72,7 @@ class ConfigValidation(Validation):
     DEBUG = Field([default(DEFAULT_DEBUG)])
     SECRET_KEY = Field([default(DEFAULT_SECRET_KEY), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])
+    SQLALCHEMY_TRACK_MODIFICATIONS = Field([default(False)])
 
     BASE_URL = Field([required(), url(), no_trailing_slash()])
 
