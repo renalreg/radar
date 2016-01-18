@@ -248,7 +248,7 @@ class CreateModelViewMixin(object):
         db.session.add(obj)
         db.session.commit()
         data = serializer.to_data(obj)
-        return jsonify(data), 201
+        return jsonify(data), 200
 
 
 class SortRequestSerializer(Serializer):
@@ -358,7 +358,7 @@ class DestroyModelViewMixin(object):
         obj = self.get_object()
         db.session.delete(obj)
         db.session.commit()
-        return '', 204
+        return '', 200
 
 
 class RetrieveModelView(RetrieveModelViewMixin, ModelView):

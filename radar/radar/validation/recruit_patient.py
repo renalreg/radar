@@ -1,5 +1,3 @@
-from sqlalchemy import or_
-
 from radar.validation.core import Validation, Field, pass_call, pass_context, ValidationError, ListField
 from radar.validation.validators import optional, required, not_in_future, in_, not_empty
 from radar.models.patients import GENDERS, ETHNICITIES, Patient
@@ -10,6 +8,7 @@ from radar.roles import PERMISSION
 from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
 from radar.patient_search import filter_by_patient_number_at_group
 from radar.database import db
+from radar.exceptions import PermissionDenied
 
 
 class RecruitPatientSearchValidation(Validation):
@@ -153,7 +152,7 @@ class RecruitPatientValidation(Validation):
         current_user = ctx['user']
 
         if not has_permission_for_group(current_user, hospital_group, PERMISSION.RECRUIT_PATIENT):
-            raise ValidationError('Permission denied!')
+            raise PermissionDenied()
 
         if hospital_group.type != GROUP_TYPE_HOSPITAL:
             raise ValidationError('Must be a hospital.')

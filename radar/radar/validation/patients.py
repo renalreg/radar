@@ -3,6 +3,7 @@ from radar.roles import PERMISSION
 from radar.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj, Validation
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, none_if_blank, max_length, optional
+from radar.exceptions import PermissionDenied
 
 
 class PatientValidation(MetaValidationMixin, Validation):
@@ -15,7 +16,7 @@ class PatientField(Field):
         user = ctx['user']
 
         if not has_permission_for_patient(user, patient, PERMISSION.EDIT_PATIENT):
-            raise ValidationError('Permission denied!')
+            raise PermissionDenied()
 
         return patient
 

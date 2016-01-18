@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from radar.models.users import User
 from radar.database import db
+from radar_api.tests.fixtures import create_user
 
 
 def login(client, username, password):
@@ -20,12 +20,9 @@ def login(client, username, password):
 
 @pytest.fixture
 def user():
-    user = User()
-    user.username = 'admin'
-    user.password = 'password'
-    db.session.add(user)
+    u = create_user('admin')
     db.session.commit()
-    return user
+    return u
 
 
 def test_good_login(app, session, user):
