@@ -1,8 +1,6 @@
-from datetime import datetime
 import json
 
 import pytest
-import pytz
 from sqlalchemy import func
 
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL, GroupUser, GROUP_CODE_RADAR, GROUP_TYPE_OTHER
