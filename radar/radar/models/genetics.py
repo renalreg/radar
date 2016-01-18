@@ -25,7 +25,7 @@ class Genetics(db.Model, MetaModelMixin):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    date_sent = Column(DateTime(timezone=True))
+    date_sent = Column(DateTime(timezone=True), nullable=False)
     laboratory = Column(String)
     reference_number = Column(String)
     karyotype = Column(Integer)
