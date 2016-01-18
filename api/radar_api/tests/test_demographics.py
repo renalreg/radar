@@ -11,7 +11,11 @@ from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_OTHER, GROUP_COD
 
 
 def get_read_list_args():
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it', 'cohort1_senior_researcher'
+    ]
     groups = [
         (GROUP_TYPE_OTHER, GROUP_CODE_RADAR),
         (GROUP_TYPE_HOSPITAL, 'HOSPITAL1'),
@@ -23,12 +27,15 @@ def get_read_list_args():
         if username == 'admin':
             expected = True
             expected_demographics = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = True
             expected_demographics = True
-        elif username == 'cohort1':
+        elif username == 'cohort1_researcher':
             expected = True
             expected_demographics = False
+        elif username == 'cohort1_senior_researcher':
+            expected = True
+            expected_demographics = True
         else:
             expected = False
             expected_demographics = False
@@ -45,14 +52,18 @@ def get_create_args():
     hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
     cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it', 'cohort1_senior_researcher'
+    ]
     groups = [radar_group, hospital1_group, cohort1_group]
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = source_type == SOURCE_TYPE_RADAR and group == radar_group
         else:
             expected = False
@@ -68,19 +79,23 @@ def get_update_args():
     radar_group = (GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
     hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital1_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it', 'cohort1_senior_researcher'
+    ]
     groups = [radar_group, hospital1_group]
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = 200
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             if source_type == SOURCE_TYPE_RADAR and group == radar_group:
                 expected = 200
             else:
                 expected = 403
-        elif username == 'cohort1':
+        elif username in ['cohort1_researcher', 'cohort1_senior_researcher']:
             expected = 403
         else:
             expected = 404

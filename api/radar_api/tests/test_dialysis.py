@@ -28,7 +28,11 @@ def create_dialysis(patient, **kwargs):
 
 
 def get_read_list_args():
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
     groups = [
         (GROUP_TYPE_OTHER, GROUP_CODE_RADAR),
         (GROUP_TYPE_HOSPITAL, 'HOSPITAL1'),
@@ -39,9 +43,9 @@ def get_read_list_args():
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = True
-        elif username == 'cohort1':
+        elif username == 'cohort1_researcher':
             expected = True
         else:
             expected = False
@@ -59,14 +63,18 @@ def get_create_args():
     hospital2_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL2')
     cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
     groups = [radar_group, hospital1_group, hospital2_group, cohort1_group]
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = source_type == SOURCE_TYPE_RADAR and group in (radar_group, hospital1_group)
         else:
             expected = False
@@ -83,19 +91,23 @@ def get_update_args():
     hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
     hospital2_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL2')
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
     groups = [radar_group, hospital1_group, hospital2_group]
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = 200
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             if source_type == SOURCE_TYPE_RADAR and group in (radar_group, hospital1_group):
                 expected = 200
             else:
                 expected = 403
-        elif username == 'cohort1':
+        elif username == 'cohort1_researcher':
             expected = 403
         else:
             expected = 404

@@ -26,7 +26,11 @@ def create_genetics(patient, group, **kwargs):
 
 
 def get_read_list_args():
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
     cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
     cohort2_group = (GROUP_TYPE_COHORT, 'COHORT2')
     groups = [cohort1_group, cohort2_group]
@@ -34,9 +38,9 @@ def get_read_list_args():
     for username, group in itertools.product(usernames, groups):
         if username == 'admin':
             expected = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = True
-        elif username == 'cohort1':
+        elif username == 'cohort1_researcher':
             expected = group == cohort1_group
         else:
             expected = False
@@ -54,7 +58,11 @@ def get_create_args():
     cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
     cohort2_group = (GROUP_TYPE_COHORT, 'COHORT2')
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
     groups = [radar_group, hospital1_group, cohort1_group, cohort2_group]
 
     for username, group in itertools.product(usernames, groups):
@@ -62,7 +70,7 @@ def get_create_args():
             expected = False
         elif username == 'admin':
             expected = True
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = True
         else:
             expected = False
@@ -78,14 +86,18 @@ def get_update_args():
     group_type = GROUP_TYPE_COHORT
     group_code = 'COHORT1'
 
-    usernames = ['admin', 'hospital1', 'hospital2', 'cohort1', 'cohort2', 'null']
+    usernames = [
+        'admin', 'hospital1_clinician', 'hospital2_clinician',
+        'cohort1_researcher', 'cohort2_researcher', 'null',
+        'hospital1_it'
+    ]
 
     for username in usernames:
         if username == 'admin':
             expected = 200
-        elif username == 'hospital1':
+        elif username == 'hospital1_clinician':
             expected = 200
-        elif username == 'cohort1':
+        elif username == 'cohort1_researcher':
             expected = 403
         else:
             expected = 404
