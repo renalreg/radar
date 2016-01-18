@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import func
 
 from radar.database import db
@@ -93,8 +95,10 @@ def create_patient(**kwargs):
 
 
 def create_demographics(patient, **kwargs):
-    kwargs.setdefault('first_name', 'John')
-    kwargs.setdefault('last_name', 'Smith')
+    kwargs.setdefault('first_name', 'JOHN')
+    kwargs.setdefault('last_name', 'SMITH')
+    kwargs.setdefault('gender', 1)
+    kwargs.setdefault('date_of_birth', datetime(1990, 1, 1))
     set_default_users(kwargs)
     set_default_source(kwargs)
 
@@ -151,8 +155,13 @@ def create_fixtures():
     hospital2_user = create_user('hospital2')
     add_user_to_group(hospital2_user, hospital2_group, ROLE.CLINICIAN)
 
-    patient = create_patient(id=1)
-    add_patient_to_group(patient, radar_group)
-    add_patient_to_group(patient, cohort1_group)
-    add_patient_to_group(patient, hospital1_group)
-    create_demographics(patient)
+    patient1 = create_patient(id=1)
+    add_patient_to_group(patient1, radar_group)
+    add_patient_to_group(patient1, cohort1_group)
+    add_patient_to_group(patient1, hospital1_group)
+    create_demographics(patient1)
+
+    patient2 = create_patient(id=2)
+    add_patient_to_group(patient2, radar_group)
+    add_patient_to_group(patient2, cohort1_group)
+    add_patient_to_group(patient2, hospital1_group)
