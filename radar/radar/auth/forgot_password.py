@@ -39,6 +39,10 @@ def forgot_password(username, email):
 
     db.session.commit()
 
+    send_reset_password_email(user, token)
+
+
+def send_reset_password_email(user, token):
     base_url = get_base_url()
     reset_password_url = base_url + '/reset-password/%s' % token
 
@@ -66,7 +70,7 @@ def reset_password(token, username, password):
     max_age = get_password_reset_max_age()
 
     # Token has expired
-    if user.reset_password_date is not None and (user.reset_password_date - datetime.now()).seconds > max_age:
+    if user.reset_password_date is not None and (datetime.now() - user.reset_password_date).total_seconds() > max_age:
         raise InvalidToken()
 
     # Update the user's password
