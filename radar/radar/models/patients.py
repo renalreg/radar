@@ -63,8 +63,12 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def recruited_date(self):
-        x = max([x.from_date for x in self.group_patients if is_radar_group(x.group)])
-        return x
+        from_dates = [x.from_date for x in self.group_patients if is_radar_group(x.group)]
+
+        if from_dates:
+            return max(from_dates)
+        else:
+            return None
 
     @recruited_date.expression
     def recruited_date(cls):

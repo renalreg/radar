@@ -1,6 +1,3 @@
-import random
-import string
-
 import pytest
 
 from radar.app import create_app
@@ -9,48 +6,34 @@ from radar.database import db
 
 @pytest.fixture(scope='session')
 def app():
-    return create_app({
+    app = create_app({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-        'SECRET_KEY': ''.join(random.sample(string.printable, 32)),
         'BASE_URL': 'http://localhost',
     })
 
+    return app
+
 
 @pytest.yield_fixture(scope='session')
-def app_context(app):
-    with app.app_context() as app_context:
-        yield app_context
-
-
-@pytest.fixture(scope='session')
-def test_db(request, app_context):
-    db.drop_all()
-    db.create_all()
-
-    def teardown():
-        db.session.close()
+def tables(app):
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        yield db
         db.drop_all()
 
-    request.addfinalizer(teardown)
 
-    return db
+@pytest.yield_fixture(scope='function', autouse=True)
+def session(app, tables):
+    with app.app_context():
+        connection = db.engine.connect()
+        transaction = connection.begin()
+        session = db.create_scoped_session(options=dict(bind=connection))
+        db.session = session
 
+        yield session
 
-@pytest.fixture(autouse=True)
-def transaction(request, app_context, test_db):
-    db.session.begin_nested()
-
-    def teardown():
-        db.session.rollback()
-
-    request.addfinalizer(teardown)
-
-    return db
-
-
-@pytest.yield_fixture
-def client(app, app_context):
-    with app.test_client() as client:
-        yield client
+        transaction.rollback()
+        connection.close()
+        session.remove()

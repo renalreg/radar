@@ -1,7 +1,7 @@
-import string
-import random
+import json
 
 import pytest
+from flask.testing import FlaskClient
 
 from radar_api.app import create_app
 from radar.database import db
@@ -9,49 +9,80 @@ from radar.database import db
 
 @pytest.fixture(scope='session')
 def app():
-    return create_app({
+    app = create_app({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-        'SECRET_KEY': ''.join(random.sample(string.printable, 32)),
         'BASE_URL': 'http://localhost',
-        'UKRDC_SEARCH_ENABLED': True,
-        'UKRDC_SEARCH_URL': 'http://localhost:5101/search',
     })
+
+    app.test_client_class = TestClient
+
+    return app
 
 
 @pytest.yield_fixture(scope='session')
-def app_context(app):
-    with app.app_context() as app_context:
-        yield app_context
-
-
-@pytest.fixture(scope='session')
-def test_db(request, app_context):
-    db.drop_all()
-    db.create_all()
-
-    def teardown():
+def tables(app):
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        yield db
         db.drop_all()
 
-    request.addfinalizer(teardown)
 
-    return db
+@pytest.yield_fixture(scope='function', autouse=True)
+def session(app, tables):
+    with app.app_context():
+        connection = db.engine.connect()
+        transaction = connection.begin()
+        session = db.create_scoped_session(options=dict(bind=connection))
+        db.session = session
+
+        yield session
+
+        transaction.rollback()
+        connection.close()
+        session.remove()
 
 
-@pytest.fixture
-def transaction(request, app_context, test_db):
-    db.session.begin_nested()
+class TestClient(FlaskClient):
+    def __init__(self, *args, **kwargs):
+        super(TestClient, self).__init__(*args, **kwargs)
+        self.token = None
 
-    def teardown():
-        db.session.rollback()
+    def login(self, user):
+        response = self.post(
+            '/login',
+            data={
+                'username': user.username,
+                'password': 'password',
+            }
+        )
 
-    request.addfinalizer(teardown)
+        self.token = json.loads(response.data)['token']
 
-    return db
+    def open(self, *args, **kwargs):
+        content_type = kwargs.pop('content_type', None)
+        data = kwargs.pop('data', None)
 
+        if data is not None and content_type is None:
+            content_type = 'application/json'
 
-@pytest.yield_fixture
-def client(app, app_context):
-    with app.test_client() as client:
-        yield client
+        if content_type == 'application/json':
+            data = json.dumps(data)
+
+        environ_base = kwargs.pop('environ_base', {})
+        environ_base.setdefault('REMOTE_ADDR', '127.0.0.1')
+
+        headers = kwargs.pop('headers', {})
+
+        if self.token is not None:
+            headers['x-auth-token'] = self.token
+
+        return super(TestClient, self).open(
+            *args,
+            content_type=content_type,
+            data=data,
+            environ_base=environ_base,
+            headers=headers,
+            **kwargs
+        )
