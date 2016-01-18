@@ -8,12 +8,12 @@ class TestClient(FlaskClient):
         super(TestClient, self).__init__(*args, **kwargs)
         self.token = None
 
-    def login(self, user):
+    def login(self, user, password='password'):
         response = self.post(
             '/login',
             data={
                 'username': user.username,
-                'password': 'password',
+                'password': password,
             }
         )
 
