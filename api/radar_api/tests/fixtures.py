@@ -146,17 +146,26 @@ def create_fixtures():
     hospital1_group = create_hospital('HOSPITAL1')
     hospital2_group = create_hospital('HOSPITAL2')
 
-    cohort1_user = create_user('cohort1')
-    add_user_to_group(cohort1_user, cohort1_group, ROLE.RESEARCHER)
+    cohort1_researcher = create_user('cohort1_researcher')
+    add_user_to_group(cohort1_researcher, cohort1_group, ROLE.RESEARCHER)
 
-    cohort2_user = create_user('cohort2')
-    add_user_to_group(cohort2_user, cohort2_group, ROLE.RESEARCHER)
+    cohort1_senior_researcher = create_user('cohort1_senior_researcher')
+    add_user_to_group(cohort1_senior_researcher, cohort1_group, ROLE.SENIOR_RESEARCHER)
 
-    hospital1_user = create_user('hospital1')
-    add_user_to_group(hospital1_user, hospital1_group, ROLE.CLINICIAN)
+    cohort2_researcher = create_user('cohort2_researcher')
+    add_user_to_group(cohort2_researcher, cohort2_group, ROLE.RESEARCHER)
 
-    hospital2_user = create_user('hospital2')
-    add_user_to_group(hospital2_user, hospital2_group, ROLE.CLINICIAN)
+    hospital1_clinician = create_user('hospital1_clinician')
+    add_user_to_group(hospital1_clinician, hospital1_group, ROLE.CLINICIAN)
+
+    hospital1_admin = create_user('hospital1_admin')
+    add_user_to_group(hospital1_admin, hospital1_group, ROLE.ADMIN)
+
+    hospital1_admin = create_user('hospital1_it')
+    add_user_to_group(hospital1_admin, hospital1_group, ROLE.IT)
+
+    hospital2_clinician = create_user('hospital2_clinician')
+    add_user_to_group(hospital2_clinician, hospital2_group, ROLE.CLINICIAN)
 
     patient1 = create_patient(id=1)
     add_patient_to_group(patient1, radar_group)
