@@ -2,6 +2,7 @@ from radar.validation.core import Validation, Field, pass_context, pass_old_obj,
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional
 from radar.permissions import has_permission_for_group, PERMISSION, has_permission_for_patient
+from radar.exceptions import PermissionDenied
 
 
 class GroupPatientValidation(MetaValidationMixin, Validation):
@@ -34,11 +35,11 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
         if old_obj.id is not None:
             # Check permissions on old membership
             if not self.has_permission(current_user, old_obj):
-                raise ValidationError({'group': 'Permission denied!'})
+                raise PermissionDenied()
 
         # Check permissions on new membership
         if not self.has_permission(current_user, new_obj):
-            raise ValidationError({'group': 'Permission denied!'})
+            raise PermissionDenied()
 
         # Check that the patient doesn't already belong to this group
         # Note: it's important this check happens after the permission checks to prevent membership enumeration

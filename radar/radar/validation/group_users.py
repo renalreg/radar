@@ -3,6 +3,7 @@ from radar.validation.core import Validation, Field, pass_old_obj, ValidationErr
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, in_
 from radar.permissions import has_permission_for_group_role
+from radar.exceptions import PermissionDenied
 
 
 class GroupUserValidation(MetaValidationMixin, Validation):
@@ -15,11 +16,11 @@ class GroupUserValidation(MetaValidationMixin, Validation):
     def check_permissions(cls, user, obj):
         # Can't change your own role
         if user == obj.user and not user.is_admin:
-            raise ValidationError({'group': 'Permission denied!'})
+            raise PermissionDenied()
 
         # Check the user has permission for the group and role
         if not has_permission_for_group_role(user, obj.group, obj.role):
-            raise ValidationError({'role': 'Permission denied!'})
+            raise PermissionDenied()
 
     @classmethod
     def is_duplicate(cls, obj):

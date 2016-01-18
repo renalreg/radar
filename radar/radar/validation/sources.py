@@ -1,11 +1,12 @@
 from radar.validation.core import ValidationError, pass_context
 from radar.validation.core import Field
 from radar.validation.validators import required
-from radar.permissions import has_permission_for_group, has_permission
+from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
 from radar.groups import is_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.models.groups import GROUP_TYPE_HOSPITAL
+from radar.exceptions import PermissionDenied
 
 
 class SourceGroupField(Field):
@@ -17,7 +18,7 @@ class SourceGroupField(Field):
             raise ValidationError('Must be RaDaR or a hospital.')
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
-            raise ValidationError('Permission denied!')
+            raise PermissionDenied()
 
         return group
 
@@ -31,7 +32,7 @@ class RadarSourceGroupField(Field):
             raise ValidationError('Must be RaDaR.')
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
-            raise ValidationError('Permission denied!')
+            raise PermissionDenied()
 
         return group
 
@@ -50,7 +51,7 @@ class SourceTypeField(Field):
 
         # Only admins can enter data for a non-RaDaR source type
         if not user.is_admin and source_type != SOURCE_TYPE_RADAR:
-            raise ValidationError('Permission denied!')
+            raise PermissionDenied()
 
         return source_type
 

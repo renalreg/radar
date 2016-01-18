@@ -3,6 +3,7 @@ import pytest
 from radar_api.app import create_app
 from radar.database import db
 from radar_api.tests.client import TestClient
+from radar_api.tests.fixtures import create_fixtures
 
 
 @pytest.fixture(scope='session')
@@ -24,6 +25,14 @@ def tables(app):
         db.drop_all()
         db.create_all()
 
+        # TODO UnboundExecutionError without this
+        db.session = db.create_scoped_session(options=dict(bind=db.engine))
+
+        # Create fixtures here so the tests run faster
+        # TODO should probably be changed so tests can have different fixtures
+        create_fixtures()
+        db.session.commit()
+
         yield db
 
         db.drop_all()
@@ -42,3 +51,8 @@ def session(app, tables):
         transaction.rollback()
         connection.close()
         session.remove()
+
+
+@pytest.fixture
+def admin_user():
+    return User.query.filter(User.username == 'admin').one()
