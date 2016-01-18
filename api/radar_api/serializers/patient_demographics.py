@@ -6,9 +6,10 @@ from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledIntegerField, LabelledStringField
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import GENDERS, ETHNICITIES
+from radar_api.serializers.patient_mixins import PatientSerializerMixin
 
 
-class PatientDemographicsSerializer(MetaSerializerMixin, SourceSerializerMixin, ModelSerializer):
+class PatientDemographicsSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     year_of_death = IntegerField(read_only=True)
     ethnicity = LabelledStringField(ETHNICITIES)

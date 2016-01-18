@@ -26,10 +26,10 @@ def test_patient_read_list(app, username, expected, expected_demographics):
     data = json.loads(response.data)
 
     if expected:
-        assert len(data['data']) == 1
+        assert len(data['data']) == 2
 
         if expected_demographics:
-            assert data['data'][0]['first_name'] == 'John'
+            assert data['data'][0]['first_name'] == 'JOHN'
         else:
             assert 'first_name' not in data['data'][0]
     else:
@@ -51,7 +51,7 @@ def test_patient_read(app, username, expected, expected_demographics):
         data = json.loads(response.data)
 
         if expected_demographics:
-            assert data['first_name'] == 'John'
+            assert data['first_name'] == 'JOHN'
         else:
             assert 'first_name' not in data
     else:

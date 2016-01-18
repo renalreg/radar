@@ -15,7 +15,7 @@ class SourceGroupField(Field):
         user = ctx['user']
 
         if not user.is_admin and not is_radar_group(group) and group.type != GROUP_TYPE_HOSPITAL:
-            raise ValidationError('Must be RaDaR or a hospital.')
+            raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
             raise PermissionDenied()
@@ -29,7 +29,7 @@ class RadarSourceGroupField(Field):
         user = ctx['user']
 
         if not user.is_admin and not is_radar_group(group):
-            raise ValidationError('Must be RaDaR.')
+            raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
             raise PermissionDenied()

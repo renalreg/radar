@@ -51,8 +51,3 @@ def session(app, tables):
         transaction.rollback()
         connection.close()
         session.remove()
-
-
-@pytest.fixture
-def admin_user():
-    return User.query.filter(User.username == 'admin').one()
