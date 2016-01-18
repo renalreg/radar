@@ -17,6 +17,8 @@ class TestClient(FlaskClient):
             }
         )
 
+        assert response.status_code == 200
+
         self.token = json.loads(response.data)['token']
 
     def open(self, *args, **kwargs):
