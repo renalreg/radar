@@ -64,6 +64,10 @@ PERMISSION_ROLES = {
         ROLE.ADMIN,
         ROLE.SENIOR_CLINICIAN,
     ],
+    PERMISSION.EDIT_USER: [
+        ROLE.IT,
+        ROLE.ADMIN,
+    ],
 }
 
 MANAGED_ROLES = {

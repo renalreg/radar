@@ -41,14 +41,8 @@ class UserValidation(MetaValidationMixin, Validation):
     @pass_old_obj
     @pass_new_obj
     def validate_password(self, ctx, call, old_obj, new_obj, password):
-        current_user = ctx['user']
-
         # Setting password
         if password is not None:
-            # Can't change other user's passwords
-            if old_obj.id is not None and new_obj != current_user and not current_user.is_admin:
-                raise ValidationError("Can't change other user's passwords.")
-
             allow_weak_passwords = ctx.get('allow_weak_passwords', False)
 
             if not allow_weak_passwords and not is_strong_password(password, new_obj):
