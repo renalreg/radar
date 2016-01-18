@@ -1,5 +1,7 @@
 import json
 
+from radar_api.tests.fixtures import get_user
+
 
 def login(client, username, password):
     response = client.post(
@@ -13,7 +15,9 @@ def login(client, username, password):
     return response
 
 
-def test_good_login(app, session, user):
+def test_good_login(app):
+    user = get_user('admin')
+
     client = app.test_client()
 
     response = login(client, 'admin', 'password')
@@ -26,7 +30,7 @@ def test_good_login(app, session, user):
     assert 'token' in data
 
 
-def test_bad_login(app, user):
+def test_bad_login(app):
     client = app.test_client()
 
     response = login(client, 'admin', 'foo')
