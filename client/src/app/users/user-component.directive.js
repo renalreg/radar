@@ -12,7 +12,7 @@
     };
 
     UserPermission.prototype.hasObjectPermission = function(obj) {
-      return hasPermissionForUser(session.user, obj, 'EDIT_USER');
+      return obj !== session.user && hasPermissionForUser(session.user, obj, 'EDIT_USER');
     };
 
     return UserPermission;
