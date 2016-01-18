@@ -13,11 +13,6 @@
         return true;
       }
 
-      // Can view and edit yourself
-      if (user.id == otherUser.id && (permission == 'VIEW_USER' || permission == 'EDIT_USER')) {
-        return true;
-      }
-
       var otherUserGroupIds = _.map(otherUser.groups, function(userGroup) {
         return userGroup.group.id;
       });
