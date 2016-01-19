@@ -5,27 +5,40 @@ import pytz
 
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.genetics import Genetics
 from radar.validation.core import ValidationError
 from radar.validation.genetics import GeneticsValidation
 from radar.tests.validation.helpers import validation_runner
+from radar.exceptions import PermissionDenied
 
 
 @pytest.fixture
-def patient():
+def group():
+    return Group(type=GROUP_TYPE.COHORT)
+
+
+@pytest.fixture
+def patient(group):
     patient = Patient()
+
     patient_demographics = PatientDemographics()
     patient_demographics.date_of_birth = date(2000, 1, 1)
     patient.patient_demographics.append(patient_demographics)
+
+    group_patient = GroupPatient()
+    group_patient.group = group
+    group_patient.patient = patient
+    patient.group_patients.append(group_patient)
+
     return patient
 
 
 @pytest.fixture
-def genetics(patient):
+def genetics(patient, group):
     obj = Genetics()
     obj.patient = patient
-    obj.group = Group(type=GROUP_TYPE.COHORT)
+    obj.group = group
     obj.date_sent = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.reference_number = '12345'
@@ -61,7 +74,9 @@ def test_group_missing(genetics):
 
 def test_group_not_cohort(genetics):
     genetics.group.type = GROUP_TYPE.OTHER
-    invalid(genetics)
+
+    with pytest.raises(PermissionDenied):
+        valid(genetics)
 
 
 def test_date_sent_none(genetics):
