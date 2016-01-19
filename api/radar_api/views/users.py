@@ -59,29 +59,6 @@ class UserRetrieveView(RetrieveModelView):
     model_class = User
     permission_classes = [UserRetrievePermission]
 
-    def get_context(self, deserialized_data):
-        ctx = super(UserRetrieveView, self).get_context(deserialized_data)
-        ctx['current_password'] = deserialized_data.get('current_password')
-        return ctx
-
-    def update(self, *args, **kwargs):
-        obj = self.get_object()
-        old_password_hash = obj.password_hash
-        old_email = obj.email
-
-        r = super(UserRetrieveView, self).update(*args, **kwargs)
-
-        # Changed password or email
-        if obj.password_hash != old_password_hash or obj.email != old_email:
-            # User changed their own password
-            if current_user == obj:
-                logout_other_sessions()
-            else:
-                logout_user(obj)
-                db.session.commit()
-
-        return r
-
 
 class UserUpdateView(UpdateModelView):
     serializer_class = UserSerializer
@@ -90,7 +67,7 @@ class UserUpdateView(UpdateModelView):
     permission_classes = [UserUpdatePermission]
 
     def get_context(self, deserialized_data):
-        ctx = super(UserRetrieveView, self).get_context(deserialized_data)
+        ctx = super(UserUpdateView, self).get_context(deserialized_data)
         ctx['current_password'] = deserialized_data.get('current_password')
         return ctx
 
@@ -99,7 +76,7 @@ class UserUpdateView(UpdateModelView):
         old_password_hash = obj.password_hash
         old_email = obj.email
 
-        r = super(UserRetrieveView, self).update(*args, **kwargs)
+        r = super(UserUpdateView, self).update(*args, **kwargs)
 
         # Changed password or email
         if obj.password_hash != old_password_hash or obj.email != old_email:
