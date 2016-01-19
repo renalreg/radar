@@ -6,9 +6,18 @@
   app.factory('lazyLoad', ['_', 'store', function(_, store) {
     return function lazyLoad(modelName, data) {
       var item;
+      var id;
 
-      if (_.isInteger(data)) {
-        var id = data;
+      if (_.isObject(data)) {
+        id = data.id
+
+        item = store.getFromStore(modelName, id);
+
+        if (item === null) {
+            item = store.pushToStore(store.create(modelName, data));
+        }
+      } else if (data) {
+        id = data;
 
         item = store.getFromStore(modelName, id);
 
@@ -17,8 +26,6 @@
           item = store.pushToStore(item);
           item.reload();
         }
-      } else if (data) {
-        item = store.pushToStore(store.create(modelName, data));
       } else {
         item = data;
       }

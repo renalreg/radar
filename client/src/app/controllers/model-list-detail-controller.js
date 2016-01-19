@@ -223,7 +223,7 @@
       return !this.scope.saving;
     };
 
-    ModelListDetailController.prototype.createPermission = function(item) {
+    ModelListDetailController.prototype.createPermission = function() {
       return this._createPermission.hasPermission();
     };
 
