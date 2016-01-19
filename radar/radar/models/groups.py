@@ -39,7 +39,7 @@ class Group(db.Model):
 
     # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
     pages = Column('pages', postgresql.ARRAY(EnumToStringType(PAGE)))
-    notes = Column(String)
+    instructions = Column(String)
 
     @property
     def patients(self):

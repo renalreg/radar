@@ -1,3 +1,5 @@
 <h1 class="page-header">{{cohort.name}}</h1>
 
-<div cohort-notes-component cohort="cohort"></div>
+<p ng-if="cohort.instructions">{{cohort.instructions}}</p>
+
+<p ng-if="!cohort.instructions"><i>No instructions available.</i></p>
