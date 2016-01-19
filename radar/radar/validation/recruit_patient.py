@@ -141,7 +141,13 @@ class RecruitPatientValidation(Validation):
             if cls.patient_number_exists(x):
                 raise ValidationError({'patient_numbers': {i: {'number': 'A patient already exists with this number.'}}})
 
-    def validate_cohort_group(self, cohort_group):
+    @pass_context
+    def validate_cohort_group(self, ctx, cohort_group):
+        current_user = ctx['user']
+
+        if not has_permission_for_group(current_user, cohort_group, PERMISSION.RECRUIT_PATIENT):
+            raise PermissionDenied()
+
         if cohort_group.type != GROUP_TYPE_COHORT:
             raise ValidationError('Must be a cohort.')
 

@@ -1,8 +1,9 @@
+import itertools
 import json
 
 import pytest
 
-from radar_api.tests.fixtures import get_user, get_group
+from radar_api.tests.fixtures import get_user, get_group, get_cohort, get_hospital
 from radar.models.groups import GROUP_TYPE_OTHER, GROUP_CODE_NHS
 
 
@@ -50,5 +51,52 @@ def test_recruit_patient_search(app, username, expected):
         data = json.loads(response.data)
 
         assert len(data['patients']) == 1
+    else:
+        assert response.status_code == 403
+
+
+def get_recruit_patient_args():
+    usernames = ['admin', 'hospital1_clinician', 'cohort1_researcher', 'null']
+    cohorts = ['COHORT1', 'COHORT2']
+    hospitals = ['HOSPITAL1', 'HOSPITAL2']
+
+    for username, cohort_code, hospital_code in itertools.product(usernames, cohorts, hospitals):
+        if username == 'admin':
+            expected = True
+        elif username == 'hospital1_clinician':
+            expected = hospital_code == 'HOSPITAL1'
+        else:
+            expected = False
+
+        yield username, cohort_code, hospital_code, expected
+
+
+@pytest.mark.parametrize(['username', 'cohort_code', 'hospital_code', 'expected'], get_recruit_patient_args())
+def test_recruit_patient(app, username, cohort_code, hospital_code, expected):
+    user = get_user(username)
+    cohort_group = get_cohort(cohort_code)
+    hospital_group = get_hospital(hospital_code)
+    nhs_group = get_group(GROUP_TYPE_OTHER, GROUP_CODE_NHS)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.post('/recruit-patient', data={
+        'first_name': 'Bruce',
+        'last_name': 'Wayne',
+        'date_of_birth': '1990-01-01',
+        'gender': 1,
+        'cohort_group': cohort_group.id,
+        'hospital_group': hospital_group.id,
+        'patient_numbers': [
+            {
+                'number': '9434765919',
+                'number_group': nhs_group.id
+            }
+        ]
+    })
+
+    if expected:
+        assert response.status_code == 200
     else:
         assert response.status_code == 403
