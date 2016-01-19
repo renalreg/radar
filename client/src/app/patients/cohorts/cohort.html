@@ -1,5 +1,5 @@
 <h1 class="page-header">{{cohort.name}}</h1>
 
-<p ng-if="cohort.instructions">{{cohort.instructions}}</p>
+<div ng-if="cohort.instructions" ng-bind-html="cohort.instructions | unsafe"></div>
 
 <p ng-if="!cohort.instructions"><i>No instructions available.</i></p>

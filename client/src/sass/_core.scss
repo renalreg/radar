@@ -150,6 +150,10 @@ th.right {
   max-width: 768px;
 }
 
+.full-width .form-control {
+  width: 100%;
+}
+
 .form-control {
   width: auto;
 }

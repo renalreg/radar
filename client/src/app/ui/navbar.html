@@ -49,11 +49,11 @@
           </ul>
         </li>
 
-        <li ui-sref-active="active">
+        <li ng-if="showPatients" ui-sref-active="active">
           <a ui-sref="patients">Patients</a>
         </li>
 
-        <li ui-sref-active="active">
+        <li ng-if="showUsers" ui-sref-active="active">
           <a ui-sref="users">Users</a>
         </li>
 

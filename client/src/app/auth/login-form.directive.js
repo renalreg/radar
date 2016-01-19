@@ -31,7 +31,7 @@
               if (hasPermission(session.user, 'VIEW_PATIENT')) {
                 state = 'patients';
               } else {
-                state = 'home';
+                state = 'index';
               }
 
               notificationService.success('Logged in successfully.');

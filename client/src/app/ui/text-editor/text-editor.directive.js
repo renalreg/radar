@@ -23,22 +23,15 @@
         quill.addModule('link-tooltip', true);
 
         ngModel.$render = function() {
-          quill.setHTML($sce.getTrustedHtml(ngModel.$viewValue || ''));
+          quill.setHTML(ngModel.$viewValue || '');
         };
 
-        ngModel.$parsers.unshift(function(viewValue) {
-          return viewValue ? $sce.getTrustedHtml(viewValue) : '';
-        });
-
         quill.on('text-change', function() {
-          scope.$evalAsync(read);
+          scope.$apply(function() {
+            var html = quill.getHTML();
+            ngModel.$setViewValue(html);
+          });
         });
-
-        function read() {
-          var html = quill.getHTML();
-          html = $sce.trustAsHtml(html);
-          ngModel.$setViewValue(html);
-        }
       }
     };
   }]);

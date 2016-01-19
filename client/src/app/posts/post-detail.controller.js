@@ -36,12 +36,12 @@
     PostDetailController.$inject = ['$scope'];
     PostDetailController.prototype = Object.create(ModelDetailController.prototype);
 
-    PostDetailController.prototype.view = function() {
+    PostDetailController.prototype.view = function(item) {
       // Deleted a post or cancelled a new one
       if (this.scope.item === null) {
         $state.go('posts');
       } else {
-        ModelDetailController.prototype.view.call(this);
+        ModelDetailController.prototype.view.call(this, item);
       }
     };
 

@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <div frm-field frm-group>
+    <div ng-if="user.isAdmin" frm-field frm-group>
       <div frm-label>Is Admin?</div>
 
       <div frm-control>
@@ -71,16 +71,6 @@
         <div frm-errors errors="item.errors.isAdmin"></div>
       </div>
     </div>
-
-    <!--
-    <h2>Cohorts</h2>
-
-    <div new-user-cohorts-component user="item"></div>
-
-    <h2>Units</h2>
-
-    <div new-user-organisations-component user="item"></div>
-    -->
 
     <div frm-buttons>
       <span crud-save-button></span>

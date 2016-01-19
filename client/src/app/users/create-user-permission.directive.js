@@ -1,23 +1,21 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.posts');
+  var app = angular.module('radar.users');
 
-  app.directive('newPostPermission', ['PostPermission', '$compile', function(PostPermission, $compile) {
+  app.directive('createUserPermission', ['hasPermission', '$compile', 'session', function(hasPermission, $compile, session) {
     return {
       scope: true,
       link: function(scope, element, attrs) {
-        var permission = new PostPermission();
-
         scope.$watch(function() {
-          return permission.hasPermission();
+          return hasPermission(session.user, 'EDIT_USER_MEMBERSHIP');
         }, function(hasPermission) {
           scope.hasPermission = hasPermission;
         });
 
         // TODO this will overwrite an existing ng-if attribute
         element.attr('ng-if', 'hasPermission');
-        element.removeAttr('new-post-permission');
+        element.removeAttr('create-user-permission');
         $compile(element)(scope);
       }
     };

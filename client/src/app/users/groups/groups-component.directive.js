@@ -12,7 +12,6 @@
     };
 
     UserGroupPermission.prototype.hasObjectPermission = function(obj) {
-      console.log(obj);
       return hasPermissionForGroup(session.user, obj.group, 'EDIT_USER_MEMBERSHIP');
     };
 
