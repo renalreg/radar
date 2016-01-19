@@ -1,21 +1,14 @@
-from radar.validation.core import Field, Validation, pass_context
+from radar.validation.core import Field, Validation, ValidationError
 from radar.validation.validators import required
 from radar.models.groups import GROUP_TYPE
-from radar.exceptions import PermissionDenied
 
 
 class CohortGroupValidationMixin(object):
     group = Field([required()])
 
-    @pass_context
-    def validate_group(self, ctx, group):
-        patient = ctx['patient']
-
+    def validate_group(self, group):
         if group.type != GROUP_TYPE.COHORT:
-            raise PermissionDenied()
-
-        if not patient.in_group(group):
-            raise PermissionDenied()
+            raise ValidationError('Must be a cohort.')
 
         return group
 
