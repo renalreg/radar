@@ -74,7 +74,7 @@ def has_permission_for_group(user, group, permission):
         # Users get permissions on cohort groups through their hospital groups
         if (
             group.type == GROUP_TYPE_COHORT and
-            permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT) and
+            permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT, PERMISSION.RECRUIT_PATIENT) and
             has_permission(user, permission, group_type=GROUP_TYPE_HOSPITAL)
         ):
             return True
