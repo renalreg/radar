@@ -3,7 +3,7 @@ from sqlalchemy.orm import aliased
 from flask import request
 
 from radar.database import db
-from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL
+from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
 from radar.permissions import GroupObjectPermission
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.serializers.core import Serializer
@@ -30,8 +30,8 @@ def filter_query_by_group_permissions(query, model_class):
                 or_(
                     GroupPatient.group_id == model_class.group_id,
                     and_(
-                        group_a.type == GROUP_TYPE_COHORT,
-                        group_b.type == GROUP_TYPE_HOSPITAL
+                        group_a.type == GROUP_TYPE.COHORT,
+                        group_b.type == GROUP_TYPE.HOSPITAL
                     )
                 )
             )\

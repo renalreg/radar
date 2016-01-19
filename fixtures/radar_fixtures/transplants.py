@@ -1,14 +1,14 @@
 from datetime import date
 import random
 
-from radar.models.groups import Group, GROUP_TYPE_HOSPITAL
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.transplants import Transplant, TRANSPLANT_MODALITIES
 from radar_fixtures.utils import random_date
 from radar_fixtures.validation import validate_and_add
 
 
 def create_transplants_f():
-    hospitals = Group.query.filter(Group.type == GROUP_TYPE_HOSPITAL).all()
+    hospitals = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
 
     def create_transplants(patient, source_group, source_type, n):
         for _ in range(n):

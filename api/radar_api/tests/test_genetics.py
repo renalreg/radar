@@ -8,7 +8,7 @@ import pytz
 from radar.models.genetics import Genetics
 from radar.database import db
 from radar_api.tests.fixtures import get_user, get_patient, get_group, set_default_users
-from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_OTHER, GROUP_CODE_RADAR, GROUP_TYPE_COHORT
+from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 
 
 def create_genetics(patient, group, **kwargs):
@@ -31,8 +31,8 @@ def get_read_list_args():
         'cohort1_researcher', 'cohort2_researcher', 'null',
         'hospital1_it'
     ]
-    cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
-    cohort2_group = (GROUP_TYPE_COHORT, 'COHORT2')
+    cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
+    cohort2_group = (GROUP_TYPE.COHORT, 'COHORT2')
     groups = [cohort1_group, cohort2_group]
 
     for username, group in itertools.product(usernames, groups):
@@ -53,10 +53,10 @@ def get_read_args():
 
 
 def get_create_args():
-    radar_group = (GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
-    cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
-    cohort2_group = (GROUP_TYPE_COHORT, 'COHORT2')
+    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
+    cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
+    cohort2_group = (GROUP_TYPE.COHORT, 'COHORT2')
 
     usernames = [
         'admin', 'hospital1_clinician', 'hospital2_clinician',
@@ -83,7 +83,7 @@ def get_delete_args():
 
 
 def get_update_args():
-    group_type = GROUP_TYPE_COHORT
+    group_type = GROUP_TYPE.COHORT
     group_code = 'COHORT1'
 
     usernames = [

@@ -5,7 +5,7 @@ import pytest
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.diagnoses import Diagnosis, GroupDiagnosis, BiopsyDiagnosis, GroupBiopsyDiagnosis
-from radar.models.groups import Group, GROUP_TYPE_COHORT, GROUP_TYPE_OTHER
+from radar.models.groups import Group, GROUP_TYPE
 from radar.validation.core import ValidationError
 from radar.validation.diagnoses import DiagnosisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -22,7 +22,7 @@ def patient():
 
 @pytest.fixture
 def diagnosis(patient):
-    group = Group(type=GROUP_TYPE_COHORT)
+    group = Group(type=GROUP_TYPE.COHORT)
     group_diagnosis = GroupDiagnosis(group=group)
     biopsy_diagnosis = BiopsyDiagnosis()
 
@@ -69,7 +69,7 @@ def test_group_missing(diagnosis):
 
 
 def test_group_not_cohort(diagnosis):
-    diagnosis.group.type = GROUP_TYPE_OTHER
+    diagnosis.group.type = GROUP_TYPE.OTHER
     invalid(diagnosis)
 
 
@@ -114,7 +114,7 @@ def test_group_diagnosis_missing(diagnosis):
 
 
 def test_group_diagnosis_from_another_cohort(diagnosis):
-    diagnosis.group_diagnosis = GroupDiagnosis(group=Group(type=GROUP_TYPE_COHORT))
+    diagnosis.group_diagnosis = GroupDiagnosis(group=Group(type=GROUP_TYPE.COHORT))
     invalid(diagnosis)
 
 

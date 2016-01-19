@@ -1,6 +1,6 @@
 from radar_fixtures.validation import validate_and_add
 from radar.models.diagnoses import GroupDiagnosis
-from radar.models.groups import Group, GROUP_TYPE_COHORT
+from radar.models.groups import Group, GROUP_TYPE
 
 # TODO
 GROUP_DIAGNOSES = {
@@ -86,7 +86,7 @@ GROUP_DIAGNOSES = {
 
 def create_group_diagnoses():
     for code, names in GROUP_DIAGNOSES.items():
-        group = Group.query.filter(Group.code == code, Group.type == GROUP_TYPE_COHORT).one()
+        group = Group.query.filter(Group.code == code, Group.type == GROUP_TYPE.COHORT).one()
 
         for i, name in enumerate(names):
             group_diagnosis = GroupDiagnosis()

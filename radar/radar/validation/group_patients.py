@@ -3,7 +3,7 @@ from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional
 from radar.permissions import has_permission_for_group, PERMISSION, has_permission_for_patient
 from radar.exceptions import PermissionDenied
-from radar.models.groups import GROUP_TYPE_COHORT
+from radar.models.groups import GROUP_TYPE
 
 
 class GroupPatientValidation(MetaValidationMixin, Validation):
@@ -43,7 +43,7 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
         current_user = ctx['user']
 
         # Created group is required when the group is a cohort
-        if new_obj.group.type == GROUP_TYPE_COHORT:
+        if new_obj.group.type == GROUP_TYPE.COHORT:
             call.validators_for_field([required()], new_obj, self.created_group)
 
         if old_obj.id is not None:

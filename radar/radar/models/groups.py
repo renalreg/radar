@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from enum import Enum
 from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
@@ -12,10 +13,15 @@ from radar.models.common import MetaModelMixin, patient_id_column, patient_relat
 from radar.pages import PAGE
 from radar.models.types import EnumType, EnumToStringType
 
-# TODO enum
-GROUP_TYPE_HOSPITAL = 'HOSPITAL'
-GROUP_TYPE_COHORT = 'COHORT'
-GROUP_TYPE_OTHER = 'OTHER'
+
+class GROUP_TYPE(Enum):
+    HOSPITAL = 'HOSPITAL'
+    COHORT = 'COHORT'
+    OTHER = 'OTHER'
+
+    def __str__(self):
+        return str(self.value)
+
 
 GROUP_CODE_UKRDC = 'UKRDC'
 GROUP_CODE_UKRR = 'UKRR'
@@ -31,7 +37,7 @@ class Group(db.Model):
     __tablename__ = 'groups'
 
     id = Column(Integer, primary_key=True)
-    type = Column(String, nullable=False)
+    type = Column(EnumType(GROUP_TYPE, name='group_type'), nullable=False)
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
@@ -92,7 +98,7 @@ class GroupUser(db.Model, MetaModelMixin):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id])
-    role = Column('role', EnumType(ROLE, name='role'), nullable=False)
+    role = Column(EnumType(ROLE, name='role'), nullable=False)
 
     def has_permission(self, permission):
         permission_method = permission.value.lower()

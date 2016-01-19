@@ -5,14 +5,14 @@ import pytest
 
 from radar_api.tests.fixtures import get_user, create_user, add_user_to_group, get_group
 from radar.database import db
-from radar.models.groups import GROUP_TYPE_HOSPITAL
+from radar.models.groups import GROUP_TYPE
 from radar.roles import ROLE
 from radar.models.users import User
 
 
 def get_read_list_args():
     usernames = ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'hospital1_clinician', 'null']
-    groups = [(GROUP_TYPE_HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
+    groups = [(GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
 
     for username, group, is_admin in itertools.product(usernames, groups, [False, True]):
         group_type, group_code, role = group
@@ -33,7 +33,7 @@ def get_read_args():
 
 def get_update_args():
     usernames = ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null']
-    groups = [(GROUP_TYPE_HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
+    groups = [(GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
 
     for username, group, is_admin in itertools.product(usernames, groups, [False, True]):
         group_type, group_code, role = group

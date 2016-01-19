@@ -9,7 +9,7 @@ from radar.database import db
 from radar_api.tests.fixtures import get_user, set_default_source,\
     set_default_users, get_patient, get_group
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_OTHER, GROUP_CODE_RADAR, GROUP_TYPE_COHORT
+from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 
 
 def create_dialysis(patient, **kwargs):
@@ -34,9 +34,9 @@ def get_read_list_args():
         'hospital1_it'
     ]
     groups = [
-        (GROUP_TYPE_OTHER, GROUP_CODE_RADAR),
-        (GROUP_TYPE_HOSPITAL, 'HOSPITAL1'),
-        (GROUP_TYPE_HOSPITAL, 'HOSPITAL2'),
+        (GROUP_TYPE.OTHER, GROUP_CODE_RADAR),
+        (GROUP_TYPE.HOSPITAL, 'HOSPITAL1'),
+        (GROUP_TYPE.HOSPITAL, 'HOSPITAL2'),
     ]
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
@@ -58,10 +58,10 @@ def get_read_args():
 
 
 def get_create_args():
-    radar_group = (GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
-    hospital2_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL2')
-    cohort1_group = (GROUP_TYPE_COHORT, 'COHORT1')
+    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
+    hospital2_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL2')
+    cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
 
     usernames = [
         'admin', 'hospital1_clinician', 'hospital2_clinician',
@@ -87,9 +87,9 @@ def get_delete_args():
 
 
 def get_update_args():
-    radar_group = (GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL1')
-    hospital2_group = (GROUP_TYPE_HOSPITAL, 'HOSPITAL2')
+    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
+    hospital2_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL2')
 
     usernames = [
         'admin', 'hospital1_clinician', 'hospital2_clinician',
