@@ -43,7 +43,7 @@ def session(app, tables):
     with app.app_context():
         connection = db.engine.connect()
         transaction = connection.begin()
-        session = db.create_scoped_session(options=dict(bind=connection))
+        session = db.create_scoped_session(options=dict(bind=connection, binds={}))
         db.session = session
 
         yield session

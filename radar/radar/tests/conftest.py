@@ -34,7 +34,7 @@ def session(app, schema):
         # http://docs.sqlalchemy.org/en/latest/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites
         connection = db.engine.connect()
         transaction = connection.begin()
-        session = db.create_scoped_session(options=dict(bind=connection))
+        session = db.create_scoped_session(options=dict(bind=connection, binds={}))
         db.session = session
 
         yield session
