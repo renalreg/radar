@@ -220,6 +220,7 @@ def recruit_patient(params):
         hospital_group_patient = GroupPatient()
         hospital_group_patient.patient = patient
         hospital_group_patient.group = hospital_group
+        hospital_group_patient.created_group = hospital_group
         hospital_group_patient.from_date = datetime.now(pytz.UTC)
         hospital_group_patient.created_user = current_user
         hospital_group_patient.modified_user = current_user
