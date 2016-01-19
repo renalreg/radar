@@ -5,24 +5,35 @@ import pytest
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.diagnoses import Diagnosis, GroupDiagnosis, BiopsyDiagnosis, GroupBiopsyDiagnosis
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.validation.core import ValidationError
 from radar.validation.diagnoses import DiagnosisValidation
 from radar.tests.validation.helpers import validation_runner
+from radar.exceptions import PermissionDenied
 
 
 @pytest.fixture
-def patient():
+def group():
+    return Group(type=GROUP_TYPE.COHORT)
+
+
+@pytest.fixture
+def patient(group):
     patient = Patient()
+
     patient_demographics = PatientDemographics()
     patient_demographics.date_of_birth = date(2000, 1, 1)
     patient.patient_demographics.append(patient_demographics)
+
+    group_patient = GroupPatient()
+    group_patient.group = group
+    group_patient.patient = patient
+
     return patient
 
 
 @pytest.fixture
-def diagnosis(patient):
-    group = Group(type=GROUP_TYPE.COHORT)
+def diagnosis(patient, group):
     group_diagnosis = GroupDiagnosis(group=group)
     biopsy_diagnosis = BiopsyDiagnosis()
 
@@ -70,7 +81,9 @@ def test_group_missing(diagnosis):
 
 def test_group_not_cohort(diagnosis):
     diagnosis.group.type = GROUP_TYPE.OTHER
-    invalid(diagnosis)
+
+    with pytest.raises(PermissionDenied):
+        valid(diagnosis)
 
 
 def test_date_of_symptoms_missing(diagnosis):

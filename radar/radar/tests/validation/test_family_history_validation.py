@@ -1,18 +1,35 @@
 import pytest
 
 from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.family_histories import FamilyHistory
 from radar.validation.core import ValidationError
 from radar.validation.family_histories import FamilyHistoryValidation
 from radar.tests.validation.helpers import validation_runner
+from radar.exceptions import PermissionDenied
 
 
 @pytest.fixture
-def family_history():
+def group():
+    return Group(type=GROUP_TYPE.COHORT)
+
+
+@pytest.fixture
+def patient(group):
+    patient = Patient()
+
+    group_patient = GroupPatient()
+    group_patient.group = group
+    group_patient.patient = patient
+
+    return patient
+
+
+@pytest.fixture
+def family_history(patient, group):
     obj = FamilyHistory()
-    obj.patient = Patient()
-    obj.group = Group(type=GROUP_TYPE.COHORT)
+    obj.patient = patient
+    obj.group = group
     obj.parental_consanguinity = True
     obj.family_history = True
     obj.other_family_history = 'Hello World!'
@@ -38,7 +55,9 @@ def test_group_missing(family_history):
 
 def test_group_not_cohort(family_history):
     family_history.group.type = GROUP_TYPE.OTHER
-    invalid(family_history)
+
+    with pytest.raises(PermissionDenied):
+        valid(family_history)
 
 
 def test_parental_consanguinity_missing(family_history):
