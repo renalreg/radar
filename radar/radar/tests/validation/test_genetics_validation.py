@@ -29,7 +29,6 @@ def patient(group):
     group_patient = GroupPatient()
     group_patient.group = group
     group_patient.patient = patient
-    patient.group_patients.append(group_patient)
 
     return patient
 
