@@ -4,7 +4,7 @@ import json
 import pytest
 
 from radar_api.tests.fixtures import get_user, get_group, get_cohort, get_hospital
-from radar.models.groups import GROUP_TYPE_OTHER, GROUP_CODE_NHS
+from radar.models.groups import GROUP_TYPE, GROUP_CODE_NHS
 
 
 @pytest.mark.parametrize(['username', 'expected'], [
@@ -15,7 +15,7 @@ from radar.models.groups import GROUP_TYPE_OTHER, GROUP_CODE_NHS
 ])
 def test_recruit_patient_search(app, username, expected):
     user = get_user(username)
-    nhs_group = get_group(GROUP_TYPE_OTHER, GROUP_CODE_NHS)
+    nhs_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS)
 
     client = app.test_client()
     client.login(user)
@@ -76,7 +76,7 @@ def test_recruit_patient(app, username, cohort_code, hospital_code, expected):
     user = get_user(username)
     cohort_group = get_cohort(cohort_code)
     hospital_group = get_hospital(hospital_code)
-    nhs_group = get_group(GROUP_TYPE_OTHER, GROUP_CODE_NHS)
+    nhs_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS)
 
     client = app.test_client()
     client.login(user)

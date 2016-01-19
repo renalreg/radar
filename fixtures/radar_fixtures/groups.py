@@ -2,7 +2,7 @@ from radar_fixtures.cohorts import create_cohorts
 from radar_fixtures.hospitals import create_hospitals
 from radar.models.groups import GROUP_CODE_RADAR, GROUP_CODE_NHS, GROUP_CODE_CHI,\
     GROUP_CODE_UKRR, GROUP_CODE_HANDC, GROUP_CODE_UKRDC, GROUP_CODE_NHSBT,\
-    GROUP_CODE_BAPN, GROUP_TYPE_OTHER, Group
+    GROUP_CODE_BAPN, GROUP_TYPE, Group
 from radar_fixtures.validation import validate_and_add
 
 OTHER_GROUPS = [
@@ -23,7 +23,7 @@ def create_groups():
 
     for code, name, recruitment in OTHER_GROUPS:
         group = Group()
-        group.type = GROUP_TYPE_OTHER
+        group.type = GROUP_TYPE.OTHER
         group.code = code
         group.name = name
         group.short_name = name

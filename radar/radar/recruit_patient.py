@@ -8,7 +8,7 @@ from radar.database import db
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
 from radar.patient_search import filter_by_patient_number_at_group
-from radar.models.groups import GroupPatient, Group, GROUP_TYPE_HOSPITAL
+from radar.models.groups import GroupPatient, Group, GROUP_TYPE
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import get_radar_group, is_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
@@ -88,7 +88,7 @@ def search_ukrdc_patients(params):
             number_group_code = number_group_code.upper()
 
             # TODO this won't find NHS numbers
-            number_group = Group.query.filter(Group.code == number_group_code, Group.type == GROUP_TYPE_HOSPITAL).first()
+            number_group = Group.query.filter(Group.code == number_group_code, Group.type == GROUP_TYPE.HOSPITAL).first()
 
             if number_group is not None:
                 result['patient_numbers'].append({

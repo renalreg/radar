@@ -7,7 +7,7 @@ from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE_OTHER, GROUP_CODE_RADAR
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
 
 GENDER_NOT_KNOWN = 0
@@ -76,7 +76,7 @@ class Patient(db.Model, MetaModelMixin):
             .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
             .where(GroupPatient.patient_id == cls.id)\
             .where(Group.code == GROUP_CODE_RADAR)\
-            .where(Group.type == GROUP_TYPE_OTHER)\
+            .where(Group.type == GROUP_TYPE.OTHER)\
             .as_scalar()
 
     @hybrid_property
@@ -90,7 +90,7 @@ class Patient(db.Model, MetaModelMixin):
         q = q.where(GroupPatient.patient_id == cls.id)
         q = q.where(GroupPatient.current == True)  # noqa
         q = q.where(Group.code == GROUP_CODE_RADAR)
-        q = q.where(Group.type == GROUP_TYPE_OTHER)
+        q = q.where(Group.type == GROUP_TYPE.OTHER)
         return q
 
     @property

@@ -1,17 +1,20 @@
 from radar.serializers.core import Serializer
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar.serializers.fields import ListField, StringField, BooleanField
+from radar.serializers.fields import ListField, StringField, BooleanField, EnumField
 from radar.serializers.models import ModelSerializer, ReferenceField
-from radar.models.groups import Group
+from radar.models.groups import Group, GROUP_TYPE
 
 
 class TinyGroupSerializer(ModelSerializer):
+    type = EnumField(GROUP_TYPE)
+
     class Meta(object):
         model_class = Group
         fields = ['id', 'type', 'code', 'name', 'short_name']
 
 
 class GroupSerializer(MetaSerializerMixin, ModelSerializer):
+    type = EnumField(GROUP_TYPE)
     pages = ListField(StringField(), read_only=True)
 
     class Meta(object):
@@ -39,5 +42,5 @@ class GroupSerializerMixin(object):
 
 class GroupListRequestSerializer(Serializer):
     code = StringField()
-    type = StringField()
+    type = EnumField(GROUP_TYPE)
     recruitment = BooleanField()

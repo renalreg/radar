@@ -2,7 +2,7 @@ import pytest
 
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_CODE_NHS,\
+from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_NHS,\
     GROUP_CODE_CHI, GROUP_CODE_HANDC, GROUP_CODE_RADAR, GROUP_CODE_UKRR
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
@@ -22,7 +22,7 @@ def number(patient):
     obj.source_group = Group()
     obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
-    obj.number_group = Group(code='FOO', type=GROUP_TYPE_OTHER)
+    obj.number_group = Group(code='FOO', type=GROUP_TYPE.OTHER)
     obj.number = '123'
     return obj
 
@@ -60,7 +60,7 @@ def test_number_group_missing(number):
 
 
 def test_number_group_radar(number):
-    number.number_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.OTHER)
     invalid(number)
 
 
@@ -81,49 +81,49 @@ def test_number_remove_extra_spaces(number):
 
 
 def test_nhs_no_valid(number):
-    number.number_group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE.OTHER)
     number.number = '9434765919'
     valid(number)
 
 
 def test_nhs_no_invalid(number):
-    number.number_group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE.OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_chi_no_valid(number):
-    number.number_group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE.OTHER)
     number.number = '101299877'
     valid(number)
 
 
 def test_chi_no_invalid(number):
-    number.number_group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE.OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_handc_no_valid(number):
-    number.number_group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE.OTHER)
     number.number = '3232255825'
     valid(number)
 
 
 def test_handc_no_invalid(number):
-    number.number_group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE.OTHER)
     number.number = '9434765918'
     invalid(number)
 
 
 def test_ukrr_no_valid(number):
-    number.number_group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE.OTHER)
     number.number = '200012345'
     valid(number)
 
 
 def test_ukrr_no_invalid(number):
-    number.number_group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE_OTHER)
+    number.number_group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE.OTHER)
     number.number = '2000123456'
     invalid(number)
 

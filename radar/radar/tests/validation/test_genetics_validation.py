@@ -5,7 +5,7 @@ import pytz
 
 from radar.models.patients import Patient
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.groups import Group, GROUP_TYPE_COHORT, GROUP_TYPE_OTHER
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.genetics import Genetics
 from radar.validation.core import ValidationError
 from radar.validation.genetics import GeneticsValidation
@@ -25,7 +25,7 @@ def patient():
 def genetics(patient):
     obj = Genetics()
     obj.patient = patient
-    obj.group = Group(type=GROUP_TYPE_COHORT)
+    obj.group = Group(type=GROUP_TYPE.COHORT)
     obj.date_sent = datetime(2015, 1, 2, 3, 4, 5, tzinfo=pytz.utc)
     obj.laboratory = 'Test'
     obj.reference_number = '12345'
@@ -60,7 +60,7 @@ def test_group_missing(genetics):
 
 
 def test_group_not_cohort(genetics):
-    genetics.group.type = GROUP_TYPE_OTHER
+    genetics.group.type = GROUP_TYPE.OTHER
     invalid(genetics)
 
 

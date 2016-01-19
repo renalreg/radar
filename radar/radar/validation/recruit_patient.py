@@ -5,7 +5,7 @@ from radar.permissions import has_permission_for_group
 from radar.groups import is_radar_group
 from radar.validation.number_validators import NUMBER_VALIDATORS
 from radar.roles import PERMISSION
-from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
+from radar.models.groups import GROUP_TYPE
 from radar.patient_search import filter_by_patient_number_at_group
 from radar.database import db
 from radar.exceptions import PermissionDenied
@@ -148,7 +148,7 @@ class RecruitPatientValidation(Validation):
         if not has_permission_for_group(current_user, cohort_group, PERMISSION.RECRUIT_PATIENT):
             raise PermissionDenied()
 
-        if cohort_group.type != GROUP_TYPE_COHORT:
+        if cohort_group.type != GROUP_TYPE.COHORT:
             raise ValidationError('Must be a cohort.')
 
         return cohort_group
@@ -157,10 +157,10 @@ class RecruitPatientValidation(Validation):
     def validate_hospital_group(self, ctx, hospital_group):
         current_user = ctx['user']
 
-        if not has_permission_for_group(current_user, hospital_group, PERMISSION.RECRUIT_PATIENT):
+        if not has_permission_for_group(current_user, hospital_group, PERMISSION.RECRUIT_PATIENT, explicit=True):
             raise PermissionDenied()
 
-        if hospital_group.type != GROUP_TYPE_HOSPITAL:
+        if hospital_group.type != GROUP_TYPE.HOSPITAL:
             raise ValidationError('Must be a hospital.')
 
         return hospital_group

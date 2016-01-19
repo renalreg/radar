@@ -1,4 +1,4 @@
-from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
+from radar.models.groups import GROUP_TYPE
 from radar.groups import is_radar_group
 from radar.roles import PERMISSION
 from radar.models.source_types import SOURCE_TYPE_RADAR
@@ -75,12 +75,12 @@ def has_permission_for_group(user, group, permission, explicit=False):
         # Users get permissions on cohort groups through their hospital groups
         if (
             not explicit and
-            group.type == GROUP_TYPE_COHORT and
+            group.type == GROUP_TYPE.COHORT and
             permission in (
                 PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT,
                 PERMISSION.RECRUIT_PATIENT, PERMISSION.EDIT_PATIENT_MEMBERSHIP
             ) and
-            has_permission(user, permission, group_type=GROUP_TYPE_HOSPITAL)
+            has_permission(user, permission, group_type=GROUP_TYPE.HOSPITAL)
         ):
             return True
 

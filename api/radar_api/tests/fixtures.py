@@ -4,8 +4,7 @@ from sqlalchemy import func
 
 from radar.database import db
 from radar.models.users import User
-from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE_OTHER, GROUP_CODE_RADAR,\
-    GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT, GROUP_CODE_NHS
+from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR, GROUP_CODE_NHS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
 from radar.roles import ROLE
@@ -33,11 +32,11 @@ def get_user(username):
 
 
 def get_cohort(code):
-    return get_group(GROUP_TYPE_COHORT, code)
+    return get_group(GROUP_TYPE.COHORT, code)
 
 
 def get_hospital(code):
-    return get_group(GROUP_TYPE_HOSPITAL, code)
+    return get_group(GROUP_TYPE.HOSPITAL, code)
 
 
 def get_group(type, code):
@@ -58,7 +57,7 @@ def set_default_users(options):
 
 
 def set_default_source(options):
-    options['source_group'] = options.get('source_group') or get_group(GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
+    options['source_group'] = options.get('source_group') or get_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
     options.setdefault('source_type', SOURCE_TYPE_RADAR)
 
 
@@ -147,19 +146,19 @@ def create_group(type, code, **kwargs):
 
 
 def create_cohort(code, **kwargs):
-    return create_group(GROUP_TYPE_COHORT, code, **kwargs)
+    return create_group(GROUP_TYPE.COHORT, code, **kwargs)
 
 
 def create_hospital(code, **kwargs):
-    return create_group(GROUP_TYPE_HOSPITAL, code, **kwargs)
+    return create_group(GROUP_TYPE.HOSPITAL, code, **kwargs)
 
 
 def create_fixtures():
     create_user('admin', is_admin=True)
     create_user('null')
 
-    radar_group = create_group(GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
-    nhs_group = create_group(GROUP_TYPE_OTHER, GROUP_CODE_NHS, recruitment=True)
+    radar_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, recruitment=True)
     cohort1_group = create_cohort('COHORT1')
     cohort2_group = create_cohort('COHORT2')
     hospital1_group = create_hospital('HOSPITAL1')

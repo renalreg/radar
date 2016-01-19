@@ -2,7 +2,7 @@ import re
 
 from radar.validation.core import ValidationError
 from radar.models.groups import GROUP_CODE_NHS, GROUP_CODE_CHI, GROUP_CODE_HANDC, \
-    GROUP_CODE_UKRR, GROUP_CODE_UKRDC, GROUP_CODE_BAPN, GROUP_TYPE_OTHER, GROUP_CODE_RADAR
+    GROUP_CODE_UKRR, GROUP_CODE_UKRDC, GROUP_CODE_BAPN, GROUP_TYPE, GROUP_CODE_RADAR
 
 WHITESPACE_REGEX = re.compile('\s')
 LEADING_ZERO_REGEX = re.compile('^0+')
@@ -209,11 +209,11 @@ def radar_no():
 
 
 NUMBER_VALIDATORS = {
-    (GROUP_TYPE_OTHER, GROUP_CODE_NHS): [nhs_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_CHI): [chi_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_HANDC): [handc_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_UKRR): [ukrr_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_UKRDC): [ukrdc_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_BAPN): [bapn_no()],
-    (GROUP_TYPE_OTHER, GROUP_CODE_RADAR): [radar_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_NHS): [nhs_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_CHI): [chi_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_HANDC): [handc_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_UKRR): [ukrr_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_UKRDC): [ukrdc_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_BAPN): [bapn_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_RADAR): [radar_no()],
 }

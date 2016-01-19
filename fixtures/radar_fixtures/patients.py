@@ -24,8 +24,8 @@ from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE_COHORT, GROUP_TYPE_HOSPITAL,\
-    GROUP_CODE_NHS, GROUP_CODE_CHI, GROUP_CODE_UKRR, GROUP_CODE_NHSBT, GROUP_TYPE_OTHER
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_NHS, GROUP_CODE_CHI, \
+    GROUP_CODE_UKRR, GROUP_CODE_NHSBT
 from radar.groups import get_radar_group
 
 
@@ -112,10 +112,10 @@ def create_patient_aliases_f():
 
 def create_patient_numbers_f():
     number_groups = [
-        (Group.query.filter(Group.code == GROUP_CODE_NHS, Group.type == GROUP_TYPE_OTHER).one(), generate_nhs_no),
-        (Group.query.filter(Group.code == GROUP_CODE_CHI, Group.type == GROUP_TYPE_OTHER).one(), generate_chi_no),
-        (Group.query.filter(Group.code == GROUP_CODE_UKRR, Group.type == GROUP_TYPE_OTHER).one(), generate_ukrr_no),
-        (Group.query.filter(Group.code == GROUP_CODE_NHSBT, Group.type == GROUP_TYPE_OTHER).one(), generate_nhsbt_no),
+        (Group.query.filter(Group.code == GROUP_CODE_NHS, Group.type == GROUP_TYPE.OTHER).one(), generate_nhs_no),
+        (Group.query.filter(Group.code == GROUP_CODE_CHI, Group.type == GROUP_TYPE.OTHER).one(), generate_chi_no),
+        (Group.query.filter(Group.code == GROUP_CODE_UKRR, Group.type == GROUP_TYPE.OTHER).one(), generate_ukrr_no),
+        (Group.query.filter(Group.code == GROUP_CODE_NHSBT, Group.type == GROUP_TYPE.OTHER).one(), generate_nhsbt_no),
     ]
 
     def create_patient_numbers(patient, source_group, source_type):
@@ -180,8 +180,8 @@ def create_patient_addresses_f():
 def create_patients(n):
     radar_group = get_radar_group()
 
-    hospital_groups = Group.query.filter(Group.type == GROUP_TYPE_HOSPITAL).all()
-    cohort_groups = Group.query.filter(Group.type == GROUP_TYPE_COHORT).all()
+    hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
+    cohort_groups = Group.query.filter(Group.type == GROUP_TYPE.COHORT).all()
 
     source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
 
@@ -244,7 +244,7 @@ def create_patients(n):
         cohort_group_patient = GroupPatient()
 
         if i == 0:
-            cohort_group_patient.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE_COHORT).one()
+            cohort_group_patient.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE.COHORT).one()
         else:
             cohort_group_patient.group = random.choice(cohort_groups)
 

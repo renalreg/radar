@@ -1,7 +1,7 @@
 import pytest
 
 from radar.models.medications import Medication
-from radar.models.groups import Group, GROUP_TYPE_OTHER, GROUP_TYPE_HOSPITAL, GROUP_CODE_RADAR
+from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.permissions import RadarSourceObjectPermission
 from radar.tests.permissions.helpers import MockRequest, make_user
@@ -29,9 +29,9 @@ def make_request(action):
 
 def make_obj(source_type):
     if source_type == SOURCE_TYPE_RADAR:
-        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE_OTHER)
+        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.OTHER)
     else:
-        source_group = Group(code='REE01', type=GROUP_TYPE_HOSPITAL)
+        source_group = Group(code='REE01', type=GROUP_TYPE.HOSPITAL)
 
     obj = Medication()
     obj.source_group = source_group
