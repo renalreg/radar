@@ -378,25 +378,54 @@ class RecruitPatientPermission(Permission):
         return has_permission(user, PERMISSION.RECRUIT_PATIENT)
 
 
-class GroupPatientPermission(Permission):
-    def has_object_permission(self, request, user, obj):
-        if not super(GroupPatientPermission, self).has_object_permission(request, user, obj):
+class GroupPatientCreatePermission(Permission):
+    def has_permission(self, request, user):
+        if not super(GroupPatientCreatePermission, self).has_permission(request, user):
             return False
 
-        group = obj.group
-        patient = obj.patient
-        created_group = obj.created_group
+        return has_permission(user, PERMISSION.EDIT_PATIENT_MEMBERSHIP)
 
-        if is_safe_method(request):
-            return has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT)
-        else:
-            return (
-                has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True) or
+
+class GroupPatientRetrievePermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupPatientRetrievePermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT)
+
+
+class GroupPatientUpdatePermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupPatientUpdatePermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return (
+            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT) and
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP)
+        )
+
+
+class GroupPatientDestroyPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupPatientDestroyPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        print has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT)
+        print has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=False)
+        print has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
+        print has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=False)
+        print has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
+
+        return (
+            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT) and
+            (
+                has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True) or
                 (
-                    has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP) and
-                    has_permission_for_group(user, created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
+                    has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP) and
+                    has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
                 )
             )
+        )
 
 
 class GroupUserPermission(Permission):

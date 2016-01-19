@@ -46,6 +46,8 @@ def test_create_group_patient(app, username, group_type, group_code, created_gro
         'from_date': '2015-01-01'
     })
 
+    print response.data
+
     assert response.status_code == expected
 
 
@@ -65,6 +67,9 @@ def test_delete_group_patient(app, username, group_type, group_code, created_gro
     user = get_user(username)
 
     radar_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    cohort1_group = get_group(GROUP_TYPE.COHORT, 'COHORT1')
+    hospital1_group = get_group(GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
+
     group = get_group(group_type, group_code)
     created_group = get_group(created_group_type, created_group_code)
 
@@ -72,6 +77,12 @@ def test_delete_group_patient(app, username, group_type, group_code, created_gro
 
     if group != radar_group:
         add_patient_to_group(patient, radar_group)
+
+    if group != cohort1_group:
+        add_patient_to_group(patient, cohort1_group)
+
+    if group != hospital1_group:
+        add_patient_to_group(patient, hospital1_group)
 
     group_patient = add_patient_to_group(patient, group, created_group=created_group)
 
