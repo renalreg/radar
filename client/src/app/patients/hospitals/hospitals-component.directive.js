@@ -3,8 +3,22 @@
 
   var app = angular.module('radar.patients.hospitals');
 
-  app.factory('PatientHospitalPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
-    return PatientObjectPermission;
+  app.factory('PatientHospitalPermission', ['hasPermission', 'hasPermissionForGroup', 'session', function(hasPermission, hasPermissionForGroup, session) {
+    function PatientHospitalPermission() {
+    }
+
+    PatientHospitalPermission.prototype.hasPermission = function() {
+      return hasPermission(session.user, 'EDIT_PATIENT_MEMBERSHIP');
+    };
+
+    PatientHospitalPermission.prototype.hasObjectPermission = function(obj) {
+      return (
+          hasPermissionForGroup(session.user, obj.group, 'EDIT_PATIENT_MEMBERSHIP') &&
+          hasPermissionForGroup(session.user, obj.createdGroup, 'EDIT_PATIENT_MEMBERSHIP')
+      );
+    };
+
+    return PatientHospitalPermission;
   }]);
 
   function controllerFactory(
@@ -20,7 +34,7 @@
       $injector.invoke(ModelListDetailController, self, {
         $scope: $scope,
         params: {
-          permission: new PatientHospitalPermission($scope.patient)
+          permission: new PatientHospitalPermission()
         }
       });
 

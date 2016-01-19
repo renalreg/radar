@@ -20,6 +20,11 @@
         <th>To Date</th>
         <td>{{item.toDate | dateFormat}}</td>
       </tr>
+
+      <tr>
+        <th>Recruited By</th>
+        <td>{{item.createdGroup.name}}</td>
+      </tr>
     </table>
 
     <div  item="item"></div>
@@ -59,6 +64,15 @@
         </div>
       </div>
 
+      <div frm-field frm-group>
+        <div frm-label>Recruited By</div>
+
+        <div frm-control>
+          <div frm-group-field model="item.createdGroup" required="true"></div>
+          <div frm-errors errors="item.errors.createdGroup"></div>
+        </div>
+      </div>
+
       <div frm-buttons>
         <span crud-save-button></span>
         <span crud-cancel-list-button></span>
@@ -84,6 +98,7 @@
           <th sort-helper="group.name">Hospital</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
+          <th sort-helper="createdGroup.name">Recruited By</th>
           <th></th>
         </tr>
       </thead>
@@ -98,6 +113,7 @@
           <td>{{item.group.name}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
+          <td>{{item.createdGroup.name}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

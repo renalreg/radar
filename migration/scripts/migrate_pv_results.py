@@ -45,7 +45,7 @@ def migrate_pv_results(old_conn, new_conn):
                 '42J..', '42K..', '42L..', '42M..', '42N..',
                 '42Z5.', '42Z7', '44EC.', '44F..', '44G3.',
                 '44I9.', '44IC.', '44M3.', '44M5.', '451E.',
-                '46I..'
+                '46I..', '42Z7.', '46N3.'
             )
     """.format(EXCLUDED_UNITS)))
 

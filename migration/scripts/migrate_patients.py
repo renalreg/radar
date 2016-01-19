@@ -323,7 +323,7 @@ def migrate_patient_cohorts(old_conn, new_conn):
             tables.group_patients.insert(),
             patient_id=row['radarNo'],
             group_id=cohort_id,
-            created_group_id=m.group_id,
+            created_group_id=m.group_id,  # TODO use hospital
             from_date=row['dateReg'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
@@ -365,7 +365,7 @@ def migrate_patient_hospitals(old_conn, new_conn):
             tables.group_patients.insert(),
             patient_id=row['radarNo'],
             group_id=hospital_id,
-            created_group_id=m.group_id,
+            created_group_id=m.group_id,  # TODO use hospital
             from_date=row['dateReg'],
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
