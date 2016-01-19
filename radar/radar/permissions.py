@@ -20,13 +20,13 @@ def has_permission_for_patient(user, patient, permission):
     return grant
 
 
-def has_permission_for_user(user, other_user, permission):
+def has_permission_for_user(user, other_user, permission, explicit=False):
     """Check that the the user has a permission on any of the groups
     they share with the user."""
 
     if user.is_admin:
         grant = True
-    elif user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):
+    elif not explicit and user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):
         # Users can view themselves
         grant = True
     elif other_user.is_admin and permission == PERMISSION.EDIT_USER:
@@ -40,7 +40,7 @@ def has_permission_for_user(user, other_user, permission):
         grant = any(x.has_permission(permission) for x in group_users)
 
         # Users with the EDIT_USER_MEMBERSHIP permission get the VIEW_USER permission
-        if not grant and permission == PERMISSION.VIEW_USER:
+        if not grant and not explicit and permission == PERMISSION.VIEW_USER:
             grant = has_permission(user, PERMISSION.EDIT_USER_MEMBERSHIP)
 
     return grant
@@ -62,18 +62,19 @@ def has_permission(user, permission, group_type=None):
     return grant
 
 
-def has_permission_for_group(user, group, permission):
+def has_permission_for_group(user, group, permission, explicit=False):
     """Check that the user has a permission on a group."""
 
     if user.is_admin:
         return True
     else:
         # Users get permissions on the RaDAR group through their other groups
-        if is_radar_group(group) and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
+        if not explicit and is_radar_group(group) and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
             return has_permission(user, permission)
 
         # Users get permissions on cohort groups through their hospital groups
         if (
+            not explicit and
             group.type == GROUP_TYPE_COHORT and
             permission in (
                 PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT,
