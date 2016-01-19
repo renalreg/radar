@@ -199,3 +199,6 @@ def create_fixtures():
     add_patient_to_group(patient2, radar_group)
     add_patient_to_group(patient2, cohort1_group)
     add_patient_to_group(patient2, hospital1_group)
+
+    # Set the next patient id
+    db.session.execute("SELECT setval('patients_seq', (SELECT MAX(id) FROM patients) + 1)")
