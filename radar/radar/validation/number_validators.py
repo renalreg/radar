@@ -34,8 +34,13 @@ def clean_int(value):
         # Remove non-digits
         value = re.sub('[^0-9]', '', value)
 
-        # Remove leading zeros
-        value = re.sub('^0+', '', value)
+        if len(value) > 10:
+            # Remove extra leading zeros
+            if re.match('^0+$', value[0:-10]):
+                value = value[-10:]
+        elif len(value) < 10:
+            # Add leading zeros
+            value = value.zfill(10)
 
     return value
 
@@ -84,6 +89,10 @@ def nhs_no():
 
         if not check_number(value, MIN_NHS_NO):
             raise ValidationError('Not a valid NHS number.')
+
+        # Pad to 10 digits if value is a string
+        if isinstance(value, basestring):
+            value = value.zfill(10)
 
         return value
 

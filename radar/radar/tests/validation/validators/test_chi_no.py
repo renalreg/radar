@@ -6,16 +6,14 @@ from radar.validation.number_validators import chi_no
 
 def test_valid_int():
     assert valid(101299877) == 101299877
-    assert valid(101299877) == 101299877
 
 
 def test_valid_string():
-    assert valid('101299877') == '101299877'
-    assert valid('101299877') == '101299877'
+    assert valid('101299877') == '0101299877'
 
 
 def test_short_string():
-    assert valid('437631966') == '437631966'
+    assert valid('437631966') == '0437631966'
 
 
 def test_short_int():
