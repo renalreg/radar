@@ -1,8 +1,9 @@
-from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError
+from radar.validation.core import Validation, Field, pass_context, pass_old_obj, ValidationError, pass_call
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, optional
 from radar.permissions import has_permission_for_group, PERMISSION, has_permission_for_patient
 from radar.exceptions import PermissionDenied
+from radar.models.groups import GROUP_TYPE_COHORT
 
 
 class GroupPatientValidation(MetaValidationMixin, Validation):
@@ -11,14 +12,7 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
     patient = Field([required()])
     from_date = Field([required()])
     to_date = Field([optional()])
-    created_group = Field([optional()])  # TODO validate
-
-    @classmethod
-    def has_permission(cls, user, obj):
-        return (
-            has_permission_for_patient(user, obj.patient, PERMISSION.EDIT_PATIENT) and
-            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT)
-        )
+    created_group = Field([required()])
 
     @classmethod
     def is_duplicate(cls, obj):
@@ -26,20 +20,36 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
         duplicate = any(x != obj and x.group == group for x in obj.patient.current_group_patients)
         return duplicate
 
+    @classmethod
+    def check_permissions(cls, user, obj):
+        # Check permissions on patient
+        if not has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT):
+            raise PermissionDenied()
+
+        # Check permissions on group
+        if not has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP):
+            raise PermissionDenied()
+
+        # Check permissions on the created group
+        if not has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP):
+            raise PermissionDenied()
+
     @pass_context
+    @pass_call
     @pass_old_obj
-    def validate(self, ctx, old_obj, new_obj):
+    def validate(self, ctx, call, old_obj, new_obj):
         current_user = ctx['user']
 
-        # Updating existing record
+        # Created group is required when the group is a cohort
+        if new_obj.group.type == GROUP_TYPE_COHORT:
+            call.validators_for_field([required()], new_obj, self.created_group)
+
         if old_obj.id is not None:
             # Check permissions on old membership
-            if not self.has_permission(current_user, old_obj):
-                raise PermissionDenied()
+            self.check_permissions(current_user, old_obj)
 
         # Check permissions on new membership
-        if not self.has_permission(current_user, new_obj):
-            raise PermissionDenied()
+        self.check_permissions(current_user, new_obj)
 
         # Check that the patient doesn't already belong to this group
         # Note: it's important this check happens after the permission checks to prevent membership enumeration

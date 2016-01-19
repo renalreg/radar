@@ -68,13 +68,17 @@ def has_permission_for_group(user, group, permission):
     if user.is_admin:
         return True
     else:
-        if is_radar_group(group):
+        # Users get permissions on the RaDAR group through their other groups
+        if is_radar_group(group) and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
             return has_permission(user, permission)
 
         # Users get permissions on cohort groups through their hospital groups
         if (
             group.type == GROUP_TYPE_COHORT and
-            permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT, PERMISSION.RECRUIT_PATIENT) and
+            permission in (
+                PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT,
+                PERMISSION.RECRUIT_PATIENT, PERMISSION.EDIT_PATIENT_MEMBERSHIP
+            ) and
             has_permission(user, permission, group_type=GROUP_TYPE_HOSPITAL)
         ):
             return True
@@ -384,14 +388,7 @@ class GroupPatientPermission(Permission):
         if is_safe_method(request):
             return has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT)
         else:
-            # Not allowed to modify the RaDaR group
-            if is_radar_group(group):
-                return False
-
-            if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
-                return False
-
-            return True
+            return has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP)
 
 
 class GroupUserPermission(Permission):
