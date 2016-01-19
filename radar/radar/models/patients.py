@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, join, String, func, exists
+from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
@@ -46,7 +46,7 @@ ETHNICITIES = OrderedDict([
 class Patient(db.Model, MetaModelMixin):
     __tablename__ = 'patients'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, Sequence('patients_seq'), primary_key=True)
     comments = Column(String)
 
     @property

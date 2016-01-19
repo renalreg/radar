@@ -28,7 +28,7 @@ def create_group_diagnoses(conn, filename):
 
                 conn.execute(
                     tables.group_diagnoses.insert(),
-                    id=group_diagnosis_id,
+                    id=group_diagnosis_id,  # TODO this will break the sequence
                     group_id=cohort_id,
                     name=name,
                     display_order=display_order,

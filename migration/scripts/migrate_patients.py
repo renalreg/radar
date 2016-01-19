@@ -387,6 +387,9 @@ def cli(src, dest):
         migrate_patient_cohorts(src_conn, dest_conn)
         migrate_patient_hospitals(src_conn, dest_conn)
 
+        # Set the next patient id
+        dest_conn.execute("SELECT setval('patients_seq', (SELECT MAX(id) FROM patients) + 1)")
+
 
 if __name__ == '__main__':
     cli()
