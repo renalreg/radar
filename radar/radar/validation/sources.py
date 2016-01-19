@@ -1,4 +1,4 @@
-from radar.validation.core import ValidationError, pass_context
+from radar.validation.core import pass_context
 from radar.validation.core import Field
 from radar.validation.validators import required
 from radar.permissions import has_permission_for_group
