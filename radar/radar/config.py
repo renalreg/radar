@@ -12,6 +12,7 @@ from radar.utils import random_string
 
 SECRET_KEY_MIN_CRACK_TIME = 1000 * 365 * 24 * 60 * 60  # 1000 years in seconds
 
+DEFAULT_TESTING = False
 DEFAULT_DEBUG = False
 DEFAULT_SESSION_TIMEOUT = 1800
 
@@ -44,6 +45,7 @@ class InvalidConfig(Exception):
 
 
 class ConfigSerializer(Serializer):
+    TESTING = BooleanField()
     DEBUG = BooleanField()
     SECRET_KEY = StringField()
     SQLALCHEMY_DATABASE_URI = StringField()
@@ -69,6 +71,7 @@ class ConfigSerializer(Serializer):
 
 
 class ConfigValidation(Validation):
+    TESTING = Field([default(DEFAULT_TESTING)])
     DEBUG = Field([default(DEFAULT_DEBUG)])
     SECRET_KEY = Field([default(DEFAULT_SECRET_KEY), min_crack_time(SECRET_KEY_MIN_CRACK_TIME)])
     SQLALCHEMY_DATABASE_URI = Field([required(), sqlalchemy_connection_string()])

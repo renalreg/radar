@@ -63,6 +63,7 @@ PERMISSION_ROLES = {
         ROLE.IT,
         ROLE.ADMIN,
         ROLE.SENIOR_CLINICIAN,
+        ROLE.SENIOR_RESEARCHER,
     ],
     PERMISSION.EDIT_USER: [
         ROLE.IT,
