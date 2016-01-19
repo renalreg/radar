@@ -125,7 +125,7 @@ def migrate_radar_results(old_conn, new_conn):
         SELECT
             results.radar_no,
             CASE
-                WHEN result_date IS NOT NULL THEN
+                WHEN result_date IS NOT NULL AND result_date != '0000-00-00 00:00:00' THEN
                     result_date
                 ELSE
                     -- Use registration date if result date is missing
