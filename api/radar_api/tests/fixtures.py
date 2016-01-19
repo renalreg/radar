@@ -158,11 +158,14 @@ def create_fixtures():
     hospital1_clinician = create_user('hospital1_clinician')
     add_user_to_group(hospital1_clinician, hospital1_group, ROLE.CLINICIAN)
 
+    hospital1_senior_clinician = create_user('hospital1_senior_clinician')
+    add_user_to_group(hospital1_senior_clinician, hospital1_group, ROLE.SENIOR_CLINICIAN)
+
     hospital1_admin = create_user('hospital1_admin')
     add_user_to_group(hospital1_admin, hospital1_group, ROLE.ADMIN)
 
-    hospital1_admin = create_user('hospital1_it')
-    add_user_to_group(hospital1_admin, hospital1_group, ROLE.IT)
+    hospital1_it = create_user('hospital1_it')
+    add_user_to_group(hospital1_it, hospital1_group, ROLE.IT)
 
     hospital2_clinician = create_user('hospital2_clinician')
     add_user_to_group(hospital2_clinician, hospital2_group, ROLE.CLINICIAN)

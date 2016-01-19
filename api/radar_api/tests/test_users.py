@@ -1,8 +1,219 @@
 import json
+import itertools
 
 import pytest
 
-from radar_api.tests.fixtures import get_user
+from radar_api.tests.fixtures import get_user, create_user, add_user_to_group, get_group
+from radar.database import db
+from radar.models.groups import GROUP_TYPE_HOSPITAL
+from radar.roles import ROLE
+from radar.models.users import User
+
+
+def get_read_list_args():
+    usernames = ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'hospital1_clinician', 'null']
+    groups = [(GROUP_TYPE_HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
+
+    for username, group, is_admin in itertools.product(usernames, groups, [False, True]):
+        group_type, group_code, role = group
+
+        if username == 'admin':
+            expected = True
+        elif username in ('hospital1_admin', 'hospital1_senior_clinician'):
+            expected = True
+        else:
+            expected = False
+
+        yield username, group_type, group_code, role, is_admin, expected
+
+
+def get_read_args():
+    return get_read_list_args()
+
+
+def get_update_args():
+    usernames = ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null']
+    groups = [(GROUP_TYPE_HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN), (None, None, None)]
+
+    for username, group, is_admin in itertools.product(usernames, groups, [False, True]):
+        group_type, group_code, role = group
+
+        if username == 'admin':
+            expected = True
+        elif is_admin:
+            expected = False
+        elif username == 'hospital1_admin':
+            expected = group_code == 'HOSPITAL1'
+        else:
+            expected = False
+
+        yield username, group_type, group_code, role, is_admin, expected
+
+
+@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_read_list_args())
+def test_read_user_list(app, username, group_type, group_code, role, is_admin, expected):
+    user = get_user(username)
+
+    other_user = create_user('test', is_admin=is_admin)
+
+    if group_type is not None:
+        group = get_group(group_type, group_code)
+        add_user_to_group(other_user, group, role)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.get('/users?id=%s' % other_user.id)
+
+    assert response.status_code == 200
+
+    data = json.loads(response.data)
+
+    if expected:
+        assert len(data['data']) == 1
+    else:
+        print data
+        assert len(data['data']) == 0
+
+
+@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_read_args())
+def test_read_user(app, username, group_type, group_code, role, is_admin, expected):
+    user = get_user(username)
+
+    other_user = create_user('test', is_admin=is_admin)
+
+    if group_type is not None:
+        group = get_group(group_type, group_code)
+        add_user_to_group(other_user, group, role)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.get('/users/%s' % other_user.id)
+
+    if expected:
+        assert response.status_code == 200
+    else:
+        assert response.status_code == 403
+
+
+@pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
+def test_read_self(app, username):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.get('/users/%s' % user.id)
+    assert response.status_code == 200
+
+    response = client.get('/users?id=%s' % user.id)
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data['data']) == 1
+
+
+@pytest.mark.parametrize(['username', 'expected'], [
+    ('admin', True),
+    ('hospital1_clinician', False),
+    ('hospital1_senior_clinician', True),
+    ('hospital1_admin', True),
+    ('null', False),
+])
+def test_create_user(app, username, expected):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.post('/users', data={
+        'username': 'test',
+        'first_name': 'Bruce',
+        'last_name': 'Wayne',
+        'force_password_change': True,
+        'password': 'qzm5zuLVgL1t',
+        'email': 'foo@example.org',
+    })
+
+    created = User.query.filter(User.username == 'test').count() > 0
+
+    if expected:
+        assert response.status_code == 200
+        assert created
+    else:
+        assert response.status_code == 403
+        assert not created
+
+
+@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_update_args())
+def test_update_user(app, username, group_type, group_code, role, is_admin, expected):
+    user = get_user(username)
+
+    other_user = create_user('test', first_name='Foo', last_name='Bar', is_admin=is_admin)
+
+    if group_type is not None:
+        group = get_group(group_type, group_code)
+        add_user_to_group(other_user, group, role)
+
+    db.session.commit()
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.put('/users/%s' % other_user.id, data={
+        'first_name': 'Bruce',
+        'last_name': 'Wayne',
+    })
+
+    db.session.refresh(other_user)
+
+    if expected:
+        assert response.status_code == 200
+
+        assert other_user.first_name == 'Bruce'
+        assert other_user.last_name == 'Wayne'
+    else:
+        assert response.status_code == 403
+
+        assert other_user.first_name == 'Foo'
+        assert other_user.last_name == 'Bar'
+
+
+@pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
+def test_update_self(app, username):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.post('/users/%s' % user.id, data={
+        'first_name': 'Bruce',
+        'last_name': 'Wayne',
+    })
+
+    db.session.refresh(user)
+
+    assert response.status_code == 200
+
+    assert user.first_name == 'Bruce'
+    assert user.last_name == 'Wayne'
+
+
+@pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
+def test_delete_self(app, username):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.delete('/users/%s' % user.id)
+
+    # Not possible to delete users
+    assert response.status_code == 405
+
+    user = User.query.get(user.id)
+
+    assert user is not None
 
 
 @pytest.mark.parametrize(['username', 'other_username', 'expected'], [

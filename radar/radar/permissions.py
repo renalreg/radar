@@ -29,6 +29,9 @@ def has_permission_for_user(user, other_user, permission):
     elif user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):
         # Users can view themselves
         grant = True
+    elif other_user.is_admin and permission == PERMISSION.EDIT_USER:
+        # Users can't edit admins
+        grant = False
     else:
         # Groups in common with the user
         group_users = intersect_groups_with_user(user, other_user, user_membership=True)
@@ -338,26 +341,28 @@ class PatientGroupObjectPermission(PatientObjectPermission, GroupObjectPermissio
     pass
 
 
-class UserListPermission(Permission):
+class UserCreatePermission(Permission):
     def has_permission(self, request, user):
-        if not super(UserListPermission, self).has_permission(request, user):
+        if not super(UserCreatePermission, self).has_permission(request, user):
             return False
 
-        if is_safe_method(request):
-            return True
-        else:
-            return has_permission(user, PERMISSION.EDIT_USER_MEMBERSHIP)
+        return has_permission(user, PERMISSION.EDIT_USER_MEMBERSHIP)
 
 
-class UserDetailPermission(Permission):
+class UserRetrievePermission(Permission):
     def has_object_permission(self, request, user, obj):
-        if not super(UserDetailPermission, self).has_object_permission(request, user, obj):
+        if not super(UserRetrievePermission, self).has_object_permission(request, user, obj):
             return False
 
-        if is_safe_method(request):
-            return has_permission_for_user(user, obj, PERMISSION.VIEW_USER)
-        else:
-            return has_permission_for_user(user, obj, PERMISSION.EDIT_USER)
+        return has_permission_for_user(user, obj, PERMISSION.VIEW_USER)
+
+
+class UserUpdatePermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(UserUpdatePermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return has_permission_for_user(user, obj, PERMISSION.EDIT_USER)
 
 
 class RecruitPatientPermission(Permission):

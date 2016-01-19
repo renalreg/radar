@@ -104,7 +104,7 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_list_args())
-def test_demographics_read_list(app, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics_list(app, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -132,7 +132,7 @@ def test_demographics_read_list(app, username, group_type, group_code, source_ty
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_args())
-def test_demographics_read(app, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics(app, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -159,7 +159,7 @@ def test_demographics_read(app, username, group_type, group_code, source_type, e
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
-def test_demographics_delete(app, username, group_type, group_code, source_type, expected):
+def test_delete_demographics(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -184,7 +184,7 @@ def test_demographics_delete(app, username, group_type, group_code, source_type,
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
-def test_demographics_create(app, username, group_type, group_code, source_type, expected):
+def test_create_demographics(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -199,8 +199,6 @@ def test_demographics_create(app, username, group_type, group_code, source_type,
         'gender': 1,
         'date_of_birth': '2016-01-01',
     }
-
-    print data
 
     client = app.test_client()
     client.login(user)
@@ -224,7 +222,7 @@ def test_demographics_create(app, username, group_type, group_code, source_type,
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
-def test_demographics_update(app, username, group_type, group_code, source_type, expected):
+def test_update_demographics(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)

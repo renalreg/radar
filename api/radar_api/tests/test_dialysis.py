@@ -116,7 +116,7 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_list_args())
-def test_dialysis_read_list(app, username, group_type, group_code, source_type, expected):
+def test_read_dialysis_list(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -139,7 +139,7 @@ def test_dialysis_read_list(app, username, group_type, group_code, source_type, 
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_args())
-def test_dialysis_read(app, username, group_type, group_code, source_type, expected):
+def test_read_dialysis(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -161,7 +161,7 @@ def test_dialysis_read(app, username, group_type, group_code, source_type, expec
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
-def test_dialysis_delete(app, username, group_type, group_code, source_type, expected):
+def test_delete_dialysis(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -186,7 +186,7 @@ def test_dialysis_delete(app, username, group_type, group_code, source_type, exp
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
-def test_dialysis_create(app, username, group_type, group_code, source_type, expected):
+def test_create_dialysis(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -222,7 +222,7 @@ def test_dialysis_create(app, username, group_type, group_code, source_type, exp
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
-def test_dialysis_update(app, username, group_type, group_code, source_type, expected):
+def test_update_dialysis(app, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
