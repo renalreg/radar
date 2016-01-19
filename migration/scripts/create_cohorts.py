@@ -22,7 +22,7 @@ COHORTS = [
     {
         'code': 'APRT',
         'name': 'APRT Deficiency',
-        'short_name': 'APRT',
+        'short_name': 'APRT Deficiency',
         'pages': [
             'DIAGNOSIS',
             'GENETICS',
@@ -210,7 +210,7 @@ COHORTS = [
     {
         'code': 'IGANEPHRO',
         'name': 'IgA Nephropathy',
-        'short_name': 'IgA',
+        'short_name': 'IgA Nephropathy',
         'pages': [
             'DIAGNOSIS',
             'GENETICS',

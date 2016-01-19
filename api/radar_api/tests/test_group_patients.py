@@ -1,11 +1,28 @@
 import pytest
 
 from radar_api.tests.fixtures import get_user, get_patient, get_group
-from radar.models.groups import GROUP_TYPE_HOSPITAL
+from radar.models.groups import GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [
-    ('admin', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', True),
+    ('admin', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 200),
+
+    ('hospital_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 200),
+    ('hospital_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 200),
+    ('hospital_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_COHORT, 'COHORT2', 403),
+    ('hospital_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 422),
+    ('hospital_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 200),
+    ('hospital_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 200),
+    ('hospital_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_COHORT, 'COHORT2', 403),
+    ('hospital_clinician', GROUP_TYPE_COHORT, 'COHORT1', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 422),
+
+    ('hospital1_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 403),
+    ('hospital1_clinician', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 422),
+    ('hospital1_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 200),
+    ('hospital1_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 403),
+    ('hospital1_clinician', GROUP_TYPE_COHORT, 'COHORT1', GROUP_TYPE_HOSPITAL, 'HOSPITAL1', 422),
+
+    ('hospital2_clinician', GROUP_TYPE_COHORT, 'COHORT2', GROUP_TYPE_HOSPITAL, 'HOSPITAL2', 403),
 ])
 def test_create_group_patient(app, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
@@ -29,4 +46,4 @@ def test_create_group_patient(app, username, group_type, group_code, created_gro
         'from_date': '2015-01-01'
     })
 
-    print response.data
+    assert response.status_code == expected
