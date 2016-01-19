@@ -2,7 +2,7 @@
   <h1 class="page-header">Rare Disease Registry</h1>
 
   <div class="row">
-    <div class="col-sm-8">
+    <div ng-class="{'col-sm-8': !isAuthenticated, 'col-sm-12': isAuthenticated}">
       <div class="about">
         <p>
           Welcome to the national Rare Disease Registry (RaDaR). In partnership with Rare Diease Groups (RDGs),
@@ -31,12 +31,10 @@
       <div latest-posts></div>
     </div>
 
-    <div class="col-sm-4">
-      <div ng-show="!isAuthenticated">
+    <div class="col-sm-4" ng-show="!isAuthenticated">
         <h3>Login</h3>
 
         <div login-form></div>
-      </div>
     </div>
   </div>
 
