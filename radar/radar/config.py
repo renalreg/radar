@@ -99,8 +99,10 @@ class ConfigValidation(Validation):
             call.validators_for_field([required()], obj, self.UKRDC_SEARCH_URL)
 
         if obj['EMAIL_ENABLED'] is None:
-            # Disable emails by default in debug mode
-            call.validators_for_field([default(not obj['DEBUG'])], obj, self.EMAIL_ENABLED)
+            # Disable emails by default when either DEBUG or TESTING are set
+            default_email_enabled = not (obj['DEBUG'] or obj['TESTING'])
+
+            call.validators_for_field([default(default_email_enabled)], obj, self.EMAIL_ENABLED)
 
         return obj
 
