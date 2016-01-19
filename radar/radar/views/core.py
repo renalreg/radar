@@ -418,6 +418,9 @@ class UpdateModelView(UpdateModelViewMixin, ModelView):
     def put(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
+    def post(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
 
 class DestroyModelView(DestroyModelViewMixin, ModelView):
     def delete(self, *args, **kwargs):
