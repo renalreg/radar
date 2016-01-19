@@ -1,11 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, text
+from sqlalchemy import Integer, Column, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
-
-from radar.database import db
 
 
 def uuid_pk_column():

@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from sqlalchemy import Column, Boolean, String, Date, Index
 
 from radar.database import db

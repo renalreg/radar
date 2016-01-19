@@ -3,7 +3,7 @@ from radar.validation.core import Field, Validation, ValidationError, pass_new_o
 from radar.validation.sources import SourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
-from radar.validation.validators import valid_date_for_patient, required, optional, not_empty, min_, in_, max_length, none_if_blank
+from radar.validation.validators import valid_date_for_patient, required, optional, min_, in_, max_length, none_if_blank
 
 
 class MedicationValidation(PatientValidationMixin, SourceValidationMixin, MetaValidationMixin, Validation):
