@@ -4,11 +4,13 @@ from sqlalchemy import func
 
 from radar.database import db
 from radar.models.users import User
-from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE_OTHER, GROUP_CODE_RADAR, GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT
+from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE_OTHER, GROUP_CODE_RADAR,\
+    GROUP_TYPE_HOSPITAL, GROUP_TYPE_COHORT, GROUP_CODE_NHS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
 from radar.roles import ROLE
 from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.patient_numbers import PatientNumber
 
 
 def create_user(username, **kwargs):
@@ -114,6 +116,21 @@ def create_demographics(patient, **kwargs):
     return d
 
 
+def create_patient_number(patient, number_group, number, **kwargs):
+    set_default_users(kwargs)
+    set_default_source(kwargs)
+
+    n = PatientNumber(
+        patient=patient,
+        number_group=number_group,
+        number=number,
+        **kwargs
+    )
+    db.session.add(n)
+
+    return n
+
+
 def create_group(type, code, **kwargs):
     kwargs.setdefault('name', 'Test')
     kwargs.setdefault('short_name', 'Test')
@@ -141,6 +158,7 @@ def create_fixtures():
     create_user('null')
 
     radar_group = create_group(GROUP_TYPE_OTHER, GROUP_CODE_RADAR)
+    nhs_group = create_group(GROUP_TYPE_OTHER, GROUP_CODE_NHS, recruitment=True)
     cohort1_group = create_cohort('COHORT1')
     cohort2_group = create_cohort('COHORT2')
     hospital1_group = create_hospital('HOSPITAL1')
@@ -175,6 +193,7 @@ def create_fixtures():
     add_patient_to_group(patient1, cohort1_group)
     add_patient_to_group(patient1, hospital1_group)
     create_demographics(patient1)
+    create_patient_number(patient1, nhs_group, '9434765870')
 
     patient2 = create_patient(id=2)
     add_patient_to_group(patient2, radar_group)
