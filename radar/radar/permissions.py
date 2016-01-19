@@ -385,11 +385,18 @@ class GroupPatientPermission(Permission):
 
         group = obj.group
         patient = obj.patient
+        created_group = obj.created_group
 
         if is_safe_method(request):
             return has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT)
         else:
-            return has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP)
+            return (
+                has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True) or
+                (
+                    has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT_MEMBERSHIP) and
+                    has_permission_for_group(user, created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
+                )
+            )
 
 
 class GroupUserPermission(Permission):

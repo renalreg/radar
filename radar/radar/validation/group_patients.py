@@ -26,12 +26,14 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
         if not has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT):
             raise PermissionDenied()
 
-        # Check permissions on group
-        if not has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP):
-            raise PermissionDenied()
-
-        # Check permissions on the created group
-        if not has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True):
+        # Check group permissions
+        if not (
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True) or
+            (
+                has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP) and
+                has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
+            )
+        ):
             raise PermissionDenied()
 
     @pass_context
