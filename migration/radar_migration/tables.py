@@ -453,7 +453,7 @@ drugs = Table(
     'drugs', metadata,
     Column('id', Integer, primary_key=True),
     Column('name', String),
-    Column('drug_type_id', Integer),
+    Column('parent_drug_id', Integer),
 )
 
 drug_types = Table(

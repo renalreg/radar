@@ -7,39 +7,34 @@ from radar_migration import tables
 
 
 def create_drugs(conn, drug_types_filename, drugs_filename):
-    drug_type_map = {}
-
-    with open(drug_types_filename) as f:
-        reader = csv.reader(f)
-
-        for row in reader:
-            name = row[0]
-
-            result = conn.execute(
-                tables.drug_types.insert(),
-                name=name,
-            )
-
-            drug_type_id = result.inserted_primary_key[0]
-
-            drug_type_map[name] = drug_type_id
+    drug_map = {}
+    drugs = []
 
     with open(drugs_filename) as f:
         reader = csv.reader(f)
 
         for row in reader:
-            drug_name, drug_type = row
+            drug_name, parent_drug_name = row
 
-            try:
-                drug_type_id = drug_type_map[drug_type]
-            except KeyError:
-                raise ValueError('Unknown drug type: %s' % drug_type)
-
-            conn.execute(
+            result = conn.execute(
                 tables.drugs.insert(),
-                name=drug_name,
-                drug_type_id=drug_type_id,
+                name=drug_name
             )
+
+            drug_id = result.inserted_primary_key[0]
+
+            drug_map[drug_name] = drug_id
+
+            if parent_drug_name:
+                drugs.append((drug_name, parent_drug_name))
+
+    for drug_name, parent_drug_name in drugs:
+        drug_id = drug_map[drug_name]
+        parent_drug_id = drug_map[parent_drug_name]
+
+        print drug_id, parent_drug_id
+
+        conn.execute(tables.drugs.update().where(tables.drugs.c.id == drug_id).values(parent_drug_id=parent_drug_id))
 
 
 @click.command()

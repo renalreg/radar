@@ -58,5 +58,5 @@ class Drug(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    parent_drug_id = Column(Integer, ForeignKey('drug_types.id'))
+    parent_drug_id = Column(Integer, ForeignKey('drugs.id'))
     parent_drug = relationship('Drug')

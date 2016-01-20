@@ -1,7 +1,7 @@
 ACE Inhibitor,Antihypertensive
 Albumin,IV Infusion
 Alemtuzumab,Immunosuppressive
-Alpha Blockers,Antihypertensive
+Alpha Blocker,Antihypertensive
 Amlodipine,Calcium Channel Blocker
 Amoxicillin,Antibiotic
 Angiotensin II Receptor Antagonist,Antihypertensive
@@ -13,8 +13,8 @@ Atorvastatin,Statin
 Azathioprine,Immunosuppressive
 Basiliximab,Immunosuppressive
 Bendroflumethazide,Diuretic
-Beta Blockers,Antihypertensive
-Calcium Channel Blockers,Antihypertensive
+Beta Blocker,Antihypertensive
+Calcium Channel Blocker,Antihypertensive
 Candesartan Cilexetil,Angiotensin II Receptor Antagonist
 Captopril,ACE Inhibitor
 Cefalexin,Antibiotic
@@ -79,6 +79,7 @@ IV Infusion,
 Statin,
 Proton Pump Inhibitor,
 NSAID,
-Phosphate Binders,
+Phosphate Binder,
 ESA (EPO),
 Endocrine,
+Anticoagulant,
