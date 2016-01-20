@@ -21,7 +21,7 @@ def check_config(config):
     debug = config.setdefault('DEBUG', False)
     testing = config.setdefault('TESTING', False)
 
-    if 'SECRET_KEY' not in config:
+    if config.get('SECRET_KEY') is None:
         config['SECRET_KEY'] = random_string(string.ascii_letters + string.digits, 64)
 
     if config.get('SQLALCHEMY_DATABASE_URI') is None:
@@ -57,3 +57,5 @@ def check_config(config):
 
         if config.get('UKRDC_SEARCH_URL') is None:
             raise ConfigError('Missing UKRDC_SEARCH_URL')
+
+    print config

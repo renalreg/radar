@@ -29,9 +29,6 @@
         store.findMany('medication-dose-units').then(function(doseUnits) {
           $scope.doseUnits = doseUnits;
         }),
-        store.findMany('medication-frequencies').then(function(frequencies) {
-          $scope.frequencies = frequencies;
-        }),
         store.findMany('medication-routes').then(function(routes) {
           $scope.routes = routes;
         })

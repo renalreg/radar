@@ -33,7 +33,7 @@
 
       <tr>
         <th>Frequency</th>
-        <td>{{item.frequency.label | missing}}</td>
+        <td>{{item.frequency | missing}}</td>
       </tr>
 
       <tr>
@@ -130,7 +130,7 @@
         <div frm-label>Frequency</div>
 
         <div frm-control>
-          <div frm-select-field model="item.frequency" options="frequencies"></div>
+          <div frm-text-field model="item.frequency"></div>
           <div frm-errors errors="item.errors.frequency"></div>
         </div>
       </div>
@@ -170,7 +170,7 @@
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="getDose()">Dose</th>
-          <th sort-helper="frequency.label">Frequency</th>
+          <th sort-helper="frequency">Frequency</th>
           <th sort-helper="route.label">Route</th>
           <th sort-helper="getSource()">Source</th>
           <th></th>
@@ -188,7 +188,7 @@
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
           <td>{{item.getDose()}}</td>
-          <td>{{item.frequency.label | missing}}</td>
+          <td>{{item.frequency | missing}}</td>
           <td>{{item.route.label | missing}}</td>
           <td>{{item.unstructured | missing}}</td>
           <td class="source">{{item.getSource()}}</td>

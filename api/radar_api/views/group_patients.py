@@ -41,7 +41,6 @@ class GroupPatientUpdateView(UpdateModelView):
 
 
 class GroupPatientDestroyView(DestroyModelView):
-    serializer_class = GroupPatientSerializer
     model_class = GroupPatient
     permission_classes = [GroupPatientDestroyPermission]
 

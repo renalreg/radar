@@ -410,12 +410,8 @@ class GroupPatientDestroyPermission(Permission):
         if not super(GroupPatientDestroyPermission, self).has_object_permission(request, user, obj):
             return False
 
-        print has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT)
-        print has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=False)
-        print has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
-        print has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=False)
-        print has_permission_for_group(user, obj.created_group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True)
-
+        # Has view patient permission and explicit permission on the group or permission
+        # on the group and explicit permission on the created group
         return (
             has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT) and
             (
@@ -428,12 +424,39 @@ class GroupPatientDestroyPermission(Permission):
         )
 
 
-class GroupUserPermission(Permission):
-    def has_object_permission(self, request, user, obj):
-        if not super(GroupUserPermission, self).has_object_permission(request, user, obj):
+class GroupUserCreatePermission(Permission):
+    def has_permission(self, request, user):
+        if not super(GroupUserCreatePermission, self).has_permission(request, user):
             return False
 
-        if is_safe_method(request):
-            return has_permission_for_user(user, obj.user, PERMISSION.VIEW_USER)
-        else:
-            return has_permission_for_group(user, obj.group, PERMISSION.EDIT_USER_MEMBERSHIP)
+        return has_permission(user, PERMISSION.EDIT_USER_MEMBERSHIP)
+
+
+class GroupUserRetrievePermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupUserRetrievePermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return has_permission_for_user(user, obj.user, PERMISSION.VIEW_USER)
+
+
+class GroupUserUpdatePermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupUserUpdatePermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return (
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_USER_MEMBERSHIP) and
+            has_permission_for_group_role(user, obj.group, obj.role)
+        )
+
+
+class GroupUserDestroyPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupUserDestroyPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return (
+            has_permission_for_group(user, obj.group, PERMISSION.EDIT_USER_MEMBERSHIP) and
+            has_permission_for_group_role(user, obj.group, obj.role)
+        )
