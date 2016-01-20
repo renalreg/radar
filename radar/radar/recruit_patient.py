@@ -61,11 +61,11 @@ def search_ukrdc_patients(params):
     try:
         r = requests.post(url, json=request_data, timeout=timeout)
     except requests.exceptions.Timeout:
-        # TODO raise/log error?
+        # TODO raise error
         return []
 
     if r.status_code != 200:
-        # TODO raise/log error?
+        # TODO raise error
         return []
 
     response_data = r.json()
