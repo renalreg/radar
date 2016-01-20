@@ -72,7 +72,6 @@ def test_read_user_list(app, username, group_type, group_code, role, is_admin, e
     if expected:
         assert len(data['data']) == 1
     else:
-        print data
         assert len(data['data']) == 0
 
 

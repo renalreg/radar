@@ -241,7 +241,6 @@ class CreateModelViewMixin(object):
                     obj = serializer.update(obj, deserialized_data)
                     validation.after_update(ctx, old_obj, obj)
                 except ValidationError as e:
-                    print e.errors
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
 
