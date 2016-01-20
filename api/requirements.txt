@@ -17,6 +17,7 @@ requests==2.8.1
 six==1.10.0
 SQLAlchemy==1.0.8
 SQLAlchemy-Enum34==1.0.1
+termcolor==1.1.0
 tzlocal==1.2
 uWSGI==2.0.11.2
 Werkzeug==0.10.4

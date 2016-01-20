@@ -56,7 +56,7 @@ from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
 from radar.config import check_config
-from radar_api.debug import foo, bar
+from radar_api.debug import debug_before_request, debug_teardown_request
 
 
 class RadarApi(Flask):
@@ -79,8 +79,8 @@ class RadarApi(Flask):
         if self.debug:
             self.after_request(set_cors_headers)
 
-            self.before_request(foo)
-            self.teardown_request(bar)
+            self.before_request(debug_before_request)
+            self.teardown_request(debug_teardown_request)
 
         if not self.debug:
             stream_handler = logging.StreamHandler()
