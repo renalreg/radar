@@ -1,4 +1,4 @@
-from radar.models import MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES
+from radar.models import MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj, pass_call
 from radar.validation.sources import SourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
@@ -12,7 +12,7 @@ class MedicationValidation(PatientValidationMixin, SourceValidationMixin, MetaVa
     drug = Field([optional()])
     dose_quantity = Field([optional(), min_(0)])
     dose_unit = Field([optional(), in_(MEDICATION_DOSE_UNITS.keys())])
-    frequency = Field([optional(), in_(MEDICATION_FREQUENCIES.keys())])
+    frequency = Field([none_if_blank(), optional(), max_length(1000)])
     route = Field([optional(), in_(MEDICATION_ROUTES.keys())])
     drug_text = Field([none_if_blank(), optional(), max_length(10000)])
     dose_text = Field([none_if_blank(), optional(), max_length(10000)])
