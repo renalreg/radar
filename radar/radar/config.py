@@ -57,5 +57,3 @@ def check_config(config):
 
         if config.get('UKRDC_SEARCH_URL') is None:
             raise ConfigError('Missing UKRDC_SEARCH_URL')
-
-    print config

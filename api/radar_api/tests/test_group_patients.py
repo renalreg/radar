@@ -46,8 +46,6 @@ def test_create_group_patient(app, username, group_type, group_code, created_gro
         'from_date': '2015-01-01'
     })
 
-    print response.data
-
     assert response.status_code == expected
 
 
