@@ -195,7 +195,41 @@ def test_update_group_user(
     assert response.status_code == expected
 
 
+@pytest.mark.parametrize('username', ['admin', 'hospital1_clinician', 'cohort1_researcher', 'null'])
+def test_view_self(app, username):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.get('/group-users?user=%s' % user.id)
+
+    assert response.status_code == 200
+
+    data = json.loads(response.data)
+
+    assert len(data['data']) == len(user.group_users)
+
+    for group_user in user.group_users:
+        response = client.get('/group-users/%s' % group_user.id)
+        assert response.status_code == 200
+
+
+@pytest.mark.parametrize('username', ['admin', 'hospital1_clinician', 'cohort1_researcher', 'null'])
+def test_delete_self(app, username):
+    user = get_user(username)
+
+    client = app.test_client()
+    client.login(user)
+
+    for group_user in user.group_users:
+        response = client.delete('/group-users/%s' % group_user.id)
+
+        if user.is_admin:
+            assert response.status_code == 200
+        else:
+            assert response.status_code == 403
+
+
 # TODO update self
 # TODO create self
-# TODO delete self
-# TODO view self
