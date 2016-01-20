@@ -231,5 +231,105 @@ def test_delete_self(app, username):
             assert response.status_code == 403
 
 
-# TODO update self
-# TODO create self
+@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'expected'], [
+    ('admin', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN, 200),
+    ('admin', GROUP_TYPE.COHORT, 'COHORT1', ROLE.SENIOR_RESEARCHER, 200),
+
+    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN, 403),
+    ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', ROLE.RESEARCHER, 403),
+    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', ROLE.CLINICIAN, 403),
+
+    ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN, 403),
+    ('null', GROUP_TYPE.COHORT, 'COHORT1', ROLE.RESEARCHER, 403),
+
+    ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN, 403),
+    ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', ROLE.CLINICIAN, 403),
+])
+def test_create_self(app, username, group_type, group_code, role, expected):
+    user = get_user(username)
+    group = get_group(group_type, group_code)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.post('/group-users', data={
+        'user': user.id,
+        'group': group.id,
+        'role': str(role),
+    })
+
+    assert response.status_code == expected
+
+
+@pytest.mark.parametrize([
+    'is_admin',
+    'old_group_type', 'old_group_code', 'old_role',
+    'new_group_type', 'new_group_code', 'new_role',
+    'expected'
+], [
+    (
+        True,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        GROUP_TYPE.COHORT, 'COHORT1', ROLE.SENIOR_RESEARCHER,
+        200
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        403
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL2', ROLE.CLINICIAN,
+        403
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN,
+        403
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN,
+        403
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL2', ROLE.CLINICIAN,
+        403
+    ),
+    (
+        False,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN,
+        GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN,
+        403
+    ),
+])
+def test_update_self(
+    app,
+    is_admin,
+    old_group_type, old_group_code, old_role,
+    new_group_type, new_group_code, new_role,
+    expected
+):
+    user = create_user('test', is_admin=is_admin)
+    old_group = get_group(old_group_type, old_group_code)
+    group_user = add_user_to_group(user, old_group, old_role)
+
+    new_group = get_group(new_group_type, new_group_code)
+
+    client = app.test_client()
+    client.login(user)
+
+    response = client.post('/group-users/%s' % group_user.id, data={
+        'user': user.id,
+        'group': new_group.id,
+        'role': str(new_role),
+    })
+
+    assert response.status_code == expected
