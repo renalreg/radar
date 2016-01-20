@@ -32,8 +32,6 @@ def create_drugs(conn, drug_types_filename, drugs_filename):
         drug_id = drug_map[drug_name]
         parent_drug_id = drug_map[parent_drug_name]
 
-        print drug_id, parent_drug_id
-
         conn.execute(tables.drugs.update().where(tables.drugs.c.id == drug_id).values(parent_drug_id=parent_drug_id))
 
 

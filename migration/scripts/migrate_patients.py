@@ -3,6 +3,7 @@ import click
 
 from radar_migration import tables, Migration, EXCLUDED_UNITS
 from radar_migration.groups import convert_cohort_code
+from radar_migration import utils
 
 
 ETHNICITY_MAP = {
@@ -67,17 +68,6 @@ def convert_gender(old_value):
         new_value = None
 
     return new_value
-
-
-def number_to_group_code(value):
-    if len(value) != 10 or not value.isdigit():
-        return None
-    elif value >= '0101000000' and value <= '3112999999':
-        return 'CHI'
-    elif value >= '3200000010' and value <= '3999999999':
-        return 'HANDC'
-    else:
-        return 'NHS'
 
 
 def migrate_patients(old_conn, new_conn):
@@ -276,20 +266,31 @@ def migrate_patients(old_conn, new_conn):
             modified_user_id=m.user_id,
         )
 
-        # Note: NHS, CHI, H&C... numbers are all stored in the nhsno column
-        group_code = number_to_group_code(nhs_no)
+        number = nhs_no
+        number_group_code = None
 
-        if group_code is not None:
+        for group_code, f in (('NHS', utils.nhs_no), ('CHI', utils.chi_no), ('HANDC', utils.handc_no)):
+            try:
+                number = f(number)
+            except ValueError:
+                continue
+
+            number_group_code = group_code
+            break
+
+        if number_group_code is not None:
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
                 source_group_id=m.group_id,
                 source_type=m.source_type,
-                number_group_id=m.get_group_id('OTHER', group_code),
-                number=nhs_no,
+                number_group_id=m.get_group_id('OTHER', number_group_code),
+                number=number,
                 created_user_id=m.user_id,
                 modified_user_id=m.user_id,
             )
+        else:
+            print number, 'for', radar_no, 'is invalid'
 
 
 def migrate_patient_cohorts(old_conn, new_conn):
