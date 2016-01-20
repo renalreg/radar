@@ -76,16 +76,14 @@ def migrate_significant_diagnoses(old_conn, new_conn, significant_diagnoses_file
 
     for row in rows:
         patient_id, from_date, disorder_name = row
-        disorder_name = sdc.convert(disorder_name)
+        new_disorder_name = sdc.convert(disorder_name)
 
         # Significant diagnosis is being dropped
-        if disorder_name is None:
+        if new_disorder_name is None:
+            print disorder_name
             continue
 
-        try:
-            disorder_id = m.get_disorder_id(disorder_name)
-        except DisorderNotFound:
-            print disorder_name
+        disorder_id = m.get_disorder_id(new_disorder_name)
 
         new_conn.execute(
             tables.comorbidities.insert(),
