@@ -23,12 +23,6 @@ MEDICATION_DOSE_UNITS = OrderedDict([
     ('IU', 'IU'),
 ])
 
-MEDICATION_FREQUENCIES = OrderedDict([
-    ('DAILY', 'Daily'),
-    ('WEEKLY', 'Weekly'),
-    ('MONTHLY', 'Monthly'),
-])
-
 
 class Medication(db.Model, MetaModelMixin):
     __tablename__ = 'medications'
