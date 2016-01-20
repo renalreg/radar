@@ -74,6 +74,8 @@ echo 'migrate phenotypes...'
 python scripts/migrate_phenotypes.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
+echo 'migrate therapies...'
+python scripts/migrate_therapies.py "$SRC" "$DEST"
 echo 'migrate transplants...'
 python scripts/migrate_transplants.py "$SRC" "$DEST" data/transplant_modalities.csv
 echo 'add patients to NEPHROS...'
