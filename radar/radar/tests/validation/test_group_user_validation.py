@@ -6,6 +6,7 @@ from radar.roles import ROLE
 from radar.validation.group_users import GroupUserValidation
 from radar.validation.core import ValidationError
 from radar.tests.validation.helpers import validation_runner
+from radar.exceptions import PermissionDenied
 
 
 @pytest.fixture
@@ -74,7 +75,8 @@ def test_add_to_another_group():
     group_user.user = User()
     group_user.role = ROLE.RESEARCHER
 
-    invalid(group_user, user=current_user)
+    with pytest.raises(PermissionDenied):
+        valid(group_user, user=current_user)
 
 
 def test_add_to_group_not_managed_role():
@@ -92,7 +94,8 @@ def test_add_to_group_not_managed_role():
     group_user.user = User()
     group_user.role = ROLE.SENIOR_RESEARCHER
 
-    invalid(group_user, user=current_user)
+    with pytest.raises(PermissionDenied):
+        valid(group_user, user=current_user)
 
 
 def test_remove_own_membership():
@@ -109,7 +112,8 @@ def test_remove_own_membership():
     new_group_user.user = User()
     new_group_user.role = ROLE.RESEARCHER
 
-    invalid(new_group_user, user=current_user, old_obj=old_group_user)
+    with pytest.raises(PermissionDenied):
+        valid(new_group_user, user=current_user, old_obj=old_group_user)
 
 
 def test_update_own_membership():
@@ -128,7 +132,8 @@ def test_update_own_membership():
     new_group_user.user = current_user
     new_group_user.role = ROLE.RESEARCHER
 
-    invalid(new_group_user, user=current_user, old_obj=old_group_user)
+    with pytest.raises(PermissionDenied):
+        valid(new_group_user, user=current_user, old_obj=old_group_user)
 
 
 def test_already_in_group():

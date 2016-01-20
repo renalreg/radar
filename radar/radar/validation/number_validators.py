@@ -34,13 +34,8 @@ def clean_int(value):
         # Remove non-digits
         value = re.sub('[^0-9]', '', value)
 
-        if len(value) > 10:
-            # Remove extra leading zeros
-            if re.match('^0+$', value[0:-10]):
-                value = value[-10:]
-        elif len(value) < 10:
-            # Add leading zeros
-            value = value.zfill(10)
+        # Remove leading zeros
+        value = re.sub('^0+', '', value)
 
     return value
 
@@ -55,14 +50,23 @@ def check_range(value, min_value=None, max_value=None):
     )
 
 
-def check_number(value, min_value=None, max_value=None):
+def _nhs_no(value, min_value=None, max_value=None):
     if not isinstance(value, basestring):
         value = str(value)
 
-    value = value.zfill(10)
+    # Remove non-digits
+    value = re.sub('[^0-9]', '', value)
 
-    if not value.isdigit():
-        return False
+    if len(value) > 10:
+        # Remove extra leading zeros
+        if re.match('^0+$', value[0:-10]):
+            value = value[-10:]
+    elif len(value) < 10:
+        # Add leading zeros
+        value = value.zfill(10)
+
+    if len(value) != 10:
+        raise ValueError('Not 10 digits.')
 
     check_digit = 0
 
@@ -75,24 +79,23 @@ def check_number(value, min_value=None, max_value=None):
         check_digit = 0
 
     if check_digit != int(value[9]):
-        return False
+        raise ValueError('Bas check digit.')
 
     if not check_range(value, min_value, max_value):
-        return False
+        raise ValueError('Not in range.')
 
-    return True
+    return value
 
 
 def nhs_no():
     def nhs_no_f(value):
-        value = clean_int(value)
-
-        if not check_number(value, MIN_NHS_NO):
+        try:
+            new_value = _nhs_no(value, MIN_NHS_NO)
+        except ValueError:
             raise ValidationError('Not a valid NHS number.')
 
-        # Pad to 10 digits if value is a string
         if isinstance(value, basestring):
-            value = value.zfill(10)
+            value = new_value
 
         return value
 
@@ -101,10 +104,13 @@ def nhs_no():
 
 def chi_no():
     def chi_no_f(value):
-        value = clean_int(value)
-
-        if not check_number(value, MIN_CHI_NO, MAX_CHI_NO):
+        try:
+            new_value = _nhs_no(value, MIN_CHI_NO, MAX_CHI_NO)
+        except ValueError:
             raise ValidationError('Not a valid CHI number.')
+
+        if isinstance(value, basestring):
+            value = new_value
 
         return value
 
@@ -113,10 +119,13 @@ def chi_no():
 
 def handc_no():
     def handc_no_f(value):
-        value = clean_int(value)
-
-        if not check_number(value, MIN_HANDC_NO, MAX_HANDC_NO):
+        try:
+            new_value = _nhs_no(value, MIN_HANDC_NO, MAX_HANDC_NO)
+        except ValueError:
             raise ValidationError('Not a valid H&C number.')
+
+        if isinstance(value, basestring):
+            value = new_value
 
         return value
 

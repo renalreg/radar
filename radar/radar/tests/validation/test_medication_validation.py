@@ -33,7 +33,7 @@ def medication(patient):
     obj.drug_text = 'Paracetamol'
     obj.dose_quantity = 100
     obj.dose_unit = 'MG'
-    obj.frequency = 'DAILY'
+    obj.frequency = 'Daily'
     obj.route = 'ORAL'
     return obj
 
@@ -46,7 +46,7 @@ def test_valid(medication):
     assert obj.drug_text is None
     assert obj.dose_quantity == 100
     assert obj.dose_unit == 'MG'
-    assert obj.frequency == 'DAILY'
+    assert obj.frequency == 'Daily'
     assert obj.route == 'ORAL'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -156,11 +156,6 @@ def test_dose_unit_invalid(medication):
 def test_frequency_missing(medication):
     medication.frequency = None
     valid(medication)
-
-
-def test_frequency_invalid(medication):
-    medication.frequency = 'FOO'
-    invalid(medication)
 
 
 def test_route_missing(medication):
