@@ -6,18 +6,18 @@ from werkzeug.local import LocalProxy
 from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
-from radar.config import get_config_value
+from radar.config import config
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 
 
 def get_session_timeout():
-    return get_config_value('SESSION_TIMEOUT')
+    return config['SESSION_TIMEOUT']
 
 
 def get_secret_key():
-    return get_config_value('SECRET_KEY')
+    return config['SECRET_KEY']
 
 
 def login(username, password):

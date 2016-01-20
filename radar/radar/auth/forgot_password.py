@@ -8,15 +8,15 @@ from radar.auth.sessions import logout_user
 from radar.database import db
 from radar.models import User
 from radar.mail import send_email_from_template
-from radar.config import get_config_value
+from radar.config import config
 
 
 def get_password_reset_max_age():
-    return get_config_value('PASSWORD_RESET_MAX_AGE')
+    return config['PASSWORD_RESET_MAX_AGE']
 
 
 def get_base_url():
-    return get_config_value('BASE_URL')
+    return config['BASE_URL']
 
 
 def generate_reset_password_token():

@@ -1,7 +1,7 @@
 import werkzeug.security
 import zxcvbn
 
-from radar.config import get_config_value
+from radar.config import config
 from radar.utils import random_string
 
 NATO_ALPHABET = {
@@ -62,15 +62,15 @@ HASH_METHOD = 'pbkdf2:sha1:50000'
 
 
 def get_password_alphabet():
-    return get_config_value('PASSWORD_ALPHABET')
+    return config['PASSWORD_ALPHABET']
 
 
 def get_password_length():
-    return get_config_value('PASSWORD_LENGTH')
+    return config['PASSWORD_LENGTH']
 
 
 def get_password_min_score():
-    return get_config_value('PASSWORD_MIN_SCORE')
+    return config['PASSWORD_MIN_SCORE']
 
 
 def generate_password():
