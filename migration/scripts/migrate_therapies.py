@@ -14,7 +14,7 @@ def migrate_therapies(old_conn, new_conn):
                 WHEN x.from_date IS NOT NULL THEN
                     x.from_date
                 ELSE
-                    -- Use registration date if FROM date is missing
+                    -- Use registration date if from date is missing
                     CAST(LEAST(
                         COALESCE(patient.dateReg, NOW()),
                         COALESCE(rdr_radar_number.creationDate, NOW()),
@@ -85,6 +85,62 @@ def migrate_therapies(old_conn, new_conn):
             source_type=m.source_type,
             from_date=from_date,
             drug_id=drug_id,
+            created_user_id=m.user_id,
+            modified_user_id=m.user_id,
+        )
+
+    rows = old_conn.execute(text("""
+        SELECT
+            x.radar_no,
+            CASE
+                WHEN x.from_date IS NOT NULL THEN
+                    x.from_date
+                ELSE
+                    -- Use registration date if from date is missing
+                    CAST(LEAST(
+                        COALESCE(patient.dateReg, NOW()),
+                        COALESCE(rdr_radar_number.creationDate, NOW()),
+                        COALESCE(tbl_demographics.DATE_REG, NOW())
+                    ) AS DATE)
+            END as from_date,
+            drug
+        FROM (
+            SELECT radar_no, from_date, drug FROM (
+                SELECT radar_no AS radar_no, date_treat AS from_date, p_other_drug1 AS drug FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, p_other_drug2 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, p_other_drug3 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, p_other_drug4 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, other_drug1 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, other_drug2 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, other_drug3 FROM tbl_therapy
+                UNION
+                SELECT radar_no, date_treat, other_drug4 FROM tbl_therapy
+            ) AS y
+            WHERE drug IS NOT NULL
+            GROUP BY radar_no, drug
+        ) AS x
+        JOIN patient ON (
+            y.radar_no = patient.radarNo AND
+            patient.unitcode NOT IN %s
+        )
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
+    """ % EXCLUDED_UNITS))
+
+    for radar_no, from_date, drug in rows:
+        new_conn.execute(
+            tables.medications.insert(),
+            patient_id=radar_no,
+            source_group_id=m.group_id,  # TODO
+            source_type=m.source_type,
+            from_date=from_date,
+            drug_text=drug,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
