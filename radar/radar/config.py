@@ -1,8 +1,16 @@
 import string
 
 from flask import current_app
+from werkzeug.local import LocalProxy
 
 from radar.utils import random_string
+
+
+config = LocalProxy(lambda: get_config())
+
+
+def get_config():
+    return current_app.config
 
 
 class ConfigError(Exception):
@@ -28,6 +36,8 @@ def check_config(config):
     elif base_url.endswith('/'):
         raise ConfigError('BASE_URL should not have a trailing slash')
 
+    config.setdefault('READ_ONLY', False)
+
     config.setdefault('SESSION_TIMEOUT', 1800)  # 30 mins
 
     config.setdefault('PASSWORD_ALPHABET', string.ascii_lowercase + string.digits)
@@ -47,7 +57,3 @@ def check_config(config):
 
         if config.get('UKRDC_SEARCH_URL') is None:
             raise ConfigError('Missing UKRDC_SEARCH_URL')
-
-
-def get_config_value(key):
-    return current_app.config[key]
