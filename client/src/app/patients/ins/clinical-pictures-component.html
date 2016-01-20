@@ -57,8 +57,13 @@
       </tr>
 
       <tr>
-        <th>Possible Immunisation Trigger</th>
-        <td><span tick="item.possibleImmunisationTrigger"></span></td>
+        <th>Infection Necessitating Hospitalisation</th>
+        <td><span tick="item.infection"></span></td>
+      </tr>
+
+      <tr ng-if="item.infection">
+        <th>Infection Details</th>
+        <td class="newlines">{{item.infectionDetails | missing}}</td>
       </tr>
 
       <tr>
@@ -178,11 +183,20 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Possible Immunisation Trigger</div>
+        <div frm-label>Infection Necessitating Hospitalisation</div>
 
         <div frm-control>
-          <div frm-boolean-field model="item.possibleImmunisationTrigger"></div>
-          <div frm-errors errors="item.errors.possibleImmunisationTrigger"></div>
+          <div frm-boolean-field model="item.infection"></div>
+          <div frm-errors errors="item.errors.infection"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group ng-if="item.infection">
+        <div frm-label>Infection Details</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.infectionDetails"></div>
+          <div frm-errors errors="item.errors.infectionDetails"></div>
         </div>
       </div>
 

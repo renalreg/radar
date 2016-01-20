@@ -17,7 +17,8 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
     hypertension = Field([optional()])
     rash = Field([optional()])
     rash_details = Field([none_if_blank(), optional(), max_length(10000)])
-    possible_immunisation_trigger = Field([optional()])
+    infection = Field([optional()])
+    infection_details = Field([none_if_blank(), optional(), max_length(10000)])
     ophthalmoscopy = Field([optional()])
     ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(10000)])
     comments = Field([none_if_blank(), optional(), max_length(10000)])
@@ -30,6 +31,10 @@ class InsClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin, 
         # Remove ophthalmoscopy details if a ophthalmoscopy test wan't performed
         if not obj.ophthalmoscopy:
             obj.ophthalmoscopy_details = None
+
+        # Remove infection details if no infection
+        if not obj.infection:
+            obj.infection_details = None
 
         return obj
 
