@@ -35,7 +35,7 @@ def migrate_users(old_conn, new_conn):
         new_conn.execute(
             tables.users.insert(),
             username=username,
-            password_hash=password_hash,
+            password=password_hash,
             email=email,
             first_name=row['firstName'],
             last_name=row['lastName'],

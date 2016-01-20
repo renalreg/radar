@@ -36,7 +36,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     id = Column(Integer, primary_key=True)
     _username = Column('username', String, nullable=False)
-    password_hash = Column(String)
+    _password = Column('password', String)
     _email = Column('email', String)
     first_name = Column(String)
     last_name = Column(String)
@@ -54,7 +54,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
-        self._password = None
+        self.plaintext_password = None
 
     @hybrid_property
     def username(self):
@@ -84,13 +84,21 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     @property
     def password(self):
-        return getattr(self, '_password', None)
+        return getattr(self, 'plaintext_password', None)
 
     @password.setter
     def password(self, value):
-        self._password = value
+        self.plaintext_password = value
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
+
+    @property
+    def password_hash(self):
+        return self._password
+
+    @password_hash.setter
+    def password_hash(self, value):
+        self._password = value
 
     def check_password(self, password):
         return (
@@ -99,7 +107,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         )
 
     @property
-    def is_old_password_hash(self):
+    def needs_password_rehash(self):
         if self.password_hash is None:
             r = False
         else:
