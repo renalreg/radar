@@ -1,6 +1,7 @@
 from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.core import Serializer
-from radar.serializers.fields import DateField, IntegerField, ListField, StringField
+from radar.serializers.fields import DateField, IntegerField, ListField, EnumField
+from radar.models.groups import GROUP_TYPE
 
 
 class DataPointSerializer(Serializer):
@@ -28,4 +29,4 @@ class RecruitmentByMonthRequestSerializer(Serializer):
 
 class PatientsByGroupRequestSerializer(Serializer):
     group = GroupReferenceField()
-    group_type = StringField()
+    type = EnumField(GROUP_TYPE)
