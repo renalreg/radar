@@ -38,7 +38,7 @@ def login(username, password):
         return None
 
     # Update old password hashes
-    if user.is_old_password_hash:
+    if user.needs_password_rehash:
         user.password = password
 
     # Create a new session

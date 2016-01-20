@@ -73,13 +73,13 @@ class UserUpdateView(UpdateModelView):
 
     def update(self, *args, **kwargs):
         obj = self.get_object()
-        old_password_hash = obj.password_hash
+        old_password = obj.password
         old_email = obj.email
 
         r = super(UserUpdateView, self).update(*args, **kwargs)
 
         # Changed password or email
-        if obj.password_hash != old_password_hash or obj.email != old_email:
+        if obj.password != old_password or obj.email != old_email:
             # User changed their own password
             if current_user == obj:
                 logout_other_sessions()

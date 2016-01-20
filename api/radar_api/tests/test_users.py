@@ -317,5 +317,6 @@ def test_serialization(app):
 
     for user in data['data']:
         assert 'username' in user
+        assert 'password' not in user
         assert 'password_hash' not in user
         assert 'reset_password_token' not in user
