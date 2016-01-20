@@ -16,8 +16,8 @@
       if (this.drug) {
         r = this.drug.name;
 
-        if (this.parentDrug) {
-          r += ' (' + this.parentDrug.name + ')';
+        if (this.drug.parentDrug) {
+          r += ' (' + this.drug.parentDrug.name + ')';
         }
       } else {
         r = this.drugText;
