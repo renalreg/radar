@@ -55,13 +55,12 @@
         self.load(promise);
       });
 
-      // TODO
       // Reset the result value when the observation changes
-      // $scope.$watch('item.observation', function() {
-      //   if ($scope.item) {
-      //     $scope.item.value = null;
-      //   }
-      // });
+      $scope.$watch('item.observation', function(oldValue, newValue) {
+        if ($scope.editing && oldValue != newValue) {
+          $scope.item.value = null;
+        }
+      });
 
       $scope.create = function() {
         var item = store.create('results', {
