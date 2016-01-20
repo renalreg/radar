@@ -1,7 +1,8 @@
 from sqlalchemy import or_, case, desc, extract, null, func, and_
 
 from sqlalchemy.orm import aliased, subqueryload
-from radar.models import PatientAlias, PatientNumber
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_numbers import PatientNumber
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser

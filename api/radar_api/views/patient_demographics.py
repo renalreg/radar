@@ -2,7 +2,8 @@ from radar_api.serializers.patient_demographics import PatientDemographicsSerial
 from radar.auth.sessions import current_user
 from radar.validation.patient_demographics import PatientDemographicsValidation
 from radar.views.codes import CodedIntegerListView
-from radar.models import PatientDemographics, GENDERS, ETHNICITIES
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import GENDERS, ETHNICITIES
 from radar.views.sources import RadarObjectViewMixin
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar.views.codes import CodedStringListView

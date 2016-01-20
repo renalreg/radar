@@ -1,5 +1,5 @@
 from radar_api.serializers.group_users import GroupUserSerializer
-from radar.models import GroupUser
+from radar.models.groups import GroupUser
 from radar.validation.group_users import GroupUserValidation
 from radar.views.core import ListCreateModelView, RetrieveUpdateDestroyModelView
 from radar.views.users import filter_query_by_user_permissions, filter_query_by_user

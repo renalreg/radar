@@ -2,7 +2,7 @@ from radar_api.serializers.groups import GroupSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.models import ModelSerializer
-from radar.models import Genetics, GENETICS_KARYOTYPES
+from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
 from radar.serializers.fields import LabelledIntegerField
 
 

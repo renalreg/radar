@@ -1,4 +1,4 @@
-from radar.models import User
+from radar.models.users import User
 from radar.validation.utils import VALIDATIONS
 from radar.database import db
 

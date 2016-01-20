@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequ
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 from radar.database import db
-from radar.models import MetaModelMixin
+from radar.models.common import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group

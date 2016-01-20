@@ -1,5 +1,5 @@
 from radar_api.serializers.genetics import GeneticsSerializer
-from radar.models import Genetics
+from radar.models.genetics import Genetics
 from radar.validation.genetics import GeneticsValidation, GENETICS_KARYOTYPES
 from radar.views.groups import GroupObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView

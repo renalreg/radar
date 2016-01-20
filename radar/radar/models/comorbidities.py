@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models import MetaModelMixin
+from radar.models.common import MetaModelMixin
 from radar.models.common import uuid_pk_column, patient_id_column, patient_relationship
 
 

@@ -1,5 +1,5 @@
 from radar_api.serializers.patient_consultants import PatientConsultantSerializer
-from radar.models import PatientConsultant
+from radar.models.patient_consultants import PatientConsultant
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 from radar.validation.patient_consultants import PatientConsultantValidation
 

@@ -3,7 +3,7 @@ from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.patient_addresses import PatientAddressProxy
 from radar.serializers.models import ModelSerializer
-from radar.models import PatientAddress
+from radar.models.patient_addresses import PatientAddress
 
 
 class PatientAddressSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):

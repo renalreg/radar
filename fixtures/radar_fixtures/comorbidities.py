@@ -1,5 +1,5 @@
 from radar_fixtures.validation import validate_and_add
-from radar.models import Disorder
+from radar.models.comorbidities import Disorder
 
 DISORDERS = [
     'Auto Immune Disease',

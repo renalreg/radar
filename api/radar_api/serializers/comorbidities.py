@@ -2,7 +2,7 @@ from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.models import ModelSerializer, ReferenceField
-from radar.models import Disorder, Comorbidity
+from radar.models.comorbidities import Disorder, Comorbidity
 from radar.serializers.core import Serializer
 from radar.serializers.fields import IntegerField, ListField
 from radar_api.serializers.groups import TinyGroupSerializer

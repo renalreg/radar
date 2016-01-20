@@ -3,7 +3,7 @@ from radar.validation.posts import PostValidation
 from radar.views.core import ListModelView, CreateModelView, RetrieveModelView, \
     UpdateModelView, DestroyModelView
 from radar.permissions import AdminPermission
-from radar.models import Post
+from radar.models.posts import Post
 
 
 class PostListView(ListModelView):

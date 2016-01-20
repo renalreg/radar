@@ -1,5 +1,5 @@
 from radar_api.serializers.renal_imaging import RenalImagingSerializer
-from radar.models import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
+from radar.models.renal_imaging import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
 from radar.validation.renal_imaging import RenalImagingValidation
 from radar.views.codes import CodedStringListView
 from radar.views.sources import SourceObjectViewMixin
