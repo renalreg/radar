@@ -4,7 +4,7 @@ from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, IntegerField, ListField, BooleanField, CommaSeparatedField
 from radar.serializers.models import ModelSerializer
-from radar.models import User
+from radar.models.users import User
 
 
 class UserSerializer(MetaSerializerMixin, ModelSerializer):

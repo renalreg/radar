@@ -1,5 +1,5 @@
 from radar_api.serializers.salt_wasting_clinical_features import SaltWastingClinicalFeaturesSerializer
-from radar.models import SaltWastingClinicalFeatures
+from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.validation.salt_wasting import SaltWastingClinicalFeaturesValidation
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
 

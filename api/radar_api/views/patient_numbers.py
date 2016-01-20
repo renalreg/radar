@@ -1,5 +1,5 @@
 from radar_api.serializers.patient_numbers import PatientNumberSerializer
-from radar.models import PatientNumber
+from radar.models.patient_numbers import PatientNumber
 from radar.validation.patient_numbers import PatientNumberValidation
 from radar.views.sources import RadarObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView, DemographicsViewMixin

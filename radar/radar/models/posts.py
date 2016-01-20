@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Text, DateTime
 
 from radar.database import db
-from radar.models import MetaModelMixin
+from radar.models.common import MetaModelMixin
 
 
 class Post(db.Model, MetaModelMixin):

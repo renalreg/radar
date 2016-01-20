@@ -1,4 +1,4 @@
-from radar.models import User
+from radar.models.users import User
 from radar.serializers.fields import StringField, IntegerField
 from radar.serializers.models import ModelSerializer
 

@@ -1,5 +1,5 @@
 from radar_api.serializers.plasmapheresis import PlasmapheresisSerializer
-from radar.models import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
+from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
 from radar.validation.plasmapheresis import PlasmapheresisValidation
 from radar.views.codes import CodedStringListView
 from radar.views.sources import SourceObjectViewMixin

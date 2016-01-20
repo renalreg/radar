@@ -6,7 +6,7 @@ from radar.auth.exceptions import UserNotFound, InvalidToken
 from radar.auth.passwords import generate_password_hash, check_password_hash
 from radar.auth.sessions import logout_user
 from radar.database import db
-from radar.models import User
+from radar.models.users import User
 from radar.mail import send_email_from_template
 from radar.config import config
 

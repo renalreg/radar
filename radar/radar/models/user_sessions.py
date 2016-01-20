@@ -2,7 +2,7 @@ from sqlalchemy import String, Column, Integer, ForeignKey, DateTime, Boolean, I
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 from radar.database import db
-from radar.models import User, AnonymousUser
+from radar.models.users import User, AnonymousUser
 
 
 class UserSession(db.Model):

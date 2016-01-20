@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Dialysis, Patient, PatientDemographics
+from radar.models.patients import Patient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.dialysis import Dialysis
 from radar.models.groups import Group
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
