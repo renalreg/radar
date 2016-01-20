@@ -168,6 +168,10 @@ def create_fixtures():
     add_user_to_group(hospital_clinician, hospital1_group, ROLE.CLINICIAN)
     add_user_to_group(hospital_clinician, hospital2_group, ROLE.CLINICIAN)
 
+    hospital_senior_clinician = create_user('hospital_senior_clinician')
+    add_user_to_group(hospital_senior_clinician, hospital1_group, ROLE.SENIOR_CLINICIAN)
+    add_user_to_group(hospital_senior_clinician, hospital2_group, ROLE.SENIOR_CLINICIAN)
+
     cohort1_researcher = create_user('cohort1_researcher')
     add_user_to_group(cohort1_researcher, cohort1_group, ROLE.RESEARCHER)
 
