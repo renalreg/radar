@@ -1,6 +1,8 @@
 from collections import OrderedDict
 from enum import Enum
 
+from radar.config import config
+
 
 class ROLE(Enum):
     IT = 'IT'
@@ -92,10 +94,22 @@ MANAGED_ROLES = {
     ]
 }
 
+READ_ONLY_PERMISSIONS = [
+    PERMISSION.VIEW_PATIENT,
+    PERMISSION.VIEW_DEMOGRAPHICS,
+    PERMISSION.VIEW_USER,
+]
+
 
 def get_roles_managed_by_role(role):
-    return MANAGED_ROLES.get(role, [])
+    if config['READ_ONLY']:
+        return []
+    else:
+        return MANAGED_ROLES.get(role, [])
 
 
 def get_roles_with_permission(permission):
-    return PERMISSION_ROLES.get(permission, [])
+    if config['READ_ONLY'] and permission not in READ_ONLY_PERMISSIONS:
+        return []
+    else:
+        return PERMISSION_ROLES.get(permission, [])
