@@ -1,7 +1,7 @@
 import random
 from datetime import date
 
-from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES
+from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 from radar_fixtures.utils import random_date
 from radar_fixtures.constants import MEDICATION_NAMES
 from radar_fixtures.validation import validate_and_add
@@ -22,7 +22,7 @@ def create_medications_f():
             medication.drug_text = random.choice(MEDICATION_NAMES)
             medication.dose_quantity = random.randint(1, 10)
             medication.dose_unit = random.choice(MEDICATION_DOSE_UNITS.keys())
-            medication.frequency = random.choice(MEDICATION_FREQUENCIES.keys())
+            medication.frequency = 'Daily'
             medication.route = random.choice(MEDICATION_ROUTES.keys())
 
             validate_and_add(medication)
