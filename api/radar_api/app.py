@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import logging
-import sys
 
 from flask import Flask
 
@@ -56,7 +55,7 @@ from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
 from radar.template_filters import register_template_filters
-from radar.config import check_config, InvalidConfig
+from radar.config import check_config
 from radar_api.debug import foo, bar
 
 
@@ -73,7 +72,7 @@ class RadarApi(Flask):
         else:
             self.config.update(config)
 
-        self.config.update(check_config(self.config))
+        check_config(self.config)
 
         db.init_app(self)
 
@@ -150,10 +149,6 @@ class RadarApi(Flask):
 
 
 def create_app(config=None):
-    try:
-        app = RadarApi(config)
-    except InvalidConfig as e:
-        print(e, file=sys.stderr)
-        raise SystemExit(1)
+    app = RadarApi(config)
 
     return app
