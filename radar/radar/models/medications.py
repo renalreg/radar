@@ -8,8 +8,14 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 
 MEDICATION_ROUTES = OrderedDict([
     ('ORAL', 'Oral'),
-    ('RECTAL', 'Rectal'),
+    ('IV', 'Intravenous'),
+    ('IM', 'Intramuscular'),
+    ('SC', 'Subcutaneous'),
+    ('PR', 'Per Rectum'),
+    ('TOPICAL', 'Topical'),
+    ('PATCH', 'Patch'),
 ])
+
 
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
