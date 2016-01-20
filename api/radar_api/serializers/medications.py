@@ -6,9 +6,23 @@ from radar.serializers.fields import LabelledStringField
 from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES, Drug
 
 
-class DrugSerializer(ModelSerializer):
+class ParentDrugSerializer(ModelSerializer):
     class Meta(object):
         model_class = Drug
+        exclude = ['parent_drug_id']
+
+
+class ParentDrugReferenceField(ReferenceField):
+    model_class = Drug
+    serializer_class = ParentDrugSerializer
+
+
+class DrugSerializer(ModelSerializer):
+    parent_drug = ParentDrugReferenceField()
+
+    class Meta(object):
+        model_class = Drug
+        exclude = ['parent_drug_id']
 
 
 class DrugReferenceField(ReferenceField):

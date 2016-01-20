@@ -15,6 +15,10 @@
 
       if (this.drug) {
         r = this.drug.name;
+
+        if (this.parentDrug) {
+          r += ' (' + this.parentDrug.name + ')';
+        }
       } else {
         r = this.drugText;
       }

@@ -4,7 +4,7 @@
       <tr>
         <th></th>
         <th sort-helper="name">Name</th>
-        <th>TODO</th>
+        <th>Parent</th>
       </tr>
     </thead>
 
@@ -14,7 +14,7 @@
           <button type="button" ng-click="drop()" class="btn btn-primary btn-xs">Deselect</button>
         </td>
         <td>{{selectedDrug.name}}</td>
-        <td></td>
+        <td>{{selectedDrug.parentDrug.name | missing}}</td>
       </tr>
 
       <tr>
@@ -33,7 +33,7 @@
         </td>
 
         <td>{{drug.name}}</td>
-        <td></td>
+        <td>{{drug.parentDrug.name | missing}}</td>
       </tr>
     </tbody>
   </table>
