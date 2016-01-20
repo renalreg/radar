@@ -16,7 +16,6 @@ MEDICATION_ROUTES = OrderedDict([
     ('PATCH', 'Patch'),
 ])
 
-
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
     ('MG', 'mg'),
