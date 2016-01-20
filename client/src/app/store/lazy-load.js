@@ -9,12 +9,12 @@
       var id;
 
       if (_.isObject(data)) {
-        id = data.id
+        id = data.id;
 
         item = store.getFromStore(modelName, id);
 
         if (item === null) {
-            item = store.pushToStore(store.create(modelName, data));
+          item = store.pushToStore(store.create(modelName, data));
         }
       } else if (data) {
         id = data;
