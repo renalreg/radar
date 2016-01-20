@@ -256,6 +256,7 @@ medications = Table(
     Column('drug_id', Integer),
     Column('from_date', Date),
     Column('to_date', Date),
+    Column('dose_quantity', String),
     Column('drug_text', String),
     Column('dose_text', String),
     Column('created_user_id', Integer),

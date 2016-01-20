@@ -56,6 +56,8 @@ echo 'migrate hnf1b...'
 python scripts/migrate_hnf1b.py "$SRC" "$DEST"
 echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
+echo 'migrate immunosuppressives...'
+python scripts/migrate_immunosuppressives.py "$SRC" "$DEST"
 echo 'migrate ins...'
 python scripts/migrate_ins.py "$SRC" "$DEST" data/ins_relapse_drugs.csv
 echo 'migrate medications...'
