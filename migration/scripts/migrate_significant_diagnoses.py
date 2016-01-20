@@ -3,7 +3,7 @@ import unicodecsv
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables, EXCLUDED_UNITS
+from radar_migration import Migration, tables, EXCLUDED_UNITS, DisorderNotFound
 
 
 class SignificantDiagnosisConverter(object):
@@ -24,12 +24,7 @@ class SignificantDiagnosisConverter(object):
 
     def convert(self, old_name):
         old_name = old_name.upper()
-
-        try:
-            new_name = self.map[old_name]
-        except KeyError:
-            raise ValueError('Unknown disorder: %s' % old_name)
-
+        new_name = self.map.get(old_name)
         return new_name
 
 
@@ -87,7 +82,10 @@ def migrate_significant_diagnoses(old_conn, new_conn, significant_diagnoses_file
         if disorder_name is None:
             continue
 
-        disorder_id = m.get_disorder_id(disorder_name)
+        try:
+            disorder_id = m.get_disorder_id(disorder_name)
+        except DisorderNotFound:
+            print disorder_name
 
         new_conn.execute(
             tables.comorbidities.insert(),
