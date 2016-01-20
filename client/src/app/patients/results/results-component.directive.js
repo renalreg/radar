@@ -57,7 +57,7 @@
 
       // Reset the result value when the observation changes
       $scope.$watch('item.observation', function(oldValue, newValue) {
-        if ($scope.editing && oldValue != newValue) {
+        if ($scope.editing && oldValue !== newValue) {
           $scope.item.value = null;
         }
       });

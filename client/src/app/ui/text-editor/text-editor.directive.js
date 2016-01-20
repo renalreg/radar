@@ -1,12 +1,9 @@
-// jshint camelcase: false
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-
 (function() {
   'use strict';
 
   var app = angular.module('radar.ui.textEditor');
 
-  app.directive('textEditor', ['Quill', '$sce', function(Quill, $sce) {
+  app.directive('textEditor', ['Quill', function(Quill) {
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -16,7 +13,6 @@
         var toolbar = element.find('.text-editor-toolbar').get(0);
 
         var quill = new Quill(container, {
-          styles: false,
           formats: ['bold', 'italic', 'link', 'bullet', 'list']
         });
         quill.addModule('toolbar', {container: toolbar});
