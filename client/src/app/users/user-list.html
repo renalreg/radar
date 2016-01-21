@@ -42,16 +42,16 @@
 
               <td>
                 <span ng-if="!user.getCohorts().length">-</span>
-                <span ng-repeat="x in user.getCohorts() | orderBy: 'group.name'">
-                  {{x.group.shortName}}
+                <span ng-repeat="x in user.getCohorts() | orderBy: 'name'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
                 <span ng-if="!user.getHospitals().length">-</span>
-                <span ng-repeat="x in user.getHospitals() | orderBy: 'group.name'">
-                  {{x.group.shortName}}
+                <span ng-repeat="x in user.getHospitals() | orderBy: 'name'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>

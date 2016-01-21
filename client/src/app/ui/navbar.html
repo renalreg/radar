@@ -18,7 +18,7 @@
         </li>
 
         <li ng-if="!user.isAdmin && user.getCohorts().length == 1" ui-sref-active="active">
-          <a ui-sref="cohort({cohortId: x.group.id})" ng-repeat="x in user.getCohorts()">{{x.group.shortName}}</a>
+          <a ui-sref="cohort({cohortId: x.id})" ng-repeat="x in user.getCohorts()">{{x.shortName}}</a>
         </li>
 
         <li ng-if="!user.isAdmin && user.getCohorts().length > 1 && user.getCohorts().length <= 5" class="dropdown">
@@ -26,7 +26,7 @@
 
           <ul class="dropdown-menu" role="menu">
             <li ui-sref-active="active" ng-repeat="x in user.getCohorts()">
-              <a ui-sref="cohort({cohortId: x.group.id})">{{cohort.group.shortName}}</a>
+              <a ui-sref="cohort({cohortId: x.id})">{{x.shortName}}</a>
             </li>
           </ul>
         </li>
@@ -36,7 +36,7 @@
         </li>
 
         <li ng-if="!user.isAdmin && user.getHospitals().length == 1" ui-sref-active="active">
-          <a ui-sref="hospital({hospitalId: x.group.id})" ng-repeat="x in user.getHospitals()">{{x.group.shortName}}</a>
+          <a ui-sref="hospital({hospitalId: x.id})" ng-repeat="x in user.getHospitals()">{{x.shortName}}</a>
         </li>
 
         <li ng-if="!user.isAdmin && user.getHospitals().length > 1 && user.getHospitals().length <= 5" class="dropdown">
@@ -44,7 +44,7 @@
 
           <ul class="dropdown-menu" role="menu">
             <li ui-sref-active="active" ng-repeat="x in user.getHospitals()">
-              <a ui-sref="hospital({hospitalId: x.group.id})">{{x.group.name}}</a>
+              <a ui-sref="hospital({hospitalId: x.id})">{{x.name}}</a>
             </li>
           </ul>
         </li>

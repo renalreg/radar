@@ -22,10 +22,7 @@
           setCohorts(cohorts);
         });
       } else {
-        var cohorts = _.map(user.getCohorts(), function(x) {
-          return x.cohort;
-        });
-
+        var cohorts = user.getCohorts();
         setCohorts(cohorts);
       }
     }
