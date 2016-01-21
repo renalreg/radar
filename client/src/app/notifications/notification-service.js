@@ -111,6 +111,15 @@
         }, notification.timeout);
       }
 
+      // Remove old duplicate messages
+      _.remove(notifications, function(x) {
+        return (
+          x.type === notification.type &&
+          x.title === notification.title &&
+          x.message === notification.message
+        );
+      });
+
       notifications.push(notification);
 
       return notification;
