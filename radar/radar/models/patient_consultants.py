@@ -20,10 +20,6 @@ class PatientConsultant(db.Model, MetaModelMixin):
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
 
-    __table_args__ = (
-        UniqueConstraint('patient_id', 'consultant_id'),
-    )
-
 Index(
     'patient_consultants_patient_consultant_idx',
     PatientConsultant.patient_id,
