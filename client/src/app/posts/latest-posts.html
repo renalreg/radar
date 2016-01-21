@@ -8,6 +8,6 @@
   <div ng-repeat="item in items" class="post">
     <h3><a ui-sref="post({postId: item.id})">{{item.title}}</a> <small>{{item.publishedDate | dateFormat}}</small></h3>
 
-    <div ng-bind-html="item.body"></div>
+    <div ng-bind-html="item.body | unsafe"></div>
   </div>
 </div>
