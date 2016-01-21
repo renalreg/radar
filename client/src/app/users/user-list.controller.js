@@ -3,7 +3,9 @@
 
   var app = angular.module('radar.users');
 
-  app.factory('UserListController', ['ListController', '$injector', 'ListHelperProxy', 'store', function(ListController, $injector, ListHelperProxy, store) {
+  function controllerFactory(
+    ListController, $injector, ListHelperProxy, store, _
+  ) {
     function UserListController($scope) {
       var self = this;
 
@@ -70,5 +72,11 @@
     UserListController.prototype = Object.create(ListController.prototype);
 
     return UserListController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListController', '$injector', 'ListHelperProxy', 'store', '_'
+  ];
+
+  app.factory('UserListController', controllerFactory);
 })();

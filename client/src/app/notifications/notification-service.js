@@ -12,11 +12,14 @@
       fail: fail,
       warn: warn,
       info: info,
-      remove: remove
+      fatal: fatal,
+      remove: remove,
     };
 
     function toParams(params) {
-      if (angular.isArray(params) || !angular.isObject(params)) {
+      if (params === undefined || params === null) {
+        params = {};
+      } else if (angular.isArray(params) || !angular.isObject(params)) {
         params = {message: params};
       }
 
@@ -67,6 +70,17 @@
         title: 'Info',
         icon: 'fa-info-circle',
         type: 'info'
+      });
+      return _notify(params);
+    }
+
+    function fatal(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Fatal Error',
+        type: 'fatal',
+        message: 'An unexpected error has occurred. Please try reloading the page.',
+        timeout: 0
       });
       return _notify(params);
     }

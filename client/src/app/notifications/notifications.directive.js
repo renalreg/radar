@@ -7,7 +7,8 @@
     success: 'alert-success',
     fail: 'alert-danger',
     info: 'alert-info',
-    warn: 'alert-warning'
+    warn: 'alert-warning',
+    fatal: 'alert-danger',
   };
 
   app.directive('notifications', ['notificationService', function(notificationService) {
