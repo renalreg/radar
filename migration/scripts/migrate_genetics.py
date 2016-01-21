@@ -9,18 +9,30 @@ def migrate_genetics(old_conn, new_conn):
 
     rows = old_conn.execute(text("""
         SELECT
-            radar_no,
+            patient.radarNo,
             labWhereTestWasDone,
             referenceNumber,
             whatResultsShowed,
             keyEvidence,
-            COALESCE(dateSent, '1900-01-01') as dateSent,  # TODO use dateReg
+            CASE
+                WHEN dateSent IS NOT NULL AND dateSent != '0000-00-00 00:00:00' THEN
+                    dateSent
+                ELSE
+                    -- Use registration date if date sent is missing
+                    CAST(LEAST(
+                        COALESCE(patient.dateReg, NOW()),
+                        COALESCE(rdr_radar_number.creationDate, NOW()),
+                        COALESCE(tbl_demographics.DATE_REG, NOW())
+                    ) AS DATE)
+            END AS dateSent,
             testDoneOn
         FROM rdc_genetic_test
         JOIN patient ON (
             rdc_genetic_test.radar_no = patient.radarNo AND
             patient.unitcode NOT IN %s
         )
+        LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
+        LEFT JOIN tbl_demographics ON patient.radarNo = tbl_demographics.radar_no
     """ % EXCLUDED_UNITS))
 
     for row in rows:
