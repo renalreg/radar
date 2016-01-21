@@ -22,7 +22,7 @@ class UserNotFound(Exception):
     pass
 
 
-class DisorderNotFound(Exception):
+class DiagnosisNotFound(Exception):
     pass
 
 
@@ -41,7 +41,7 @@ class Migration(object):
         self._user_ids = {}
         self._group_ids = {}
         self._observation_ids = {}
-        self._disorder_ids = {}
+        self._diagnosis_ids = {}
         self._drug_ids = {}
         self._primary_group_ids = {}
 
@@ -148,24 +148,24 @@ class Migration(object):
 
         return observation_id
 
-    def get_disorder_id(self, name):
-        disorder_id = self._disorder_ids.get(name)
+    def get_diagnosis_id(self, name):
+        diagnosis_id = self._diagnosis_ids.get(name)
 
-        if disorder_id is None:
-            results = self.conn.execute(select([tables.disorders.c.id]).where(tables.disorders.c.name == name))
+        if diagnosis_id is None:
+            results = self.conn.execute(select([tables.diagnoses.c.id]).where(tables.diagnoses.c.name == name))
             row = results.fetchone()
 
             if row is None:
-                disorder_id = None
+                diagnosis_id = None
             else:
-                disorder_id = row[0]
+                diagnosis_id = row[0]
 
-            self._disorder_ids[name] = disorder_id
+            self._diagnosis_ids[name] = diagnosis_id
 
-        if disorder_id is None:
-            raise DisorderNotFound('Disorder not found: %s' % name)
+        if diagnosis_id is None:
+            raise DiagnosisNotFound('Diagnosis not found: %s' % name)
 
-        return disorder_id
+        return diagnosis_id
 
     def get_drug_id(self, name):
         drug_id = self._drug_ids.get(name)
