@@ -12,14 +12,14 @@ DIAGNOSES = [
 
 GROUP_DIAGNOSES = {
     'BONEITIS': [
-        ('Blindness', GROUP_DIAGNOSIS_TYPE.CHILD),
-        ('Deafness', GROUP_DIAGNOSIS_TYPE.CHILD),
-        ('Diabetes', GROUP_DIAGNOSIS_TYPE.SIGNIFICANT),
+        ('Blindness', GROUP_DIAGNOSIS_TYPE.PRIMARY),
+        ('Deafness', GROUP_DIAGNOSIS_TYPE.PRIMARY),
+        ('Diabetes', GROUP_DIAGNOSIS_TYPE.SECONDARY),
     ],
     'CIRCUSITIS': [
-        ('Hepatitis B', GROUP_DIAGNOSIS_TYPE.CHILD),
-        ('Hepatitis C', GROUP_DIAGNOSIS_TYPE.CHILD),
-        ('Diabetes', GROUP_DIAGNOSIS_TYPE.SIGNIFICANT),
+        ('Hepatitis B', GROUP_DIAGNOSIS_TYPE.PRIMARY),
+        ('Hepatitis C', GROUP_DIAGNOSIS_TYPE.PRIMARY),
+        ('Diabetes', GROUP_DIAGNOSIS_TYPE.SECONDARY),
     ]
 }
 

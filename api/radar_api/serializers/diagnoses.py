@@ -3,7 +3,7 @@ from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
-from radar.serializers.fields import IntegerField, EnumField, LabelledStringField, ListField
+from radar.serializers.fields import IntegerField, EnumField, LabelledIntegerField, ListField, CommaSeparatedField
 from radar.serializers.models import ModelSerializer, ReferenceField
 from radar.models.diagnoses import Diagnosis, GROUP_DIAGNOSIS_TYPE, BIOPSY_DIAGNOSES, PatientDiagnosis
 
@@ -35,7 +35,7 @@ class PatientDiagnosisSerializer(PatientSerializerMixin, SourceSerializerMixin, 
     symptoms_age = IntegerField(read_only=True)
     from_age = IntegerField(read_only=True)
     to_age = IntegerField(read_only=True)
-    biopsy_diagnosis = LabelledStringField(BIOPSY_DIAGNOSES)
+    biopsy_diagnosis = LabelledIntegerField(BIOPSY_DIAGNOSES)
 
     class Meta(object):
         model_class = PatientDiagnosis
@@ -43,5 +43,5 @@ class PatientDiagnosisSerializer(PatientSerializerMixin, SourceSerializerMixin, 
 
 
 class DiagnosisRequestSerializer(Serializer):
-    group_diagnosis_group = IntegerField()
-    group_diagnosis_type = EnumField(GROUP_DIAGNOSIS_TYPE)
+    primary_group = CommaSeparatedField(IntegerField())
+    secondary_group = CommaSeparatedField(IntegerField())
