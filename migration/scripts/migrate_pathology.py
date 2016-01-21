@@ -54,7 +54,6 @@ def migrate_pathology(old_conn, new_conn):
         kidney_type = convert_kidney_type(row['NAT_TRANSP_KID'])
         kidney_side = convert_kidney_side(row['LATERALITY_BX'])
 
-        # TODO other fields
         new_conn.execute(
             tables.pathology.insert(),
             patient_id=radar_no,
