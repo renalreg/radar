@@ -55,16 +55,16 @@
 
               <td>
                 <span ng-if="!patient.getCurrentCohorts().length">-</span>
-                <span ng-repeat="x in patient.getCurrentCohorts() | orderBy: 'group.shortName'">
-                  {{x.group.shortName}}
+                <span ng-repeat="x in patient.getCurrentCohorts() | orderBy: 'shortName'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
                 <span ng-if="!patient.getCurrentHospitals().length">-</span>
-                <span ng-repeat="x in patient.getCurrentHospitals() | orderBy: 'group.shortName'">
-                  {{x.group.shortName}}
+                <span ng-repeat="x in patient.getCurrentHospitals() | orderBy: 'shortName'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>

@@ -13,10 +13,7 @@
         setHospitals(hospitals);
       });
     } else {
-      var hospitals = _.filter(user.getHospitals(), function(x) {
-        return x.group;
-      });
-
+      var hospitals = user.getHospitals();
       setHospitals(hospitals);
     }
 

@@ -19,10 +19,7 @@
             if (user.isAdmin) {
               hospitalStore.findMany().then(setHospitals);
             } else {
-              var hospitals = _.map(user.getHospitals(), function(x) {
-                return x.group;
-              });
-
+              var hospitals = user.getHospitals();
               setHospitals(hospitals);
             }
           } else {

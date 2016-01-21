@@ -13,9 +13,7 @@
         scope.$watchCollection(function() {
           return scope.patient.getCurrentCohorts();
         }, function(cohorts) {
-          scope.cohorts = sortCohorts(_.map(cohorts, function(x) {
-            return x.group;
-          }));
+          scope.cohorts = sortCohorts(cohorts);
         });
       }
     };

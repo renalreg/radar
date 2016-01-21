@@ -34,14 +34,14 @@
       <li ng-repeat="x in patient.getCurrentCohorts()" class="info">
         <span>
           <span class="key">Cohort</span>
-          <span class="value">{{x.group.shortName}}</span>
+          <span class="value">{{x.shortName}}</span>
         </span>
       </li>
 
       <li ng-repeat="x in patient.getCurrentHospitals()" class="info">
         <span>
           <span class="key">Hospital</span>
-          <span class="value">{{x.group.shortName}}</span>
+          <span class="value">{{x.shortName}}</span>
         </span>
       </li>
     </ul>

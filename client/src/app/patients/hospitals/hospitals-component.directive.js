@@ -38,7 +38,7 @@
         }
       });
 
-      self.load($scope.patient.getHospitals());
+      self.load($scope.patient.getHospitalPatients());
 
       $scope.create = function() {
         self.edit(store.create('group-patients', {patient: $scope.patient.id}));

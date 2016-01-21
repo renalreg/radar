@@ -4,16 +4,26 @@
   var app = angular.module('radar.patients');
 
   app.factory('PatientModel', ['Model', 'store', '_', function(Model, store, _) {
-    function filterByCurrent(groups) {
-      return _.filter(groups, function(x) {
+    function filterGroupPatientsByType(groupPatients, groupType) {
+      return _.filter(groupPatients, function(x) {
+        return x.group.type === groupType;
+      });
+    }
+
+    function filterGroupPatientsByCurrent(groupPatients) {
+      return _.filter(groupPatients, function(x) {
         return x.current;
       });
     }
 
-    function filterByType(groups, type) {
-      return _.filter(groups, function(x) {
-        return x.group.type === type;
+    function uniqueGroups(groupPatients) {
+      var groups = _.map(groupPatients, function(x) {
+        return x.group;
       });
+
+      groups = _.uniqBy(groups, 'id');
+
+      return groups;
     }
 
     function PatientModel(modelName, data) {
@@ -45,20 +55,36 @@
       }
     };
 
-    PatientModel.prototype.getHospitals = function() {
-      return filterByType(this.groups, 'HOSPITAL');
+    PatientModel.prototype.getHospitalPatients = function() {
+      return filterGroupPatientsByType(this.groups, 'HOSPITAL');
     };
 
-    PatientModel.prototype.getCurrentHospitals = function(all) {
-      return filterByCurrent(this.getHospitals());
+    PatientModel.prototype.getCohortPatients = function(all) {
+      return filterGroupPatientsByType(this.groups, 'COHORT');
+    };
+
+    PatientModel.prototype.getCurrentHospitalPatients = function() {
+      return filterGroupPatientsByCurrent(this.getHospitalPatients());
+    };
+
+    PatientModel.prototype.getCurrentCohortPatients = function() {
+      return filterGroupPatientsByCurrent(this.getCohortPatients());
     };
 
     PatientModel.prototype.getCohorts = function(all) {
-      return filterByType(this.groups, 'COHORT');
+      return uniqueGroups(this.getCohortPatients());
+    };
+
+    PatientModel.prototype.getHospitals = function(all) {
+      return uniqueGroups(this.getHospitalPatients());
     };
 
     PatientModel.prototype.getCurrentCohorts = function(all) {
-      return filterByCurrent(this.getCohorts());
+      return uniqueGroups(this.getCurrentCohortPatients());
+    };
+
+    PatientModel.prototype.getCurrentHospitals = function(all) {
+      return uniqueGroups(this.getCurrentHospitalPatients());
     };
 
     return PatientModel;

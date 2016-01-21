@@ -24,7 +24,7 @@
         }
       });
 
-      self.load($scope.patient.getCohorts());
+      self.load($scope.patient.getCohortPatients());
 
       $scope.create = function() {
         self.edit(store.create('group-patients', {patient: $scope.patient.id}));
