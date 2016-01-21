@@ -1,5 +1,5 @@
 from radar.models.users import User
-from radar.serializers.fields import StringField, IntegerField
+from radar.serializers.fields import StringField, IntegerField, DateTimeField
 from radar.serializers.models import ModelSerializer
 
 
@@ -39,5 +39,13 @@ class ModifiedUserMixin(object):
         return model_exclude
 
 
-class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin):
+class CreatedDateMixin(object):
+    created_date = DateTimeField(read_only=False)
+
+
+class ModifiedDateMixin(object):
+    modified_date = DateTimeField(read_only=False)
+
+
+class MetaSerializerMixin(CreatedUserMixin, ModifiedUserMixin, CreatedDateMixin, ModifiedDateMixin):
     pass
