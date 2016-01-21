@@ -1,4 +1,5 @@
-from radar_api.serializers.groups import GroupSerializerMixin, TinyGroupSerializer
+from radar_api.serializers.groups import TinyGroupSerializer
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
@@ -15,6 +16,9 @@ class GroupDiagnosisSerializer(Serializer):
 class DiagnosisSerializer(ModelSerializer):
     groups = ListField(GroupDiagnosisSerializer(), source='group_diagnoses')
 
+    class Meta(object):
+        model_class = Diagnosis
+
 
 class TinyDiagnosisSerializer(ModelSerializer):
     class Meta(object):
@@ -26,7 +30,7 @@ class DiagnosisReferenceField(ReferenceField):
     serializer_class = TinyDiagnosisSerializer
 
 
-class PatientDiagnosisSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
+class PatientDiagnosisSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
     diagnosis = DiagnosisReferenceField()
     symptoms_age = IntegerField(read_only=True)
     from_age = IntegerField(read_only=True)

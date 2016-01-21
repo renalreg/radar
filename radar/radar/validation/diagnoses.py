@@ -29,9 +29,12 @@ class PatientDiagnosisValidation(PatientValidationMixin, SourceValidationMixin, 
     biopsy = Field([optional()])
     biopsy_diagnosis = Field([optional(), in_(BIOPSY_DIAGNOSES.keys())])
 
-    def pre_validate(obj):
+    def pre_validate(self, obj):
         if obj.diagnosis is not None:
             obj.diagnosis_text = None
+
+        if not obj.biopsy:
+            obj.biopsy_diagnosis = None
 
         return obj
 
@@ -42,17 +45,17 @@ class PatientDiagnosisValidation(PatientValidationMixin, SourceValidationMixin, 
         if symptoms_date is not None and from_date < symptoms_date:
             raise ValidationError('Must be on or after date of onset of symptoms.')
 
-        return symptoms_date
+        return from_date
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):
-        if to_date < obj.from_date:
+        if to_date is not None and to_date < obj.from_date:
             raise ValidationError('Must be on or after from date.')
 
         return to_date
 
-    def validate(obj):
-        if obj.diagnosis and obj.diagnosis_text is None:
+    def validate(self, obj):
+        if obj.diagnosis is None and obj.diagnosis_text is None:
             raise ValidationError({
                 'diagnosis': 'Must specify a diagnosis.',
                 'diagnosis_text': 'Must specify a diagnosis.',
