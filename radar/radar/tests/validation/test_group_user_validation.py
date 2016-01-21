@@ -151,6 +151,24 @@ def test_already_in_group():
     group_user2.group = group
     group_user2.role = ROLE.SENIOR_RESEARCHER
 
+    valid(group_user2)
+
+
+def test_already_in_group_and_role():
+    user = User()
+    group = Group()
+
+    group_user1 = GroupUser()
+    group_user1.user = user
+    group_user1.group = group
+    group_user1.role = ROLE.RESEARCHER
+    user.group_users.append(group_user1)
+
+    group_user2 = GroupUser()
+    group_user2.user = user
+    group_user2.group = group
+    group_user2.role = ROLE.RESEARCHER
+
     invalid(group_user2)
 
 
