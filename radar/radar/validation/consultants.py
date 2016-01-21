@@ -33,6 +33,7 @@ class GroupConsultantListField(ListField):
         return group_consultants
 
 
+# TODO check GMC number not duplicated
 class ConsultantValidation(MetaValidationMixin, Validation):
     first_name = Field([not_empty(), upper(), max_length(100)])
     last_name = Field([not_empty(), upper(), max_length(100)])

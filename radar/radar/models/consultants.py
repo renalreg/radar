@@ -13,7 +13,7 @@ class Consultant(db.Model, MetaModelMixin):
     last_name = Column(String, nullable=False)
     email = Column(String)
     telephone_number = Column(String)
-    gmc_number = Column(Integer)  # TODO unique
+    gmc_number = Column(Integer, unique=True)
 
     @property
     def groups(self):
