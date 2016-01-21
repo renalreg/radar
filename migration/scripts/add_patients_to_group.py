@@ -37,6 +37,7 @@ def add_patients_to_group(conn, group_type, group_code, patients_filename):
                     patient_id=patient_id,
                     group_id=group_id,
                     from_date=m.now,
+                    created_group_id=m.get_recruited_group_id(patient_id),
                     created_user_id=m.user_id,
                     modified_user_id=m.user_id
                 )

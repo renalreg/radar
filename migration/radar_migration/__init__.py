@@ -221,6 +221,35 @@ class Migration(object):
 
         return group_id
 
+    def get_recruited_group_id(self, patient_id):
+        group_id = self._recruited_group_ids.get(patient_id)
+
+        if group_id is None:
+            q = select([tables.groups.c.id])
+            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.id == tables.group_patients.c.group_id))
+            q = q.where(tables.group.c.code == 'RADAR')
+            q = q.where(tables.group.c.type == 'OTHER')
+            q = q.where(tables.group_patients.c.patient_id == patient_id)
+            q = q.order_by(tables.group_patients.c.from_date)
+            q = q.limit(1)
+
+            print q
+
+            results = self.conn.execute(q)
+            row = results.fetchone()
+
+            if row is None:
+                group_id = None
+            else:
+                group_id = row[0]
+
+            self._recruited_group_ids[patient_id] = group_id
+
+        if group_id is None:
+            raise GroupNotFound('Recruited group not found: %s' % patient_id)
+
+        return group_id
+
 
 def check_patient_exists(conn, patient_id):
     q = select().where(tables.patients.c.id == patient_id)
