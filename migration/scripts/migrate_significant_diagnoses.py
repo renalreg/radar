@@ -3,7 +3,7 @@ import unicodecsv
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables, EXCLUDED_UNITS, DisorderNotFound
+from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 
 class SignificantDiagnosisConverter(object):
