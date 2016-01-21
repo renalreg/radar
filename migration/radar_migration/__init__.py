@@ -43,6 +43,7 @@ class Migration(object):
         self._observation_ids = {}
         self._disorder_ids = {}
         self._drug_ids = {}
+        self._primary_group_ids = {}
 
         self.now = datetime.now(pytz.UTC)
 
@@ -180,6 +181,41 @@ class Migration(object):
             raise DrugNotFound('Drug not found: %s' % name)
 
         return drug_id
+
+    def get_primary_cohort_id(self, patient_id):
+        return self.get_primary_group_id('COHORT', patient_id)
+
+    def get_primary_hospital_id(self, patient_id):
+        return self.get_primary_group_id('HOSPITAL', patient_id)
+
+    def get_primary_group_id(self, group_type, patient_id):
+        key = (group_type, patient_id)
+        group_id = self._primary_group_ids.get(patient_id)
+
+        if group_id is None:
+            q = select([tables.groups.c.id])
+            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.id == tables.group_patients.c.group_id))
+            q = q.where(tables.group.c.type == group_type)
+            q = q.where(tables.group_patients.c.patient_id == patient_id)
+            q = q.order_by(tables.group_patients.c.id)
+            q = q.limit(1)
+
+            print q
+
+            results = self.conn.execute(q)
+            row = results.fetchone()
+
+            if row is None:
+                group_id = None
+            else:
+                group_id = row[0]
+
+            self._primary_group_ids[key] = group_id
+
+        if group_id is None:
+            raise GroupNotFound('Primary group not found: %s (%s)' % (patient_id, group_type))
+
+        return group_id
 
 
 def check_patient_exists(conn, patient_id):

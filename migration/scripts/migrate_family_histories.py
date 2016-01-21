@@ -65,13 +65,14 @@ def migrate_family_histories(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        radar_no = row['RADAR_NO']
         parental_consanguinity = convert_parental_consanguity(row['CONSANGUINITY'])
         family_history = convert_family_history(row['FAM_HIST'])
 
         result = new_conn.execute(
             tables.family_histories.insert(),
-            patient_id=row['RADAR_NO'],
-            group_id=m.group_id,  # TODO
+            patient_id=radar_no,
+            group_id=m.get_primary_cohort_id(radar_no),
             parental_consanguinity=parental_consanguinity,
             family_history=family_history,
             created_user_id=m.user_id,
