@@ -45,3 +45,8 @@ class PatientDiagnosisSerializer(PatientSerializerMixin, SourceSerializerMixin, 
 class DiagnosisRequestSerializer(Serializer):
     primary_group = CommaSeparatedField(IntegerField())
     secondary_group = CommaSeparatedField(IntegerField())
+
+
+class PatientDiagnosisRequestSerializer(Serializer):
+    primary_group = CommaSeparatedField(IntegerField())
+    secondary_group = CommaSeparatedField(IntegerField())

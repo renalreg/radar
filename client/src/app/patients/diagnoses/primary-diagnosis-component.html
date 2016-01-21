@@ -73,30 +73,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Source</div>
-
-        <div frm-control>
-          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
-          <div frm-errors errors="item.errors.sourceGroup"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
         <div frm-label>Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.diagnosis" required="!item.diagnosisText" options="diagnoses" options-label="name"></div>
+          <div frm-select-field model="item.diagnosis" required="true" options="diagnoses" options-label="name"></div>
           <div frm-errors errors="item.errors.diagnosis"></div>
-        </div>
-      </div>
-
-      <div ng-if="!item.diagnosis" frm-field frm-group>
-        <div frm-label>Diagnosis Text</div>
-
-        <div frm-control>
-          <div frm-text-field model="item.diagnosisText" required="!item.diagnosis"></div>
-          <div frm-help>Please use a diagnosis from the list where possible.</div>
-          <div frm-errors errors="item.errors.diagnosisText"></div>
         </div>
       </div>
 
