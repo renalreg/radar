@@ -17,6 +17,11 @@
       </tr>
 
       <tr>
+        <th>Transplant Hospital</th>
+        <td>{{item.transplantGroup.name | missing}}</td>
+      </tr>
+
+      <tr>
         <th>Modality</th>
         <td>{{item.modality.label}}</td>
       </tr>
@@ -81,14 +86,21 @@
         </div>
       </div>
 
-      <!-- TODO organisation -->
-
       <div frm-field frm-group>
         <div frm-label>Date</div>
 
         <div frm-control>
           <div frm-date-field model="item.date" required="true"></div>
           <div frm-errors errors="item.errors.date"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Transplant Hospital</div>
+
+        <div frm-control>
+          <div frm-hospital-field model="item.transplantGroup"></div>
+          <div frm-errors errors="item.errors.transplantGroup"></div>
         </div>
       </div>
 
@@ -145,6 +157,7 @@
         <tr>
           <th></th>
           <th sort-helper="date">Date</th>
+          <th sort-helper="transplantGroup.shortName">Hospital</th>
           <th sort-helper="modality.label">Modality</th>
           <th sort-helper="dateOfRecurrence.label">Date of Recurrence</th>
           <th sort-helper="dateOfFailure.label">Date of Failure</th>
@@ -161,6 +174,7 @@
           </td>
 
           <td>{{item.date | dateFormat}}</td>
+          <td>{{item.transplantGroup.shortName | missing}}</td>
           <td>{{item.modality.label}}</td>
           <td>{{item.dateOfRecurrence | dateFormat}}</td>
           <td>{{item.dateOfFailure | dateFormat}}</td>

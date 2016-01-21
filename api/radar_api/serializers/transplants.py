@@ -5,6 +5,7 @@ from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant, Transpla
 from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledIntegerField
 from radar.serializers.fields import ListField
+from radar_api.serializers.groups import GroupReferenceField
 
 
 class TransplantRejectionSerializer(ModelSerializer):
@@ -20,6 +21,7 @@ class TransplantBiopsySerializer(ModelSerializer):
 
 
 class TransplantSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
+    transplant_group = GroupReferenceField()
     modality = LabelledIntegerField(TRANSPLANT_MODALITIES)
     rejections = ListField(TransplantRejectionSerializer())
     biopsies = ListField(TransplantBiopsySerializer())
