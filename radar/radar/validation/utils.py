@@ -11,12 +11,10 @@ from radar.models.renal_imaging import RenalImaging
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_addresses import PatientAddress
-from radar.models.comorbidities import Disorder
-from radar.models.diagnoses import GroupDiagnosis
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis
 from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.results import Result
 from radar.models.consultants import Consultant
-from radar.validation.comorbidities import DisorderValidation
 from radar.validation.dialysis import DialysisValidation
 from radar.validation.hospitalisations import HospitalisationValidation
 from radar.validation.medications import MedicationValidation
@@ -35,7 +33,7 @@ from radar.validation.consultants import ConsultantValidation
 from radar.validation.groups import GroupValidation
 from radar.validation.group_users import GroupUserValidation
 from radar.validation.group_patients import GroupPatientValidation
-from radar.validation.group_diagnoses import GroupDiagnosisValidation
+from radar.validation.diagnoses import DiagnosisValidation, GroupDiagnosisValidation
 from radar.database import db
 from radar.auth.sessions import current_user
 
@@ -53,13 +51,13 @@ VALIDATIONS = {
     PatientAlias: PatientAliasValidation,
     PatientNumber: PatientNumberValidation,
     PatientAddress: PatientAddressValidation,
-    Disorder: DisorderValidation,
-    GroupDiagnosis: GroupDiagnosisValidation,
+    Diagnosis: DiagnosisValidation,
     Result: ResultValidation,
     Consultant: ConsultantValidation,
     Group: GroupValidation,
     GroupUser: GroupUserValidation,
     GroupPatient: GroupPatientValidation,
+    GroupDiagnosis: GroupDiagnosisValidation,
 }
 
 

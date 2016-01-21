@@ -2,55 +2,42 @@ from radar_api.serializers.groups import GroupSerializerMixin, TinyGroupSerializ
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
 from radar.serializers.core import Serializer
-from radar.serializers.fields import IntegerField
+from radar.serializers.fields import IntegerField, EnumField, LabelledStringField, ListField
 from radar.serializers.models import ModelSerializer, ReferenceField
-from radar.models.diagnoses import Diagnosis, GroupDiagnosis, BiopsyDiagnosis, GroupBiopsyDiagnosis
+from radar.models.diagnoses import Diagnosis, GROUP_DIAGNOSIS_TYPE, BIOPSY_DIAGNOSES, PatientDiagnosis
 
 
-class GroupDiagnosisSerializer(GroupSerializerMixin, ModelSerializer):
-    class Meta(object):
-        model_class = GroupDiagnosis
-
-
-class GroupDiagnosisReferenceField(ReferenceField):
-    model_class = GroupDiagnosis
-    serializer_class = GroupDiagnosisSerializer
-
-
-class BiopsyDiagnosisSerializer(ModelSerializer):
-    class Meta(object):
-        model_class = BiopsyDiagnosis
-
-
-class GroupBiopsyDiagnosisSerializer(ModelSerializer):
+class GroupDiagnosisSerializer(Serializer):
     group = TinyGroupSerializer()
-    biopsy_diagnosis = BiopsyDiagnosisSerializer()
-
-    class Meta(object):
-        model_class = GroupBiopsyDiagnosis
-        exclude = ['group_id', 'biopsy_diagnosis_id']
+    type = EnumField(GROUP_DIAGNOSIS_TYPE)
 
 
-class BiopsyDiagnosisReferenceField(ReferenceField):
-    model_class = BiopsyDiagnosis
-    serializer_class = BiopsyDiagnosisSerializer
+class DiagnosisSerializer(ModelSerializer):
+    groups = ListField(GroupDiagnosisSerializer(), source='group_diagnoses')
 
 
-class DiagnosisSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    group_diagnosis = GroupDiagnosisReferenceField()
-    age_of_symptoms = IntegerField(read_only=True)
-    age_of_diagnosis = IntegerField(read_only=True)
-    age_of_renal_disease = IntegerField(read_only=True)
-    biopsy_diagnosis = BiopsyDiagnosisReferenceField()
-
+class TinyDiagnosisSerializer(ModelSerializer):
     class Meta(object):
         model_class = Diagnosis
-        exclude = ['group_diagnosis_id', 'biopsy_diagnosis_id']
 
 
-class GroupDiagnosisRequestSerializer(Serializer):
-    group = IntegerField()
+class DiagnosisReferenceField(ReferenceField):
+    model_class = Diagnosis
+    serializer_class = TinyDiagnosisSerializer
 
 
-class GroupBiopsyDiagnosisRequestSerializer(Serializer):
-    group = IntegerField()
+class PatientDiagnosisSerializer(PatientSerializerMixin, GroupSerializerMixin, MetaSerializerMixin, ModelSerializer):
+    diagnosis = DiagnosisReferenceField()
+    symptoms_age = IntegerField(read_only=True)
+    from_age = IntegerField(read_only=True)
+    to_age = IntegerField(read_only=True)
+    biopsy_diagnosis = LabelledStringField(BIOPSY_DIAGNOSES)
+
+    class Meta(object):
+        model_class = PatientDiagnosis
+        exclude = ['diagnosis_id']
+
+
+class DiagnosisRequestSerializer(Serializer):
+    group_diagnosis_group = IntegerField()
+    group_diagnosis_type = EnumField(GROUP_DIAGNOSIS_TYPE)

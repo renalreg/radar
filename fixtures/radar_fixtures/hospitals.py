@@ -2,11 +2,8 @@ from radar_fixtures.validation import validate_and_add
 from radar.models.groups import Group, GROUP_TYPE
 
 HOSPITALS = [
-    ("RNJ00", "Barts"),
-    ("RP4", 'Great Ormond Street'),
-    ("RJ121", "Guy's"),
-    ("RJZ", "King's College"),
-    ("REE01", 'Southmead'),
+    ('SPRINGFIELD', 'Springfield General Hospital'),
+    ('CALMWOOD', 'Calmwood Mental Hospital'),
 ]
 
 

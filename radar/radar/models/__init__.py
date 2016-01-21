@@ -2,7 +2,6 @@
 
 from radar.models.alport import *
 from radar.models.common import *
-from radar.models.comorbidities import *
 from radar.models.consultants import *
 from radar.models.diagnoses import *
 from radar.models.dialysis import *

@@ -45,6 +45,11 @@ def check_config(config):
     config.setdefault('PASSWORD_RESET_MAX_AGE', 86400)  # 1 day
     config.setdefault('PASSWORD_MIN_SCORE', 3)
 
+    # Password hashing method to use
+    # 50000 iterations
+    # Note: updating this will cause passwords to be re-hashed when the user next logs in
+    config.setdefault('PASSWORD_HASH_METHOD', 'pbkdf2:sha1:50000')
+
     config.setdefault('EMAIL_ENABLED', not (debug or testing))
     config.setdefault('EMAIL_FROM_ADDRESS', 'RaDaR <radar@radar.nhs.uk>')  # TODO
     config.setdefault('EMAIL_SMTP_HOST', 'localhost')
