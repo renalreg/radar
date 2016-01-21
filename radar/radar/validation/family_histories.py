@@ -9,7 +9,7 @@ from radar.models.family_histories import RELATIONSHIPS
 
 class FamilyHistoryRelativeValidation(Validation):
     relationship = Field([required(), in_(RELATIONSHIPS.keys())])
-    patient = Field([optional()])
+    patient = Field([optional()])  # TODO check not own relative
 
 
 class FamilyHistoryValidation(PatientValidationMixin, CohortGroupValidationMixin, MetaValidationMixin, Validation):
