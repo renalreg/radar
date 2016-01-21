@@ -14,7 +14,7 @@ def cli(connection_string, patients, password):
         'SQLALCHEMY_DATABASE_URI': connection_string,
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'BASE_URL': 'http://localhost',
-        'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1000',
+        'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
     }
 
     app = create_app(config)

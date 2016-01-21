@@ -10,6 +10,7 @@ def app():
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
         'BASE_URL': 'http://localhost',
+        'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
     })
 
     return app
