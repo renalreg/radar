@@ -6,8 +6,6 @@
   function forbiddenResponseFactory($q, notificationService) {
     return function(promise) {
       return promise['catch'](function(response) {
-        console.log(response);
-
         if (response.status === 403) {
           notificationService.fatal({
             title: 'Forbidden',
