@@ -14,7 +14,6 @@ BIOPSY_DIAGNOSES = OrderedDict([
     (2, 'FSGS'),
     (3, 'Mesangial Hyperthrophy'),
     (4, 'Other'),
-    (5, 'No BX @ Time of Diagnosis'),
 ])
 
 
@@ -24,7 +23,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient_relationship = patient_relationship('patient_diagnoses')
+    patient = patient_relationship('patient_diagnoses')
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     source_group = relationship('Group')

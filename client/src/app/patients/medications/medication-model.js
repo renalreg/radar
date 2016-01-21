@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.medications');
 
-  app.factory('MedicationModel', ['Model', 'lazyLoad', function(Model, lazyLoad) {
+  app.factory('MedicationModel', ['Model', function(Model) {
     function MedicationModel(modelName, data) {
       Model.call(this, modelName, data);
     }

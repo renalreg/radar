@@ -12,18 +12,23 @@
       </tr>
 
       <tr>
-        <th>Disorder</th>
-        <td>{{item.disorder.name}}</td>
+        <th>Diagnosis</th>
+        <td>{{item.getDiagnosis()}}</td>
       </tr>
 
       <tr>
         <th>From Date</th>
-        <td>{{item.fromDate | dateFormat}}</td>
+        <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
       </tr>
 
       <tr>
         <th>To Date</th>
-        <td>{{item.toDate | dateFormat}}</td>
+        <td>{{item.toDate | dateFormat}} <span ng-if="item.toAge">({{item.toAge | ageFormat}})</span></td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
       </tr>
     </table>
 
@@ -47,11 +52,20 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Disorder</div>
+        <div frm-label>Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.disorder" required="true" options="disorders" options-label="name"></div>
-          <div frm-errors errors="item.errors.disorder"></div>
+          <div frm-select-field model="item.diagnosis" required="!item.diagnosisText" options="diagnoses" options-label="name"></div>
+          <div frm-errors errors="item.errors.diagnosis"></div>
+        </div>
+      </div>
+
+      <div ng-if="item.diagnosis" frm-field frm-group>
+        <div frm-label>Diagnosis Text</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.diagnosisText" required="!item.diagnosis"></div>
+          <div frm-errors errors="item.errors.diagnosisText"></div>
         </div>
       </div>
 
@@ -70,6 +84,15 @@
         <div frm-control>
           <div frm-date-field model="item.toDate"></div>
           <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
         </div>
       </div>
 
@@ -95,7 +118,7 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="disorder.name">Disorder</th>
+          <th sort-helper="getDiagnosis()">Diagnosis</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
           <th sort-helper="getSource()">Source</th>
@@ -110,8 +133,8 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.disorder.name}}</td>
-          <td>{{item.fromDate | dateFormat}}</td>
+          <td>{{item.getDiagnosis()}}</td>
+          <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
           <td>{{item.toDate | dateFormat}}</td>
           <td class="source">{{item.getSource()}}</td>
 
