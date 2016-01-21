@@ -56,8 +56,12 @@ class Migration(object):
         return self.get_group_id('OTHER', 'RADAR')
 
     @property
-    def source_type(self):
+    def radar_source_type(self):
         return 'RADAR'
+
+    @property
+    def ukrdc_source_type(self):
+        return 'UKRDC'
 
     def get_group_id(self, group_type, group_code):
         group_type = group_type.upper()

@@ -63,7 +63,7 @@ def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
         result = new_conn.execute(
             tables.transplants.insert(),
             patient_id=row['RADAR_NO'],
-            source_group_id=m.group_id,  # TODO
+            source_group_id=m.radar_group_id,  # TODO
             source_type=m.source_type,
             date=row['DATE_TRANSPLANT'],
             modality=modality,

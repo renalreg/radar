@@ -77,8 +77,8 @@ def migrate_comorbidities(old_conn, new_conn):
         new_conn.execute(
             tables.comorbidities.insert(),
             patient_id=patient_id,
-            source_group_id=m.group_id,  # TODO
-            source_type=m.source_type,
+            source_group_id=m.radar_group_id,  # TODO
+            source_type=m.radar_source_type,
             disorder_id=disorder_id,
             from_date=from_date,
             created_user_id=m.user_id,

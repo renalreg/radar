@@ -225,7 +225,7 @@ def migrate_patients(old_conn, new_conn):
         # Add the patient to the RaDaR cohort
         new_conn.execute(
             tables.group_patients.insert(),
-            group_id=m.group_id,
+            group_id=m.radar_group_id,
             patient_id=radar_no,
             created_group_id=hospital_id,
             from_date=row['date_registered'],
@@ -252,8 +252,8 @@ def migrate_patients(old_conn, new_conn):
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=radar_no,
-            source_group_id=m.group_id,
-            source_type=m.source_type,
+            source_group_id=m.radar_group_id,
+            source_type=m.radar_source_type,
             first_name=first_name,
             last_name=last_name,
             date_of_birth=row['date_of_birth'],
@@ -282,8 +282,8 @@ def migrate_patients(old_conn, new_conn):
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
-                source_group_id=m.group_id,
-                source_type=m.source_type,
+                source_group_id=m.radar_group_id,
+                source_type=m.radar_source_type,
                 number_group_id=m.get_group_id('OTHER', number_group_code),
                 number=number,
                 created_user_id=m.user_id,

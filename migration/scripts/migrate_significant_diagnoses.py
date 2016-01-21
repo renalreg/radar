@@ -88,7 +88,7 @@ def migrate_significant_diagnoses(old_conn, new_conn, significant_diagnoses_file
         new_conn.execute(
             tables.comorbidities.insert(),
             patient_id=patient_id,
-            source_group_id=m.group_id,
+            source_group_id=m.radar_group_id,
             source_type=m.source_type,
             disorder_id=disorder_id,
             from_date=from_date,

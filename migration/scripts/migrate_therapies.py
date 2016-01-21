@@ -81,8 +81,8 @@ def migrate_therapies(old_conn, new_conn):
         new_conn.execute(
             tables.medications.insert(),
             patient_id=radar_no,
-            source_group_id=m.group_id,  # TODO
-            source_type=m.source_type,
+            source_group_id=m.radar_group_id,  # TODO
+            source_type=m.radar_source_type,
             from_date=from_date,
             drug_id=drug_id,
             created_user_id=m.user_id,
@@ -137,8 +137,8 @@ def migrate_therapies(old_conn, new_conn):
         new_conn.execute(
             tables.medications.insert(),
             patient_id=radar_no,
-            source_group_id=m.group_id,  # TODO
-            source_type=m.source_type,
+            source_group_id=m.radar_group_id,  # TODO
+            source_type=m.radar_source_type,
             from_date=from_date,
             drug_text=drug,
             created_user_id=m.user_id,

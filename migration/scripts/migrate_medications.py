@@ -13,7 +13,8 @@ def migrate_medications(old_conn, new_conn):
             startdate,
             enddate,
             name,
-            dose
+            dose,
+            unitcode
         FROM medicine
         JOIN patient ON medicine.nhsno = patient.nhsno
         WHERE
@@ -23,13 +24,12 @@ def migrate_medications(old_conn, new_conn):
             startdate != '0000-00-00 00:00:00'
     """ % EXCLUDED_UNITS))
 
-    # TODO unitcode
     for row in rows:
         new_conn.execute(
             tables.medications.insert(),
             patient_id=row['radarNo'],
-            source_group_id=m.group_id,  # TODO
-            source_type=m.source_type,
+            source_group_id=m.get_hospital_id(row['unitcode']),
+            source_type=m.ukrdc_source_type,
             from_date=row['startdate'],
             to_date=row['enddate'],
             drug_text=row['name'],

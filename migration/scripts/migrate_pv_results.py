@@ -71,7 +71,7 @@ def migrate_pv_results(old_conn, new_conn):
             tables.results.insert(),
             patient_id=row['radarNo'],
             source_group_id=m.get_hospital_id(row['unitcode']),
-            source_type=m.source_type,
+            source_type=m.ukrdc_source_type,
             observation_id=observation_id,
             date=row['datestamp'],
             value=value,

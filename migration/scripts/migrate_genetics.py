@@ -35,7 +35,7 @@ def migrate_genetics(old_conn, new_conn):
         new_conn.execute(
             tables.genetics.insert(),
             patient_id=row['radar_no'],
-            group_id=m.group_id,  # TODO
+            group_id=m.radar_group_id,  # TODO
             date_sent=row['dateSent'],
             laboratory=row['labWhereTestWasDone'],
             reference_number=row['referenceNumber'],

@@ -30,8 +30,8 @@ def migrate_patient_addresses(old_conn, new_conn):
         new_conn.execute(
             tables.patient_addresses.insert(),
             patient_id=row['radarNo'],
-            source_group_id=m.group_id,
-            source_type=m.source_type,
+            source_group_id=m.radar_group_id,
+            source_type=m.radar_source_type,
             address_1=row['address1'],
             address_2=row['address2'],
             address_3=row['address3'],

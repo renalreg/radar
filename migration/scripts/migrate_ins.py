@@ -154,8 +154,8 @@ def migrate_ins_relapses(old_conn, new_conn, ins_relapse_drugs_filename):
             new_conn.execute(
                 tables.medications.insert(),
                 patient_id=row['RADAR_NO'],
-                source_group_id=m.group_id,  # TODO
-                source_type=m.source_type,
+                source_group_id=m.radar_group_id,  # TODO
+                source_type=m.radar_source_type,
                 from_date=row['DATE_ONSET_RELAP'],
                 drug_id=drug_id,
                 created_user_id=m.user_id,
