@@ -1,10 +1,12 @@
-from radar_api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer
-from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES
+from flask import request
+
+from radar_api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer, DiagnosisRequestSerializer
+from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE
 from radar.validation.diagnoses import PatientDiagnosisValidation
 from radar.views.sources import SourceObjectViewMixin
 from radar.views.patients import PatientObjectDetailView, PatientObjectListView
 from radar.views.core import ListModelView
-from radar.views.codes import CodedStringListView
+from radar.views.codes import CodedIntegerListView
 
 
 class PatientDiagnosisListView(SourceObjectViewMixin, PatientObjectListView):
@@ -19,29 +21,38 @@ class PatientDiagnosisDetailView(SourceObjectViewMixin, PatientObjectDetailView)
     model_class = PatientDiagnosis
 
 
+def diagnosis_group_type_filter(group_ids, group_diagnosis_type):
+    return GroupDiagnosis.query\
+        .filter(GroupDiagnosis.group_id.in_(group_ids))\
+        .filter(GroupDiagnosis.diagnosis_id == Diagnosis.id)\
+        .filter(GroupDiagnosis.type == group_diagnosis_type)\
+        .exists()
+
+
 class DiagnosisListView(ListModelView):
     serializer_class = DiagnosisSerializer
     model_class = Diagnosis
 
-    # TODO
-    """
     def filter_query(self, query):
-        query = super(DisorderListView, self).filter_query(query)
+        query = super(DiagnosisListView, self).filter_query(query)
 
-        serializer = DisorderRequestSerializer()
+        serializer = DiagnosisRequestSerializer()
         args = serializer.args_to_value(request.args)
 
-        group_id = args.get('group')
+        primary_group_ids = args.get('primary_group')
+        secondary_group_ids = args.get('secondary_group')
 
-        if group_id is not None:
-            query = query.join(Disorder.group_disorders)
-            query = query.filter(GroupDisorder.group_id == group_id)
+        if primary_group_ids:
+            query = query.filter(diagnosis_group_type_filter(primary_group_ids, GROUP_DIAGNOSIS_TYPE.PRIMARY))
+
+        if secondary_group_ids:
+            query = query.filter(diagnosis_group_type_filter(secondary_group_ids, GROUP_DIAGNOSIS_TYPE.SECONDARY))
 
         return query
-    """
 
 
-class BiopsyDiagnosisListView(CodedStringListView):
+# TODO rename CodedIntegerListView to LabelledIntegerListView
+class BiopsyDiagnosisListView(CodedIntegerListView):
     items = BIOPSY_DIAGNOSES
 
 

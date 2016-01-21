@@ -84,8 +84,8 @@ class Diagnosis(db.Model):
 
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
-    CHILD = 'CHILD'
-    SIGNIFICANT = 'SIGNIFICANT'
+    PRIMARY = 'PRIMARY'
+    SECONDARY = 'SECONDARY'
 
 
 class GroupDiagnosis(db.Model):
