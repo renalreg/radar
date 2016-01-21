@@ -3,7 +3,7 @@ import csv
 from sqlalchemy import create_engine, text
 import click
 
-from radar_migration import tables, Migration, EXCLUDED_UNITS, GroupNotFound
+from radar_migration import tables, Migration, EXCLUDED_UNITS
 
 
 def optional_int(old_value):
