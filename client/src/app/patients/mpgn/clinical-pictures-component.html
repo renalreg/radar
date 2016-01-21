@@ -33,12 +33,12 @@
 
       <tr>
         <th>Recent Infection</th>
-        <td><span tick="item.recentInfection"></span></td>
+        <td><span tick="item.infection"></span></td>
       </tr>
 
-      <tr ng-if="item.recentInfection">
+      <tr ng-if="item.infection">
         <th>Recent Infection Details</th>
-        <td class="newlines">{{item.recentInfectionDetails | missing}}</td>
+        <td class="newlines">{{item.infectionDetails | missing}}</td>
       </tr>
 
       <tr>
@@ -116,17 +116,17 @@
         <div frm-label>Recent Infection</div>
 
         <div frm-control>
-          <div frm-boolean-field model="item.recentInfection"></div>
-          <div frm-errors errors="item.errors.recentInfection"></div>
+          <div frm-boolean-field model="item.infection"></div>
+          <div frm-errors errors="item.errors.infection"></div>
         </div>
       </div>
 
-      <div frm-field frm-group ng-if="item.recentInfection">
+      <div frm-field frm-group ng-if="item.infection">
         <div frm-label>Recent Infection Details</div>
 
         <div frm-control>
-          <div frm-textarea-field model="item.recentInfectionDetails"></div>
-          <div frm-errors errors="item.errors.recentInfectionDetails"></div>
+          <div frm-textarea-field model="item.infectionDetails"></div>
+          <div frm-errors errors="item.errors.infectionDetails"></div>
         </div>
       </div>
 

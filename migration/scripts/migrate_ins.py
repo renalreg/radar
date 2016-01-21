@@ -193,8 +193,9 @@ def migrate_ins_clinical_pictures(old_conn, new_conn):
             tbl_clinicaldata.COMMENTS,
             OPTHALM,
             OPTHALM_DETAIL,
-            IMMUNIS_TRIGGER,
-            OEDEMA
+            OEDEMA,
+            PREC_INF,
+            PREC_INF_DETAIL
         FROM tbl_clinicaldata
         JOIN patient ON (
             tbl_clinicaldata.radar_no = patient.radarNo AND
@@ -224,7 +225,8 @@ def migrate_ins_clinical_pictures(old_conn, new_conn):
         hypertension = bit_to_bool(row['HTH_REQ_TMT'])
         rash = bit_to_bool(row['RASH'])
         rash_details = row['RASH_DETAIL']
-        possible_immunisation_trigger = bit_to_bool(row['IMMUNIS_TRIGGER'])
+        infection = bit_to_bool(row['PREC_INF'])
+        infection_details = row['PREC_INF_DETAIL']
         ophthalmoscopy = bit_to_bool(row['OPTHALM'])
         ophthalmoscopy_details = row['OPTHALM_DETAIL']
         comments = row['COMMENTS']
@@ -242,7 +244,8 @@ def migrate_ins_clinical_pictures(old_conn, new_conn):
             hypertension=hypertension,
             rash=rash,
             rash_details=rash_details,
-            possible_immunisation_trigger=possible_immunisation_trigger,
+            infection=infection,
+            infection_details=infection_details,
             ophthalmoscopy=ophthalmoscopy,
             ophthalmoscopy_details=ophthalmoscopy_details,
             comments=comments,

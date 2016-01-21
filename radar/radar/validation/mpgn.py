@@ -11,16 +11,16 @@ class MpgnClinicalPictureValidation(PatientValidationMixin, MetaValidationMixin,
     hypertension = Field([optional()])
     urticaria = Field([optional()])
     partial_lipodystrophy = Field([optional()])
-    recent_infection = Field([optional()])
-    recent_infection_details = Field([none_if_blank(), optional(), max_length(10000)])
+    infection = Field([optional()])
+    infection_details = Field([none_if_blank(), optional(), max_length(10000)])
     ophthalmoscopy = Field([optional()])
     ophthalmoscopy_details = Field([none_if_blank(), optional(), max_length(10000)])
     comments = Field([none_if_blank(), optional(), max_length(5000)])
 
     def pre_validate(self, obj):
-        # Remove recent infection details if the patient didn't have a recent infection
-        if not obj.recent_infection:
-            obj.recent_infection_details = None
+        # Remove infection details if the patient didn't have an infection
+        if not obj.infection:
+            obj.infection_details = None
 
         # Remove ophthalmoscopy details if a ophthalmoscopy test wan't performed
         if not obj.ophthalmoscopy:

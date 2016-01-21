@@ -54,8 +54,8 @@ def migrate_mpgn(old_conn, new_conn):
         hypertension = bit_to_bool(row['HTH_REQ_TMT'])
         urticaria = int_to_bool(row['URTICARIA'])
         partial_lipodystrophy = bit_to_bool(row['PART_LIPODYS'])
-        recent_infection = bit_to_bool(row['PREC_INF'])
-        recent_infection_details = row['PREC_INF_DETAIL']
+        infection = bit_to_bool(row['PREC_INF'])
+        infection_details = row['PREC_INF_DETAIL']
         ophthalmoscopy = bit_to_bool(row['OPTHALM'])
         ophthalmoscopy_details = row['OPTHALM_DETAIL']
         comments = row['COMMENTS']
@@ -68,8 +68,8 @@ def migrate_mpgn(old_conn, new_conn):
             hypertension=hypertension,
             urticaria=urticaria,
             partial_lipodystrophy=partial_lipodystrophy,
-            recent_infection=recent_infection,
-            recent_infection_details=recent_infection_details,
+            infection=infection,
+            infection_details=infection_details,
             ophthalmoscopy=ophthalmoscopy,
             ophthalmoscopy_details=ophthalmoscopy_details,
             comments=comments,
