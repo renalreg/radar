@@ -24,7 +24,7 @@ class GroupPatientValidation(MetaValidationMixin, Validation):
     def validate(self, ctx, old_obj, new_obj):
         current_user = ctx['user']
 
-        if not has_permission_for_patient(current_user, new_obj.patient, PERMISSION.VIEW_PATIENT):
+        if not has_permission_for_patient(current_user, new_obj.patient, PERMISSION.VIEW_DEMOGRAPHICS):
             raise PermissionDenied()
 
         if not has_permission_for_group(current_user, new_obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP):

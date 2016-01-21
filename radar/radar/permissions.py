@@ -388,7 +388,7 @@ class GroupPatientRetrievePermission(Permission):
         if not super(GroupPatientRetrievePermission, self).has_object_permission(request, user, obj):
             return False
 
-        return has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT)
+        return has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_USER)
 
 
 class GroupPatientUpdatePermission(Permission):
@@ -397,7 +397,7 @@ class GroupPatientUpdatePermission(Permission):
             return False
 
         return (
-            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT) and
+            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_DEMOGRAPHICS) and
             has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP)
         )
 
@@ -407,10 +407,10 @@ class GroupPatientDestroyPermission(Permission):
         if not super(GroupPatientDestroyPermission, self).has_object_permission(request, user, obj):
             return False
 
-        # Has view patient permission and explicit permission on the group or permission
+        # Has the view demographics permission and explicit permission on the group or permission
         # on the group and explicit permission on the created group
         return (
-            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_PATIENT) and
+            has_permission_for_patient(user, obj.patient, PERMISSION.VIEW_DEMOGRAPHICS) and
             (
                 has_permission_for_group(user, obj.group, PERMISSION.EDIT_PATIENT_MEMBERSHIP, explicit=True) or
                 (
