@@ -95,16 +95,13 @@ def has_permission_for_group(user, group, permission, explicit=False):
 
 def has_permission_for_group_role(user, group, role):
     if user.is_admin:
-        grant = True
+        return True
     else:
-        grant = False
-
         for group_user in user.group_users:
             if group_user.group == group and role in group_user.managed_roles:
-                grant = True
-                break
+                return True
 
-    return grant
+    return False
 
 
 def intersect_groups_with_patient(user, patient, user_membership=False, patient_membership=False):

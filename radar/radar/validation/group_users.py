@@ -25,7 +25,8 @@ class GroupUserValidation(MetaValidationMixin, Validation):
     @classmethod
     def is_duplicate(cls, obj):
         group = obj.group
-        duplicate = any(x != obj and x.group == group for x in obj.user.group_users)
+        role = obj.role
+        duplicate = any(x != obj and x.group == group and x.role == role for x in obj.user.group_users)
         return duplicate
 
     @pass_context

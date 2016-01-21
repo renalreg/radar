@@ -124,4 +124,4 @@ class GroupUser(db.Model, MetaModelMixin):
 
 Index('group_users_group_idx', GroupUser.group_id)
 Index('group_users_user_idx', GroupUser.user_id)
-Index('group_patients_group_user_idx', GroupUser.group_id, GroupUser.user_id, unique=True)
+Index('group_patients_group_user_role_idx', GroupUser.group_id, GroupUser.user_id, GroupUser.role, unique=True)
