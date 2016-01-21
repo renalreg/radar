@@ -47,14 +47,13 @@ def migrate_dialysis(old_conn, new_conn):
         )
     """ % EXCLUDED_UNITS))
 
-    # TODO UNIT_CODE
     for row in rows:
         modality = convert_modality(row['MODALITY'])
 
         new_conn.execute(
             tables.dialysis.insert(),
             patient_id=row['RADAR_NO'],
-            source_group_id=m.group_id,  # TODO
+            source_group_id=m.group_id,
             source_type=m.source_type,
             from_date=row['DATE_START'],
             to_date=row['DATE_STOP'],
