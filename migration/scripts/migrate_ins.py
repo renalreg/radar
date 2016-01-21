@@ -149,12 +149,13 @@ def migrate_ins_relapses(old_conn, new_conn, ins_relapse_drugs_filename):
         new_drugs = dc.convert_drugs(old_drugs)
 
         for new_drug in new_drugs:
+            radar_no = row['RADAR_NO']
             drug_id = m.get_drug_id(new_drug)
 
             new_conn.execute(
                 tables.medications.insert(),
-                patient_id=row['RADAR_NO'],
-                source_group_id=m.radar_group_id,  # TODO
+                patient_id=radar_no,
+                source_group_id=m.get_primary_hospital_id(radar_no),
                 source_type=m.radar_source_type,
                 from_date=row['DATE_ONSET_RELAP'],
                 drug_id=drug_id,

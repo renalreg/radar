@@ -24,6 +24,8 @@ def migrate_genetics(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        radar_no = row['radar_no']
+
         summary = [row['testDoneOn'], row['keyEvidence']]
         summary = [x for x in summary if x]
 
@@ -34,8 +36,8 @@ def migrate_genetics(old_conn, new_conn):
 
         new_conn.execute(
             tables.genetics.insert(),
-            patient_id=row['radar_no'],
-            group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            group_id=m.get_primary_cohort_id(radar_no),
             date_sent=row['dateSent'],
             laboratory=row['labWhereTestWasDone'],
             reference_number=row['referenceNumber'],

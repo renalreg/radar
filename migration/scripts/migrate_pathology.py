@@ -50,14 +50,15 @@ def migrate_pathology(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        radar_no = row['RADAR_NO']
         kidney_type = convert_kidney_type(row['NAT_TRANSP_KID'])
         kidney_side = convert_kidney_side(row['LATERALITY_BX'])
 
         # TODO other fields
         new_conn.execute(
             tables.pathology.insert(),
-            patient_id=row['RADAR_NO'],
-            source_group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            source_group_id=m.get_primary_hospital_id(radar_no),
             source_type=m.radar_source_type,
             date=row['BX_DATE'],
             kidney_type=kidney_type,

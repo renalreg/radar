@@ -70,14 +70,14 @@ def migrate_comorbidities(old_conn, new_conn):
     rows = old_conn.execute(text(q))
 
     for row in rows:
-        patient_id, from_date, disorder_name = row
+        radar_no, from_date, disorder_name = row
 
         disorder_id = m.get_disorder_id(disorder_name)
 
         new_conn.execute(
             tables.comorbidities.insert(),
-            patient_id=patient_id,
-            source_group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            source_group_id=m.get_primary_hospital_id(radar_no),
             source_type=m.radar_source_type,
             disorder_id=disorder_id,
             from_date=from_date,

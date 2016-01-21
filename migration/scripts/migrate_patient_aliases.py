@@ -19,13 +19,13 @@ def migrate_patient_aliases(old_conn, new_conn):
             surnameAlias != '-'
     """ % EXCLUDED_UNITS))
 
-    for row in rows:
+    for radar_no, last_name in rows:
         new_conn.execute(
             tables.patient_aliases.insert(),
-            patient_id=row['radarNo'],
-            source_group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            source_group_id=m.radar_group_id,
             source_type=m.radar_source_type,
-            last_name=row['surnameAlias'],
+            last_name=last_name,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )

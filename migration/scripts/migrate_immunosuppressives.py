@@ -46,7 +46,7 @@ def migrate_immunosuppressives(old_conn, new_conn):
         new_conn.execute(
             tables.medications.insert(),
             patient_id=radar_no,
-            source_group_id=m.radar_group_id,  # TODO
+            source_group_id=m.get_primary_hospital_id(radar_no),
             source_type=m.radar_source_type,
             from_date=from_date,
             to_date=to_date,

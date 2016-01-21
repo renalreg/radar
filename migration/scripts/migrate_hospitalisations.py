@@ -22,10 +22,12 @@ def migrate_hospitalisations(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        radar_no = row['RADAR_NO']
+
         new_conn.execute(
             tables.hospitalisations.insert(),
-            patient_id=row['RADAR_NO'],
-            source_group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            source_group_id=m.get_primary_hospital_id(radar_no),
             source_type=m.radar_source_type,
             date_of_admission=row['DATE_ADMIT'],
             date_of_discharge=row['DATE_DISCHARGE'],

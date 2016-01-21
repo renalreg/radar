@@ -58,13 +58,14 @@ def migrate_plasmapheresis(old_conn, new_conn):
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        radar_no = row['RADAR_NO']
         no_of_exchanges = convert_no_of_exchanges(row['NO_EXCH_PLASMAPH'])
         response = convert_response(row['RESPONSE_TO_PLASMA'])
 
         new_conn.execute(
             tables.plasmapheresis.insert(),
-            patient_id=row['RADAR_NO'],
-            source_group_id=m.radar_group_id,  # TODO
+            patient_id=radar_no,
+            source_group_id=m.get_primary_hospital_id(radar_no),
             source_type=m.radar_source_type,
             from_date=row['DATE_START_PLASMAPH'],
             to_date=row['DATE_STOP_PLASMAPH'],
