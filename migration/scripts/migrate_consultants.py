@@ -62,12 +62,7 @@ def migrate_consultants(old_conn, new_conn, consultants_filename):
             if old_consultant_id is not None:
                 old_consultant_ids[old_consultant_id] = consultant_id
 
-            # TODO some hospital codes are satellite codes
-            try:
-                hospital_id = m.get_hospital_id(hospital_code)
-            except GroupNotFound:
-                print hospital_code, 'not found'
-                continue
+            hospital_id = m.get_hospital_id(hospital_code)
 
             new_conn.execute(
                 tables.group_consultants.insert(),
