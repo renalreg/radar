@@ -1,7 +1,7 @@
 <div loading="loading" crud>
   <div ng-if="viewing">
     <p>
-      <span crud-list-button></span>
+      <span ng-if="multiple" crud-list-button></span>
       <span crud-edit-button item="item"></span>
     </p>
 
@@ -67,7 +67,7 @@
 
   <div ng-if="editing">
     <p>
-      <span crud-list-button></span>
+      <span ng-if="multiple" crud-list-button></span>
       <span crud-view-button item="originalItem"></span>
     </p>
 
@@ -176,10 +176,11 @@
       <span crud-create-button action="create()"></span>
     </p>
 
-    <div filter-helper></div>
+    <div ng-if="multiple" filter-helper></div>
 
     <div ng-show="!page.getCount()">
-      <p>No results.</p>
+      <p ng-if="multiple">No results.</p>
+      <p ng-if="!multiple">Not entered.</p>
     </div>
 
     <table class="table table-condensed table-striped" ng-if="page.getCount()">

@@ -22,8 +22,10 @@
         }
       });
 
+      $scope.multiple = false;
+
       self.load(firstPromise([
-        store.findMany('patient-diagnoses', {patient: $scope.patient.id}),
+        store.findMany('patient-diagnoses', {patient: $scope.patient.id, primaryGroup: $scope.cohort.id}),
         store.findMany('diagnoses', {primaryGroup: $scope.cohort.id}).then(function(diagnoses) {
           $scope.diagnoses = diagnoses;
         }),
@@ -33,15 +35,33 @@
         getRadarGroup().then(function(group) {
           $scope.sourceGroup = group;
         })
-      ]));
+      ])).then(function() {
+        var multiple = $scope.items.length > 1 || $scope.cohort.multipleDiagnoses;
 
-      $scope.create = function() {
+        if ($scope.items.length === 0) {
+          if (self.createPermission()) {
+            create();
+          } else {
+            self.list();
+          }
+        } else if (multiple) {
+          self.list();
+        } else {
+          self.view($scope.items[0]);
+        }
+
+        $scope.multiple = multiple;
+      });
+
+      $scope.create = create;
+
+      function create() {
         var item = store.create('patient-diagnoses', {
           patient: $scope.patient.id,
           sourceGroup: $scope.sourceGroup,
         });
         self.edit(item);
-      };
+      }
     }
 
     PrimaryPatientDiagnosisController.$inject = ['$scope'];
