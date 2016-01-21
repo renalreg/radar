@@ -178,6 +178,12 @@ def run_command(args, env=None, cwd=None, allowed_exit_codes=None):
     if env is None:
         env = {}
 
+    if 'HTTP_PROXY' in os.environ:
+        env.setdefault('HTTP_PROXY', os.environ['HTTP_PROXY'])
+
+    if 'HTTPS_PROXY' in os.environ:
+        env.setdefault('HTTPS_PROXY', os.environ['HTTPS_PROXY'])
+
     info('Running {args} with environment {env} and working directory {cwd}'.format(
         args=args,
         env=env,
