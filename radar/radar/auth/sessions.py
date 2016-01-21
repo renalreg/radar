@@ -25,9 +25,11 @@ def login(username, password):
     username = username.lower()
 
     # Get user by username
-    user = User.query\
-        .filter(User.username == username)\
-        .first()
+    q = User.query
+    q = q.filter(User.username == username)
+    q = q.filter(User.is_enabled == True)  # noqa
+
+    user = q.first()
 
     # User not found
     if user is None:
@@ -132,12 +134,15 @@ def get_user_session_from_token(token):
     except BadSignature:
         return None
 
-    return UserSession.query\
-        .filter(UserSession.id == user_session_id)\
-        .filter(UserSession.is_active)\
-        .filter(UserSession.ip_address == get_ip_address())\
-        .filter(UserSession.user_agent == get_user_agent())\
-        .first()
+    q = UserSession.query
+    q = q.join(UserSession.user)
+    q = q.filter(UserSession.id == user_session_id)
+    q = q.filter(UserSession.is_active)
+    q = q.filter(UserSession.ip_address == get_ip_address())
+    q = q.filter(UserSession.user_agent == get_user_agent())
+    q = q.filter(User.is_enabled == True)  # noqa
+
+    return q.first()
 
 
 def get_user_session():
