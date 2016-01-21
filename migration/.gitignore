@@ -1,5 +1,5 @@
 *.csv
-!data/disorders.csv
+!data/diagnoses.csv
 !data/biopsy_diagnoses.csv
 !data/drugs.csv
 !data/group_diagnoses.csv

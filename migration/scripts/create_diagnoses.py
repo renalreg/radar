@@ -6,28 +6,28 @@ from sqlalchemy import create_engine
 from radar_migration.groups import tables
 
 
-def create_disorders(conn, disorders_filename):
-    with open(disorders_filename, 'rb') as f:
+def create_diagnoses(conn, diagnoses_filename):
+    with open(diagnoses_filename, 'rb') as f:
         reader = csv.reader(f)
 
         for row in reader:
             name = row[0]
 
             conn.execute(
-                tables.disorders.insert(),
+                tables.diagnoses.insert(),
                 name=name
             )
 
 
 @click.command()
 @click.argument('db')
-@click.argument('disorders')
-def cli(db, disorders):
+@click.argument('diagnoses')
+def cli(db, diagnoses):
     engine = create_engine(db)
     conn = engine.connect()
 
     with conn.begin():
-        create_disorders(conn, disorders)
+        create_diagnoses(conn, diagnoses)
 
 
 if __name__ == '__main__':

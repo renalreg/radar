@@ -30,8 +30,8 @@ echo 'create observations...'
 python scripts/create_observations.py "$DEST" data/observations.csv
 echo 'create drugs...'
 python scripts/create_drugs.py "$DEST" data/drug_types.csv data/drugs.csv
-echo 'create disorders...'
-python scripts/create_disorders.py "$DEST" data/disorders.csv
+echo 'create diagnoses...'
+python scripts/create_diagnoses.py "$DEST" data/diagnoses.csv
 
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
