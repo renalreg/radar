@@ -6,7 +6,6 @@
   function controllerFactory(
     ModelListDetailController,
     PatientDiagnosisPermission,
-    firstPromise,
     $injector,
     store
   ) {
@@ -20,12 +19,7 @@
         }
       });
 
-      self.load(firstPromise([
-        store.findMany('patient-diagnoses', {patient: $scope.patient.id}),
-        store.findMany('diagnoses').then(function(diagnoses) {
-          $scope.diagnoses = diagnoses;
-        })
-      ]));
+      self.load(store.findMany('patient-diagnoses', {patient: $scope.patient.id}));
 
       $scope.create = function() {
         var item = store.create('patient-diagnoses', {patient: $scope.patient.id});
@@ -42,7 +36,6 @@
   controllerFactory.$inject = [
     'ModelListDetailController',
     'PatientDiagnosisPermission',
-    'firstPromise',
     '$injector',
     'store'
   ];
