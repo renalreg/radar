@@ -242,12 +242,7 @@ def create_patients(n):
                     create_renal_imaging(patient, hospital_group, source_type, 3)
 
         cohort_group_patient = GroupPatient()
-
-        if i == 0:
-            cohort_group_patient.group = Group.query.filter(Group.code == 'INS', Group.type == GROUP_TYPE.COHORT).one()
-        else:
-            cohort_group_patient.group = random.choice(cohort_groups)
-
+        cohort_group_patient.group = random.choice(cohort_groups)
         cohort_group_patient.patient = patient
         cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
         cohort_group_patient.created_group = radar_group

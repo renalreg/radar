@@ -1,65 +1,92 @@
+from collections import OrderedDict
+
 from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean
 from sqlalchemy.orm import relationship
+from enum import Enum
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.types import EnumType
 from radar.utils import to_age
 
+BIOPSY_DIAGNOSES = OrderedDict([
+    (1, 'Minimal Change'),
+    (2, 'FSGS'),
+    (3, 'Mesangial Hyperthrophy'),
+    (4, 'Other'),
+    (5, 'No BX @ Time of Diagnosis'),
+])
 
-class Diagnosis(db.Model, MetaModelMixin):
-    __tablename__ = 'diagnoses'
+
+class PatientDiagnosis(db.Model, MetaModelMixin):
+    __tablename__ = 'patient_diagnoses'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('diagnoses')
+    patient_relationship = patient_relationship('patient_diagnoses')
 
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
-    date_of_symptoms = Column(Date)
-    date_of_diagnosis = Column(Date, nullable=False)
-    date_of_renal_disease = Column(Date)
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'))
+    diagnosis = relationship('Diagnosis')
+    diagnosis_text = Column(String)
 
-    group_diagnosis_id = Column(Integer, ForeignKey('group_diagnoses.id'))
-    group_diagnosis = relationship('GroupDiagnosis')
+    symptoms_date = Column(Date)
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
 
     gene_test = Column(Boolean)
     biochemistry = Column(Boolean)
     clinical_picture = Column(Boolean)
     biopsy = Column(Boolean)
+    biopsy_diagnosis = Column(Integer)
 
-    biopsy_diagnosis_id = Column(Integer, ForeignKey('biopsy_diagnoses.id'))
-    biopsy_diagnosis = relationship('BiopsyDiagnosis')
-
-    diagnosis_text = Column(String)
+    comments = Column(String)
 
     @property
-    def age_of_symptoms(self):
-        x = to_age(self.patient, self.date_of_symptoms)
-        return x
-
-    @property
-    def age_of_diagnosis(self):
-        return to_age(self.patient, self.date_of_diagnosis)
-
-    @property
-    def age_of_renal_disease(self):
-        if self.date_of_renal_disease is None:
+    def symptoms_age(self):
+        if self.symptoms_date is None:
             r = None
         else:
-            r = to_age(self.patient, self.date_of_renal_disease)
+            r = to_age(self.patient, self.symptoms_date)
 
         return r
 
-Index('diagnoses_patient_idx', Diagnosis.patient_id)
-Index('diagnoses_group_idx', Diagnosis.group_id)
-Index(
-    'diagnoses_patient_group_idx',
-    Diagnosis.patient_id,
-    Diagnosis.group_id,
-    unique=True
-)
+    @property
+    def from_age(self):
+        return to_age(self.patient, self.from_date)
+
+    @property
+    def to_age(self):
+        if self.to_date is None:
+            r = None
+        else:
+            r = to_age(self.patient, self.to_date)
+
+        return r
+
+Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
+
+
+class Diagnosis(db.Model):
+    __tablename__ = 'diagnoses'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+
+    group_diagnoses = relationship('GroupDiagnosis')
+
+    @property
+    def groups(self):
+        return [x.group for x in self.group_diagnoses]
+
+
+class GROUP_DIAGNOSIS_TYPE(Enum):
+    CHILD = 'CHILD'
+    SIGNIFICANT = 'SIGNIFICANT'
 
 
 class GroupDiagnosis(db.Model):
@@ -70,36 +97,11 @@ class GroupDiagnosis(db.Model):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    name = Column(String, nullable=False)
-    display_order = Column(Integer, nullable=False)
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'), nullable=False)
+    diagnosis = relationship('Diagnosis')
+
+    type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
-
-
-class GroupBiopsyDiagnosis(db.Model):
-    __tablename__ = 'group_biopsy_diagnoses'
-
-    id = Column(Integer, primary_key=True)
-
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
-
-    biopsy_diagnosis_id = Column(Integer, ForeignKey('biopsy_diagnoses.id'), nullable=False)
-    biopsy_diagnosis = relationship('BiopsyDiagnosis')
-
-    display_order = Column(Integer, nullable=False)
-
-Index('group_biopsy_diagnoses_group_idx', GroupBiopsyDiagnosis.group_id)
-
-
-class BiopsyDiagnosis(db.Model):
-    __tablename__ = 'biopsy_diagnoses'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-
-    group_biopsy_diagnoses = relationship('GroupBiopsyDiagnosis')
-
-    @property
-    def groups(self):
-        return [x.group for x in self.group_biopsy_diagnoses]
+Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.group_id)
+Index('group_diagnoses_diagnosis_group_idx', GroupDiagnosis.diagnosis_id, GroupDiagnosis.group_id, unique=True)

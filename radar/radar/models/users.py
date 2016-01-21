@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, f
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from radar.auth.passwords import check_password_hash, generate_password_hash, HASH_METHOD
+from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
 from radar.database import db
 from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
@@ -108,11 +108,13 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     @property
     def needs_password_rehash(self):
+        new_hash_method = get_password_hash_method()
+
         if self.password_hash is None:
             r = False
         else:
-            hash_method = self.password_hash.split('$')[0]
-            r = hash_method != HASH_METHOD
+            current_hash_method = self.password_hash.split('$')[0]
+            r = current_hash_method != new_hash_method
 
         return r
 

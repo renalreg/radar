@@ -9,7 +9,6 @@ from radar_api.views import consultants
 from radar_api.views import forgot_password
 from radar_api.views import patient_consultants
 from radar_api.views import stats
-from radar_api.views import comorbidities
 from radar_api.views import diagnoses
 from radar_api.views import family_histories
 from radar_api.views import logout
@@ -49,8 +48,6 @@ from radar_api.views import group_patients
 from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
-from radar_api.views import group_diagnoses
-from radar_api.views import group_biopsy_diagnoses
 from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token
 from radar.database import db
@@ -95,7 +92,6 @@ class RadarApi(Flask):
         register_template_filters(self)
 
         alport.register_views(self)
-        comorbidities.register_views(self)
         consultants.register_views(self)
         diagnoses.register_views(self)
         dialysis.register_views(self)
@@ -108,8 +104,6 @@ class RadarApi(Flask):
         genetics.register_views(self)
         groups.register_views(self)
         group_consultants.register_views(self)
-        group_biopsy_diagnoses.register_views(self)
-        group_diagnoses.register_views(self)
         group_patients.register_views(self)
         group_users.register_views(self)
         hnf1b.register_views(self)
