@@ -299,6 +299,7 @@ def migrate_patient_cohorts(old_conn, new_conn):
     rows = old_conn.execute(text("""
         SELECT DISTINCT
             patient.radarNo,
+            patient.unitcode,
             unit.unitcode,
             CAST(LEAST(
                 COALESCE(patient.dateReg, NOW()),
@@ -316,16 +317,16 @@ def migrate_patient_cohorts(old_conn, new_conn):
             unit.sourceType = 'radargroup'
     """ % EXCLUDED_UNITS))
 
-    for row in rows:
-        cohort_code = convert_cohort_code(row['unitcode'])
+    for radar_no, hospital_code, cohort_code, from_date in rows:
+        cohort_code = convert_cohort_code(cohort_code)
         cohort_id = m.get_cohort_id(cohort_code)
 
         new_conn.execute(
             tables.group_patients.insert(),
-            patient_id=row['radarNo'],
+            patient_id=radar_no,
             group_id=cohort_id,
-            created_group_id=m.group_id,  # TODO use hospital
-            from_date=row['dateReg'],
+            created_group_id=m.get_hospital_id(hospital_code),
+            from_date=from_date,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
@@ -359,15 +360,15 @@ def migrate_patient_hospitals(old_conn, new_conn):
             unit.sourceType = 'renalunit'
     """ % EXCLUDED_UNITS))
 
-    for row in rows:
-        hospital_id = m.get_hospital_id(row['unitcode'])
+    for radar_no, hospital_code, from_date in rows:
+        hospital_id = m.get_hospital_id(hospital_code)
 
         new_conn.execute(
             tables.group_patients.insert(),
-            patient_id=row['radarNo'],
+            patient_id=radar_no,
             group_id=hospital_id,
-            created_group_id=m.group_id,  # TODO use hospital
-            from_date=row['dateReg'],
+            created_group_id=hospital_id,
+            from_date=from_date,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
