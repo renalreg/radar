@@ -1,6 +1,6 @@
 from flask import request
 
-from radar_api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer, DiagnosisRequestSerializer
+from radar_api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer, DiagnosisRequestSerializer, PatientDiagnosisRequestSerializer
 from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE
 from radar.validation.diagnoses import PatientDiagnosisValidation
 from radar.views.sources import SourceObjectViewMixin
@@ -9,24 +9,49 @@ from radar.views.core import ListModelView
 from radar.views.codes import CodedIntegerListView
 
 
+def patient_diagnosis_group_type_filter(group_ids, group_diagnosis_type):
+    return _diagnosis_group_type_filter(PatientDiagnosis.diagnosis_id, group_ids, group_diagnosis_type)
+
+
+def diagnosis_group_type_filter(group_ids, group_diagnosis_type):
+    return _diagnosis_group_type_filter(Diagnosis.id, group_ids, group_diagnosis_type)
+
+
+def _diagnosis_group_type_filter(diagnois_column, group_ids, group_diagnosis_type):
+    return GroupDiagnosis.query\
+        .filter(GroupDiagnosis.group_id.in_(group_ids))\
+        .filter(GroupDiagnosis.diagnosis_id == diagnois_column)\
+        .filter(GroupDiagnosis.type == group_diagnosis_type)\
+        .exists()
+
+
 class PatientDiagnosisListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = PatientDiagnosisSerializer
     validation_class = PatientDiagnosisValidation
     model_class = PatientDiagnosis
+
+    def filter_query(self, query):
+        query = super(PatientDiagnosisListView, self).filter_query(query)
+
+        serializer = PatientDiagnosisRequestSerializer()
+        args = serializer.args_to_value(request.args)
+
+        primary_group_ids = args.get('primary_group')
+        secondary_group_ids = args.get('secondary_group')
+
+        if primary_group_ids:
+            query = query.filter(patient_diagnosis_group_type_filter(primary_group_ids, GROUP_DIAGNOSIS_TYPE.PRIMARY))
+
+        if secondary_group_ids:
+            query = query.filter(patient_diagnosis_group_type_filter(secondary_group_ids, GROUP_DIAGNOSIS_TYPE.SECONDARY))
+
+        return query
 
 
 class PatientDiagnosisDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = PatientDiagnosisSerializer
     validation_class = PatientDiagnosisValidation
     model_class = PatientDiagnosis
-
-
-def diagnosis_group_type_filter(group_ids, group_diagnosis_type):
-    return GroupDiagnosis.query\
-        .filter(GroupDiagnosis.group_id.in_(group_ids))\
-        .filter(GroupDiagnosis.diagnosis_id == Diagnosis.id)\
-        .filter(GroupDiagnosis.type == group_diagnosis_type)\
-        .exists()
 
 
 class DiagnosisListView(ListModelView):
