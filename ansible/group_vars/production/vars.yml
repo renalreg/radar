@@ -5,3 +5,4 @@ db_password: '{{ vault_db_password }}'
 db_api_address: 10.38.181.70/32 # nww.radar.nhs.uk
 web_base_url: 'https://nww.radar.nhs.uk/#'
 api_live: true
+api_read_only: true
