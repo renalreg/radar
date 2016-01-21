@@ -3,6 +3,7 @@ from radar.auth.sessions import current_user
 
 
 def require_login():
+    # User trying to access an endpoint that requires login
     if (
         request.method != 'OPTIONS' and
         request.endpoint is not None and
@@ -13,15 +14,15 @@ def require_login():
 
 
 def force_password_change():
+    # Deny access to private endpoints until the user changes their password
     if (
         request.method != 'OPTIONS' and
         request.endpoint is not None and
         current_user.is_authenticated() and
         current_user.force_password_change and
         not current_app.is_public_endpoint(request.endpoint) and
-        request.endpoint not in ['user_detail', 'logout']
+        request.endpoint not in ['user_update', 'logout']
     ):
-        # TODO include an error message
         abort(403)
 
 
