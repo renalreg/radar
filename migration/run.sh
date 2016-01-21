@@ -32,6 +32,7 @@ echo 'create drugs...'
 python scripts/create_drugs.py "$DEST" data/drug_types.csv data/drugs.csv
 echo 'create disorders...'
 python scripts/create_disorders.py "$DEST" data/disorders.csv
+
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
@@ -80,8 +81,11 @@ echo 'migrate therapies...'
 python scripts/migrate_therapies.py "$SRC" "$DEST"
 echo 'migrate transplants...'
 python scripts/migrate_transplants.py "$SRC" "$DEST" data/transplant_modalities.csv
+
+# TODO
 echo 'add patients to NEPHROS...'
 python scripts/add_patients_to_group.py "$DEST" COHORT NEPHROS data/nephros.csv
 echo 'add patients to NSMPGNC3...'
 python scripts/add_patients_to_group.py "$DEST" COHORT NSMPGNC3 data/nsmpgnc3.csv
+
 echo 'done'
