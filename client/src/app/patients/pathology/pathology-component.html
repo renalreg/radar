@@ -33,8 +33,10 @@
 
       <tr>
         <th>Image URL</th>
-        <!-- TODO link -->
-        <td>{{item.imageUrl | missing}}</td>
+        <td>
+          <a ng-if="item.imageUrl" href="{{item.imageUrl}}">{{item.imageUrl}}</a>
+          <span ng-if="!item.imageUrl">-</span>
+        </td>
       </tr>
 
       <tr>
