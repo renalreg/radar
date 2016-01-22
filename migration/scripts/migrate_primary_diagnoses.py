@@ -81,7 +81,7 @@ def migrate_diagnoses(old_conn, new_conn):
                 WHEN patient.dateOfGenericDiagnosis IS NOT NULL THEN
                     patient.dateOfGenericDiagnosis
                 ELSE
-                    -- Use registration date if result date is missing
+                    -- Use registration date if from date is missing
                     CAST(LEAST(
                         COALESCE(patient.dateReg, NOW()),
                         COALESCE(rdr_radar_number.creationDate, NOW()),

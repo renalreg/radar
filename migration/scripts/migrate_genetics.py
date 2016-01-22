@@ -25,7 +25,10 @@ def migrate_genetics(old_conn, new_conn):
                         COALESCE(tbl_demographics.DATE_REG, NOW())
                     ) AS DATE)
             END AS dateSent,
-            testDoneOn
+            testDoneOn,
+            (
+                SELECT karyotype FROM tbl_diagnosis WHERE tbl_diagnosis.radar_no = rdc_genetic_test.radar_no)
+            ) AS karyotype
         FROM rdc_genetic_test
         JOIN patient ON (
             rdc_genetic_test.radar_no = patient.radarNo AND
@@ -53,6 +56,7 @@ def migrate_genetics(old_conn, new_conn):
             date_sent=row['dateSent'],
             laboratory=row['labWhereTestWasDone'],
             reference_number=row['referenceNumber'],
+            karyotype=row['karyotype'],
             results=row['whatResultsShowed'],
             summary=summary,
             created_user_id=m.user_id,
