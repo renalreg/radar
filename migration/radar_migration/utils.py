@@ -1,4 +1,5 @@
 import re
+import itertools
 
 MIN_NHS_NO = '4000000000'
 
@@ -59,3 +60,15 @@ def _nhs_no(value, min_value=None, max_value=None):
         raise ValueError('Not in range')
 
     return value
+
+
+def grouper(n, iterable):
+    it = iter(iterable)
+
+    while True:
+        chunk = tuple(itertools.islice(it, n))
+
+        if not chunk:
+            return
+
+        yield chunk
