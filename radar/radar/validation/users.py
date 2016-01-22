@@ -102,6 +102,17 @@ class UserValidation(MetaValidationMixin, Validation):
         return new_is_admin
 
     @pass_context
+    @pass_new_obj
+    @pass_old_value
+    def validate_is_enabled(self, ctx, obj, old_is_enabled, new_is_enabled):
+        current_user = ctx['user']
+
+        if current_user == obj and old_is_enabled != new_is_enabled:
+            raise ValidationError("Can't enable/disable your own account.")
+
+        return new_is_enabled
+
+    @pass_context
     @pass_call
     @pass_old_obj
     def validate(self, ctx, call, old_obj, new_obj):

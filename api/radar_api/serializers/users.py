@@ -16,6 +16,7 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
     last_name = StringField()
     force_password_change = BooleanField()
     telephone_number = StringField()
+    is_enabled = BooleanField()
 
     groups = ListField(field=GroupUserSerializer(), source='group_users', read_only=True)
 

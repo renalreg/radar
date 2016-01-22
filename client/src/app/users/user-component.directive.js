@@ -22,7 +22,7 @@
   }]);
 
   function controllerFactory(
-    ModelDetailController, $injector, UserPermission, DenyPermission
+    ModelDetailController, $injector, UserPermission, DenyPermission, session
   ) {
     function UserController($scope) {
       var self = this;
@@ -35,6 +35,8 @@
           removePermission: new DenyPermission(),
         }
       });
+
+      $scope.currentUser = session.user;
 
       self.load($scope.user).then(function() {
         self.view();
@@ -57,7 +59,7 @@
   }
 
   controllerFactory.$inject = [
-    'ModelDetailController', '$injector', 'UserPermission', 'DenyPermission'
+    'ModelDetailController', '$injector', 'UserPermission', 'DenyPermission', 'session'
   ];
 
   app.factory('UserController', controllerFactory);

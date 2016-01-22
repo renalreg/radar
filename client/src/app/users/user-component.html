@@ -37,6 +37,11 @@
         </tr>
 
         <tr>
+          <th>Is Enabled?</th>
+          <td><span tick="item.isEnabled"></span></td>
+        </tr>
+
+        <tr>
           <th>Is Admin?</th>
           <td><span tick="item.isAdmin"></span></td>
         </tr>
@@ -119,7 +124,16 @@
         </div>
       </div>
 
-      <div ng-if="user.isAdmin" frm-field frm-group>
+      <div frm-field frm-group>
+        <div frm-label>Is Enabled?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.isEnabled"></div>
+          <div frm-errors errors="item.errors.isEnabled"></div>
+        </div>
+      </div>
+
+      <div ng-if="currentUser.isAdmin" frm-field frm-group>
         <div frm-label>Is Admin?</div>
 
         <div frm-control>
