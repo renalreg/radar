@@ -1,33 +1,55 @@
-1,ALPORT,Alport Syndrome - No Histology
-2,ALPORT,Alport Syndrome - Histologically Proven
-3,ALPORT,Thin Basement Membrane Disease
-4,DENTLOWE,Dent Disease
-5,DENTLOWE,Lowe Syndrome (Oculocerebrorenal Syndrome)
-6,DENTLOWE,Other Primary Renal Fanconi Syndrome
-7,HNF1B,Renal Cysts & Diabetes Syndrome
-8,HNF1B,Glomerulocystic Disease
-9,HNF1B,Multicystic Dysplastic Kidneys
-10,HNF1B,Inherited/Genetic Diabetes Mellitus Type II (MODY)
-11,HYPOXAL,Primary Hyperoxaluria
-12,HYPOXAL,Primary Hyperoxaluria Type I
-13,HYPOXAL,Primary Hyperoxaluria Type II
-14,HYPALK,Gitelman Syndrome
-15,HYPALK,Type 1 Bartter Syndrome
-16,HYPALK,Type 2 Bartter Syndrome
-17,HYPALK,Type 3 Bartter Syndrome
-18,HYPALK,Type 4a Bartter Syndrome
-19,HYPALK,Type 4b Bartter Syndrome
-20,HYPALK,EAST Syndrome
-21,HYPALK,Liddle Syndrome
-22,INS,SRNS - Primary Steroid Resistance
-23,INS,SRNS - Secondary Steroid Resistance
-24,INS,SRNS - Presumed Steroid Resistance
-25,INS,SSNS - Steroid Sensitive
-26,INS,SSNS - Steroid Dependant
-27,INS,SSNS - Frequently Relapsing
-28,INS,SSNS - Partial Steroid Resistance
-29,OBS,CKD Stage 3 - 5
-30,OBS,Lupus nephritis
-31,OBS,Renal Transplant Recipient
-32,VAS,Systemic Vasculitis - ANCA Positive - No Histology
-33,VAS,Systemic Vasculitis - ANCA Negative - Histologially Proven
+ALPORT,Alport Syndrome
+ALPORT,Alport Syndrome - No Histology
+ALPORT,Alport Syndrome - Histologically Proven
+ALPORT,Thin Basement Membrane Disease
+APRT,APRT Deficiency
+ADPKD,Autosomal Dominant Polycystic Kidney Disease
+ARPKD,Autosomal Recessive Polycystic Kidney Disease
+AHUS,Atypical Haemolytic Uraemic Syndrome
+CALCIP,Calciphylaxis
+CYSTIN,Cystinosis
+CYSURIA,Cystinuria
+DENTLOWE,Dent Disease and Lowe Syndrome
+DENTLOWE,Dent Disease
+DENTLOWE,Lowe Syndrome (Oculocerebrorenal Syndrome)
+DENTLOWE,Other Primary Renal Fanconi Syndrome
+FUAN,Familial Urate Associated Nephropathy
+HNF1B,HNF1b Mutations
+HNF1B,Renal Cysts & Diabetes Syndrome
+HNF1B,Glomerulocystic Disease
+HNF1B,Multicystic Dysplastic Kidneys
+HNF1B,Diabetes - Type II MODY - Inherited/Genetic
+HYPOXAL,Hyperoxaluria
+HYPOXAL,Primary Hyperoxaluria
+HYPOXAL,Primary Hyperoxaluria Type I
+HYPOXAL,Primary Hyperoxaluria Type II
+HYPALK,Gitelman Syndrome
+HYPALK,Bartter Syndrome - Type 1
+HYPALK,Bartter Syndrome - Type 2
+HYPALK,Bartter Syndrome - Type 3
+HYPALK,Bartter Syndrome - Type 4a
+HYPALK,Bartter Syndrome - Type 4b
+HYPALK,EAST Syndrome
+HYPALK,Liddle Syndrome
+IGANEPHRO,IgA Nephropathy
+INS,Idiopathic Nephrotic Syndrome
+INS,SRNS - Primary Steroid Resistance
+INS,SRNS - Secondary Steroid Resistance
+INS,SRNS - Presumed Steroid Resistance
+INS,SSNS - Steroid Sensitive
+INS,SSNS - Steroid Dependant
+INS,SSNS - Frequently Relapsing
+INS,SSNS - Partial Steroid Resistance
+MPGN,Membranoproliferative Glomerulonephritis / Dense Deposit Disease
+MEMNEPHRO,Membranous Nephropathy
+OBS,Pregnancy
+OBS,CKD3
+OBS,CKD4
+OBS,CKD5
+OBS,Lupus Nephritis
+OBS,Renal Transplant Recipient
+PRCA,Pure Red Cell Aplasia
+STECHUS,STEC-associated HUS
+VAS,Vasculitis
+VAS,Systemic Vasculitis - ANCA Positive - No Histology
+VAS,Systemic Vasculitis - ANCA Negative - Histologially Proven
