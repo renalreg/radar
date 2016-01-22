@@ -4,6 +4,22 @@
   var app = angular.module('radar.users');
 
   app.factory('UserModel', ['Model', 'store', '_', function(Model, store, _) {
+    function filterGroupUsersByType(groupUsers, groupType) {
+      return _.filter(groupUsers, function(x) {
+        return x.group.type === groupType;
+      });
+    }
+
+    function uniqueGroups(groupUsers) {
+      var groups = _.map(groupUsers, function(x) {
+        return x.group;
+      });
+
+      groups = _.uniqBy(groups, 'id');
+
+      return groups;
+    }
+
     function UserModel(modelName, data) {
       var i;
 
@@ -11,30 +27,17 @@
         data = {};
       }
 
-      if (data.cohorts === undefined) {
-        data.cohorts = [];
+      if (data.groups === undefined) {
+        data.groups = [];
       } else {
-        var cohorts = [];
+        var groups = [];
 
-        for (i = 0; i < data.cohorts.length; i++) {
-          var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(store.create('cohort-users', rawCohort)));
+        for (i = 0; i < data.groups.length; i++) {
+          var rawGroup = data.groups[i];
+          groups.push(store.pushToStore(store.create('group-users', rawGroup)));
         }
 
-        data.cohorts = cohorts;
-      }
-
-      if (data.organisations === undefined) {
-        data.organisations = [];
-      } else {
-        var organisations = [];
-
-        for (i = 0; i < data.organisations.length; i++) {
-          var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(store.create('organisation-users', rawOrganisation)));
-        }
-
-        data.organisations = organisations;
+        data.groups = groups;
       }
 
       Model.call(this, modelName, data);
@@ -42,10 +45,24 @@
 
     UserModel.prototype = Object.create(Model.prototype);
 
-    UserModel.prototype.getUnits = function() {
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
-      });
+    UserModel.prototype.getCohortUsers = function() {
+      return filterGroupUsersByType(this.groups, 'COHORT');
+    };
+
+    UserModel.prototype.getHospitalUsers = function() {
+      return filterGroupUsersByType(this.groups, 'HOSPITAL');
+    };
+
+    UserModel.prototype.getCohorts = function() {
+      var groupUsers = this.getCohortUsers();
+      var groups = uniqueGroups(groupUsers);
+      return groups;
+    };
+
+    UserModel.prototype.getHospitals = function() {
+      var groupUsers = this.getHospitalUsers();
+      var groups = uniqueGroups(groupUsers);
+      return groups;
     };
 
     return UserModel;

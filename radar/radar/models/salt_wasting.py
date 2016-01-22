@@ -27,4 +27,4 @@ class SaltWastingClinicalFeatures(db.Model, MetaModelMixin):
     other_x_ray_abnormality = Column(Boolean)
     other_x_ray_abnormality_text = Column(String)
 
-Index('salt_wasting_clinical_features_patient_id_idx', SaltWastingClinicalFeatures.patient_id)
+Index('salt_wasting_clinical_features_patient_idx', SaltWastingClinicalFeatures.patient_id)

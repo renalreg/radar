@@ -3,8 +3,8 @@
 
   <div class="row">
     <div class="col-sm-8">
-      <p new-user-permission>
-        <a ui-sref="newUser" class="btn btn-primary">New User</a>
+      <p create-user-permission>
+        <a ui-sref="createUser" class="btn btn-primary">New User</a>
       </p>
 
       <div loading="loading" list-helper="proxy">
@@ -41,17 +41,17 @@
               <td>{{user.telephoneNumber | missing}}</td>
 
               <td>
-                <span ng-if="!user.cohorts.length">-</span>
-                <span ng-repeat="cohort in user.cohorts | orderBy: 'cohort.name'">
-                  {{cohort.cohort.shortName}}
+                <span ng-if="!user.getCohorts().length">-</span>
+                <span ng-repeat="x in user.getCohorts() | orderBy: 'name'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!user.getUnits().length">-</span>
-                <span ng-repeat="organisation in user.getUnits() | orderBy: 'organisation.name'">
-                  {{organisation.organisation.name}}
+                <span ng-if="!user.getHospitals().length">-</span>
+                <span ng-repeat="x in user.getHospitals() | orderBy: 'name'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
@@ -118,10 +118,10 @@
         </div>
 
         <div frm-field frm-group>
-          <div frm-label>Unit</div>
+          <div frm-label>Hospital</div>
 
           <div frm-control>
-            <div frm-unit-field model="filters.organisation"></div>
+            <div frm-hospital-field model="filters.hospital"></div>
             <div frm-errors></div>
           </div>
         </div>

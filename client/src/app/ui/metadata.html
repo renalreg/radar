@@ -1,0 +1,26 @@
+<table class="metadata">
+  <tr>
+    <th>ID</th>
+    <td>{{item.id}}</td>
+  </tr>
+
+  <tr>
+    <th>Created User</th>
+    <td>{{item.createdUser.username | missing}}</td>
+  </tr>
+
+  <tr>
+    <th>Created Date</th>
+    <td>{{item.createdDate | dateTimeFormat}}</td>
+  </tr>
+
+  <tr>
+    <th>Modified User</th>
+    <td>{{item.modifiedUser.username | missing}}</td>
+  </tr>
+
+  <tr>
+    <th>Modified Date</th>
+    <td>{{item.modifiedDate | dateTimeFormat}}</td>
+  </tr>
+</table>

@@ -5,20 +5,55 @@
 
   app.provider('adapter', function() {
     var config = {
-      baseUrl: ''
+      baseUrl: '',
+      beforeRequestChain: [],
+      afterResponseChain: []
     };
 
     this.setBaseUrl = function(value) {
       config.baseUrl = value;
     };
 
-    this.$get = function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships) {
+    this.beforeRequest = function(name) {
+      config.beforeRequestChain.push(name);
+    };
+
+    this.afterResponse = function(name) {
+      config.afterResponseChain.push(name);
+    };
+
+    this.$get = function($http, $q, _, camelCaseKeys, snakeCaseKeys, flattenRelationships, $injector) {
       function Adapter(config) {
         this.config = config;
+
+        this.baseUrl = config.baseUrl;
+
+        this.beforeRequestChain = null;
+        this.afterResponseChain = null;
       }
 
       Adapter.prototype.getUrl = function(url) {
-        return this.config.baseUrl + url;
+        return this.baseUrl + url;
+      };
+
+      Adapter.prototype.getBeforeRequestChain = function() {
+        if (this.beforeRequestChain === null) {
+          this.beforeRequestChain = _.map(this.config.beforeRequestChain, function(name) {
+            return $injector.get(name);
+          });
+        }
+
+        return this.beforeRequestChain;
+      };
+
+      Adapter.prototype.getAfterResponseChain = function() {
+        if (this.afterResponseChain === null) {
+          this.afterResponseChain = _.map(this.config.afterResponseChain, function(name) {
+            return $injector.get(name);
+          });
+        }
+
+        return this.afterResponseChain;
       };
 
       Adapter.prototype.getModelUrl = function(modelName, id) {
@@ -175,7 +210,12 @@
           config.data = self.transformRequest(data);
         }
 
-        return $http(config)
+        // Apply before request chain
+        _.forEach(this.getBeforeRequestChain(), function(beforeRequest) {
+          config = beforeRequest(config);
+        });
+
+        var promise = $http(config)
           .then(function(response) {
             if (angular.isObject(response.data)) {
               response.data = self.transformResponse(response.data);
@@ -190,13 +230,20 @@
 
             return $q.reject(response);
           });
+
+        // Apply after response chain
+        _.forEach(this.getAfterResponseChain(), function(afterResponse) {
+          promise = afterResponse(promise);
+        });
+
+        return promise;
       };
 
       return new Adapter(config);
     };
 
     this.$get.$inject = [
-      '$http', '$q', '_', 'camelCaseKeys', 'snakeCaseKeys', 'flattenRelationships'
+      '$http', '$q', '_', 'camelCaseKeys', 'snakeCaseKeys', 'flattenRelationships', '$injector'
     ];
   });
 })();

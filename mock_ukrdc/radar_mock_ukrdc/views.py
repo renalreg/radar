@@ -9,19 +9,23 @@ class PatientSearchView(ApiView):
     def post(self, data):
         patient = {
             'name': {
-                'given': data['name']['given'].capitalize(),
-                'family': data['name']['family'].capitalize()
+                'given_name': data['name']['given_name'].upper(),
+                'family_name': data['name']['family_name'].upper()
             },
             'birth_time': data['birth_time'],
             'gender': '1',
             'patient_numbers': [
                 {
                     'number': '100000001',
-                    'code_system': 'ukrdc',
+                    'organization': {
+                        'code': 'UKRDC',
+                    },
                 },
                 {
                     'number': data['patient_number']['number'],
-                    'code_system': data['patient_number']['code_system'],
+                    'organization': {
+                        'code': data['patient_number']['organization']['code'],
+                    },
                 }
             ]
         }

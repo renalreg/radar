@@ -1,13 +1,13 @@
-from radar.permissions import has_organisation_permission_for_patient
-from radar.roles import PERMISSIONS
+from radar.permissions import has_permission_for_patient
+from radar.roles import PERMISSION
 from radar.validation.core import Field, ValidationError, pass_context, pass_call, pass_new_obj, Validation
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.validators import required, none_if_blank, max_length, optional
+from radar.exceptions import PermissionDenied
 
 
 class PatientValidation(MetaValidationMixin, Validation):
-    is_active = Field([required()])
-    comments = Field([none_if_blank(), optional(), max_length(1000)])
+    comments = Field([none_if_blank(), optional(), max_length(10000)])
 
 
 class PatientField(Field):
@@ -15,8 +15,8 @@ class PatientField(Field):
     def validate(self, ctx, patient):
         user = ctx['user']
 
-        if not user.is_admin and not has_organisation_permission_for_patient(user, patient, PERMISSIONS.EDIT_PATIENT):
-            raise ValidationError('Permission denied!')
+        if not has_permission_for_patient(user, patient, PERMISSION.EDIT_PATIENT):
+            raise PermissionDenied()
 
         return patient
 

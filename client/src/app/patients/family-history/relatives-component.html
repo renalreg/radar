@@ -1,0 +1,35 @@
+<div loading="loading" crud>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Relatives</h3>
+    </div>
+
+    <div class="panel-body">
+      <div ng-repeat="item in items track by $index">
+        <div frm-field frm-group>
+          <div frm-label>Relationship</div>
+
+          <div frm-control>
+            <div frm-select-field model="item.relationship" required="true" options="relationships"></div>
+            <div frm-errors errors="parent.errors.relatives[$index].relationship"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>RaDaR Patient ID</div>
+
+          <div frm-control>
+            <div frm-integer-field model="item.patient.id"></div>
+            <div frm-errors errors="parent.errors.relatives[$index].patient"></div>
+          </div>
+        </div>
+
+        <p><span crud-list-remove-button item="item"></span></p>
+
+        <hr />
+      </div>
+
+      <p><span crud-list-append-button action="create()"></span></p>
+    </div>
+  </div>
+</div>

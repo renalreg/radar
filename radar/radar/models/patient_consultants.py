@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, UniqueConstraint, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models import MetaModelMixin
+from radar.models.common import MetaModelMixin
 from radar.models.common import patient_id_column, patient_relationship
 
 
@@ -17,6 +17,12 @@ class PatientConsultant(db.Model, MetaModelMixin):
     consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
     consultant = relationship('Consultant')
 
-    __table_args__ = (
-        UniqueConstraint('patient_id', 'consultant_id'),
-    )
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
+
+Index(
+    'patient_consultants_patient_consultant_idx',
+    PatientConsultant.patient_id,
+    PatientConsultant.consultant_id,
+    unique=True
+)

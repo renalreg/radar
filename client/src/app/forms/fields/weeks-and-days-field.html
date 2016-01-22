@@ -1,0 +1,34 @@
+<div
+  frm-model
+  frm-required
+  frm-weeks-and-days
+  ng-required="required()"
+  ng-model="model">
+  <div class="row">
+    <div class="col-md-6">
+      <div frm-field frm-group-inline>
+        <div class="input-group">
+          <input
+            frm-model
+            integer-validator
+            ng-model="period.weeks"
+            class="form-control"/>
+          <span class="input-group-addon">weeks</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div frm-field frm-group-inline>
+        <div class="input-group">
+          <input
+            frm-model
+            integer-validator
+            ng-model="period.days"
+            class="form-control"/>
+          <span class="input-group-addon">days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

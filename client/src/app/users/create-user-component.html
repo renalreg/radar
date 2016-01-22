@@ -1,0 +1,79 @@
+<div crud>
+  <form class="form-horizontal form-container" crud-submit="save()" novalidate>
+    <div frm-field frm-group>
+      <div frm-label>Username</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.username" required="true"></div>
+        <div frm-errors errors="item.errors.username"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Email</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.email" required="true"></div>
+        <div frm-errors errors="item.errors.email"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>First Name</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.firstName" required="true"></div>
+        <div frm-errors errors="item.errors.firstName"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Last Name</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.lastName" required="true"></div>
+        <div frm-errors errors="item.errors.lastName"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Telephone Number</div>
+
+      <div frm-control>
+        <div frm-text-field model="item.telephoneNumber"></div>
+        <div frm-errors errors="item.errors.telephoneNumber"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Password</div>
+
+      <div frm-control>
+        <div frm-password-field model="item.password" required="true"></div>
+        <div frm-errors errors="item.errors.password"></div>
+      </div>
+    </div>
+
+    <div frm-field frm-group>
+      <div frm-label>Confirm Password</div>
+
+      <div frm-control>
+        <div frm-confirm-password-field model="item.confirmPassword" password="item.password" required="true"></div>
+        <div frm-errors></div>
+      </div>
+    </div>
+
+    <div ng-if="user.isAdmin" frm-field frm-group>
+      <div frm-label>Is Admin?</div>
+
+      <div frm-control>
+        <div frm-boolean-field model="item.isAdmin"></div>
+        <div frm-errors errors="item.errors.isAdmin"></div>
+      </div>
+    </div>
+
+    <div frm-buttons>
+      <span crud-save-button></span>
+    </div>
+  </form>
+</div>

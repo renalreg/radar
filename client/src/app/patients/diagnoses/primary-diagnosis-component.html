@@ -1,0 +1,222 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span ng-if="multiple" crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
+      </tr>
+
+      <tr>
+        <th>Diagnosis</th>
+        <td>{{item.getDiagnosis()}}</td>
+      </tr>
+
+      <tr>
+        <th>Symptoms Date</th>
+        <td>{{item.symptomsDate | dateFormat}} <span ng-if="item.symptomsAge">({{item.symptomsAge | ageFormat}})</span></td>
+      </tr>
+
+      <tr>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
+      </tr>
+
+      <tr>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}} <span ng-if="item.toAge">({{item.toAge | ageFormat}})</span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Gene Test</th>
+        <td><span tick="item.geneTest"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Biochemistry</th>
+        <td><span tick="item.biochemistry"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Clinical Picture</th>
+        <td><span tick="item.clinicalPicture"></span></td>
+      </tr>
+
+      <tr>
+        <th>Confirmed by Biopsy</th>
+        <td><span tick="item.biopsy"></span></td>
+      </tr>
+
+      <tr ng-if="item.biopsy">
+        <th>Biopsy Diagnosis</th>
+        <td>{{item.biopsyDiagnosis.label | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
+      </tr>
+    </table>
+
+    <div metadata item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span ng-if="multiple" crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Diagnosis</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.diagnosis" required="true" options="diagnoses" options-label="name"></div>
+          <div frm-help>Choose the most specific diagnosis.</div>
+          <div frm-errors errors="item.errors.diagnosis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Symptoms Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.symptomsDate"></div>
+          <div frm-help>Date of onset of symptoms.</div>
+          <div frm-errors errors="item.errors.symptomsDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>From Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.fromDate" required="true"></div>
+          <div frm-help>Date of diagnosis.</div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Gene Test</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.geneTest"></div>
+          <div frm-errors errors="item.errors.geneTest"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Biochemistry</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.biochemistry"></div>
+          <div frm-errors errors="item.errors.biochemistry"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Clinical Picture</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.clinicalPicture"></div>
+          <div frm-errors errors="item.errors.clinicalPicture"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirmed by Biopsy</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.biopsy"></div>
+          <div frm-errors errors="item.errors.biopsy"></div>
+        </div>
+      </div>
+
+      <div ng-if="item.biopsy" frm-field frm-group>
+        <div frm-label>Biopsy Diagnosis</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses"></div>
+          <div frm-errors errors="item.errors.biopsyDiagnosis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'fromDate', reverse: true}">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div ng-if="multiple" filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p ng-if="multiple">No results.</p>
+      <p ng-if="!multiple">Not entered.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="getDiagnosis()">Diagnosis</th>
+          <th sort-helper="symptomsDate">Symptoms Date</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
+          <th sort-helper="getSource()">Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.getDiagnosis()}}</td>
+          <td>{{item.symptomsDate | dateFormat}}</td>
+          <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
+          <td>{{item.toDate | dateFormat}}</td>
+          <td class="source">{{item.getSource()}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

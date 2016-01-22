@@ -1,6 +1,6 @@
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar.serializers.models import ModelSerializer
-from radar.models import Post
+from radar.models.posts import Post
 
 
 class PostSerializer(MetaSerializerMixin, ModelSerializer):

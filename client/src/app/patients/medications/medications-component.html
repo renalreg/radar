@@ -7,18 +7,13 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
-      </tr>
-
-      <tr>
-        <th>Name</th>
-        <td>{{item.name}}</td>
+        <th>Drug</th>
+        <td>{{item.getDrug()}}</td>
       </tr>
 
       <tr>
@@ -33,21 +28,21 @@
 
       <tr>
         <th>Dose</th>
-        <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
+        <td>{{item.getDose() | missing}}</td>
       </tr>
 
       <tr>
         <th>Frequency</th>
-        <td>{{item.frequency.label}}</td>
+        <td>{{item.frequency | missing}}</td>
       </tr>
 
       <tr>
         <th>Route</th>
-        <td>{{item.route.label}}</td>
+        <td>{{item.route.label | missing}}</td>
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -58,11 +53,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
@@ -85,11 +80,21 @@
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Name</div>
+        <div frm-label>Drug</div>
 
         <div frm-control>
-          <div frm-text-field model="item.name" required="true"></div>
-          <div frm-errors errors="item.errors.name"></div>
+          <div frm-drug-field model="item.drug"></div>
+          <div frm-errors errors="item.errors.drug"></div>
+        </div>
+      </div>
+
+      <div ng-if="!item.drug" frm-field frm-group>
+        <div frm-label>Drug Text</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.drugText"></div>
+          <div frm-help>Please use a drug from the list where possible.</div>
+          <div frm-errors errors="item.errors.drugText"></div>
         </div>
       </div>
 
@@ -97,7 +102,7 @@
         <div frm-label>Dose Quantity</div>
 
         <div frm-control>
-          <div frm-number-field model="item.doseQuantity" required="true"></div>
+          <div frm-number-field model="item.doseQuantity"></div>
           <div frm-errors errors="item.errors.doseQuantity"></div>
         </div>
       </div>
@@ -106,8 +111,18 @@
         <div frm-label>Dose Unit</div>
 
         <div frm-control>
-          <div frm-select-field model="item.doseUnit" required="true" options="doseUnits"></div>
+          <div frm-select-field model="item.doseUnit" options="doseUnits"></div>
           <div frm-errors errors="item.errors.doseUnit"></div>
+        </div>
+      </div>
+
+      <div ng-if="!item.doseQuantity" frm-field frm-group>
+        <div frm-label>Dose Text</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.doseText"></div>
+          <div frm-help>Please use dose quantity and dose unit for new medications.</div>
+          <div frm-errors errors="item.errors.doseText"></div>
         </div>
       </div>
 
@@ -115,7 +130,7 @@
         <div frm-label>Frequency</div>
 
         <div frm-control>
-          <div frm-select-field model="item.frequency" required="true" options="frequencies"></div>
+          <div frm-text-field model="item.frequency"></div>
           <div frm-errors errors="item.errors.frequency"></div>
         </div>
       </div>
@@ -124,7 +139,7 @@
         <div frm-label>Route</div>
 
         <div frm-control>
-          <div frm-select-field model="item.route" required="true" options="routes"></div>
+          <div frm-select-field model="item.route" options="routes"></div>
           <div frm-errors errors="item.errors.route"></div>
         </div>
       </div>
@@ -136,7 +151,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'fromDate', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -151,13 +166,13 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="name">Name</th>
+          <th sort-helper="getDrug()">Drug</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="doseQuantity">Dose</th>
-          <th sort-helper="frequency.label">Frequency</th>
+          <th sort-helper="getDose()">Dose</th>
+          <th sort-helper="frequency">Frequency</th>
           <th sort-helper="route.label">Route</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -169,13 +184,14 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.name}}</td>
+          <td>{{item.getDrug()}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.doseQuantity}} {{item.doseUnit.label}}</td>
-          <td>{{item.frequency.label}}</td>
-          <td>{{item.route.label}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.getDose()}}</td>
+          <td>{{item.frequency | missing}}</td>
+          <td>{{item.route.label | missing}}</td>
+          <td>{{item.unstructured | missing}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

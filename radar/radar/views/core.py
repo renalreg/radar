@@ -1,10 +1,12 @@
 from functools import wraps
+import uuid
 
 from flask import request, jsonify
 from flask.views import MethodView
-from sqlalchemy import desc
+from sqlalchemy import desc, inspect, Integer
 from sqlalchemy.orm.exc import NoResultFound
 from flask import abort
+from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
@@ -175,9 +177,23 @@ class ModelView(SerializerViewMixin, ValidationViewMixin, PermissionViewMixin, A
         query = self.get_query()
         query = self.filter_query(query)
 
-        id = request.view_args['id']
         model_class = self.get_model_class()
-        query = query.filter(model_class.id == id)
+        id_type = inspect(model_class).columns['id'].type
+
+        obj_id = request.view_args['id']
+
+        if isinstance(id_type, Integer):
+            try:
+                obj_id = int(obj_id)
+            except ValueError:
+                raise NotFound()
+        elif isinstance(id_type, postgresql.UUID):
+            try:
+                uuid.UUID(obj_id)
+            except ValueError:
+                raise NotFound()
+
+        query = query.filter(model_class.id == obj_id)
 
         try:
             obj = query.one()
@@ -225,13 +241,14 @@ class CreateModelViewMixin(object):
                     obj = serializer.update(obj, deserialized_data)
                     validation.after_update(ctx, old_obj, obj)
                 except ValidationError as e:
+                    print e.errors
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
 
         db.session.add(obj)
         db.session.commit()
         data = serializer.to_data(obj)
-        return jsonify(data), 201
+        return jsonify(data), 200
 
 
 class SortRequestSerializer(Serializer):
@@ -341,7 +358,7 @@ class DestroyModelViewMixin(object):
         obj = self.get_object()
         db.session.delete(obj)
         db.session.commit()
-        return '', 204
+        return '', 200
 
 
 class RetrieveModelView(RetrieveModelViewMixin, ModelView):
@@ -399,6 +416,9 @@ class CreateModelView(CreateModelViewMixin, ModelView):
 
 class UpdateModelView(UpdateModelViewMixin, ModelView):
     def put(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
 

@@ -8,7 +8,8 @@
       restrict: 'A',
       scope: {
         required: '&',
-        model: '='
+        model: '=',
+        units: '@'
       },
       templateUrl: 'app/forms/fields/integer-field.html'
     };

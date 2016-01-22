@@ -1,0 +1,123 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Date of Picture</th>
+        <td>{{item.dateOfPicture | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Any Evidence of Deafness?</th>
+        <td>{{item.deafness.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Date Problem First Noticed</th>
+        <td>{{item.deafnessDate | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Date Started Using Hearing Aid</th>
+        <td>{{item.hearingAidDate | dateFormat}}</td>
+      </tr>
+    </table>
+
+    <div metadata item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Date of Picture</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfPicture" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfPicture"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Any Evidence of Deafness?</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.deafness" options="deafnessOptions" required="true"></div>
+          <div frm-errors errors="item.errors.deafness"></div>
+        </div>
+      </div>
+
+      <div ng-show="item.deafness.id === 2 || item.deafness.id === 3">
+        <div frm-field frm-group>
+          <div frm-label>Date Problem First Noticed</div>
+
+          <div frm-control>
+            <div frm-date-field model="item.deafnessDate"></div>
+            <div frm-errors errors="item.errors.deafnessDate"></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Date Started Using Hearing Aid</div>
+
+          <div frm-control>
+            <div frm-date-field model="item.hearingAidDate"></div>
+            <div frm-errors errors="item.errors.hearingAidDate"></div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'dateOfPicture', reverse: true}">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfPicture">Date</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfPicture | dateFormat}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

@@ -2,9 +2,11 @@ from datetime import date
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, DataSource, Pathology
+from radar.models import Patient, PatientDemographics, Pathology
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
-from radar.validation.pathology_validation import PathologyValidation
+from radar.validation.pathology import PathologyValidation
 from radar.tests.validation.helpers import validation_runner
 
 
@@ -20,12 +22,13 @@ def patient():
 @pytest.fixture
 def pathology(patient):
     obj = Pathology()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
-    obj.kidney_type = 'NATURAL'
+    obj.kidney_type = 'NATIVE'
     obj.kidney_side = 'RIGHT'
-    obj.laboratory_reference_number = '12345'
+    obj.reference_number = '12345'
     obj.histological_summary = 'foo bar baz'
     return obj
 
@@ -33,9 +36,9 @@ def pathology(patient):
 def test_valid(pathology):
     obj = valid(pathology)
     assert obj.date == date(2015, 1, 1)
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
     assert obj.kidney_side == 'RIGHT'
-    assert obj.laboratory_reference_number == '12345'
+    assert obj.reference_number == '12345'
     assert obj.histological_summary == 'foo bar baz'
 
 
@@ -44,14 +47,20 @@ def test_patient_missing(pathology):
     invalid(pathology)
 
 
-def test_data_source_missing(pathology):
-    pathology.data_source = None
+def test_source_group_missing(pathology):
+    pathology.source_group = None
     invalid(pathology)
+
+
+def test_source_type_missing(pathology):
+    pathology.source_type = None
+    pathology = valid(pathology)
+    assert pathology.source_type == 'RADAR'
 
 
 def test_kidney_type_missing(pathology):
     pathology.kidney_type = None
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_kidney_type_blank(pathology):
@@ -59,10 +68,10 @@ def test_kidney_type_blank(pathology):
     invalid(pathology)
 
 
-def test_kidney_type_natural(pathology):
-    pathology.kidney_type = 'NATURAL'
+def test_kidney_type_native(pathology):
+    pathology.kidney_type = 'NATIVE'
     obj = valid(pathology)
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
 
 
 def test_kidney_type_transplant(pathology):
@@ -78,7 +87,7 @@ def test_kidney_type_invalid(pathology):
 
 def test_kidney_side_missing(pathology):
     pathology.kidney_side = None
-    invalid(pathology)
+    valid(pathology)
 
 
 def test_kidney_side_blank(pathology):
@@ -103,14 +112,14 @@ def test_kidney_side_invalid(pathology):
     invalid(pathology)
 
 
-def test_laboratory_reference_number_missing(pathology):
-    pathology.laboratory_reference_number = None
-    invalid(pathology)
+def test_reference_number_missing(pathology):
+    pathology.reference_number = None
+    valid(pathology)
 
 
-def test_laboratory_reference_number_blank(pathology):
-    pathology.laboratory_reference_number = ''
-    invalid(pathology)
+def test_reference_number_blank(pathology):
+    pathology.reference_number = ''
+    valid(pathology)
 
 
 def test_histological_summary_missing(pathology):

@@ -7,18 +7,13 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
-      </tr>
-
-      <tr>
-        <th>Organisation</th>
-        <td>{{item.organisation.name}}</td>
+        <th>Number Group</th>
+        <td>{{item.numberGroup.name}}</td>
       </tr>
 
       <tr>
@@ -27,7 +22,7 @@
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -38,11 +33,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndList()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Organisation</div>
+        <div frm-label>Number Group</div>
 
         <div frm-control>
-          <div frm-organisation-field model="item.organisation" required="true"></div>
-          <div frm-errors errors="item.errors.organisation"></div>
+          <div frm-group-field model="item.numberGroup" required="true"></div>
+          <div frm-errors errors="item.errors.numberGroup"></div>
         </div>
       </div>
 
@@ -77,9 +72,9 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="organisation.name">Organisation</th>
+          <th sort-helper="numberGroup.shortName">Number Group</th>
           <th sort-helper="number">Number</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -91,9 +86,9 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.organisation.name}}</td>
+          <td>{{item.numberGroup.shortName}}</td>
           <td>{{item.number}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

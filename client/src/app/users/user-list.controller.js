@@ -3,7 +3,9 @@
 
   var app = angular.module('radar.users');
 
-  app.factory('UserListController', ['ListController', '$injector', 'ListHelperProxy', 'store', function(ListController, $injector, ListHelperProxy, store) {
+  function controllerFactory(
+    ListController, $injector, ListHelperProxy, store, _
+  ) {
     function UserListController($scope) {
       var self = this;
 
@@ -20,9 +22,37 @@
       $scope.clear = clear;
       $scope.count = 0;
 
+      function filtersToParams(filters) {
+        var params = {};
+
+        var keys = ['username', 'email', 'firstName', 'lastName'];
+
+        _.forEach(keys, function(key) {
+          var value = filters[key];
+
+          if (value !== undefined && value !== null && value !== '') {
+            params[key] = value;
+          }
+        });
+
+        var groups = _.filter([filters.cohort, filters.hospital], function(group) {
+          return group !== undefined && group !== null;
+        });
+
+        var groupIds = _.map(groups, function(group) {
+          return group.id;
+        });
+
+        if (groupIds.length > 0) {
+          params.group = groupIds.join(',');
+        }
+
+        return params;
+      }
+
       function search() {
         var proxyParams = proxy.getParams();
-        var params = angular.extend({}, proxyParams, $scope.filters);
+        var params = angular.extend({}, proxyParams, filtersToParams($scope.filters));
 
         return self.load(store.findMany('users', params, true).then(function(data) {
           proxy.setItems(data.data);
@@ -42,5 +72,11 @@
     UserListController.prototype = Object.create(ListController.prototype);
 
     return UserListController;
-  }]);
+  }
+
+  controllerFactory.$inject = [
+    'ListController', '$injector', 'ListHelperProxy', 'store', '_'
+  ];
+
+  app.factory('UserListController', controllerFactory);
 })();

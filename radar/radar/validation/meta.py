@@ -32,7 +32,7 @@ class CreatedDateField(Field):
 
 
 class ModifiedDateField(Field):
-    def pre_validate(self, created_date):
+    def pre_validate(self, modified_date):
         return func.now()
 
 

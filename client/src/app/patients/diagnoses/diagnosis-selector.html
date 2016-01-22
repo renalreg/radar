@@ -1,0 +1,40 @@
+<div list-helper="diagnoses as page" list-helper-options="{perPage: 10, sortBy: 'name'}" class="diagnosis-selector">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th sort-helper="name">Name</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-if="selectedDiagnosis">
+        <td>
+          <button type="button" ng-click="drop()" class="btn btn-primary btn-xs">Deselect</button>
+        </td>
+
+        <td>{{selectedDiagnosis.name}}</td>
+      </tr>
+
+      <tr>
+        <td colspan="2">
+          <div filter-helper></div>
+        </td>
+      </tr>
+
+      <tr ng-if="!page.getCount()">
+        <td colspan="2" class="empty">No matching diagnoses.</td>
+      </tr>
+
+      <tr ng-repeat="diagnosis in page.getItems()">
+        <td>
+          <button type="button" ng-click="use(diagnosis)" class="btn btn-primary btn-xs">Select</button>
+        </td>
+
+        <td>{{diagnosis.name}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div pagination-helper></div>
+</div>

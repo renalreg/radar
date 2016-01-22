@@ -1,21 +1,23 @@
-from radar.models import User, Post, PatientDemographics, Dialysis, Medication, Patient, Transplant, Hospitalisation, \
-    Plasmapheresis, RenalImaging, Cohort, Organisation, OrganisationPatient, OrganisationUser, CohortPatient, CohortUser, \
-    DataSource, ResultGroup, PatientAlias, PatientNumber, PatientAddress, Disorder, CohortDiagnosis, ResultSpec, \
-    ResultGroupSpec, ResultGroupResultSpec, CohortFeature, CohortResultGroupSpec
-from radar.validation.cohort_features import CohortFeatureValidation
-from radar.validation.cohort_patients import CohortPatientValidation
-from radar.validation.cohort_result_group_specs import CohortResultGroupSpecValidation
-from radar.validation.cohort_users import CohortUserValidation
-from radar.validation.cohorts import CohortValidation
-from radar.validation.comorbidities import DisorderValidation
-from radar.validation.data_sources import DataSourceValidation
-from radar.validation.diagnoses import CohortDiagnosisValidation
+from radar.models.users import User
+from radar.models.posts import Post
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.dialysis import Dialysis
+from radar.models.medications import Medication
+from radar.models.patients import Patient
+from radar.models.transplants import Transplant
+from radar.models.hospitalisations import Hospitalisation
+from radar.models.plasmapheresis import Plasmapheresis
+from radar.models.renal_imaging import RenalImaging
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patient_addresses import PatientAddress
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis
+from radar.models.groups import Group, GroupPatient, GroupUser
+from radar.models.results import Result
+from radar.models.consultants import Consultant
 from radar.validation.dialysis import DialysisValidation
 from radar.validation.hospitalisations import HospitalisationValidation
 from radar.validation.medications import MedicationValidation
-from radar.validation.organisation_patients import OrganisationPatientValidation
-from radar.validation.organisation_users import OrganisationUserValidation
-from radar.validation.organisations import OrganisationValidation
 from radar.validation.patient_addresses import PatientAddressValidation
 from radar.validation.patient_aliases import PatientAliasValidation
 from radar.validation.patient_demographics import PatientDemographicsValidation
@@ -24,26 +26,20 @@ from radar.validation.patients import PatientValidation
 from radar.validation.plasmapheresis import PlasmapheresisValidation
 from radar.validation.posts import PostValidation
 from radar.validation.renal_imaging import RenalImagingValidation
-from radar.validation.result_group_result_specs import ResultGroupResultSpecValidation
-from radar.validation.result_group_specs import ResultGroupSpecValidation
-from radar.validation.result_specs import ResultSpecValidation
-from radar.validation.result_groups import ResultGroupValidation
+from radar.validation.results import ResultValidation
 from radar.validation.transplants import TransplantValidation
 from radar.validation.users import UserValidation
+from radar.validation.consultants import ConsultantValidation
+from radar.validation.groups import GroupValidation
+from radar.validation.group_users import GroupUserValidation
+from radar.validation.group_patients import GroupPatientValidation
+from radar.validation.diagnoses import DiagnosisValidation, GroupDiagnosisValidation
 from radar.database import db
 from radar.auth.sessions import current_user
 
 VALIDATIONS = {
     User: UserValidation,
     Post: PostValidation,
-    ResultGroup: ResultGroupValidation,
-    DataSource: DataSourceValidation,
-    Cohort: CohortValidation,
-    Organisation: OrganisationValidation,
-    OrganisationUser: OrganisationUserValidation,
-    OrganisationPatient: OrganisationPatientValidation,
-    CohortUser: CohortUserValidation,
-    CohortPatient: CohortPatientValidation,
     RenalImaging: RenalImagingValidation,
     Plasmapheresis: PlasmapheresisValidation,
     Hospitalisation: HospitalisationValidation,
@@ -55,13 +51,13 @@ VALIDATIONS = {
     PatientAlias: PatientAliasValidation,
     PatientNumber: PatientNumberValidation,
     PatientAddress: PatientAddressValidation,
-    Disorder: DisorderValidation,
-    CohortDiagnosis: CohortDiagnosisValidation,
-    ResultSpec: ResultSpecValidation,
-    ResultGroupSpec: ResultGroupSpecValidation,
-    ResultGroupResultSpec: ResultGroupResultSpecValidation,
-    CohortFeature: CohortFeatureValidation,
-    CohortResultGroupSpec: CohortResultGroupSpecValidation,
+    Diagnosis: DiagnosisValidation,
+    Result: ResultValidation,
+    Consultant: ConsultantValidation,
+    Group: GroupValidation,
+    GroupUser: GroupUserValidation,
+    GroupPatient: GroupPatientValidation,
+    GroupDiagnosis: GroupDiagnosisValidation,
 }
 
 

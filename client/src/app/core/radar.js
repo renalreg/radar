@@ -16,12 +16,12 @@
           session.login(user);
         })
         ['catch'](function() {
-        session.logout();
-      })
+          session.logout();
+        })
         ['finally'](function() {
-        // Always resolve so the application still boots even if our token is no longer valid
-        sessionUserDeferred.resolve();
-      });
+          // Always resolve so the application still boots even if our token is no longer valid
+          sessionUserDeferred.resolve();
+        });
 
       promises.push(sessionUserDeferred.promise);
     }

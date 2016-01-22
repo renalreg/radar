@@ -1,4 +1,4 @@
-from radar.models import Patient
+from radar.models.patients import Patient
 from radar.serializers.models import ReferenceField
 
 

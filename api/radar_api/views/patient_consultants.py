@@ -1,16 +1,19 @@
 from radar_api.serializers.patient_consultants import PatientConsultantSerializer
-from radar.models import PatientConsultant
+from radar.models.patient_consultants import PatientConsultant
 from radar.views.patients import PatientObjectListView, PatientObjectDetailView
+from radar.validation.patient_consultants import PatientConsultantValidation
 
 
 class PatientConsultantListView(PatientObjectListView):
     model_class = PatientConsultant
     serializer_class = PatientConsultantSerializer
+    validation_class = PatientConsultantValidation
 
 
 class PatientConsultantDetailView(PatientObjectDetailView):
     model_class = PatientConsultant
     serializer_class = PatientConsultantSerializer
+    validation_class = PatientConsultantValidation
 
 
 def register_views(app):

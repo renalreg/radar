@@ -1,0 +1,165 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>First Name</th>
+        <td>{{item.firstName}}</td>
+      </tr>
+
+      <tr>
+        <th>Last Name</th>
+        <td>{{item.lastName}}</td>
+      </tr>
+
+      <tr>
+        <th>Email Address</th>
+        <td>{{item.emailAddress | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Telephone Number</th>
+        <td>{{item.telephoneNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>GMC Number</th>
+        <td>{{item.gmcNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Hospitals</th>
+        <td>
+          <span ng-if="!item.groups.length">-</span>
+          <span ng-repeat="x in item.groups | orderBy: 'group.name'">
+            {{x.group.name}}
+            <br ng-if="!$last" />
+          </span>
+        </td>
+      </tr>
+    </table>
+
+    <div metadata item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>First Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.firstName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Last Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.lastName" required="true"></div>
+          <div frm-errors errors="item.errors.lastName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Email</div>
+
+        <div frm-control>
+          <div frm-email-field model="item.email"></div>
+          <div frm-errors errors="item.errors.email"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Telephone Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.telephoneNumber"></div>
+          <div frm-errors errors="item.errors.telephoneNumber"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>GMC Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.gmcNumber"></div>
+          <div frm-errors errors="item.errors.gmcNumber"></div>
+        </div>
+      </div>
+
+      <div consultant-hospitals-component consultant="item"></div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 100, sortBy: 'lastName'}">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="firstName">First Name</th>
+          <th sort-helper="lastName">Last Name</th>
+          <th sort-helper="email">Email</th>
+          <th sort-helper="telephoneNumber">Telephone Number</th>
+          <th sort-helper="gmcNumber">GMC Number</th>
+          <th>Hospitals</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.firstName}}</td>
+          <td>{{item.lastName}}</td>
+          <td>{{item.email | missing}}</td>
+          <td>{{item.telephoneNumber | missing}}</td>
+          <td>{{item.gmcNumber | missing}}</td>
+
+          <td>
+            <span ng-if="!item.groups.length">-</span>
+            <span ng-repeat="x in item.groups | orderBy: 'group.name'">
+              {{x.group.name}}
+              <br ng-if="!$last" />
+            </span>
+          </td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

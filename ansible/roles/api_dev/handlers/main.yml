@@ -1,6 +1,3 @@
 ---
 - name: reload systemd
   command: systemctl daemon-reload
-
-- name: restart radar-api-dev
-  service: name=radar-api-dev state=restarted

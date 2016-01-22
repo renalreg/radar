@@ -1,7 +1,7 @@
 import pytest
 
 from radar.validation.core import ValidationError
-from radar.validation.patient_number_validators import nhs_no
+from radar.validation.number_validators import nhs_no
 
 
 def test_valid_int():
@@ -13,14 +13,6 @@ def test_valid_int():
 def test_valid_string():
     assert valid('9434765919') == '9434765919'
     assert valid('9434765870') == '9434765870'
-
-
-def test_short_string():
-    assert valid('437631966') == '437631966'
-
-
-def test_short_int():
-    assert valid(437631966) == 437631966
 
 
 def test_invalid():
@@ -41,6 +33,14 @@ def test_remove_spaces():
 def test_remove_leading_zeros():
     value = valid('0009434765919')
     assert value == '9434765919'
+
+
+def test_chi_no():
+    invalid('101299877')
+
+
+def test_handc_no():
+    invalid('3232255825')
 
 
 def valid(value):

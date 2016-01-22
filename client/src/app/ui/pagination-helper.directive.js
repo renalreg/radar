@@ -4,7 +4,10 @@
   var app = angular.module('radar.ui');
 
   app.directive('paginationHelper', function() {
-    // TODO allow updating page and perPage from template
+    var LEFT_EDGE = 2;
+    var RIGHT_EDGE = 2;
+    var LEFT_CURRENT = 2;
+    var RIGHT_CURRENT = 5;
 
     return {
       require: '^listHelper',
@@ -22,6 +25,38 @@
         scope.nextPage = nextPage;
         scope.firstPage = firstPage;
         scope.lastPage = lastPage;
+        scope.isCurrentPage = isCurrentPage;
+        scope.isJump = isJump;
+
+        scope.page = listHelperCtrl.getPage();
+        scope.perPage = listHelperCtrl.getPerPage();
+
+        scope.$watch('page', function(value) {
+          setPage(value);
+        });
+
+        scope.$watch(function() {
+          return getPage();
+        }, function(value) {
+          scope.page = value;
+          scope.pages = getPages();
+        });
+
+        scope.$watch('perPage', function(value) {
+          setPerPage(value);
+        });
+
+        scope.$watch(function() {
+          return getPerPage();
+        }, function(value) {
+          scope.perPage = value;
+        });
+
+        scope.$watch(function() {
+          return getTotalPages();
+        }, function() {
+          scope.pages = getPages();
+        });
 
         function getPage() {
           return listHelperCtrl.getPage();
@@ -70,30 +105,37 @@
         function getPages() {
           var page = getPage();
           var totalPages = getTotalPages();
-
           var pages = [];
+          var last = 0;
 
           for (var i = 1; i <= totalPages; i++) {
-            pages.push({
-              number: i,
-              active: i === page
-            });
+            if (
+              i <= LEFT_EDGE ||
+              (
+                i > page - LEFT_CURRENT &&
+                i < page + RIGHT_CURRENT
+              ) ||
+              i > totalPages - RIGHT_EDGE
+            ) {
+              if (last + 1 !== i) {
+                pages.push(null);
+              }
+
+              pages.push(i);
+              last = i;
+            }
           }
 
           return pages;
         }
 
-        scope.$watch(function() {
-          return getPage();
-        }, function() {
-          scope.pages = getPages();
-        });
+        function isCurrentPage(page) {
+          return page === getPage();
+        }
 
-        scope.$watch(function() {
-          return getTotalPages();
-        }, function() {
-          scope.pages = getPages();
-        });
+        function isJump(page) {
+          return page === null;
+        }
       }
     };
   });

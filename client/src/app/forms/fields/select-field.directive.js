@@ -10,15 +10,15 @@
         required: '&',
         model: '=',
         options: '=',
-        idPath: '@',
-        labelPath: '@',
+        optionsId: '@',
+        optionsLabel: '@',
       },
       templateUrl: 'app/forms/fields/select-field.html',
       link: function(scope) {
         scope.data = {};
 
         scope.$watch('model', function(value) {
-          scope.data.model = toSelectView(value, scope.idPath, scope.labelPath);
+          scope.data.model = toSelectView(value, scope.optionsId, scope.optionsLabel);
         });
 
         scope.$watch('data.model', function(value) {
@@ -26,7 +26,7 @@
         });
 
         scope.$watchCollection('options', function(options) {
-          scope.data.options = wrapSelectOptions(options, scope.idPath, scope.labelPath);
+          scope.data.options = wrapSelectOptions(options, scope.optionsId, scope.optionsLabel);
         });
       }
     };

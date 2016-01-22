@@ -2,7 +2,11 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Dialysis, DialysisType, Patient, PatientDemographics, DataSource
+from radar.models.patients import Patient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.dialysis import Dialysis
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.dialysis import DialysisValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,11 +24,12 @@ def patient():
 @pytest.fixture
 def dialysis(patient):
     obj = Dialysis()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
-    obj.dialysis_type = DialysisType(id=1)
+    obj.modality = 1
     return obj
 
 
@@ -32,7 +37,7 @@ def test_valid(dialysis):
     obj = valid(dialysis)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.dialysis_type.id == 1
+    assert obj.modality == 1
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -44,9 +49,15 @@ def test_patient_missing(dialysis):
     invalid(dialysis)
 
 
-def test_data_source_missing(dialysis):
-    dialysis.data_source = None
+def test_source_group_missing(dialysis):
+    dialysis.source_group = None
     invalid(dialysis)
+
+
+def test_source_type_missing(dialysis):
+    dialysis.source_type = None
+    dialysis = valid(dialysis)
+    assert dialysis.source_type == 'RADAR'
 
 
 def test_from_date_missing(dialysis):
@@ -84,8 +95,13 @@ def test_to_date_before_from_date(dialysis):
     invalid(dialysis)
 
 
-def test_dialysis_type_missing(dialysis):
-    dialysis.dialysis_type = None
+def test_modality_missing(dialysis):
+    dialysis.modality = None
+    invalid(dialysis)
+
+
+def test_modality_invalid(dialysis):
+    dialysis.modality = 0
     invalid(dialysis)
 
 

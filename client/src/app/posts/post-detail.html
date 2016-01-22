@@ -9,7 +9,7 @@
           <span crud-remove-button item="item"></span>
         </p>
 
-        <div ng-bind-html="item.body"></div>
+        <div ng-bind-html="item.body | unsafe"></div>
       </div>
 
       <div ng-if="editing">
@@ -17,15 +17,15 @@
         <h1 class="page-header" ng-if="item.id">Edit Post</h1>
 
         <p>
-          <span crud-view-button item="originalItem"></span>
-          <span crud-remove-button item="originalItem"></span>
+          <span ng-if="item.id" crud-view-button item="originalItem"></span>
+          <span ng-if="item.id" crud-remove-button item="originalItem"></span>
         </p>
 
         <form class="form-container" crud-submit="saveAndView()" frm-layout="vertical" novalidate>
           <div frm-field frm-group>
             <div frm-label>Title</div>
 
-            <div frm-control>
+            <div frm-control class="full-width">
               <div frm-text-field model="item.title" required="true"></div>
               <div frm-errors errors="item.errors.title"></div>
             </div>
@@ -42,7 +42,7 @@
 
           <div frm-buttons>
             <span crud-save-button></span>
-            <span crud-cancel-button action="view(originalItem)"></span>
+            <span ng-if="item.id" crud-cancel-button action="view(originalItem)"></span>
           </div>
         </form>
       </div>

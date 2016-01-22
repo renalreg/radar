@@ -28,19 +28,19 @@ $radar-secondary-bg: mix($radar-secondary, white, 20%);
 $radar-secondary-selected: mix($radar-secondary, white, 90%);
 
 $radar-success: $nhs-light-green;
-$radar-success-text: mix($radar-success, black, 30%);
+$radar-success-text: mix($radar-success, black, 70%);
 $radar-success-bg: mix($radar-success, white, 20%);
 
 $radar-info: $nhs-aqua-blue;
-$radar-info-text: mix($radar-info, black, 30%);
+$radar-info-text: mix($radar-info, black, 70%);
 $radar-info-bg: mix($radar-info, white, 20%);
 
-$radar-warning: $nhs-yellow;
-$radar-warning-text: mix($radar-warning, black, 30%);
+$radar-warning: $nhs-orange;
+$radar-warning-text: mix($radar-warning, black, 70%);
 $radar-warning-bg: mix($radar-warning, white, 20%);
 
 $radar-danger: $nhs-red;
-$radar-danger-text: mix($radar-danger, black, 30%);
+$radar-danger-text: mix($radar-danger, black, 70%);
 $radar-danger-bg: mix($radar-danger, white, 20%);
 
 $radar-footer-height: 45px;

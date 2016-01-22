@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Patient, PatientDemographics, Transplant, DataSource
+from radar.models import Patient, PatientDemographics, Transplant
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.transplants import TransplantValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,19 +22,20 @@ def patient():
 @pytest.fixture
 def transplant(patient):
     obj = Transplant()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
-    obj.transplant_date = date(2015, 1, 1)
-    obj.transplant_type = 'LIVE'
-    obj.date_failed = date(2015, 1, 2)
+    obj.date = date(2015, 1, 1)
+    obj.modality = 29
+    obj.date_of_failure = date(2015, 1, 2)
     return obj
 
 
 def test_valid(transplant):
     obj = valid(transplant)
-    assert obj.transplant_date == date(2015, 1, 1)
-    assert obj.transplant_type == 'LIVE'
-    assert obj.date_failed == date(2015, 1, 2)
+    assert obj.date == date(2015, 1, 1)
+    assert obj.modality == 29
+    assert obj.date_of_failure == date(2015, 1, 2)
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -44,53 +47,59 @@ def test_patient_missing(transplant):
     invalid(transplant)
 
 
-def test_data_source_missing(transplant):
-    transplant.data_source = None
+def test_source_group_missing(transplant):
+    transplant.source_group = None
     invalid(transplant)
 
 
-def test_transplant_date_missing(transplant):
-    transplant.transplant_date = None
+def test_source_type_missing(transplant):
+    transplant.source_type = None
+    transplant = valid(transplant)
+    assert transplant.source_type == 'RADAR'
+
+
+def test_date_missing(transplant):
+    transplant.date = None
     invalid(transplant)
 
 
-def test_transplant_date_before_dob(transplant):
-    transplant.transplant_date = date(1999, 1, 1)
+def test_date_before_dob(transplant):
+    transplant.date = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_transplant_date_future(transplant):
-    transplant.transplant_date = date.today() + timedelta(days=1)
+def test_date_future(transplant):
+    transplant.date = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_transplant_type_missing(transplant):
-    transplant.transplant_type = None
+def test_modality_missing(transplant):
+    transplant.modality = None
     invalid(transplant)
 
 
-def test_transplant_type_invalid(transplant):
-    transplant.transplant_type = 'FOO'
+def test_modality_invalid(transplant):
+    transplant.modality = 0
     invalid(transplant)
 
 
-def test_date_failed_missing(transplant):
-    transplant.date_failed = None
+def test_date_of_failure_missing(transplant):
+    transplant.date_of_failure = None
     valid(transplant)
 
 
-def test_date_failed_before_dob(transplant):
-    transplant.date_failed = date(1999, 1, 1)
+def test_date_of_failure_before_dob(transplant):
+    transplant.date_of_failure = date(1999, 1, 1)
     invalid(transplant)
 
 
-def test_date_failed_future(transplant):
-    transplant.date_failed = date.today() + timedelta(days=1)
+def test_date_of_failure_future(transplant):
+    transplant.date_of_failure = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_date_failed_before_transplant_date(transplant):
-    transplant.date_failed = transplant.transplant_date - timedelta(days=1)
+def test_date_of_failure_before_transplant_date(transplant):
+    transplant.date_of_failure = transplant.date - timedelta(days=1)
     invalid(transplant)
 
 

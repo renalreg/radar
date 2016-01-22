@@ -1,0 +1,229 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Scan</th>
+        <td>{{item.dateOfScan | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Gestational Age</th>
+        <td>{{item.gestationalAge | weeksAndDaysFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Oligohydramnios</th>
+        <td><span tick="item.oligohydramnios"></span></td>
+      </tr>
+    </table>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Right Kidney</h3>
+          </div>
+
+          <div class="panel-body">
+            <table class="table properties">
+              <tr>
+                <th>Anomaly Details</th>
+                <td class="newlines">{{item.rightAnomalyDetails | missing}}</td>
+              </tr>
+
+              <tr>
+                <th>Ultrasound Details</th>
+                <td class="newlines">{{item.rightUltrasoundDetails | missing}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Left Kidney</h3>
+          </div>
+
+          <div class="panel-body">
+            <table class="table properties">
+              <tr>
+                <th>Anomaly Details</th>
+                <td class="newlines">{{item.leftAnomalyDetails | missing}}</td>
+              </tr>
+
+              <tr>
+                <th>Ultrasound Details</th>
+                <td class="newlines">{{item.leftUltrasoundDetails | missing}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div metadata item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Source</div>
+
+        <div frm-control>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Scan</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfScan" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfScan"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Gestational Age</div>
+
+        <div frm-control>
+          <div frm-weeks-and-days-field model="item.gestationalAge" required="true"></div>
+          <div frm-errors errors="item.errors.gestationalAge"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Oligohydramnios</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.oligohydramnios" required="true"></div>
+          <div frm-errors errors="item.errors.oligohydramnios"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Right Kidney</h3>
+            </div>
+
+            <div class="panel-body">
+              <div frm-field frm-group>
+                <div frm-label>Anomaly Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.rightAnomalyDetails"></div>
+                  <div frm-errors errors="item.errors.rightAnomalyDetails"></div>
+                </div>
+              </div>
+
+              <div frm-field frm-group>
+                <div frm-label>Ultrasound Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.rightUltrasoundDetails"></div>
+                  <div frm-errors errors="item.errors.rightUltrasoundDetails"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Left Kidney</h3>
+            </div>
+
+            <div class="panel-body">
+              <div frm-field frm-group>
+                <div frm-label>Anomaly Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.leftAnomalyDetails"></div>
+                  <div frm-errors errors="item.errors.leftAnomalyDetails"></div>
+                </div>
+              </div>
+
+              <div frm-field frm-group>
+                <div frm-label>Ultrasound Details</div>
+
+                <div frm-control>
+                  <div frm-textarea-field model="item.leftUltrasoundDetails"></div>
+                  <div frm-errors errors="item.errors.leftUltrasoundDetails"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'dateOfScan', reverse: true}">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfScan">Date of Scan</th>
+          <th sort-helper="gestationalAge">Gestational Age</th>
+          <th sort-helper="getSource()">Source</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfScan | dateFormat}}</td>
+          <td>{{item.gestationalAge | weeksAndDaysFormat}}</td>
+          <td class="source">{{item.getSource()}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

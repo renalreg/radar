@@ -1,7 +1,13 @@
-<div loading="loading">
-  <div ng-repeat="item in items" class="post">
-    <h2><a ui-sref="post({postId: item.id})">{{item.title}}</a> <small>{{item.publishedDate | dateFormat}}</small></h2>
+<h2>Latest News</h2>
 
-    <div ng-bind-html="item.body"></div>
+<div loading="loading">
+  <div ng-show="!items.length">
+    <p>No posts found.</p>
+  </div>
+
+  <div ng-repeat="item in items" class="post">
+    <h3><a ui-sref="post({postId: item.id})">{{item.title}}</a> <small>{{item.publishedDate | dateFormat}}</small></h3>
+
+    <div ng-bind-html="item.body | unsafe"></div>
   </div>
 </div>

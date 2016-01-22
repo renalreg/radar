@@ -8,52 +8,52 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" ui-sref="index">RaDaR</a>
+      <a class="navbar-brand" ui-sref="index"><img src="/images/logo.png" height="30" /></a>
     </div>
 
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav" ng-if="isAuthenticated">
-        <li ng-if="user.isAdmin || user.cohorts.length > 5" ui-sref-active="active">
+        <li ng-if="user.isAdmin || user.getCohorts().length > 5" ui-sref-active="active">
           <a ui-sref="cohorts">Cohorts</a>
         </li>
 
-        <li ng-if="!user.isAdmin && user.cohorts.length == 1" ui-sref-active="active">
-          <a ui-sref="cohort({cohortId: cohort.cohort.id})" ng-repeat="cohort in user.cohorts">{{cohort.cohort.shortName}}</a>
+        <li ng-if="!user.isAdmin && user.getCohorts().length == 1" ui-sref-active="active">
+          <a ui-sref="cohort({cohortId: x.id})" ng-repeat="x in user.getCohorts()">{{x.shortName}}</a>
         </li>
 
-        <li ng-if="!user.isAdmin && user.cohorts.length > 1 && user.cohorts.length <= 5" class="dropdown">
+        <li ng-if="!user.isAdmin && user.getCohorts().length > 1 && user.getCohorts().length <= 5" class="dropdown">
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Cohorts <span class="caret"></span></a>
 
           <ul class="dropdown-menu" role="menu">
-            <li ui-sref-active="active" ng-repeat="cohort in user.cohorts">
-              <a ui-sref="cohort({cohortId: cohort.cohort.id})">{{cohort.cohort.shortName}}</a>
+            <li ui-sref-active="active" ng-repeat="x in user.getCohorts()">
+              <a ui-sref="cohort({cohortId: x.id})">{{x.shortName}}</a>
             </li>
           </ul>
         </li>
 
-        <li ng-if="user.isAdmin || user.getUnits().length > 5" ui-sref-active="active">
-          <a ui-sref="units">Units</a>
+        <li ng-if="user.isAdmin || user.getHospitals().length > 5" ui-sref-active="active">
+          <a ui-sref="hospitals">Hospitals</a>
         </li>
 
-        <li ng-if="!user.isAdmin && user.getUnits().length == 1" ui-sref-active="active">
-          <a ui-sref="unit({unitId: organisation.organisation.id})" ng-repeat="organisation in user.getUnits()">{{organisation.organisation.name}}</a>
+        <li ng-if="!user.isAdmin && user.getHospitals().length == 1" ui-sref-active="active">
+          <a ui-sref="hospital({hospitalId: x.id})" ng-repeat="x in user.getHospitals()">{{x.shortName}}</a>
         </li>
 
-        <li ng-if="!user.isAdmin && user.getUnits().length > 1 && user.getUnits().length <= 5" class="dropdown">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Units <span class="caret"></span></a>
+        <li ng-if="!user.isAdmin && user.getHospitals().length > 1 && user.getHospitals().length <= 5" class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Hospitals <span class="caret"></span></a>
 
           <ul class="dropdown-menu" role="menu">
-            <li ui-sref-active="active" ng-repeat="organisation in user.getUnits()">
-              <a ui-sref="unit({unitId: organisation.organisation.id})">{{organisation.organisation.name}}</a>
+            <li ui-sref-active="active" ng-repeat="x in user.getHospitals()">
+              <a ui-sref="hospital({hospitalId: x.id})">{{x.name}}</a>
             </li>
           </ul>
         </li>
 
-        <li ui-sref-active="active">
+        <li ng-if="showPatients" ui-sref-active="active">
           <a ui-sref="patients">Patients</a>
         </li>
 
-        <li ui-sref-active="active">
+        <li ng-if="showUsers" ui-sref-active="active">
           <a ui-sref="users">Users</a>
         </li>
 
@@ -65,17 +65,15 @@
           <a ui-sref="stats">Stats</a>
         </li>
 
-        <!--
         <li ui-sref-active="active" ng-if="user.isAdmin">
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin <span class="caret"></span></a>
 
           <ul class="dropdown-menu" role="menu">
             <li ui-sref-active="active">
-              <a ui-sref="logs">Logs</a>
+              <a ui-sref="consultants">Consultants</a>
             </li>
           </ul>
         </li>
-        -->
       </ul>
 
       <ul class="nav navbar-nav" ng-if="!isAuthenticated">

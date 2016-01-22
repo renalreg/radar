@@ -9,7 +9,7 @@
         var dt = moment(input);
 
         if (dt.isValid()) {
-          return dt.format('DD/MM/YYYY HH:MM:SS');
+          return dt.format('DD/MM/YYYY HH:mm:ss');
         } else {
           return '-';
         }

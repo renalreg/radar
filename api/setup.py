@@ -22,8 +22,6 @@ setup(
         'radar',
         'six',
         'SQLAlchemy',
-    ],
-    scripts=[
-        'scripts/manage.py',
+        'SQLAlchemy-Enum34',
     ],
 )

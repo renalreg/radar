@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.nephrectomies');
 
-  app.factory('NephrectomyPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('NephrectomyPermission', ['PatientSourceObjectPermission', function(PatientSourceObjectPermission) {
+    return PatientSourceObjectPermission;
   }]);
 
   function controllerFactory(

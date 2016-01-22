@@ -1,15 +1,16 @@
 from radar.validation.core import Field, Validation, ValidationError, pass_new_obj
-from radar.validation.data_sources import DataSourceValidationMixin
+from radar.validation.sources import SourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, optional, \
-    valid_date_for_patient
+    valid_date_for_patient, in_
+from radar.models.dialysis import DIALYSIS_MODALITIES
 
 
-class DialysisValidation(PatientValidationMixin, DataSourceValidationMixin, MetaValidationMixin, Validation):
+class DialysisValidation(PatientValidationMixin, SourceValidationMixin, MetaValidationMixin, Validation):
     from_date = Field([required(), valid_date_for_patient()])
     to_date = Field([optional(), valid_date_for_patient()])
-    dialysis_type = Field([required()])
+    modality = Field([required(), in_(DIALYSIS_MODALITIES.keys())])
 
     @pass_new_obj
     def validate_to_date(self, obj, to_date):

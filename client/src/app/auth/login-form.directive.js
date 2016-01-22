@@ -3,7 +3,9 @@
 
   var app = angular.module('radar.auth');
 
-  app.directive('loginForm', ['session', 'authService', '$state', function(session, authService, $state) {
+  function directive(
+    session, authService, $state, hasPermission, notificationService
+  ) {
     return {
       restrict: 'A',
       scope: {},
@@ -24,9 +26,17 @@
 
           return authService.login(credentials)
             .then(function() {
-              // Redirect to the patients list
-              // TODO not all users will have access to this
-              $state.go('patients');
+              var state;
+
+              if (hasPermission(session.user, 'VIEW_PATIENT')) {
+                state = 'patients';
+              } else {
+                state = 'index';
+              }
+
+              notificationService.success('Logged in successfully.');
+
+              $state.go(state);
             })
             ['catch'](function(errors) {
               if (errors) {
@@ -36,5 +46,11 @@
         };
       }
     };
-  }]);
+  }
+
+  directive.$inject = [
+    'session', 'authService', '$state', 'hasPermission', 'notificationService'
+  ];
+
+  app.directive('loginForm', directive);
 })();

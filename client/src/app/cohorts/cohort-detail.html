@@ -1,19 +1,9 @@
 <div page-wrapper>
   <h1 class="page-header">{{cohort.name}} <small>{{cohort.code}}</small></h1>
 
-  <div cohort-recruitment-graph cohort="cohort"></div>
+  <div group-recruitment-graph group="cohort"></div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">Notes</h2>
-    </div>
+  <h2>Patients by Hospital</h2>
 
-    <div class="panel-body">
-      <div cohort-notes-component cohort="cohort"></div>
-    </div>
-  </div>
-
-  <h2>Recruitment By Unit</h2>
-
-  <div recruitment-by-organisation-table cohort="cohort"><div>
+  <div patients-by-group-table group="cohort" group-type="HOSPITAL"><div>
 </div>

@@ -1,25 +1,26 @@
 from radar.validation.core import Validation, Field, pass_call
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import optional, required, none_if_blank, max_length, not_empty, range_
+from radar.validation.meta import MetaValidationMixin
 
 
-class SaltWastingClinicalFeaturesValidation(PatientValidationMixin, Validation):
+class SaltWastingClinicalFeaturesValidation(PatientValidationMixin, MetaValidationMixin, Validation):
     normal_pregnancy = Field([required()])
-    abnormal_pregnancy_text = Field([none_if_blank(), optional(), max_length(1000)])
+    abnormal_pregnancy_text = Field([none_if_blank(), optional(), max_length(10000)])
 
     neurological_problems = Field([required()])
     seizures = Field([optional()])
     abnormal_gait = Field([optional()])
     deafness = Field([optional()])
     other_neurological_problem = Field([optional()])
-    other_neurological_problem_text = Field([none_if_blank(), optional(), max_length(1000)])
+    other_neurological_problem_text = Field([none_if_blank(), optional(), max_length(10000)])
 
     joint_problems = Field([required()])
     joint_problems_age = Field([optional(), range_(0, 120)])
     x_ray_abnormalities = Field([optional()])
     chondrocalcinosis = Field([optional()])
     other_x_ray_abnormality = Field([optional()])
-    other_x_ray_abnormality_text = Field([none_if_blank(), optional(), max_length(1000)])
+    other_x_ray_abnormality_text = Field([none_if_blank(), optional(), max_length(10000)])
 
     def pre_validate(self, obj):
         if obj.normal_pregnancy:

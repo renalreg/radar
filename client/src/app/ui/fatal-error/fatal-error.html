@@ -1,9 +1,9 @@
-<div class="overlay" ng-show="open" ng-click="close()">
+<div class="overlay" ng-show="notification" ng-click="close()">
   <div class="overlay-inner">
     <div class="fatal-error" ng-click="$event.stopPropagation()">
       <div class="fatal-error-inner">
-        <div class="fatal-error-heading">Error</div>
-        <div class="fatal-error-body">An unexpected error has occurred. Please try reloading the page.</div>
+        <div class="fatal-error-heading">{{notification.title}}</div>
+        <div class="fatal-error-body">{{notification.message}}</div>
         <div class="fatal-error-footer">
           <button class="btn btn-default" type="button" ng-click="close()">Close</button>
           <button class="btn btn-primary" type="button" ng-click="reload()">Reload</button>

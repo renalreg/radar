@@ -2,7 +2,11 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Medication, Patient, PatientDemographics, DataSource
+from radar.models.medications import Medication, Drug
+from radar.models.patients import Patient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.medications import MedicationValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,14 +24,16 @@ def patient():
 @pytest.fixture
 def medication(patient):
     obj = Medication()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.from_date = date(2015, 1, 1)
     obj.to_date = date(2015, 1, 2)
-    obj.name = 'Paracetamol'
+    obj.drug = Drug(name='Paracetamol')
+    obj.drug_text = 'Paracetamol'
     obj.dose_quantity = 100
     obj.dose_unit = 'MG'
-    obj.frequency = 'DAILY'
+    obj.frequency = 'Daily'
     obj.route = 'ORAL'
     return obj
 
@@ -36,10 +42,11 @@ def test_valid(medication):
     obj = valid(medication)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.name == 'Paracetamol'
+    assert obj.drug is not None
+    assert obj.drug_text is None
     assert obj.dose_quantity == 100
     assert obj.dose_unit == 'MG'
-    assert obj.frequency == 'DAILY'
+    assert obj.frequency == 'Daily'
     assert obj.route == 'ORAL'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -52,9 +59,15 @@ def test_patient_missing(medication):
     invalid(medication)
 
 
-def test_data_source_missing(medication):
-    medication.data_source = None
+def test_source_group_missing(medication):
+    medication.source_group = None
     invalid(medication)
+
+
+def test_source_type_missing(medication):
+    medication.source_type = None
+    medication = valid(medication)
+    assert medication.source_type == 'RADAR'
 
 
 def test_from_date_missing(medication):
@@ -92,19 +105,32 @@ def test_to_date_before_from_date(medication):
     invalid(medication)
 
 
-def test_name_missing(medication):
-    medication.name = None
-    invalid(medication)
+def test_drug_missing(medication):
+    medication.drug = None
+    medication = valid(medication)
+    assert medication.drug_text == 'Paracetamol'
 
 
-def test_name_empty(medication):
-    medication.name = ''
+def test_drug_text_missing(medication):
+    medication.drug_text = None
+    valid(medication)
+
+
+def test_drug_text_empty(medication):
+    medication.drug_text = ''
+    medication = valid(medication)
+    assert medication.drug_text is None
+
+
+def test_drug_and_drug_text_missing(medication):
+    medication.drug = None
+    medication.drug_text = None
     invalid(medication)
 
 
 def test_dose_quantity_missing(medication):
     medication.dose_quantity = None
-    invalid(medication)
+    valid(medication)
 
 
 def test_dose_quantity_negative(medication):
@@ -114,6 +140,11 @@ def test_dose_quantity_negative(medication):
 
 def test_dose_unit_missing(medication):
     medication.dose_quantity = None
+    medication.dose_unit = None
+    valid(medication)
+
+    medication.dose_quantity = 1
+    medication.dose_unit = None
     invalid(medication)
 
 
@@ -124,17 +155,12 @@ def test_dose_unit_invalid(medication):
 
 def test_frequency_missing(medication):
     medication.frequency = None
-    invalid(medication)
-
-
-def test_frequency_invalid(medication):
-    medication.frequency = 'FOO'
-    invalid(medication)
+    valid(medication)
 
 
 def test_route_missing(medication):
     medication.route = None
-    invalid(medication)
+    valid(medication)
 
 
 def test_route_invalid(medication):

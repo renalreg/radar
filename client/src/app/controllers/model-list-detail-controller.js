@@ -145,7 +145,7 @@
         self.scope.item = null;
       }
 
-      item.remove().then(function() {
+      return item.remove().then(function() {
         _.pull(self.scope.items, item);
       });
     };
@@ -223,7 +223,7 @@
       return !this.scope.saving;
     };
 
-    ModelListDetailController.prototype.createPermission = function(item) {
+    ModelListDetailController.prototype.createPermission = function() {
       return this._createPermission.hasPermission();
     };
 

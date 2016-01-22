@@ -1,10 +1,10 @@
 from flask import request
 
-from radar_api.serializers.patients import PatientSerializer, PatientListRequestSerializer
+from radar_api.serializers.patients import PatientSerializer, PatientListRequestSerializer, TinyPatientSerializer
 from radar.patient_search import PatientQueryBuilder
 from radar.permissions import PatientPermission
 from radar.views.core import ListModelView, RetrieveUpdateModelView
-from radar.models import Patient
+from radar.models.patients import Patient
 from radar.auth.sessions import current_user
 
 
@@ -18,59 +18,59 @@ class PatientListView(ListModelView):
 
         builder = PatientQueryBuilder(current_user)
 
-        if args.get('id') is not None:
-            builder.patient_id(args['id'])
+        patient_id = args.get('id')
+        first_name = args.get('first_name') or None
+        last_name = args.get('last_name') or None
+        patient_number = args.get('patient_number') or None
+        gender = args.get('gender') or None
+        date_of_birth = args.get('date_of_birth')
+        year_of_birth = args.get('year_of_birth')
+        date_of_death = args.get('date_of_death')
+        year_of_death = args.get('year_of_death')
+        groups = args.get('group') or []
+        current = args.get('current')
 
-        if args.get('first_name'):
-            builder.first_name(args['first_name'])
+        if patient_id is not None:
+            builder.patient_id(patient_id)
 
-        if args.get('last_name'):
-            builder.last_name(args['last_name'])
+        if first_name is not None:
+            builder.first_name(first_name)
 
-        if args.get('organisation') is not None:
-            if args.get('is_active') is not None:
-                builder.organisation(args['organisation'], args['is_active'])
-            else:
-                builder.organisation(args['organisation'])
+        if last_name is not None:
+            builder.last_name(last_name)
 
-        if args.get('cohort') is not None:
-            if args.get('is_active') is not None:
-                builder.cohort(args['cohort'], args['is_active'])
-            else:
-                builder.cohort(args['cohort'])
+        if patient_number is not None:
+            builder.patient_number(patient_number)
 
-        if args.get('patient_number'):
-            builder.patient_number(args['patient_number'])
+        if gender is not None:
+            builder.gender(gender)
 
-        if args.get('gender'):
-            builder.gender(args['gender'])
+        if date_of_birth is not None:
+            builder.date_of_birth(date_of_birth)
 
-        if args.get('date_of_birth') is not None:
-            builder.date_of_birth(args['date_of_birth'])
+        if year_of_birth is not None:
+            builder.year_of_birth(year_of_birth)
 
-        if args.get('year_of_birth') is not None:
-            builder.year_of_birth(args['year_of_birth'])
+        if date_of_death is not None:
+            builder.date_of_death(date_of_death)
 
-        if args.get('date_of_death') is not None:
-            builder.date_of_death(args['date_of_death'])
+        if year_of_death is not None:
+            builder.year_of_death(year_of_death)
 
-        if args.get('year_of_death') is not None:
-            builder.year_of_death(args['year_of_death'])
-
-        if args.get('is_active') is not None:
-            builder.is_active(args['is_active'])
+        for group in groups:
+            builder.group(group, current=current)
 
         sort, reverse = self.get_sort_args()
 
         if sort is not None:
             builder.sort(sort, reverse)
 
-        query = builder.build()
+        query = builder.build(current=current)
 
         return query
 
     def get_serializer(self):
-        return PatientSerializer(current_user)
+        return TinyPatientSerializer(current_user)
 
 
 class PatientDetailView(RetrieveUpdateModelView):

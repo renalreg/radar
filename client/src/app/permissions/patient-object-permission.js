@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.permissions');
 
-  app.factory('PatientObjectPermission', ['session', 'hasGroupPermissionForPatient', function(session, hasGroupPermissionForPatient) {
+  app.factory('PatientObjectPermission', ['session', 'hasPermissionForPatient', function(session, hasPermissionForPatient) {
     function PatientObjectPermission(patient) {
       this.patient = patient;
     }
@@ -15,7 +15,7 @@
 
       var user = session.user;
 
-      return hasGroupPermissionForPatient(user, this.patient, 'EDIT_PATIENT');
+      return hasPermissionForPatient(user, this.patient, 'EDIT_PATIENT');
     };
 
     PatientObjectPermission.prototype.hasObjectPermission = function() {

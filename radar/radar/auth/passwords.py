@@ -1,7 +1,7 @@
 import werkzeug.security
 import zxcvbn
 
-from radar.config import get_config_value
+from radar.config import config
 from radar.utils import random_string
 
 NATO_ALPHABET = {
@@ -56,16 +56,20 @@ USER_INPUTS = [
 ]
 
 
+def get_password_hash_method():
+    return config['PASSWORD_HASH_METHOD']
+
+
 def get_password_alphabet():
-    return get_config_value('PASSWORD_ALPHABET')
+    return config['PASSWORD_ALPHABET']
 
 
 def get_password_length():
-    return get_config_value('PASSWORD_LENGTH')
+    return config['PASSWORD_LENGTH']
 
 
 def get_password_min_score():
-    return get_config_value('PASSWORD_MIN_SCORE')
+    return config['PASSWORD_MIN_SCORE']
 
 
 def generate_password():
@@ -75,8 +79,8 @@ def generate_password():
 
 
 def generate_password_hash(password):
-    # 50000 iterations
-    return werkzeug.security.generate_password_hash(password, 'pbkdf2:sha1:50000')
+    hash_method = get_password_hash_method()
+    return werkzeug.security.generate_password_hash(password, hash_method)
 
 
 def check_password_hash(password_hash, password):

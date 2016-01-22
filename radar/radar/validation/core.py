@@ -629,6 +629,12 @@ class Validation(Field):
         try:
             validate_call = ValidateCall(ctx, old_obj)
             new_obj = validate_call(self.validate, new_obj)
+        except ValidationError as e:
+            if isinstance(e.errors, dict):
+                raise
+            else:
+                raise ValidationError({'_': e.errors})
+
         except SkipField:
             if result is not None:
                 result.skipped = True
@@ -690,7 +696,7 @@ class ListField(Field):
             else:
                 try:
                     old_value = old_obj[i]
-                except ValueError:
+                except IndexError:
                     old_value = None
 
             try:

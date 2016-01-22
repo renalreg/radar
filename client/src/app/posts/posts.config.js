@@ -15,8 +15,8 @@
       }
     });
 
-    $stateProvider.state('newPost', {
-      url: '/news/new',
+    $stateProvider.state('createPost', {
+      url: '/news/create',
       templateUrl: 'app/posts/post-detail.html',
       controller: ['$scope', '$controller', 'PostDetailController', 'post', function($scope, $controller, PostDetailController, post) {
         $scope.post = post;

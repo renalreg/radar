@@ -15,10 +15,6 @@
       link: function(scope) {
         scope.options = [
           {
-            value: undefined,
-            label: ''
-          },
-          {
             value: true,
             label: 'Yes'
           },

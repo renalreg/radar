@@ -8,21 +8,23 @@
     $injector,
     ListHelperProxy,
     firstPromise,
-    store
+    store,
+    _
   ) {
+    var DEFAULT_FILTERS = {
+      current: true
+    };
+
     function PatientListController($scope) {
       var self = this;
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      var defaultFilters = {
-        isActive: true
-      };
-      $scope.filters = angular.copy(defaultFilters);
+      $scope.filters = angular.copy(DEFAULT_FILTERS);
 
       var proxy = new ListHelperProxy(search, {
         perPage: 50,
-        sortBy: 'recruitedDate',
+        sortBy: 'id',
         reverse: true
       });
       proxy.load();
@@ -32,9 +34,48 @@
       $scope.clear = clear;
       $scope.count = 0;
 
+      var genderPromise = store.findMany('genders').then(function(genders) {
+        $scope.genders = genders;
+      });
+
+      function filtersToParams(filters) {
+        var params = {};
+
+        var keys = [
+            'id',
+            'firstName', 'lastName',
+            'dateOfBirth', 'yearOfBirth',
+            'dateOfDeath', 'yearOfDeath',
+            'gender', 'patientNumber',
+            'current'
+        ];
+
+        _.forEach(keys, function(key) {
+          var value = filters[key];
+
+          if (value !== undefined && value !== null && value !== '') {
+            params[key] = value;
+          }
+        });
+
+        var groups = _.filter([filters.cohort, filters.hospital], function(group) {
+          return group !== undefined && group !== null;
+        });
+
+        var groupIds = _.map(groups, function(group) {
+          return group.id;
+        });
+
+        if (groupIds.length > 0) {
+          params.group = groupIds.join(',');
+        }
+
+        return params;
+      }
+
       function search() {
         var proxyParams = proxy.getParams();
-        var params = angular.extend({}, proxyParams, $scope.filters);
+        var params = angular.extend({}, proxyParams, filtersToParams($scope.filters));
 
         return self.load(firstPromise([
           store.findMany('patients', params, true).then(function(data) {
@@ -43,14 +84,12 @@
             $scope.count = data.pagination.count;
             return data.data;
           }),
-          store.findMany('genders').then(function(genders) {
-            $scope.genders = genders;
-          })
+          genderPromise
         ]));
       }
 
       function clear() {
-        $scope.filters = angular.copy(defaultFilters);
+        $scope.filters = angular.copy(DEFAULT_FILTERS);
         search();
       }
     }
@@ -66,7 +105,8 @@
     '$injector',
     'ListHelperProxy',
     'firstPromise',
-    'store'
+    'store',
+    '_'
   ];
 
   app.factory('PatientListController', controllerFactory);

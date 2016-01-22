@@ -1,9 +1,3 @@
-# XXX On windows hosts only:
-# Use Vagrant 1.7.3 (exact version) and VirtualBox 4.x (4.3.30 is known to work)
-# Vagrant 1.7.3 added support for long paths. This was removed in 1.7.4 as it
-# caused problems in VirtualBox 5.
-# FIXME https://github.com/mitchellh/vagrant/issues/1953
-
 nbt = ENV['NBT'] == '1'
 
 if nbt && !Vagrant.has_plugin?('vagrant-proxyconf')
@@ -30,6 +24,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder '.', '/home/vagrant/src', create: true, owner: 'vagrant', group: 'vagrant'
 
   # FIXME https://github.com/ansible/ansible/pull/10369
+  # FIXME should be fixed in ansible 2.0
   config.vm.synced_folder 'ansible', '/home/vagrant/ansible', create: true, owner: 'vagrant', group: 'vagrant', :mount_options => ["dmode=755", "fmode=644"]
 
   config.vm.provider 'virtualbox' do |v|

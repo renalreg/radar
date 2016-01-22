@@ -1,7 +1,7 @@
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar_api.serializers.organisation_consultants import ConsultantReferenceField
+from radar_api.serializers.group_consultants import ConsultantReferenceField
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models import PatientConsultant
+from radar.models.patient_consultants import PatientConsultant
 from radar.serializers.models import ModelSerializer
 
 

@@ -1,12 +1,9 @@
-// jshint camelcase: false
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-
 (function() {
   'use strict';
 
   var app = angular.module('radar.ui.textEditor');
 
-  app.directive('textEditor', ['Quill', '$sce', function(Quill, $sce) {
+  app.directive('textEditor', ['Quill', function(Quill) {
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -16,29 +13,21 @@
         var toolbar = element.find('.text-editor-toolbar').get(0);
 
         var quill = new Quill(container, {
-          styles: false,
           formats: ['bold', 'italic', 'link', 'bullet', 'list']
         });
         quill.addModule('toolbar', {container: toolbar});
         quill.addModule('link-tooltip', true);
 
         ngModel.$render = function() {
-          quill.setHTML($sce.getTrustedHtml(ngModel.$viewValue || ''));
+          quill.setHTML(ngModel.$viewValue || '');
         };
 
-        ngModel.$parsers.unshift(function(viewValue) {
-          return viewValue ? $sce.getTrustedHtml(viewValue) : '';
-        });
-
         quill.on('text-change', function() {
-          scope.$evalAsync(read);
+          scope.$apply(function() {
+            var html = quill.getHTML();
+            ngModel.$setViewValue(html);
+          });
         });
-
-        function read() {
-          var html = quill.getHTML();
-          html = $sce.trustAsHtml(html);
-          ngModel.$setViewValue(html);
-        }
       }
     };
   }]);

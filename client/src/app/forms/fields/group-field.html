@@ -1,0 +1,7 @@
+<select
+  frm-model
+  frm-required
+  ng-model="model"
+  ng-options="x as x.shortName for x in groups track by x.id"
+  ng-required="required()"
+  class="form-control"></select>

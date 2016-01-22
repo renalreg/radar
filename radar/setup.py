@@ -22,6 +22,7 @@ setup(
         'bleach',
         'click',
         'Delorean',
+        'enum34',
         'Flask',
         'Flask-SQLAlchemy',
         'itsdangerous',
@@ -32,7 +33,8 @@ setup(
         'requests',
         'six',
         'SQLAlchemy',
+        'SQLAlchemy-Enum34',
         'Werkzeug',
         'zxcvbn',
-    ]
+    ],
 )

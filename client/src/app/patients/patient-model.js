@@ -4,29 +4,40 @@
   var app = angular.module('radar.patients');
 
   app.factory('PatientModel', ['Model', 'store', '_', function(Model, store, _) {
+    function filterGroupPatientsByType(groupPatients, groupType) {
+      return _.filter(groupPatients, function(x) {
+        return x.group.type === groupType;
+      });
+    }
+
+    function filterGroupPatientsByCurrent(groupPatients) {
+      return _.filter(groupPatients, function(x) {
+        return x.current;
+      });
+    }
+
+    function uniqueGroups(groupPatients) {
+      var groups = _.map(groupPatients, function(x) {
+        return x.group;
+      });
+
+      groups = _.uniqBy(groups, 'id');
+
+      return groups;
+    }
+
     function PatientModel(modelName, data) {
       var i;
 
-      if (data.cohorts !== undefined) {
-        var cohorts = [];
+      if (data.groups !== undefined) {
+        var groups = [];
 
-        for (i = 0; i < data.cohorts.length; i++) {
-          var rawCohort = data.cohorts[i];
-          cohorts.push(store.pushToStore(new Model('cohort-patients', rawCohort)));
+        for (i = 0; i < data.groups.length; i++) {
+          var rawGroup = data.groups[i];
+          groups.push(store.pushToStore(new Model('group-patients', rawGroup)));
         }
 
-        data.cohorts = cohorts;
-      }
-
-      if (data.organisations !== undefined) {
-        var organisations = [];
-
-        for (i = 0; i < data.organisations.length; i++) {
-          var rawOrganisation = data.organisations[i];
-          organisations.push(store.pushToStore(new Model('organisation-patients', rawOrganisation)));
-        }
-
-        data.organisations = organisations;
+        data.groups = groups;
       }
 
       Model.call(this, modelName, data);
@@ -44,28 +55,36 @@
       }
     };
 
-    PatientModel.prototype.getUnits = function() {
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
-      });
+    PatientModel.prototype.getHospitalPatients = function() {
+      return filterGroupPatientsByType(this.groups, 'HOSPITAL');
+    };
+
+    PatientModel.prototype.getCohortPatients = function(all) {
+      return filterGroupPatientsByType(this.groups, 'COHORT');
+    };
+
+    PatientModel.prototype.getCurrentHospitalPatients = function() {
+      return filterGroupPatientsByCurrent(this.getHospitalPatients());
+    };
+
+    PatientModel.prototype.getCurrentCohortPatients = function() {
+      return filterGroupPatientsByCurrent(this.getCohortPatients());
     };
 
     PatientModel.prototype.getCohorts = function(all) {
-      if (all === undefined) {
-        all = false;
-      }
+      return uniqueGroups(this.getCohortPatients());
+    };
 
-      if (all) {
-        return this.cohorts;
-      } else {
-        return _.filter(this.cohorts, function(x) {
-          return x.cohort.code !== 'RADAR';
-        });
-      }
+    PatientModel.prototype.getHospitals = function(all) {
+      return uniqueGroups(this.getHospitalPatients());
+    };
 
-      return _.filter(this.organisations, function(x) {
-        return x.organisation.type === 'UNIT';
-      });
+    PatientModel.prototype.getCurrentCohorts = function(all) {
+      return uniqueGroups(this.getCurrentCohortPatients());
+    };
+
+    PatientModel.prototype.getCurrentHospitals = function(all) {
+      return uniqueGroups(this.getCurrentHospitalPatients());
     };
 
     return PatientModel;
@@ -75,4 +94,3 @@
     storeProvider.registerModel('patients', 'PatientModel');
   }]);
 })();
-

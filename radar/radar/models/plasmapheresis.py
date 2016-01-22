@@ -32,12 +32,13 @@ class Plasmapheresis(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('plasmapheresis')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
     no_of_exchanges = Column(String)
     response = Column(String)
 
-Index('plasmapheresis_patient_id_idx', Plasmapheresis.patient_id)
+Index('plasmapheresis_patient_idx', Plasmapheresis.patient_id)

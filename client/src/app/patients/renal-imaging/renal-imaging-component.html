@@ -7,13 +7,8 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
@@ -59,6 +54,11 @@
               <tr ng-show="item.rightPresent">
                 <th>Renal Cysts</th>
                 <td><span tick="item.rightCysts"></span></td>
+              </tr>
+
+              <tr ng-show="item.rightPresent">
+                <th>Renal Stones</th>
+                <td><span tick="item.rightStones"></span></td>
               </tr>
 
               <tr ng-show="item.rightPresent">
@@ -119,6 +119,11 @@
               </tr>
 
               <tr ng-show="item.leftPresent">
+                <th>Renal Stones</th>
+                <td><span tick="item.leftStones"></span></td>
+              </tr>
+
+              <tr ng-show="item.leftPresent">
                 <th>Calcification Present</th>
                 <td><span tick="item.leftCalcification"></span></td>
               </tr>
@@ -143,7 +148,7 @@
       </div>
     </div>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -154,11 +159,11 @@
 
     <form class="form-horizontal" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
@@ -230,6 +235,15 @@
                 <div frm-control>
                   <div frm-yes-no-field model="item.rightCysts" required="item.rightPresent"></div>
                   <div frm-errors errors="item.errors.rightCysts"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.rightPresent" frm-field frm-group>
+                <div frm-label>Renal Stones</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.rightStones" required="item.rightPresent"></div>
+                  <div frm-errors errors="item.errors.rightStones"></div>
                 </div>
               </div>
 
@@ -325,6 +339,15 @@
               </div>
 
               <div ng-show="item.leftPresent" frm-field frm-group>
+                <div frm-label>Renal Stones</div>
+
+                <div frm-control>
+                  <div frm-yes-no-field model="item.leftStones" required="item.leftPresent"></div>
+                  <div frm-errors errors="item.errors.leftStones"></div>
+                </div>
+              </div>
+
+              <div ng-show="item.leftPresent" frm-field frm-group>
                 <div frm-label>Calcification Present</div>
 
                 <div frm-control>
@@ -371,7 +394,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="date" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'date', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -388,7 +411,7 @@
           <th></th>
           <th sort-helper="date">Date</th>
           <th sort-helper="imagingType.label">Imaging Type</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -402,7 +425,7 @@
 
           <td>{{item.date | dateFormat}}</td>
           <td>{{item.imagingType.label}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

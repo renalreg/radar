@@ -16,10 +16,10 @@
         return false;
       }
 
-      var dataSource = obj.dataSource;
-      var organisation = dataSource.organisation;
+      var sourceGroup = obj.sourceGroup;
+      var sourceType = obj.sourceType;
 
-      return dataSource.type === 'RADAR' && organisation.type === 'OTHER' && organisation.code === 'RADAR';
+      return sourceGroup.code === 'RADAR' && sourceGroup.type === 'OTHER' && sourceType === 'RADAR';
     };
 
     return RadarObjectPermission;

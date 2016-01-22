@@ -7,13 +7,8 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
@@ -32,7 +27,7 @@
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -64,8 +59,8 @@
         <div frm-label>Address Line 1</div>
 
         <div frm-control>
-          <div frm-text-field model="item.addressLine1" required="true"></div>
-          <div frm-errors errors="item.errors.addressLine1"></div>
+          <div frm-text-field model="item.address1" required="true"></div>
+          <div frm-errors errors="item.errors.address1"></div>
         </div>
       </div>
 
@@ -73,8 +68,8 @@
         <div frm-label>Address Line 2</div>
 
         <div frm-control>
-          <div frm-text-field model="item.addressLine2"></div>
-          <div frm-errors errors="item.errors.addressLine2"></div>
+          <div frm-text-field model="item.address2"></div>
+          <div frm-errors errors="item.errors.address2"></div>
         </div>
       </div>
 
@@ -82,8 +77,8 @@
         <div frm-label>Address Line 3</div>
 
         <div frm-control>
-          <div frm-text-field model="item.addressLine3"></div>
-          <div frm-errors errors="item.errors.addressLine3"></div>
+          <div frm-text-field model="item.address3"></div>
+          <div frm-errors errors="item.errors.address3"></div>
         </div>
       </div>
 
@@ -103,7 +98,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'fromDate', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -118,10 +113,10 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="address()">Address</th>
+          <th sort-helper="getAddress()">Address</th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -136,7 +131,7 @@
           <td class="newlines">{{item.getAddress()}}</td>
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

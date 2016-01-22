@@ -59,6 +59,10 @@ a.btn, .nav a {
   text-decoration: none;
 }
 
+select {
+  max-width: 100%;
+}
+
 .input-group {
   max-width: 200px;
 }
@@ -90,6 +94,16 @@ a.btn, .nav a {
 
 th.right {
   text-align: right;
+}
+
+.table {
+  > thead, > tbody, & {
+    > tr {
+      > td, > th {
+          padding: 5px 10px;
+      }
+    }
+  }
 }
 
 .latest-news-body {
@@ -136,6 +150,10 @@ th.right {
   max-width: 768px;
 }
 
+.full-width .form-control {
+  width: 100%;
+}
+
 .form-control {
   width: auto;
 }
@@ -152,7 +170,7 @@ textarea.form-control {
   white-space: pre-line;
 }
 
-td.data-source {
+td.source {
   color: #777;
 }
 
@@ -161,6 +179,11 @@ a .hidden-demographics {
 }
 
 .hidden-demographics {
+  color: #777;
+  font-style: italic;
+}
+
+.empty {
   color: #777;
   font-style: italic;
 }
@@ -190,7 +213,7 @@ form.columns {
   margin-bottom: 9px;
 }
 
-table.item-meta {
+table.metadata {
   font-size: 12px;
   border: 1px solid #eee;
   color: #777;
@@ -209,6 +232,10 @@ table.item-meta {
   padding: 3px 15px;
   color: #fff;
   background-color: #333;
+}
+
+.header-alert a {
+  color: #fff;
 }
 
 .header-alert-danger {
@@ -232,11 +259,47 @@ table.item-meta {
   margin: 0 0 9px 0;
 }
 
-.text-editor {
+.text-editor.ql-container {
   border: 1px solid #ccc;
-  min-height: 200px;
+  height: 300px;
 }
 
 .graph {
   margin-bottom: 18px;
+}
+
+.navbar-brand {
+  padding: 10px 15px;
+}
+
+.filter-helper {
+  margin: 0 0 9px 0;
+}
+
+.observation-list-selector .pagination {
+  margin: 9px 0 0 0;
+}
+
+.observation-list-selector .filter-helper {
+  margin: 0;
+}
+
+.observation-list-selector table.observations {
+  margin: 0 0 9px 0;
+}
+
+.observation-selector, .drug-selector, .diagnosis-selector {
+  margin: 0 0 18px 0;
+
+  .pagination {
+    margin: 9px 0 0 0;
+  }
+
+  .filter-helper {
+    margin: 0;
+  }
+
+  .table {
+    margin: 0;
+  }
 }

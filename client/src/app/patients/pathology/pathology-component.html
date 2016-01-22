@@ -7,13 +7,8 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
@@ -23,26 +18,39 @@
 
       <tr>
         <th>Kidney Type</th>
-        <td>{{item.kidneyType.label}}</td>
+        <td>{{item.kidneyType.label | missing}}</td>
       </tr>
 
       <tr>
         <th>Kidney Side</th>
-        <td>{{item.kidneySide.label}}</td>
+        <td>{{item.kidneySide.label | missing}}</td>
       </tr>
 
       <tr>
-        <th>Laboratory Reference Number</th>
-        <td>{{item.laboratoryReferenceNumber}}</td>
+        <th>Reference Number</th>
+        <td>{{item.referenceNumber | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Image URL</th>
+        <td>
+          <a ng-if="item.imageUrl" href="{{item.imageUrl}}">{{item.imageUrl}}</a>
+          <span ng-if="!item.imageUrl">-</span>
+        </td>
       </tr>
 
       <tr>
         <th>Histological Summary</th>
         <td class="newlines">{{item.histologicalSummary | missing}}</td>
       </tr>
+
+      <tr>
+        <th>EM Findings</th>
+        <td class="newlines">{{item.emFindings | missing}}</td>
+      </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -53,11 +61,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
@@ -74,7 +82,7 @@
         <div frm-label>Kidney Type</div>
 
         <div frm-control>
-          <div frm-radio-field model="item.kidneyType" options="kidneyTypes" required="true"></div>
+          <div frm-select-field model="item.kidneyType" options="kidneyTypes"></div>
           <div frm-errors errors="item.errors.kidneyType"></div>
         </div>
       </div>
@@ -83,17 +91,26 @@
         <div frm-label>Kidney Side</div>
 
         <div frm-control>
-          <div frm-radio-field model="item.kidneySide" options="kidneySides" required="true"></div>
+          <div frm-select-field model="item.kidneySide" options="kidneySides"></div>
           <div frm-errors errors="item.errors.kidneySide"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Laboratory Reference Number</div>
+        <div frm-label>Reference Number</div>
 
         <div frm-control>
-          <div frm-text-field model="item.laboratoryReferenceNumber" required="true"></div>
-          <div frm-errors errors="item.errors.laboratoryReferenceNumber"></div>
+          <div frm-text-field model="item.referenceNumber"></div>
+          <div frm-errors errors="item.errors.referenceNumber"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Image URL</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.imageUrl"></div>
+          <div frm-errors errors="item.errors.imageUrl"></div>
         </div>
       </div>
 
@@ -101,9 +118,19 @@
         <div frm-label>Histological Summary</div>
 
         <div frm-control>
-          <div frm-textarea-field model="item.histologicalSummary"></div>
-          <div frm-help>Please update with EM findings when available.</div>
+          <div frm-textarea-field model="item.histologicalSummary" rows="15"></div>
+          <div frm-help>Copy and paste from the pathology report.</div>
           <div frm-errors errors="item.errors.histologicalSummary"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>EM Findings</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.emFindings" rows="15"></div>
+          <div frm-help>If not included in histological summary above.</div>
+          <div frm-errors errors="item.errors.emFindings"></div>
         </div>
       </div>
 
@@ -132,7 +159,7 @@
           <th sort-helper="date">Date</th>
           <th sort-helper="kidneyType.label">Type</th>
           <th sort-helper="kidneySide.label">Side</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -145,9 +172,9 @@
           </td>
 
           <td>{{item.date | dateFormat}}</td>
-          <td>{{item.kidneyType.label}}</td>
-          <td>{{item.kidneySide.label}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.kidneyType.label | missing}}</td>
+          <td>{{item.kidneySide.label | missing}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

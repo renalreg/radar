@@ -3,6 +3,9 @@
 
   var app = angular.module('radar.ui');
 
+  var DEFAULT_SORT_BY = 'id';
+  var DEFAULT_PER_PAGE = 10;
+
   app.directive('listHelper', ['$parse', '_', 'escapeRegExp', 'dateSearch', 'anyValue', function($parse, _, escapeRegExp, dateSearch, anyValue) {
     return {
       scope: false,
@@ -28,20 +31,20 @@
         function client(collectionGetter, aliasSetter) {
           aliasSetter($scope, self);
 
+          var options = $parse($attrs.listHelperOptions)($scope) || {};
+          var deep = options.deep !== false;
+          var perPage = options.perPage || DEFAULT_PER_PAGE;
+          var reverse = options.reverse === true;
+          var sortBy = options.sortBy || DEFAULT_SORT_BY;
+          var sortId = options.sortId || sortBy;
+
           var items = [];
           var filteredItems = [];
           var sortedItems = [];
           var paginatedItems = [];
-
-          var sortBy = 'id';
           var sortScope = $scope;
-          var sortId = null;
-          var reverse = false;
-
-          var page = 1;
-          var perPage = 10;
-
           var search = '';
+          var page = 1;
 
           $scope.$watchCollection(function() {
             return collectionGetter($scope) || [];
@@ -50,33 +53,9 @@
             _filter();
           });
 
-          $attrs.$observe('perPage', function(value) {
-            if (value) {
-              perPage = parseInt(value);
-              _paginate();
-            }
-          });
-
-          $attrs.$observe('sortBy', function(value) {
-            if (value) {
-              sortBy = value;
-              _sort();
-              sortId = value;
-            }
-          });
-
-          $attrs.$observe('reverse', function(value) {
-            if (value) {
-              reverse = value === 'true';
-              _sort();
-            }
-          });
-
-          $scope.$watch(function() {
-            return items;
-          }, function() {
+          $scope.$watch('items', function() {
             _filter();
-          }, true);
+          }, deep);
 
           _filter();
 
@@ -104,6 +83,7 @@
 
           function filter(newSearch) {
             search = newSearch;
+            page = 1;
             _filter();
           }
 
@@ -177,8 +157,10 @@
 
             if (sortBy !== null) {
               var getter = $parse(sortBy);
+
               sortedItems = _.sortBy(sortedItems, function(item) {
-                return getter(sortScope, item);
+                // Note: AngularJS doesn't check the prototype of the locals argument
+                return getter(item, sortScope);
               });
             }
 
@@ -190,14 +172,19 @@
           }
 
           function _paginate() {
-            var startIndex = (page - 1) * perPage;
-            var endIndex = page * perPage;
-            paginatedItems = _.slice(sortedItems, startIndex, endIndex);
+            if (perPage === null) {
+              paginatedItems = sortedItems;
+            } else {
+              var startIndex = (page - 1) * perPage;
+              var endIndex = page * perPage;
+              paginatedItems = _.slice(sortedItems, startIndex, endIndex);
+            }
+
           }
         }
 
         function server(apiGetter) {
-          var api;
+          var api = apiGetter($scope);
 
           $scope.$watch(function() {
             return apiGetter($scope);
@@ -246,7 +233,7 @@
           }
 
           function getPerPage() {
-            return api ? api.getPerPage() : 10;
+            return api ? api.getPerPage() : DEFAULT_PER_PAGE;
           }
 
           function setPerPage(perPage) {
@@ -277,7 +264,7 @@
       this.count = 0;
 
       this.page = 1;
-      this.perPage = 10;
+      this.perPage = DEFAULT_PER_PAGE;
 
       this.sortBy = 'id';
       this.reverse = false;
@@ -297,6 +284,8 @@
           this.reverse = params.reverse;
         }
       }
+
+      this.lastParams = null;
     }
 
     ListHelperProxy.prototype.sort = function(sortBy, reverse) {
@@ -369,7 +358,12 @@
 
     ListHelperProxy.prototype.load = function() {
       var params = this.getParams();
-      this.callback(this, params);
+
+      // Params have changed
+      if (!angular.equals(params, this.lastParams)) {
+        this.callback(this, params);
+        this.lastParams = angular.copy(params);
+      }
     };
 
     return ListHelperProxy;

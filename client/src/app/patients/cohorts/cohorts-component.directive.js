@@ -4,28 +4,15 @@
   var app = angular.module('radar.patients.cohorts');
 
   app.factory('PatientCohortPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
-    function PatientCohortPermission() {
-      PatientObjectPermission.apply(this, arguments);
-    }
-
-    PatientCohortPermission.prototype = Object.create(PatientObjectPermission.prototype);
-
-    PatientCohortPermission.prototype.hasObjectPermission = function(obj) {
-      if (!PatientObjectPermission.prototype.hasObjectPermission.call(this, obj)) {
-        return false;
-      }
-
-      return obj.cohort.code !== 'RADAR';
-    };
-
-    return PatientCohortPermission;
+    return PatientObjectPermission;
   }]);
 
   function controllerFactory(
     ModelListDetailController,
     PatientCohortPermission,
     $injector,
-    store
+    store,
+    _
   ) {
     function PatientCohortsController($scope) {
       var self = this;
@@ -37,15 +24,37 @@
         }
       });
 
-      self.load($scope.patient.cohorts);
+      self.load($scope.patient.getCohortPatients());
 
       $scope.create = function() {
-        self.edit(store.create('cohort-patients', {patient: $scope.patient.id, isActive: true}));
+        self.edit(store.create('group-patients', {patient: $scope.patient.id}));
       };
     }
 
     PatientCohortsController.$inject = ['$scope'];
     PatientCohortsController.prototype = Object.create(ModelListDetailController.prototype);
+
+    PatientCohortsController.prototype.save = function() {
+      var self = this;
+
+      return ModelListDetailController.prototype.save.call(self).then(function(groupPatient) {
+        // Add the group to the patient's groups
+        if (!_.includes(self.scope.patient.groups, groupPatient)) {
+          self.scope.patient.groups.push(groupPatient);
+        }
+
+        return groupPatient;
+      });
+    };
+
+    PatientCohortsController.prototype.remove = function(groupPatient) {
+      var self = this;
+
+      return ModelListDetailController.prototype.remove.call(self, groupPatient).then(function() {
+        // Remove the group from the patient's groups
+        _.pull(self.scope.patient.groups, groupPatient);
+      });
+    };
 
     return PatientCohortsController;
   }
@@ -54,7 +63,8 @@
     'ModelListDetailController',
     'PatientCohortPermission',
     '$injector',
-    'store'
+    'store',
+    '_'
   ];
 
   app.factory('PatientCohortsController', controllerFactory);

@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.store');
 
-  app.factory('Model', ['_', 'store', 'hashModel', function(_, store, hashModel) {
+  app.factory('Model', ['_', 'store', function(_, store) {
     function Model(modelName, data) {
       var self = this;
 
@@ -19,16 +19,26 @@
       self.isLoading = false;
       self.errors = {};
 
-      self.hash = '';
-
       self.meta = [];
       self.meta = _.keysIn(self);
 
-      self.update(data);
+      self.create(data);
     }
 
     Model.prototype.isDirty = function() {
-      return this.hash !== hashModel(this.getData());
+      return store.isDirty(this);
+    };
+
+    Model.prototype.isPristine = function() {
+      return store.isPristine(this);
+    };
+
+    Model.prototype.create = function(data) {
+      var self = this;
+
+      _.forEach(data, function(value, key) {
+        self[key] = value;
+      });
     };
 
     Model.prototype.update = function(data) {
@@ -41,8 +51,6 @@
         var key = keys[i];
         delete this[key];
       }
-
-      self.hash = hashModel(data);
 
       _.forEach(data, function(value, key) {
         self[key] = value;
@@ -66,11 +74,17 @@
       this.update(this.originalData);
     };
 
-    Model.prototype.reload = function() {
-      var id = this.getId();
+    Model.prototype.reload = function(force) {
+      if (force === undefined) {
+        force = false;
+      }
 
-      if (id !== null) {
-        store.findOne(this.modelName, id);
+      if (force || !this.isLoading) {
+        var id = this.getId();
+
+        if (id !== null) {
+          store.findOne(this.modelName, id);
+        }
       }
     };
 

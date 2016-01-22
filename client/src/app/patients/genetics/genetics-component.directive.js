@@ -25,14 +25,14 @@
       });
 
       self.load(firstPromise([
-        store.findMany('genetics', {patient: $scope.patient.id, cohort: $scope.cohort.id}),
+        store.findMany('genetics', {patient: $scope.patient.id, group: $scope.cohort.id}),
         store.findMany('genetics-karyotypes').then(function(karyotypes) {
           $scope.karyotypes = karyotypes;
         })
       ]));
 
       $scope.create = function() {
-        var item = store.create('genetics', {patient: $scope.patient.id, cohort: $scope.cohort});
+        var item = store.create('genetics', {patient: $scope.patient.id, group: $scope.cohort});
         self.edit(item);
       };
     }

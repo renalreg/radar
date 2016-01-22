@@ -22,7 +22,7 @@
               <th sort-helper="gender">Gender</th>
               <th sort-helper="recruitedDate">Date Recruited</th>
               <th>Cohorts</th>
-              <th>Units</th>
+              <th>Hospitals</th>
             </tr>
           </thead>
 
@@ -32,14 +32,14 @@
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.firstName !== undefined">{{patient.firstName}}</span>
+                  <span ng-if="patient.firstName !== undefined">{{patient.firstName | missing}}</span>
                   <span ng-if="patient.firstName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
 
               <td>
                 <a ui-sref="patient.demographics({patientId: patient.id})">
-                  <span ng-if="patient.lastName !== undefined">{{patient.lastName}}</span>
+                  <span ng-if="patient.lastName !== undefined">{{patient.lastName | missing}}</span>
                   <span ng-if="patient.lastName === undefined" class="hidden-demographics">Hidden</span>
                 </a>
               </td>
@@ -49,22 +49,22 @@
                 <span ng-if="patient.dateOfBirth === undefined">{{patient.yearOfBirth | missing}}</span>
               </td>
 
-              <td>{{patient.gender.label}}</td>
+              <td>{{patient.gender.label | missing}}</td>
 
-              <td>{{patient.recruitedDate | dateFormat | missing}}</td>
+              <td>{{patient.recruitedDate | dateFormat}}</td>
 
               <td>
-                <span ng-if="!patient.getCohorts().length">-</span>
-                <span ng-repeat="cohort in patient.getCohorts() | orderBy: 'cohort.name'" ng-if="cohort.isActive">
-                  {{cohort.cohort.shortName}}
+                <span ng-if="!patient.getCurrentCohorts().length">-</span>
+                <span ng-repeat="x in patient.getCurrentCohorts() | orderBy: 'shortName'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
 
               <td>
-                <span ng-if="!patient.getUnits().length">-</span>
-                <span ng-repeat="organisation in patient.getUnits() | orderBy: 'organisation.name'" ng-if="organisation.isActive">
-                  {{organisation.organisation.name}}
+                <span ng-if="!patient.getCurrentHospitals().length">-</span>
+                <span ng-repeat="x in patient.getCurrentHospitals() | orderBy: 'shortName'">
+                  {{x.shortName}}
                   <br ng-if="!$last" />
                 </span>
               </td>
@@ -176,19 +176,19 @@
         </div>
 
         <div frm-field frm-group>
-          <div frm-label>Unit</div>
+          <div frm-label>Hospital</div>
 
           <div frm-control>
-            <div frm-unit-field model="filters.organisation"></div>
+            <div frm-hospital-field model="filters.hospital"></div>
             <div frm-errors></div>
           </div>
         </div>
 
         <div frm-field frm-group>
-          <div frm-label>Is Active?</div>
+          <div frm-label>Current</div>
 
           <div frm-control>
-            <div frm-boolean-field model="filters.isActive"></div>
+            <div frm-boolean-field model="filters.current"></div>
             <div frm-errors></div>
           </div>
         </div>

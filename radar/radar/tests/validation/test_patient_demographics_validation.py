@@ -3,7 +3,9 @@ from datetime import date, datetime, timedelta
 import pytest
 import pytz
 
-from radar.models import PatientDemographics, Patient, DataSource, EthnicityCode, GENDER_MALE, GENDER_FEMALE
+from radar.models import PatientDemographics, Patient, GENDER_MALE, GENDER_FEMALE
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.patient_demographics import PatientDemographicsValidation
 from radar.validation.validators import DAY_ZERO
@@ -19,14 +21,15 @@ def patient():
 @pytest.fixture
 def demographics(patient):
     obj = PatientDemographics()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.first_name = 'JOHN'
     obj.last_name = 'SMITH'
     obj.date_of_birth = date(1900, 1, 1)
     obj.date_of_death = date(2000, 1, 1)
     obj.gender = GENDER_MALE
-    obj.ethnicity_code = EthnicityCode(id=1)
+    obj.ethnicity = 'A'
     obj.home_number = '111111'
     obj.work_number = '222222'
     obj.mobile_number = '333333'
@@ -41,7 +44,7 @@ def test_valid(demographics):
     assert obj.date_of_birth == date(1900, 1, 1)
     assert obj.date_of_death == date(2000, 1, 1)
     assert obj.gender == GENDER_MALE
-    assert obj.ethnicity_code == demographics.ethnicity_code
+    assert obj.ethnicity == 'A'
     assert obj.home_number == '111111'
     assert obj.work_number == '222222'
     assert obj.mobile_number == '333333'
@@ -57,9 +60,15 @@ def test_patient_missing(demographics):
     invalid(demographics)
 
 
-def test_data_source_missing(demographics):
-    demographics.data_source = None
+def test_source_group_missing(demographics):
+    demographics.source_group = None
     invalid(demographics)
+
+
+def test_source_type_missing(demographics):
+    demographics.source_type = None
+    demographics = valid(demographics)
+    assert demographics.source_type == 'RADAR'
 
 
 def test_first_name_blank(demographics):
@@ -172,9 +181,9 @@ def test_gender_invalid(demographics):
 
 
 def test_ethnicity_missing(demographics):
-    demographics.ethnicity_code = None
+    demographics.ethnicity = None
     obj = valid(demographics)
-    obj.ethnicity_code = None
+    obj.ethnicity = None
 
 
 def test_home_number_blank(demographics):

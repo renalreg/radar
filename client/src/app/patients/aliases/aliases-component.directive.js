@@ -11,7 +11,7 @@
     ModelListDetailController,
     PatientAliasPermission,
     firstPromise,
-    getRadarDataSource,
+    getRadarGroup,
     $injector,
     store
   ) {
@@ -27,15 +27,15 @@
 
       self.load(firstPromise([
         store.findMany('patient-aliases', {patient: $scope.patient.id}),
-        getRadarDataSource().then(function(dataSource) {
-          $scope.dataSource = dataSource;
+        getRadarGroup().then(function(group) {
+          $scope.sourceGroup = group;
         })
       ]));
 
       $scope.create = function() {
         var item = store.create('patient-aliases', {
           patient: $scope.patient.id,
-          dataSource: $scope.dataSource
+          sourceGroup: $scope.sourceGroup
         });
         self.edit(item);
       };
@@ -51,7 +51,7 @@
     'ModelListDetailController',
     'PatientAliasPermission',
     'firstPromise',
-    'getRadarDataSource',
+    'getRadarGroup',
     '$injector',
     'store'
   ];

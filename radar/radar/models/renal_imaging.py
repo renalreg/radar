@@ -13,7 +13,7 @@ RENAL_IMAGING_TYPES = OrderedDict([
 
 RENAL_IMAGING_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 
@@ -25,8 +25,9 @@ class RenalImaging(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('renal_imaging')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     date = Column(DateTime(timezone=True))
 
@@ -37,6 +38,7 @@ class RenalImaging(db.Model, MetaModelMixin):
     right_length = Column(Numeric)
     right_volume = Column(Numeric)
     right_cysts = Column(Boolean)
+    right_stones = Column(Boolean)
     right_calcification = Column(Boolean)
     right_nephrocalcinosis = Column(Boolean)
     right_nephrolithiasis = Column(Boolean)
@@ -47,9 +49,10 @@ class RenalImaging(db.Model, MetaModelMixin):
     left_length = Column(Numeric)
     left_volume = Column(Numeric)
     left_cysts = Column(Boolean)
+    left_stones = Column(Boolean)
     left_calcification = Column(Boolean)
     left_nephrocalcinosis = Column(Boolean)
     left_nephrolithiasis = Column(Boolean)
     left_other_malformation = Column(String)
 
-Index('renal_imaging_patient_id_idx', RenalImaging.patient_id)
+Index('renal_imaging_patient_idx', RenalImaging.patient_id)

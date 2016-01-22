@@ -1,0 +1,9 @@
+<div page-wrapper>
+  <h1 class="page-header">Hospitals</h1>
+
+  <div loading="loading">
+    <ul>
+      <li ng-repeat="hospital in hospitals"><a ui-sref="hospital({hospitalId: hospital.id})">{{hospital.name}}</a> ({{hospital.code}})</li>
+    </ul>
+  </div>
+</div>

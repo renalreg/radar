@@ -10,10 +10,6 @@
       templateUrl: 'app/forms/group.html',
       scope: {},
       link: function(scope, element, attrs, fieldCtrl) {
-        scope.isValid = function() {
-          return fieldCtrl.isValid();
-        };
-
         scope.isRequired = function() {
           return fieldCtrl.isRequired();
         };

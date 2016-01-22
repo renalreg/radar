@@ -6,7 +6,8 @@
   app.provider('store', function() {
     var config = {
       models: {},
-      childModels: {}
+      childModels: {},
+      mixins: {}
     };
 
     this.registerModel = function(name, constructorName) {
@@ -17,20 +18,44 @@
       config.childModels[key] = name;
     };
 
+    this.registerMixin = function(key, name) {
+      if (config.mixins[key] === undefined) {
+        config.mixins[key] = [];
+      }
+
+      config.mixins[key].push(name);
+    };
+
     this.$get = ['_', '$injector', 'adapter', '$q', function(_, $injector, adapter, $q) {
       function Store(config) {
         this.config = config;
         this.store = {};
+        this.pristineStore = {};
         this.eventListeners = {};
         this.modelEventListeners = {};
       }
 
       Store.prototype.getModelConstructor = function(modelName) {
         var modelConstructorName = this.config.models[modelName] || 'Model';
-        return $injector.get(modelConstructorName);
+        var Model = $injector.get(modelConstructorName);
+
+        var mixinNames = this.config.mixins[modelName];
+
+        if (mixinNames) {
+          _.forEach(mixinNames, function(mixinName) {
+            var mixin = $injector.get(mixinName);
+            angular.extend(Model.prototype, mixin);
+          });
+        }
+
+        return Model;
       };
 
       Store.prototype.create = function(modelName, data) {
+        if (data === undefined) {
+          data = {};
+        }
+
         var Model = this.getModelConstructor(modelName);
         data = this.inflate(data);
         return new Model(modelName, data);
@@ -49,9 +74,26 @@
         return store[id] || null;
       };
 
+      Store.prototype.getPristineStore = function(modelName) {
+        if (this.pristineStore[modelName] === undefined) {
+          this.pristineStore[modelName] = {};
+        }
+
+        return this.pristineStore[modelName];
+      };
+
+      Store.prototype.getFromPristineStore = function(modelName, id) {
+        var store = this.getPristineStore(modelName);
+        return store[id] || null;
+      };
+
       Store.prototype.pushToStore = function(item) {
         var modelName = item.modelName;
         var id = item.getId();
+
+        var pristineStore = this.getPristineStore(modelName);
+        var pristineItem = angular.copy(item);
+        pristineStore[id] = pristineItem;
 
         var existingItem = this.getFromStore(modelName, id);
 
@@ -63,6 +105,19 @@
           existingItem.update(item.getData());
           return existingItem;
         }
+      };
+
+      Store.prototype.isPristine = function(item) {
+        var modelName = item.modelName;
+        var id = item.getId();
+
+        var pristineItem = this.getFromPristineStore(modelName, id);
+
+        return pristineItem !== null && angular.equals(item.getData(), pristineItem.getData());
+      };
+
+      Store.prototype.isDirty = function(item) {
+        return !this.isPristine(item);
       };
 
       Store.prototype.findOne = function(modelName, id, useCache) {

@@ -8,11 +8,6 @@
 
     <table class="table properties" ng-if="item">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
         <th>Parental Consanguinity</th>
         <td><span tick="item.parentalConsanguinity"></span></td>
       </tr>
@@ -28,7 +23,23 @@
       </tr>
     </table>
 
-    <div ng-if="item" item-meta item="item"></div>
+    <table class="table table-condensed table-striped" ng-if="item.relatives">
+      <thead>
+        <tr>
+          <th>Relationship</th>
+          <th>RaDaR Patient ID</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="relative in item.relatives">
+          <td>{{relative.relationship.label}}</td>
+          <td>{{relative.patient.id | missing}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div ng-if="item"  item="item"></div>
 
     <p ng-if="!item">Not entered.</p>
   </div>
@@ -66,6 +77,8 @@
           <div frm-errors errors="item.errors.otherFamilyHistory"></div>
         </div>
       </div>
+
+      <div ng-show="item.familyHistory" family-history-relatives-component family-history="item"></div>
 
       <div frm-buttons>
         <span crud-save-button></span>

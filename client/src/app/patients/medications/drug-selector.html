@@ -1,0 +1,43 @@
+<div list-helper="drugs as page" list-helper-options="{perPage: 10, sortBy: 'name'}" class="drug-selector">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th sort-helper="name">Name</th>
+        <th>Parent</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-if="selectedDrug">
+        <td>
+          <button type="button" ng-click="drop()" class="btn btn-primary btn-xs">Deselect</button>
+        </td>
+        
+        <td>{{selectedDrug.name}}</td>
+        <td>{{selectedDrug.parentDrug.name | missing}}</td>
+      </tr>
+
+      <tr>
+        <td colspan="3">
+          <div filter-helper></div>
+        </td>
+      </tr>
+
+      <tr ng-if="!page.getCount()">
+        <td colspan="3" class="empty">No matching drugs.</td>
+      </tr>
+
+      <tr ng-repeat="drug in page.getItems()">
+        <td>
+          <button type="button" ng-click="use(drug)" class="btn btn-primary btn-xs">Select</button>
+        </td>
+
+        <td>{{drug.name}}</td>
+        <td>{{drug.parentDrug.name | missing}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div pagination-helper></div>
+</div>

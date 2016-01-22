@@ -7,37 +7,32 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
-        <th>Date of Onset</th>
-        <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
-      </tr>
-
-      <tr>
-        <th>Date of Diagnosis</th>
-        <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
         <th>Diagnosis</th>
-        <td>{{item.cohortDiagnosis.label}}</td>
+        <td>{{item.getDiagnosis()}}</td>
       </tr>
 
       <tr>
-        <th>Diagnosis Text</th>
-        <td class="newlines">{{item.diagnosisText | missing}}</td>
+        <th>From Date</th>
+        <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
       </tr>
 
       <tr>
-        <th>Biopsy Diagnosis</th>
-        <td>{{item.biopsyDiagnosis.label | missing}}</td>
+        <th>To Date</th>
+        <td>{{item.toDate | dateFormat}} <span ng-if="item.toAge">({{item.toAge | ageFormat}})</span></td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -48,20 +43,11 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Date of Onset</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-date-field model="item.dateOfOnset" required="true"></div>
-          <div frm-errors errors="item.errors.dateOfOnset"></div>
-        </div>
-      </div>
-
-      <div frm-field frm-group>
-        <div frm-label>Date of Diagnosis</div>
-
-        <div frm-control>
-          <div frm-date-field model="item.dateOfDiagnosis" required="true" min-date="item.dateOfOnset"></div>
-          <div frm-errors errors="item.errors.dateOfDiagnosis"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
@@ -69,26 +55,46 @@
         <div frm-label>Diagnosis</div>
 
         <div frm-control>
-          <div frm-select-field model="item.cohortDiagnosis" required="true" options="cohortDiagnoses"></div>
-          <div frm-errors errors="item.errors.cohortDiagnosis"></div>
+          <div frm-diagnosis-field model="item.diagnosis" required="!item.diagnosisText"></div>
+          <div frm-errors errors="item.errors.diagnosis"></div>
         </div>
       </div>
 
-      <div frm-field frm-group>
+      <div ng-if="!item.diagnosis" frm-field frm-group>
         <div frm-label>Diagnosis Text</div>
 
         <div frm-control>
-          <div frm-textarea-field model="item.diagnosisText"></div>
+          <div frm-text-field model="item.diagnosisText" required="!item.diagnosis"></div>
+          <div frm-help>Please use a diagnosis from the list where possible.</div>
           <div frm-errors errors="item.errors.diagnosisText"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Biopsy Diagnosis</div>
+        <div frm-label>From Date</div>
 
         <div frm-control>
-          <div frm-select-field model="item.biopsyDiagnosis" options="biopsyDiagnoses"></div>
-          <div frm-errors errors="item.errors.biopsyDiagnosis"></div>
+          <div frm-date-field model="item.fromDate" required="true"></div>
+          <div frm-help>Date of diagnosis.</div>
+          <div frm-errors errors="item.errors.fromDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>To Date</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.toDate"></div>
+          <div frm-errors errors="item.errors.toDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
         </div>
       </div>
 
@@ -99,7 +105,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" sort-by="dateOfDiagnosis" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'fromDate', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -114,9 +120,10 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="dateOfOnset">Date of Onset</th>
-          <th sort-helper="dateOfDiagnosis">Date of Diagnosis</th>
-          <th sort-helper="cohortDiagnosis">Diagnosis</th>
+          <th sort-helper="getDiagnosis()">Diagnosis</th>
+          <th sort-helper="fromDate">From Date</th>
+          <th sort-helper="toDate">To Date</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -128,9 +135,10 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.dateOfOnset | dateFormat}} ({{item.ageAtOnset | ageFormat}})</td>
-          <td>{{item.dateOfDiagnosis | dateFormat}} ({{item.ageAtDiagnosis | ageFormat}})</td>
-          <td>{{item.cohortDiagnosis.label}}</td>
+          <td>{{item.getDiagnosis()}}</td>
+          <td>{{item.fromDate | dateFormat}} ({{item.fromAge | ageFormat}})</td>
+          <td>{{item.toDate | dateFormat}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

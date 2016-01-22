@@ -10,6 +10,8 @@
     store,
     adapter
   ) {
+    var loggingOut = false;
+
     return {
       login: login,
       logout: logout,
@@ -59,9 +61,22 @@
 
     /** Log the user out */
     function logout() {
-      return adapter.post('/logout')['finally'](function() {
-        session.logout();
-      });
+      var deferred = $q.defer();
+
+      // Logged in and not already logging out
+      if (session.isAuthenticated && !loggingOut) {
+        loggingOut = true;
+
+        adapter.post('/logout')['finally'](function() {
+          loggingOut = false;
+          session.logout();
+          deferred.resolve();
+        });
+      } else {
+        deferred.resolve();
+      }
+
+      return deferred.promise;
     }
 
     /** Request a username reminder */

@@ -1,28 +1,46 @@
 import json
 
-from radar_api.tests.helpers import e2e
-from radar.database import db
-from radar.models.users import User
+from radar_api.tests.fixtures import get_user
 
 
-@e2e
-def test_login(client):
-    user = User()
-    user.username = 'admin'
-    user.password = 'password'
-    db.session.add(user)
-    db.session.commit()
-
+def login(client, username, password):
     response = client.post(
         '/login',
-        content_type='application/json',
-        data=json.dumps({
-            'username': 'admin',
-            'password': 'password'
-        }),
-        environ_base={
-            'REMOTE_ADDR': '127.0.0.1'
+        data={
+            'username': username,
+            'password': password
         }
     )
 
+    return response
+
+
+def test_good_login(app):
+    user = get_user('admin')
+
+    client = app.test_client()
+
+    response = login(client, 'admin', 'password')
+
     assert response.status_code == 200
+
+    data = json.loads(response.data)
+
+    assert data['user_id'] == user.id
+    assert 'token' in data
+
+
+def test_bad_login(app):
+    client = app.test_client()
+
+    response = login(client, 'admin', 'foo')
+
+    assert response.status_code == 422
+
+    data = json.loads(response.data)
+
+    assert data == {
+        'errors': {
+            'username': ['Incorrect username or password.']
+        }
+    }

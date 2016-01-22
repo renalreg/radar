@@ -7,27 +7,67 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Date</th>
+        <td>{{item.date | dateFormat}}</td>
       </tr>
 
       <tr>
-        <th>Transplant Date</th>
-        <td>{{item.transplantDate | dateFormat}}</td>
+        <th>Transplant Hospital</th>
+        <td>{{item.transplantGroup.name | missing}}</td>
       </tr>
 
       <tr>
-        <th>Transplant Type</th>
-        <td>{{item.transplantType.label}}</td>
+        <th>Modality</th>
+        <td>{{item.modality.label}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Recurrence</th>
+        <td>{{item.dateOfRecurrence | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of Failure</th>
+        <td>{{item.dateOfFailure | dateFormat}}</td>
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <table class="table table-condensed table-striped" ng-if="item.rejections">
+      <thead>
+        <tr>
+          <th>Date of Rejection</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="rejection in item.rejections">
+          <td>{{rejection.dateOfRejection | dateFormat}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-condensed table-striped" ng-if="item.biopsies">
+      <thead>
+        <tr>
+          <th>Date of Biopsy</th>
+          <th>Recurrence of Disease</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="biopsy in item.biopsies">
+          <td>{{biopsy.dateOfBiopsy | dateFormat}}</td>
+          <td><span tick="biopsy.recurrence"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -38,31 +78,61 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Transplant Date</div>
+        <div frm-label>Date</div>
 
         <div frm-control>
-          <div frm-date-field model="item.transplantDate" required="true"></div>
-          <div frm-errors errors="item.errors.transplantDate"></div>
+          <div frm-date-field model="item.date" required="true"></div>
+          <div frm-errors errors="item.errors.date"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Transplant Type</div>
+        <div frm-label>Transplant Hospital</div>
 
         <div frm-control>
-          <div frm-select-field model="item.transplantType" required="true" options="transplantTypes"></div>
-          <div frm-errors errors="item.errors.transplantType"></div>
+          <div frm-hospital-field model="item.transplantGroup"></div>
+          <div frm-errors errors="item.errors.transplantGroup"></div>
         </div>
       </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Modality</div>
+
+        <div frm-control>
+          <div frm-select-field model="item.modality" required="true" options="modalities"></div>
+          <div frm-errors errors="item.errors.modality"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Recurrence</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfRecurrence"></div>
+          <div frm-errors errors="item.errors.dateOfRecurrence"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of Failure</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfFailure"></div>
+          <div frm-errors errors="item.errors.dateOfFailure"></div>
+        </div>
+      </div>
+
+      <div transplant-rejections-component transplant="item"></div>
+      <div transplant-biopsies-component transplant="item"></div>
 
       <div frm-buttons>
         <span crud-save-button></span>
@@ -71,7 +141,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="transplantDate" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'transplantDate', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -86,9 +156,12 @@
       <thead>
         <tr>
           <th></th>
-          <th sort-helper="transplantDate">Date</th>
-          <th sort-helper="transplantType.label">Type</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="date">Date</th>
+          <th sort-helper="transplantGroup.shortName">Hospital</th>
+          <th sort-helper="modality.label">Modality</th>
+          <th sort-helper="dateOfRecurrence.label">Date of Recurrence</th>
+          <th sort-helper="dateOfFailure.label">Date of Failure</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -100,9 +173,12 @@
             <span crud-list-edit-button item="item"></span>
           </td>
 
-          <td>{{item.transplantDate | dateFormat}}</td>
-          <td>{{item.transplantType.label}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.date | dateFormat}}</td>
+          <td>{{item.transplantGroup.shortName | missing}}</td>
+          <td>{{item.modality.label}}</td>
+          <td>{{item.dateOfRecurrence | dateFormat}}</td>
+          <td>{{item.dateOfFailure | dateFormat}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

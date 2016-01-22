@@ -1,31 +1,29 @@
-from radar.models import ORGANISATION_TYPE_OTHER
-from radar.organisations import is_radar_organisation
+from radar.groups import is_radar_group
 from radar.validation.core import Validation, pass_call, ValidationError, Field
-from radar.validation.data_sources import RadarDataSourceValidationMixin
+from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
 from radar.validation.patients import PatientValidationMixin
 from radar.validation.validators import required, max_length, not_empty, normalise_whitespace
-from radar.validation.patient_number_validators import NUMBER_VALIDATORS
+from radar.validation.number_validators import NUMBER_VALIDATORS
 
 
-class PatientNumberValidation(PatientValidationMixin, RadarDataSourceValidationMixin, MetaValidationMixin, Validation):
-    organisation = Field([required()])
+class PatientNumberValidation(PatientValidationMixin, RadarSourceValidationMixin, MetaValidationMixin, Validation):
     number = Field([not_empty(), normalise_whitespace(), max_length(50)])
+    number_group = Field([required()])
 
-    def validate_organisation(self, organisation):
-        if is_radar_organisation(organisation):
+    def validate_number_group(self, number_group):
+        if is_radar_group(number_group):
             raise ValidationError("Can't add RaDaR numbers.")
 
-        return organisation
+        return number_group
 
     @pass_call
     def validate(self, call, obj):
-        organisation = obj.organisation
+        number_group = obj.number_group
 
-        if organisation.type == ORGANISATION_TYPE_OTHER:
-            number_validators = NUMBER_VALIDATORS.get(organisation.code)
+        number_validators = NUMBER_VALIDATORS.get((number_group.type, number_group.code))
 
-            if number_validators is not None:
-                call.validators_for_field(number_validators, obj, self.number)
+        if number_validators is not None:
+            call.validators_for_field(number_validators, obj, self.number)
 
         return obj

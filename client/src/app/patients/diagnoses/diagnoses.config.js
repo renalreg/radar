@@ -5,14 +5,19 @@
 
   app.config(['$stateProvider', function($stateProvider) {
     $stateProvider.state('patient.diagnoses', {
-      url: '/diagnoses/:cohortId',
-      templateUrl: 'app/patients/diagnoses/diagnoses.html',
+      url: '/diagnoses',
+      templateUrl: 'app/patients/diagnoses/diagnoses.html'
+    });
+
+    $stateProvider.state('patient.primaryDiagnosis', {
+      url: '/primary-diagnosis/:cohortId',
+      templateUrl: 'app/patients/diagnoses/primary-diagnosis.html',
       controller: ['$scope', 'cohort', function($scope, cohort) {
         $scope.cohort = cohort;
       }],
       resolve: {
-        cohort: ['$stateParams', 'store', function($stateParams, store) {
-          return store.findOne('cohorts', $stateParams.cohortId, true);
+        cohort: ['$stateParams', 'cohortStore', function($stateParams, cohortStore) {
+          return cohortStore.findOne($stateParams.cohortId);
         }]
       }
     });

@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-import sys
-sys.path.append('../')
-
 import tempfile
 import logging
 
 import click
 import os
 
-from build_tools import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
+from radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
     get_mock_ukrdc_src_path, get_release
 
 NAME = 'radar-mock-ukrdc'
@@ -95,8 +92,8 @@ def test_mock_ukrdc(root_path):
     mock_ukrdc_src_path = get_mock_ukrdc_src_path(root_path)
 
     heading('Test %s' % NAME)
-    run_tox(['-c', os.path.join(radar_src_path, 'tox.ini')])
-    run_tox(['-c', os.path.join(mock_ukrdc_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(radar_src_path, 'tox.ini')])
+    run_tox(['-r', '-c', os.path.join(mock_ukrdc_src_path, 'tox.ini')])
 
 
 @click.command()

@@ -3,11 +3,16 @@
 
   var app = angular.module('radar.crud');
 
-  app.directive('crudSaveButton', function() {
+  app.directive('crudSaveButton', ['$parse', function($parse) {
     return {
       require: ['^crud', '^form', '?^crudSubmit'],
-      scope: {},
-      templateUrl: 'app/crud/save-button.html',
+      scope: {
+        action: '&',
+        text: '@'
+      },
+      templateUrl: function(element, attrs) {
+        return attrs.action ? 'app/crud/save-button.html' : 'app/crud/save-submit-button.html';
+      },
       link: function(scope, element, attrs, ctrls) {
         var crudCtrl = ctrls[0];
         var formCtrl = ctrls[1];
@@ -28,15 +33,17 @@
         });
 
         if (crudSubmitCtrl !== null) {
-          crudSubmitCtrl.on('submit', function() {
-            scope.submitting = true;
-          });
-
-          crudSubmitCtrl.on('submitted', function() {
-            scope.submitting = false;
+          crudSubmitCtrl.on('submitting', function(submitting) {
+            scope.submitting = submitting;
           });
         }
+
+        scope.click = function() {
+          crudSubmitCtrl.submit(function() {
+            return scope.action();
+          });
+        };
       }
     };
-  });
+  }]);
 })();

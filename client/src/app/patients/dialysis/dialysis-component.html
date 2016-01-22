@@ -8,18 +8,13 @@
     <table class="table properties">
       <tbody>
         <tr>
-          <th>ID</th>
-          <td>{{item.id}}</td>
+          <th>Source</th>
+          <td>{{item.getSource()}}</td>
         </tr>
 
         <tr>
-          <th>Data Source</th>
-          <td>{{item.dataSource.getName()}}</td>
-        </tr>
-
-        <tr>
-          <th>Dialysis Type</th>
-          <td>{{item.dialysisType.label}}</td>
+          <th>Modality</th>
+          <td>{{item.modality.label}}</td>
         </tr>
 
         <tr>
@@ -34,7 +29,7 @@
       </tbody>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -45,20 +40,20 @@
 
     <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
       <div frm-field frm-group>
-        <div frm-label>Data Source</div>
+        <div frm-label>Source</div>
 
         <div frm-control>
-          <div frm-patient-data-source-field patient="patient" model="item.dataSource" required="true"></div>
-          <div frm-errors errors="item.errors.dataSource"></div>
+          <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+          <div frm-errors errors="item.errors.sourceGroup"></div>
         </div>
       </div>
 
       <div frm-field frm-group>
-        <div frm-label>Dialysis Type</div>
+        <div frm-label>Modality</div>
 
         <div frm-control>
-          <div frm-select-field patient="patient" model="item.dialysisType" required="true" options="dialysisTypes"></div>
-          <div frm-errors errors="item.errors.dialysisType"></div>
+          <div frm-select-field patient="patient" model="item.modality" required="true" options="modalities"></div>
+          <div frm-errors errors="item.errors.modality"></div>
         </div>
       </div>
 
@@ -87,7 +82,7 @@
     </form>
   </div>
 
-  <div ng-if="!viewing && !editing" list-helper="items as page" per-page="10" sort-by="fromDate" reverse="true">
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'fromDate', reverse: true}">
     <p>
       <span crud-create-button action="create()"></span>
     </p>
@@ -104,8 +99,8 @@
           <th></th>
           <th sort-helper="fromDate">From Date</th>
           <th sort-helper="toDate">To Date</th>
-          <th sort-helper="dialysisType.name">Dialysis Type</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="modality.label">Modality</th>
+          <th sort-helper="getSource()">Source</th>
           <th></th>
         </tr>
       </thead>
@@ -119,8 +114,8 @@
 
           <td>{{item.fromDate | dateFormat}}</td>
           <td>{{item.toDate | dateFormat}}</td>
-          <td>{{item.dialysisType.label}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.modality.label}}</td>
+          <td class="source">{{item.getSource()}}</td>
 
           <td>
             <span crud-list-remove-button item="item"></span>

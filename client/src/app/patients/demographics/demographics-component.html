@@ -7,13 +7,8 @@
 
     <table class="table properties">
       <tr>
-        <th>ID</th>
-        <td>{{item.id}}</td>
-      </tr>
-
-      <tr>
-        <th>Data Source</th>
-        <td>{{item.dataSource.getName()}}</td>
+        <th>Source</th>
+        <td>{{item.getSource()}}</td>
       </tr>
 
       <tr ng-if="item.firstName">
@@ -53,7 +48,7 @@
 
       <tr>
         <th>Ethnicity</th>
-        <td>{{item.ethnicityCode.label | missing}}</td>
+        <td>{{item.ethnicity.label | missing}}</td>
       </tr>
 
       <tr ng-if="item.homeNumber !== undefined">
@@ -77,7 +72,7 @@
       </tr>
     </table>
 
-    <div item-meta item="item"></div>
+    <div metadata item="item"></div>
   </div>
 
   <div ng-if="editing">
@@ -138,8 +133,8 @@
             <div frm-label>Ethnicity</div>
 
             <div frm-control>
-              <div frm-select-field model="item.ethnicityCode" options="ethnicityCodes"></div>
-              <div frm-errors errors="item.errors.ethnicityCode"></div>
+              <div frm-select-field model="item.ethnicity" options="ethnicities"></div>
+              <div frm-errors errors="item.errors.ethnicity"></div>
             </div>
           </div>
         </div>
@@ -206,8 +201,8 @@
           <th sort-helper="dateOfBirth || yearOfBirth">DOB</th>
           <th sort-helper="dateOfDeath || yearOfDeath">DOD</th>
           <th sort-helper="gender">Gender</th>
-          <th sort-helper="ethnicityCode.label">Ethnicity</th>
-          <th sort-helper="dataSource.getName()">Data Source</th>
+          <th sort-helper="ethnicity.label">Ethnicity</th>
+          <th sort-helper="getSource()">Source</th>
         </tr>
       </thead>
 
@@ -219,28 +214,28 @@
           </td>
 
           <td>
-            <span ng-if="item.firstName !== undefined">{{item.firstName}}</span>
+            <span ng-if="item.firstName !== undefined">{{item.firstName | missing}}</span>
             <span ng-if="item.firstName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
           <td>
-            <span ng-if="item.lastName !== undefined">{{item.lastName}}</span>
+            <span ng-if="item.lastName !== undefined">{{item.lastName | missing}}</span>
             <span ng-if="item.lastName === undefined" class="hidden-demographics">Hidden</span>
           </td>
 
           <td>
             <span ng-if="item.dateOfBirth !== undefined">{{item.dateOfBirth | dateFormat}}</span>
-            <span ng-if="item.dateOfBirth === undefined">{{item.yearOfBirth}}</span>
+            <span ng-if="item.dateOfBirth === undefined">{{item.yearOfBirth | missing}}</span>
           </td>
 
           <td>
             <span ng-if="item.dateOfDeath !== undefined">{{item.dateOfDeath | dateFormat}}</span>
-            <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath}}</span>
+            <span ng-if="item.dateOfDeath === undefined">{{item.yearOfDeath | missing}}</span>
           </td>
 
-          <td>{{item.gender.label}}</td>
-          <td>{{item.ethnicityCode.label | missing}}</td>
-          <td class="data-source">{{item.dataSource.getName()}}</td>
+          <td>{{item.gender.label | missing}}</td>
+          <td>{{item.ethnicity.label | missing}}</td>
+          <td class="source">{{item.getSource()}}</td>
         </tr>
       </tbody>
     </table>

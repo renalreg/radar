@@ -58,7 +58,7 @@
   app.factory('session', sessionFactory);
 
   app.run(['$rootScope', 'authService', '$state', function($rootScope, authService, $state) {
-    $rootScope.$on('sessions.unauthorized', function() {
+    $rootScope.$on('unauthorized', function() {
       authService.logout();
       $state.go('login');
     });

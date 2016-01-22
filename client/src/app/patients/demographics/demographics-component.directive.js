@@ -32,8 +32,8 @@
         store.findMany('genders').then(function(genders) {
           $scope.genders = genders;
         }),
-        store.findMany('ethnicity-codes').then(function(ethnicityCodes) {
-          $scope.ethnicityCodes = ethnicityCodes;
+        store.findMany('ethnicities').then(function(ethnicities) {
+          $scope.ethnicities = ethnicities;
         })
       ]));
     }

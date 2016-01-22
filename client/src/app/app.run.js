@@ -40,7 +40,7 @@
     $rootScope.$on('$stateChangeStart', function(event, toState) {
       if (!isPublicState(toState) && toState.name !== 'changePassword') {
         radar.readyPromise.then(function() {
-          var user = session.getUser();
+          var user = session.user;
 
           if (user !== null && user.forcePasswordChange) {
             notificationService.info({

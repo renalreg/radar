@@ -12,11 +12,14 @@
       fail: fail,
       warn: warn,
       info: info,
-      remove: remove
+      fatal: fatal,
+      remove: remove,
     };
 
     function toParams(params) {
-      if (angular.isArray(params) || !angular.isObject(params)) {
+      if (params === undefined || params === null) {
+        params = {};
+      } else if (angular.isArray(params) || !angular.isObject(params)) {
         params = {message: params};
       }
 
@@ -71,6 +74,17 @@
       return _notify(params);
     }
 
+    function fatal(params) {
+      params = toParams(params);
+      setDefaults(params, {
+        title: 'Fatal Error',
+        type: 'fatal',
+        message: 'An unexpected error has occurred. Please try reloading the page.',
+        timeout: 0
+      });
+      return _notify(params);
+    }
+
     function _notify(params) {
       if (angular.isArray(params.message)) {
         params.message = params.message.join(' ');
@@ -96,6 +110,15 @@
           remove(notification);
         }, notification.timeout);
       }
+
+      // Remove old duplicate messages
+      _.remove(notifications, function(x) {
+        return (
+          x.type === notification.type &&
+          x.title === notification.title &&
+          x.message === notification.message
+        );
+      });
 
       notifications.push(notification);
 

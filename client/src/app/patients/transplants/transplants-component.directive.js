@@ -3,8 +3,8 @@
 
   var app = angular.module('radar.patients.transplants');
 
-  app.factory('TransplantPermission', ['PatientDataSourceObjectPermission', function(PatientDataSourceObjectPermission) {
-    return PatientDataSourceObjectPermission;
+  app.factory('TransplantPermission', ['PatientSourceObjectPermission', function(PatientSourceObjectPermission) {
+    return PatientSourceObjectPermission;
   }]);
 
   function controllerFactory(
@@ -26,8 +26,8 @@
 
       self.load(firstPromise([
         store.findMany('transplants', {patient: $scope.patient.id}),
-        store.findMany('transplant-types').then(function(transplantTypes) {
-          $scope.transplantTypes = transplantTypes;
+        store.findMany('transplant-modalities').then(function(modalities) {
+          $scope.modalities = modalities;
         })
       ]));
 

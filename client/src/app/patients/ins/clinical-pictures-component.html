@@ -1,0 +1,275 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tr>
+        <th>Date of Picture</th>
+        <td>{{item.dateOfPicture | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Oedema</th>
+        <td><span tick="item.oedema"></span></td>
+      </tr>
+
+      <tr>
+        <th>Hypovalaemia</th>
+        <td><span tick="item.hypovalaemia"></span></td>
+      </tr>
+
+      <tr>
+        <th>Fever > 38&deg;C</th>
+        <td><span tick="item.fever"></span></td>
+      </tr>
+
+      <tr>
+        <th>Thrombosis</th>
+        <td><span tick="item.thrombosis"></span></td>
+      </tr>
+
+      <tr>
+        <th>Peritonitis</th>
+        <td><span tick="item.peritonitis"></span></td>
+      </tr>
+
+      <tr>
+        <th>Pulmonary Oedema</th>
+        <td><span tick="item.pulmonaryOdemea"></span></td>
+      </tr>
+
+      <tr>
+        <th>Hypertension (Requiring Treatment)</th>
+        <td><span tick="item.hypertension"></span></td>
+      </tr>
+
+      <tr>
+        <th>Rash</th>
+        <td><span tick="item.rash"></span></td>
+      </tr>
+
+      <tr ng-if="item.rash">
+        <th>Rash Details</th>
+        <td class="newlines">{{item.rashDetails | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Infection Necessitating Hospitalisation</th>
+        <td><span tick="item.infection"></span></td>
+      </tr>
+
+      <tr ng-if="item.infection">
+        <th>Infection Details</th>
+        <td class="newlines">{{item.infectionDetails | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Ophthalmoscopy</th>
+        <td><span tick="item.ophthalmoscopy"></span></td>
+      </tr>
+
+      <tr ng-if="item.ophthalmoscopy">
+        <th>Ophthalmoscopy Details</th>
+        <td class="newlines">{{item.ophthalmoscopyDetail | missing}}</td>
+      </tr>
+
+      <tr>
+        <th>Comments</th>
+        <td class="newlines">{{item.comments | missing}}</td>
+      </tr>
+    </table>
+
+    <div metadata item="item"></div>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-list-button></span>
+      <span crud-view-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Date of Picture</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.dateOfPicture" required="true"></div>
+          <div frm-errors errors="item.errors.dateOfPicture"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Oedema</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.oedema"></div>
+          <div frm-errors errors="item.errors.oedema"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Hypovalaemia</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.hypovalaemia"></div>
+          <div frm-errors errors="item.errors.hypovalaemia"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Fever > 38&deg;C</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.fever"></div>
+          <div frm-errors errors="item.errors.fever"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Thrombosis</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.thrombosis"></div>
+          <div frm-errors errors="item.errors.thrombosis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Peritonitis</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.peritonitis"></div>
+          <div frm-errors errors="item.errors.peritonitis"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Pulmonary Oedema</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.pulmonaryOdemea"></div>
+          <div frm-errors errors="item.errors.pulmonaryOdemea"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Hypertension (Requiring Treatment)</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.hypertension"></div>
+          <div frm-errors errors="item.errors.hypertension"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Rash</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.rash"></div>
+          <div frm-errors errors="item.errors.rash"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group ng-if="item.rash">
+        <div frm-label>Rash Details</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.rashDetails"></div>
+          <div frm-errors errors="item.errors.rashDetails"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Infection Necessitating Hospitalisation</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.infection"></div>
+          <div frm-errors errors="item.errors.infection"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group ng-if="item.infection">
+        <div frm-label>Infection Details</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.infectionDetails"></div>
+          <div frm-errors errors="item.errors.infectionDetails"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Ophthalmoscopy</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.ophthalmoscopy"></div>
+          <div frm-errors errors="item.errors.ophthalmoscopy"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group ng-if="item.ophthalmoscopy">
+        <div frm-label>Ophthalmoscopy Details</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.ophthalmoscopyDetails"></div>
+          <div frm-errors errors="item.errors.ophthalmoscopyDetails"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Comments</div>
+
+        <div frm-control>
+          <div frm-textarea-field model="item.comments"></div>
+          <div frm-errors errors="item.errors.comments"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-list-button></span>
+      </div>
+    </form>
+  </div>
+
+  <div ng-if="!viewing && !editing" list-helper="items as page" list-helper-options="{perPage: 10, sortBy: 'dateOfPicture', reverse: true}">
+    <p>
+      <span crud-create-button action="create()"></span>
+    </p>
+
+    <div filter-helper></div>
+
+    <div ng-show="!page.getCount()">
+      <p>No results.</p>
+    </div>
+
+    <table class="table table-condensed table-striped" ng-if="page.getCount()">
+      <thead>
+        <tr>
+          <th></th>
+          <th sort-helper="dateOfPicture">Date</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr ng-repeat="item in page.getItems()">
+          <td>
+            <span crud-list-view-button item="item"></span>
+            <span crud-list-edit-button item="item"></span>
+          </td>
+
+          <td>{{item.dateOfPicture | dateFormat}}</td>
+
+          <td>
+            <span crud-list-remove-button item="item"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div pagination-helper></div>
+  </div>
+</div>

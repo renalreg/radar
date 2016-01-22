@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var app = angular.module('radar.patients.genetics');
+  var app = angular.module('radar.patients.familyHistory');
 
   app.factory('FamilyHistoryPermission', ['PatientObjectPermission', function(PatientObjectPermission) {
     return PatientObjectPermission;
@@ -23,12 +23,12 @@
         }
       });
 
-      self.load(store.findFirst('family-history', {patient: $scope.patient.id, cohort: $scope.cohort.id})).then(function() {
+      self.load(store.findFirst('family-histories', {patient: $scope.patient.id, group: $scope.cohort.id})).then(function() {
         self.view();
       });
 
       $scope.create = function() {
-        var item = store.create('family-history', {patient: $scope.patient.id, cohort: $scope.cohort});
+        var item = store.create('family-histories', {patient: $scope.patient.id, group: $scope.cohort});
         self.edit(item);
       };
     }

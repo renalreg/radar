@@ -12,9 +12,9 @@
       }]
     });
 
-    $stateProvider.state('newUser', {
-      url: '/users/new',
-      templateUrl: 'app/users/new-user.html'
+    $stateProvider.state('createUser', {
+      url: '/users/create',
+      templateUrl: 'app/users/create-user.html'
     });
 
     $stateProvider.state('user', {
