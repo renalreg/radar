@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, tables, EXCLUDED_UNITS
+from radar_migration import Migration, tables, EXCLUDED_UNITS, GroupNotFound
 
 
 def migrate_medications(old_conn, new_conn):
@@ -14,22 +14,44 @@ def migrate_medications(old_conn, new_conn):
             enddate,
             name,
             dose,
-            unitcode
+            medicine.unitcode
         FROM medicine
         JOIN patient ON medicine.nhsno = patient.nhsno
         WHERE
             patient.radarNo is not NULL AND
             patient.unitcode NOT IN %s AND
             startdate is not NULL AND
-            startdate != '0000-00-00 00:00:00'
+            startdate != '0000-00-00 00:00:00' AND
+            medicine.unitcode != 'ECS'
     """ % EXCLUDED_UNITS))
 
     for row in rows:
+        group_code = row['unitcode']
+        source_group_id = None
+        source_type = None
+
+        try:
+            source_group_id = m.get_hospital_id(group_code)
+            source_type = m.ukrdc_source_type
+        except GroupNotFound:
+            pass
+
+        # Otherwise check the data was entered by a cohort
+        if source_group_id is None:
+            try:
+                m.get_cohort_id(group_code)
+            except GroupNotFound:
+                print 'group', group_code, 'not found'
+                continue
+
+            source_group_id = m.group_id
+            source_type = m.radar_source_type
+
         new_conn.execute(
             tables.medications.insert(),
             patient_id=row['radarNo'],
-            source_group_id=m.get_hospital_id(row['unitcode']),
-            source_type=m.ukrdc_source_type,
+            source_group_id=source_group_id,
+            source_type=source_type,
             from_date=row['startdate'],
             to_date=row['enddate'],
             drug_text=row['name'],

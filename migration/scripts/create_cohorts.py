@@ -206,6 +206,7 @@ COHORTS = [
             'TRANSPLANTS',
             'HOSPITALISATIONS',
         ],
+        'multiple_diagnoses': True,
     },
     {
         'code': 'IGANEPHRO',

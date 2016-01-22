@@ -44,6 +44,7 @@ class Migration(object):
         self._diagnosis_ids = {}
         self._drug_ids = {}
         self._primary_group_ids = {}
+        self._recruited_group_ids = {}
 
         self.now = datetime.now(pytz.UTC)
 
@@ -198,13 +199,11 @@ class Migration(object):
 
         if group_id is None:
             q = select([tables.groups.c.id])
-            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.id == tables.group_patients.c.group_id))
-            q = q.where(tables.group.c.type == group_type)
+            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.c.id == tables.group_patients.c.group_id))
+            q = q.where(tables.groups.c.type == group_type)
             q = q.where(tables.group_patients.c.patient_id == patient_id)
             q = q.order_by(tables.group_patients.c.id)
             q = q.limit(1)
-
-            print q
 
             results = self.conn.execute(q)
             row = results.fetchone()
@@ -226,14 +225,12 @@ class Migration(object):
 
         if group_id is None:
             q = select([tables.groups.c.id])
-            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.id == tables.group_patients.c.group_id))
-            q = q.where(tables.group.c.code == 'RADAR')
-            q = q.where(tables.group.c.type == 'OTHER')
+            q = q.select_from(tables.groups.join(tables.group_patients, tables.groups.c.id == tables.group_patients.c.group_id))
+            q = q.where(tables.groups.c.code == 'RADAR')
+            q = q.where(tables.groups.c.type == 'OTHER')
             q = q.where(tables.group_patients.c.patient_id == patient_id)
             q = q.order_by(tables.group_patients.c.from_date)
             q = q.limit(1)
-
-            print q
 
             results = self.conn.execute(q)
             row = results.fetchone()

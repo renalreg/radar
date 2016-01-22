@@ -39,8 +39,8 @@ def migrate_phenotypes(old_conn, new_conn):
     m = Migration(new_conn)
 
     # Check all phenotypes exist
-    for disorder_name in PHENOTYPE_MAP.values():
-        m.get_disorder_id(disorder_name)
+    for diagnosis_name in PHENOTYPE_MAP.values():
+        m.get_diagnosis_id(diagnosis_name)
 
     rows = old_conn.execute(text("""
         SELECT
@@ -107,7 +107,7 @@ def migrate_phenotypes(old_conn, new_conn):
         new_conn.execute(
             tables.patient_diagnoses.insert(),
             patient_id=patient_id,
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             diagnosis_id=diagnosis_id,
             from_date=from_date,

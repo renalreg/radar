@@ -14,7 +14,7 @@ DIAGNOSIS_MAP = {
     '2760': 'Alport Syndrome - Histologically Proven',
     '2787': 'Thin Basement Membrane Disease',
     '2964': None,
-    '3139': 'Inherited/Genetic Diabetes - Type II (MODY)',
+    '3139': 'Diabetes - Type II MODY - Inherited/Genetic',
     '3604': None,
     '3627': 'Renal Cysts & Diabetes Syndrome',
     'APRT01': None,
@@ -28,9 +28,9 @@ DIAGNOSIS_MAP = {
     'xCYSURIA': None,
     'xFUAN': None,
     'xHYPALK': None,
-    'xHYPALK01': 'Type 1 Bartter Syndrome',  # Note: 1/2 map to 1
-    'xHYPALK02': 'Type 3 Bartter Syndrome',
-    'xHYPALK03': 'Type 4a Bartter Syndrome',  # Note: 4 to 4a
+    'xHYPALK01': 'Bartter Syndrome - Type 1',  # Note: 1/2 map to 1
+    'xHYPALK02': 'Bartter Syndrome - Type 3',
+    'xHYPALK03': 'Bartter Syndrome - Type 4a',  # Note: 4 to 4a
     'xHYPALK04': 'EAST Syndrome',
     'xHYPALK05': 'Gitelman Syndrome',
     'xHYPALK06': None,  # Note: not specified
@@ -117,16 +117,16 @@ def migrate_diagnoses(old_conn, new_conn):
         diagnosis_id = None
 
         if cohort_code == 'INS':
-            if row['biopsy'] == 2:
+            if row['biopsy_diagnosis'] == '2':
                 biopsy = True
                 biopsy_diagnosis = 1  # Minimal Change
-            elif row['biopsy'] == 3:
+            elif row['biopsy_diagnosis'] == '3':
                 biopsy = True
                 biopsy_diagnosis = 2  # FSGS
-            elif row['biopsy'] == 4:
+            elif row['biopsy_diagnosis'] == '4':
                 biopsy = True
                 biopsy_diagnosis = 3  # Mesangial Hyperthrophy
-            elif row['biopsy'] == 5:
+            elif row['biopsy_diagnosis'] == '5':
                 biopsy = True
                 biopsy_diagnosis = 4  # Other
 
@@ -137,20 +137,19 @@ def migrate_diagnoses(old_conn, new_conn):
                     diagnosis_id = m.get_diagnosis_id('SRNS - Secondary Steroid Resistance')
                 elif diagnosis2 == 3:
                     diagnosis_id = m.get_diagnosis_id('SRNS - Presumed Steroid Resistance')
-
         elif cohort_code == 'MPGN':
-            if row['biopsy'] == 1:
+            if row['biopsy_diagnosis'] == '1':
                 biopsy = True
 
         if diagnosis_id is None and diagnosis1 is not None:
             diagnosis_name = DIAGNOSIS_MAP[diagnosis1]
-            diagnosis_id = m.get_diagnosis_id(diagnosis_name)
+
+            if diagnosis_name is not None:
+                diagnosis_id = m.get_diagnosis_id(diagnosis_name)
 
         if diagnosis_id is None:
             diagnosis_name = GROUP_DIAGNOSIS_MAP[cohort_code]
             diagnosis_id = m.get_diagnosis_id(diagnosis_name)
-
-        print radar_no, diagnosis_id, from_date, biopsy, biopsy_diagnosis, comments
 
         new_conn.execute(
             tables.patient_diagnoses.insert(),

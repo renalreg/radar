@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import tables, Migration, EXCLUDED_UNITS
+from radar_migration import tables, Migration, EXCLUDED_UNITS, UserNotFound
 from radar_migration.groups import convert_cohort_code
 from radar_migration import utils
 
@@ -218,14 +218,18 @@ def migrate_patients(old_conn, new_conn):
         username = row['username']
 
         if username:
-            user_id = m.get_user_id(username)
+            try:
+                user_id = m.get_user_id(username)
+            except UserNotFound:
+                print 'user', username, 'not found'
+                user_id = m.user_id
         else:
             user_id = m.user_id
 
         # Add the patient to the RaDaR cohort
         new_conn.execute(
             tables.group_patients.insert(),
-            group_id=m.radar_group_id,
+            group_id=m.group_id,
             patient_id=radar_no,
             created_group_id=hospital_id,
             from_date=row['date_registered'],
@@ -252,7 +256,7 @@ def migrate_patients(old_conn, new_conn):
         new_conn.execute(
             tables.patient_demographics.insert(),
             patient_id=radar_no,
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             first_name=first_name,
             last_name=last_name,
@@ -282,7 +286,7 @@ def migrate_patients(old_conn, new_conn):
             new_conn.execute(
                 tables.patient_numbers.insert(),
                 patient_id=radar_no,
-                source_group_id=m.radar_group_id,
+                source_group_id=m.group_id,
                 source_type=m.radar_source_type,
                 number_group_id=m.get_group_id('OTHER', number_group_code),
                 number=number,
@@ -290,7 +294,7 @@ def migrate_patients(old_conn, new_conn):
                 modified_user_id=m.user_id,
             )
         else:
-            print number, 'for', radar_no, 'is invalid'
+            print 'patient number', number, 'for', radar_no, 'is invalid'
 
 
 def migrate_patient_cohorts(old_conn, new_conn):
@@ -390,7 +394,7 @@ def cli(src, dest):
         migrate_patient_hospitals(src_conn, dest_conn)
 
         # Set the next patient id
-        dest_conn.execute("SELECT setval('patients_seq', (SELECT MAX(id) FROM patients) + 1)")
+        dest_conn.execute("SELECT setval('patients_seq', (SELECT GREATEST(MAX(id), 5100) FROM patients) + 1)")
 
 
 if __name__ == '__main__':

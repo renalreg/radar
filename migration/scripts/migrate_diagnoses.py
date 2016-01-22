@@ -45,7 +45,7 @@ def migrate_diagnoses(old_conn, new_conn):
                 SELECT
                     radar_no,
                     date_clin_pic,
-                    'Diabetes Type I',
+                    'Diabetes - Type I'
                 FROM tbl_clinicaldata
                 WHERE diabetes = 1
             )
@@ -54,7 +54,7 @@ def migrate_diagnoses(old_conn, new_conn):
                 SELECT
                     radar_no,
                     date_clin_pic,
-                    'Diabetes Type II',
+                    'Diabetes - Type II'
                 FROM tbl_clinicaldata
                 WHERE diabetes = 2
             )

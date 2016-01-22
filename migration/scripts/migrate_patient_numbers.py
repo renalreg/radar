@@ -35,7 +35,7 @@ def migrate_patient_numbers(old_conn, new_conn):
         new_conn.execute(
             tables.patient_numbers.insert(),
             patient_id=row['radarNo'],
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             number_group_id=hospital_id,
             number=number,

@@ -23,7 +23,7 @@ def migrate_patient_aliases(old_conn, new_conn):
         new_conn.execute(
             tables.patient_aliases.insert(),
             patient_id=radar_no,
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             last_name=last_name,
             created_user_id=m.user_id,

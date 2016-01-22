@@ -1,7 +1,7 @@
 from sqlalchemy import text, create_engine
 import click
 
-from radar_migration import Migration, EXCLUDED_UNITS, tables, ObservationNotFound
+from radar_migration import Migration, EXCLUDED_UNITS, tables, ObservationNotFound, GroupNotFound
 
 PV_CODE_MAP = {
     'ADJUSTEDCA': 'ADJUSTEDCALCIUM',
@@ -67,11 +67,32 @@ def migrate_pv_results(old_conn, new_conn):
 
         value = str(value)
 
+        group_code = row['unitcode']
+        source_group_id = None
+        source_type = None
+
+        try:
+            source_group_id = m.get_hospital_id(group_code)
+            source_type = m.ukrdc_source_type
+        except GroupNotFound:
+            pass
+
+        # Otherwise check the data was entered by a cohort
+        if source_group_id is None:
+            try:
+                m.get_cohort_id(group_code)
+            except GroupNotFound:
+                print 'group', group_code, 'not found'
+                continue
+
+            source_group_id = m.group_id
+            source_type = m.radar_source_type
+
         new_conn.execute(
             tables.results.insert(),
             patient_id=row['radarNo'],
-            source_group_id=m.get_hospital_id(row['unitcode']),
-            source_type=m.ukrdc_source_type,
+            source_group_id=source_group_id,
+            source_type=source_type,
             observation_id=observation_id,
             date=row['datestamp'],
             value=value,

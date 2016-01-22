@@ -162,7 +162,7 @@ def migrate_radar_results(old_conn, new_conn):
         new_conn.execute(
             tables.results.insert(),
             patient_id=patient_id,
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             observation_id=observation_id,
             date=result_date,

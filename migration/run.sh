@@ -22,14 +22,14 @@ echo 'create hospitals...'
 python scripts/create_hospitals.py "$DEST" data/hospitals.csv
 echo 'create other groups...'
 python scripts/create_other_groups.py "$DEST"
-echo 'create group diagnoses...'
-python scripts/create_group_diagnoses.py "$DEST" data/group_diagnoses.csv
 echo 'create observations...'
 python scripts/create_observations.py "$DEST" data/observations.csv
 echo 'create drugs...'
-python scripts/create_drugs.py "$DEST" data/drug_types.csv data/drugs.csv
+python scripts/create_drugs.py "$DEST" data/drugs.csv
 echo 'create diagnoses...'
 python scripts/create_diagnoses.py "$DEST" data/diagnoses.csv
+echo 'create group diagnoses...'
+python scripts/create_group_diagnoses.py "$DEST" data/group_diagnoses.csv
 
 echo 'migrate users...'
 python scripts/migrate_users.py "$SRC" "$DEST"
@@ -75,7 +75,7 @@ python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
 echo 'migrate primary diagnoses...'
 python scripts/migrate_primary_diagnoses.py "$SRC" "$DEST"
 echo 'migrate significant diagnoses...'
-python scripts/migrate_significant_diagnoses.py "$SRC" "$DEST"
+python scripts/migrate_significant_diagnoses.py "$SRC" "$DEST" data/significant_diagnoses.csv
 echo 'migrate therapies...'
 python scripts/migrate_therapies.py "$SRC" "$DEST"
 echo 'migrate transplants...'
@@ -86,7 +86,6 @@ python scripts/migrate_pv_results.py "$SRC" "$DEST"
 echo 'migrate radar results...'
 python scripts/migrate_radar_results.py "$SRC" "$DEST"
 
-# TODO
 echo 'add patients to NEPHROS...'
 python scripts/add_patients_to_group.py "$DEST" COHORT NEPHROS data/nephros.csv
 echo 'add patients to NSMPGNC3...'

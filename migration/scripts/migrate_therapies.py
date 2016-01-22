@@ -35,11 +35,11 @@ def migrate_therapies(old_conn, new_conn):
             WHERE p_anti_htn = 1 OR anti_htn = 1 OR p_other_anti_htn = 1 OR other_anti_htn = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Ace Inhibitor' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'ACE Inhibitor' FROM tbl_therapy
             WHERE p_ace_inhib = 1 OR ace_inhib = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Angiotension II Receptor Antogonist' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Angiotensin II Receptor Antagonist' FROM tbl_therapy
             WHERE p_arb_antag = 1 OR arb_antag = 1
             GROUP BY radar_no
             UNION
@@ -126,7 +126,7 @@ def migrate_therapies(old_conn, new_conn):
             GROUP BY radar_no, drug
         ) AS x
         JOIN patient ON (
-            y.radar_no = patient.radarNo AND
+            x.radar_no = patient.radarNo AND
             patient.unitcode NOT IN %s
         )
         LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id

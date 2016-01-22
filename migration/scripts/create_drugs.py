@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from radar_migration import tables
 
 
-def create_drugs(conn, drug_types_filename, drugs_filename):
+def create_drugs(conn, drugs_filename):
     drug_map = {}
     drugs = []
 
@@ -37,14 +37,13 @@ def create_drugs(conn, drug_types_filename, drugs_filename):
 
 @click.command()
 @click.argument('db')
-@click.argument('drug_types')
 @click.argument('drugs')
-def cli(db, drug_types, drugs):
+def cli(db, drugs):
     engine = create_engine(db)
     conn = engine.connect()
 
     with conn.begin():
-        create_drugs(conn, drug_types, drugs)
+        create_drugs(conn, drugs)
 
 
 if __name__ == '__main__':

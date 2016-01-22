@@ -9,10 +9,12 @@ from radar_migration import EXCLUDED_UNITS, tables, Migration
 class ModalityConverter(object):
     modality_map = {
         '20': 20,
+        '21': 21,
         '23': 23,
         '24': 24,
         '25': 25,
         '26': 26,
+        '28': 28,
     }
 
     def __init__(self, filename):
@@ -33,7 +35,7 @@ class ModalityConverter(object):
             try:
                 new_modality = self.modality_map[old_modality]
             except KeyError:
-                raise ValueError('Unknown modality: %s' % old_modality)
+                raise ValueError('Unknown modality: %s (%s)' % (old_modality, transplant_id))
 
         return new_modality
 
@@ -65,7 +67,7 @@ def migrate_transplants(old_conn, new_conn, transplant_modalities_filename):
             tables.transplants.insert(),
             patient_id=radar_no,
             source_group_id=m.get_primary_hospital_id(radar_no),
-            source_type=m.source_type,
+            source_type=m.radar_source_type,
             date=row['DATE_TRANSPLANT'],
             modality=modality,
             date_of_recurrence=row['DATE_RECURR_TXK'],

@@ -53,7 +53,7 @@ def migrate_dialysis(old_conn, new_conn):
         new_conn.execute(
             tables.dialysis.insert(),
             patient_id=row['RADAR_NO'],
-            source_group_id=m.radar_group_id,
+            source_group_id=m.group_id,
             source_type=m.radar_source_type,
             from_date=row['DATE_START'],
             to_date=row['DATE_STOP'],
