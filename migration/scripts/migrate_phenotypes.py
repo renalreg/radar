@@ -101,15 +101,15 @@ def migrate_phenotypes(old_conn, new_conn):
 
     for row in rows:
         patient_id, from_date, phenotype = row
-        disorder_name = convert_phenotype(phenotype)
-        disorder_id = m.get_disorder_id(disorder_name)
+        diagnois_name = convert_phenotype(phenotype)
+        diagnosis_id = m.get_diagnosis_id(diagnois_name)
 
         new_conn.execute(
-            tables.comorbidities.insert(),
+            tables.patient_diagnoses.insert(),
             patient_id=patient_id,
             source_group_id=m.radar_group_id,
             source_type=m.radar_source_type,
-            disorder_id=disorder_id,
+            diagnosis_id=diagnosis_id,
             from_date=from_date,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,

@@ -75,22 +75,23 @@ def migrate_significant_diagnoses(old_conn, new_conn, significant_diagnoses_file
     """.format(EXCLUDED_UNITS)))
 
     for row in rows:
-        patient_id, from_date, disorder_name = row
-        new_disorder_name = sdc.convert(disorder_name)
+        patient_id, from_date, diagnosis_name = row
+        new_diagnosis_name = sdc.convert(diagnosis_name)
 
-        # Significant diagnosis is being dropped
-        if new_disorder_name is None:
-            print disorder_name
-            continue
-
-        disorder_id = m.get_disorder_id(new_disorder_name)
+        if new_diagnosis_name is None:
+            diagnosis_id = None
+            diagnosis_text = diagnosis_name
+        else:
+            diagnosis_id = m.get_diagnosis_id(new_diagnosis_name)
+            diagnosis_text = None
 
         new_conn.execute(
-            tables.comorbidities.insert(),
+            tables.patient_diagnoses.insert(),
             patient_id=patient_id,
             source_group_id=m.radar_group_id,
             source_type=m.source_type,
-            disorder_id=disorder_id,
+            diagnosis_id=diagnosis_id,
+            diagnosis_text=diagnosis_text,
             from_date=from_date,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,

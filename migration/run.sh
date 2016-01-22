@@ -38,15 +38,8 @@ python scripts/migrate_users.py "$SRC" "$DEST"
 echo 'migrate patients...'
 python scripts/migrate_patients.py "$SRC" "$DEST"
 
-echo 'migrate pv results...'
-python scripts/migrate_pv_results.py "$SRC" "$DEST"
-echo 'migrate radar results...'
-python scripts/migrate_radar_results.py "$SRC" "$DEST"
-
 echo 'migrate alport...'
 python scripts/migrate_alport.py "$SRC" "$DEST"
-echo 'migrate comorbidities...'
-python scripts/migrate_comorbidities.py "$SRC" "$DEST"
 echo 'migrate consultants...'
 python scripts/migrate_consultants.py "$SRC" "$DEST" data/consultants.csv
 echo 'migrate dialysis...'
@@ -81,12 +74,19 @@ echo 'migrate phenotypes...'
 python scripts/migrate_phenotypes.py "$SRC" "$DEST"
 echo 'migrate plasmapheresis...'
 python scripts/migrate_plasmapheresis.py "$SRC" "$DEST"
+echo 'migrate primary diagnoses...'
+python scripts/migrate_primary_diagnoses.py "$SRC" "$DEST"
 echo 'migrate significant diagnoses...'
 python scripts/migrate_significant_diagnoses.py "$SRC" "$DEST"
 echo 'migrate therapies...'
 python scripts/migrate_therapies.py "$SRC" "$DEST"
 echo 'migrate transplants...'
 python scripts/migrate_transplants.py "$SRC" "$DEST" data/transplant_modalities.csv
+
+echo 'migrate pv results...'
+python scripts/migrate_pv_results.py "$SRC" "$DEST"
+echo 'migrate radar results...'
+python scripts/migrate_radar_results.py "$SRC" "$DEST"
 
 # TODO
 echo 'add patients to NEPHROS...'
