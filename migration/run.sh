@@ -22,8 +22,6 @@ echo 'create hospitals...'
 python scripts/create_hospitals.py "$DEST" data/hospitals.csv
 echo 'create other groups...'
 python scripts/create_other_groups.py "$DEST"
-echo 'create source types...'
-python scripts/create_source_types.py "$DEST"
 echo 'create group diagnoses...'
 python scripts/create_group_diagnoses.py "$DEST" data/group_diagnoses.csv
 echo 'create observations...'
