@@ -37,8 +37,8 @@ group_diagnoses = Table(
     'group_diagnoses', metadata,
     Column('id', Integer, primary_key=True),
     Column('group_id', Integer),
-    Column('name', String),
-    Column('display_order', String),
+    Column('diagnosis_id', Integer),
+    Column('type', String),
 )
 
 group_patients = Table(
@@ -382,31 +382,29 @@ results = Table(
     Column('modified_user_id', Integer),
 )
 
-diagnoses = Table(
-    'diagnoses', metadata,
-    Column('id', postgresql.UUID, primary_key=True),
-    Column('patient_id', Integer),
-    Column('group_id', Integer),
-    Column('date_of_diagnosis', Integer),
-    Column('group_diagnosis_id', Integer),
-    Column('created_user_id', Integer),
-    Column('modified_user_id', Integer),
-)
-
-comorbidities = Table(
-    'comorbidities', metadata,
+patient_diagnoses = Table(
+    'patient_diagnoses', metadata,
     Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('source_group_id', Integer),
     Column('source_type', String),
-    Column('disorder_id', Integer),
+    Column('diagnosis_id', Integer),
+    Column('diagnosis_text', String),
+    Column('symptoms_date', Date),
     Column('from_date', Date),
+    Column('to_date', Date),
+    Column('gene_test', Boolean),
+    Column('biochemistry', Boolean),
+    Column('clinical_picture', Boolean),
+    Column('biopsy', Boolean),
+    Column('biopsy_diagnosis', Integer),
+    Column('comments', String),
     Column('created_user_id', Integer),
     Column('modified_user_id', Integer),
 )
 
-disorders = Table(
-    'disorders', metadata,
+diagnoses = Table(
+    'diagnoses', metadata,
     Column('id', Integer, primary_key=True),
     Column('name', String),
 )

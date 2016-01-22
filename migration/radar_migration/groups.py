@@ -18,6 +18,8 @@ def create_group(conn, data):
         short_name=data.get('short_name', data['name']),
         recruitment=data.get('recruitment', False),
         pages=data.get('pages'),
+        instructions=data.get('instructions'),
+        multiple_diagnoses=data.get('multiple_diagnoses', False),
     )
 
 

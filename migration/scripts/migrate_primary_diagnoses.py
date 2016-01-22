@@ -6,22 +6,21 @@ from radar_migration.groups import convert_cohort_code
 
 
 DIAGNOSIS_MAP = {
-    None: None,
-    '1383': 33,
-    '1396': 32,
-    '1639': 9,
-    '1656': 8,
-    '2756': 1,
-    '2760': 2,
-    '2787': 3,
+    '1383': 'Systemic Vasculitis - ANCA Negative - Histologially Proven',
+    '1396': 'Systemic Vasculitis - ANCA Positive - No Histology',
+    '1639': 'Multicystic Dysplastic Kidneys',
+    '1656': 'Glomerulocystic Disease',
+    '2756': 'Alport Syndrome - No Histology',
+    '2760': 'Alport Syndrome - Histologically Proven',
+    '2787': 'Thin Basement Membrane Disease',
     '2964': None,
-    '3139': 10,
+    '3139': 'Inherited/Genetic Diabetes - Type II (MODY)',
     '3604': None,
-    '3627': 7,
+    '3627': 'Renal Cysts & Diabetes Syndrome',
     'APRT01': None,
-    'DENTLOWE01': 4,
-    'DENTLOWE02': 5,
-    'DENTLOWE03': 6,
+    'DENTLOWE01': 'Dent Disease',
+    'DENTLOWE02': 'Lowe Syndrome (Oculocerebrorenal Syndrome)',
+    'DENTLOWE03': 'Other Primary Renal Fanconi Syndrome',
     'Obs': None,
     'xAHUS': None,
     'xARPKD': None,
@@ -29,13 +28,13 @@ DIAGNOSIS_MAP = {
     'xCYSURIA': None,
     'xFUAN': None,
     'xHYPALK': None,
-    'xHYPALK01': 15,  # Note: 1/2 map to 1
-    'xHYPALK02': 17,
-    'xHYPALK03': 18,  # Note: 4 to 4a
-    'xHYPALK04': 20,
-    'xHYPALK05': 14,
+    'xHYPALK01': 'Type 1 Bartter Syndrome',  # Note: 1/2 map to 1
+    'xHYPALK02': 'Type 3 Bartter Syndrome',
+    'xHYPALK03': 'Type 4a Bartter Syndrome',  # Note: 4 to 4a
+    'xHYPALK04': 'EAST Syndrome',
+    'xHYPALK05': 'Gitelman Syndrome',
     'xHYPALK06': None,  # Note: not specified
-    'xHYPALK07': 21,
+    'xHYPALK07': 'Liddle Syndrome',
     'xHYPERRDG': None,
     'xIGANEPHRO': None,
     'xMEMRDG': None,
@@ -43,14 +42,30 @@ DIAGNOSIS_MAP = {
     'xSTECHUS': None,
 }
 
-
-def convert_diagnosis(value):
-    try:
-        value = DIAGNOSIS_MAP[value]
-    except KeyError:
-        raise ValueError('Unknown diagnosis: %s' % value)
-
-    return value
+GROUP_DIAGNOSIS_MAP = {
+    'ALPORT': 'Alport Syndrome',
+    'ALPORT': 'Thin Basement Membrane Disease',
+    'APRT': 'APRT Deficiency',
+    'ADPKD': 'Autosomal Dominant Polycystic Kidney Disease',
+    'ARPKD': 'Autosomal Recessive Polycystic Kidney Disease',
+    'AHUS': 'Atypical Haemolytic Uraemic Syndrome',
+    'CALCIP': 'Calciphylaxis',
+    'CYSTIN': 'Cystinosis',
+    'CYSURIA': 'Cystinuria',
+    'DENTLOWE': 'Dent Disease and Lowe Syndrome',
+    'FUAN': 'Familial Urate Associated Nephropathy',
+    'HNF1B': 'HNF1b Mutations',
+    'HYPOXAL': 'Hyperoxaluria',
+    'HYPALK': 'Hypokalaemic Alkalosis',
+    'IGANEPHRO': 'IgA Nephropathy',
+    'INS': 'Idiopathic Nephrotic Syndrome',
+    'MPGN': 'Membranoproliferative Glomerulonephritis / Dense Deposit Disease',
+    'MEMNEPHRO': 'Membranous Nephropathy',
+    'OBS': 'Pregnancy',
+    'PRCA': 'Pure Red Cell Aplasia',
+    'STECHUS': 'STEC-associated HUS',
+    'VAS': 'Vasculitis',
+}
 
 
 def migrate_diagnoses(old_conn, new_conn):
@@ -58,8 +73,11 @@ def migrate_diagnoses(old_conn, new_conn):
 
     rows = old_conn.execute(text("""
         SELECT DISTINCT
-            patient.radarNo,
+            patient.radarNo AS radar_no,
+            unit.unitcode AS cohort_code,
             CASE
+                WHEN tbl_diagnosis.date_diag IS NOT NULL THEN
+                    tbl_diagnosis.date_diag
                 WHEN patient.dateOfGenericDiagnosis IS NOT NULL THEN
                     patient.dateOfGenericDiagnosis
                 ELSE
@@ -69,10 +87,13 @@ def migrate_diagnoses(old_conn, new_conn):
                         COALESCE(rdr_radar_number.creationDate, NOW()),
                         COALESCE(tbl_demographics.DATE_REG, NOW())
                     ) AS DATE)
-            END,
-            patient.genericDiagnosis,
-            unit.unitcode
+            END AS from_date,
+            patient.genericDiagnosis AS diagnosis1,
+            tbl_diagnosis.steroid_resist AS diagnosis2,
+            tbl_diagnosis.diag_txt AS comments,
+            tbl_diagnosis.BX_PROVEN_DIAG AS biopsy_diagnosis
         FROM patient
+        LEFT JOIN tbl_diagnosis ON patient.radarNo = tbl_diagnosis.radar_no
         JOIN usermapping ON patient.nhsno = usermapping.nhsno
         JOIN unit ON usermapping.unitcode = unit.unitcode
         LEFT JOIN rdr_radar_number ON patient.radarNo = rdr_radar_number.id
@@ -84,19 +105,69 @@ def migrate_diagnoses(old_conn, new_conn):
     """.format(EXCLUDED_UNITS)))
 
     for row in rows:
-        patient_id, date_of_diagnosis, diagnosis_code, cohort_code = row
+        radar_no = row['radar_no']
+        cohort_code = convert_cohort_code(row['cohort_code'])
+        comments = row['comments']
+        from_date = row['from_date']
+        diagnosis1 = row['diagnosis1']
+        diagnosis2 = row['diagnosis2']
+        biopsy = None
+        biopsy_diagnosis = None
 
-        group_diagnosis_id = convert_diagnosis(diagnosis_code)
+        diagnosis_id = None
 
-        cohort_code = convert_cohort_code(cohort_code)
-        cohort_id = m.get_cohort_id(cohort_code)
+        if cohort_code == 'INS':
+            if row['biopsy'] == 2:
+                biopsy = True
+                biopsy_diagnosis = 1  # Minimal Change
+            elif row['biopsy'] == 3:
+                biopsy = True
+                biopsy_diagnosis = 2  # FSGS
+            elif row['biopsy'] == 4:
+                biopsy = True
+                biopsy_diagnosis = 3  # Mesangial Hyperthrophy
+            elif row['biopsy'] == 5:
+                biopsy = True
+                biopsy_diagnosis = 4  # Other
+
+            if diagnosis2 is not None:
+                if diagnosis2 == 1:
+                    diagnosis_id = m.get_diagnosis_id('SRNS - Primary Steroid Resistance')
+                elif diagnosis2 == 2:
+                    diagnosis_id = m.get_diagnosis_id('SRNS - Secondary Steroid Resistance')
+                elif diagnosis2 == 3:
+                    diagnosis_id = m.get_diagnosis_id('SRNS - Presumed Steroid Resistance')
+
+        elif cohort_code == 'MPGN':
+            if row['biopsy'] == 1:
+                biopsy = True
+
+        if diagnosis_id is None and diagnosis1 is not None:
+            diagnosis_name = DIAGNOSIS_MAP[diagnosis1]
+            diagnosis_id = m.get_diagnosis_id(diagnosis_name)
+
+        if diagnosis_id is None:
+            diagnosis_name = GROUP_DIAGNOSIS_MAP[cohort_code]
+            diagnosis_id = m.get_diagnosis_id(diagnosis_name)
+
+        print radar_no, diagnosis_id, from_date, biopsy, biopsy_diagnosis, comments
 
         new_conn.execute(
-            tables.diagnoses.insert(),
-            patient_id=patient_id,
-            group_id=cohort_id,
-            date_of_diagnosis=date_of_diagnosis,
-            group_diagnosis_id=group_diagnosis_id,
+            tables.patient_diagnoses.insert(),
+            patient_id=radar_no,
+            source_group_id=m.group_id,
+            source_type=m.radar_source_type,
+            diagnosis_id=diagnosis_id,
+            diagnosis_text=None,
+            symptoms_date=None,
+            from_date=from_date,
+            to_date=None,
+            gene_test=None,
+            biochemistry=None,
+            clinical_picture=None,
+            biopsy=biopsy,
+            biopsy_diagnosis=biopsy_diagnosis,
+            comments=comments,
             created_user_id=m.user_id,
             modified_user_id=m.user_id,
         )
