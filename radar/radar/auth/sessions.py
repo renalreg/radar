@@ -1,23 +1,23 @@
 from flask import request, has_request_context, _request_ctx_stack
 from itsdangerous import BadSignature, TimestampSigner
-from sqlalchemy import func, not_
+from sqlalchemy import func
 from werkzeug.local import LocalProxy
 
 from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
-from radar.config import get_config_value
+from radar.config import config
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 
 
 def get_session_timeout():
-    return get_config_value('SESSION_TIMEOUT')
+    return config['SESSION_TIMEOUT']
 
 
 def get_secret_key():
-    return get_config_value('SECRET_KEY')
+    return config['SECRET_KEY']
 
 
 def login(username, password):
@@ -25,10 +25,11 @@ def login(username, password):
     username = username.lower()
 
     # Get user by username
-    user = User.query\
-        .filter(User.username == username)\
-        .filter(not_(User.is_bot))\
-        .first()
+    q = User.query
+    q = q.filter(User.username == username)
+    q = q.filter(User.is_enabled == True)  # noqa
+
+    user = q.first()
 
     # User not found
     if user is None:
@@ -38,6 +39,10 @@ def login(username, password):
     if not user.check_password(password):
         return None
 
+    # Update old password hashes
+    if user.needs_password_rehash:
+        user.password = password
+
     # Create a new session
     user_session = UserSession()
     user_session.user = user
@@ -46,6 +51,7 @@ def login(username, password):
     user_session.user_agent = request.headers.get('User-Agent')
     user_session.is_active = True
     db.session.add(user_session)
+
     db.session.commit()
 
     _request_ctx_stack.top.user_session = user_session
@@ -128,12 +134,15 @@ def get_user_session_from_token(token):
     except BadSignature:
         return None
 
-    return UserSession.query\
-        .filter(UserSession.id == user_session_id)\
-        .filter(UserSession.is_active)\
-        .filter(UserSession.ip_address == get_ip_address())\
-        .filter(UserSession.user_agent == get_user_agent())\
-        .first()
+    q = UserSession.query
+    q = q.join(UserSession.user)
+    q = q.filter(UserSession.id == user_session_id)
+    q = q.filter(UserSession.is_active)
+    q = q.filter(UserSession.ip_address == get_ip_address())
+    q = q.filter(UserSession.user_agent == get_user_agent())
+    q = q.filter(User.is_enabled == True)  # noqa
+
+    return q.first()
 
 
 def get_user_session():

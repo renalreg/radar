@@ -1,5 +1,5 @@
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar.models import Consultant
+from radar.models.consultants import Consultant
 from radar.serializers.models import ReferenceField, ModelSerializer
 
 

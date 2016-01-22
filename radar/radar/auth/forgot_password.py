@@ -6,17 +6,17 @@ from radar.auth.exceptions import UserNotFound, InvalidToken
 from radar.auth.passwords import generate_password_hash, check_password_hash
 from radar.auth.sessions import logout_user
 from radar.database import db
-from radar.models import User
+from radar.models.users import User
 from radar.mail import send_email_from_template
-from radar.config import get_config_value
+from radar.config import config
 
 
 def get_password_reset_max_age():
-    return get_config_value('PASSWORD_RESET_MAX_AGE')
+    return config['PASSWORD_RESET_MAX_AGE']
 
 
 def get_base_url():
-    return get_config_value('BASE_URL')
+    return config['BASE_URL']
 
 
 def generate_reset_password_token():
@@ -39,6 +39,10 @@ def forgot_password(username, email):
 
     db.session.commit()
 
+    send_reset_password_email(user, token)
+
+
+def send_reset_password_email(user, token):
     base_url = get_base_url()
     reset_password_url = base_url + '/reset-password/%s' % token
 
@@ -66,7 +70,7 @@ def reset_password(token, username, password):
     max_age = get_password_reset_max_age()
 
     # Token has expired
-    if user.reset_password_date is not None and (user.reset_password_date - datetime.now()).seconds > max_age:
+    if user.reset_password_date is not None and (datetime.now() - user.reset_password_date).total_seconds() > max_age:
         raise InvalidToken()
 
     # Update the user's password

@@ -38,12 +38,16 @@ def test_no_user():
     invalid('@example.org')
 
 
-def valid(value):
-    return email_address()(value)
+def test_name():
+    valid('Foo <foo@example.org>', name=True)
 
 
-def invalid(value):
+def valid(value, name=False):
+    return email_address(name)(value)
+
+
+def invalid(value, name=False):
     with pytest.raises(ValidationError) as e:
-        email_address()(value)
+        email_address(name)(value)
 
     return e

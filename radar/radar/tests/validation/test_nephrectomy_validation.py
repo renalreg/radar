@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import Nephrectomy, Patient, PatientDemographics, DataSource
+from radar.models import Nephrectomy, Patient, PatientDemographics
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.nephrectomies import NephrectomyValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,11 +22,12 @@ def patient():
 @pytest.fixture
 def nephrectomy(patient):
     obj = Nephrectomy()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.kidney_side = 'LEFT'
-    obj.kidney_type = 'NATURAL'
+    obj.kidney_type = 'NATIVE'
     obj.entry_type = 'HA'
     return obj
 
@@ -33,7 +36,7 @@ def test_valid(nephrectomy):
     obj = valid(nephrectomy)
     assert obj.date == date(2015, 1, 1)
     assert obj.kidney_side == 'LEFT'
-    assert obj.kidney_type == 'NATURAL'
+    assert obj.kidney_type == 'NATIVE'
     assert obj.entry_type == 'HA'
     assert obj.created_date is not None
     assert obj.modified_date is not None
@@ -46,9 +49,15 @@ def test_patient_missing(nephrectomy):
     invalid(nephrectomy)
 
 
-def test_data_source_missing(nephrectomy):
-    nephrectomy.data_source = None
+def test_source_group_missing(nephrectomy):
+    nephrectomy.source_group = None
     invalid(nephrectomy)
+
+
+def test_source_type_missing(nephrectomy):
+    nephrectomy.source_type = None
+    nephrectomy = valid(nephrectomy)
+    assert nephrectomy.source_type == 'RADAR'
 
 
 def test_date_missing(nephrectomy):

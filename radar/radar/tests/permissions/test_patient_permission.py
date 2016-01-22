@@ -1,8 +1,7 @@
-from radar.models import Organisation
+from radar.models.groups import Group
 from radar.permissions import PatientPermission, PatientObjectPermission
-from radar.roles import COHORT_ROLES, ORGANISATION_ROLES
-from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_cohorts, make_organisations
-from radar.models.cohorts import Cohort
+from radar.roles import ROLE
+from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_groups
 
 
 class MockObj(object):
@@ -51,10 +50,10 @@ def test_admin():
     should_grant(write_request, user, patient)
 
 
-def test_intersecting_cohorts():
-    cohort = Cohort()
-    patient = make_patient(cohorts=[cohort])
-    user = make_user(cohorts=[(cohort, COHORT_ROLES.RESEARCHER)])
+def test_intersecting_groups():
+    group = Group()
+    patient = make_patient([group])
+    user = make_user([(group, ROLE.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -62,22 +61,11 @@ def test_intersecting_cohorts():
     should_deny(write_request, user, patient)
 
 
-def test_intersecting_organisations():
-    organisation = Organisation()
-    patient = make_patient(organisations=[organisation])
-    user = make_user(organisations=[(organisation, ORGANISATION_ROLES.CLINICIAN)])
-    read_request = make_read_request()
-    write_request = make_write_request()
-
-    should_grant(read_request, user, patient)
-    should_grant(write_request, user, patient)
-
-
-def test_disjoint_cohorts():
-    cohort_a, cohort_b = make_cohorts(2)
-    patient = make_patient(cohorts=[cohort_a])
-    user_a = make_user(cohorts=[(cohort_a, COHORT_ROLES.RESEARCHER)])
-    user_b = make_user(cohorts=[(cohort_b, COHORT_ROLES.RESEARCHER)])
+def test_disjoint_groups():
+    group_a, group_b = make_groups(2)
+    patient = make_patient([group_a])
+    user_a = make_user([(group_a, ROLE.RESEARCHER)])
+    user_b = make_user([(group_b, ROLE.RESEARCHER)])
     read_request = make_read_request()
     write_request = make_write_request()
 
@@ -85,19 +73,4 @@ def test_disjoint_cohorts():
     should_deny(read_request, user_b, patient)
 
     should_deny(write_request, user_a, patient)
-    should_deny(write_request, user_b, patient)
-
-
-def test_disjoint_organisations():
-    organisation_a, organisation_b = make_organisations(2)
-    patient = make_patient(organisations=[organisation_a])
-    user_a = make_user(organisations=[(organisation_a, ORGANISATION_ROLES.CLINICIAN)])
-    user_b = make_user(organisations=[(organisation_b, ORGANISATION_ROLES.CLINICIAN)])
-    read_request = make_read_request()
-    write_request = make_write_request()
-
-    should_grant(read_request, user_a, patient)
-    should_deny(read_request, user_b, patient)
-
-    should_grant(write_request, user_a, patient)
     should_deny(write_request, user_b, patient)

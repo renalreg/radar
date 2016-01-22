@@ -1,63 +1,70 @@
 from flask import request
-from sqlalchemy import or_
-from sqlalchemy.sql.expression import null
-from radar_api.serializers.results import ResultGroupSpecSerializer, ResultGroupSerializer, ResultGroupRequestSerializer, \
-    ResultSpecSerializer, ResultGroupResultSpecSerializer
-from radar.models import ResultGroupSpec, ResultGroup, ResultSpec, ResultGroupResultSpec
-from radar.validation.result_groups import ResultGroupValidation
-from radar.views.core import ListModelView
-from radar.views.data_sources import DataSourceObjectViewMixin
-from radar.views.patients import PatientObjectListView, PatientObjectDetailView
+
+from radar.models.results import Result, Observation
+from radar.views.core import ListModelView, RetrieveModelView, CreateModelView
+from radar.views.sources import SourceObjectViewMixin
+from radar.views.patients import PatientObjectDetailView, PatientObjectViewMixin
+from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
+    ResultListRequestSerializer, ObservationListRequestSerializer, TinyResultSerializer
+from radar.validation.results import ResultValidation
 
 
-# TODO should probably enforce specifying a patient here to avoid DOS
-class ResultGroupListView(DataSourceObjectViewMixin, PatientObjectListView):
-    serializer_class = ResultGroupSerializer
-    model_class = ResultGroup
-    validation_class = ResultGroupValidation
+class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelView):
+    serializer_class = TinyResultSerializer
+    model_class = Result
+    validation_class = ResultValidation
 
     def filter_query(self, query):
-        query = super(ResultGroupListView, self).filter_query(query)
+        query = super(ResultListView, self).filter_query(query)
 
-        serializer = ResultGroupRequestSerializer()
+        serializer = ResultListRequestSerializer()
         args = serializer.args_to_value(request.args)
 
-        if 'result_group_codes' in args:
-            result_group_codes = args['result_group_codes']
-            query = query.join(ResultGroup.result_group_spec)
-            query = query.filter(or_(*[ResultGroup.code == x for x in result_group_codes]))
+        observation_ids = args.get('observation_ids')
 
-        if 'result_codes' in args:
-            result_codes = args['result_codes']
-            query = query.filter(or_(*[ResultGroup.results[x].astext != null() for x in result_codes]))
+        if observation_ids:
+            query = query.filter(Result.observation_id.in_(observation_ids))
 
         return query
 
 
-class ResultGroupDetailView(DataSourceObjectViewMixin, PatientObjectDetailView):
-    serializer_class = ResultGroupSerializer
-    model_class = ResultGroup
-    validation_class = ResultGroupValidation
+class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateModelView):
+    serializer_class = ResultSerializer
+    model_class = Result
+    validation_class = ResultValidation
 
 
-class ResultGroupSpecListView(ListModelView):
-    serializer_class = ResultGroupSpecSerializer
-    model_class = ResultGroupSpec
+class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
+    serializer_class = ResultSerializer
+    model_class = Result
+    validation_class = ResultValidation
 
 
-class ResultSpecListView(ListModelView):
-    serializer_class = ResultSpecSerializer
-    model_class = ResultSpec
+class ObservationListView(ListModelView):
+    serializer_class = ObservationSerializer
+    model_class = Observation
+
+    def filter_query(self, query):
+        serializer = ObservationListRequestSerializer()
+        args = serializer.args_to_value(request.args)
+
+        if 'value_type' in args:
+            query = query.filter(Observation.type == args['value_type'])
+
+        if 'value_types' in args:
+            query = query.filter(Observation.type.in_(args['value_types']))
+
+        return query
 
 
-class ResultGroupResultSpecListView(ListModelView):
-    serializer_class = ResultGroupResultSpecSerializer
-    model_class = ResultGroupResultSpec
+class ObservationDetailView(RetrieveModelView):
+    serializer_class = ObservationSerializer
+    model_class = Observation
 
 
 def register_views(app):
-    app.add_url_rule('/result-groups', view_func=ResultGroupListView.as_view('result_group_list'))
-    app.add_url_rule('/result-groups/<id>', view_func=ResultGroupDetailView.as_view('result_group_detail'))
-    app.add_url_rule('/result-group-specs', view_func=ResultGroupSpecListView.as_view('result_group_spec_list'))
-    app.add_url_rule('/result-specs', view_func=ResultSpecListView.as_view('result_spec_list'))
-    app.add_url_rule('/result-group-result-specs', view_func=ResultGroupResultSpecListView.as_view('result_group_result_spec_list'))
+    app.add_url_rule('/results', view_func=ResultListView.as_view('result_list'))
+    app.add_url_rule('/results', view_func=ResultCreateView.as_view('result_create'))
+    app.add_url_rule('/results/<id>', view_func=ResultDetailView.as_view('result_detail'))
+    app.add_url_rule('/observations', view_func=ObservationListView.as_view('observation_list'))
+    app.add_url_rule('/observations/<id>', view_func=ObservationDetailView.as_view('observation_detail'))

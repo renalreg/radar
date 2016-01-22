@@ -1,115 +1,94 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, UniqueConstraint, DateTime, Index, Boolean
-from sqlalchemy.dialects.postgresql import JSONB
+from collections import OrderedDict
+
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects import postgresql
+from enum import Enum
 
 from radar.database import db
-from radar.models import MetaModelMixin
-from radar.models.common import uuid_pk_column, patient_id_column, patient_relationship
-
-RESULT_SPEC_TYPE_INTEGER = 'INTEGER'
-RESULT_SPEC_TYPE_FLOAT = 'FLOAT'
-RESULT_SPEC_TYPE_STRING = 'STRING'
-RESULT_SPEC_TYPE_CODED_STRING = 'CODED_STRING'
-RESULT_SPEC_TYPE_CODED_INTEGER = 'CODED_INTEGER'
-
-RESULT_SPEC_TYPES = [
-    RESULT_SPEC_TYPE_INTEGER,
-    RESULT_SPEC_TYPE_FLOAT,
-    RESULT_SPEC_TYPE_STRING,
-    RESULT_SPEC_TYPE_CODED_STRING,
-    RESULT_SPEC_TYPE_CODED_INTEGER
-]
+from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.types import EnumType
 
 
-class ResultGroup(db.Model, MetaModelMixin):
-    __tablename__ = 'result_groups'
+class OBSERVATION_VALUE_TYPE(Enum):
+    INTEGER = 'INTEGER'
+    REAL = 'REAL'
+    ENUM = 'ENUM'
+    STRING = 'STRING'
+
+
+OBSERVATION_VALUE_TYPE_NAMES = OrderedDict([
+    (OBSERVATION_VALUE_TYPE.INTEGER, 'Integer'),
+    (OBSERVATION_VALUE_TYPE.REAL, 'Real'),
+    (OBSERVATION_VALUE_TYPE.ENUM, 'Enum'),
+    (OBSERVATION_VALUE_TYPE.STRING, 'String'),
+])
+
+
+class OBSERVATION_SAMPLE_TYPE(Enum):
+    URINE = 'URINE'
+    BLOOD = 'BLOOD'
+    URINE_DIPSTICK = 'URINE_DIPSTICK'
+    OBSERVATION = 'OBSERVATION'
+
+
+OBSERVATION_SAMPLE_TYPE_NAMES = OrderedDict([
+    (OBSERVATION_SAMPLE_TYPE.BLOOD, 'Blood'),
+    (OBSERVATION_SAMPLE_TYPE.URINE, 'Urine'),
+    (OBSERVATION_SAMPLE_TYPE.URINE_DIPSTICK, 'Urine Dipstick'),
+    (OBSERVATION_SAMPLE_TYPE.OBSERVATION, 'Observation'),
+])
+
+
+class Observation(db.Model):
+    __tablename__ = 'observations'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    short_name = Column(String, nullable=False)
+    value_type = Column(EnumType(OBSERVATION_VALUE_TYPE, name='observation_value_type'), nullable=False)
+    sample_type = Column(EnumType(OBSERVATION_SAMPLE_TYPE, name='observation_sample_type'), nullable=False)
+    pv_code = Column(String)
+    properties = Column(postgresql.JSONB, nullable=False)
+
+
+class Result(db.Model, MetaModelMixin):
+    __tablename__ = 'results'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('result_groups')
+    patient = patient_relationship('results')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
-    result_group_spec_id = Column(Integer, ForeignKey('result_group_specs.id'), nullable=False)
-    result_group_spec = relationship('ResultGroupSpec')
+    observation_id = Column(Integer, ForeignKey('observations.id'), nullable=False)
+    observation = relationship('Observation')
 
     date = Column(DateTime(timezone=True), nullable=False)
-    results = Column(JSONB, nullable=False)
-
-Index('result_groups_patient_id_idx', ResultGroup.patient_id)
-Index('result_groups_results_gin', ResultGroup.results, postgresql_using='gin')
-
-
-class ResultGroupSpec(db.Model):
-    __tablename__ = 'result_group_specs'
-
-    id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False, unique=True)
-    name = Column(String, nullable=False)
-
-    result_group_result_specs = relationship('ResultGroupResultSpec')
+    _value = Column('value', String, nullable=False)
 
     @property
-    def result_specs(self):
-        return [x.result_spec for x in self.result_group_result_specs]
+    def value(self):
+        x = self._value
 
-    @property
-    def sorted_result_specs(self):
-        return [x.result_spec for x in sorted(self.result_group_result_specs, key=lambda y: y.weight)]
+        if x is not None and self.observation is not None:
+            value_type = self.observation.value_type
 
+            if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
+                x = int(x)
+            elif value_type == OBSERVATION_VALUE_TYPE.REAL:
+                x = float(x)
 
-class ResultSpec(db.Model):
-    __tablename__ = 'result_specs'
+        return x
 
-    id = Column(Integer, primary_key=True)
-    code = Column(String, nullable=False, unique=True)
-    name = Column(String, nullable=False)
-    short_name = Column(String, nullable=False)
-    type = Column(String, nullable=False)
+    @value.setter
+    def value(self, x):
+        if x is not None:
+            x = str(x)
 
-    # For INTEGER and DECIMAL types
-    min_value = Column(Numeric, nullable=True)
-    max_value = Column(Numeric, nullable=True)
-    units = Column(String, nullable=True)
+        self._value = x
 
-    # For STRING type
-    min_length = Column(Integer, nullable=True)
-    max_length = Column(Integer, nullable=True)
-
-    # For SELECT type
-    options = Column(JSONB, nullable=True)
-
-    # Controls whether this value will be grouped with values from other result groups
-    # True if this value gives context to the other data in this result group (e.g. pre/post dialysis)
-    meta = Column(Boolean, nullable=False)
-
-    @property
-    def options_as_dict(self):
-        return {x['id']: x['label'] for x in self.options}
-
-    @property
-    def option_values(self):
-        return [x['id'] for x in self.options]
-
-
-class ResultGroupResultSpec(db.Model):
-    __tablename__ = 'result_group_result_specs'
-
-    id = Column(Integer, primary_key=True)
-
-    result_group_spec_id = Column(Integer, ForeignKey('result_group_specs.id'), nullable=False)
-    result_group_spec = relationship('ResultGroupSpec')
-
-    result_spec_id = Column(Integer, ForeignKey('result_specs.id'), nullable=False)
-    result_spec = relationship('ResultSpec')
-
-    weight = Column(Integer, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('result_group_spec_id', 'result_spec_id'),
-    )
-
-Index('result_group_result_specs_result_group_spec_id_idx', ResultGroupResultSpec.result_group_spec_id)
-Index('result_group_result_specs_result_spec_id_idx', ResultGroupResultSpec.result_spec_id)
+Index('results_patient_idx', Result.patient_id)

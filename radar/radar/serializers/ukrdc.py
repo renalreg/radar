@@ -7,9 +7,13 @@ class NameSerializer(Serializer):
     family = StringField()
 
 
+class OrganizationSerializer(Serializer):
+    code = StringField()
+
+
 class NumberSerializer(Serializer):
     number = StringField()
-    code_system = StringField()
+    organization = OrganizationSerializer()
 
 
 class SearchSerializer(Serializer):

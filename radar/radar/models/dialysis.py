@@ -1,9 +1,26 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index
+from collections import OrderedDict
+
+from sqlalchemy import Column, Integer, ForeignKey, Date, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, IntegerLookupTable, uuid_pk_column, \
+from radar.models.common import MetaModelMixin, uuid_pk_column, \
     patient_id_column, patient_relationship
+
+DIALYSIS_MODALITIES = OrderedDict([
+    (1, 'Haemodialysis'),
+    (2, 'Haemofiltration'),
+    (3, 'Haemodiafiltration'),
+    (5, 'Ultrafiltration'),
+    (11, 'CAPD'),
+    (111, 'Assisted CAPD'),
+    (12, 'APD'),
+    (121, 'Assisted APD'),
+    (19, 'Peritoneal Dialysis - Type Unknown'),
+    (201, 'Hybrid CAPD with HD'),
+    (202, 'Hybrid APD with HD'),
+    (203, 'Hybrid APD with CAPD'),
+])
 
 
 class Dialysis(db.Model, MetaModelMixin):
@@ -14,17 +31,13 @@ class Dialysis(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('dialysis')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
 
-    dialysis_type_id = Column(Integer, ForeignKey('dialysis_types.id'), nullable=False)
-    dialysis_type = relationship('DialysisType')
+    modality = Column(Integer, nullable=False)
 
-Index('dialysis_patient_id_idx', Dialysis.patient_id)
-
-
-class DialysisType(IntegerLookupTable):
-    __tablename__ = 'dialysis_types'
+Index('dialysis_patient_idx', Dialysis.patient_id)

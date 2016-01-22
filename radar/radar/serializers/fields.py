@@ -4,7 +4,7 @@ from uuid import UUID
 
 import delorean
 
-from radar.serializers.core import Field
+from radar.serializers.core import Field, Serializer
 from radar.validation.core import ValidationError
 
 
@@ -145,19 +145,21 @@ class DateField(Field):
     def to_value(self, data):
         if data is None:
             return None
-
-        if isinstance(data, datetime):
+        elif isinstance(data, datetime):
             self.fail('datetime')
-
-        if isinstance(data, date):
+        elif isinstance(data, date):
+            # Already a date
             return data
-
-        try:
-            value = delorean.parse(data).date
-        except ValueError:
+        elif not isinstance(data, six.string_types):
+            # Not a string
             self.fail('invalid')
+        else:
+            try:
+                value = delorean.parse(data).date
+            except ValueError:
+                self.fail('invalid')
 
-        return value
+            return value
 
     def to_data(self, value):
         if value is None:
@@ -176,19 +178,21 @@ class DateTimeField(Field):
     def to_value(self, data):
         if data is None:
             return None
-
-        if isinstance(data, date) and not isinstance(data, datetime):
-            self.fail('date')
-
-        if isinstance(data, datetime):
+        elif isinstance(data, datetime):
+            # Already a datetime
             return data
-
-        try:
-            value = delorean.parse(data).datetime
-        except ValueError:
+        elif isinstance(data, date):
+            self.fail('date')
+        elif not isinstance(data, six.string_types):
+            # Not a string
             self.fail('invalid')
+        else:
+            try:
+                value = delorean.parse(data).datetime
+            except ValueError:
+                self.fail('invalid')
 
-        return value
+            return value
 
     def to_data(self, value):
         # TODO always %Y-%m-%dT%H:%M:%S+00:00
@@ -222,7 +226,7 @@ class ListField(Field):
             else:
                 values.append(value)
 
-        if any(errors):
+        if errors:
             raise ValidationError(errors)
 
         return values
@@ -256,15 +260,36 @@ class ListField(Field):
         return transformed_errors
 
 
-class CommaSeparatedStringField(Field):
+class CommaSeparatedField(Field):
+    default_error_messages = {
+        'invalid': 'A valid string is required.'
+    }
+
+    def __init__(self, field, **kwargs):
+        super(CommaSeparatedField, self).__init__(**kwargs)
+        self.field = field
+
     def to_value(self, data):
         if data is None:
             return None
 
-        return [x.strip() for x in data.split(',')]
+        if isinstance(data, dict) or isinstance(data, list) or isinstance(data, bool):
+            self.fail('invalid')
 
-    def to_data(self, value):
-        return ','.join(value)
+        parts = six.text_type(data).split(',')
+        values = []
+
+        for part in parts:
+            value = self.field.to_value(part)
+            values.append(value)
+
+        return values
+
+    def to_data(self, values):
+        if values is None:
+            return None
+
+        return ','.join(values)
 
 
 class UUIDField(Field):
@@ -298,3 +323,100 @@ class UUIDField(Field):
         data = six.text_type(value)
 
         return data
+
+
+class EnumField(Field):
+    default_error_messages = {
+        'invalid': 'Not a valid value.'
+    }
+
+    def __init__(self, enum, **kwargs):
+        super(EnumField, self).__init__(**kwargs)
+        self.enum = enum
+
+    def to_value(self, data):
+        if data is None:
+            return None
+
+        try:
+            value = self.enum(data)
+        except ValueError:
+            self.fail('invalid')
+
+        return value
+
+    def to_data(self, value):
+        if value is None:
+            return None
+
+        try:
+            data = value.value
+        except AttributeError:
+            data = value
+
+        return data
+
+
+class LabelledValueField(Serializer):
+    def __init__(self, field_f, items, id_key='id', label_key='label', **kwargs):
+        super(LabelledValueField, self).__init__(**kwargs)
+        self.field_f = field_f
+        self.items = items
+        self.id_key = id_key
+        self.label_key = label_key
+
+    def transform_errors(self, errors):
+        return errors
+
+    def get_fields(self):
+        fields = {
+            self.id_key: self.field_f(),
+            self.label_key: StringField(read_only=True)
+        }
+
+        for field_name, field in fields.items():
+            field.bind(field_name)
+
+        return fields
+
+    def to_value(self, data):
+        if isinstance(data, dict):
+            try:
+                value = super(LabelledValueField, self).to_value(data)
+            except ValidationError as e:
+                raise ValidationError(e.errors[self.id_key])
+
+            value = value.get(self.id_key)
+        else:
+            value = self.fields[self.id_key].to_value(data)
+
+        return value
+
+    def to_data(self, value):
+        if value is None:
+            return None
+
+        label = self.items[value]
+
+        return super(LabelledValueField, self).to_data({
+            self.id_key: value,
+            self.label_key: label,
+        })
+
+
+class LabelledStringField(LabelledValueField):
+    def __init__(self, items, **kwargs):
+        super(LabelledStringField, self).__init__(StringField, items, **kwargs)
+
+
+class LabelledIntegerField(LabelledValueField):
+    def __init__(self, items, **kwargs):
+        super(LabelledIntegerField, self).__init__(IntegerField, items, **kwargs)
+
+
+class LabelledEnumField(LabelledValueField):
+    def __init__(self, enum, items, **kwargs):
+        def f(**kwargs):
+            return EnumField(enum, **kwargs)
+
+        super(LabelledEnumField, self).__init__(f, items, **kwargs)

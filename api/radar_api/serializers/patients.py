@@ -1,16 +1,46 @@
-from radar_api.serializers.cohort_patients import CohortPatientSerializer
-from radar_api.serializers.cohorts import CohortReferenceField
 from radar_api.serializers.meta import MetaSerializerMixin
-from radar_api.serializers.organisation_patients import OrganisationPatientSerializer
-from radar_api.serializers.organisations import OrganisationReferenceField
-from radar_api.serializers.patient_demographics import EthnicityCodeReferenceField
+from radar_api.serializers.group_patients import GroupPatientSerializer
+from radar_api.serializers.groups import GroupReferenceField, TinyGroupReferenceField
 from radar.patients import PatientProxy
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
-    DateField, ListField, DateTimeField
+    DateField, ListField, DateTimeField, CommaSeparatedField
 from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedStringSerializer
-from radar.models import Patient, GENDERS
+from radar.serializers.fields import LabelledStringField, LabelledIntegerField
+from radar.models.patients import Patient, GENDERS, ETHNICITIES
+
+
+class TinyGroupPatientSerializer(Serializer):
+    id = IntegerField()
+    group = TinyGroupReferenceField()
+    from_date = DateTimeField()
+    to_date = DateTimeField()
+    current = BooleanField(read_only=True)
+
+
+class TinyPatientSerializer(Serializer):
+    id = IntegerField(read_only=True)
+    first_name = StringField(read_only=True)
+    last_name = StringField(read_only=True)
+    date_of_birth = DateField(read_only=True)
+    year_of_birth = IntegerField(read_only=True)
+    date_of_death = DateField(read_only=True)
+    year_of_death = IntegerField(read_only=True)
+    gender = LabelledIntegerField(GENDERS, read_only=True)
+    ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
+    groups = ListField(TinyGroupPatientSerializer(), source='group_patients', read_only=True)
+    recruited_date = DateTimeField(read_only=True)
+    recruited_group = TinyGroupReferenceField(read_only=True)
+    comments = StringField()
+    current = BooleanField(read_only=True)
+
+    def __init__(self, current_user, **kwargs):
+        super(TinyPatientSerializer, self).__init__(**kwargs)
+        self.current_user = current_user
+
+    def to_data(self, value):
+        value = PatientProxy(value, self.current_user)
+        return super(TinyPatientSerializer, self).to_data(value)
 
 
 class PatientSerializer(MetaSerializerMixin, ModelSerializer):
@@ -20,14 +50,13 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     year_of_birth = IntegerField(read_only=True)
     date_of_death = DateField(read_only=True)
     year_of_death = IntegerField(read_only=True)
-    gender = CodedStringSerializer(GENDERS, read_only=True)
-    ethnicity_code = EthnicityCodeReferenceField(read_only=True)
-    organisations = ListField(field=OrganisationPatientSerializer(), source='organisation_patients', read_only=True)
-    cohorts = ListField(field=CohortPatientSerializer(), source='cohort_patients', read_only=True)
-    recruited_by_organisation = OrganisationReferenceField(read_only=True)
-    is_active = BooleanField()
-    comments = StringField()
+    gender = LabelledIntegerField(GENDERS, read_only=True)
+    ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
+    groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
+    recruited_group = GroupReferenceField(read_only=True)
+    comments = StringField()
+    current = BooleanField(read_only=True)
 
     class Meta(object):
         model_class = Patient
@@ -52,6 +81,5 @@ class PatientListRequestSerializer(Serializer):
     year_of_death = IntegerField()
     gender = StringField()
     patient_number = StringField()
-    organisation = OrganisationReferenceField()
-    cohort = CohortReferenceField()
-    is_active = BooleanField()
+    group = CommaSeparatedField(GroupReferenceField())
+    current = BooleanField()

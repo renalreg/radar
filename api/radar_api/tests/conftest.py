@@ -1,56 +1,54 @@
-import string
-import random
-
 import pytest
 
 from radar_api.app import create_app
 from radar.database import db
+from radar_api.tests.client import TestClient
+from radar_api.tests.fixtures import create_fixtures
 
 
 @pytest.fixture(scope='session')
 def app():
-    return create_app({
+    app = create_app({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'postgres://postgres@localhost/radar_test',
-        'SECRET_KEY': ''.join(random.sample(string.printable, 32)),
         'BASE_URL': 'http://localhost',
-        'UKRDC_SEARCH_ENABLED': True,
-        'UKRDC_SEARCH_URL': 'http://localhost:5101/search',
+        'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
     })
+
+    app.test_client_class = TestClient
+
+    return app
 
 
 @pytest.yield_fixture(scope='session')
-def app_context(app):
-    with app.app_context() as app_context:
-        yield app_context
+def tables(app):
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
 
+        # TODO UnboundExecutionError without this
+        db.session = db.create_scoped_session(options=dict(bind=db.engine))
 
-@pytest.fixture(scope='session')
-def test_db(request, app_context):
-    db.drop_all()
-    db.create_all()
+        # Create fixtures here so the tests run faster
+        # TODO should probably be changed so tests can have different fixtures
+        create_fixtures()
+        db.session.commit()
 
-    def teardown():
+        yield db
+
         db.drop_all()
 
-    request.addfinalizer(teardown)
 
-    return db
+@pytest.yield_fixture(scope='function', autouse=True)
+def session(app, tables):
+    with app.app_context():
+        connection = db.engine.connect()
+        transaction = connection.begin()
+        session = db.create_scoped_session(options=dict(bind=connection, binds={}))
+        db.session = session
 
+        yield session
 
-@pytest.fixture
-def transaction(request, app_context, test_db):
-    db.session.begin_nested()
-
-    def teardown():
-        db.session.rollback()
-
-    request.addfinalizer(teardown)
-
-    return db
-
-
-@pytest.yield_fixture
-def client(app, app_context):
-    with app.test_client() as client:
-        yield client
+        transaction.rollback()
+        connection.close()
+        session.remove()

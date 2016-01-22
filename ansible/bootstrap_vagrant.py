@@ -57,7 +57,7 @@ def run_ansible_playbook(extra_vars=None):
 
     heading('Running ansible playbook...')
 
-    cmd = ['ansible-playbook', 'site.yml', '-i', '/home/vagrant/ansible/inventory']
+    cmd = ['ansible-playbook', 'site.yml', '-i', '/home/vagrant/ansible/dev']
 
     if extra_vars:
         for k, v in extra_vars.items():

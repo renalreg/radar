@@ -14,7 +14,7 @@ NEPHRECTOMY_KIDNEY_SIDES = OrderedDict([
 
 NEPHRECTOMY_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 NEPHRECTOMY_ENTRY_TYPES = OrderedDict([
@@ -33,12 +33,13 @@ class Nephrectomy(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('nephrectomies')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     date = Column(Date, nullable=False)
     kidney_side = Column(String, nullable=False)
     kidney_type = Column(String, nullable=False)
     entry_type = Column(String, nullable=False)
 
-Index('nephrectomies_patient_id_idx', Nephrectomy.patient_id)
+Index('nephrectomies_patient_idx', Nephrectomy.patient_id)

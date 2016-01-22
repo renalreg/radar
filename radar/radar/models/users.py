@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index, text
 
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from radar.auth.passwords import check_password_hash, generate_password_hash
+from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
 from radar.database import db
-from radar.models import OrganisationUser, CohortUser
+from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
 
 
@@ -36,26 +36,25 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     id = Column(Integer, primary_key=True)
     _username = Column('username', String, nullable=False)
-    password_hash = Column(String, nullable=False)
+    _password = Column('password', String)
     _email = Column('email', String)
     first_name = Column(String)
     last_name = Column(String)
     telephone_number = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False)
-    is_bot = Column(Boolean, default=False, nullable=False)
-    is_enabled = Column(Boolean, default=True, nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    is_bot = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    is_enabled = Column(Boolean, default=True, nullable=False, server_default=text('true'))
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False)
+    force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
-    organisation_users = relationship('OrganisationUser', back_populates='user', foreign_keys=[OrganisationUser.user_id])
-    cohort_users = relationship('CohortUser', back_populates='user', foreign_keys=[CohortUser.user_id])
+    group_users = relationship('GroupUser', back_populates='user', foreign_keys=[GroupUser.user_id])
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
-        self._password = None
+        self.plaintext_password = None
 
     @hybrid_property
     def username(self):
@@ -80,25 +79,44 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self._email = email
 
     @property
-    def organisations(self):
-        return [x.organisation for x in self.organisation_users]
-
-    @property
-    def cohorts(self):
-        return [x.cohort for x in self.cohort_users]
+    def groups(self):
+        return [x.group for x in self.group_users]
 
     @property
     def password(self):
-        return getattr(self, '_password', None)
+        return getattr(self, 'plaintext_password', None)
 
     @password.setter
     def password(self, value):
-        self._password = value
+        self.plaintext_password = value
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
 
+    @property
+    def password_hash(self):
+        return self._password
+
+    @password_hash.setter
+    def password_hash(self, value):
+        self._password = value
+
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return (
+            self.password_hash is not None and
+            check_password_hash(self.password_hash, password)
+        )
+
+    @property
+    def needs_password_rehash(self):
+        new_hash_method = get_password_hash_method()
+
+        if self.password_hash is None:
+            r = False
+        else:
+            current_hash_method = self.password_hash.split('$')[0]
+            r = current_hash_method != new_hash_method
+
+        return r
 
     @classmethod
     def is_authenticated(cls):

@@ -2,7 +2,9 @@ from datetime import date, timedelta
 
 import pytest
 
-from radar.models import RenalImaging, DataSource, Patient, PatientDemographics
+from radar.models import RenalImaging, Patient, PatientDemographics
+from radar.models.groups import Group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.validation.core import ValidationError
 from radar.validation.renal_imaging import RenalImagingValidation
 from radar.tests.validation.helpers import validation_runner
@@ -20,15 +22,17 @@ def patient():
 @pytest.fixture
 def renal_imaging(patient):
     obj = RenalImaging()
-    obj.data_source = DataSource()
+    obj.source_group = Group()
+    obj.source_type = SOURCE_TYPE_RADAR
     obj.patient = patient
     obj.date = date(2015, 1, 1)
     obj.imaging_type = 'USS'
     obj.right_present = True
-    obj.right_type = 'NATURAL'
+    obj.right_type = 'NATIVE'
     obj.right_length = 10
     obj.right_volume = 50
     obj.right_cysts = True
+    obj.right_stones = True
     obj.right_calcification = True
     obj.right_nephrocalcinosis = True
     obj.right_nephrolithiasis = True
@@ -38,6 +42,7 @@ def renal_imaging(patient):
     obj.left_length = 11
     obj.left_volume = 51
     obj.left_cysts = True
+    obj.left_stones = True
     obj.left_calcification = True
     obj.left_nephrocalcinosis = True
     obj.left_nephrolithiasis = True
@@ -50,10 +55,11 @@ def test_valid(renal_imaging):
     assert obj.date == date(2015, 1, 1)
     assert obj.imaging_type == 'USS'
     assert obj.right_present is True
-    assert obj.right_type == 'NATURAL'
+    assert obj.right_type == 'NATIVE'
     assert obj.right_length == 10
     assert obj.right_volume == 50
     assert obj.right_cysts is True
+    assert obj.right_stones is True
     assert obj.right_calcification is True
     assert obj.right_nephrocalcinosis is True
     assert obj.right_nephrolithiasis is True
@@ -63,6 +69,7 @@ def test_valid(renal_imaging):
     assert obj.left_length == 11
     assert obj.left_volume == 51
     assert obj.left_cysts is True
+    assert obj.left_stones is True
     assert obj.left_calcification is True
     assert obj.left_nephrocalcinosis is True
     assert obj.left_nephrolithiasis is True
@@ -78,9 +85,15 @@ def test_patient_missing(renal_imaging):
     invalid(renal_imaging)
 
 
-def test_data_source_missing(renal_imaging):
-    renal_imaging.data_source = None
+def test_source_group_missing(renal_imaging):
+    renal_imaging.source_group = None
     invalid(renal_imaging)
+
+
+def test_source_type_missing(renal_imaging):
+    renal_imaging.source_type = None
+    renal_imaging = valid(renal_imaging)
+    assert renal_imaging.source_type == 'RADAR'
 
 
 def test_date_missing(renal_imaging):

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text, Index
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text, Index, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -13,12 +13,13 @@ class Hospitalisation(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('hospitalisations')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     date_of_admission = Column(DateTime(timezone=True), nullable=False)
     date_of_discharge = Column(DateTime(timezone=True))
     reason_for_admission = Column(Text)
     comments = Column(Text)
 
-Index('hospitalisations_patient_id_idx', Hospitalisation.patient_id)
+Index('hospitalisations_patient_idx', Hospitalisation.patient_id)

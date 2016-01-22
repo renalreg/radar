@@ -7,7 +7,7 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 
 PATHOLOGY_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
-    ('NATURAL', 'Natural'),
+    ('NATIVE', 'Native'),
 ])
 
 PATHOLOGY_KIDNEY_SIDES = OrderedDict([
@@ -24,13 +24,16 @@ class Pathology(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('pathology')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     date = Column(Date, nullable=False)
-    kidney_type = Column(String, nullable=False)
-    kidney_side = Column(String, nullable=False)
-    laboratory_reference_number = Column(String, nullable=False)
+    kidney_type = Column(String)
+    kidney_side = Column(String)
+    reference_number = Column(String)
+    image_url = Column(String)
     histological_summary = Column(String)
+    em_findings = Column(String)
 
-Index('pathology_patient_id_idx', Pathology.patient_id)
+Index('pathology_patient_idx', Pathology.patient_id)

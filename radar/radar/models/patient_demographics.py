@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Date, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, ForeignKey, String, Date, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, StringLookupTable, uuid_pk_column, \
+from radar.models.common import MetaModelMixin, uuid_pk_column, \
     patient_id_column, patient_relationship
 
 
@@ -14,29 +14,26 @@ class PatientDemographics(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('patient_demographics')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     first_name = Column(String)
     last_name = Column(String)
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
     gender = Column(Integer)
-
-    ethnicity_code_id = Column(String, ForeignKey('ethnicity_codes.id'))
-    ethnicity_code = relationship('EthnicityCode')
-
+    ethnicity = Column(String)
     home_number = Column(String)
     work_number = Column(String)
     mobile_number = Column(String)
     email_address = Column(String)
 
-    __table_args__ = (
-        UniqueConstraint('patient_id', 'data_source_id'),
-    )
-
-Index('patient_demographics_patient_id_idx', PatientDemographics.patient_id)
-
-
-class EthnicityCode(StringLookupTable):
-    __tablename__ = 'ethnicity_codes'
+Index('patient_demographics_patient_idx', PatientDemographics.patient_id)
+Index(
+    'patient_demographics_patient_source_idx',
+    PatientDemographics.patient_id,
+    PatientDemographics.source_group_id,
+    PatientDemographics.source_type,
+    unique=True
+)

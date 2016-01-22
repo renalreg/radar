@@ -2,11 +2,10 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.models import OrganisationUser, Organisation, CohortUser
-from radar.models.cohorts import Cohort
+from radar.models.groups import GroupUser, Group
 from radar.models.users import User
-from radar.roles import get_cohort_roles_with_permission, get_organisation_roles_with_permission, PERMISSIONS
-from radar.permissions import has_permission_for_any_group
+from radar.roles import get_roles_with_permission, PERMISSION
+from radar.permissions import has_permission
 
 
 class UserQueryBuilder(object):
@@ -34,78 +33,55 @@ class UserQueryBuilder(object):
         self.query = self.query.filter(User.last_name.ilike(last_name + '%'))
         return self
 
-    def organisation(self, organisation):
-        # Show users that have access to an organisation
-        # Include admins even though they don't have explicit membership
-        self.query = self.query\
-            .outerjoin(User.organisation_users)\
-            .filter(or_(User.is_admin, OrganisationUser.organisation == organisation))
+    def group(self, group):
+        sub_query = db.session.query(GroupUser)\
+            .filter(
+                GroupUser.group == group,
+                GroupUser.user_id == User.id,
+            )\
+            .exists()
 
-    def cohort(self, cohort):
-        # Show users that have access to a cohort
-        # Include admins even though they don't have explicit membership
-        self.query = self.query\
-            .outerjoin(User.cohort_users)\
-            .filter(or_(User.is_admin, CohortUser.cohort == cohort))
+        # Include admins even though they don't have explicit group membership
+        self.query = self.query.filter(or_(
+            User.is_admin,
+            sub_query
+        ))
+
+        return self
 
     def build(self):
         query = self.query
 
         # Show all users if the user is an admin or if the user can manage group membership
-        all_users = (
-            self.current_user.is_admin or
-            has_permission_for_any_group(self.current_user, 'has_edit_user_membership_permission')  # TODO
-        )
-
-        if not all_users:
+        if not has_permission(self.current_user, PERMISSION.EDIT_USER_MEMBERSHIP):
             query = query.filter(filter_by_permissions(self.current_user))
 
         return query
 
 
 def filter_by_permissions(current_user):
-    # Grant access based on membership of a common organisation/cohort where the user has the view user permission
+    # Grant access based on membership of a common group where the user has the VIEW_USER permission
     # User's can always view their own accounts
     return or_(
-        filter_by_organisation_roles(current_user, get_organisation_roles_with_permission(PERMISSIONS.VIEW_USER)),
-        filter_by_cohort_roles(current_user, get_cohort_roles_with_permission(PERMISSIONS.VIEW_USER)),
+        filter_by_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_USER)),
         User.id == current_user.id
     )
 
 
-def filter_by_organisation_roles(current_user, roles):
-    # Alias as we are joining against the OrganisationUser table twice
-    organisation_user_alias = aliased(OrganisationUser)
+def filter_by_roles(current_user, roles):
+    # Alias as we are joining against the GroupUser table twice
+    group_user_alias = aliased(GroupUser)
 
-    # Users in the same organisation as the parent user (correlated query)
-    query = db.session.query(OrganisationUser)\
-        .join(OrganisationUser.organisation)\
-        .join(organisation_user_alias, Organisation.organisation_users)\
-        .filter(OrganisationUser.user_id == User.id)
+    # Users in the same group as the parent user (correlated query)
+    query = db.session.query(GroupUser)\
+        .join(GroupUser.group)\
+        .join(group_user_alias, Group.group_users)\
+        .filter(GroupUser.user_id == User.id)
 
-    # Filter on the current user's organisation membership and roles
+    # Filter on the current user's group membership and roles
     query = query.filter(
-        organisation_user_alias.user_id == current_user.id,
-        organisation_user_alias.role.in_(roles)
-    )
-
-    return query.exists()
-
-
-def filter_by_cohort_roles(current_user, roles):
-    # Alias as we are joining against the CohortUser table twice
-    cohort_user_alias = aliased(CohortUser)
-
-    # Users in the same cohort as the parent user (correlated query)
-    query = db.session.query(CohortUser)\
-        .join(CohortUser.cohort)\
-        .join(cohort_user_alias, Cohort.cohort_users)\
-        .filter(CohortUser.user_id == User.id)
-
-    # Filter on the current user's cohort membership and roles
-    query = query.filter(
-        cohort_user_alias.user_id == current_user.id,
-        cohort_user_alias.role.in_(roles)
+        group_user_alias.user_id == current_user.id,
+        group_user_alias.role.in_(roles)
     )
 
     return query.exists()

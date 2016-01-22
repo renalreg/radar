@@ -8,21 +8,19 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 
 MEDICATION_ROUTES = OrderedDict([
     ('ORAL', 'Oral'),
-    ('RECTAL', 'Rectal'),
+    ('IV', 'Intravenous'),
+    ('IM', 'Intramuscular'),
+    ('SC', 'Subcutaneous'),
+    ('PR', 'Per Rectum'),
+    ('TOPICAL', 'Topical'),
+    ('PATCH', 'Patch'),
 ])
 
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
-    ('L', 'l'),
     ('MG', 'mg'),
     ('G', 'g'),
-    ('KG', 'kg'),
-])
-
-MEDICATION_FREQUENCIES = OrderedDict([
-    ('DAILY', 'Daily'),
-    ('WEEKLY', 'Weekly'),
-    ('MONTHLY', 'Monthly'),
+    ('IU', 'IU'),
 ])
 
 
@@ -34,15 +32,30 @@ class Medication(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('medications')
 
-    data_source_id = Column(Integer, ForeignKey('data_sources.id'), nullable=False)
-    data_source = relationship('DataSource')
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
-    name = Column(String, nullable=False)
-    dose_quantity = Column(Numeric, nullable=False)
-    dose_unit = Column(String, nullable=False)
-    frequency = Column(String, nullable=False)
-    route = Column(String, nullable=False)
+    drug_id = Column(Integer, ForeignKey('drugs.id'))
+    drug = relationship('Drug')
+    dose_quantity = Column(Numeric)
+    dose_unit = Column(String)
+    frequency = Column(String)
+    route = Column(String)
 
-Index('medications_patient_id_idx', Medication.patient_id)
+    drug_text = Column(String)
+    dose_text = Column(String)
+
+Index('medications_patient_idx', Medication.patient_id)
+
+
+class Drug(db.Model):
+    __tablename__ = 'drugs'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+
+    parent_drug_id = Column(Integer, ForeignKey('drugs.id'))
+    parent_drug = relationship('Drug', uselist=False)

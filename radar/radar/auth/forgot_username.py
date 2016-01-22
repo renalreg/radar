@@ -1,5 +1,5 @@
 from radar.auth.exceptions import UserNotFound
-from radar.models import User
+from radar.models.users import User
 from radar.mail import send_email_from_template
 
 

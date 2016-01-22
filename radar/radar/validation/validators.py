@@ -19,7 +19,8 @@ USERNAME_MAX_LENGTH = 32
 
 PASSWORD_MIN_LENGTH = 8
 
-EMAIL_REGEX = re.compile(r'^.+@[^\.@][^@]*\.[^\.@]+$')
+EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
+EMAIL_NAME_REGEX = re.compile(r'^.* <\S+@[^\.@\s][^@]*\.[^\.@\s]+>$')
 
 POSTCODE_BFPO_REGEX = re.compile('^BFPO[ ]?\\d{1,4}$')
 POSTCODE_REGEX = re.compile('^(GIR[ ]?0AA|((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|BX|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\\d[\\dA-Z]?[ ]?\\d[ABD-HJLN-UW-Z]{2}))|BFPO[ ]?\\d{1,4})$')  # noqa
@@ -105,34 +106,44 @@ def not_empty():
     return not_empty_f
 
 
-def min_(min_value):
+def min_(min_value, units=None):
+    if units is None:
+        message = 'Must be greater than or equal to %s.'
+    else:
+        message = 'Must be greater than or equal to %%s %s.' % units
+
     def min_f(value):
         if value < min_value:
-            raise ValidationError('Must be greater than or equal to %s.' % min_value)
+            raise ValidationError(message % min_value)
 
         return value
 
     return min_f
 
 
-def max_(max_value):
+def max_(max_value, units=None):
+    if units is None:
+        message = 'Must be less than or equal to %s.'
+    else:
+        message = 'Must be less than or equal to %%s %s.' % units
+
     def max_f(value):
         if value > max_value:
-            raise ValidationError('Must be less than or equal to %s.' % max_value)
+            raise ValidationError(message % max_value)
 
         return value
 
     return max_f
 
 
-def range_(min_value=None, max_value=None):
+def range_(min_value=None, max_value=None, units=None):
     @pass_call
     def range_f(call, value):
         if min_value is not None:
-            value = call(min_(min_value), value)
+            value = call(min_(min_value, units), value)
 
         if max_value is not None:
-            value = call(max_(max_value), value)
+            value = call(max_(max_value, units), value)
 
         return value
 
@@ -220,11 +231,11 @@ def min_length(min_value):
     return min_length_f
 
 
-def email_address():
+def email_address(name=False):
     def email_address_f(value):
         value = value.lower()
 
-        if not EMAIL_REGEX.match(value):
+        if not EMAIL_REGEX.match(value) and (not name or not EMAIL_NAME_REGEX.match(value)):
             raise ValidationError('Not a valid email address.')
 
         return value
@@ -236,33 +247,18 @@ def username():
     def username_f(value):
         value = value.lower()
 
-        message = None
-
-        if not USERNAME_REGEX.match(value):
-            message = 'Not a valid username.'
-        elif len(value) < USERNAME_MIN_LENGTH:
-            message = 'Username too short.'
-        elif len(value) > USERNAME_MAX_LENGTH:
-            message = 'Username too long.'
-
         # Old usernames are email addresses
-        if message is not None and not EMAIL_REGEX.match(value):
-            raise ValidationError(message)
+        if not EMAIL_REGEX.match(value):
+            if not USERNAME_REGEX.match(value):
+                raise ValidationError('Not a valid username.')
+            elif len(value) < USERNAME_MIN_LENGTH:
+                raise ValidationError('Username too short.')
+            elif len(value) > USERNAME_MAX_LENGTH:
+                raise ValidationError('Username too long.')
 
         return value
 
     return username_f
-
-
-# TODO
-def password():
-    def password_f(value):
-        if len(value) < PASSWORD_MIN_LENGTH:
-            raise ValidationError('Password too short (must be at least %d characters).' % PASSWORD_MIN_LENGTH)
-
-        return value
-
-    return password_f
 
 
 def postcode():

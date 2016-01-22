@@ -1,203 +1,212 @@
-import six
+from collections import OrderedDict
 
-from radar_api.serializers.data_sources import DataSourceSerializerMixin
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.models import ResultGroupSpec, ResultGroup, ResultGroupResultSpec, RESULT_SPEC_TYPE_INTEGER, RESULT_SPEC_TYPE_FLOAT, \
-    RESULT_SPEC_TYPE_CODED_INTEGER, RESULT_SPEC_TYPE_CODED_STRING
-from radar.serializers.core import Serializer, Empty, Field
-from radar.serializers.fields import StringField, IntegerField, FloatField, DateTimeField, ListField, \
-    CommaSeparatedStringField, UUIDField
-from radar.serializers.models import ModelSerializer, ReferenceField
-from radar.serializers.codes import CodedStringSerializer, CodedIntegerSerializer
+from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result, \
+    OBSERVATION_SAMPLE_TYPE, OBSERVATION_VALUE_TYPE_NAMES, OBSERVATION_SAMPLE_TYPE_NAMES
+from radar.serializers.core import Serializer, Empty
+from radar.serializers.fields import StringField, IntegerField, FloatField,\
+    DateTimeField, UUIDField, ListField, CommaSeparatedField
+from radar.serializers.models import ReferenceField
+from radar.serializers.fields import LabelledStringField, LabelledEnumField
 from radar.validation.core import ValidationError
 
 
-class OptionValueField(Field):
-    def to_data(self, value):
-        if isinstance(value, int):
-            return value
-        else:
-            return six.text_type(value)
+class IntegerObservationSerializer(Serializer):
+    min_value = IntegerField()
+    max_value = IntegerField()
+    units = StringField()
 
 
-class OptionSerializer(Serializer):
-    id = OptionValueField()
-    label = StringField()
-
-
-class ResultSpecSerializer(Serializer):
-    id = IntegerField()
-    code = StringField()
-    short_name = StringField()
-    name = StringField()
-    type = StringField()
+class RealObservationSerializer(Serializer):
     min_value = FloatField()
     max_value = FloatField()
     units = StringField()
+
+
+class OptionSerializer(Serializer):
+    code = StringField()
+    description = StringField()
+
+
+class LookupObservationSerializer(Serializer):
     options = ListField(OptionSerializer())
 
 
-class ResultGroupSpecSerializer(ModelSerializer):
-    result_specs = ListField(ResultSpecSerializer(), source='sorted_result_specs')
-
-    class Meta(object):
-        model_class = ResultGroupSpec
+class StringObservationSerializer(Serializer):
+    min_length = IntegerField()
+    max_length = IntegerField()
 
 
-class ResultGroupResultSpecSerializer(ModelSerializer):
-    result_spec = ResultSpecSerializer()
-    result_group_spec = ResultGroupSpecSerializer()
+class ObservationSerializer(Serializer):
+    SERIALIZER_CLASSES = {
+        OBSERVATION_VALUE_TYPE.INTEGER: IntegerObservationSerializer,
+        OBSERVATION_VALUE_TYPE.REAL: RealObservationSerializer,
+        OBSERVATION_VALUE_TYPE.ENUM: LookupObservationSerializer,
+        OBSERVATION_VALUE_TYPE.STRING: StringObservationSerializer,
+    }
 
-    class Meta(object):
-        model_class = ResultGroupResultSpec
+    id = IntegerField()
+    name = StringField()
+    short_name = StringField()
+    value_type = LabelledEnumField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
+    sample_type = LabelledEnumField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
+
+    def to_data(self, observation):
+        data = super(ObservationSerializer, self).to_data(observation)
+
+        value_type = observation.value_type
+
+        try:
+            serializer_class = self.SERIALIZER_CLASSES[value_type]
+        except KeyError:
+            raise ValueError('Unknown value type: %s' % value_type)
+
+        serializer = serializer_class()
+        properties_data = serializer.serialize(observation.properties)
+        data.update(properties_data)
+
+        return data
+
+    def to_value(self, data):
+        observation = super(ObservationSerializer, self).to_value(data)
+
+        if 'value_type' in observation:
+            value_type = observation['value_type']
+
+            try:
+                serializer_class = self.SERIALIZER_CLASSES[value_type]
+            except ValueError:
+                raise ValidationError({'value_type': 'Unknown value type.'})
+
+            serializer = serializer_class()
+
+            try:
+                properties = serializer.deserialize(data)
+            except ValidationError as e:
+                raise ValidationError({'properties': e.errors})
+
+            observation['properties'] = properties
+
+        return observation
+
+    def transform_errors(self, errors):
+        transformed_errors = super(ObservationSerializer, self).transform_errors(errors)
+
+        if 'properties' in errors:
+            transformed_errors['properties'] = errors['properties']
+
+        return transformed_errors
 
 
-class ResultGroupSpecReferenceField(ReferenceField):
-    model_class = ResultGroupSpec
-    serializer_class = ResultGroupSpecSerializer
+class ObservationReferenceField(ReferenceField):
+    model_class = Observation
+    serializer_class = ObservationSerializer
 
 
-class ResultField(Field):
-    def __init__(self, result_spec, **kwargs):
-        super(ResultField, self).__init__(**kwargs)
-        self.result_spec = result_spec
-        self.field = self.get_field()
+class TinyResultSerializer(PatientSerializerMixin, Serializer):
+    id = UUIDField()
+    observation = IntegerField(source='observation_id')
+    source_type = StringField()
+    source_group = IntegerField(source='source_group_id')
+    date = DateTimeField()
+    created_user = IntegerField(source='created_user_id')
+    modified_user = IntegerField(source='modified_user_id')
+    created_date = DateTimeField()
+    modified_date = DateTimeField()
 
-    def bind(self, field_name):
-        super(ResultField, self).bind(field_name)
-        self.field.bind(field_name)
+    def get_value_field(self, observation):
+        value_type = observation.value_type
 
-    def get_field(self):
-        source = self.result_spec.code
-
-        if self.result_spec.type == RESULT_SPEC_TYPE_INTEGER:
-            field = IntegerField(source=source)
-        elif self.result_spec.type == RESULT_SPEC_TYPE_FLOAT:
-            field = FloatField(source=source)
-        elif self.result_spec.type == RESULT_SPEC_TYPE_CODED_STRING:
-            field = CodedStringSerializer(self.result_spec.options_as_dict, source=source)
-        elif self.result_spec.type == RESULT_SPEC_TYPE_CODED_INTEGER:
-            field = CodedIntegerSerializer(self.result_spec.options_as_dict, source=source)
+        if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
+            field = IntegerField()
+        elif value_type == OBSERVATION_VALUE_TYPE.REAL:
+            field = FloatField()
+        elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
+            options = [(x['code'], x['description']) for x in observation.properties['options']]
+            options = OrderedDict(options)
+            field = LabelledStringField(options, id_key='code', label_key='description')
+        elif value_type == OBSERVATION_VALUE_TYPE.STRING:
+            field = StringField()
         else:
-            field = StringField(source=source)
+            raise ValueError('Unknown value type: %s' % value_type)
 
         return field
 
-    def get_data(self, data):
-        return self.field.get_data(data)
+    def to_data(self, result):
+        data = super(TinyResultSerializer, self).to_data(result)
 
-    def get_value(self, value):
-        return self.field.get_value(value)
+        # Serialize the result value
+        field = self.get_value_field(result.observation)
+        data['value'] = field.serialize(result.value)
 
-    def to_data(self, value):
-        return self.field.to_data(value)
-
-    def to_value(self, data):
-        return self.field.to_value(data)
+        return data
 
 
-class ResultsSerializer(Field):
-    def __init__(self, result_group_spec, **kwargs):
-        super(ResultsSerializer, self).__init__(**kwargs)
-        self.result_group_sec = result_group_spec
-
-    def to_data(self, value):
-        results = {}
-
-        for result_spec in self.result_group_sec.result_specs:
-            field = ResultField(result_spec)
-            field.bind(result_spec.code)
-
-            result_value = field.get_value(value)
-
-            if result_value is Empty:
-                result_data = None
-            else:
-                result_data = field.to_data(result_value)
-
-            results[field.field_name] = result_data
-
-        return results
-
-    def to_value(self, data):
-        if data is None:
-            return None
-
-        if not isinstance(data, dict):
-            raise ValidationError('Expected an object.')
-
-        value = {}
-        errors = {}
-
-        for result_spec in self.result_group_sec.result_specs:
-            field = ResultField(result_spec)
-            field.bind(result_spec.code)
-            result_data = field.get_data(data)
-
-            if result_data is Empty:
-                continue
-
-            if result_data is None:
-                result_value = None
-            else:
-                try:
-                    result_value = field.to_value(result_data)
-                except ValidationError as e:
-                    errors[field.field_name] = e.errors
-                    continue
-
-            value[result_spec.code] = result_value
-
-        if any(errors):
-            raise ValidationError(errors)
-
-        return value
-
-
-class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, Serializer):
+class ResultSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, Serializer):
     id = UUIDField()
-    result_group_spec = ResultGroupSpecReferenceField()
+    observation = ObservationReferenceField()
     date = DateTimeField()
     created_date = DateTimeField()
     modified_date = DateTimeField()
 
-    @classmethod
-    def get_results_serializer(cls, result_group_spec):
-        serializer = ResultsSerializer(result_group_spec)
-        serializer.bind('results')
-        return serializer
+    def get_value_field(self, observation):
+        value_type = observation.value_type
 
-    def transform_errors(self, errors):
-        transformed_errors = super(ResultGroupSerializer, self).transform_errors(errors)
+        if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
+            field = IntegerField()
+        elif value_type == OBSERVATION_VALUE_TYPE.REAL:
+            field = FloatField()
+        elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
+            options = [(x['code'], x['description']) for x in observation.properties['options']]
+            options = OrderedDict(options)
+            field = LabelledStringField(options, id_key='code', label_key='description')
+        elif value_type == OBSERVATION_VALUE_TYPE.STRING:
+            field = StringField()
+        else:
+            raise ValueError('Unknown value type: %s' % value_type)
 
-        if 'results' in errors:
-            transformed_errors['results'] = errors['results']
+        return field
 
-        return transformed_errors
+    def to_data(self, result):
+        data = super(ResultSerializer, self).to_data(result)
 
-    def to_data(self, value):
-        data = super(ResultGroupSerializer, self).to_data(value)
-        serializer = self.get_results_serializer(value.result_group_spec)
-        data[serializer.field_name] = serializer.to_data(value.results)
+        # Serialize the result value
+        field = self.get_value_field(result.observation)
+        data['value'] = field.serialize(result.value)
+
         return data
 
     def to_value(self, data):
-        value = super(ResultGroupSerializer, self).to_value(data)
+        result = super(ResultSerializer, self).to_value(data)
 
-        if 'result_group_spec' in value:
-            serializer = self.get_results_serializer(value['result_group_spec'])
-            results_data = serializer.get_data(data)
+        observation = result.get('observation')
 
-            if results_data is None:
-                value[serializer.field_name] = None
-            elif results_data is not Empty:
-                value[serializer.field_name] = serializer.to_value(results_data)
+        if observation is not None:
+            field = self.get_value_field(observation)
+            field.bind('value')
 
-        return value
+            try:
+                value = field.deserialize(data)
+            except ValidationError as e:
+                raise ValidationError({'value': e.errors})
+
+            if value is not Empty:
+                result['value'] = value
+
+        return result
+
+    def transform_errors(self, errors):
+        transformed_errors = super(ResultSerializer, self).transform_errors(errors)
+
+        if 'value' in errors:
+            transformed_errors['value'] = errors['value']
+
+        return transformed_errors
 
     def create(self):
-        return ResultGroup()
+        return Result()
 
     def update(self, obj, deserialized_data):
         for attr, value in deserialized_data.items():
@@ -206,6 +215,9 @@ class ResultGroupSerializer(PatientSerializerMixin, DataSourceSerializerMixin, M
         return obj
 
 
-class ResultGroupRequestSerializer(Serializer):
-    result_group_codes = CommaSeparatedStringField()
-    result_codes = CommaSeparatedStringField()
+class ObservationListRequestSerializer(Serializer):
+    value_type = CommaSeparatedField(StringField())
+
+
+class ResultListRequestSerializer(Serializer):
+    observation_id = CommaSeparatedField(IntegerField())

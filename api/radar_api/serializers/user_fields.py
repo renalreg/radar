@@ -1,4 +1,4 @@
-from radar.models import User
+from radar.models.users import User
 from radar.serializers.models import ReferenceField
 
 

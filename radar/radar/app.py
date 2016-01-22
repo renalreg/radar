@@ -11,7 +11,7 @@ def create_app(config=None):
     if config is not None:
         app.config.update(config)
 
-    app.config.update(check_config(app.config))
+    check_config(app.config)
 
     # noinspection PyUnresolvedReferences
     from radar import models  # noqa

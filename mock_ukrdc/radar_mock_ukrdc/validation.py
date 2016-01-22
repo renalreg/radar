@@ -2,14 +2,18 @@ from radar.validation.core import Validation, Field
 from radar.validation.validators import required
 
 
+class OrganizationValidation(Validation):
+    code = Field([required()])
+
+
 class PatientNameValidation(Validation):
-    given = Field([required()])
-    family = Field([required()])
+    given_name = Field([required()])
+    family_name = Field([required()])
 
 
 class PatientNumberValidation(Validation):
     number = Field([required()])
-    code_system = Field([required()])
+    organization = OrganizationValidation([required()])
 
 
 class PatientSearchValidation(Validation):

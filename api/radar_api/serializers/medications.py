@@ -1,15 +1,40 @@
-from radar_api.serializers.data_sources import DataSourceSerializerMixin
+from radar_api.serializers.sources import SourceSerializerMixin
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.patient_mixins import PatientSerializerMixin
-from radar.serializers.models import ModelSerializer
-from radar.serializers.codes import CodedStringSerializer
-from radar.models import Medication, MEDICATION_DOSE_UNITS, MEDICATION_FREQUENCIES, MEDICATION_ROUTES
+from radar.serializers.models import ModelSerializer, ReferenceField
+from radar.serializers.fields import LabelledStringField
+from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, Drug
 
 
-class MedicationSerializer(PatientSerializerMixin, DataSourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
-    dose_unit = CodedStringSerializer(MEDICATION_DOSE_UNITS)
-    frequency = CodedStringSerializer(MEDICATION_FREQUENCIES)
-    route = CodedStringSerializer(MEDICATION_ROUTES)
+class ParentDrugSerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Drug
+        exclude = ['parent_drug_id']
+
+
+class ParentDrugReferenceField(ReferenceField):
+    model_class = Drug
+    serializer_class = ParentDrugSerializer
+
+
+class DrugSerializer(ModelSerializer):
+    parent_drug = ParentDrugReferenceField()
+
+    class Meta(object):
+        model_class = Drug
+        exclude = ['parent_drug_id']
+
+
+class DrugReferenceField(ReferenceField):
+    model_class = Drug
+    serializer_class = DrugSerializer
+
+
+class MedicationSerializer(PatientSerializerMixin, SourceSerializerMixin, MetaSerializerMixin, ModelSerializer):
+    drug = DrugReferenceField()
+    dose_unit = LabelledStringField(MEDICATION_DOSE_UNITS)
+    route = LabelledStringField(MEDICATION_ROUTES)
 
     class Meta(object):
         model_class = Medication
+        exclude = ['drug_id']
