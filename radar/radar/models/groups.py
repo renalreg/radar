@@ -64,7 +64,7 @@ class GroupPatient(db.Model, MetaModelMixin):
 
     id = Column(Integer, primary_key=True)
 
-    group_id = Column(Integer, ForeignKey('groups.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group', foreign_keys=[group_id], backref=backref('group_patients', cascade='all, delete-orphan', passive_deletes=True))
 
     patient_id = patient_id_column()

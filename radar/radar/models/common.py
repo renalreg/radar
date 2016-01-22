@@ -11,7 +11,7 @@ def uuid_pk_column():
 
 
 def patient_id_column():
-    return Column(Integer, ForeignKey('patients.id', ondelete='CASCADE'), nullable=False)
+    return Column(Integer, ForeignKey('patients.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
 
 
 def patient_relationship(name):

@@ -63,7 +63,7 @@ class FamilyHistoryRelative(db.Model):
 
     relationship = Column(Integer, nullable=False)
 
-    patient_id = Column(Integer, ForeignKey('patients.id', ondelete='SET NULL'))
+    patient_id = Column(Integer, ForeignKey('patients.id', onupdate='CASCADE', ondelete='SET NULL'))
     patient = orm.relationship('Patient')
 
 Index('family_history_relatives_family_history_id_idx', FamilyHistoryRelative.family_history_id)
