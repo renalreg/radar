@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.patients.diagnoses');
 
-  app.directive('diagnosisSelector', ['store', function(store) {
+  app.directive('diagnosisSelector', ['store', '_', function(store, _) {
     return {
       require: 'ngModel',
       templateUrl: 'app/patients/diagnoses/diagnosis-selector.html',
@@ -11,7 +11,7 @@
         scope.selectedDiagnosis = null;
 
         store.findMany('diagnoses').then(function(diagnoses) {
-          scope.diagnoses = diagnoses;
+          scope.diagnoses = _.sortBy(diagnoses, 'name');
         });
 
         ngModel.$render = function() {
