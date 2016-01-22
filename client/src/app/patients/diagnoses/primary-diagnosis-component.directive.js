@@ -27,7 +27,7 @@
       self.load(firstPromise([
         store.findMany('patient-diagnoses', {patient: $scope.patient.id, primaryGroup: $scope.cohort.id}),
         store.findMany('diagnoses', {primaryGroup: $scope.cohort.id}).then(function(diagnoses) {
-          $scope.diagnoses = diagnoses;
+          $scope.diagnoses = _.sortBy(diagnoses, 'name');
         }),
         store.findMany('biopsy-diagnoses').then(function(biopsyDiagnoses) {
           $scope.biopsyDiagnoses = biopsyDiagnoses;
