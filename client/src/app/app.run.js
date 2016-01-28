@@ -3,6 +3,8 @@
 
   var app = angular.module('radar');
 
+  var CHANGE_PASSWORD_STATE = 'changePassword';
+
   function run(
     $rootScope,
     radar,
@@ -38,19 +40,17 @@
 
     // Force the user to change their password
     $rootScope.$on('$stateChangeStart', function(event, toState) {
-      if (!isPublicState(toState) && toState.name !== 'changePassword') {
-        radar.readyPromise.then(function() {
-          var user = session.user;
+      if (!isPublicState(toState) && toState.name !== CHANGE_PASSWORD_STATE) {
+        var user = session.user;
 
-          if (user !== null && user.forcePasswordChange) {
-            notificationService.info({
-              title: 'Attention',
-              message: 'Please update your password.'
-            });
-            event.preventDefault();
-            $state.go('changePassword');
-          }
-        });
+        if (user !== null && user.forcePasswordChange) {
+          event.preventDefault();
+          notificationService.info({
+            title: 'Attention',
+            message: 'Please update your password.'
+          });
+          $state.go(CHANGE_PASSWORD_STATE);
+        }
       }
     });
   }

@@ -21,7 +21,7 @@ def force_password_change():
         current_user.is_authenticated() and
         current_user.force_password_change and
         not current_app.is_public_endpoint(request.endpoint) and
-        request.endpoint not in ['user_update', 'logout']
+        request.endpoint not in ['user_retrieve', 'user_update', 'logout']
     ):
         abort(403)
 
