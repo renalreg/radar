@@ -29,4 +29,4 @@ class RecruitmentByMonthRequestSerializer(Serializer):
 
 class PatientsByGroupRequestSerializer(Serializer):
     group = GroupReferenceField()
-    type = EnumField(GROUP_TYPE)
+    group_type = EnumField(GROUP_TYPE)
