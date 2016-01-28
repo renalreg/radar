@@ -26,8 +26,8 @@ def migrate_medications(old_conn, new_conn):
             medicine.unitcode != 'ECS'
     """ % EXCLUDED_UNITS))
 
-    for i, rows in enumerate(grouper(1000, rows)):
-        print 'batch %d' % i
+    for i, rows in enumerate(grouper(1000, rows), start=1):
+        print 'batch', i
 
         batch = []
 

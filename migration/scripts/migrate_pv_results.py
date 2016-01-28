@@ -2,6 +2,7 @@ from sqlalchemy import text, create_engine
 import click
 
 from radar_migration import Migration, EXCLUDED_UNITS, tables, ObservationNotFound, GroupNotFound
+from radar_migration.utils import grouper
 
 PV_CODE_MAP = {
     'ADJUSTEDCA': 'ADJUSTEDCALCIUM',
@@ -49,56 +50,59 @@ def migrate_pv_results(old_conn, new_conn):
             )
     """.format(EXCLUDED_UNITS)))
 
-    for i, row in enumerate(rows):
-        if i % 10000 == 0:
-            print i
+    for i, rows in enumerate(grouper(100000, rows), start=1):
+        print 'batch', i
 
-        pv_code = convert_pv_code(row['testcode'])
+        batch = []
 
-        try:
-            observation_id = m.get_observation_id(pv_code=pv_code)
-        except ObservationNotFound:
-            print pv_code, 'not found'
+        for row in rows:
+            pv_code = convert_pv_code(row['testcode'])
 
-        try:
-            value = float(row['value'])
-        except ValueError:
-            continue
-
-        value = str(value)
-
-        group_code = row['unitcode']
-        source_group_id = None
-        source_type = None
-
-        try:
-            source_group_id = m.get_hospital_id(group_code)
-            source_type = m.ukrdc_source_type
-        except GroupNotFound:
-            pass
-
-        # Otherwise check the data was entered by a cohort
-        if source_group_id is None:
             try:
-                m.get_cohort_id(group_code)
-            except GroupNotFound:
-                print 'group', group_code, 'not found'
+                observation_id = m.get_observation_id(pv_code=pv_code)
+            except ObservationNotFound:
+                print pv_code, 'not found'
+
+            try:
+                value = float(row['value'])
+            except ValueError:
                 continue
 
-            source_group_id = m.group_id
-            source_type = m.radar_source_type
+            value = str(value)
 
-        new_conn.execute(
-            tables.results.insert(),
-            patient_id=row['radarNo'],
-            source_group_id=source_group_id,
-            source_type=source_type,
-            observation_id=observation_id,
-            date=row['datestamp'],
-            value=value,
-            created_user_id=m.user_id,
-            modified_user_id=m.user_id,
-        )
+            group_code = row['unitcode']
+            source_group_id = None
+            source_type = None
+
+            try:
+                source_group_id = m.get_hospital_id(group_code)
+                source_type = m.ukrdc_source_type
+            except GroupNotFound:
+                pass
+
+            # Otherwise check the data was entered by a cohort
+            if source_group_id is None:
+                try:
+                    m.get_cohort_id(group_code)
+                except GroupNotFound:
+                    print 'group', group_code, 'not found'
+                    continue
+
+                source_group_id = m.group_id
+                source_type = m.radar_source_type
+
+            batch.append(dict(
+                patient_id=row['radarNo'],
+                source_group_id=source_group_id,
+                source_type=source_type,
+                observation_id=observation_id,
+                date=row['datestamp'],
+                value=value,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
+            ))
+
+        new_conn.execute(tables.results.insert(), batch)
 
 
 @click.command()

@@ -2,6 +2,7 @@ from sqlalchemy import text, create_engine
 import click
 
 from radar_migration import Migration, tables, EXCLUDED_UNITS
+from radar_migration.utils import grouper
 
 
 OBSERVATIONS = [
@@ -149,27 +150,30 @@ def migrate_radar_results(old_conn, new_conn):
 
     rows = old_conn.execute(text(q))
 
-    for i, row in enumerate(rows):
-        if i % 10000 == 0:
-            print i
+    for i, rows in enumerate(grouper(1000, rows), start=1):
+        print 'batch', i
 
-        patient_id = row[0]
-        result_date = row[1]
-        observation_short_name = row[2]
-        result_value = row[3]
-        observation_id = m.get_observation_id(short_name=observation_short_name)
+        batch = []
 
-        new_conn.execute(
-            tables.results.insert(),
-            patient_id=patient_id,
-            source_group_id=m.group_id,
-            source_type=m.radar_source_type,
-            observation_id=observation_id,
-            date=result_date,
-            value=result_value,
-            created_user_id=m.user_id,
-            modified_user_id=m.user_id,
-        )
+        for row in rows:
+            patient_id = row[0]
+            result_date = row[1]
+            observation_short_name = row[2]
+            result_value = row[3]
+            observation_id = m.get_observation_id(short_name=observation_short_name)
+
+            batch.append(dict(
+                patient_id=patient_id,
+                source_group_id=m.group_id,
+                source_type=m.radar_source_type,
+                observation_id=observation_id,
+                date=result_date,
+                value=result_value,
+                created_user_id=m.user_id,
+                modified_user_id=m.user_id,
+            ))
+
+        new_conn.execute(tables.results.insert(), batch)
 
 
 @click.command()
