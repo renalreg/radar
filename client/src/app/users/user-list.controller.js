@@ -66,7 +66,7 @@
       }
 
       function clear() {
-        $scope.filters = angular.copy(defaultFilters);
+        $scope.filters = angular.copy(DEFAULT_FILTERS);
         search();
       }
     }
