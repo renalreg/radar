@@ -16,7 +16,7 @@ class DataPointListSerializer(Serializer):
 
 class PatientsByGroupSerializer(Serializer):
     group = GroupReferenceField()
-    patientCount = IntegerField()
+    count = IntegerField()
 
 
 class PatientsByGroupListSerializer(Serializer):
@@ -30,3 +30,7 @@ class RecruitmentByMonthRequestSerializer(Serializer):
 class PatientsByGroupRequestSerializer(Serializer):
     group = GroupReferenceField()
     group_type = EnumField(GROUP_TYPE)
+
+
+class PatientsByRecruitedGroupRequestSerializer(Serializer):
+    group = GroupReferenceField()
