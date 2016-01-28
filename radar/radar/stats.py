@@ -13,7 +13,7 @@ def recruitment_by_month(group):
     year_column = cast(extract('year', GroupPatient.from_date), Integer)
     month_column = cast(extract('month', GroupPatient.from_date), Integer)
 
-    # TODO this needs to use the latest from_date
+    # TODO this needs to use the earliest from_date
     query = db.session\
         .query(year_column, month_column, func.count())\
         .filter(GroupPatient.group == group)\
@@ -47,11 +47,13 @@ def recruitment_by_month(group):
 
 
 def patients_by_group(group=None, group_type=None):
-    count_query = db.session.query(GroupPatient.group_id.label('group_id'), func.count(distinct(Patient.id)).label('patient_count'))\
-        .select_from(Patient)\
-        .join(Patient.group_patients)\
-        .join(GroupPatient.group)\
-        .group_by(GroupPatient.group_id)
+    count_query = db.session.query(
+        GroupPatient.group_id.label('group_id'),
+        func.count(distinct(Patient.id)).label('patient_count')
+    )
+    count_query = count_query.select_from(Patient)
+    count_query = count_query.join(Patient.group_patients)
+    count_query = count_query.group_by(GroupPatient.group_id)
 
     # Filter by patients belonging to the specified group
     if group is not None:
@@ -77,5 +79,24 @@ def patients_by_group(group=None, group_type=None):
     # Filter by groups of a particular type
     if group_type is not None:
         query = query.filter(Group.type == group_type)
+
+    return query.all()
+
+
+def patients_by_recruited_group(group):
+    # TODO only count the first created_group (by from_date)
+    count_query = db.session.query(
+        GroupPatient.created_group_id.label('created_group_id'),
+        func.count(distinct(GroupPatient.patient_id)).label('patient_count')
+    )
+    count_query = count_query.select_from(GroupPatient)
+    count_query = count_query.filter(GroupPatient.group == group)
+    count_query = count_query.group_by(GroupPatient.created_group_id)
+    count_subquery = count_query.subquery()
+
+    query = db.session\
+        .query(Group, count_subquery.c.patient_count)\
+        .join(count_subquery, Group.id == count_subquery.c.created_group_id)\
+        .order_by(Group.id)
 
     return query.all()
