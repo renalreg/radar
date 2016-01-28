@@ -6,13 +6,16 @@
   function controllerFactory(
     ListController, $injector, ListHelperProxy, store, _
   ) {
+    var DEFAULT_FILTERS = {
+      isEnabled: true
+    };
+
     function UserListController($scope) {
       var self = this;
 
       $injector.invoke(ListController, self, {$scope: $scope});
 
-      var defaultFilters = {};
-      $scope.filters = angular.copy(defaultFilters);
+      $scope.filters = angular.copy(DEFAULT_FILTERS);
 
       var proxy = new ListHelperProxy(search, {perPage: 50});
       proxy.load();
@@ -25,7 +28,7 @@
       function filtersToParams(filters) {
         var params = {};
 
-        var keys = ['username', 'email', 'firstName', 'lastName'];
+        var keys = ['username', 'email', 'firstName', 'lastName', 'isEnabled', 'isAdmin'];
 
         _.forEach(keys, function(key) {
           var value = filters[key];

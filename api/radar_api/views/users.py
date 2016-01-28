@@ -42,6 +42,12 @@ class UserListView(ListModelView):
         for group in groups:
             builder.group(group)
 
+        if args.get('is_enabled') is not None:
+            builder.is_enabled(args['is_enabled'])
+
+        if args.get('is_admin') is not None:
+            builder.is_admin(args['is_admin'])
+
         query = builder.build()
 
         return query

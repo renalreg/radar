@@ -27,7 +27,7 @@
           </thead>
 
           <tbody>
-            <tr ng-repeat="user in items">
+            <tr ng-repeat="user in items" ng-class="{'disabled-user': !user.isEnabled}">
               <td><a ui-sref="user({userId: user.id})">{{user.id}}</a></td>
 
               <td><a ui-sref="user({userId: user.id})">{{user.username}}</a></td>
@@ -122,6 +122,24 @@
 
           <div frm-control>
             <div frm-hospital-field model="filters.hospital"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Is Enabled?</div>
+
+          <div frm-control>
+            <div frm-boolean-field model="filters.isEnabled"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Is Super Admin?</div>
+
+          <div frm-control>
+            <div frm-boolean-field model="filters.isAdmin"></div>
             <div frm-errors></div>
           </div>
         </div>
