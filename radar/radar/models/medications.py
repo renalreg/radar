@@ -58,4 +58,4 @@ class Drug(db.Model):
     name = Column(String, nullable=False, unique=True)
 
     parent_drug_id = Column(Integer, ForeignKey('drugs.id'))
-    parent_drug = relationship('Drug', uselist=False)
+    parent_drug = relationship('Drug', remote_side=[id])
