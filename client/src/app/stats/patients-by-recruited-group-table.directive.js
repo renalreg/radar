@@ -15,8 +15,6 @@
         scope.$watch('group', function(group) {
           var params = {};
 
-          console.log(group);
-
           if (group) {
             params.group = group.id;
           }
