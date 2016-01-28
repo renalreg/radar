@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import cast, extract, Integer, func
-from sqlalchemy.sql.expression import null, distinct
+from sqlalchemy.sql.expression import distinct
 from sqlalchemy.orm import aliased
 
 from radar.database import db
@@ -13,12 +13,10 @@ def recruitment_by_month(group):
     year_column = cast(extract('year', GroupPatient.from_date), Integer)
     month_column = cast(extract('month', GroupPatient.from_date), Integer)
 
+    # TODO this needs to use the latest from_date
     query = db.session\
         .query(year_column, month_column, func.count())\
-        .filter(
-            GroupPatient.from_date != null(),
-            GroupPatient.group == group,
-        )\
+        .filter(GroupPatient.group == group)\
         .group_by(year_column, month_column)\
         .order_by(year_column, month_column)
 
