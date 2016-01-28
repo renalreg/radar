@@ -1,86 +1,113 @@
-ACE Inhibitor,Antihypertensive
-Albumin,IV Infusion
-Alemtuzumab,Immunosuppressive
-Alpha Blocker,Antihypertensive
-Amlodipine,Calcium Channel Blocker
-Amoxicillin,Antibiotic
-Angiotensin II Receptor Antagonist,Antihypertensive
-Antibiotics - All Types,Antibiotic
-Aranesp,ESA (EPO)
+Amoxicillin,Antibiotics
+Antibiotics,Antibiotics
+Cefalexin,Antibiotics
+Co-amoxiclav,Antibiotics
+Co-trimoxazole,Antibiotics
+Flucloxacillin,Antibiotics
+Penicillin,Antibiotics
+Teicoplanin,Antibiotics
+Anticoagulant,Anticoagulant
 Aspirin,Anticoagulant
-Atenolol,Beta Blocker
-Atorvastatin,Statin
+Clexane,Anticoagulant
+Clopidogrel,Anticoagulant
+Dalteparin,Anticoagulant
+Dipyridamole,Anticoagulant
+Fondaparinux,Anticoagulant
+Heparin,Anticoagulant
+Tinzaparin,Anticoagulant
+Warfarin,Anticoagulant
+Antihypertensive,Antihypertensive
+Antihypertensive - ACE Inhibitor,Antihypertensive
+Antihypertensive - Alpha Blockers,Antihypertensive
+Antihypertensive - Angiotensin II Receptor Antagonist,Antihypertensive
+Antihypertensive - Beta Blockers,Antihypertensive
+Antihypertensive - Calcium Channel Blockers,Antihypertensive
+Captopril,Antihypertensive - ACE Inhibitor
+Enalapril,Antihypertensive - ACE Inhibitor
+Lisinopril,Antihypertensive - ACE Inhibitor
+Ramipril,Antihypertensive - ACE Inhibitor
+Doxazosin,Antihypertensive - Alpha Blockers
+Indoramin,Antihypertensive - Alpha Blockers
+Prazosin,Antihypertensive - Alpha Blockers
+Terazosin,Antihypertensive - Alpha Blockers
+Candesartan Cilexetil,Antihypertensive - Angiotensin II Receptor Antagonist
+Eprosartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Irbesartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Losartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Olmesartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Telmisartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Valsartan,Antihypertensive - Angiotensin II Receptor Antagonist
+Atenolol,Antihypertensive - Beta Blockers
+Propranolol,Antihypertensive - Beta Blockers
+Amlodipine,Antihypertensive - Calcium Channel Blockers
+Diltiazem,Antihypertensive - Calcium Channel Blockers
+Felodipine,Antihypertensive - Calcium Channel Blockers
+Lacidipine,Antihypertensive - Calcium Channel Blockers
+Nicardipine,Antihypertensive - Calcium Channel Blockers
+Nifedipine,Antihypertensive - Calcium Channel Blockers
+Nimodipine,Antihypertensive - Calcium Channel Blockers
+Verapamil,Antihypertensive - Calcium Channel Blockers
+Bronchodilators (Inhalers),Bronchodilators (Inhalers)
+Salbutamol,Bronchodilators (Inhalers)
+Ventolin,Bronchodilators (Inhalers)
+Bendroflumethiazide,Diuretics
+Diuretics,Diuretics
+Furosemide,Diuretics
+Spironolactone,Diuretics
+Endocrine,Endocrine
+Growth Hormone,Endocrine
+Insulin,Endocrine
+Levothyroxine,Endocrine
+Thyroxine,Endocrine
+Aranesp,ESA (EPO)
+Darbepoetin,ESA (EPO)
+Epoetin Alfa,ESA (EPO)
+Epoetin Beta,ESA (EPO)
+Eprex,ESA (EPO)
+ESA (EPO),ESA (EPO)
+Mircera,ESA (EPO)
+NeoRecormon,ESA (EPO)
+Retacrit,ESA (EPO)
+Alemtuzumab,Immunosuppressive
 Azathioprine,Immunosuppressive
 Basiliximab,Immunosuppressive
-Bendroflumethazide,Diuretic
-Beta Blocker,Antihypertensive
-Calcium Channel Blocker,Antihypertensive
-Candesartan Cilexetil,Angiotensin II Receptor Antagonist
-Captopril,ACE Inhibitor
-Cefalexin,Antibiotic
 Ciclosporin,Immunosuppressive
 Corticosteroids,Immunosuppressive
 Cyclophosphamide,Immunosuppressive
 Daclizumab,Immunosuppressive
-Diltiazem,Calcium Channel Blocker
-Dipyridamole,Anticoagulant
-Doxazosin,Alpha Blocker
 Eculizumab,Immunosuppressive
-Enalapril,ACE Inhibitor
-Epoetin Alpha,ESA (EPO)
-Eprex,ESA (EPO)
-Eprosartan,Angiotensin II Receptor Antagonist
-Esomeprazole,Proton Pump Inhibitor
-Felodipine,Calcium Channel Blocker
-Fluvastatin,Statin
-Flucloxicillin,Antibiotic
-Furosemide,Diuretic
-Indoramin,Alpha Blocker
-Irbesartan,Angiotensin II Receptor Antagonist
-Lacidipine,Calcium Channel Blocker
-Lansoprazole,Proton Pump Inhibitor
-Lathanum,Phosphate Binder
-Levamisole,Immunosuppressive
-Lisinopril,ACE Inhibitor
-Losartan,Angiotensin II Receptor Antagonist
+Immunosuppressive,Immunosuppressive
 Methyl Prednisolone,Immunosuppressive
-Mircira,ESA (EPO)
-Modigraf,Immunosuppressive
-Myophenolate Mofetil - MMF,Immunosuppressive
-NeoRecormon,ESA (EPO)
-Nicardipine,Calcium Channel Blocker
-Nifedipine,Calcium Channel Blocker
-Nimodipine,Calcium Channel Blocker
-Olmesartan,Angiotensin II Receptor Antagonist
-Omeprazole,Proton Pump Inhibitor
-Penicillin,Antibiotic
-Prazosin,Alpha Blocker
+Mycophenolate Mofetil -  MMF,Immunosuppressive
 Prednisolone,Immunosuppressive
-Propranolol,Beta Blocker
-Ramipril,ACE Inhibitor
-Ranitidine,Proton Pump Inhibitor
-Retacrit,ESA (EPO)
 Rituximab,Immunosuppressive
-Sevelamer,Phosphate Binder
-Simvastatin,Statin
 Sirolimus,Immunosuppressive
-Spironolactone,Diuretic
 Tacrolimus,Immunosuppressive
-Telmisartan,Angiotensin II Receptor Antagonist
-Teicoplanin,Antibiotic
-Terazosin,Alpha Blocker
-Valsartan,Angiotensin II Receptor Antagonist
-Varapamil,Calcium Channel Blocker
-Insulin,Endocrine
-Immunosuppressive,
-Antihypertensive,
-Antibiotic,
-Diuretic,
-IV Infusion,
-Statin,
-Proton Pump Inhibitor,
-NSAID,
-Phosphate Binder,
-ESA (EPO),
-Endocrine,
-Anticoagulant,
+IV Infusions,IV Infusions
+Albumin,IV Infusions
+NSAID,NSAID
+Lanthanum,Phosphate Binders
+Phosphate Binders,Phosphate Binders
+Sevelamer,Phosphate Binders
+Esomeprazole,Proton Pump Inhibitor
+Lansoprazole,Proton Pump Inhibitor
+Omeprazole,Proton Pump Inhibitor
+Proton Pump Inhibitor,Proton Pump Inhibitor
+Ranitidine,Proton Pump Inhibitor
+Atorvastatin,Statins
+Fluvastatin,Statins
+Simvastatin,Statins
+Statins,Statins
+Supplements,Supplements
+Alfacalcidol,Supplements
+Calcium Carbonate,Supplements
+Cholecalciferol,Supplements
+Ergocalciferol,Supplements
+Ferrous sulphate,Supplements
+Folic Acid,Supplements
+Multivitamins,Supplements
+Sodium Feredetate,Supplements
+Sytron,Supplements
+Venofer,Supplements
+Levamisole,
+Sodium Bicarbonate,
