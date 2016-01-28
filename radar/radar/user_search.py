@@ -49,6 +49,14 @@ class UserQueryBuilder(object):
 
         return self
 
+    def is_enabled(self, is_enabled):
+        self.query = self.query.filter(User.is_enabled == is_enabled)
+        return self
+
+    def is_admin(self, is_admin):
+        self.query = self.query.filter(User.is_admin == is_admin)
+        return self
+
     def build(self):
         query = self.query
 

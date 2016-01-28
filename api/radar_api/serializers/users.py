@@ -44,3 +44,5 @@ class UserListRequestSerializer(Serializer):
     first_name = StringField()
     last_name = StringField()
     group = CommaSeparatedField(GroupReferenceField())
+    is_enabled = BooleanField()
+    is_admin = BooleanField()
