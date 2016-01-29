@@ -123,6 +123,7 @@ class UserValidation(MetaValidationMixin, Validation):
             call.validators_for_field([required()], new_obj, self.password)
 
             # New humans need a name and email
+            # TODO users can blank their first name, last name and email
             if not new_obj.is_bot:
                 call.validators_for_field([not_empty()], new_obj, self.first_name)
                 call.validators_for_field([not_empty()], new_obj, self.last_name)
