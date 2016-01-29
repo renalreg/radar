@@ -4,7 +4,7 @@ from sqlalchemy.orm import ColumnProperty
 from sqlalchemy.sql import sqltypes
 from radar.serializers.core import Serializer, Field
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
-    FloatField, DateField, DateTimeField, UUIDField
+    FloatField, DateField, DateTimeField, UUIDField, JSONField
 
 
 class ModelSerializer(Serializer):
@@ -17,7 +17,8 @@ class ModelSerializer(Serializer):
         sqltypes.Boolean: BooleanField,
         sqltypes.Numeric: FloatField,
         postgresql.INET: StringField,
-        postgresql.UUID: UUIDField
+        postgresql.UUID: UUIDField,
+        postgresql.JSONB: JSONField
     }
 
     class Meta(object):

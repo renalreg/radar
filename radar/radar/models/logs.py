@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import event, DDL, Column, Integer, DateTime, String, text
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import relationship
 
 from radar.database import db
 
@@ -12,7 +13,9 @@ class Log(db.Model):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default=text('now()'))
     type = Column(String, nullable=False)
+
     user_id = Column(Integer)
+    user = relationship('User', primaryjoin='User.id == Log.user_id', foreign_keys=[user_id])
 
     table_name = Column(String)
     original_data = Column(postgresql.JSONB)

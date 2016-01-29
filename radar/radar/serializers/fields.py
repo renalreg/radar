@@ -420,3 +420,11 @@ class LabelledEnumField(LabelledValueField):
             return EnumField(enum, **kwargs)
 
         super(LabelledEnumField, self).__init__(f, items, **kwargs)
+
+
+class JSONField(Field):
+    def to_value(self, data):
+        return data
+
+    def to_data(self, value):
+        return value
