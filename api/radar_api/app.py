@@ -3,6 +3,7 @@ from __future__ import print_function
 import logging
 
 from flask import Flask
+from sqlalchemy import event
 
 from radar_api.auth import require_login, force_password_change
 from radar_api.views import consultants
@@ -49,7 +50,7 @@ from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
 from radar_api.auth import set_cors_headers
-from radar.auth.sessions import refresh_token
+from radar.auth.sessions import refresh_token, current_user
 from radar.database import db
 from radar.template_filters import register_template_filters
 from radar.config import check_config
@@ -72,6 +73,12 @@ class RadarApi(Flask):
         check_config(self.config)
 
         db.init_app(self)
+
+        @event.listens_for(db.session, 'before_flush')
+        def before_flush(session, flush_context, instances):
+            if current_user.is_authenticated():
+                user_id = current_user.id
+                session.execute('SET SESSION radar.user_id = :user_id', dict(user_id=user_id))
 
         if self.debug:
             self.after_request(set_cors_headers)
