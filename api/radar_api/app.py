@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import logging
 
 from flask import Flask
@@ -56,6 +54,7 @@ from radar.database import db
 from radar.template_filters import register_template_filters
 from radar.config import check_config
 from radar_api.debug import debug_before_request, debug_teardown_request
+from radar_api.logs import log_request
 
 
 class RadarApi(Flask):
@@ -99,6 +98,7 @@ class RadarApi(Flask):
         self.before_request(force_password_change)
 
         self.after_request(refresh_token)
+        self.after_request(log_request)
 
         register_template_filters(self)
 

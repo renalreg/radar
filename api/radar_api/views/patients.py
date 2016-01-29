@@ -6,6 +6,7 @@ from radar.permissions import PatientPermission
 from radar.views.core import ListModelView, RetrieveUpdateModelView
 from radar.models.patients import Patient
 from radar.auth.sessions import current_user
+from radar_api.logs import log_view_patients, log_view_patient
 
 
 class PatientListView(ListModelView):
@@ -72,6 +73,11 @@ class PatientListView(ListModelView):
     def get_serializer(self):
         return TinyPatientSerializer(current_user)
 
+    def get_object_list(self):
+        patients, pagination = super(PatientListView, self).get_object_list()
+        log_view_patients(patients)
+        return patients, pagination
+
 
 class PatientDetailView(RetrieveUpdateModelView):
     model_class = Patient
@@ -83,6 +89,11 @@ class PatientDetailView(RetrieveUpdateModelView):
 
     def get_serializer(self):
         return PatientSerializer(current_user)
+
+    def get_object(self):
+        patient = super(PatientDetailView, self).get_object()
+        log_view_patient(patient)
+        return patient
 
 
 def register_views(app):
