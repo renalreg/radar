@@ -5,8 +5,10 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin
 from radar.models.common import uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 
+@log_changes
 class PatientAddress(db.Model, MetaModelMixin):
     __tablename__ = 'patient_addresses'
 

@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, Date, Index, Boolean
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 OUTCOMES = OrderedDict([
     ('ID_LT_20', 'Intrauterine Death < 20 Weeks'),
@@ -28,6 +29,7 @@ PRE_ECLAMPSIA_TYPES = OrderedDict([
 ])
 
 
+@log_changes
 class Pregnancy(db.Model, MetaModelMixin):
     __tablename__ = 'pregnancies'
 
@@ -39,8 +41,8 @@ class Pregnancy(db.Model, MetaModelMixin):
     pregnancy_number = Column(Integer, nullable=False)
     date_of_lmp = Column(Date, nullable=False)
     gravidity = Column(Integer)
-    parity1 = Column(Integer)
-    parity2 = Column(Integer)
+    parity_1 = Column(Integer)
+    parity_2 = Column(Integer)
     outcome = Column(Integer)
     weight = Column(Integer)
     weight_centile = Column(Integer)

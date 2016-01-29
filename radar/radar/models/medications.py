@@ -53,6 +53,7 @@ class Medication(db.Model, MetaModelMixin):
 Index('medications_patient_idx', Medication.patient_id)
 
 
+@log_changes
 class Drug(db.Model):
     __tablename__ = 'drugs'
 

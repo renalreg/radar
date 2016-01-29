@@ -3,8 +3,10 @@ from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
+from radar.models.logs import log_changes
 
 
+@log_changes
 class Consultant(db.Model, MetaModelMixin):
     __tablename__ = 'consultants'
 
@@ -20,6 +22,7 @@ class Consultant(db.Model, MetaModelMixin):
         return [x.group for x in self.group_consultants]
 
 
+@log_changes
 class GroupConsultant(db.Model, MetaModelMixin):
     __tablename__ = 'group_consultants'
 

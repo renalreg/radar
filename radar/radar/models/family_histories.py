@@ -6,6 +6,7 @@ from sqlalchemy import orm
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 
 RELATIONSHIPS = OrderedDict([
@@ -28,6 +29,7 @@ RELATIONSHIPS = OrderedDict([
 ])
 
 
+@log_changes
 class FamilyHistory(db.Model, MetaModelMixin):
     __tablename__ = 'family_histories'
 
@@ -53,6 +55,7 @@ Index(
 )
 
 
+@log_changes
 class FamilyHistoryRelative(db.Model):
     __tablename__ = 'family_history_relatives'
 

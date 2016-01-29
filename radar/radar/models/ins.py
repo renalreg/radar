@@ -4,6 +4,7 @@ from sqlalchemy import Column, Boolean, String, Index, Date
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
@@ -17,6 +18,7 @@ REMISSION_TYPES = OrderedDict([
 ])
 
 
+@log_changes
 class InsClinicalPicture(db.Model, MetaModelMixin):
     __tablename__ = 'ins_clinical_pictures'
 
@@ -44,6 +46,7 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
 Index('ins_clinical_pictures_patient_idx', InsClinicalPicture.patient_id)
 
 
+@log_changes
 class InsRelapse(db.Model, MetaModelMixin):
     __tablename__ = 'ins_relapses'
 

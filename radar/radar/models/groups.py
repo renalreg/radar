@@ -12,6 +12,7 @@ from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_m
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.pages import PAGE
 from radar.models.types import EnumType, EnumToStringType
+from radar.models.logs import log_changes
 
 
 class GROUP_TYPE(Enum):
@@ -33,6 +34,7 @@ GROUP_CODE_NHSBT = 'NHSBT'
 GROUP_CODE_BAPN = 'BAPN'
 
 
+@log_changes
 class Group(db.Model):
     __tablename__ = 'groups'
 
@@ -59,6 +61,7 @@ class Group(db.Model):
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
 
+@log_changes
 class GroupPatient(db.Model, MetaModelMixin):
     __tablename__ = 'group_patients'
 
@@ -89,6 +92,7 @@ Index('group_patients_group_idx', GroupPatient.group_id)
 Index('group_patients_patient_idx', GroupPatient.patient_id)
 
 
+@log_changes
 class GroupUser(db.Model, MetaModelMixin):
     __tablename__ = 'group_users'
 

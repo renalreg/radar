@@ -8,6 +8,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.types import EnumType
 from radar.utils import to_age
+from radar.models.logs import log_changes
 
 BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
@@ -17,6 +18,7 @@ BIOPSY_DIAGNOSES = OrderedDict([
 ])
 
 
+@log_changes
 class PatientDiagnosis(db.Model, MetaModelMixin):
     __tablename__ = 'patient_diagnoses'
 
@@ -70,6 +72,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
 
 
+@log_changes
 class Diagnosis(db.Model):
     __tablename__ = 'diagnoses'
 
@@ -88,6 +91,7 @@ class GROUP_DIAGNOSIS_TYPE(Enum):
     SECONDARY = 'SECONDARY'
 
 
+@log_changes
 class GroupDiagnosis(db.Model):
     __tablename__ = 'group_diagnoses'
 

@@ -7,6 +7,7 @@ from radar.auth.passwords import check_password_hash, generate_password_hash, ge
 from radar.database import db
 from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
+from radar.models.logs import log_changes
 
 
 class UserCreatedUserMixin(object):
@@ -31,6 +32,7 @@ class UserModifiedUserMixin(object):
         return relationship('User', primaryjoin="User.id == %s.modified_user_id" % cls.__name__, remote_side='User.id', post_update=True)
 
 
+@log_changes
 class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMixin, ModifiedDateMixin):
     __tablename__ = 'users'
 

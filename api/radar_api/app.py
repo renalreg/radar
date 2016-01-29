@@ -78,7 +78,10 @@ class RadarApi(Flask):
         def before_flush(session, flush_context, instances):
             if current_user.is_authenticated():
                 user_id = current_user.id
-                session.execute('SET SESSION radar.user_id = :user_id', dict(user_id=user_id))
+
+                # SET LOCAL lasts until the end of the current transaction
+                # http://www.postgresql.org/docs/9.4/static/sql-set.html
+                session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user_id))
 
         if self.debug:
             self.after_request(set_cors_headers)
