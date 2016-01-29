@@ -8,6 +8,7 @@ class LogListView(ListModelView):
     serializer_class = LogSerializer
     model_class = Log
     permission_classes = [AdminPermission]
+    sort_fields = ['date']
 
 
 class LogDetailView(RetrieveModelView):
