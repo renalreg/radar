@@ -49,6 +49,7 @@ from radar_api.views import group_patients
 from radar_api.views import group_users
 from radar_api.views import group_consultants
 from radar_api.views import roles
+from radar_api.views import logs
 from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token, current_user
 from radar.database import db
@@ -121,6 +122,7 @@ class RadarApi(Flask):
         ins.register_views(self)
         login.register_views(self)
         logout.register_views(self)
+        logs.register_views(self)
         medications.register_views(self)
         mpgn.register_views(self)
         nephrectomies.register_views(self)

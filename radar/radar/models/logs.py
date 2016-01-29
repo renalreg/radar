@@ -17,7 +17,7 @@ class Log(db.Model):
     table_name = Column(String)
     original_data = Column(postgresql.JSONB)
     new_data = Column(postgresql.JSONB)
-    query = Column(String)
+    statement = Column(String)
 
     data = Column(postgresql.JSONB)
 
@@ -50,7 +50,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                 table_name,
                 original_data,
                 new_data,
-                query
+                statement
             ) VALUES (
                 'UPDATE',
                 user_id,
@@ -66,7 +66,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                 user_id,
                 table_name,
                 original_data,
-                query
+                statement
             ) VALUES (
                 'DELETE',
                 user_id,
@@ -81,7 +81,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                 user_id,
                 table_name,
                 new_data,
-                query
+                statement
             ) VALUES (
                 'INSERT',
                 user_id,
