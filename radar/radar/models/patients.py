@@ -95,13 +95,37 @@ class Patient(db.Model, MetaModelMixin):
         q = q.where(Group.type == GROUP_TYPE.OTHER)
         return q
 
-    @property
+    @hybrid_property
     def recruited_group(self):
-        for x in self.group_patients:
-            if is_radar_group(x.group):
-                return x.created_group
+        group_patients = [x for x in self.group_patients if is_radar_group(x.group)]
 
-        return None
+        from_date = None
+        recruited_group = None
+
+        for x in group_patients:
+            if (
+                is_radar_group(x.group) and
+                (
+                    from_date is None or
+                    x.from_date < from_date
+                )
+            ):
+                from_date = x.from_date
+                recruited_group = x.created_group
+
+        return recruited_group
+
+    # TODO relationship?
+    @recruited_group.expression
+    def recruited_group(cls):
+        return select([GroupPatient.created_group])\
+            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
+            .where(GroupPatient.patient_id == cls.id)\
+            .where(Group.code == GROUP_CODE_RADAR)\
+            .where(Group.type == GROUP_TYPE.OTHER)\
+            .order_by(GroupPatient.from_date)\
+            .limit(1)\
+            .as_scalar()
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
