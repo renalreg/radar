@@ -2,8 +2,10 @@ from sqlalchemy import Column, Integer, Boolean, String, Index
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 
+@log_changes
 class SaltWastingClinicalFeatures(db.Model, MetaModelMixin):
     __tablename__ = 'salt_wasting_clinical_features'
 

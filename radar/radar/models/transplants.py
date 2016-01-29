@@ -6,6 +6,7 @@ from sqlalchemy.dialects import postgresql
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.logs import log_changes
 
 TRANSPLANT_MODALITIES = OrderedDict([
     (21, 'Live - Sibling'),
@@ -23,6 +24,7 @@ TRANSPLANT_MODALITIES = OrderedDict([
 ])
 
 
+@log_changes
 class Transplant(db.Model, MetaModelMixin):
     __tablename__ = 'transplants'
 
@@ -46,6 +48,7 @@ class Transplant(db.Model, MetaModelMixin):
 Index('transplants_patient_idx', Transplant.patient_id)
 
 
+@log_changes
 class TransplantRejection(db.Model):
     __tablename__ = 'transplant_rejections'
 
@@ -59,6 +62,7 @@ class TransplantRejection(db.Model):
 Index('transplant_rejections_transplant_idx', TransplantRejection.transplant_id)
 
 
+@log_changes
 class TransplantBiopsy(db.Model):
     __tablename__ = 'transplant_biopsies'
 

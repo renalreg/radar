@@ -9,6 +9,7 @@ from radar.models.common import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
+from radar.models.logs import log_changes
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -43,6 +44,7 @@ ETHNICITIES = OrderedDict([
 ])
 
 
+@log_changes
 class Patient(db.Model, MetaModelMixin):
     __tablename__ = 'patients'
 

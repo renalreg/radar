@@ -8,6 +8,7 @@ from enum import Enum
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.types import EnumType
+from radar.models.logs import log_changes
 
 
 class OBSERVATION_VALUE_TYPE(Enum):
@@ -40,6 +41,7 @@ OBSERVATION_SAMPLE_TYPE_NAMES = OrderedDict([
 ])
 
 
+@log_changes
 class Observation(db.Model):
     __tablename__ = 'observations'
 
@@ -52,6 +54,7 @@ class Observation(db.Model):
     properties = Column(postgresql.JSONB, nullable=False)
 
 
+@log_changes
 class Result(db.Model, MetaModelMixin):
     __tablename__ = 'results'
 

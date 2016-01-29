@@ -1,10 +1,13 @@
 from sqlalchemy import String, Column, Integer, ForeignKey, DateTime, Boolean, Index
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
+
 from radar.database import db
 from radar.models.users import User, AnonymousUser
+from radar.models.logs import log_changes
 
 
+@log_changes
 class UserSession(db.Model):
     __tablename__ = 'user_sessions'
 
