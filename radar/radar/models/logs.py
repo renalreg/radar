@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import event, DDL, Column, Integer, DateTime, String, text
+from sqlalchemy import event, DDL, Column, Integer, DateTime, String, text, Index
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
@@ -23,6 +23,8 @@ class Log(db.Model):
     statement = Column(String)
 
     data = Column(postgresql.JSONB)
+
+Index('logs_date_idx', Log.date)
 
 
 def log_changes(cls):
