@@ -155,14 +155,17 @@ def get_user_session():
             if not user.is_enabled:
                 user_session = None
 
-        if user_session is None:
-            user_session = AnonymousSession()
-
         _request_ctx_stack.top.user_session = user_session
 
-    return getattr(_request_ctx_stack.top, 'user_session', None)
+    user_session = getattr(_request_ctx_stack.top, 'user_session', None)
+
+    if user_session is None:
+        user_session = AnonymousSession()
+
+    return user_session
 
 
 def get_user():
     user_session = get_user_session()
-    return user_session.user
+    user = user_session.user
+    return user

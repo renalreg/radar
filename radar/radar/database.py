@@ -28,4 +28,5 @@ class SQLAlchemy(SQLAlchemyBase):
     def create_session(self, options):
         return sessionmaker(class_=Session, db=self, **options)
 
+
 db = SQLAlchemy()

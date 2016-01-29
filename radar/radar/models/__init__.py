@@ -13,6 +13,7 @@ from radar.models.groups import *
 from radar.models.hnf1b import *
 from radar.models.hospitalisations import *
 from radar.models.ins import *
+from radar.models.logs import *
 from radar.models.results import *
 from radar.models.medications import *
 from radar.models.mpgn import *
