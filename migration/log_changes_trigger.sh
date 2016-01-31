@@ -1,5 +1,9 @@
-TABLE_NAME="$1"
+#!/bin/sh
 
-echo "CREATE TRIGGER ${TABLE_NAME}_log_changes
-AFTER INSERT OR UPDATE OR DELETE ON ${TABLE_NAME}
-FOR EACH ROW EXECUTE PROCEDURE log_changes()"
+set -e
+
+table_name="$1"
+
+echo "CREATE TRIGGER ${table_name}_log_changes
+AFTER INSERT OR UPDATE OR DELETE ON ${table_name}
+FOR EACH ROW EXECUTE PROCEDURE log_changes();"
