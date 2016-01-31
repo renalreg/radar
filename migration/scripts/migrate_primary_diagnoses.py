@@ -75,6 +75,7 @@ def migrate_diagnoses(old_conn, new_conn):
         SELECT DISTINCT
             patient.radarNo AS radar_no,
             unit.unitcode AS cohort_code,
+            tbl_diagnosis.TODO as symptoms_date,
             CASE
                 WHEN tbl_diagnosis.date_diag IS NOT NULL THEN
                     tbl_diagnosis.date_diag
@@ -108,6 +109,7 @@ def migrate_diagnoses(old_conn, new_conn):
         radar_no = row['radar_no']
         cohort_code = convert_cohort_code(row['cohort_code'])
         comments = row['comments']
+        symptoms_date = row['symptoms_date']
         from_date = row['from_date']
         diagnosis1 = row['diagnosis1']
         diagnosis2 = row['diagnosis2']
@@ -158,7 +160,7 @@ def migrate_diagnoses(old_conn, new_conn):
             source_type=m.radar_source_type,
             diagnosis_id=diagnosis_id,
             diagnosis_text=None,
-            symptoms_date=None,
+            symptoms_date=symptoms_date,
             from_date=from_date,
             to_date=None,
             gene_test=None,
