@@ -54,8 +54,10 @@ echo 'migrate hospitalisations...'
 python scripts/migrate_hospitalisations.py "$SRC" "$DEST"
 echo 'migrate immunosuppressives...'
 python scripts/migrate_immunosuppressives.py "$SRC" "$DEST"
-echo 'migrate ins...'
-python scripts/migrate_ins.py "$SRC" "$DEST" data/ins_relapse_drugs.csv
+echo 'migrate ins clinical pictures...'
+python scripts/migrate_ins_clinical_pictures.py "$SRC" "$DEST"
+echo 'migrate ins relapses...'
+python scripts/migrate_ins_relapses.py "$SRC" "$DEST" data/ins_relapse_drugs.csv
 echo 'migrate medications...'
 python scripts/migrate_medications.py "$SRC" "$DEST"
 echo 'migrate mpgn...'
