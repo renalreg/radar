@@ -13,7 +13,7 @@ Cyclosporin,0,Ciclosporin
 Cyclosporin dose increased,0,Ciclosporin
 CYTRON 5MG,0,
 diuretics,0,
-FLUCLOXICILLIN 250MG QDS,0,Flucloxicillin
+Flucloxicillin 250MG QDS,0,Flucloxacillin
 Frusemide,0,Furosemide
 High does steroids,1,
 high dose oral pred,1,
@@ -29,7 +29,7 @@ IV Methyl prednisolone,2,
 IV methylprednisolone,2,
 IV Teicoplanin,0,Teicoplanin
 methylprednisolone,2,
-Modigraf,0,Modigraf
+Modigraf,0,
 None,0,
 Penicilian V250,0,Penicillin
 Penicillin,0,Penicillin
@@ -56,12 +56,12 @@ rituximab,0,Rituximab
 Tacrolimus,0,Tacrolimus
 Aspirin,0,Aspirin
 INCREASED CYCLOSPORIN,0,Ciclosporin
-MMF,0,Myophenolate Mofetil - MMF
+MMF,0,Mycophenolate Mofetil - MMF
 20% Human albumin,0,Albumin
 Enalapril,0,Enalapril
 Omeprazole,0,Omeprazole
 Steroids,1,
-Mycophenolate,0,Myophenolate Mofetil - MMF
+Mycophenolate,0,Mycophenolate Mofetil - MMF
 cyclosporin A,0,Ciclosporin
 20% albumin infusion,0,Albumin
 Penicillin V,0,Penicillin

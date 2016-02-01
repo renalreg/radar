@@ -27,7 +27,7 @@ def migrate_therapies(old_conn, new_conn):
             WHERE p_nsaid = 1 OR nsaid = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Diuretic' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Diuretics' FROM tbl_therapy
             WHERE p_diuretic = 1 OR diuretic = 1
             GROUP BY radar_no
             UNION
@@ -35,19 +35,19 @@ def migrate_therapies(old_conn, new_conn):
             WHERE p_anti_htn = 1 OR anti_htn = 1 OR p_other_anti_htn = 1 OR other_anti_htn = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'ACE Inhibitor' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Antihypertensive - ACE Inhibitor' FROM tbl_therapy
             WHERE p_ace_inhib = 1 OR ace_inhib = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Angiotensin II Receptor Antagonist' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Antihypertensive - Angiotensin II Receptor Antagonist' FROM tbl_therapy
             WHERE p_arb_antag = 1 OR arb_antag = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Calcium Channel Blocker' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Antihypertensive - Calcium Channel Blockers' FROM tbl_therapy
             WHERE p_ca_ch_block = 1 OR ca_ch_block = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Beta Blocker' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Antihypertensive - Beta Blockers' FROM tbl_therapy
             WHERE p_b_block = 1 OR b_block = 1
             GROUP BY radar_no
             UNION
@@ -55,7 +55,7 @@ def migrate_therapies(old_conn, new_conn):
             WHERE p_insulin = 1 OR insulin = 1
             GROUP BY radar_no
             UNION
-            SELECT radar_no, min(date_treat), 'Statin' FROM tbl_therapy
+            SELECT radar_no, min(date_treat), 'Statins' FROM tbl_therapy
             WHERE p_lip_lower_ag = 1 OR lip_lower_ag = 1
             GROUP BY radar_no
             UNION

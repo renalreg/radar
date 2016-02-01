@@ -6,7 +6,7 @@ from radar_migration import Migration, tables, EXCLUDED_UNITS
 
 IMMMUNOSUPPRESSIVE_MAP = {
     1: 'Corticosteroids',
-    2: 'Myophenolate Mofetil - MMF',
+    2: 'Mycophenolate Mofetil - MMF',
     3: 'Azathioprine',
     4: 'Ciclosporin',
     6: 'Tacrolimus',
