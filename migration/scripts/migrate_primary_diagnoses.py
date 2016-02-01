@@ -75,7 +75,7 @@ def migrate_diagnoses(old_conn, new_conn):
         SELECT DISTINCT
             patient.radarNo AS radar_no,
             unit.unitcode AS cohort_code,
-            tbl_diagnosis.TODO as symptoms_date,
+            tbl_diagnosis.date_onset_renaldis AS symptoms_date,
             CASE
                 WHEN tbl_diagnosis.date_diag IS NOT NULL THEN
                     tbl_diagnosis.date_diag
