@@ -37,6 +37,7 @@ patients
 plasmapheresis
 posts
 pregnancies
+renal_diagnoses
 renal_imaging
 results
 salt_wasting_clinical_features
