@@ -411,6 +411,7 @@ diagnoses = Table(
 
 mpgn_clinical_pictures = Table(
     'mpgn_clinical_pictures', metadata,
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('date_of_picture', Date),
     Column('oedema', Boolean),
@@ -428,7 +429,7 @@ mpgn_clinical_pictures = Table(
 
 ins_clinical_pictures = Table(
     'ins_clinical_pictures', metadata,
-    Column('id', Integer, primary_key=True),
+    Column('id', postgresql.UUID, primary_key=True),
     Column('patient_id', Integer),
     Column('date_of_picture', Integer),
     Column('oedema', Boolean),
@@ -456,8 +457,12 @@ drugs = Table(
     Column('parent_drug_id', Integer),
 )
 
-drug_types = Table(
-    'drug_types', metadata,
+renal_diagnoses = Table(
+    'renal_diagnoses', metadata,
     Column('id', Integer, primary_key=True),
-    Column('name', String),
+    Column('patient_id', Integer),
+    Column('onset_date', Date),
+    Column('esrf_date', Date),
+    Column('created_user_id', Integer),
+    Column('modified_user_id', Integer),
 )
