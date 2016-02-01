@@ -1,5 +1,6 @@
 from datetime import datetime, date
-import csv
+
+import unicodecsv as csv
 
 
 def to_str(value):
@@ -46,7 +47,7 @@ def datetime_to_str(value):
 
 
 def rows_to_csv(rows, output_file):
-    writer = csv.writer(output_file)
+    writer = csv.writer(output_file, encoding='utf-8')
 
     first = True
 
