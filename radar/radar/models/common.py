@@ -10,8 +10,8 @@ def uuid_pk_column():
     return Column(postgresql.UUID, primary_key=True, server_default=text('uuid_generate_v4()'))
 
 
-def patient_id_column():
-    return Column(Integer, ForeignKey('patients.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+def patient_id_column(**kwargs):
+    return Column(Integer, ForeignKey('patients.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False, **kwargs)
 
 
 def patient_relationship(name):

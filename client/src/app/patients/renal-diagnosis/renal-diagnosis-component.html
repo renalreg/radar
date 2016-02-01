@@ -1,0 +1,55 @@
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-create-button action="create()"></span>
+      <span crud-edit-button item="item"></span>
+      <span crud-remove-button item="item"></span>
+    </p>
+
+    <table class="table properties" ng-if="item">
+      <tr>
+        <th>Date of Onset of Renal Disease</th>
+        <td>{{item.onsetDate | dateFormat}}</td>
+      </tr>
+
+      <tr>
+        <th>Date of ESRF</th>
+        <td>{{item.esrfDate | dateFormat}}</td>
+      </tr>
+    </table>
+
+    <p ng-if="!item">Not entered.</p>
+  </div>
+
+  <div ng-if="editing">
+    <p>
+      <span crud-view-button item="originalItem"></span>
+      <span crud-remove-button item="originalItem"></span>
+    </p>
+
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Date of Onset of Renal Disease</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.onsetDate"></div>
+          <div frm-errors errors="item.errors.onsetDate"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Date of ESRF</div>
+
+        <div frm-control>
+          <div frm-date-field model="item.esrfDate"></div>
+          <div frm-errors errors="item.errors.esrfDate"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-button action="view(originalItem)"></span>
+      </div>
+    </form>
+  </div>
+</div>
