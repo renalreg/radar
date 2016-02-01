@@ -28,6 +28,7 @@ from radar.models.patient_demographics import *
 from radar.models.patient_numbers import *
 from radar.models.plasmapheresis import *
 from radar.models.pregnancies import *
+from radar.models.renal_diagnoses import *
 from radar.models.renal_imaging import *
 from radar.models.salt_wasting import *
 from radar.models.source_types import *
