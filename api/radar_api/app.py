@@ -49,6 +49,7 @@ from radar_api.views import group_consultants
 from radar_api.views import roles
 from radar_api.views import logs
 from radar_api.views import renal_diagnoses
+from radar_api.views import random_password
 from radar_api.auth import set_cors_headers
 from radar.auth.sessions import refresh_token, current_user
 from radar.database import db
@@ -137,6 +138,7 @@ class RadarApi(Flask):
         plasmapheresis.register_views(self)
         posts.register_views(self)
         pregnancies.register_views(self)
+        random_password.register_views(self)
         recruit_patient.register_views(self)
         renal_diagnoses.register_views(self)
         renal_imaging.register_views(self)
