@@ -29,6 +29,8 @@ Index('logs_patient3_idx', Log.data[('original_data', 'patient_id')].astext.cast
 Index('logs_patient4_idx', Log.data[('new_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'UPDATE')
 Index('logs_patient5_idx', Log.data[('original_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'DELETE')
 
+Index('logs_table_name_idx', Log.data['table_name'].astext, postgresql_where=Log.type.in_(['INSERT', 'UPDATE', 'DELETE']))
+
 
 def log_changes(cls):
     event.listen(cls.__table__, 'after_create', DDL("""
@@ -63,7 +65,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                     'table_name', TG_TABLE_NAME,
                     'original_data', row_to_json(OLD)::jsonb,
                     'new_data', row_to_json(NEW)::jsonb,
-                    'statement', current_query()
+                    'query', current_query()
                 )::jsonb
             );
             RETURN NEW;
@@ -78,7 +80,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                 json_build_object(
                     'table_name', TG_TABLE_NAME,
                     'original_data', row_to_json(OLD)::jsonb,
-                    'statement', current_query()
+                    'query', current_query()
                 )::jsonb
             );
             RETURN OLD;
@@ -93,7 +95,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
                 json_build_object(
                     'table_name', TG_TABLE_NAME,
                     'new_data', row_to_json(NEW)::jsonb,
-                    'statement', current_query()
+                    'query', current_query()
                 )::jsonb
             );
             RETURN NEW;
