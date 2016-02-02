@@ -23,7 +23,10 @@
               <td>{{entry.date | dateTimeFormat}}</td>
               <td>{{entry.type}}</td>
               <td>{{entry.user.username | missing}}</td>
-              <td><div class="log-data">{{entry.data | json}}</div></td>
+              <td>
+                <div ng-if="entry.data" class="log-data">{{entry.data | json}}</div>
+                <div ng-if="!entry.data">-</div>
+              </td>
             </tr>
           </tbody>
         </table>
