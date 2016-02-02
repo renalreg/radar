@@ -1,6 +1,6 @@
 from radar.serializers.models import ModelSerializer
 from radar_api.serializers.meta import TinyUserSerializer
-from radar.serializers.fields import IntegerField, StringField
+from radar.serializers.fields import IntegerField, StringField, DateTimeField
 from radar.serializers.core import Serializer
 from radar.models.logs import Log
 
@@ -13,6 +13,8 @@ class LogSerializer(ModelSerializer):
 
 
 class LogListRequestSerializer(Serializer):
+    from_date = DateTimeField()
+    to_date = DateTimeField()
     type = StringField()
     user = IntegerField()
     patient = IntegerField()
