@@ -11,6 +11,10 @@ from radar.database import db
 from radar.exceptions import PermissionDenied
 
 
+def get_number_validators(number_group):
+    return NUMBER_VALIDATORS.get((number_group.type, number_group.code))
+
+
 class RecruitPatientSearchValidation(Validation):
     first_name = Field([not_empty(), upper()])
     last_name = Field([not_empty(), upper()])
@@ -19,6 +23,7 @@ class RecruitPatientSearchValidation(Validation):
     number_group = Field([required()])
 
     def validate_number_group(self, number_group):
+        # Group must have the recruitment flag set
         if not number_group.recruitment:
             raise ValidationError('Patient number not suitable for recruitment.')
 
@@ -28,13 +33,13 @@ class RecruitPatientSearchValidation(Validation):
     def validate(self, call, obj):
         number_group = obj['number_group']
 
-        number_validators = NUMBER_VALIDATORS.get((number_group.type, number_group.code))
+        number_validators = get_number_validators(number_group)
 
         if number_validators is not None:
             call.validators_for_field(number_validators, obj, self.number)
 
-        first_name = obj['first_name'].upper()
-        last_name = obj['last_name'].upper()
+        first_name = obj['first_name']
+        last_name = obj['last_name']
         date_of_birth = obj['date_of_birth']
         number = obj['number']
 
@@ -44,7 +49,7 @@ class RecruitPatientSearchValidation(Validation):
         for patient in patients:
             # Check the supplied demographics match existing demographics
             # Note: Users are able to check if a patient is on RaDaR by only supplying a patient number
-            # TODO this could do with being less strict
+            # TODO this could do with being less strict (soundex?)
             match = (
                 first_name in patient.first_names and
                 last_name in patient.last_names and
@@ -65,7 +70,7 @@ class PatientNumberValidation(Validation):
     def validate(self, call, obj):
         number_group = obj['number_group']
 
-        number_validators = NUMBER_VALIDATORS.get((number_group.type, number_group.code))
+        number_validators = get_number_validators(number_group)
 
         if number_validators is not None:
             call.validators_for_field(number_validators, obj, self.number)
@@ -80,6 +85,7 @@ class PatientNumberListField(ListField):
     def validate(self, obj):
         groups = set()
 
+        # Check for groups with multiple numbers (e.g. two NHS numbers)
         for i, x in enumerate(obj):
             group = x['number_group']
 
@@ -95,7 +101,7 @@ class RecruitPatientValidation(Validation):
     first_name = Field([not_empty(), upper()])
     last_name = Field([not_empty(), upper()])
     date_of_birth = Field([required(), not_in_future()])
-    gender = Field([required(), in_(GENDERS.keys())])
+    gender = Field([optional(), in_(GENDERS.keys())])  # Required when adding a new patient
     ethnicities = Field([optional(), in_(ETHNICITIES.keys())])
     cohort_group = Field([required()])
     hospital_group = Field([required()])
@@ -103,8 +109,6 @@ class RecruitPatientValidation(Validation):
 
     @classmethod
     def get_patient(cls, obj):
-        patient = None
-
         for i, x in enumerate(obj['patient_numbers']):
             if is_radar_group(x['number_group']):
                 patient_id = int(x['number'])
@@ -113,41 +117,45 @@ class RecruitPatientValidation(Validation):
                 if patient is None:
                     raise ValidationError({'patient_numbers': {i: {'number': 'Patient not found.'}}})
 
-                break
+                return patient
 
-        return patient
+        return None
 
     @classmethod
     def get_recruitment_group(cls, obj):
-        group = None
+        """Returns the first group with the recruitment flag set."""
 
-        for i, x in enumerate(obj['patient_numbers']):
+        for x in obj['patient_numbers']:
             if x['number_group'].recruitment:
-                group = x['number_group']
-                break
+                return x['number_group']
 
-        return group
+        return None
 
     @classmethod
-    def patient_number_exists(cls, x):
-        number = x['number']
-        number_group = x['number_group']
+    def is_duplicate_patient_number(cls, obj):
+        """Checks for a patient with this patient number."""
+        number = obj['number']
+        number_group = obj['number_group']
         number_filter = filter_by_patient_number_at_group(number, number_group)
         q = Patient.query.filter(number_filter).exists()
-        return db.session.query(q).scalar()
+        duplicate = db.session.query(q).scalar()
+        return duplicate
 
     def check_patient_numbers(cls, obj):
         for i, x in enumerate(obj['patient_numbers']):
-            if cls.patient_number_exists(x):
+            # Check if a patient already exists with this patient number
+            if cls.is_duplicate_patient_number(x):
                 raise ValidationError({'patient_numbers': {i: {'number': 'A patient already exists with this number.'}}})
 
     @pass_context
     def validate_cohort_group(self, ctx, cohort_group):
         current_user = ctx['user']
 
+        # Must have the RECRUIT_PATIENT permission on the cohort (this can be granted through hospital permissions)
         if not has_permission_for_group(current_user, cohort_group, PERMISSION.RECRUIT_PATIENT):
             raise PermissionDenied()
 
+        # Group must be a cohort
         if cohort_group.type != GROUP_TYPE.COHORT:
             raise ValidationError('Must be a cohort.')
 
@@ -157,9 +165,11 @@ class RecruitPatientValidation(Validation):
     def validate_hospital_group(self, ctx, hospital_group):
         current_user = ctx['user']
 
+        # Must have the RECRUIT_PATIENT permission on the hospital
         if not has_permission_for_group(current_user, hospital_group, PERMISSION.RECRUIT_PATIENT, explicit=True):
             raise PermissionDenied()
 
+        # Group must be a hospital
         if hospital_group.type != GROUP_TYPE.HOSPITAL:
             raise ValidationError('Must be a hospital.')
 
@@ -167,15 +177,18 @@ class RecruitPatientValidation(Validation):
 
     @pass_call
     def validate(self, call, obj):
+        # If a RaDaR number was supplied, find the patient
         patient = self.get_patient(obj)
 
+        # Adding an existing patient to another cohort/hospital
         if patient:
-            first_name = obj['first_name'].upper()
-            last_name = obj['last_name'].upper()
+            first_name = obj['first_name']
+            last_name = obj['last_name']
             date_of_birth = obj['date_of_birth']
 
             # Check the supplied demographics match existing demographics
             # This is to prevent a user recruiting a patient without knowing their demographics
+            # TODO this is very strict
             match = (
                 first_name in patient.first_names and
                 last_name in patient.last_names and
@@ -185,10 +198,12 @@ class RecruitPatientValidation(Validation):
             if not match:
                 raise ValidationError("Supplied demographics don't match existing demographics.")
         else:
+            # Gender is required when adding a new patient
             call.validators_for_field([required()], obj, self.gender)
 
             recruitment_group = self.get_recruitment_group(obj)
 
+            # Must supply a patient number for a group with the recruitment flag set (e.g. a NHS number)
             if recruitment_group is None:
                 raise ValidationError({'patient_numbers': {'_': 'Missing a patient number suitable for recruitment.'}})
 
