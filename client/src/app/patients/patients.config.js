@@ -81,7 +81,7 @@
       PLASMAPHERESIS: patientPage('Plasmapheresis', 'patient.plasmapheresis'),
       PREGNANCIES: patientPage('Pregnancies', 'patient.pregnancies'),
       PRIMARY_DIAGNOSIS: patientPage('Primary Diagnosis', 'patient.primaryDiagnosis', true),
-      RENAL_DIAGNOSIS: patientPage('Renal Diagnosis', 'patient.renalDiagnosis'),
+      RENAL_DIAGNOSIS: patientPage('Renal Disease Progression', 'patient.renalDiagnosis'),
       RENAL_IMAGING: patientPage('Renal Imaging', 'patient.renalImaging'),
       RESULTS: patientPage('Results', 'patient.results'),
       SALT_WASTING_CLINICAL_FEATURES: patientPage('Clinical Features', 'patient.saltWastingClinicalFeatures'),
