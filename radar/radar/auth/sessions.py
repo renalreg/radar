@@ -7,6 +7,7 @@ from radar.database import db
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
 from radar.config import config
+from radar.models.logs import Log
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
@@ -52,6 +53,11 @@ def login(username, password):
     user_session.is_active = True
     db.session.add(user_session)
 
+    log = Log()
+    log.type = 'LOGIN'
+    log.user = user
+    db.session.add(log)
+
     db.session.commit()
 
     _request_ctx_stack.top.user_session = user_session
@@ -64,6 +70,12 @@ def login(username, password):
 def logout():
     if current_user_session.is_authenticated():
         current_user_session.is_active = False
+
+        log = Log()
+        log.type = 'LOGOUT'
+        log.user = current_user
+        db.session.add(log)
+
         db.session.commit()
         _request_ctx_stack.top.user_session = AnonymousSession()
 
