@@ -50,6 +50,9 @@
 
       <div frm-control>
         <div frm-password-field model="item.password" required="true"></div>
+        <div frm-help>
+          <span random-password ng-model="randomPassword" ng-change="item.password = randomPassword; item.confirmPassword = randomPassword"></span>
+        </div>
         <div frm-errors errors="item.errors.password"></div>
       </div>
     </div>
