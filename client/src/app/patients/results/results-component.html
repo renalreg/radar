@@ -49,63 +49,66 @@
           </div>
 
           <div class="form-container">
-            <div frm-field frm-group>
-              <div frm-label>Source</div>
+            <div ng-if="item.observation">
 
-              <div frm-control>
-                <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
-                <div frm-errors errors="item.errors.sourceGroup"></div>
-              </div>
-            </div>
+              <div frm-field frm-group>
+                <div frm-label>Source</div>
 
-            <div frm-field frm-group>
-              <div frm-label>Date</div>
-
-              <div frm-control>
-                <div frm-date-field model="item.date" required="true"></div>
-                <div frm-errors errors="item.errors.date"></div>
-              </div>
-            </div>
-
-            <div ng-if="item.observation" frm-field frm-group>
-              <div frm-label>{{item.observation.shortName}}</div>
-
-              <div frm-control>
-                <div ng-switch="item.observation.valueType.id">
-                  <div
-                    ng-switch-when="INTEGER"
-                    frm-integer-field model="item.value"
-                    units="{{item.observation.units}}"
-                    required="true"></div>
-
-                  <div
-                    ng-switch-when="REAL"
-                    frm-number-field model="item.value"
-                    units="{{item.observation.units}}"
-                    required="true"></div>
-
-                  <div
-                    ng-switch-when="ENUM"
-                    frm-select-field model="item.value"
-                    options="item.observation.options"
-                    options-id="code"
-                    options-label="description"
-                    required="true"></div>
-
-                  <div
-                    ng-switch-when="STRING"
-                    frm-text-field model="item.value"
-                    required="true"></div>
+                <div frm-control>
+                  <div frm-source-group-field patient="patient" model="item.sourceGroup" required="true"></div>
+                  <div frm-errors errors="item.errors.sourceGroup"></div>
                 </div>
-
-                <div frm-errors errors="item.errors.value"></div>
               </div>
-            </div>
 
-            <div frm-buttons>
-              <span crud-save-button text="Save and Add Another"></span>
-              <span crud-save-button action="saveAndView()"></span>
-              <span crud-cancel-list-button></span>
+              <div frm-field frm-group>
+                <div frm-label>Date</div>
+
+                <div frm-control>
+                  <div frm-date-field model="item.date" required="true"></div>
+                  <div frm-errors errors="item.errors.date"></div>
+                </div>
+              </div>
+
+              <div frm-field frm-group>
+                <div frm-label>{{item.observation.shortName}}</div>
+
+                <div frm-control>
+                  <div ng-switch="item.observation.valueType.id">
+                    <div
+                      ng-switch-when="INTEGER"
+                      frm-integer-field model="item.value"
+                      units="{{item.observation.units}}"
+                      required="true"></div>
+
+                    <div
+                      ng-switch-when="REAL"
+                      frm-number-field model="item.value"
+                      units="{{item.observation.units}}"
+                      required="true"></div>
+
+                    <div
+                      ng-switch-when="ENUM"
+                      frm-select-field model="item.value"
+                      options="item.observation.options"
+                      options-id="code"
+                      options-label="description"
+                      required="true"></div>
+
+                    <div
+                      ng-switch-when="STRING"
+                      frm-text-field model="item.value"
+                      required="true"></div>
+                  </div>
+
+                  <div frm-errors errors="item.errors.value"></div>
+                </div>
+              </div>
+
+              <div frm-buttons>
+                <span crud-save-button text="Save and Add Another"></span>
+                <span crud-save-button action="saveAndView()"></span>
+                <span crud-cancel-list-button></span>
+              </div>
             </div>
           </div>
         </form>
