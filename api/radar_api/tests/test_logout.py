@@ -3,7 +3,7 @@ from radar.models.user_sessions import UserSession
 
 
 def get_session_count(user):
-    return UserSession.query.filter(UserSession.user == user, UserSession.is_active == True).count()  # noqa
+    return UserSession.query.filter(UserSession.user == user).count()
 
 
 def test_logout(app):
