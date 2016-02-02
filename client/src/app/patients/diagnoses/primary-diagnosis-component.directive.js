@@ -36,6 +36,7 @@
           $scope.sourceGroup = group;
         })
       ])).then(function() {
+        // TODO this won't handle a UKRDC primary diagnoses being entered before a RaDaR one
         var multiple = $scope.items.length > 1 || $scope.cohort.multipleDiagnoses;
 
         if ($scope.items.length === 0) {
