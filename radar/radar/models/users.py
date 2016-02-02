@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index, text
-
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index, text, select
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, column_property
+
 from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
 from radar.database import db
 from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
-from radar.models.logs import log_changes
+from radar.models.logs import log_changes, Log
 
 
 class UserCreatedUserMixin(object):
@@ -53,6 +53,14 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     group_users = relationship('GroupUser', back_populates='user', foreign_keys=[GroupUser.user_id])
+
+    last_login_date = column_property(
+        select([func.max(Log.date)]).where(Log.user_id == id).where(Log.type == 'LOGIN')
+    )
+
+    last_active_date = column_property(
+        select([func.max(Log.date)]).where(Log.user_id == id)
+    )
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)

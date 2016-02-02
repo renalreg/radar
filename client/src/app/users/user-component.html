@@ -45,6 +45,16 @@
           <th>Is Super Admin?</th>
           <td><span tick="item.isAdmin"></span></td>
         </tr>
+
+        <tr>
+          <th>Last Login</th>
+          <td>{{item.lastLoginDate | dateTimeFormat}}</td>
+        </tr>
+
+        <tr>
+          <th>Last Active</th>
+          <td>{{item.lastActiveDate | dateTimeFormat}}</td>
+        </tr>
       </tbody>
     </table>
   </div>

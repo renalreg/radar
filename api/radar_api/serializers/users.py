@@ -2,7 +2,7 @@ from radar_api.serializers.group_users import GroupUserSerializer
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, IntegerField, ListField, BooleanField, CommaSeparatedField
+from radar.serializers.fields import StringField, IntegerField, ListField, BooleanField, CommaSeparatedField, DateTimeField
 from radar.serializers.models import ModelSerializer
 from radar.models.users import User
 
@@ -17,6 +17,9 @@ class UserSerializer(MetaSerializerMixin, ModelSerializer):
     force_password_change = BooleanField()
     telephone_number = StringField()
     is_enabled = BooleanField()
+
+    last_login_date = DateTimeField(read_only=True)
+    last_active_date = DateTimeField(read_only=True)
 
     groups = ListField(field=GroupUserSerializer(), source='group_users', read_only=True)
 
