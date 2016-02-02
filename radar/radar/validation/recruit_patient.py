@@ -1,5 +1,5 @@
 from radar.validation.core import Validation, Field, pass_call, pass_context, ValidationError, ListField
-from radar.validation.validators import optional, required, not_in_future, in_, not_empty
+from radar.validation.validators import optional, required, not_in_future, in_, not_empty, upper
 from radar.models.patients import GENDERS, ETHNICITIES, Patient
 from radar.permissions import has_permission_for_group
 from radar.groups import is_radar_group
@@ -12,8 +12,8 @@ from radar.exceptions import PermissionDenied
 
 
 class RecruitPatientSearchValidation(Validation):
-    first_name = Field([required()])
-    last_name = Field([required()])
+    first_name = Field([not_empty(), upper()])
+    last_name = Field([not_empty(), upper()])
     date_of_birth = Field([required()])
     number = Field([not_empty()])
     number_group = Field([required()])
@@ -92,10 +92,10 @@ class PatientNumberListField(ListField):
 
 
 class RecruitPatientValidation(Validation):
-    first_name = Field([not_empty()])
-    last_name = Field([not_empty()])
+    first_name = Field([not_empty(), upper()])
+    last_name = Field([not_empty(), upper()])
     date_of_birth = Field([required(), not_in_future()])
-    gender = Field([optional(), in_(GENDERS.keys())])
+    gender = Field([required(), in_(GENDERS.keys())])
     ethnicities = Field([optional(), in_(ETHNICITIES.keys())])
     cohort_group = Field([required()])
     hospital_group = Field([required()])

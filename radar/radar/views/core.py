@@ -448,7 +448,7 @@ def request_json(serializer_class, validation_class=None):
                     ctx['user'] = current_user
 
                 try:
-                    validation.after_update(ctx, {}, data)
+                    data = validation.after_update(ctx, {}, data)
                 except ValidationError as e:
                     errors = serializer.transform_errors(e.errors)
                     raise ValidationError(errors)
