@@ -57,6 +57,14 @@ class UserQueryBuilder(object):
         self.query = self.query.filter(User.is_admin == is_admin)
         return self
 
+    def has_logged_in(self, has_logged_in):
+        if has_logged_in:
+            self.query = self.query.filter(User.last_login_date != None)  # noqa
+        else:
+            self.query = self.query.filter(User.last_login_date == None)  # noqa
+
+        return self
+
     def build(self):
         query = self.query
 

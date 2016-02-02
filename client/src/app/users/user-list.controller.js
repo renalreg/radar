@@ -28,7 +28,7 @@
       function filtersToParams(filters) {
         var params = {};
 
-        var keys = ['username', 'email', 'firstName', 'lastName', 'isEnabled', 'isAdmin'];
+        var keys = ['username', 'email', 'firstName', 'lastName', 'isEnabled', 'isAdmin', 'hasLoggedIn'];
 
         _.forEach(keys, function(key) {
           var value = filters[key];

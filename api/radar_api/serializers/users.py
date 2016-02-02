@@ -49,3 +49,4 @@ class UserListRequestSerializer(Serializer):
     group = CommaSeparatedField(GroupReferenceField())
     is_enabled = BooleanField()
     is_admin = BooleanField()
+    has_logged_in = BooleanField()
