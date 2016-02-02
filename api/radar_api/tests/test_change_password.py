@@ -100,6 +100,6 @@ def test_weak_password(app):
 
     assert data == {
         'errors': {
-            'password': ['Password is too weak.']
+            'password': ['Password is too weak, try including an uppercase letter.']
         }
     }
