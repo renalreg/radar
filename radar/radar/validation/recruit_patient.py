@@ -14,7 +14,7 @@ from radar.exceptions import PermissionDenied
 class RecruitPatientSearchValidation(Validation):
     first_name = Field([not_empty(), upper()])
     last_name = Field([not_empty(), upper()])
-    date_of_birth = Field([required()])
+    date_of_birth = Field([required(), not_in_future()])
     number = Field([not_empty()])
     number_group = Field([required()])
 
