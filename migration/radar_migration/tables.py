@@ -30,6 +30,7 @@ groups = Table(
     Column('name', String),
     Column('short_name', String),
     Column('recruitment', Boolean),
+    Column('multiple_diagnoses', Boolean),
     Column('pages', postgresql.ARRAY(String)),
 )
 
