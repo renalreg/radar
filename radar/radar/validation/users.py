@@ -1,4 +1,4 @@
-from radar.auth.passwords import check_password_hash, is_strong_password
+from radar.auth.passwords import check_password_hash, check_password_strength, WeakPasswordError
 from radar.validation.core import Validation, Field, pass_old_obj, pass_context, ValidationError, pass_new_obj, \
     pass_call, pass_old_value
 from radar.validation.meta import MetaValidationMixin
@@ -37,6 +37,7 @@ class UserValidation(MetaValidationMixin, Validation):
         if old_obj.id is None or old_username != new_username:
             q = User.query.filter(User.username == new_username)
 
+            # Ignore self
             if old_obj.id is not None:
                 q = q.filter(User.id != old_obj.id)
 
@@ -55,8 +56,11 @@ class UserValidation(MetaValidationMixin, Validation):
         if password is not None:
             allow_weak_passwords = ctx.get('allow_weak_passwords', False)
 
-            if not allow_weak_passwords and not is_strong_password(password, new_obj):
-                raise ValidationError('Password is too weak.')
+            if not allow_weak_passwords:
+                try:
+                    check_password_strength(password, new_obj)
+                except WeakPasswordError as e:
+                    raise ValidationError(e.message)
 
         return password
 

@@ -1,5 +1,6 @@
 import werkzeug.security
 import zxcvbn
+import re
 
 from radar.config import config
 from radar.utils import random_string
@@ -130,3 +131,23 @@ def is_strong_password(password, user=None):
         user_inputs.extend(USER_INPUTS)
 
     return password_score(password, user_inputs) >= min_score
+
+
+class WeakPasswordError(Exception):
+    pass
+
+
+def check_password_strength(password, user=None):
+    if not is_strong_password(password, user):
+        if len(password) < 8:
+            raise WeakPasswordError('Password is too weak, try something longer.')
+        elif not re.search('[a-z]', password):
+            raise WeakPasswordError('Password is too weak, try including a lowercase letter.')
+        elif not re.search('[A-Z]', password):
+            raise WeakPasswordError('Password is too weak, try including an uppercase letter.')
+        elif not re.search('[0-9]', password):
+            raise WeakPasswordError('Password is too weak, try including a number.')
+        elif re.match('^[a-zA-Z0-9]+$', password):
+            raise WeakPasswordError('Password is too weak, try including some punctuation.')
+        else:
+            raise WeakPasswordError('Password is too weak.')
