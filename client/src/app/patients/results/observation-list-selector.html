@@ -15,16 +15,17 @@
             <th sort-helper="units">Units</th>
             <th sort-helper="minValue">Min Value</th>
             <th sort-helper="maxValue">Max Value</th>
+            <th sort-helper="getCount(this)">Count</th>
           </tr>
         </thead>
 
         <tbody>
           <tr>
-            <th colspan="8">Selected</th>
+            <th colspan="9">Selected</th>
           </tr>
 
           <tr ng-if="selectedObservations.length === 0">
-            <td colspan="8" class="empty">Please choose some observations from the list below.</td>
+            <td colspan="9" class="empty">Please choose some observations from the list below.</td>
           </tr>
 
           <tr ng-repeat="observation in selectedObservations">
@@ -38,6 +39,7 @@
             <td>{{observation.units | missing}}</td>
             <td>{{observation.minValue | missing}}</td>
             <td>{{observation.maxValue | missing}}</td>
+            <td>{{getCount(observation) | missing}}</td>
 
             <td>
               <div class="btn-group">
@@ -48,17 +50,21 @@
           </tr>
 
           <tr>
-            <th colspan="8">Available</th>
+            <th colspan="9">Available</th>
           </tr>
 
           <tr>
-            <td colspan="8">
+            <td colspan="9">
               <div filter-helper></div>
             </td>
           </tr>
 
-          <tr ng-if="!page.getCount()">
-            <td colspan="8" class="empty">No matching observations.</td>
+          <tr ng-if="!observations.length">
+            <td colspan="9" class="empty">No results available.</td>
+          </tr>
+
+          <tr ng-if="observations.length && !page.getCount()">
+            <td colspan="9" class="empty">No matching observations.</td>
           </tr>
 
           <tr ng-repeat="observation in page.getItems()">
@@ -72,6 +78,7 @@
             <td>{{observation.units | missing}}</td>
             <td>{{observation.minValue | missing}}</td>
             <td>{{observation.maxValue | missing}}</td>
+            <td>{{getCount(observation) | missing}}</td>
 
             <td></td>
           </tr>
