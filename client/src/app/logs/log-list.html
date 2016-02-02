@@ -1,33 +1,87 @@
 <div page-wrapper>
   <h1 class="page-header">Logs <small>{{count}} entries</small></h1>
 
-    <div loading="loading" list-helper="proxy">
-      <div ng-show="!items.length">
-        <p>No entries found.</p>
+  <div class="row">
+    <div class="col-sm-8">
+      <div loading="loading" list-helper="proxy">
+        <div ng-show="!items.length">
+          <p>No entries found.</p>
+        </div>
+
+        <table class="table table-condensed table-striped" ng-if="items.length">
+          <thead>
+            <tr>
+              <th sort-helper="date">Date</th>
+              <th>Type</th>
+              <th>User</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-repeat="entry in items">
+              <td>{{entry.date | dateTimeFormat}}</td>
+              <td>{{entry.type}}</td>
+              <td>{{entry.user.username | missing}}</td>
+              <td><div class="log-data">{{entry.data | json}}</div></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div pagination-helper></div>
       </div>
+    </div>
 
-      <table class="table table-condensed table-striped" ng-if="items.length">
-        <thead>
-          <tr>
-            <th sort-helper="date">Date</th>
-            <th>Type</th>
-            <th>Table</th>
-            <th>User</th>
-            <th></th>
-          </tr>
-        </thead>
+    <div class="col-sm-4">
+      <h3>Search</h3>
 
-        <tbody>
-          <tr ng-repeat="entry in items">
-            <td>{{entry.date | dateTimeFormat}}</td>
-            <td>{{entry.type}}</td>
-            <td>{{entry.tableName}}</td>
-            <td>{{entry.user.username | missing}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <form class="form-horizontal form-container" submit-if-valid="search()" novalidate>
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
 
-      <div pagination-helper></div>
+        <div frm-field frm-group>
+          <div frm-label>Type</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.type"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>User ID</div>
+
+          <div frm-control>
+            <div frm-integer-field model="filters.user"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Patient ID</div>
+
+          <div frm-control>
+            <div frm-integer-field model="filters.patient"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-field frm-group>
+          <div frm-label>Table Name</div>
+
+          <div frm-control>
+            <div frm-text-field model="filters.tableName"></div>
+            <div frm-errors></div>
+          </div>
+        </div>
+
+        <div frm-buttons>
+          <span submit-button>Search</span>
+          <button ng-click="clear()" class="btn btn-link">Clear</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

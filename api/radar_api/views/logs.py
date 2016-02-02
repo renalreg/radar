@@ -1,4 +1,7 @@
-from radar_api.serializers.logs import LogSerializer
+from sqlalchemy import Integer, or_, and_
+from flask import request
+
+from radar_api.serializers.logs import LogSerializer, LogListRequestSerializer
 from radar.models.logs import Log
 from radar.permissions import AdminPermission
 from radar.views.core import ListModelView, RetrieveModelView
@@ -9,6 +12,40 @@ class LogListView(ListModelView):
     model_class = Log
     permission_classes = [AdminPermission]
     sort_fields = ['date']
+
+    def filter_query(self, query):
+        query = super(LogListView, self).filter_query(query)
+
+        serializer = LogListRequestSerializer()
+        args = serializer.args_to_value(request.args)
+
+        type = args.get('type')
+        user_id = args.get('user')
+        patient_id = args.get('patient')
+        table_name = args.get('table_name')
+
+        if type is not None:
+            query = query.filter(Log.type == type)
+
+        if user_id is not None:
+            query = query.filter(Log.user_id == user_id)
+
+        if patient_id is not None:
+            query = query.filter(or_(
+                and_(Log.type == 'VIEW_PATIENT', Log.data['patient_id'].astext.cast(Integer) == patient_id),
+                and_(Log.type == 'INSERT', Log.data[('new_data', 'patient_id')].astext.cast(Integer) == patient_id),
+                and_(Log.type == 'UPDATE', Log.data[('original_data', 'patient_id')].astext.cast(Integer) == patient_id),
+                and_(Log.type == 'UPDATE', Log.data[('new_data', 'patient_id')].astext.cast(Integer) == patient_id),
+                and_(Log.type == 'DELETE', Log.data[('original_data', 'patient_id')].astext.cast(Integer) == patient_id),
+            ))
+
+        if table_name is not None:
+            query = query.filter(
+                Log.type.in_(['INSERT', 'UPDATE', 'DELETE']),
+                Log.data['table_name'].astext == table_name
+            )
+
+        return query
 
 
 class LogDetailView(RetrieveModelView):
