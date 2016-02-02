@@ -19,10 +19,18 @@ class LogListView(ListModelView):
         serializer = LogListRequestSerializer()
         args = serializer.args_to_value(request.args)
 
+        from_date = args.get('from_date')
+        to_date = args.get('to_date')
         type = args.get('type')
         user_id = args.get('user')
         patient_id = args.get('patient')
         table_name = args.get('table_name')
+
+        if from_date is not None:
+            query = query.filter(Log.date >= from_date)
+
+        if to_date is not None:
+            query = query.filter(Log.date <= to_date)
 
         if type is not None:
             query = query.filter(Log.type == type)
