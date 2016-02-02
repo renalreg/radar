@@ -1,6 +1,6 @@
 from radar.validation.core import Field, Validation, ValidationError
 from radar.validation.validators import required
-from radar.auth.passwords import is_strong_password
+from radar.auth.passwords import check_password_strength, WeakPasswordError
 
 
 class ResetPasswordValidation(Validation):
@@ -9,8 +9,10 @@ class ResetPasswordValidation(Validation):
     password = Field([required()])
 
     def validate_password(self, password):
-        # TODO second argument
-        if not is_strong_password(password):
-            raise ValidationError('Password is too weak.')
+        try:
+            # TODO pass user argument to check_password_strength
+            check_password_strength(password)
+        except WeakPasswordError as e:
+            raise ValidationError(e.message)
 
         return password
