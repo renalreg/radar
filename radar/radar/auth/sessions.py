@@ -50,7 +50,6 @@ def login(username, password):
     user_session.date = func.now()
     user_session.ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
     user_session.user_agent = request.headers.get('User-Agent')
-    user_session.is_active = True
     db.session.add(user_session)
 
     log = Log()
@@ -69,7 +68,7 @@ def login(username, password):
 
 def logout():
     if current_user_session.is_authenticated():
-        current_user_session.is_active = False
+        db.session.delete(current_user_session)
 
         log = Log()
         log.type = 'LOGOUT'
@@ -77,6 +76,7 @@ def logout():
         db.session.add(log)
 
         db.session.commit()
+
         _request_ctx_stack.top.user_session = AnonymousSession()
 
 
@@ -85,14 +85,14 @@ def logout_other_sessions():
         UserSession.query\
             .filter(UserSession.user == current_user)\
             .filter(UserSession.id != current_user_session.id)\
-            .update({'is_active': False})
+            .delete()
         db.session.commit()
 
 
 def logout_user(user):
     UserSession.query\
         .filter(UserSession.user == user)\
-        .update({'is_active': False})
+        .delete()
 
 
 def refresh_token(response):
@@ -149,7 +149,6 @@ def get_user_session_from_token(token):
     q = UserSession.query
     q = q.join(UserSession.user)
     q = q.filter(UserSession.id == user_session_id)
-    q = q.filter(UserSession.is_active)
     q = q.filter(UserSession.ip_address == get_ip_address())
     q = q.filter(UserSession.user_agent == get_user_agent())
     q = q.filter(User.is_enabled == True)  # noqa

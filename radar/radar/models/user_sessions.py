@@ -20,8 +20,6 @@ class UserSession(db.Model):
     ip_address = Column(postgresql.INET, nullable=False)
     user_agent = Column(String, nullable=True)
 
-    is_active = Column(Boolean, nullable=False)
-
     @classmethod
     def is_authenticated(cls):
         return True
