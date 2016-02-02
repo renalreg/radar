@@ -11,6 +11,7 @@ from radar.serializers.fields import StringField, IntegerField, FloatField,\
 from radar.serializers.models import ReferenceField
 from radar.serializers.fields import LabelledStringField, LabelledEnumField
 from radar.validation.core import ValidationError
+from radar_api.serializers.patient_fields import PatientReferenceField
 
 
 class IntegerObservationSerializer(Serializer):
@@ -221,3 +222,12 @@ class ObservationListRequestSerializer(Serializer):
 
 class ResultListRequestSerializer(Serializer):
     observation_id = CommaSeparatedField(IntegerField())
+
+
+class ObservationCountListRequestSerializer(Serializer):
+    patient = PatientReferenceField()
+
+
+class ObservationCountSerializer(Serializer):
+    observation = ObservationSerializer()
+    count = IntegerField()
