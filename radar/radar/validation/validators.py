@@ -17,8 +17,6 @@ USERNAME_REGEX = re.compile('^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
 USERNAME_MIN_LENGTH = 4
 USERNAME_MAX_LENGTH = 32
 
-PASSWORD_MIN_LENGTH = 8
-
 EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
 EMAIL_NAME_REGEX = re.compile(r'^.* <\S+@[^\.@\s][^@]*\.[^\.@\s]+>$')
 
