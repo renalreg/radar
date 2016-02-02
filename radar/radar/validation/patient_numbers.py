@@ -1,4 +1,4 @@
-from radar.groups import is_radar_group, get_radar_group
+from radar.groups import is_radar_group
 from radar.validation.core import Validation, pass_call, ValidationError, Field
 from radar.validation.sources import RadarSourceValidationMixin
 from radar.validation.meta import MetaValidationMixin
@@ -22,7 +22,7 @@ class PatientNumberValidation(PatientValidationMixin, RadarSourceValidationMixin
     @classmethod
     def is_duplicate(cls, obj):
         q = PatientNumber.query
-        q = q.filter(PatientNumber.source_group == get_radar_group())
+        q = q.filter(PatientNumber.source_group == obj.source_group)
         q = q.filter(PatientNumber.number_group == obj.number_group)
         q = q.filter(PatientNumber.number == obj.number)
 
