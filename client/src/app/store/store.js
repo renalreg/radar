@@ -209,6 +209,8 @@
 
         item.isSaving = true;
 
+        self.broadcast(modelName, 'before_save', item);
+
         if (create) {
           promise = adapter.create(modelName, data);
         } else {
@@ -253,23 +255,37 @@
           item.isSaving = false;
         });
 
+        promise = promise.then(function(item) {
+          self.broadcast(modelName, 'after_save', item);
+          return item;
+        });
+
         return promise;
       };
 
       Store.prototype.remove = function(obj) {
+        var self = this;
         var id = obj.getId();
         var modelName = obj.modelName;
 
         obj.isSaving = true;
         obj.isDeleted = true;
 
-        return adapter.remove(modelName, id)
+        self.broadcast(modelName, 'before_remove', obj);
+
+        var promise = adapter.remove(modelName, id)
           ['catch'](function() {
             obj.isDeleted = false;
           })
           ['finally'](function() {
             obj.isSaving = false;
           });
+
+        promise = promise.then(function() {
+          self.broadcast(modelName, 'after_remove', obj);
+        });
+
+        return promise;
       };
 
       Store.prototype.addEventListener = function(event, callback) {
