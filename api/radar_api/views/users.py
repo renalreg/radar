@@ -48,6 +48,9 @@ class UserListView(ListModelView):
         if args.get('is_admin') is not None:
             builder.is_admin(args['is_admin'])
 
+        if args.get('has_logged_in') is not None:
+            builder.has_logged_in(args['has_logged_in'])
+
         query = builder.build()
 
         return query
