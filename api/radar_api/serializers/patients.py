@@ -1,6 +1,6 @@
 from radar_api.serializers.meta import MetaSerializerMixin
 from radar_api.serializers.group_patients import GroupPatientSerializer
-from radar_api.serializers.groups import GroupReferenceField, TinyGroupReferenceField
+from radar_api.serializers.groups import GroupReferenceField, TinyGroupSerializer
 from radar.patients import PatientProxy
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField, \
@@ -8,11 +8,12 @@ from radar.serializers.fields import StringField, BooleanField, IntegerField, \
 from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledStringField, LabelledIntegerField
 from radar.models.patients import Patient, GENDERS, ETHNICITIES
+from radar_api.serializers.meta import TinyUserSerializer
 
 
 class TinyGroupPatientSerializer(Serializer):
     id = IntegerField()
-    group = TinyGroupReferenceField()
+    group = TinyGroupSerializer()
     from_date = DateTimeField()
     to_date = DateTimeField()
     current = BooleanField(read_only=True)
@@ -30,7 +31,8 @@ class TinyPatientSerializer(Serializer):
     ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
     groups = ListField(TinyGroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
-    recruited_group = TinyGroupReferenceField(read_only=True)
+    recruited_group = TinyGroupSerializer(read_only=True)
+    recruited_user = TinyUserSerializer(read_only=True)
     comments = StringField()
     current = BooleanField(read_only=True)
 
@@ -54,7 +56,8 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     ethnicity = LabelledStringField(ETHNICITIES, read_only=True)
     groups = ListField(field=GroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = DateTimeField(read_only=True)
-    recruited_group = GroupReferenceField(read_only=True)
+    recruited_group = TinyGroupSerializer(read_only=True)
+    recruited_user = TinyUserSerializer(read_only=True)
     comments = StringField()
     current = BooleanField(read_only=True)
 

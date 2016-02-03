@@ -95,37 +95,45 @@ class Patient(db.Model, MetaModelMixin):
         q = q.where(Group.type == GROUP_TYPE.OTHER)
         return q
 
-    @hybrid_property
-    def recruited_group(self):
-        group_patients = [x for x in self.group_patients if is_radar_group(x.group)]
-
+    @property
+    def _recruited_group_patient(self):
         from_date = None
-        recruited_group = None
+        recruited_group_patient = None
 
-        for x in group_patients:
+        for group_patient in self.group_patients:
             if (
-                is_radar_group(x.group) and
+                is_radar_group(group_patient.group) and
                 (
                     from_date is None or
-                    x.from_date < from_date
+                    group_patient.from_date < from_date
                 )
             ):
-                from_date = x.from_date
-                recruited_group = x.created_group
+                from_date = group_patient.from_date
+                recruited_group_patient = group_patient
 
-        return recruited_group
+        return recruited_group_patient
 
-    # TODO relationship?
-    @recruited_group.expression
-    def recruited_group(cls):
-        return select([GroupPatient.created_group])\
-            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
-            .where(GroupPatient.patient_id == cls.id)\
-            .where(Group.code == GROUP_CODE_RADAR)\
-            .where(Group.type == GROUP_TYPE.OTHER)\
-            .order_by(GroupPatient.from_date)\
-            .limit(1)\
-            .as_scalar()
+    @property
+    def recruited_user(self):
+        group_patient = self._recruited_group_patient
+
+        if group_patient is None:
+            user = None
+        else:
+            user = group_patient.created_user
+
+        return user
+
+    @property
+    def recruited_group(self):
+        group_patient = self._recruited_group_patient
+
+        if group_patient is None:
+            group = None
+        else:
+            group = group_patient.created_group
+
+        return group
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics

@@ -26,8 +26,22 @@
 
       <li class="info">
         <span>
-          <span class="key">Recruited</span>
+          <span class="key">Recruited On</span>
           <span class="value">{{patient.recruitedDate | dateFormat}}</span>
+        </span>
+      </li>
+
+      <li class="info">
+        <span>
+          <span class="key">Recruited By</span>
+          <span class="value">{{patient.recruitedUser.username}}</span>
+        </span>
+      </li>
+
+      <li class="info">
+        <span>
+          <span class="key">Recruited At</span>
+          <span class="value">{{patient.recruitedGroup.shortName}}</span>
         </span>
       </li>
 
