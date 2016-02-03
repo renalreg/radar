@@ -199,7 +199,7 @@ def test_update_self(app, username):
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
-def test_delete_self(app, username, other_username, expected):
+def test_delete_self(app, username):
     user = get_user(username)
 
     client = app.test_client()
