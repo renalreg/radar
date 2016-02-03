@@ -6,7 +6,7 @@ from radar.user_search import UserQueryBuilder
 from radar.views.core import ListModelView, CreateModelView, RetrieveModelView, UpdateModelView, DestroyModelView
 from radar.models.users import User
 from radar.auth.sessions import current_user, logout_other_sessions, logout_user
-from radar.permissions import UserRetrievePermission, UserCreatePermission, UserUpdatePermission, AdminPermission
+from radar.permissions import UserRetrievePermission, UserCreatePermission, UserUpdatePermission, UserDestroyPermission
 from radar.database import db
 
 
@@ -101,7 +101,7 @@ class UserUpdateView(UpdateModelView):
 
 class UserDestroyView(DestroyModelView):
     model_class = User
-    permission_classes = [AdminPermission]
+    permission_classes = [UserDestroyPermission]
 
 
 def register_views(app):

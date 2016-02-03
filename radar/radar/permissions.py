@@ -367,6 +367,17 @@ class UserUpdatePermission(Permission):
         return has_permission_for_user(user, obj, PERMISSION.EDIT_USER)
 
 
+class UserDestroyPermission(Permission):
+    def has_object_permission(self, request, user, obj):
+        if not super(UserDestroyPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        return (
+            user.is_admin and  # only admin's can delete users
+            obj != user  # can't delete yourself
+        )
+
+
 class RecruitPatientPermission(Permission):
     def has_permission(self, request, user):
         if not super(RecruitPatientPermission, self).has_permission(request, user):
