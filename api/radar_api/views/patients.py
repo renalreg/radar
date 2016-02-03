@@ -2,8 +2,8 @@ from flask import request
 
 from radar_api.serializers.patients import PatientSerializer, PatientListRequestSerializer, TinyPatientSerializer
 from radar.patient_search import PatientQueryBuilder
-from radar.permissions import PatientPermission
-from radar.views.core import ListModelView, RetrieveUpdateModelView
+from radar.permissions import PatientPermission, AdminPermission
+from radar.views.core import ListModelView, RetrieveUpdateModelView, DestroyModelView
 from radar.models.patients import Patient
 from radar.auth.sessions import current_user
 from radar_api.logs import log_view_patients, log_view_patient
@@ -96,6 +96,12 @@ class PatientDetailView(RetrieveUpdateModelView):
         return patient
 
 
+class PatientDestroyView(DestroyModelView):
+    model_class = Patient
+    permission_classes = [AdminPermission]
+
+
 def register_views(app):
     app.add_url_rule('/patients', view_func=PatientListView.as_view('patient_list'))
     app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
+    app.add_url_rule('/patients/<int:id>', view_func=PatientDestroyView.as_view('patient_destroy'))
