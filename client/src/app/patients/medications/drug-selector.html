@@ -18,17 +18,17 @@
         <td>{{selectedDrug.parentDrug.name | missing}}</td>
       </tr>
 
-      <tr ng-if="!selectedDrug">
+      <tr ng-show="!selectedDrug">
         <td colspan="3">
           <div filter-helper></div>
         </td>
       </tr>
 
-      <tr ng-if="!selectedDrug && !page.getCount()">
+      <tr ng-show="!selectedDrug && !page.getCount()">
         <td colspan="3" class="empty">No matching drugs.</td>
       </tr>
 
-      <tr ng-if="!selectedDrug" ng-repeat="drug in page.getItems()">
+      <tr ng-show="!selectedDrug" ng-repeat="drug in page.getItems()">
         <td>
           <button type="button" ng-click="use(drug)" class="btn btn-primary btn-xs">Select</button>
         </td>
