@@ -20,6 +20,7 @@
 
     // Logout user just before session expires
     var logoutTimeout = null;
+    var logoutNotification = null;
 
     $rootScope.$on('sessions.login', extend);
     $rootScope.$on('sessions.refresh', extend);
@@ -53,7 +54,7 @@
         var logoutDelay = (sessionTimeout - 60) * 1000;
 
         logoutTimeout = $timeout(function() {
-          notificationService.info({
+          logoutNotification = notificationService.info({
             message: 'You were logged out due to inactivity.',
             timeout: 0
           });
@@ -77,6 +78,11 @@
       if (logoutTimeout !== null) {
         $timeout.cancel(logoutTimeout);
         logoutTimeout = null;
+      }
+
+      if (logoutNotification !== null) {
+        logoutNotification.remove();
+        logoutNotification = null;
       }
     }
   }
