@@ -21,3 +21,5 @@
 <h2 class="page-header">Metadata</h2>
 
 <div patient-metadata-component patient="patient"></div>
+
+<p ng-if="user.isAdmin"><a ui-sref="patient.delete({patientId: patient.id})" class="delete-patient">Delete Patient</a></p>

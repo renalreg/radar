@@ -28,6 +28,12 @@
       url: '/all',
       templateUrl: 'app/patients/all.html'
     });
+
+    $stateProvider.state('patient.delete', {
+      url: '/delete',
+      templateUrl: 'app/patients/delete-patient.html',
+      controller: 'DeletePatientController'
+    });
   }]);
 
   app.factory('patientPages', ['_', function(_) {

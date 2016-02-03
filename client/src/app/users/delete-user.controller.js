@@ -9,7 +9,7 @@
 
     $scope.remove = function(user) {
       user.remove()
-        ['then'](function() {
+        .then(function() {
           notificationService.success('User deleted.');
           $state.go('users');
         })
