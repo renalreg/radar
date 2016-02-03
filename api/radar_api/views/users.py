@@ -3,10 +3,10 @@ from flask import request
 from radar.validation.users import UserValidation
 from radar_api.serializers.users import UserSerializer, UserListRequestSerializer
 from radar.user_search import UserQueryBuilder
-from radar.views.core import ListModelView, CreateModelView, RetrieveModelView, UpdateModelView
+from radar.views.core import ListModelView, CreateModelView, RetrieveModelView, UpdateModelView, DestroyModelView
 from radar.models.users import User
 from radar.auth.sessions import current_user, logout_other_sessions, logout_user
-from radar.permissions import UserRetrievePermission, UserCreatePermission, UserUpdatePermission
+from radar.permissions import UserRetrievePermission, UserCreatePermission, UserUpdatePermission, AdminPermission
 from radar.database import db
 
 
@@ -99,8 +99,14 @@ class UserUpdateView(UpdateModelView):
         return r
 
 
+class UserDestroyView(DestroyModelView):
+    model_class = User
+    permission_classes = [AdminPermission]
+
+
 def register_views(app):
     app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))
     app.add_url_rule('/users', view_func=UserCreateView.as_view('user_create'))
     app.add_url_rule('/users/<int:id>', view_func=UserRetrieveView.as_view('user_retrieve'))
     app.add_url_rule('/users/<int:id>', view_func=UserUpdateView.as_view('user_update'))
+    app.add_url_rule('/users/<int:id>', view_func=UserDestroyView.as_view('user_destroy'))
