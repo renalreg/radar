@@ -16,7 +16,7 @@
           session.login(user);
         })
         ['catch'](function() {
-          session.logout();
+          session.logout(true);
         })
         ['finally'](function() {
           // Always resolve so the application still boots even if our token is no longer valid

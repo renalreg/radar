@@ -327,8 +327,8 @@
       };
 
       Store.prototype.broadcast = function(modelName, event) {
-        var args = Array.prototype.slice.call(1, arguments);
         var listeners = this.getListeners(modelName, event);
+        var args = Array.prototype.slice.call(arguments, 2);
 
         _.forEach(listeners, function(listener) {
           listener(args);

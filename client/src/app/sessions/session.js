@@ -3,21 +3,36 @@
 
   var app = angular.module('radar.sessions');
 
-  function sessionFactory(authStore, $rootScope) {
+  function sessionFactory(authStore, $rootScope, _) {
     function Session() {
       this.setUser(null);
+      this.user = null;
+      this.callbacks = {};
     }
 
-    Session.prototype.logout = function() {
-      authStore.logout();
-      this.setUser(null);
-      $rootScope.$broadcast('sessions.logout');
+    Session.prototype.logout = function(forced) {
+      if (forced === undefined) {
+        forced = false;
+      }
+
+      var userId = this.getUserId();
+
+      // Logged in
+      if (userId !== null) {
+        authStore.logout();
+        this.setUser(null);
+
+        this.broadcast('logout', {
+          userId: userId,
+          forced: forced
+        });
+      }
     };
 
     Session.prototype.login = function(user) {
       authStore.setUserId(user.id);
       this.setUser(user);
-      $rootScope.$broadcast('sessions.login');
+      this.broadcast('login');
     };
 
     Session.prototype.getToken = function() {
@@ -26,7 +41,7 @@
 
     Session.prototype.setToken = function(token) {
       authStore.setToken(token);
-      $rootScope.$broadcast('sessions.refresh');
+      this.broadcast('refresh');
     };
 
     Session.prototype.getUserId = function() {
@@ -50,10 +65,29 @@
       $rootScope.isAuthenticated = isAuthenticated;
     };
 
+    Session.prototype.broadcast = function(name) {
+      var self = this;
+
+      var callbacks = self.callbacks[name] || [];
+      var args = Array.prototype.slice.call(arguments, 1);
+
+      _.forEach(callbacks, function(callback) {
+        callback.apply(self, args);
+      });
+    };
+
+    Session.prototype.on = function(name, callback) {
+      if (this.callbacks[name] === undefined) {
+        this.callbacks[name] = [];
+      }
+
+      this.callbacks[name].push(callback);
+    };
+
     return new Session();
   }
 
-  sessionFactory.$inject = ['authStore', '$rootScope'];
+  sessionFactory.$inject = ['authStore', '$rootScope', '_'];
 
   app.factory('session', sessionFactory);
 })();

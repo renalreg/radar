@@ -3,11 +3,11 @@
 
   var app = angular.module('radar.store');
 
-  function unauthorizedResponseFactory($q, session, notificationService, $state, $rootScope) {
+  function unauthorizedResponseFactory($q, session, notificationService, $state) {
     var notification = null;
 
     // Hide logout notification on login
-    $rootScope.$on('sessions.login', function() {
+    session.on('login', function() {
       if (notification !== null) {
         notification.remove();
         notification = null;
@@ -18,7 +18,7 @@
       return promise['catch'](function(response) {
         // API endpoint requires login (token may have expired)
         if (response.status === 401) {
-          session.logout();
+          session.logout(true);
 
           if (notification === null) {
             notification = notificationService.info({message: 'You have been logged out.', timeout: 0});
@@ -33,7 +33,7 @@
   }
 
   unauthorizedResponseFactory.$inject = [
-    '$q', 'authService', 'notificationService', '$state', '$rootScope'
+    '$q', 'session', 'notificationService', '$state'
   ];
 
   app.factory('unauthorizedResponse', unauthorizedResponseFactory);

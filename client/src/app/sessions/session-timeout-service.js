@@ -5,11 +5,11 @@
 
   function factory(
     notificationService,
-    $rootScope,
     adapter,
     $timeout,
     authService,
-    $state
+    $state,
+    session
   ) {
     // Session length in seconds
     var sessionTimeout = null;
@@ -22,9 +22,9 @@
     var logoutTimeout = null;
     var logoutNotification = null;
 
-    $rootScope.$on('sessions.login', extend);
-    $rootScope.$on('sessions.refresh', extend);
-    $rootScope.$on('sessions.logout', cancel);
+    session.on('login', extend);
+    session.on('refresh', extend);
+    session.on('logout', cancel);
 
     return {
       init: init
@@ -58,7 +58,7 @@
             message: 'You were logged out due to inactivity.',
             timeout: 0
           });
-          authService.logout();
+          authService.logout(true);
           $state.go('login');
         }, logoutDelay);
       }
@@ -89,11 +89,11 @@
 
   factory.$inject = [
     'notificationService',
-    '$rootScope',
     'adapter',
     '$timeout',
     'authService',
-    '$state'
+    '$state',
+    'session'
   ];
 
   app.factory('sessionTimeoutService', factory);

@@ -60,7 +60,7 @@
     }
 
     /** Log the user out */
-    function logout() {
+    function logout(forced) {
       var deferred = $q.defer();
 
       // Logged in and not already logging out
@@ -69,7 +69,7 @@
 
         adapter.post('/logout')['finally'](function() {
           loggingOut = false;
-          session.logout();
+          session.logout(forced);
           deferred.resolve();
         });
       } else {
