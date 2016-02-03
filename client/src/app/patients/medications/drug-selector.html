@@ -13,22 +13,22 @@
         <td>
           <button type="button" ng-click="drop()" class="btn btn-primary btn-xs">Deselect</button>
         </td>
-        
+
         <td>{{selectedDrug.name}}</td>
         <td>{{selectedDrug.parentDrug.name | missing}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="!selectedDrug">
         <td colspan="3">
           <div filter-helper></div>
         </td>
       </tr>
 
-      <tr ng-if="!page.getCount()">
+      <tr ng-if="!selectedDrug && !page.getCount()">
         <td colspan="3" class="empty">No matching drugs.</td>
       </tr>
 
-      <tr ng-repeat="drug in page.getItems()">
+      <tr ng-if="!selectedDrug" ng-repeat="drug in page.getItems()">
         <td>
           <button type="button" ng-click="use(drug)" class="btn btn-primary btn-xs">Select</button>
         </td>

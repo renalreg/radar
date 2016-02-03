@@ -16,17 +16,17 @@
         <td>{{selectedDiagnosis.name}}</td>
       </tr>
 
-      <tr>
+      <tr ng-if="!selectedDiagnosis">
         <td colspan="2">
           <div filter-helper></div>
         </td>
       </tr>
 
-      <tr ng-if="!page.getCount()">
+      <tr ng-if="!selectedDiagnosis && !page.getCount()">
         <td colspan="2" class="empty">No matching diagnoses.</td>
       </tr>
 
-      <tr ng-repeat="diagnosis in page.getItems()">
+      <tr ng-if="!selectedDiagnosis" ng-repeat="diagnosis in page.getItems()">
         <td>
           <button type="button" ng-click="use(diagnosis)" class="btn btn-primary btn-xs">Select</button>
         </td>
