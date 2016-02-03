@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship, column_property
 
 from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
 from radar.database import db
-from radar.models.groups import GroupUser
 from radar.models.common import ModifiedDateMixin, CreatedDateMixin
 from radar.models.logs import log_changes, Log
 
