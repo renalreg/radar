@@ -101,8 +101,8 @@ class GroupUser(db.Model, MetaModelMixin):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group', backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
 
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship('User', foreign_keys=[user_id])
+    user_id = Column(Integer, ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    user = relationship('User', foreign_keys=[user_id], backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
     role = Column(EnumType(ROLE, name='role'), nullable=False)
 
     def has_permission(self, permission):

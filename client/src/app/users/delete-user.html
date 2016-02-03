@@ -1,0 +1,183 @@
+<div page-wrapper>
+  <h1 class="page-header">Delete {{user.username}}?</h1>
+
+  <p>
+    Are you sure you want to delete <strong>{{user.username}}</strong>?
+    In most cases you should disable the user instead.
+  </p>
+
+  <p>
+      <button ng-disabled="user.isDeleting" class="btn btn-danger" ng-click="remove(user)">
+        <i class="fa fa-trash-o" ng-show="!user.isDeleting"></i>
+        <i class="fa fa-spinner fa-spin" ng-show="user.isDeleting"></i>
+        Delete
+      </button>
+  </p>
+
+  <p>Note: deletion will fail if any records in RaDaR reference this user. In this case you should disable the user instead.</p>
+
+<div loading="loading" crud>
+  <div ng-if="viewing">
+    <p>
+      <span crud-edit-button item="item"></span>
+    </p>
+
+    <table class="table properties">
+      <tbody>
+        <tr>
+          <th>Username</th>
+          <td>{{item.username}}</td>
+        </tr>
+
+        <tr>
+          <th>Email</th>
+          <td>{{item.email}}</td>
+        </tr>
+
+        <tr>
+          <th>First Name</th>
+          <td>{{item.firstName | missing}}</td>
+        </tr>
+
+        <tr>
+          <th>Last Name</th>
+          <td>{{item.lastName | missing}}</td>
+        </tr>
+
+        <tr>
+          <th>Telephone Number</th>
+          <td>{{item.telephoneNumber | missing}}</td>
+        </tr>
+
+        <tr>
+          <th>Force Password Change?</th>
+          <td><span tick="item.forcePasswordChange"></span></td>
+        </tr>
+
+        <tr>
+          <th>Is Enabled?</th>
+          <td><span tick="item.isEnabled"></span></td>
+        </tr>
+
+        <tr>
+          <th>Is Super Admin?</th>
+          <td><span tick="item.isAdmin"></span></td>
+        </tr>
+
+        <tr>
+          <th>Last Login</th>
+          <td>{{item.lastLoginDate | dateTimeFormat}}</td>
+        </tr>
+
+        <tr>
+          <th>Last Active</th>
+          <td>{{item.lastActiveDate | dateTimeFormat}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div ng-if="editing">
+    <form class="form-horizontal form-container" crud-submit="saveAndView()" novalidate>
+      <div frm-field frm-group>
+        <div frm-label>Username</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.username" required="true"></div>
+          <div frm-errors errors="item.errors.username"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Email</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.email" required="true"></div>
+          <div frm-errors errors="item.errors.email"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>First Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.firstName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Last Name</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.lastName" required="true"></div>
+          <div frm-errors errors="item.errors.firstName"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Telephone Number</div>
+
+        <div frm-control>
+          <div frm-text-field model="item.telephoneNumber"></div>
+          <div frm-errors errors="item.errors.telephoneNumber"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Password</div>
+
+        <div frm-control>
+          <div frm-password-field model="item.password"></div>
+          <div frm-help>Leave blank to keep the same password.</div>
+          <div frm-help>
+            <span random-password ng-model="randomPassword" ng-change="item.password = randomPassword; item.confirmPassword = randomPassword"></span>
+          </div>
+          <div frm-errors errors="item.errors.password"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Confirm Password</div>
+
+        <div frm-control>
+          <div frm-confirm-password-field model="item.confirmPassword" password="item.password" required="item.password.length > 0"></div>
+          <div frm-errors></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Force Password Change?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.forcePasswordChange"></div>
+          <div frm-errors errors="item.errors.forcePasswordChange"></div>
+        </div>
+      </div>
+
+      <div frm-field frm-group>
+        <div frm-label>Is Enabled?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.isEnabled"></div>
+          <div frm-errors errors="item.errors.isEnabled"></div>
+        </div>
+      </div>
+
+      <div ng-if="currentUser.isAdmin" frm-field frm-group>
+        <div frm-label>Is Super Admin?</div>
+
+        <div frm-control>
+          <div frm-boolean-field model="item.isAdmin"></div>
+          <div frm-help>Note: this gives access to <strong>all</strong> patients.</div>
+          <div frm-errors errors="item.errors.isAdmin"></div>
+        </div>
+      </div>
+
+      <div frm-buttons>
+        <span crud-save-button></span>
+        <span crud-cancel-view-button></span>
+      </div>
+    </form>
+  </div>
+</div>

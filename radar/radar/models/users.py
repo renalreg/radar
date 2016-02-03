@@ -52,8 +52,6 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
     force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
-    group_users = relationship('GroupUser', back_populates='user', foreign_keys=[GroupUser.user_id])
-
     last_login_date = column_property(
         select([func.max(Log.date)]).where(Log.user_id == id).where(Log.type == 'LOGIN')
     )

@@ -276,6 +276,7 @@
         var promise = adapter.remove(modelName, id)
           ['catch'](function() {
             obj.isDeleted = false;
+            return $q.reject();
           })
           ['finally'](function() {
             obj.isSaving = false;

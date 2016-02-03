@@ -6,4 +6,6 @@
   <h2>Groups</h2>
 
   <div user-groups-component user="user"></div>
+
+  <p ng-if="currentUser.isAdmin"><a ui-sref="deleteUser({userId: user.id})" class="delete-user">Delete User</a></p>
 </div>
