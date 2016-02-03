@@ -199,7 +199,7 @@ def test_update_self(app, username):
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
-def test_delete_self(app, username):
+def test_delete_self(app, username, other_username, expected):
     user = get_user(username)
 
     client = app.test_client()
@@ -207,8 +207,8 @@ def test_delete_self(app, username):
 
     response = client.delete('/users/%s' % user.id)
 
-    # Not possible to delete users
-    assert response.status_code == 405
+    # Not possible to delete yourself
+    assert response.status_code == 403
 
     user = User.query.get(user.id)
 
