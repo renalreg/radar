@@ -81,7 +81,7 @@ def package_mock_ukrdc(v, root_path):
         if config_file:
             package.add_config_file(dst)
 
-    package.before_install_script = 'before_install.sh'
+    package.before_install = 'before_install.sh'
     rpm_path = package.build()
 
     success('Successfully built rpm at %s' % rpm_path)

@@ -223,7 +223,12 @@ class Package(object):
         self.name = name
         self.version = version
         self.architecture = architecture
-        self.before_install_script = None
+        self.after_install = None
+        self.before_install = None
+        self.after_remove = None
+        self.before_remove = None
+        self.after_upgrade = None
+        self.before_upgrade = None
         self.url = url
         self.release = release
         self.dependencies = []
@@ -261,8 +266,23 @@ class Package(object):
         for path in self.config_files:
             args.extend(['--config-files', path])
 
-        if self.before_install_script is not None:
-            args.extend(['--before-install', self.before_install_script])
+        if self.after_install is not None:
+            args.extend(['--after-install', self.after_install])
+
+        if self.before_install is not None:
+            args.extend(['--before-install', self.before_install])
+
+        if self.after_remove is not None:
+            args.extend(['--after-remove', self.after_remove])
+
+        if self.before_remove is not None:
+            args.extend(['--before-remove', self.before_remove])
+
+        if self.after_upgrade is not None:
+            args.extend(['--after-upgrade', self.after_upgrade])
+
+        if self.before_upgrade is not None:
+            args.extend(['--before-upgrade', self.before_upgrade])
 
         for path in self.paths:
             args.append(path)
