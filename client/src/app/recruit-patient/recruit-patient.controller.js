@@ -76,8 +76,8 @@
     function patientNotFound() {
       $scope.patient = {
         existing: false,
-        firstName: $scope.searchParams.firstName,
-        lastName: $scope.searchParams.lastName,
+        firstName: $scope.searchParams.firstName.toUpperCase(),
+        lastName: $scope.searchParams.lastName.toUpperCase(),
         dateOfBirth: $scope.searchParams.dateOfBirth,
         patientNumbers: [
           {
