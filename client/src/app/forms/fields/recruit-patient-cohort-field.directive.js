@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmRecruitPatientCohortField', ['sortCohorts', 'cohortStore', 'session', 'hasPermissionForGroup', function(sortCohorts, cohortStore, session, hasPermissionForGroup) {
+  function factory(_, sortCohorts, cohortStore, session, hasPermissionForGroup) {
     return {
       restrict: 'A',
       scope: {
@@ -31,5 +31,9 @@
         }
       }
     };
-  }]);
+  }
+
+  factory.$inject = ['_', 'sortCohorts', 'cohortStore', 'session', 'hasPermissionForGroup'];
+
+  app.directive('frmRecruitPatientCohortField', factory);
 })();
