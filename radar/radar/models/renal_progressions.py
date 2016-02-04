@@ -6,15 +6,15 @@ from radar.models.logs import log_changes
 
 
 @log_changes
-class RenalDiagnosis(db.Model, MetaModelMixin):
-    __tablename__ = 'renal_diagnoses'
+class RenalProgression(db.Model, MetaModelMixin):
+    __tablename__ = 'renal_progressions'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column(unique=True)
-    patient = patient_relationship('renal_diagnoses')
+    patient = patient_relationship(__tablename__)
 
     onset_date = Column(Date)
     esrf_date = Column(Date)
 
-Index('renal_diagnoses_patient_idx', RenalDiagnosis.patient_id)
+Index('renal_progressions_patient_idx', RenalProgression.patient_id)
