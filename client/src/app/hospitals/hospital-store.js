@@ -14,8 +14,14 @@
           }
         });
       },
-      findMany: function() {
-        return store.findMany('groups', {type: 'HOSPITAL'});
+      findMany: function(params) {
+        if (params === undefined) {
+          params = {};
+        }
+
+        params.type = 'HOSPITAL';
+
+        return store.findMany('groups', params);
       }
     };
   }]);

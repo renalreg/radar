@@ -3,7 +3,7 @@
 
   var app = angular.module('radar.forms.fields');
 
-  app.directive('frmHospitalField', ['_', 'session', 'hospitalStore', 'sortHospitals', function(_, session, hospitalStore, sortHospitals) {
+  app.directive('frmRecruitPatientHospitalField', ['_', 'session', 'hospitalStore', 'sortHospitals', 'hasPermissionForGroup', function(_, session, hospitalStore, sortHospitals, hasPermissionForGroup) {
     return {
       restrict: 'A',
       scope: {
@@ -15,17 +15,15 @@
         scope.$watch(function() {
           return session.user;
         }, function(user) {
-          if (user) {
-            if (user.isAdmin) {
-              setHospitals([]);
-              hospitalStore.findMany().then(setHospitals);
-            } else {
-              var hospitals = user.getHospitals();
-              setHospitals(hospitals);
-            }
-          } else {
-            setHospitals([]);
-          }
+          setHospitals([]);
+
+          hospitalStore.findMany().then(function(hospitals) {
+            hospitals = _.filter(hospitals, function(x) {
+              return hasPermissionForGroup(user, x, 'RECRUIT_PATIENT', true);
+            });
+
+            setHospitals(hospitals);
+          });
         });
 
         function setHospitals(hospitals) {

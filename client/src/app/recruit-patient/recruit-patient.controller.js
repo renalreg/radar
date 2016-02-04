@@ -29,7 +29,7 @@
     init();
 
     function init() {
-      $q.all([loadGenders(), loadEthnicities(), loadRecruitmentGroups()]).then(function() {
+      $q.all([loadGenders(), loadEthnicities(), loadNumberGroups()]).then(function() {
         $scope.loading = false;
       });
     }
@@ -122,13 +122,13 @@
       });
     }
 
-    function loadRecruitmentGroups() {
-      return store.findMany('groups', {recruitment: true}).then(function(groups) {
+    function loadNumberGroups() {
+      return store.findMany('groups', {isRecruitmentNumberGroup: true}).then(function(groups) {
         // Sort by name
         groups = _.sortBy(groups, 'name');
 
         // Set the options
-        $scope.recruitmentGroups = groups;
+        $scope.numberGroups = groups;
       });
     }
   }

@@ -23,8 +23,8 @@ class RecruitPatientSearchValidation(Validation):
     number_group = Field([required()])
 
     def validate_number_group(self, number_group):
-        # Group must have the recruitment flag set
-        if not number_group.recruitment:
+        # Group must have the is_recruitment_number_group flag set
+        if not number_group.is_recruitment_number_group:
             raise ValidationError('Patient number not suitable for recruitment.')
 
         return number_group
@@ -126,7 +126,7 @@ class RecruitPatientValidation(Validation):
         """Returns the first group with the recruitment flag set."""
 
         for x in obj['patient_numbers']:
-            if x['number_group'].recruitment:
+            if x['number_group'].is_recruitment_number_group:
                 return x['number_group']
 
         return None
@@ -158,6 +158,10 @@ class RecruitPatientValidation(Validation):
         # Group must be a cohort
         if cohort_group.type != GROUP_TYPE.COHORT:
             raise ValidationError('Must be a cohort.')
+
+        # Check this is a recruitment group
+        if not cohort_group.is_recruitment_group:
+            raise ValidationError('Cannot recruit into this cohort.')
 
         return cohort_group
 

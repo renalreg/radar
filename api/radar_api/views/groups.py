@@ -25,8 +25,11 @@ class GroupListView(ListCreateModelView):
         if 'type' in args:
             query = query.filter(Group.type == args['type'])
 
-        if 'recruitment' in args:
-            query = query.filter(Group.recruitment == args['recruitment'])
+        if 'is_recruitment_group' in args:
+            query = query.filter(Group.is_recruitment_group == args['is_recruitment_group'])
+
+        if 'is_recruitment_number_group' in args:
+            query = query.filter(Group.is_recruitment_number_group == args['is_recruitment_number_group'])
 
         return query
 

@@ -14,8 +14,14 @@
           }
         });
       },
-      findMany: function() {
-        return store.findMany('groups', {type: 'COHORT'});
+      findMany: function(params) {
+        if (params === undefined) {
+          params = {};
+        }
+
+        params.type = 'COHORT';
+
+        return store.findMany('groups', params);
       }
     };
   }]);

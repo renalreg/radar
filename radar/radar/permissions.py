@@ -68,7 +68,7 @@ def has_permission_for_group(user, group, permission, explicit=False):
     if user.is_admin:
         return True
     else:
-        # Users get permissions on the RaDAR group through their other groups
+        # Users get permissions on the RaDaR group through their other groups
         if not explicit and is_radar_group(group) and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
             return has_permission(user, permission)
 
