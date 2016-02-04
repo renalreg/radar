@@ -76,8 +76,8 @@ def search_ukrdc_patients(params):
 
     for patient in response_data['patients']:
         result = {}
-        result['first_name'] = patient['name']['given']
-        result['last_name'] = patient['name']['family']
+        result['first_name'] = patient['name']['given'].upper()
+        result['last_name'] = patient['name']['family'].upper()
         result['date_of_birth'] = patient['birth_time']
         result['gender'] = patient['gender']
         result['patient_numbers'] = []
