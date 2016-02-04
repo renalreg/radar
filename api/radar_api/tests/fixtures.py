@@ -158,7 +158,7 @@ def create_fixtures():
     create_user('null')
 
     radar_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
-    nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, recruitment=True)
+    nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, is_recruitment_number_group=True)
     cohort1_group = create_cohort('COHORT1')
     cohort2_group = create_cohort('COHORT2')
     hospital1_group = create_hospital('HOSPITAL1')
