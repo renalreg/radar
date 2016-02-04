@@ -23,6 +23,9 @@ Index('logs_date_idx', Log.date)
 Index('logs_type_idx', Log.type)
 Index('logs_user_idx', Log.user_id)
 
+Index('logs_user_date_idx', Log.user_id, Log.date)
+Index('logs_user_type_idx', Log.user_id, Log.type)
+
 Index('logs_patient1_idx', Log.data['patient_id'].astext.cast(Integer), postgresql_where=Log.type == 'VIEW_PATIENT')
 Index('logs_patient2_idx', Log.data[('new_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'INSERT')
 Index('logs_patient3_idx', Log.data[('original_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'UPDATE')
