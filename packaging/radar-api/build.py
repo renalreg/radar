@@ -83,6 +83,11 @@ def package_api(v, root_path):
             package.add_config_file(dst)
 
     package.before_install = 'before_install.sh'
+    package.after_install = 'after_install.sh'
+    package.after_upgrade = 'after_upgrade.sh'
+    package.before_remove = 'before_remove.sh'
+    package.after_remove = 'after_remove.sh'
+
     rpm_path = package.build()
 
     success('Successfully built rpm at %s' % rpm_path)
