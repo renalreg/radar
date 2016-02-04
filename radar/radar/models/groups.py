@@ -43,12 +43,14 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
-    recruitment = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
     pages = Column('pages', postgresql.ARRAY(EnumToStringType(PAGE)))
     instructions = Column(String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
+
+    is_recruitment_group = Column(Boolean, nullable=False, default=True, server_default=text('true'))
+    is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
     def patients(self):

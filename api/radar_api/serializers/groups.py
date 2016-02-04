@@ -43,4 +43,5 @@ class GroupSerializerMixin(object):
 class GroupListRequestSerializer(Serializer):
     code = StringField()
     type = EnumField(GROUP_TYPE)
-    recruitment = BooleanField()
+    is_recruitment_group = BooleanField()
+    is_recruitment_number_group = BooleanField()

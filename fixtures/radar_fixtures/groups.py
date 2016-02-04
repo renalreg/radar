@@ -21,11 +21,11 @@ def create_groups():
     create_cohorts()
     create_hospitals()
 
-    for code, name, recruitment in OTHER_GROUPS:
+    for code, name, is_recruitment_number_group in OTHER_GROUPS:
         group = Group()
         group.type = GROUP_TYPE.OTHER
         group.code = code
         group.name = name
         group.short_name = name
-        group.recruitment = recruitment
+        group.is_recruitment_number_group = is_recruitment_number_group
         group = validate_and_add(group)
