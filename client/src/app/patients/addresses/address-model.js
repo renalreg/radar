@@ -25,6 +25,10 @@
         lines.push(this.address3);
       }
 
+      if (this.address4) {
+        lines.push(this.address4);
+      }
+
       if (this.postcode) {
         lines.push(this.postcode);
       }

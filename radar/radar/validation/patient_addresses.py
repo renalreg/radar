@@ -34,6 +34,15 @@ class PatientAddressValidation(PatientValidationMixin, RadarSourceValidationMixi
         normalise_whitespace(),
         max_length(100)
     ])
+    address_4 = Field([
+        none_if_blank(),
+        optional(),
+        remove_trailing_comma(),
+        none_if_blank(),
+        optional(),
+        normalise_whitespace(),
+        max_length(100)
+    ])
     postcode = Field([
         required(),
         postcode()

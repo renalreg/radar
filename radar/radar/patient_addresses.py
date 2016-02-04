@@ -31,6 +31,13 @@ class PatientAddressProxy(object):
             return Empty
 
     @property
+    def address_4(self):
+        if self.demographics_permission:
+            return self.address.address_4
+        else:
+            return Empty
+
+    @property
     def postcode(self):
         postcode = self.address.postcode
 
