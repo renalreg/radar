@@ -1,4 +1,5 @@
-from radar.auth.sessions import login, logout_other_sessions
+from radar.auth.sessions import login, logout_other_sessions,\
+    DisabledLoginError, UsernameLoginError, PasswordLoginError
 
 from radar.serializers.core import Serializer
 from radar.serializers.fields import StringField, BooleanField, IntegerField
@@ -22,15 +23,15 @@ class LoginView(ApiView):
     @request_json(LoginSerializer, LoginValidation)
     @response_json(TokenSerializer)
     def post(self, credentials):
-        result = login(credentials['username'], credentials['password'])
-
-        if result is None:
+        try:
+            user, token = login(credentials['username'], credentials['password'])
+        except DisabledLoginError:
+            raise ValidationError({'username': 'Account disabled, please contact support.'})
+        except (UsernameLoginError, PasswordLoginError):
             raise ValidationError({'username': 'Incorrect username or password.'})
 
         if credentials.get('logout_other_sessions', False):
             logout_other_sessions()
-
-        user, token = result
 
         return {'user_id': user.id, 'token': token}
 

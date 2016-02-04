@@ -21,6 +21,22 @@ def get_secret_key():
     return config['SECRET_KEY']
 
 
+class LoginError(Exception):
+    pass
+
+
+class UsernameLoginError(LoginError):
+    pass
+
+
+class PasswordLoginError(LoginError):
+    pass
+
+
+class DisabledLoginError(LoginError):
+    pass
+
+
 def login(username, password):
     # Username should be case insensitive
     username = username.lower()
@@ -28,17 +44,19 @@ def login(username, password):
     # Get user by username
     q = User.query
     q = q.filter(User.username == username)
-    q = q.filter(User.is_enabled == True)  # noqa
-
     user = q.first()
 
     # User not found
     if user is None:
-        return None
+        raise UsernameLoginError()
+
+    # User is disabled
+    if not user.is_enabled:
+        raise DisabledLoginError()
 
     # Incorrect password
     if not user.check_password(password):
-        return None
+        raise PasswordLoginError()
 
     # Update old password hashes
     if user.needs_password_rehash:
