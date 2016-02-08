@@ -167,8 +167,6 @@ def get_user_session_from_token(token):
     q = UserSession.query
     q = q.join(UserSession.user)
     q = q.filter(UserSession.id == user_session_id)
-    q = q.filter(UserSession.ip_address == get_ip_address())
-    q = q.filter(UserSession.user_agent == get_user_agent())
     q = q.filter(User.is_enabled == True)  # noqa
 
     return q.first()
