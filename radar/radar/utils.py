@@ -85,6 +85,7 @@ def sql_year_filter(column, year):
     )
 
 
+# TODO this should just return number of months
 def seconds_to_age(seconds):
     years = float(seconds) / SECONDS_IN_YEAR
 
@@ -96,11 +97,6 @@ def seconds_to_age(seconds):
         years = int(years) + months
 
     return years * SECONDS_IN_YEAR
-
-
-def to_age(patient, event_date):
-    seconds = (event_date - patient.date_of_birth).total_seconds()
-    return seconds_to_age(seconds)
 
 
 def random_string(alphabet, length):

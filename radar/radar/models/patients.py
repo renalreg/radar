@@ -10,6 +10,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
 from radar.models.logs import log_changes
+from radar.utils import seconds_to_age
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -265,3 +266,14 @@ class Patient(db.Model, MetaModelMixin):
         values = [x.date_of_birth for x in self.patient_demographics]
         values = [x for x in values if x]
         return values
+
+    def to_age(self, date):
+        date_of_birth = self.date_of_birth
+
+        if date_of_birth is None:
+            seconds = None
+        else:
+            seconds = (date - date_of_birth).total_seconds()
+            seconds = seconds_to_age(seconds)
+
+        return seconds

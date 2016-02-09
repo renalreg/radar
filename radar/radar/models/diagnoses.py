@@ -7,7 +7,6 @@ from enum import Enum
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.types import EnumType
-from radar.utils import to_age
 from radar.models.logs import log_changes
 
 BIOPSY_DIAGNOSES = OrderedDict([
@@ -52,20 +51,20 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
         if self.symptoms_date is None:
             r = None
         else:
-            r = to_age(self.patient, self.symptoms_date)
+            r = self.patient.to_age(self.symptoms_date)
 
         return r
 
     @property
     def from_age(self):
-        return to_age(self.patient, self.from_date)
+        return self.patient.to_age(self.from_date)
 
     @property
     def to_age(self):
         if self.to_date is None:
             r = None
         else:
-            r = to_age(self.patient, self.to_date)
+            r = self.patient.to_age(self.to_date)
 
         return r
 
