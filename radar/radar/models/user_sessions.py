@@ -1,6 +1,6 @@
 from sqlalchemy import String, Column, Integer, ForeignKey, DateTime, Index
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
 from radar.models.users import User, AnonymousUser
@@ -13,8 +13,8 @@ class UserSession(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    user = relationship('User', backref=backref('user_sessions', cascade='all, delete-orphan', passive_deletes=True))
 
     date = Column(DateTime(timezone=True), nullable=False)
     ip_address = Column(postgresql.INET, nullable=False)
