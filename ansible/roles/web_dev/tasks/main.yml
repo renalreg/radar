@@ -3,6 +3,7 @@
   template: src={{ item }} dest=/etc/nginx/{{ item }} owner=root group=root mode=0644
   with_items:
     - radar_web_dev_headers
+    - radar_web_dev_no_cache
     - radar_web_dev_proxy
   notify:
     - restart nginx
