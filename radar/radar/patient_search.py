@@ -97,6 +97,8 @@ class PatientQueryBuilder(object):
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
 
+        return self
+
     def build(self, permissions=True, current=None):
         query = self.query
 

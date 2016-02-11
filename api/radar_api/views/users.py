@@ -14,7 +14,6 @@ class UserListView(ListModelView):
     serializer_class = UserSerializer
     validation_class = UserValidation
     model_class = User
-    sort_fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
     def get_query(self):
         serializer = UserListRequestSerializer()
@@ -50,6 +49,11 @@ class UserListView(ListModelView):
 
         if args.get('has_logged_in') is not None:
             builder.has_logged_in(args['has_logged_in'])
+
+        sort, reverse = self.get_sort_args()
+
+        if sort is not None:
+            builder.sort(sort, reverse)
 
         query = builder.build()
 

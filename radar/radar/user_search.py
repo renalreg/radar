@@ -65,6 +65,32 @@ class UserQueryBuilder(object):
 
         return self
 
+    def sort(self, column, reverse=False):
+        def direction(expression):
+            if reverse:
+                expression = expression.desc()
+
+            return expression
+
+        if column == 'email':
+            expressions = [direction(User.email)]
+        elif column == 'first_name':
+            expressions = [direction(User.first_name), direction(User.last_name)]
+        elif column == 'last_name':
+            expressions = [direction(User.last_name), direction(User.first_name)]
+        elif column == 'username':
+            expressions = [direction(User.username)]
+        else:
+            expressions = [direction(User.id)]
+
+        # Decided ties using ID
+        if column in ('email', 'first_name', 'last_name'):
+            expressions.append(User.id)
+
+        self.query = self.query.order_by(*expressions)
+
+        return self
+
     def build(self):
         query = self.query
 
