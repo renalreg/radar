@@ -292,9 +292,9 @@ def sort_by_recruited_date(reverse=False):
 
 def sort_patients(user, sort_by, reverse=False):
     if sort_by == 'first_name':
-        clauses = [sort_by_first_name(user, reverse)]
+        clauses = [sort_by_first_name(user, reverse), sort_by_last_name(user, reverse)]
     elif sort_by == 'last_name':
-        clauses = [sort_by_last_name(user, reverse)]
+        clauses = [sort_by_last_name(user, reverse), sort_by_first_name(user, reverse)]
     elif sort_by == 'gender':
         clauses = [sort_by_gender(reverse)]
     elif sort_by == 'date_of_birth':
