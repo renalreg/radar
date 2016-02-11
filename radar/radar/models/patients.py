@@ -151,7 +151,10 @@ class Patient(db.Model, MetaModelMixin):
         return select([column])\
             .select_from(join(PatientDemographics, patient_alias))\
             .where(patient_alias.id == cls.id)\
-            .order_by(PatientDemographics.modified_date.desc())\
+            .order_by(
+                PatientDemographics.modified_date.desc(),
+                PatientDemographics.id.desc(),
+            )\
             .limit(1)\
             .as_scalar()
 
@@ -163,7 +166,7 @@ class Patient(db.Model, MetaModelMixin):
             return None
 
         def by_modified_date(x):
-            return x.modified_date or datetime.min
+            return (x.modified_date or datetime.min, x.id)
 
         return max(patient_demographics, key=by_modified_date)
 
