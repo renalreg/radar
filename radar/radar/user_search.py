@@ -83,7 +83,7 @@ class UserQueryBuilder(object):
         else:
             expressions = [direction(User.id)]
 
-        # Decided ties using ID
+        # Decide ties using ID
         if column in ('email', 'first_name', 'last_name'):
             expressions.append(User.id)
 
