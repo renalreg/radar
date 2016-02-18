@@ -236,7 +236,7 @@ def _create_patients(n, data):
             hospital_group_patient.created_group = radar_group
             validate_and_add(hospital_group_patient)
 
-            if i < 5:
+            if data:
                 for source_type in source_types:
                     if source_type != SOURCE_TYPE_RADAR:
                         create_demographics(patient, hospital_group, source_type, gender)
