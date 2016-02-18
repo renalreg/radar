@@ -53,5 +53,6 @@ Note: you'll probably need to specify the `--connection-string` argument to
 1. Create patients:
 
    ```bash
-   python fixtures.py patients --patients 500
+   python fixtures.py patients --patients 450 --no-data
+   python fixtures.py patients --patients 50 --data
    ```

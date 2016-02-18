@@ -49,10 +49,11 @@ def all(ctx, patients, password):
 
 @cli.command()
 @click.option('--patients', default=5)
+@click.option('--data/--no-data', default=True)
 @click.pass_context
-def patients(ctx, patients):
+def patients(ctx, patients, data):
     with ctx.obj['app'].app_context():
-        create_patients(patients)
+        create_patients(patients, data)
         db.session.commit()
 
 

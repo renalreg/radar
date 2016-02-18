@@ -23,6 +23,7 @@ from radar_fixtures.transplants import create_transplants_f
 from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
+from radar_fixtures.results import create_results_f
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_NHS, GROUP_CODE_CHI, \
     GROUP_CODE_UKRR, GROUP_CODE_NHSBT
@@ -178,14 +179,14 @@ def create_patient_addresses_f():
     return create_patient_addresses
 
 
-def create_patients(n):
+def create_patients(n, data=True):
     with db.session.no_autoflush:
-        _create_patients(n)
+        _create_patients(n, data)
 
     db.session.flush()
 
 
-def _create_patients(n):
+def _create_patients(n, data):
     radar_group = get_radar_group()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
@@ -203,6 +204,7 @@ def _create_patients(n):
     create_patient_aliases = create_patient_aliases_f()
     create_patient_numbers = create_patient_numbers_f()
     create_patient_addresses = create_patient_addresses_f()
+    create_results = create_results_f()
 
     for i in range(n):
         print 'patient #%d' % (i + 1)
@@ -248,6 +250,7 @@ def _create_patients(n):
                     create_hospitalisations(patient, hospital_group, source_type, 3)
                     create_plasmapheresis(patient, hospital_group, source_type, 3)
                     create_renal_imaging(patient, hospital_group, source_type, 3)
+                    create_results(patient, hospital_group, source_type, 10, 25)
 
         cohort_group_patient = GroupPatient()
         cohort_group_patient.group = random.choice(cohort_groups)
