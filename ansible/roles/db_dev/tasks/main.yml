@@ -1,6 +1,6 @@
 ---
 - name: populate database
-  command: /home/vagrant/venv/bin/python /home/vagrant/src/fixtures/scripts/fixtures.py
+  command: /home/vagrant/venv/bin/python /home/vagrant/src/fixtures/scripts/fixtures.py all
   become: yes
   become_user: radar
 

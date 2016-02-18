@@ -27,6 +27,7 @@ from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_NHS, GROUP_CODE_CHI, \
     GROUP_CODE_UKRR, GROUP_CODE_NHSBT
 from radar.groups import get_radar_group
+from radar.database import db
 
 
 def create_demographics_f():
@@ -178,6 +179,13 @@ def create_patient_addresses_f():
 
 
 def create_patients(n):
+    with db.session.no_autoflush:
+        _create_patients(n)
+
+    db.session.flush()
+
+
+def _create_patients(n):
     radar_group = get_radar_group()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
@@ -218,7 +226,7 @@ def create_patients(n):
         radar_group_patient.created_group = radar_group
         validate_and_add(radar_group_patient)
 
-        for hospital_group in random.sample(hospital_groups, random.randint(1, 3)):
+        for hospital_group in random.sample(hospital_groups, random.randint(1, min(3, len(hospital_groups)))):
             hospital_group_patient = GroupPatient()
             hospital_group_patient.group = hospital_group
             hospital_group_patient.patient = patient
