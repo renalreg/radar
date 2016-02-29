@@ -212,7 +212,7 @@ def filter_by_year_of_death(year):
     return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
 
 
-def filter_by_group_roles(current_user, roles, current):
+def filter_by_group_roles(current_user, roles, current=None):
     patient_alias = aliased(Patient)
     sub_query = db.session.query(patient_alias)\
         .join(patient_alias.group_patients)\
