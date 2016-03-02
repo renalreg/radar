@@ -19,3 +19,4 @@ class LogListRequestSerializer(Serializer):
     user = IntegerField()
     patient = IntegerField()
     table_name = StringField()
+    username = StringField()

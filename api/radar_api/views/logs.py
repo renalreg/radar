@@ -5,6 +5,8 @@ from radar_api.serializers.logs import LogSerializer, LogListRequestSerializer
 from radar.models.logs import Log
 from radar.permissions import AdminPermission
 from radar.views.core import ListModelView, RetrieveModelView
+from radar.models.users import User
+from radar.validation.core import ValidationError
 
 
 class LogListView(ListModelView):
@@ -23,6 +25,7 @@ class LogListView(ListModelView):
         to_date = args.get('to_date')
         type = args.get('type')
         user_id = args.get('user')
+        username = args.get('username')
         patient_id = args.get('patient')
         table_name = args.get('table_name')
 
@@ -37,6 +40,14 @@ class LogListView(ListModelView):
 
         if user_id is not None:
             query = query.filter(Log.user_id == user_id)
+
+        if username is not None:
+            user = User.query.filter(User.username == username).first()
+
+            if user is None:
+                raise ValidationError({'username': 'User not found!'})
+
+            query = query.filter(Log.user == user)
 
         if patient_id is not None:
             query = query.filter(or_(

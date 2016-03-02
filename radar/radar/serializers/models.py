@@ -129,6 +129,7 @@ class ReferenceField(Field):
     type_map = {
         sqltypes.String: StringField,
         sqltypes.Integer: IntegerField,
+        postgresql.UUID: UUIDField,
     }
 
     default_error_messages = {
@@ -185,7 +186,10 @@ class ReferenceField(Field):
         return field_class(source=model_id)
 
     def get_object(self, id):
-        obj = self.get_model_class().query.get(id)
+        model_class = self.get_model_class()
+        model_id = self.get_model_id()
+
+        obj = model_class.query.filter(getattr(model_class, model_id) == id)
 
         if obj is None:
             self.fail('not_found')
