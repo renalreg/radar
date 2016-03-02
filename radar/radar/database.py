@@ -5,7 +5,7 @@ from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy import select
 
-# Session and SQLAlchemy that allow transactions to be rolled back in pytest
+# Session and SQLAlchemy classes that allow transactions to be rolled back in pytest
 # TODO report flask_sqlalchemy bug
 
 
@@ -31,6 +31,7 @@ class SQLAlchemy(SQLAlchemyBase):
     def create_session(self, options):
         return sessionmaker(class_=Session, db=self, **options)
 
+    # Overridden so we can listen for events on the engine
     def make_connector(self, app=None, bind=None):
         connector = super(SQLAlchemy, self).make_connector(app, bind)
         engine = connector.get_engine()
