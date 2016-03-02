@@ -6,7 +6,6 @@ from radar.roles import ROLE, ROLE_NAMES
 from radar.serializers.fields import ListField, StringField
 from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledEnumField
-from radar.roles import ROLE_NAMES
 from radar.serializers.fields import LabelledStringField
 
 
