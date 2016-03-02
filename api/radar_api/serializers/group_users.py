@@ -6,13 +6,15 @@ from radar.roles import ROLE, ROLE_NAMES
 from radar.serializers.fields import ListField, StringField
 from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledEnumField
+from radar.roles import ROLE_NAMES
+from radar.serializers.fields import LabelledStringField
 
 
 class GroupUserSerializer(UserSerializerMixin, MetaSerializerMixin, ModelSerializer):
     group = GroupReferenceField()
     role = LabelledEnumField(ROLE, ROLE_NAMES)
     permissions = ListField(StringField(), read_only=True)
-    managed_roles = ListField(StringField(), read_only=True)
+    managed_roles = ListField(LabelledStringField(ROLE_NAMES, read_only=True), read_only=True)
 
     class Meta(object):
         model_class = GroupUser
