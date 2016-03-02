@@ -12,6 +12,7 @@ class GroupUserSerializer(UserSerializerMixin, MetaSerializerMixin, ModelSeriali
     group = GroupReferenceField()
     role = LabelledEnumField(ROLE, ROLE_NAMES)
     permissions = ListField(StringField(), read_only=True)
+    managed_roles = ListField(StringField(), read_only=True)
 
     class Meta(object):
         model_class = GroupUser
