@@ -136,6 +136,27 @@ class Patient(db.Model, MetaModelMixin):
 
         return group
 
+    @property
+    def primary_patient_number(self):
+        patient_numbers = [x for x in self.patient_numbers if x.number_group.is_recruitment_number_group]
+
+        if len(patient_numbers) == 0:
+            return None
+
+        def by_modified_date(x):
+            return (x.modified_date or datetime.min, x.id)
+
+        return max(patient_numbers, key=by_modified_date)
+
+    @recruited_date.expression
+    def recruited_date(cls):
+        return select([func.min(GroupPatient.from_date)])\
+            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
+            .where(GroupPatient.patient_id == cls.id)\
+            .where(Group.code == GROUP_CODE_RADAR)\
+            .where(Group.type == GROUP_TYPE.OTHER)\
+            .as_scalar()
+
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
 

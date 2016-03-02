@@ -31,6 +31,13 @@ class PatientProxy(object):
             return Empty
 
     @property
+    def primary_patient_number(self):
+        if self.demographics_permission:
+            return self.patient.primary_patient_number
+        else:
+            return Empty
+
+    @property
     def year_of_birth(self):
         if self.patient.date_of_birth is not None:
             return self.patient.date_of_birth.year
