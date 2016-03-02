@@ -120,6 +120,7 @@ class ModelSerializer(Serializer):
     def update(self, obj, deserialized_data):
         for attr, value in deserialized_data.items():
             if hasattr(obj, attr):
+                print attr, value
                 setattr(obj, attr, value)
 
         return obj
@@ -189,7 +190,7 @@ class ReferenceField(Field):
         model_class = self.get_model_class()
         model_id = self.get_model_id()
 
-        obj = model_class.query.filter(getattr(model_class, model_id) == id)
+        obj = model_class.query.filter(getattr(model_class, model_id) == id).first()
 
         if obj is None:
             self.fail('not_found')
