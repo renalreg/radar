@@ -7,6 +7,7 @@ from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models.common import MetaModelMixin
 from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
 from radar.models.logs import log_changes
@@ -148,14 +149,31 @@ class Patient(db.Model, MetaModelMixin):
 
         return max(patient_numbers, key=by_modified_date)
 
-    @recruited_date.expression
-    def recruited_date(cls):
-        return select([func.min(GroupPatient.from_date)])\
-            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
-            .where(GroupPatient.patient_id == cls.id)\
-            .where(Group.code == GROUP_CODE_RADAR)\
-            .where(Group.type == GROUP_TYPE.OTHER)\
+    @hybrid_property
+    def primary_patient_number_number(self):
+        patient_number = self.primary_patient_number
+
+        if patient_number is None:
+            return None
+        else:
+            return patient_number.number
+
+    @primary_patient_number_number.expression
+    def primary_patient_number_number(cls):
+        patient_alias = aliased(Patient)
+
+        return (
+            select([PatientNumber.number])
+            .select_from(join(PatientNumber, patient_alias).join(Group, PatientNumber.number_group_id == Group.id))
+            .where(patient_alias.id == cls.id)
+            .where(Group.is_recruitment_number_group == True)  # noqa
+            .order_by(
+                PatientNumber.modified_date.desc(),
+                PatientNumber.id.desc(),
+            )
+            .limit(1)
             .as_scalar()
+        )
 
     def latest_demographics_attr(self, attr):
         demographics = self.latest_demographics
