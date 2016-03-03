@@ -9,6 +9,7 @@ from radar.serializers.models import ModelSerializer
 from radar.serializers.fields import LabelledStringField, LabelledIntegerField
 from radar.models.patients import Patient, GENDERS, ETHNICITIES
 from radar_api.serializers.meta import TinyUserSerializer
+from radar_api.serializers.patient_numbers import PatientNumberSerializer
 
 
 class TinyGroupPatientSerializer(Serializer):
@@ -35,6 +36,7 @@ class TinyPatientSerializer(Serializer):
     recruited_user = TinyUserSerializer(read_only=True)
     comments = StringField()
     current = BooleanField(read_only=True)
+    primary_patient_number = PatientNumberSerializer(read_only=True)
 
     def __init__(self, current_user, **kwargs):
         super(TinyPatientSerializer, self).__init__(**kwargs)
@@ -60,6 +62,7 @@ class PatientSerializer(MetaSerializerMixin, ModelSerializer):
     recruited_user = TinyUserSerializer(read_only=True)
     comments = StringField()
     current = BooleanField(read_only=True)
+    primary_patient_number = PatientNumberSerializer(read_only=True)
 
     class Meta(object):
         model_class = Patient

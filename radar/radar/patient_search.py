@@ -19,6 +19,7 @@ class PatientQueryBuilder(object):
 
         self.query = Patient.query\
             .options(subqueryload('patient_demographics'))\
+            .options(subqueryload('patient_numbers'))\
             .options(subqueryload('group_patients').joinedload('group'))
 
     def first_name(self, first_name):
@@ -292,6 +293,10 @@ def sort_by_recruited_date(reverse=False):
     return sort_by_field(Patient.recruited_date, reverse)
 
 
+def sort_by_primary_patient_number(reverse=False):
+    return sort_by_field(Patient.primary_patient_number_number, reverse)
+
+
 def sort_patients(user, sort_by, reverse=False):
     if sort_by == 'first_name':
         clauses = [sort_by_first_name(user, reverse), sort_by_last_name(user, reverse)]
@@ -303,6 +308,8 @@ def sort_patients(user, sort_by, reverse=False):
         clauses = sort_by_date_of_birth(user, reverse)
     elif sort_by == 'recruited_date':
         clauses = [sort_by_recruited_date(reverse)]
+    elif sort_by == 'primary_patient_number':
+        clauses = [sort_by_primary_patient_number(reverse)]
     else:
         return [sort_by_radar_id(reverse)]
 
