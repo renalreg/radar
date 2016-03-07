@@ -24,6 +24,9 @@ class PatientNumber(db.Model, MetaModelMixin):
     number_group = relationship('Group', foreign_keys=[number_group_id])
     number = Column(String, nullable=False)
 
+# TODO unique index on patient, source_group, source_type, number_group
+
+# TODO include source type
 Index(
     'patient_numbers_source_number_idx',
     PatientNumber.source_group_id,
