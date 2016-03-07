@@ -120,7 +120,6 @@ class ModelSerializer(Serializer):
     def update(self, obj, deserialized_data):
         for attr, value in deserialized_data.items():
             if hasattr(obj, attr):
-                print attr, value
                 setattr(obj, attr, value)
 
         return obj
