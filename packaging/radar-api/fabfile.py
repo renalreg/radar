@@ -25,5 +25,5 @@ def deploy(archive=None, name='radar-api'):
         run('tar --strip-components=1 -xzf %s' % tmp_archive_path)
         run('./install.sh %s' % new_version)
 
-    run('ln -sf %s %s' % (new_version, current_version))
+    run('ln -sfn %s %s' % (new_version, current_version))
     run('rm -rf %s' % tmp_archive_path)
