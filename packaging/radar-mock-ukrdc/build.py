@@ -6,8 +6,9 @@ import logging
 import click
 import os
 
-from radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
+from radar_packaging import Virtualenv, run_tox, info, heading, success, get_radar_src_path, \
     get_mock_ukrdc_src_path, get_release
+from radar_packaging.package_builder import PackageBuilder
 
 NAME = 'radar-mock-ukrdc'
 ARCHITECTURE = 'x86_64'
@@ -65,8 +66,8 @@ def package_mock_ukrdc(v, root_path):
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, release, ARCHITECTURE, URL)
-    package.add_dependency('python')
+    builder = PackageBuilder(NAME, version, release, ARCHITECTURE, URL)
+    builder.add_dependency('python')
 
     paths = [
         (v.path + '/', install_path, False),
@@ -76,18 +77,18 @@ def package_mock_ukrdc(v, root_path):
     ]
 
     for src, dst, config_file in paths:
-        package.add_path(src, dst)
+        builder.add_path(src, dst)
 
         if config_file:
-            package.add_config_file(dst)
+            builder.add_config_file(dst)
 
-    package.before_install = 'before_install.sh'
-    package.after_install = 'after_install.sh'
-    package.after_upgrade = 'after_upgrade.sh'
-    package.before_remove = 'before_remove.sh'
-    package.after_remove = 'after_remove.sh'
+    builder.before_install = 'before_install.sh'
+    builder.after_install = 'after_install.sh'
+    builder.after_upgrade = 'after_upgrade.sh'
+    builder.before_remove = 'before_remove.sh'
+    builder.after_remove = 'after_remove.sh'
 
-    rpm_path = package.build()
+    rpm_path = builder.build()
 
     success('Successfully built rpm at %s' % rpm_path)
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import logging
-
+import tarfile
 import os
 import click
 
-from radar_packaging import run_command, heading, success, Package, get_version_from_package_json, info, error, \
+from radar_packaging import run_command, heading, success, get_version_from_package_json, info, error, \
     get_client_src_path, get_release
+from radar_packaging.package_builder import PackageBuilder
 
 NAME = 'radar-client'
 ARCHITECTURE = 'noarch'
@@ -32,7 +33,15 @@ def build_client(root_path):
     run_gulp('build:dist', cwd=src_path)
 
 
-def package_client(root_path):
+def test_client(root_path):
+    src_path = get_client_src_path(root_path)
+
+    heading('Test %s' % NAME)
+    run_gulp('lint', cwd=src_path)
+    run_gulp('test', cwd=src_path)
+
+
+def create_rpm(root_path):
     src_path = get_client_src_path(root_path)
 
     heading('Package %s' % NAME)
@@ -54,32 +63,66 @@ def package_client(root_path):
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, release, ARCHITECTURE, URL)
-    package.add_path(dist_path + '/', install_path)
-    rpm_path = package.build()
+    builder = PackageBuilder(NAME, version, release, ARCHITECTURE, URL)
+    builder.add_path(dist_path + '/', install_path)
+    rpm_path = builder.build()
 
     success('Successfully built rpm at %s' % rpm_path)
 
 
-def test_client(root_path):
+def create_tar(root_path):
     src_path = get_client_src_path(root_path)
+    package_json_path = os.path.join(src_path, 'package.json')
+    dist_path = os.path.join(src_path, 'dist')
+    version = get_version_from_package_json(package_json_path)
 
-    heading('Test %s' % NAME)
-    run_gulp('lint', cwd=src_path)
-    run_gulp('test', cwd=src_path)
+    base_filename = '%s-%s' % (NAME, version)
+    filename = '%s.tar.gz' % base_filename
+
+    base_filename = filename.rstrip('.tar.gz')
+
+    # Compress with gzip
+    f = tarfile.open(filename, 'w:gz')
+    f.add(dist_path, base_filename)
+    f.close()
+
+    success('Successfully built archive at %s' % filename)
 
 
-@click.command()
+RPM = 0
+TAR = 1
+
+
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
 @click.option('--enable-tests/--disable-tests', default=True)
-def main(enable_tests):
+def rpm(enable_tests):
+    main(RPM, enable_tests)
+
+
+@cli.command()
+@click.option('--enable-tests/--disable-tests', default=True)
+def tar(enable_tests):
+    main(TAR, enable_tests)
+
+
+def main(format, run_tests):
     root_path = os.path.abspath('../../')
 
-    if enable_tests:
+    if run_tests:
         test_client(root_path)
 
     build_client(root_path)
-    package_client(root_path)
+
+    if format == RPM:
+        create_rpm(root_path)
+    else:
+        create_tar(root_path)
 
 
 if __name__ == '__main__':
-    main()
+    cli()

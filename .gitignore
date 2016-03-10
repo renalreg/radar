@@ -5,6 +5,7 @@
 build/
 dist/
 *.rpm
+*.tar.gz
 
 # Coverage
 coverage/
