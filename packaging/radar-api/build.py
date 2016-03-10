@@ -138,8 +138,9 @@ def tar(enable_tests):
     api_src_path = get_api_src_path(root_path)
 
     version = get_version(api_src_path)
+    release = get_release(RELEASE)
 
-    archive_path = '%s-%s.tar.gz' % (NAME, version)
+    archive_path = '%s-%s-%s.tar.gz' % (NAME, version, release)
 
     builder = WheelBuilder()
     builder.add(['--no-deps', '.'], cwd=radar_src_path)

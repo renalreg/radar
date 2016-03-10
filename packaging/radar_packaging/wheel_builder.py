@@ -108,9 +108,14 @@ class WheelBuilder(object):
 
         base_filename = filename.rstrip('.tar.gz')
 
+        def reset(tarinfo):
+            tarinfo.uid = tarinfo.gid = 0
+            tarinfo.uname = tarinfo.gname = 'root'
+            return tarinfo
+
         # Compress with gzip
         f = tarfile.open(filename, 'w:gz')
-        f.add(self.build_dir, base_filename)
+        f.add(self.build_dir, base_filename, filter=reset)
         f.close()
 
     def build(self, filename):

@@ -76,14 +76,27 @@ def create_tar(root_path):
     dist_path = os.path.join(src_path, 'dist')
     version = get_version_from_package_json(package_json_path)
 
-    base_filename = '%s-%s' % (NAME, version)
+    release = get_release(RELEASE)
+
+    base_filename = '%s-%s-%s' % (NAME, version, release)
     filename = '%s.tar.gz' % base_filename
 
     base_filename = filename.rstrip('.tar.gz')
 
+    def reset(tarinfo):
+        tarinfo.uid = tarinfo.gid = 0
+        tarinfo.uname = tarinfo.gname = 'root'
+
+        if tarinfo.isdir():
+            tarinfo.mode = 0755
+        else:
+            tarinfo.mode = 0644
+
+        return tarinfo
+
     # Compress with gzip
     f = tarfile.open(filename, 'w:gz')
-    f.add(dist_path, base_filename)
+    f.add(dist_path, base_filename, filter=reset)
     f.close()
 
     success('Successfully built archive at %s' % filename)
