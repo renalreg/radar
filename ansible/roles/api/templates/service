@@ -2,7 +2,7 @@
 After=syslog.target
 
 [Service]
-ExecStart=/src/radar-api/current/bin/uwsgi --ini /etc/radar-api/uwsgi.ini
+ExecStart=/srv/radar-api/current/bin/uwsgi --ini /etc/radar-api/uwsgi.ini
 Restart=always
 KillSignal=SIGQUIT
 Type=notify
