@@ -1,7 +1,4 @@
 ---
-- name: install radar-api
-  yum: name=radar-api state=latest
-
 - name: create settings.py
   template: src=settings.py dest={{ api_settings_path }} owner=root group=root mode=0644
   notify:
@@ -19,6 +16,13 @@
 
 - name: set permissions on secret key
   file: path={{ api_secret_key_path }} state=file owner=root group=radar mode=640
+
+- name: create service
+  template: src=service dest=/etc/systemd/system/radar-api.service
+  register: result
+
+- shell: systemctl daemon-reload
+  when: result|changed
 
 - name: start and enable radar-api
   service: name=radar-api state=started enabled=yes
