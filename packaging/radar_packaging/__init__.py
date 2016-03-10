@@ -1,5 +1,4 @@
 from __future__ import print_function
-from paramiko import SSHClient, AutoAddPolicy
 
 import json
 import subprocess
@@ -8,12 +7,12 @@ import shutil
 import os
 import select
 import sys
-import copy
 
 import tox.config
 import tox.session
 import virtualenv_tools
 import delorean
+from paramiko import SSHClient, AutoAddPolicy
 
 __version__ = '0.1.0'
 
