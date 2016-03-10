@@ -6,8 +6,10 @@ import logging
 import click
 import os
 
-from radar_packaging import Virtualenv, run_tox, info, heading, success, Package, get_radar_src_path, \
-    get_api_src_path, get_release
+from radar_packaging import Virtualenv, run_tox, info, heading, success, get_radar_src_path, \
+    get_api_src_path, get_release, run_command
+from radar_packaging.wheel_builder import WheelBuilder
+from radar_packaging.package_builder import PackageBuilder
 
 NAME = 'radar-api'
 ARCHITECTURE = 'x86_64'
@@ -46,6 +48,10 @@ def install_api(v, root_path):
     v.pip(['install', '--no-deps', '.'], cwd=api_src_path)
 
 
+def get_version(path):
+    return run_command(['python', 'setup.py', '--version'], cwd=path)[1].strip()
+
+
 def package_api(v, root_path):
     src_path = get_api_src_path(root_path)
 
@@ -65,9 +71,9 @@ def package_api(v, root_path):
 
     info('Building rpm ...')
 
-    package = Package(NAME, version, release, ARCHITECTURE, URL)
-    package.add_dependency('python')
-    package.add_dependency('postgresql94-libs')
+    builder = PackageBuilder(NAME, version, release, ARCHITECTURE, URL)
+    builder.add_dependency('python')
+    builder.add_dependency('postgresql94-libs')
 
     paths = [
         (v.path + '/', install_path, False),
@@ -77,18 +83,18 @@ def package_api(v, root_path):
     ]
 
     for src, dst, config_file in paths:
-        package.add_path(src, dst)
+        builder.add_path(src, dst)
 
         if config_file:
-            package.add_config_file(dst)
+            builder.add_config_file(dst)
 
-    package.before_install = 'before_install.sh'
-    package.after_install = 'after_install.sh'
-    package.after_upgrade = 'after_upgrade.sh'
-    package.before_remove = 'before_remove.sh'
-    package.after_remove = 'after_remove.sh'
+    builder.before_install = 'before_install.sh'
+    builder.after_install = 'after_install.sh'
+    builder.after_upgrade = 'after_upgrade.sh'
+    builder.before_remove = 'before_remove.sh'
+    builder.after_remove = 'after_remove.sh'
 
-    rpm_path = package.build()
+    rpm_path = builder.build()
 
     success('Successfully built rpm at %s' % rpm_path)
 
@@ -102,9 +108,14 @@ def test_api(root_path):
     run_tox(['-r', '-c', os.path.join(api_src_path, 'tox.ini')])
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command('rpm')
 @click.option('--enable-tests/--disable-tests', default=True)
-def main(enable_tests):
+def rpm(enable_tests):
     root_path = os.path.abspath('../../')
 
     if enable_tests:
@@ -115,5 +126,31 @@ def main(enable_tests):
         package_api(v, root_path)
 
 
+@cli.command('tar')
+@click.option('--enable-tests/--disable-tests', default=True)
+def tar(enable_tests):
+    root_path = os.path.abspath('../../')
+
+    if enable_tests:
+        test_api(root_path)
+
+    radar_src_path = get_radar_src_path(root_path)
+    api_src_path = get_api_src_path(root_path)
+
+    version = get_version(api_src_path)
+    release = get_release(RELEASE)
+
+    archive_path = '%s-%s-%s.tar.gz' % (NAME, version, release)
+
+    builder = WheelBuilder()
+    builder.add(['--no-deps', '.'], cwd=radar_src_path)
+    builder.add(['-r', 'requirements.txt'], cwd=api_src_path)
+    builder.add(['--no-deps', '.'], cwd=api_src_path)
+    builder.build(archive_path)
+    builder.cleanup()
+
+    success('Successfully built archive at %s' % archive_path)
+
+
 if __name__ == '__main__':
-    main()
+    cli()

@@ -1,3 +1,4 @@
+Fabric==1.10.2
 ecdsa==0.13
 pluggy==0.3.1
 paramiko==1.16.0
