@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from collections import OrderedDict
 from sqlalchemy import Column, Date, String, ForeignKey, Numeric, Index
 from sqlalchemy import Integer
@@ -19,6 +21,7 @@ MEDICATION_ROUTES = OrderedDict([
 
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
+    ('UG', u'µg'),
     ('MG', 'mg'),
     ('G', 'g'),
     ('IU', 'IU'),
