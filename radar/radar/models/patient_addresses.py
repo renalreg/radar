@@ -43,4 +43,15 @@ class PatientAddress(db.Model, MetaModelMixin):
 
         return "\n".join(x for x in parts if x)
 
+    @property
+    def anonymised_postcode(self):
+        postcode = self.postcode
+
+        if postcode is None:
+            anonymised_postcode = None
+        else:
+            anonymised_postcode = postcode.split(' ')[0][:4]
+
+        return anonymised_postcode
+
 Index('patient_addresses_patient_idx', PatientAddress.patient_id)

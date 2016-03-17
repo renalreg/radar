@@ -29,11 +29,9 @@ def check_config(config):
 
     config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
-    base_url = config.get('BASE_URL')
+    base_url = config.setdefault('BASE_URL', 'http://localhost/#')
 
-    if base_url is None:
-        raise ConfigError('Missing BASE_URL')
-    elif base_url.endswith('/'):
+    if base_url.endswith('/'):
         raise ConfigError('BASE_URL should not have a trailing slash')
 
     config.setdefault('READ_ONLY', False)

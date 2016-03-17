@@ -31,6 +31,28 @@ class PatientDemographics(db.Model, MetaModelMixin):
     mobile_number = Column(String)
     email_address = Column(String)
 
+    @property
+    def year_of_birth(self):
+        date_of_birth = self.date_of_birth
+
+        if date_of_birth is None:
+            year_of_birth = None
+        else:
+            year_of_birth = date_of_birth.year
+
+        return year_of_birth
+
+    @property
+    def year_of_death(self):
+        date_of_death = self.date_of_death
+
+        if date_of_death is None:
+            year_of_death = None
+        else:
+            year_of_death = date_of_death.year
+
+        return year_of_death
+
 Index('patient_demographics_patient_idx', PatientDemographics.patient_id)
 Index(
     'patient_demographics_patient_source_idx',

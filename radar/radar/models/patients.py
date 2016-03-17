@@ -221,9 +221,31 @@ class Patient(db.Model, MetaModelMixin):
     def date_of_birth(self):
         return self.latest_demographics_attr('date_of_birth')
 
+    @property
+    def year_of_birth(self):
+        date_of_birth = self.date_of_birth
+
+        if date_of_birth is None:
+            year_of_birth = None
+        else:
+            year_of_birth = date_of_birth.year
+
+        return year_of_birth
+
     @hybrid_property
     def date_of_death(self):
         return self.latest_demographics_attr('date_of_death')
+
+    @property
+    def year_of_death(self):
+        date_of_death = self.date_of_death
+
+        if date_of_death is None:
+            year_of_death = None
+        else:
+            year_of_death = date_of_death.year
+
+        return year_of_death
 
     @hybrid_property
     def ethnicity(self):
