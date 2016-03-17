@@ -2,5 +2,7 @@ from collections import namedtuple
 
 Config = namedtuple('Config', [
     'user',
-    'group'
+    'patient_group',
+    'data_group',
+    'anonymised',
 ])

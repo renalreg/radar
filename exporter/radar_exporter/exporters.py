@@ -76,35 +76,56 @@ def column(name, getter=None):
     return name, getter
 
 
-def demographics_column(name, user, getter=None, anonymised_getter=None, patient_getter=None):
-    if getter is None:
-        getter = path_getter(name)
-    elif isinstance(getter, basestring):
-        getter = path_getter(getter)
+def demographics_column_factory(config):
+    if config.anonymised:
+        def column(name, getter=None, anonymised_getter=None, patient_getter=None):
+            if anonymised_getter is None:
+                anonymised_getter = none_getter
+            elif isinstance(anonymised_getter, basestring):
+                anonymised_getter = path_getter(anonymised_getter)
 
-    if anonymised_getter is None:
-        anonymised_getter = none_getter
-    elif isinstance(anonymised_getter, basestring):
-        anonymised_getter = path_getter(anonymised_getter)
+            return name, anonymised_getter
+    elif config.user is not None:
+        def column(name, getter=None, anonymised_getter=None, patient_getter=None):
+            if getter is None:
+                getter = path_getter(name)
+            elif isinstance(getter, basestring):
+                getter = path_getter(getter)
 
-    if patient_getter is None:
-        patient_getter = path_getter('patient')
-    elif isinstance(anonymised_getter, basestring):
-        patient_getter = path_getter(patient_getter)
+            if anonymised_getter is None:
+                anonymised_getter = none_getter
+            elif isinstance(anonymised_getter, basestring):
+                anonymised_getter = path_getter(anonymised_getter)
 
-    def f(value):
-        patient = patient_getter(value)
+            if patient_getter is None:
+                patient_getter = path_getter('patient')
+            elif isinstance(anonymised_getter, basestring):
+                patient_getter = path_getter(patient_getter)
 
-        if has_permission_for_patient(
-            user,
-            patient,
-            PERMISSION.VIEW_DEMOGRAPHICS
-        ):
-            return getter(value)
-        else:
-            return anonymised_getter(value)
+            def f(value):
+                patient = patient_getter(value)
 
-    return name, f
+                if has_permission_for_patient(
+                    config.user,
+                    patient,
+                    PERMISSION.VIEW_DEMOGRAPHICS
+                ):
+                    return getter(value)
+                else:
+                    return anonymised_getter(value)
+
+            return name, f
+    else:
+        def column(name, getter=None, anonymised_getter=None, patient_getter=None):
+            if getter is None:
+                getter = path_getter(name)
+            elif isinstance(getter, basestring):
+                getter = path_getter(getter)
+
+            return name, getter
+
+    return column
+
 
 
 def get_meta_columns():
@@ -120,8 +141,10 @@ def get_meta_columns():
 
 @register('patients')
 def export_patients(config):
+    demographics_column = demographics_column_factory(config)
+
     def d(name, getter=None, anonymised_getter=None):
-        return demographics_column(name, config.user, getter, anonymised_getter, identity_getter)
+        return demographics_column(name, getter, anonymised_getter, identity_getter)
 
     columns = [
         column('id'),
@@ -141,15 +164,14 @@ def export_patients(config):
         column('recruited_user', lambda x: format_user(x.recruited_user)),
     ]
 
-    q = queries.get_patients(config.user)
+    q = queries.get_patients(config)
 
     return query_to_dataset(q, columns)
 
 
 @register('patient_demographics')
 def export_patient_demographics(config):
-    def d(name, getter=None, anonymised_getter=None):
-        return demographics_column(name, config.user, getter, anonymised_getter)
+    d = demographics_column_factory(config)
 
     columns = [
         column('id'),
@@ -161,7 +183,7 @@ def export_patient_demographics(config):
         d('last_name'),
         d('date_of_birth'),
         column('year_of_birth'),
-        column('date_of_death'),
+        d('date_of_death'),
         column('year_of_death'),
         column('gender'),
         column('ethnicity'),
@@ -172,13 +194,15 @@ def export_patient_demographics(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_patient_demographics(config.user)
+    q = queries.get_patient_demographics(config)
 
     return query_to_dataset(q, columns)
 
 
 @register('patient_numbers')
 def export_patient_numbers(config):
+    d = demographics_column_factory(config)
+
     columns = [
         column('id'),
         column('patient_id'),
@@ -187,37 +211,38 @@ def export_patient_numbers(config):
         column('source_type'),
         column('number_group_id'),
         column('number_group', 'number_group.name'),
-        column('number'),
+        d('number'),
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_patient_numbers(config.user)
+    q = queries.get_patient_numbers(config)
 
     return query_to_dataset(q, columns)
 
 
 @register('patient_aliases')
 def export_patient_aliases(config):
+    d = demographics_column_factory(config)
+
     columns = [
         column('id'),
         column('patient_id'),
         column('source_group_id'),
         column('source_group', 'source_group.name'),
         column('source_type'),
-        column('first_name'),
-        column('last_name'),
+        d('first_name'),
+        d('last_name'),
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_patient_aliases(config.user)
+    q = queries.get_patient_aliases(config)
 
     return query_to_dataset(q, columns)
 
 
 @register('patient_addresses')
 def export_patient_addresses(config):
-    def d(name, getter=None, anonymised_getter=None):
-        return demographics_column(name, config.user, getter, anonymised_getter)
+    d = demographics_column_factory(config)
 
     columns = [
         column('id'),
@@ -235,7 +260,7 @@ def export_patient_addresses(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_patient_addresses(config.user)
+    q = queries.get_patient_addresses(config)
 
     return query_to_dataset(q, columns)
 
@@ -261,7 +286,7 @@ def export_medications(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_medications(config.user)
+    q = queries.get_medications(config)
 
     return query_to_dataset(q, columns)
 
@@ -289,7 +314,7 @@ def export_patient_diagnoses(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_patient_diagnoses(config.user)
+    q = queries.get_patient_diagnoses(config)
 
     return query_to_dataset(q, columns)
 
@@ -310,7 +335,7 @@ def export_genetics(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_genetics(config.user)
+    q = queries.get_genetics(config)
 
     return query_to_dataset(q, columns)
 
@@ -332,7 +357,7 @@ def export_pathology(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_pathology(config.user)
+    q = queries.get_pathology(config)
 
     return query_to_dataset(q, columns)
 
@@ -349,7 +374,7 @@ def export_family_histories(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_family_histories(config.user)
+    q = queries.get_family_histories(config)
 
     return query_to_dataset(q, columns)
 
@@ -363,7 +388,7 @@ def export_family_history_relatives(config):
         column('patient_id'),
     ]
 
-    q = queries.get_family_history_relatives(config.user)
+    q = queries.get_family_history_relatives(config)
 
     return query_to_dataset(q, columns)
 
@@ -391,7 +416,7 @@ def export_ins_clinical_pictures(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_ins_clinical_pictures(config.user)
+    q = queries.get_ins_clinical_pictures(config)
 
     return query_to_dataset(q, columns)
 
@@ -410,7 +435,7 @@ def export_dialysis(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_dialyses(config.user)
+    q = queries.get_dialyses(config)
 
     return query_to_dataset(q, columns)
 
@@ -430,7 +455,7 @@ def export_plasmapheresis(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_plasmapheresis(config.user)
+    q = queries.get_plasmapheresis(config)
 
     return query_to_dataset(q, columns)
 
@@ -452,7 +477,7 @@ def export_transplants(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_transplants(config.user)
+    q = queries.get_transplants(config)
 
     return query_to_dataset(q, columns)
 
@@ -465,7 +490,7 @@ def export_transplant_biopsies(config):
         column('date_of_rejection'),
     ]
 
-    q = queries.get_transplant_biopsies(config.user)
+    q = queries.get_transplant_biopsies(config)
 
     return query_to_dataset(q, columns)
 
@@ -479,7 +504,7 @@ def export_transplant_rejections(config):
         column('recurrence'),
     ]
 
-    q = queries.get_transplant_rejections(config.user)
+    q = queries.get_transplant_rejections(config)
 
     return query_to_dataset(q, columns)
 
@@ -499,7 +524,7 @@ def export_hospitalisations(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_hospitalisations(config.user)
+    q = queries.get_hospitalisations(config)
 
     return query_to_dataset(q, columns)
 
@@ -521,7 +546,7 @@ def export_ins_relapses(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_ins_relapses(config.user)
+    q = queries.get_ins_relapses(config)
 
     return query_to_dataset(q, columns)
 
@@ -540,7 +565,7 @@ def export_group_patients(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_group_patients(config.user)
+    q = queries.get_group_patients(config)
 
     return query_to_dataset(q, columns)
 
@@ -555,6 +580,6 @@ def export_renal_progressions(config):
     ]
     columns.extend(get_meta_columns())
 
-    q = queries.get_renal_progressions(config.user)
+    q = queries.get_renal_progressions(config)
 
     return query_to_dataset(q, columns)

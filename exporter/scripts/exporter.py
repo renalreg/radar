@@ -19,6 +19,9 @@ def get_user(value):
 
     user = User.query.get(user_id)
 
+    if user is None:
+        raise argparse.ArgumentError('User not found')
+
     return user
 
 
@@ -29,6 +32,9 @@ def get_group(value):
         raise argparse.ArgumentError('Not a valid group ID')
 
     group = Group.query.get(group_id)
+
+    if group is None:
+        raise argparse.ArgumentError('Group not found')
 
     return group
 
@@ -43,6 +49,15 @@ def save(data, format, dest):
         f.write(data)
 
 
+def yn(value):
+    if value == 'yes':
+        return True
+    elif value == 'no':
+        return False
+    else:
+        raise argparse.ArgumentError('Must be yes or no')
+
+
 if __name__ == '__main__':
     initial_parser = argparse.ArgumentParser()
     initial_parser.add_argument('--connection-string', required=True)
@@ -55,18 +70,28 @@ if __name__ == '__main__':
     app = create_app(app_config)
 
     with app.app_context():
-        formats = ['csv', 'xls', 'xlsx']
-        book_formats = ['xls', 'xlsx']
+        # Note: xls doesn't support timezones
+        formats = ['csv', 'xlsx']
+        book_formats = ['xlsx']
 
         parser = argparse.ArgumentParser()
         parser.add_argument('--user', type=get_user)
-        parser.add_argument('--group', type=get_group)
-        parser.add_argument('--format', default='csv', choices=formats)
+        parser.add_argument('--patient-group', type=get_group)
+        parser.add_argument('--data-group', type=get_group)
+        parser.add_argument('--anonymised', action='store_true')
+        parser.add_argument('--format', default='csv', choices=formats)  # TODO guess format from dest extension
         parser.add_argument('src', nargs='+')
         parser.add_argument('dest')
         args = parser.parse_args(remaining_args)
 
-        config = Config(user=args.user, group=args.group)
+        # TODO add --source-group argument
+
+        config = Config(
+            user=args.user,
+            patient_group=args.patient_group,
+            data_group=args.data_group,
+            anonymised=args.anonymised,
+        )
 
         is_dir = os.path.isdir(args.dest)
 
@@ -78,15 +103,14 @@ if __name__ == '__main__':
                     dataset.title = name
                     save(dataset, args.format, dest)
             else:
-                databook = tablib.Dataset()
+                databook = tablib.Databook()
 
                 for name in args.src:
-                    dest = os.path.join(args.dest, '%s.%s' % (name, args.format))
                     dataset = export(name, config)
                     dataset.title = name
-                    book.add_sheet(dataset)
+                    databook.add_sheet(dataset)
 
-                save(databook, args.format, dest)
+                save(databook, args.format, args.dest)
         else:
             if is_dir:
                 for name in args.src:
@@ -96,9 +120,8 @@ if __name__ == '__main__':
                     save(dataset, args.format, dest)
             elif len(args.src) == 1:
                 name = args.src[0]
-                dest = args.dest
                 dataset = export(name, config)
                 dataset.title = name
-                save(dataset, args.format, dest)
+                save(dataset, args.format, args.dest)
             else:
                 parser.error('dest is not a directory')
