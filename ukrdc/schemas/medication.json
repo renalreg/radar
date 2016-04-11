@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "external_id": {
+            "type": "string"
+        },
+        "from_time": {
+            "type": "string"
+        },
+        "to_time": {
+            "type": "string"
+        },
+        "dose_u_o_m": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "required": ["code", "description"]
+        },
+        "drug_product": {
+            "type": "object",
+            "properties": {
+                "product_name": {
+                    "type": "string"
+                }
+            },
+            "required": ["product_name"]
+        },
+        "entering_organization": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "required": ["code", "description"]
+        }
+    },
+    "required": ["external_id", "from_time", "dose_u_o_m", "drug_product", "entering_organization"]
+}

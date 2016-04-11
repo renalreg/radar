@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "external_id": {
+            "type": "string"
+        },
+        "from_time": {
+            "type": "string"
+        },
+        "result": {
+            "type": "object",
+            "properties": {
+                "result_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "observation_time": {
+                                "type": "string"
+                            },
+                            "test_item_code": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["code", "description"]
+                            },
+                            "result_value": {
+                                "type": "string"
+                            },
+                            "required": ["observation_time", "test_item_code"]
+                        }
+                    }
+                }
+            },
+            "required": ["result_items"]
+        },
+        "entering_organization": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "required": ["code", "description"]
+        }
+    },
+    "required": ["external_id", "result", "entering_organization"]
+}
