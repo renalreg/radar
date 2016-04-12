@@ -3,7 +3,7 @@ import logging
 from radar.models.medications import Medication
 from radar.database import db
 
-from utils import (
+from radar_ukrdc.utils import (
     load_validator,
     validate_list,
     unique_list,

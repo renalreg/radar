@@ -25,6 +25,7 @@ from radar.models.patient_addresses import *
 from radar.models.patient_aliases import *
 from radar.models.patient_consultants import *
 from radar.models.patient_demographics import *
+from radar.models.patient_locks import *
 from radar.models.patient_numbers import *
 from radar.models.plasmapheresis import *
 from radar.models.pregnancies import *

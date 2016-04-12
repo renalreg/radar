@@ -4,7 +4,7 @@ from functools import partial
 from radar.models.results import Result, Observation
 from radar.database import db
 
-from utils import (
+from radar_ukrdc.utils import (
     load_validator,
     validate_list,
     unique_list,

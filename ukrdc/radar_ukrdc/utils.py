@@ -1,6 +1,7 @@
 import json
 import uuid
 import os
+import pkg_resources
 
 import delorean
 from jsonschema import Draft4Validator as Validator, ValidationError
@@ -9,16 +10,16 @@ from radar.database import db
 from radar.models.users import User
 from radar.models.groups import Group
 
+import radar_ukrdc
+
 
 NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')
 
 
 def load_schema(filename):
     filename = os.path.join('schemas', filename)
-
-    with open(filename, 'rb') as f:
-        schema = json.load(f)
-
+    data = pkg_resources.resource_string(radar_ukrdc.__name__, filename)
+    schema = json.loads(data)
     return schema
 
 

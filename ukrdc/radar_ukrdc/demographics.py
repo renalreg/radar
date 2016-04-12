@@ -5,7 +5,7 @@ from jsonschema import ValidationError
 from radar.models.patient_demographics import PatientDemographics
 from radar.database import db
 
-from utils import (
+from radar_ukrdc.utils import (
     load_validator,
     delete_list,
     build_id,
@@ -109,7 +109,8 @@ def parse_demographics(sda_patient):
 
     try:
         validator.validate(sda_patient)
-    except ValidationError:
+    except ValidationError as e:
+        print e
         logger.error('Ignoring invalid patient')
         return None
 

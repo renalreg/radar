@@ -3,7 +3,7 @@ import logging
 from radar.models.patient_numbers import PatientNumber
 from radar.database import db
 
-from utils import (
+from radar_ukrdc.utils import (
     load_validator,
     validate_list,
     unique_list,
