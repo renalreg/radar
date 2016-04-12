@@ -128,14 +128,14 @@ def import_sda(sda_container, sequence_number):
     patient_lock = lock_patient(patient)
 
     if patient_lock.sequence_number is not None and sequence_number < patient_lock.sequence_number:
-        logger.error('Skipping old sequence number {0} < {1}'.format(sequence_number, patient_lock.sequence_number))
+        logger.info('Skipping old sequence number {0} < {1}'.format(sequence_number, patient_lock.sequence_number))
         return False
 
     patient_lock.sequence_number = sequence_number
 
+    sda_names = sda_patient.get('aliases', list())
+    sda_addresses = sda_patient.get('addresses', list())
     sda_medications = sda_container.get('medications', list())
-    sda_names = sda_container.get('aliases', list())
-    sda_addresses = sda_container.get('addresses', list())
     sda_lab_orders = sda_container.get('lab_orders', list())
 
     import_demographics(patient, sda_patient)
