@@ -2,6 +2,8 @@ import json
 import uuid
 import os
 import pkg_resources
+import calendar
+from datetime import datetime
 
 import delorean
 from jsonschema import Draft4Validator as Validator, ValidationError
@@ -130,3 +132,7 @@ def get_import_user():
 
 def get_group(code):
     return Group.query.filter(Group.code == code).first()
+
+
+def utc():
+    return calendar.timegm(datetime.utcnow().utctimetuple())
