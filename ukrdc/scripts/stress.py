@@ -17,7 +17,7 @@ def random_string(alphabet, n):
 def random_datetime():
     start_dt = datetime(1900, 1, 1)
     end_dt = datetime.now()
-    seconds = random.randint(0, (end_dt - start_dt).total_seconds())
+    seconds = random.randint(0, int((end_dt - start_dt).total_seconds()))
     dt = start_dt + timedelta(seconds=seconds)
     return dt.isoformat()
 
