@@ -10,12 +10,13 @@ from jsonschema import Draft4Validator as Validator, ValidationError
 
 from radar.database import db
 from radar.models.users import User
-from radar.models.groups import Group
+from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_UKRDC
 
 import radar_ukrdc
 
 
 NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')
+USERNAME = 'ukrdc_importer'
 
 
 def load_schema(filename):
@@ -121,13 +122,11 @@ def parse_datetime_path(data, *path):
 
 
 def get_import_group():
-    # TODO
-    return Group.query.first()
+    return Group.query.filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_UKRDC).one()
 
 
 def get_import_user():
-    # TODO
-    return User.query.first()
+    return User.query.filter(User.username == USERNAME).one()
 
 
 def get_group(code):

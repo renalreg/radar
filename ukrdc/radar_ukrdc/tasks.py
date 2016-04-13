@@ -1,6 +1,7 @@
 import logging
 
 import sqlalchemy
+from sqlalchemy import event
 from flask import Flask
 from celery import Celery
 from jsonschema import validate, ValidationError
@@ -15,7 +16,7 @@ from radar_ukrdc.addresses import import_addresses
 from radar_ukrdc.demographics import import_demographics
 from radar_ukrdc.patient_numbers import import_patient_numbers
 from radar_ukrdc.results import import_results
-from radar_ukrdc.utils import load_schema
+from radar_ukrdc.utils import load_schema, get_import_user
 
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,14 @@ def create_app():
     from radar import models  # noqa
 
     db.init_app(app)
+
+    @event.listens_for(db.session, 'before_flush')
+    def before_flush(session, flush_context, instances):
+        user = get_import_user()
+
+        # SET LOCAL lasts until the end of the current transaction
+        # http://www.postgresql.org/docs/9.4/static/sql-set.html
+        session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user.id))
 
     return app
 
