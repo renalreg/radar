@@ -29,7 +29,7 @@ class SDAAddress(object):
 
     @property
     def from_date(self):
-        from_time = self.to_from_timetime
+        from_time = self.from_time
 
         if from_time is None:
             return None
