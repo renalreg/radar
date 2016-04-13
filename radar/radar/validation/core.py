@@ -1,5 +1,6 @@
-from collections import OrderedDict
 import copy
+import collections
+from collections import OrderedDict
 
 import six
 
@@ -67,6 +68,28 @@ class ValidationError(Exception):
 
     def first(self):
         return ValidationError._first(self.errors)
+
+    @staticmethod
+    def _flatten(errors, path=None):
+        flattened_errors = []
+
+        if path is None:
+            path = tuple()
+
+        for field_name, field_errors in errors.items():
+            field_path = path + (field_name,)
+
+            if isinstance(field_errors, collections.Mapping):
+                flattened_field_errors = ValidationError._flatten(field_errors, path=field_path)
+                flattened_errors.extend(flattened_field_errors)
+            else:
+                for field_error in field_errors:
+                    flattened_errors.append((field_path, field_error))
+
+        return flattened_errors
+
+    def flatten(self):
+        return ValidationError._flatten(self.errors)
 
     def __str__(self):
         return str(self.errors)
