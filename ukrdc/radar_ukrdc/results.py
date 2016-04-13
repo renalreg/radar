@@ -3,6 +3,7 @@ from functools import partial
 
 from radar.models.results import Result, Observation
 from radar.database import db
+from radar.groups import is_radar_group
 
 from radar_ukrdc.utils import (
     load_validator,
@@ -153,6 +154,10 @@ def convert_results(patient, sda_lab_orders):
 
         if source_group is None:
             logger.error('Ignoring lab order due to unknown entering organization code={code}'.format(code=code))
+            continue
+
+        # Ignore RaDaR data
+        if is_radar_group(source_group):
             continue
 
         for sda_lab_result_item in sda_lab_order.results:

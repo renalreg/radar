@@ -2,6 +2,7 @@ import logging
 
 from radar.models.medications import Medication
 from radar.database import db
+from radar.groups import is_radar_group
 
 from radar_ukrdc.utils import (
     load_validator,
@@ -128,6 +129,10 @@ def convert_medications(patient, sda_medications):
 
         if source_group is None:
             logger.error('Ignoring medication due to unknown entering organization code={code}'.format(code=code))
+            continue
+
+        # Ignore RaDaR data
+        if is_radar_group(source_group):
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)

@@ -2,6 +2,7 @@ import logging
 
 from radar.models.patient_numbers import PatientNumber
 from radar.database import db
+from radar.groups import is_radar_group
 
 from radar_ukrdc.utils import (
     load_validator,
@@ -90,14 +91,14 @@ def convert_patient_numbers(patient, sda_patient_numbers):
     for sda_patient_number in sda_patient_numbers:
         code = sda_patient_number.organization
 
-        # Ignore RaDaR patient numbers
-        if code == 'RADAR':
-            continue
-
         number_group = get_group(code)
 
         if number_group is None:
             logger.error('Ignoring patient number due to unknown organization code={code}'.format(code=code))
+            continue
+
+        # Ignore RaDaR patient numbers
+        if is_radar_group(number_group):
             continue
 
         patient_number_id = build_patient_number_id(patient, sda_patient_number)
