@@ -6,7 +6,7 @@ import calendar
 from datetime import datetime
 
 import delorean
-from jsonschema import Draft4Validator as Validator, ValidationError
+from jsonschema import Draft4Validator as Validator, ValidationError, FormatChecker
 
 from radar.database import db
 from radar.models.users import User
@@ -18,6 +18,24 @@ import radar_ukrdc_importer
 NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')
 USERNAME = 'ukrdc_importer'
 
+format_checker = FormatChecker()
+
+
+@format_checker.checks('date-time', raises=ValueError)
+def is_datetime(instance):
+    if isinstance(instance, basestring):
+        delorean.parse(instance)
+
+    return True
+
+
+@format_checker.checks('number', raises=ValueError)
+def is_number(instance):
+    if isinstance(instance, basestring):
+        float(instance)
+
+    return True
+
 
 def load_schema(filename):
     filename = os.path.join('schemas', filename)
@@ -27,7 +45,7 @@ def load_schema(filename):
 
 
 def load_validator(filename):
-    return Validator(load_schema(filename))
+    return Validator(load_schema(filename), format_checker=format_checker)
 
 
 def validate_list(items, validator, invalid_f=None):

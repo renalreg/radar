@@ -6,7 +6,8 @@
             "type": "string"
         },
         "from_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "result": {
             "type": "object",
@@ -17,7 +18,8 @@
                         "type": "object",
                         "properties": {
                             "observation_time": {
-                                "type": "string"
+                                "type": "string",
+                                "format": "date-time"
                             },
                             "test_item_code": {
                                 "type": "object",
@@ -32,9 +34,10 @@
                                 "required": ["code", "description"]
                             },
                             "result_value": {
-                                "type": "string"
+                                "type": "string",
+                                "format": "number"
                             },
-                            "required": ["observation_time", "test_item_code"]
+                            "required": ["observation_time", "test_item_code", "result_value"]
                         }
                     }
                 }

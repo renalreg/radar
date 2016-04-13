@@ -3,10 +3,12 @@
     "type": "object",
     "properties": {
         "from_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "to_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "street": {
             "type": "string"

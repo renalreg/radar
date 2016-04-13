@@ -6,10 +6,12 @@
             "type": "string"
         },
         "from_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "to_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "dose_u_o_m": {
             "type": "object",

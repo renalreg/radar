@@ -14,10 +14,12 @@
             }
         },
         "birth_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "death_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "gender": {
             "type": "object",
