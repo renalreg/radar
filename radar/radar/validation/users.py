@@ -123,12 +123,10 @@ class UserValidation(MetaValidationMixin, Validation):
         current_user = ctx['user']
 
         if old_obj.id is None:
-            # Password is required when creating a new user
-            call.validators_for_field([required()], new_obj, self.password)
-
-            # New humans need a name and email
+            # New humans need a name, email and password
             # TODO users can blank their first name, last name and email
             if not new_obj.is_bot:
+                call.validators_for_field([required()], new_obj, self.password)
                 call.validators_for_field([not_empty()], new_obj, self.first_name)
                 call.validators_for_field([not_empty()], new_obj, self.last_name)
                 call.validators_for_field([required()], new_obj, self.email)
