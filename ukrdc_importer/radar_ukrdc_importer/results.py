@@ -5,7 +5,7 @@ from radar.models.results import Result, Observation
 from radar.database import db
 from radar.groups import is_radar_group
 
-from radar_ukrdc.utils import (
+from radar_ukrdc_importer.utils import (
     load_validator,
     validate_list,
     unique_list,

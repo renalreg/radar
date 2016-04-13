@@ -10,13 +10,13 @@ from radar.models.patients import Patient
 from radar.models.patient_locks import PatientLock
 from radar.database import db
 
-from radar_ukrdc.aliases import import_aliases
-from radar_ukrdc.medications import import_medications
-from radar_ukrdc.addresses import import_addresses
-from radar_ukrdc.demographics import import_demographics
-from radar_ukrdc.patient_numbers import import_patient_numbers
-from radar_ukrdc.results import import_results
-from radar_ukrdc.utils import load_schema, get_import_user
+from radar_ukrdc_importer.aliases import import_aliases
+from radar_ukrdc_importer.medications import import_medications
+from radar_ukrdc_importer.addresses import import_addresses
+from radar_ukrdc_importer.demographics import import_demographics
+from radar_ukrdc_importer.patient_numbers import import_patient_numbers
+from radar_ukrdc_importer.results import import_results
+from radar_ukrdc_importer.utils import load_schema, get_import_user
 
 
 logger = logging.getLogger(__name__)

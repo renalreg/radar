@@ -3,8 +3,8 @@ from jsonschema import ValidationError
 
 from radar.database import db
 
-from radar_ukrdc.utils import utc, load_validator
-from radar_ukrdc.tasks import import_sda
+from radar_ukrdc_importer.utils import utc, load_validator
+from radar_ukrdc_importer.tasks import import_sda
 
 
 api = Blueprint('importer', __name__)

@@ -1,3 +1,4 @@
+import argparse
 import string
 import random
 import uuid
@@ -6,8 +7,8 @@ from datetime import datetime, timedelta
 from radar.models.groups import Group
 from radar.models.patients import Patient
 
-from radar_ukrdc.tasks import import_sda, create_app
-from radar_ukrdc.utils import utc
+from radar_ukrdc_importer.tasks import import_sda, create_app
+from radar_ukrdc_importer.utils import utc
 
 
 def random_string(alphabet, n):
@@ -166,7 +167,11 @@ def _stress():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('n', type=int)
+    args = parser.parse_args()
+
     app = create_app()
 
     with app.app_context():
-        stress(1000)
+        stress(args.n)
