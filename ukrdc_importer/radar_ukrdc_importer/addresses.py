@@ -11,7 +11,8 @@ from radar_ukrdc_importer.utils import (
     build_id,
     get_path,
     get_import_group,
-    get_import_user
+    get_import_user,
+    parse_datetime_path
 )
 
 
@@ -21,6 +22,32 @@ logger = logging.getLogger(__name__)
 class SDAAddress(object):
     def __init__(self, data):
         self.data = data
+
+    @property
+    def from_time(self):
+        return self.data.get('from_time')
+
+    @property
+    def from_date(self):
+        from_time = self.to_from_timetime
+
+        if from_time is None:
+            return None
+        else:
+            return from_time.date()
+
+    @property
+    def to_time(self):
+        return self.data.get('to_time')
+
+    @property
+    def to_date(self):
+        to_time = self.to_time
+
+        if to_time is None:
+            return None
+        else:
+            return to_time.date()
 
     @property
     def street(self):
@@ -49,6 +76,11 @@ def parse_addresses(sda_addresses):
 
     validator = load_validator('address.json')
     sda_addresses = validate_list(sda_addresses, validator, invalid_f=log)
+
+    for sda_address in sda_addresses:
+        parse_datetime_path(sda_address, 'from_time')
+        parse_datetime_path(sda_address, 'to_time')
+
     sda_addresses = map(SDAAddress, sda_addresses)
 
     return sda_addresses
@@ -116,6 +148,8 @@ def convert_addresses(patient, sda_addresses):
         address.created_user = user
         address.modified_user = user
 
+        address.from_date = sda_address.from_date
+        address.to_date = sda_address.to_date
         address.address_1 = sda_address.street
         address.address_2 = sda_address.city
         address.address_3 = sda_address.state

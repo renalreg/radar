@@ -2,6 +2,12 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
+        "from_time": {
+            "type": "string"
+        },
+        "to_time": {
+            "type": "string"
+        },
         "street": {
             "type": "string"
         },
