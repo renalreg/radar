@@ -234,6 +234,22 @@ class Patient(db.Model, MetaModelMixin):
         return self.latest_demographics_attr('gender')
 
     @hybrid_property
+    def home_number(self):
+        return self.latest_demographics_attr('home_number')
+
+    @hybrid_property
+    def work_number(self):
+        return self.latest_demographics_attr('work_number')
+
+    @hybrid_property
+    def mobile_number(self):
+        return self.latest_demographics_attr('mobile_number')
+
+    @hybrid_property
+    def email_address(self):
+        return self.latest_demographics_attr('email_address')
+
+    @hybrid_property
     def is_male(self):
         return self.gender == GENDER_MALE
 
@@ -264,6 +280,22 @@ class Patient(db.Model, MetaModelMixin):
     @gender.expression
     def gender(cls):
         return cls.latest_demographics_query(PatientDemographics.gender)
+
+    @home_number.expression
+    def home_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.home_number)
+
+    @work_number.expression
+    def work_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.work_number)
+
+    @mobile_number.expression
+    def mobile_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.mobile_number)
+
+    @email_address.expression
+    def email_address(cls):
+        return cls.latest_demographics_query(PatientDemographics.email_address)
 
     @property
     def earliest_date_of_birth(self):
