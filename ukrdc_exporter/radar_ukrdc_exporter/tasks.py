@@ -76,14 +76,21 @@ def export_sda(patient_id):
     return sda_container
 
 
-@celery.task
-def send_to_ukrdc(sda_container):
-    # TODO url
-    # TODO timeout
-    # TODO error handling
+@celery.task(bind=True)
+def send_to_ukrdc(self, sda_container):
+    # TODO url config
+    # TODO timeout config
+    # TODO retry config
 
+    # TODO
     url = ''
-    requests.post(url, json=sda_container)
+
+    try:
+        # Timeout if no bytes have been received on the underlying socket for 10 seconds
+        r = requests.post(url, json=sda_container, timeout=10)
+        r.raise_for_status()
+    except requests.exceptions.RequestError:
+        self.retry(countdown=60)
 
 
 def export_to_ukrdc(patient_id):
