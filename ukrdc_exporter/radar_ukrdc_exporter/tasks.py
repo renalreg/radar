@@ -1,9 +1,8 @@
 import logging
 import requests
-from flask import Flask
+
 from celery import Celery, chain
 
-from radar.database import db
 from radar.models.patients import Patient
 
 from radar_ukrdc_exporter.medications import export_medications
@@ -15,39 +14,8 @@ from radar_ukrdc_exporter.groups import export_program_memberships
 logger = logging.getLogger(__name__)
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_envvar('RADAR_SETTINGS')
-
-    # noinspection PyUnresolvedReferences
-    from radar import models  # noqa
-
-    db.init_app(app)
-
-    return app
-
-
-def create_celery():
-    app = create_app()
-
-    celery = Celery(app.import_name)
-    celery.conf.update(app.config)
-
-    TaskBase = celery.Task
-
-    class ContextTask(TaskBase):
-        abstract = True
-
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-
-    celery.Task = ContextTask
-
-    return celery
-
-
-celery = create_celery()
+celery = Celery()
+celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_exporter'
 
 
 def get_patient(patient_id):
@@ -84,21 +52,16 @@ def send_to_ukrdc(self, sda_container):
 
     # TODO
     url = ''
+    timeout = 10
+    retry_countdown = 60
 
     try:
         # Timeout if no bytes have been received on the underlying socket for 10 seconds
-        r = requests.post(url, json=sda_container, timeout=10)
+        r = requests.post(url, json=sda_container, timeout=timeout)
         r.raise_for_status()
-    except requests.exceptions.RequestError:
-        self.retry(countdown=60)
+    except requests.exceptions.RequestException as e:
+        self.retry(exc=e, countdown=retry_countdown)
 
 
 def export_to_ukrdc(patient_id):
-    chain(export_sda.s(patient_id), send_to_ukrdc.s())
-
-
-if __name__ == '__main__':
-    app = create_app()
-
-    with app.app_context():
-        print export_sda(1)
+    chain(export_sda.s(patient_id), send_to_ukrdc.s())()
