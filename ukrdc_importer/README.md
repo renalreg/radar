@@ -95,7 +95,7 @@ RADAR_SETTINGS=$(pwd)/settings.py python radar_ukrdc/api.py
 Run the worker with:
 
 ```
-RADAR_SETTINGS=$(pwd)/settings.py celery -A radar_ukrdc_importer.tasks worker
+RADAR_SETTINGS=$(pwd)/settings.py celery -A radar_ukrdc_importer.worker worker
 ```
 
 The number of worker processes/threads can be controlled with the `--concurrency` option. By default this is the number of CPUs on the machine.
