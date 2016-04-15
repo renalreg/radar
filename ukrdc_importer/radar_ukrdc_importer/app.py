@@ -32,7 +32,7 @@ def setup_celery(celery, app=None):
     broker_url = app.config.get('CELERY_BROKER_URL')
 
     if broker_url is not None:
-        celery.conf['BROKER_URL'] = broker_url
+        celery.conf.BROKER_URL = broker_url
 
     celery.conf.update(app.config)
 
