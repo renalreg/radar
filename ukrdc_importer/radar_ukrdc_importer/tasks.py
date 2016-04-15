@@ -1,8 +1,6 @@
 import logging
 
 import sqlalchemy
-from sqlalchemy import event
-from flask import Flask
 from celery import Celery
 from jsonschema import validate, ValidationError
 
@@ -16,53 +14,12 @@ from radar_ukrdc_importer.addresses import import_addresses
 from radar_ukrdc_importer.demographics import import_demographics
 from radar_ukrdc_importer.patient_numbers import import_patient_numbers
 from radar_ukrdc_importer.results import import_results
-from radar_ukrdc_importer.utils import load_schema, get_import_user
+from radar_ukrdc_importer.utils import load_schema
 
 
 logger = logging.getLogger(__name__)
 
-
-def create_app():
-    app = Flask(__name__)
-    app.config.from_envvar('RADAR_SETTINGS')
-
-    # noinspection PyUnresolvedReferences
-    from radar import models  # noqa
-
-    db.init_app(app)
-
-    @event.listens_for(db.session, 'before_flush')
-    def before_flush(session, flush_context, instances):
-        user = get_import_user()
-
-        # SET LOCAL lasts until the end of the current transaction
-        # http://www.postgresql.org/docs/9.4/static/sql-set.html
-        session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user.id))
-
-    return app
-
-
-def create_celery():
-    app = create_app()
-
-    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
-    celery.conf.update(app.config)
-
-    TaskBase = celery.Task
-
-    class ContextTask(TaskBase):
-        abstract = True
-
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-
-    celery.Task = ContextTask
-
-    return celery
-
-
-celery = create_celery()
+celery = Celery()
 
 
 def find_patient_id(sda_patient_numbers):

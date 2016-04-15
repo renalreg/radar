@@ -7,8 +7,9 @@ from datetime import datetime, timedelta
 from radar.models.groups import Group
 from radar.models.patients import Patient
 
-from radar_ukrdc_importer.tasks import import_sda, create_app
+from radar_ukrdc_importer.tasks import import_sda, celery
 from radar_ukrdc_importer.utils import utc
+from radar_ukrdc_importer.app import setup_celery, create_app
 
 
 def random_string(alphabet, n):
@@ -172,6 +173,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     app = create_app()
+    setup_celery(celery, app)
 
     with app.app_context():
         stress(args.n)
