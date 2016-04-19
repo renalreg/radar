@@ -1,6 +1,6 @@
 import logging
 
-from radar.models.patients import GENDERS
+from radar.models.patients import GENDERS, ETHNICITIES
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_numbers import PatientNumber
@@ -54,6 +54,23 @@ def export_gender(sda_patient, patient):
         code = str(gender)
 
         sda_patient['gender'] = {
+            'code': code,
+            'description': description
+        }
+
+
+def export_ethnic_group(sda_patient, patient):
+    if patient.ethnicity is not None:
+        ethnicity = patient.ethnicity
+        description = ETHNICITIES.get(ethnicity)
+
+        if description is None:
+            logger.error('Unknown ethnicity code={}'.format(ethnicity))
+            return
+
+        code = str(ethnicity)
+
+        sda_patient['ethnic_group'] = {
             'code': code,
             'description': description
         }
@@ -186,6 +203,7 @@ def export_patient(sda_container, patient):
     export_date_birth(sda_patient, patient)
     export_date_death(sda_patient, patient)
     export_gender(sda_patient, patient)
+    export_ethnic_group(sda_patient, patient)
     export_contact_info(sda_patient, patient)
     export_aliases(sda_patient, patient)
     export_addresses(sda_patient, patient)
