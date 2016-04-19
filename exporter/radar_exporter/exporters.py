@@ -127,7 +127,6 @@ def demographics_column_factory(config):
     return column
 
 
-
 def get_meta_columns():
     return [
         column('created_date'),
@@ -547,6 +546,29 @@ def export_ins_relapses(config):
     columns.extend(get_meta_columns())
 
     q = queries.get_ins_relapses(config)
+
+    return query_to_dataset(q, columns)
+
+
+@register('mpgn_clinical_pictures')
+def export_mpgn_clinical_pictures(config):
+    columns = [
+        column('id'),
+        column('patient_id'),
+        column('date_of_picture'),
+        column('oedema'),
+        column('hypertension'),
+        column('urticaria'),
+        column('partial_lipodystrophy'),
+        column('infection'),
+        column('infection_details'),
+        column('ophthalmoscopy'),
+        column('ophthalmoscopy_details'),
+        column('comments'),
+    ]
+    columns.extend(get_meta_columns())
+
+    q = queries.get_mpgn_clinical_pictures(config)
 
     return query_to_dataset(q, columns)
 

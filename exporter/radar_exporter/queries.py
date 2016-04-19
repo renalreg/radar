@@ -21,6 +21,7 @@ from radar.models.hospitalisations import Hospitalisation
 from radar.roles import PERMISSION, get_roles_with_permission
 from radar.models.groups import GROUP_TYPE
 from radar.models.renal_progressions import RenalProgression
+from radar.models.mpgn import MpgnClinicalPicture
 
 
 def filter_by_patient_permissions(query, user, patient_id, demographics=False):
@@ -188,3 +189,4 @@ get_transplants = patient_helper(Transplant)
 get_hospitalisations = patient_helper(Hospitalisation)
 get_group_patients = patient_helper(GroupPatient)
 get_renal_progressions = patient_helper(RenalProgression)
+get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
