@@ -15,13 +15,9 @@ DATA_DIR="$HERE/data"
 python "$DATA_DIR/virtualenv.py" "$1"
 VIRTUAL_ENV="$(cd "$1"; pwd)"
 
-WHEELS=$(find "$DATA_DIR" -name '*.whl')
+INSTALL_ARGS=$(cd "$DATA_DIR"; ls -1 *.whl | awk -F - '{ gsub("_", "-", $1); print $1 }' | uniq)
 
-"$VIRTUAL_ENV/bin/pip" install \
-    --pre \
-    --no-index \
-    --find-links "$DATA_DIR" \
-    $WHEELS
+"$VIRTUAL_ENV/bin/pip" install --pre --no-index --find-links "$DATA_DIR" $INSTALL_ARGS
 '''
 
 
