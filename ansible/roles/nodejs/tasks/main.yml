@@ -21,6 +21,8 @@
 
 - name: install npm
   command: sh /tmp/install_npm.sh creates=/usr/bin/npm
+  environment:
+    npm_install: 3.5
 
 # Use an alternative registry (e.g npm-lazy-proxy) if specified
 - name: set registry
