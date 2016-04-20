@@ -1,7 +1,6 @@
 import logging
 import calendar
 from datetime import datetime
-from collections import namedtuple
 
 import requests
 from celery import Celery
@@ -27,21 +26,16 @@ class DemographicsMismatch(Exception):
     """Demographic details on record don't match the supplied details."""
 
 
-BaseRecruitmentPatient = namedtuple('BaseRecruitmentPatient', [
-    'first_name', 'last_name', 'date_of_birth',
-    'gender', 'number', 'number_group',
-])
+class SearchPatient(object):
+    def __init__(self, first_name, last_name, date_of_birth, gender, number, number_group):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.date_of_birth = gender
+        self.gender = gender
+        self.number = number
+        self.number_group = number_group
 
-
-class RecruitmentPatient(BaseRecruitmentPatient):
-    def _search_radar(self):
-        q = Patient.query
-        q = q.join(Patient.patient_numbers)
-        q = q.filter(PatientNumber.number == self.number)
-        q = q.filter(PatientNumber.number_group == self.number_group)
-        return q.first()
-
-    def _search_ukrdc(self):
+    def search_ukrdc(self):
         url = current_app.config['UKRDC_SEARCH_URL']
         timeout = current_app.config.get('UKRDC_SEARCH_TIMEOUT', 60)
 
@@ -99,18 +93,45 @@ class RecruitmentPatient(BaseRecruitmentPatient):
         # TODO
         return True
 
+    def _search_radar(self):
+        q = Patient.query
+        q = q.join(Patient.patient_numbers)
+        q = q.filter(PatientNumber.number == self.number)
+        q = q.filter(PatientNumber.number_group == self.number_group)
+        patient = q.first()
+        return patient
+
+    def search_radar(self):
+        patient = self.search_radar()
+
+        if patient is not None and not self._check_demographics(patient):
+            raise DemographicsMismatch
+
+        return patient
+
+
+class RecruitmentPatient(object):
+    def __init__(self, search_patient, cohort_group, hospital_group, ethnicity=None):
+        self.search_patient = search_patient
+        self.cohort_group = cohort_group
+        self.hospital_group = hospital_group
+        self.ethnicity = None
+
+    def search_radar(self):
+        return self.search_patient.search_ukrdc()
+
+    def search_ukrdc(self):
+        return self.search_patient.search_ukrdc()
+
     def save(self):
         # TODO logging
 
-        patient = self._search_radar()
+        patient = self.search_radar()
         sda_container = None
 
-        if patient is not None:
-            if not self._check_demographics(patient):
-                raise DemographicsMismatch
-        else:
+        if patient is None:
             try:
-                sda_container = self._search_ukrdc()
+                sda_container = self.search_ukrdc()
             except ApiError:
                 # TODO log error
                 pass
