@@ -117,7 +117,7 @@ class RecruitmentPatient(object):
         self.ethnicity = None
 
     def search_radar(self):
-        return self.search_patient.search_ukrdc()
+        return self.search_patient.search_radar()
 
     def search_ukrdc(self):
         return self.search_patient.search_ukrdc()
