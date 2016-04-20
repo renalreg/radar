@@ -19,6 +19,9 @@ from radar.groups import get_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
+__version__ = '0.1'
+
+
 logger = logging.getLogger(__name__)
 
 
