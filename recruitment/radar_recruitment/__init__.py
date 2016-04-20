@@ -5,11 +5,18 @@ import itertools
 from datetime import datetime
 
 import requests
+import pytz
 from celery import Celery
 from flask import current_app
 
 from radar.models.patients import Patient, GENDERS
 from radar.models.patient_numbers import PatientNumber
+from radar.models.groups import GroupPatient
+from radar.models.patient_demographics import PatientDemographics
+from radar.auth.sessions import current_user
+from radar.database import db
+from radar.groups import get_radar_group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 
 
 logger = logging.getLogger(__name__)
@@ -167,12 +174,79 @@ class RecruitmentPatient(object):
     def search_ukrdc(self):
         return self.search_patient.search_ukrdc()
 
+    def _create_patient(self):
+        radar_group = get_radar_group()
+
+        patient = Patient()
+        patient.created_user = current_user
+        patient.modified_user = current_user
+        db.session.add(patient)
+
+        radar_group_patient = GroupPatient()
+        radar_group_patient.patient = patient
+        radar_group_patient.group = radar_group
+        radar_group_patient.created_group = self.hospital_group
+        radar_group_patient.from_date = datetime.now(pytz.UTC)
+        radar_group_patient.created_user = current_user
+        radar_group_patient.modified_user = current_user
+        db.session.add(radar_group_patient)
+
+        patient_demographics = PatientDemographics()
+        patient_demographics.patient = patient
+        patient_demographics.source_group = radar_group
+        patient_demographics.source_type = SOURCE_TYPE_RADAR
+        patient_demographics.first_name = self.first_name
+        patient_demographics.last_name = self.last_name
+        patient_demographics.date_of_birth = self.date_of_birth
+        patient_demographics.gender = self.gender
+        patient_demographics.ethnicity = self.ethnicity
+        patient_demographics.created_user = current_user
+        patient_demographics.modified_user = current_user
+        db.session.add(patient_demographics)
+
+        patient_number = PatientNumber()
+        patient_number.patient = patient
+        patient_number.source_group = radar_group
+        patient_number.source_type = SOURCE_TYPE_RADAR
+        patient_number.number_group = self.number_group
+        patient_number.number = self.number
+        patient_number.created_user = current_user
+        patient_number.modified_user = current_user
+        db.session.add(patient_number)
+
+        return patient
+
+    def _update_patient(self, patient):
+        # Add the patient to the cohort group
+
+        if not patient.in_group(self.cohort_group, current=True):
+            cohort_group_patient = GroupPatient()
+            cohort_group_patient.patient = patient
+            cohort_group_patient.group = self.cohort_group
+            cohort_group_patient.created_group = self.hospital_group
+            cohort_group_patient.from_date = datetime.now(pytz.UTC)
+            cohort_group_patient.created_user = current_user
+            cohort_group_patient.modified_user = current_user
+            db.session.add(cohort_group_patient)
+
+        # Add the patient to the hospital group
+        if not patient.in_group(self.hospital_group, current=True):
+            hospital_group_patient = GroupPatient()
+            hospital_group_patient.patient = patient
+            hospital_group_patient.group = self.hospital_group
+            hospital_group_patient.created_group = self.hospital_group
+            hospital_group_patient.from_date = datetime.now(pytz.UTC)
+            hospital_group_patient.created_user = current_user
+            hospital_group_patient.modified_user = current_user
+            db.session.add(hospital_group_patient)
+
     def save(self):
         # TODO logging
 
         patient = self.search_radar()
         sda_container = None
 
+        # New patient
         if patient is None:
             try:
                 sda_container = self.search_ukrdc()
@@ -180,17 +254,14 @@ class RecruitmentPatient(object):
                 # TODO log error
                 pass
 
-        if patient is None:
-            # TODO create patient
-            pass
-        else:
-            # TODO update patient
-            pass
+            patient = self._create_patient()
 
-        # TODO commit
+        self._update_patient(patient)
+
+        db.session.commit()
 
         if sda_container is not None:
-            sda_container.save(patient=patient)
+            sda_container.save(patient)
 
         return patient
 
