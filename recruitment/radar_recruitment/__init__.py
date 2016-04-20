@@ -26,6 +26,10 @@ class ApiError(Exception):
 class DemographicsMismatch(Exception):
     """Demographic details on record don't match the supplied details."""
 
+    def __init__(self, patient):
+        super(DemographicsMismatch, self).__init__(patient)
+        self.patient = patient
+
 
 class SearchPatient(object):
     def __init__(self, first_name, last_name, date_of_birth, gender, number_group, number):
@@ -145,7 +149,7 @@ class SearchPatient(object):
         patient = self.search_radar()
 
         if patient is not None and not self._check_demographics(patient):
-            raise DemographicsMismatch
+            raise DemographicsMismatch(patient)
 
         return patient
 
