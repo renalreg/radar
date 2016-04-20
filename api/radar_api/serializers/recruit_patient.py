@@ -2,32 +2,16 @@ from radar_api.serializers.groups import GroupReferenceField
 from radar.serializers.fields import LabelledIntegerField, LabelledStringField
 from radar.models.patients import GENDERS, ETHNICITIES
 from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, DateField, ListField
+from radar.serializers.fields import StringField, DateField, IntegerField
 
 
 class RecruitPatientSearchSerializer(Serializer):
     first_name = StringField()
     last_name = StringField()
     date_of_birth = DateField()
-    number = StringField()
-    number_group = GroupReferenceField()
-
-
-class PatientNumberSerializer(Serializer):
-    number = StringField()
-    number_group = GroupReferenceField()
-
-
-class RecruitPatientResultSerializer(Serializer):
-    first_name = StringField()
-    last_name = StringField()
-    date_of_birth = DateField()
     gender = LabelledIntegerField(GENDERS)
-    patient_numbers = ListField(PatientNumberSerializer())
-
-
-class RecruitPatientResultListSerializer(Serializer):
-    patients = ListField(RecruitPatientResultSerializer())
+    number = StringField()
+    number_group = GroupReferenceField()
 
 
 class RecruitPatientSerializer(Serializer):
@@ -35,7 +19,16 @@ class RecruitPatientSerializer(Serializer):
     last_name = StringField()
     date_of_birth = DateField()
     gender = LabelledIntegerField(GENDERS)
+    number_group = GroupReferenceField()
+    number = StringField()
     ethnicity = LabelledStringField(ETHNICITIES)
-    patient_numbers = ListField(PatientNumberSerializer())
     cohort_group = GroupReferenceField()
     hospital_group = GroupReferenceField()
+
+
+class PatientSerializer(Serializer):
+    id = IntegerField()
+
+
+class RecruitPatientResultSerializer(Serializer):
+    patient = PatientSerializer()

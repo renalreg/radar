@@ -337,7 +337,7 @@ class Patient(db.Model, MetaModelMixin):
         return values
 
     @property
-    def date_of_births(self):
+    def dates_of_birth(self):
         values = [x.date_of_birth for x in self.patient_demographics]
         values = clean(values)
         return values

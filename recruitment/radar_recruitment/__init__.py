@@ -45,7 +45,7 @@ class SearchPatient(object):
     def __init__(self, first_name, last_name, date_of_birth, gender, number_group, number):
         self.first_name = first_name
         self.last_name = last_name
-        self.date_of_birth = gender
+        self.date_of_birth = date_of_birth
         self.gender = gender
         self.number_group = number_group
         self.number = number
@@ -156,7 +156,7 @@ class SearchPatient(object):
         return patient
 
     def search_radar(self):
-        patient = self.search_radar()
+        patient = self._search_radar()
 
         if patient is not None and not self._check_demographics(patient):
             raise DemographicsMismatch(patient)
@@ -170,6 +170,30 @@ class RecruitmentPatient(object):
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
         self.ethnicity = None
+
+    @property
+    def first_name(self):
+        return self.search_patient.first_name
+
+    @property
+    def last_name(self):
+        return self.search_patient.last_name
+
+    @property
+    def date_of_birth(self):
+        return self.search_patient.date_of_birth
+
+    @property
+    def gender(self):
+        return self.search_patient.gender
+
+    @property
+    def number_group(self):
+        return self.search_patient.number_group
+
+    @property
+    def number(self):
+        return self.search_patient.number
 
     def search_radar(self):
         return self.search_patient.search_radar()
