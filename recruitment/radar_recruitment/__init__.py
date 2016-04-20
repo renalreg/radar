@@ -5,7 +5,6 @@ from datetime import datetime
 import requests
 from celery import Celery
 from flask import current_app
-from jsonschema import ValidationError
 
 from radar.models.patients import Patient, GENDERS
 from radar.models.patient_numbers import PatientNumber
@@ -154,11 +153,6 @@ class RecruitmentPatient(object):
 class SDAContainer(object):
     def __init__(self, data):
         self.data = data
-        self._validate()
-
-    def _validate(self):
-        # TODO
-        pass
 
     def _get_sequence_number(self):
         return calendar.timegm(datetime.utcnow().utctimetuple())
