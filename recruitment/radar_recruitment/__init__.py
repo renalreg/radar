@@ -1,5 +1,7 @@
 import logging
 import calendar
+import re
+import itertools
 from datetime import datetime
 
 import requests
@@ -26,13 +28,13 @@ class DemographicsMismatch(Exception):
 
 
 class SearchPatient(object):
-    def __init__(self, first_name, last_name, date_of_birth, gender, number, number_group):
+    def __init__(self, first_name, last_name, date_of_birth, gender, number_group, number):
         self.first_name = first_name
         self.last_name = last_name
         self.date_of_birth = gender
         self.gender = gender
-        self.number = number
         self.number_group = number_group
+        self.number = number
 
     def search_ukrdc(self):
         url = current_app.config['UKRDC_SEARCH_URL']
@@ -44,11 +46,11 @@ class SearchPatient(object):
                     'given_name': self.first_name,
                     'family_name': self.last_name
                 },
+                'birth_time': self.date_of_birth.isoformat(),
                 'gender': {
                     'code': str(self.gender),
                     'description': GENDERS[self.gender]
                 },
-                'birth_time': self.date_of_birth.isoformat(),
                 'patient_numbers': [
                     {
                         'number': self.number,
@@ -84,13 +86,52 @@ class SearchPatient(object):
 
         return sda_container
 
-    def _check_demographics(self, patient):
-        names = patient.first_names + patient.last_names
-        dates_of_birth = patient.dates_of_birth
-        genders = patient.genders
+    def _check_name(self, patient, name, n):
+        names = _split_names(patient.first_names + patient.last_names)
+        return len(names) == 0 or name[:n] in (x[:n] for x in names)
 
-        # TODO
-        return True
+    def _check_first_name(self, patient):
+        return self._check_name(patient, self.first_name, 1)
+
+    def _check_last_name(self, patient):
+        return self._check_name(patient, self.last_name, 3)
+
+    def _check_date_of_birth(self, patient):
+        dates_of_birth = patient.dates_of_birth
+
+        if len(dates_of_birth) == 0:
+            return True
+
+        for date_of_birth in dates_of_birth:
+            year_match = self.date_of_birth.year == date_of_birth.year
+            month_match = self.date_of_birth.month == date_of_birth.month
+            day_match = self.date_of_birth.day == date_of_birth.day
+
+            # Month and day swapped
+            if (
+                self.date_of_birth.month == date_of_birth.day and
+                self.date_of_birth.day == date_of_birth.month
+            ):
+                month_match = True
+                day_match = True
+
+            # Two parts match
+            if sum([year_match, month_match, day_match]) >= 2:
+                return True
+
+        return False
+
+    def _check_gender(self, patient):
+        genders = patient.genders
+        return len(genders) == 0 or self.gender in genders
+
+    def _check_demographics(self, patient):
+        return (
+            self._check_first_name(patient) and
+            self._check_last_name(patient) and
+            self._check_date_of_birth(patient) and
+            self._check_gender(patient)
+        )
 
     def _search_radar(self):
         q = Patient.query
@@ -167,6 +208,17 @@ class SDAContainer(object):
 
         # TODO add patient_id kwarg
         celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=[self.data, sequence_number], kwargs=kwargs)
+
+
+def _split_names(names):
+    return set(itertools.chain(*[_split_name(x) for x in names]))
+
+
+def _split_name(name):
+    name = name.upper()
+    name = re.sub('[^A-Z ]', '', name)
+    parts = name.split(' ')
+    return parts
 
 
 def setup(app):

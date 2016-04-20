@@ -101,3 +101,15 @@ def seconds_to_age(seconds):
 
 def random_string(alphabet, length):
     return ''.join(SystemRandom().choice(alphabet) for _ in range(length))
+
+
+def uniq(items):
+    seen = set()
+    unique_items = []
+
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            unique_items.append(item)
+
+    return unique_items

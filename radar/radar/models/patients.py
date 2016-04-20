@@ -11,7 +11,7 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
 from radar.models.logs import log_changes
-from radar.utils import seconds_to_age
+from radar.utils import seconds_to_age, uniq
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -44,6 +44,10 @@ ETHNICITIES = OrderedDict([
     ('S', 'Other Ethnic Background'),
     ('Z', 'Refused / Not Stated'),
 ])
+
+
+def clean(items):
+    return uniq(x for x in items if x)
 
 
 @log_changes
@@ -320,25 +324,28 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def first_names(self):
-        # TODO unique
         values = [x.first_name for x in self.patient_demographics]
-        values.extend(x.first_name for x in self.patient_aliases)
-        values = [x.upper() for x in values if x]
+        values += [x.first_name for x in self.patient_aliases]
+        values = clean(values)
         return values
 
     @property
     def last_names(self):
-        # TODO unique
         values = [x.last_name for x in self.patient_demographics]
-        values.extend(x.last_name for x in self.patient_aliases)
-        values = [x.upper() for x in values if x]
+        values += [x.last_name for x in self.patient_aliases]
+        values = clean(values)
         return values
 
     @property
     def date_of_births(self):
-        # TODO unique
         values = [x.date_of_birth for x in self.patient_demographics]
-        values = [x for x in values if x]
+        values = clean(values)
+        return values
+
+    @property
+    def genders(self):
+        values = [x.gender for x in self.patient_demographics]
+        values = clean(values)
         return values
 
     def to_age(self, date):
