@@ -197,16 +197,14 @@ class SDAContainer(object):
     def _get_sequence_number(self):
         return calendar.timegm(datetime.utcnow().utctimetuple())
 
-    def save(self, patient=None):
+    def save(self, patient):
         sequence_number = self._get_sequence_number()
 
-        kwargs = {}
-
-        if patient is not None:
-            kwargs['patient_id'] = patient.id
+        args = [self.data, sequence_number]
+        kwargs = {'patient_id': patient.id}
 
         # TODO add patient_id kwarg
-        celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=[self.data, sequence_number], kwargs=kwargs)
+        celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=args, kwargs=kwargs)
 
 
 def _split_names(names):
