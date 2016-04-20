@@ -41,6 +41,11 @@ class SearchPatient(object):
         self.number = number
 
     def search_ukrdc(self):
+        enabled = current_app.config.get('UKRDC_SEARCH_ENABLED', False)
+
+        if not enabled:
+            return None
+
         url = current_app.config['UKRDC_SEARCH_URL']
         timeout = current_app.config.get('UKRDC_SEARCH_TIMEOUT', 60)
 
