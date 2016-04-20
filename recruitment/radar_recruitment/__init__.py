@@ -83,12 +83,7 @@ class SearchPatient(object):
         except ValueError as e:
             raise ApiError(e)
 
-        try:
-            sda_container = SDAContainer(data)
-        except ValueError as e:
-            raise ApiError(e)
-
-        return sda_container
+        return SDAContainer(data)
 
     def _check_name(self, patient, name, n):
         names = _split_names(patient.first_names + patient.last_names)
