@@ -54,10 +54,15 @@ class SearchPatient(object):
         enabled = current_app.config.get('UKRDC_SEARCH_ENABLED', False)
 
         if not enabled:
+            logger.info('UKRDC search is disabled')
             return None
+
+        logger.info('Searching UKRDC number={}'.format(self.number))
 
         url = current_app.config['UKRDC_SEARCH_URL']
         timeout = current_app.config.get('UKRDC_SEARCH_TIMEOUT', 60)
+        username = current_app.config.get('UKRDC_SEARCH_USERNAME', 'RADAR')
+        password = current_app.config.get('UKRDC_SEARCH_PASSWORD', 'password')
 
         data = {
             'patient': {
@@ -84,24 +89,32 @@ class SearchPatient(object):
         }
 
         try:
-            r = requests.post(url, json=data, timeout=timeout)
+            r = requests.post(url, json=data, timeout=timeout, auth=(username, password))
 
             if r.status_code == 404:
+                logger.info('UKRDC patient not found')
                 return None
             else:
                 r.raise_for_status()
         except requests.exceptions.RequestException as e:
+            logger.exception('API error')
             raise ApiError(e)
 
         try:
             data = r.json()
         except ValueError as e:
+            logger.exception('Error decoding JSON')
             raise ApiError(e)
+
+        logger.info('UKRDC patient found')
 
         return SDAContainer(data)
 
     def _check_name(self, patient, name, n):
         names = _split_names(patient.first_names + patient.last_names)
+
+        # TODO split name
+
         return len(names) == 0 or name[:n] in (x[:n] for x in names)
 
     def _check_first_name(self, patient):
@@ -148,17 +161,40 @@ class SearchPatient(object):
         )
 
     def _search_radar(self):
+        logger.info('Searching RaDaR number={}'.format(self.number))
+
         q = Patient.query
         q = q.join(Patient.patient_numbers)
         q = q.filter(PatientNumber.number == self.number)
         q = q.filter(PatientNumber.number_group == self.number_group)
         patient = q.first()
+
+        if patient is not None:
+            logger.info('Found RaDaR patient id={}'.format(patient.id))
+        else:
+            logger.info('RaDaR patient not found')
+
         return patient
 
     def search_radar(self):
         patient = self._search_radar()
 
         if patient is not None and not self._check_demographics(patient):
+            logger.error(
+                'Demographics mismatch '
+                'id={id} '
+                'first_name={first_name} '
+                'last_name={last_name} '
+                'date_of_birth={date_of_birth} '
+                'gender={gender}'.format(
+                    id=patient.id,
+                    first_name=self.first_name,
+                    last_name=self.last_name,
+                    date_of_birth=self.date_of_birth.strftime('%d/%m/%Y'),
+                    gender=self.gender,
+                )
+            )
+
             raise DemographicsMismatch(patient)
 
         return patient
@@ -202,6 +238,8 @@ class RecruitmentPatient(object):
         return self.search_patient.search_ukrdc()
 
     def _create_patient(self):
+        logger.info('Creating patient number={}'.format(self.number))
+
         radar_group = get_radar_group()
 
         patient = Patient()
@@ -243,29 +281,23 @@ class RecruitmentPatient(object):
 
         return patient
 
-    def _update_patient(self, patient):
+    def _add_to_group(self, patient, group):
         # Add the patient to the cohort group
+        if not patient.in_group(group, current=True):
+            logger.info('Adding patient number={} to group id={}'.format(self.number, group.id))
 
-        if not patient.in_group(self.cohort_group, current=True):
-            cohort_group_patient = GroupPatient()
-            cohort_group_patient.patient = patient
-            cohort_group_patient.group = self.cohort_group
-            cohort_group_patient.created_group = self.hospital_group
-            cohort_group_patient.from_date = datetime.now(pytz.UTC)
-            cohort_group_patient.created_user = current_user
-            cohort_group_patient.modified_user = current_user
-            db.session.add(cohort_group_patient)
+            group_patient = GroupPatient()
+            group_patient.patient = patient
+            group_patient.group = self.cohort_group
+            group_patient.created_group = self.hospital_group
+            group_patient.from_date = datetime.now(pytz.UTC)
+            group_patient.created_user = current_user
+            group_patient.modified_user = current_user
+            db.session.add(group_patient)
 
-        # Add the patient to the hospital group
-        if not patient.in_group(self.hospital_group, current=True):
-            hospital_group_patient = GroupPatient()
-            hospital_group_patient.patient = patient
-            hospital_group_patient.group = self.hospital_group
-            hospital_group_patient.created_group = self.hospital_group
-            hospital_group_patient.from_date = datetime.now(pytz.UTC)
-            hospital_group_patient.created_user = current_user
-            hospital_group_patient.modified_user = current_user
-            db.session.add(hospital_group_patient)
+    def _update_patient(self, patient):
+        self._add_to_group(patient, self.hospital_group)
+        self._add_to_group(patient, self.cohort_group)
 
     def save(self):
         # TODO logging
@@ -278,7 +310,6 @@ class RecruitmentPatient(object):
             try:
                 sda_container = self.search_ukrdc()
             except ApiError:
-                # TODO log error
                 pass
 
             patient = self._create_patient()
@@ -305,6 +336,8 @@ class SDAContainer(object):
 
         args = [self.data, sequence_number]
         kwargs = {'patient_id': patient.id}
+
+        logger.info('Adding SDA to queue')
 
         # TODO add patient_id kwarg
         celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=args, kwargs=kwargs)

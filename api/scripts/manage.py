@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import logging
+
 import click
 
 from radar_api.app import create_app
@@ -18,6 +20,8 @@ def runserver(host, port):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+
     app = create_app()
 
     with app.app_context():

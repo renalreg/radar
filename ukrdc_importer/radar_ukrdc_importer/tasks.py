@@ -62,29 +62,30 @@ def lock_patient(patient):
 
 
 @celery.task
-def import_sda(sda_container, sequence_number):
+def import_sda(sda_container, sequence_number, patient_id=None):
     schema = load_schema('schema.json')
 
     try:
         validate(sda_container, schema)
     except ValidationError:
-        logger.error('Container is invalid')
+        logger.exception('Container is invalid')
         return False
 
     sda_patient = sda_container['patient']
     sda_patient_numbers = sda_patient['patient_numbers']
 
-    patient_id = find_patient_id(sda_patient_numbers)
-
     if patient_id is None:
-        logger.error('Patient ID is missing')
-        return False
+        patient_id = find_patient_id(sda_patient_numbers)
 
-    try:
-        patient_id = parse_patient_id(patient_id)
-    except ValueError:
-        logger.error('Patient ID is invalid id={id}'.format(id=patient_id))
-        return False
+        if patient_id is None:
+            logger.error('Patient ID is missing')
+            return False
+
+        try:
+            patient_id = parse_patient_id(patient_id)
+        except ValueError:
+            logger.error('Patient ID is invalid id={id}'.format(id=patient_id))
+            return False
 
     patient = get_patient(patient_id)
 
