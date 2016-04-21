@@ -111,11 +111,9 @@ class SearchPatient(object):
         return SDAContainer(data)
 
     def _check_name(self, patient, name, n):
-        names = _split_names(patient.first_names + patient.last_names)
-
-        # TODO split name
-
-        return len(names) == 0 or name[:n] in (x[:n] for x in names)
+        a = set(x[:n] for x in _split_names(patient.first_names + patient.last_names))
+        b = set(x[:n] for x in _split_name(name))
+        return len(a) == 0 or a.intersect(b)
 
     def _check_first_name(self, patient):
         return self._check_name(patient, self.first_name, 1)
@@ -341,7 +339,7 @@ class SDAContainer(object):
 
 
 def _split_names(names):
-    return set(itertools.chain(*[_split_name(x) for x in names]))
+    return itertools.chain(*[_split_name(x) for x in names])
 
 
 def _split_name(name):
