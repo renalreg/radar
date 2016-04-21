@@ -300,8 +300,6 @@ class RecruitmentPatient(object):
         self._add_to_group(patient, self.cohort_group)
 
     def save(self):
-        # TODO logging
-
         patient = self.search_radar()
         sda_container = None
 
@@ -339,7 +337,6 @@ class SDAContainer(object):
 
         logger.info('Adding SDA to queue')
 
-        # TODO add patient_id kwarg
         celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=args, kwargs=kwargs)
 
 
