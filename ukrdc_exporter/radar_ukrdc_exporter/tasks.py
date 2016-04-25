@@ -5,8 +5,10 @@ from celery import Celery, chain
 from flask import current_app
 
 from radar.models.patients import Patient
+from radar.models.groups import Group, GROUP_TYPE_HOSPITAL
 from radar.models.logs import Log
 from radar.database import db
+from radar.groups import is_radar_group
 
 from radar_ukrdc_exporter.medications import export_medications
 from radar_ukrdc_exporter.patients import export_patient
@@ -26,10 +28,17 @@ def get_patient(patient_id):
     return Patient.query.get(patient_id)
 
 
-def log_data_export(patient):
+def get_group(group_id):
+    return Group.query.get(group_id)
+
+
+def log_data_export(patient, group):
     log = Log()
     log.type = 'DATA_EXPORT'
-    log.data = dict(patient_id=patient.id)
+    log.data = dict(
+        patient_id=patient.id,
+        group_id=group.id
+    )
     db.session.add(log)
 
 
@@ -41,23 +50,50 @@ def export_sda(patient_id):
         logger.error('Patient not found id={}'.format(patient_id))
         return
 
+    groups = set(patient.groups)
+
+    for group in groups:
+        if not is_radar_group(group) and group.type != GROUP_TYPE_HOSPITAL:
+            continue
+
+        _export_sda(patient.id, group.id)
+
+
+def _export_sda(patient_id, group_id):
+    patient = get_patient(patient_id)
+
+    if patient is None:
+        logger.error('Patient not found id={}'.format(patient_id))
+        return
+
+    group = get_group(group_id)
+
+    if group is None:
+        logger.error('Group not found id={}'.format(group_id))
+        return
+    elif is_radar_group(group):
+        facility = 'RADAR'
+    else:
+        facility = 'RADAR.{type}.{code}'.format(type=group.type, code=group.code)
+
     sda_container = {
-        'sending_facility': 'RADAR'
+        'sending_facility': facility
     }
 
     export_patient(sda_container, patient)
-    export_medications(sda_container, patient)
-    export_lab_orders(sda_container, patient)
-    export_program_memberships(sda_container, patient)
+
+    export_medications(sda_container, patient, group)
+    export_lab_orders(sda_container, patient, group)
+
+    if group is None:
+        export_program_memberships(sda_container, patient)
 
     # Convert date/datetime objects to ISO strings
     sda_container = transform_values(sda_container, to_iso)
 
-    log_data_export(patient)
+    log_data_export(patient, group)
 
     db.session.commit()
-
-    return sda_container
 
 
 @celery.task(bind=True)

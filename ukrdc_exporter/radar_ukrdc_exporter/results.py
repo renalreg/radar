@@ -4,9 +4,10 @@ from sqlalchemy import null
 from radar.models.results import Result, Observation
 
 
-def export_lab_orders(sda_container, patient):
+def export_lab_orders(sda_container, patient, group):
     q = Result.query
     q = q.filter(Result.patient == patient)
+    q = q.filter(Result.source_group == group)
     q = q.filter(Result.source_type == 'RADAR')
     q = q.join(Result.observation)
     q = q.filter(Observation.pv_code != null())

@@ -6,9 +6,10 @@ from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATI
 logger = logging.getLogger(__name__)
 
 
-def export_medications(sda_container, patient):
+def export_medications(sda_container, patient, group):
     q = Medication.query
     q = q.filter(Medication.patient == patient)
+    q = q.filter(Medication.source_group == group)
     q = q.filter(Medication.source_type == 'RADAR')
     medications = q.all()
 
