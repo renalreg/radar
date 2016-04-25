@@ -2,6 +2,7 @@ import logging
 import requests
 
 from celery import Celery, chain
+from flask import current_app
 
 from radar.models.patients import Patient
 
@@ -46,14 +47,11 @@ def export_sda(patient_id):
 
 @celery.task(bind=True)
 def send_to_ukrdc(self, sda_container):
-    # TODO url config
-    # TODO timeout config
-    # TODO retry config
+    config = current_app.config['UKRDC_EXPORTER']
 
-    # TODO
-    url = ''
-    timeout = 10
-    retry_countdown = 60
+    url = config['URL']
+    timeout = config.get('TIMEOUT', 60)
+    retry_countdown = config.get('RETRY_COUNTDOWN', 60)
 
     try:
         # Timeout if no bytes have been received on the underlying socket for 10 seconds
