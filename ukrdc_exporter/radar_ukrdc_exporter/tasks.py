@@ -50,11 +50,11 @@ def send_to_ukrdc(self, sda_container):
     config = current_app.config['UKRDC_EXPORTER']
 
     url = config['URL']
-    timeout = config.get('TIMEOUT', 60)
+    timeout = config.get('TIMEOUT', 10)
     retry_countdown = config.get('RETRY_COUNTDOWN', 60)
 
     try:
-        # Timeout if no bytes have been received on the underlying socket for 10 seconds
+        # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
         r = requests.post(url, json=sda_container, timeout=timeout)
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
