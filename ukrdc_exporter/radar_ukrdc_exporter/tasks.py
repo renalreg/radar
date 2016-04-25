@@ -5,6 +5,8 @@ from celery import Celery, chain
 from flask import current_app
 
 from radar.models.patients import Patient
+from radar.models.logs import Log
+from radar.database import db
 
 from radar_ukrdc_exporter.medications import export_medications
 from radar_ukrdc_exporter.patients import export_patient
@@ -22,6 +24,13 @@ celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_exporter'
 
 def get_patient(patient_id):
     return Patient.query.get(patient_id)
+
+
+def log_data_export(patient):
+    log = Log()
+    log.type = 'DATA_EXPORT'
+    log.data = dict(patient_id=patient.id)
+    db.session.add(log)
 
 
 @celery.task
@@ -43,6 +52,10 @@ def export_sda(patient_id):
 
     # Convert date/datetime objects to ISO strings
     sda_container = transform_values(sda_container, to_iso)
+
+    log_data_export(patient)
+
+    db.session.commit()
 
     return sda_container
 
