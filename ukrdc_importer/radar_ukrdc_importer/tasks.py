@@ -6,6 +6,7 @@ from jsonschema import validate, ValidationError
 
 from radar.models.patients import Patient
 from radar.models.patient_locks import PatientLock
+from radar.models.logs import Log
 from radar.database import db
 
 from radar_ukrdc_importer.aliases import import_aliases
@@ -14,7 +15,7 @@ from radar_ukrdc_importer.addresses import import_addresses
 from radar_ukrdc_importer.demographics import import_demographics
 from radar_ukrdc_importer.patient_numbers import import_patient_numbers
 from radar_ukrdc_importer.results import import_results
-from radar_ukrdc_importer.utils import load_schema, transform_values
+from radar_ukrdc_importer.utils import load_schema, transform_values, get_import_user
 
 
 logger = logging.getLogger(__name__)
@@ -69,6 +70,14 @@ def lock_patient(patient):
                 session.commit()
             except sqlalchemy.exc.IntegrityError:
                 pass
+
+
+def log_data_import(patient):
+    log = Log()
+    log.type = 'DATA_IMPORT'
+    log.user = get_import_user()
+    log.data = dict(patient_id=patient.id)
+    db.session.add(log)
 
 
 @celery.task
@@ -142,6 +151,8 @@ def import_sda(sda_container, sequence_number, patient_id=None):
     import_addresses(patient, sda_addresses)
     import_medications(patient, sda_medications)
     import_results(patient, sda_lab_orders)
+
+    log_data_import(patient)
 
     db.session.commit()
 
