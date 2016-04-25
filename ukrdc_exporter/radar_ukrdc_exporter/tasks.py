@@ -10,6 +10,7 @@ from radar_ukrdc_exporter.medications import export_medications
 from radar_ukrdc_exporter.patients import export_patient
 from radar_ukrdc_exporter.results import export_lab_orders
 from radar_ukrdc_exporter.groups import export_program_memberships
+from radar_ukrdc_exporter.utils import transform_values, to_iso
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ def export_sda(patient_id):
     export_lab_orders(sda_container, patient)
     export_program_memberships(sda_container, patient)
 
-    # TODO datetime to iso-8601
+    # Convert date/datetime objects to ISO strings
+    sda_container = transform_values(sda_container, to_iso)
 
     return sda_container
 
