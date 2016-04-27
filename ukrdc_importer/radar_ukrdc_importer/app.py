@@ -1,5 +1,6 @@
 from flask import Flask
 from sqlalchemy import event
+from celery import Celery
 
 from radar.database import db
 from radar_ukrdc_importer.utils import get_import_user
@@ -25,9 +26,14 @@ def create_app():
     return app
 
 
-def setup_celery(celery, app=None):
+def create_celery(app=None):
     if app is None:
         app = create_app()
+
+    celery = Celery()
+    celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_importer'
+
+    import radar_ukrdc_importer.tasks  # noqa
 
     broker_url = app.config.get('CELERY_BROKER_URL')
 
@@ -46,3 +52,5 @@ def setup_celery(celery, app=None):
                 return TaskBase.__call__(self, *args, **kwargs)
 
     celery.Task = ContextTask
+
+    return celery

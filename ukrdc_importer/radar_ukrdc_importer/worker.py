@@ -1,5 +1,3 @@
-from radar_ukrdc_importer.tasks import celery
-from radar_ukrdc_importer.app import setup_celery
+from radar_ukrdc_importer.app import create_celery
 
-
-setup_celery(celery)
+celery = create_celery()

@@ -1,7 +1,7 @@
 import logging
 
 import sqlalchemy
-from celery import Celery
+from celery import shared_task
 from jsonschema import validate, ValidationError
 
 from radar.models.patients import Patient
@@ -19,9 +19,6 @@ from radar_ukrdc_importer.utils import load_schema, transform_values, get_import
 
 
 logger = logging.getLogger(__name__)
-
-celery = Celery()
-celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_importer'
 
 
 def find_patient_id(sda_patient_numbers):
@@ -80,7 +77,7 @@ def log_data_import(patient):
     db.session.add(log)
 
 
-@celery.task
+@shared_task(ignore_result=True)
 def import_sda(sda_container, sequence_number, patient_id=None):
     # The code that produces SDA JSON files in the UKRDC determines types based on the
     # content of the value.
