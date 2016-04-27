@@ -470,7 +470,8 @@ def export_transplants(config):
         column('transplant_group_id'),
         column('transplant_group', 'transplant_group.name'),
         column('date'),
-        column('modality'),
+        column('type_code', 'modality'),
+        column('type_description', 'modality_description'),
         column('date_of_recurrence'),
         column('date_of_failure'),
     ]
