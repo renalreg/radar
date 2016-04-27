@@ -1,11 +1,11 @@
 import logging
 import requests
 
-from celery import Celery, chain
+from celery import shared_task, chain
 from flask import current_app
 
 from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE_HOSPITAL
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.database import db
 from radar.groups import is_radar_group
@@ -18,10 +18,6 @@ from radar_ukrdc_exporter.utils import transform_values, to_iso
 
 
 logger = logging.getLogger(__name__)
-
-
-celery = Celery()
-celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_exporter'
 
 
 def get_patient(patient_id):
@@ -42,7 +38,7 @@ def log_data_export(patient, group):
     db.session.add(log)
 
 
-@celery.task
+@shared_task
 def export_sda(patient_id):
     patient = get_patient(patient_id)
 
@@ -51,27 +47,23 @@ def export_sda(patient_id):
         return
 
     groups = set(patient.groups)
+    sda_containers = []
 
     for group in groups:
-        if not is_radar_group(group) and group.type != GROUP_TYPE_HOSPITAL:
+        if not is_radar_group(group) and group.type != GROUP_TYPE.HOSPITAL:
             continue
 
-        _export_sda(patient.id, group.id)
+        sda_container = _export_sda(patient, group)
+        sda_containers.append(sda_container)
+        log_data_export(patient, group)
+    
+    db.session.commit()
+
+    return sda_containers
 
 
-def _export_sda(patient_id, group_id):
-    patient = get_patient(patient_id)
-
-    if patient is None:
-        logger.error('Patient not found id={}'.format(patient_id))
-        return
-
-    group = get_group(group_id)
-
-    if group is None:
-        logger.error('Group not found id={}'.format(group_id))
-        return
-    elif is_radar_group(group):
+def _export_sda(patient, group):
+    if is_radar_group(group):
         facility = 'RADAR'
     else:
         facility = 'RADAR.{type}.{code}'.format(type=group.type, code=group.code)
@@ -91,25 +83,25 @@ def _export_sda(patient_id, group_id):
     # Convert date/datetime objects to ISO strings
     sda_container = transform_values(sda_container, to_iso)
 
-    log_data_export(patient, group)
-
-    db.session.commit()
+    return sda_container
 
 
-@celery.task(bind=True)
-def send_to_ukrdc(self, sda_container):
+# TODO this can be done in parallel
+@shared_task(bind=True, ignore_result=True)
+def send_to_ukrdc(self, sda_containers):
     config = current_app.config['UKRDC_EXPORTER']
 
     url = config['URL']
     timeout = config.get('TIMEOUT', 10)
     retry_countdown = config.get('RETRY_COUNTDOWN', 60)
 
-    try:
-        # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
-        r = requests.post(url, json=sda_container, timeout=timeout)
-        r.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        self.retry(exc=e, countdown=retry_countdown)
+    for sda_container in sda_containers:
+        try:
+            # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
+            r = requests.post(url, json=sda_container, timeout=timeout)
+            r.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            self.retry(exc=e, countdown=retry_countdown)
 
 
 def export_to_ukrdc(patient_id):

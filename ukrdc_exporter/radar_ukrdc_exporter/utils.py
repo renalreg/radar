@@ -16,6 +16,6 @@ def transform_values(data, f):
 
 def to_iso(value):
     if isinstance(value, date):
-        value = date.isoformat()
+        value = value.isoformat()
 
     return value
