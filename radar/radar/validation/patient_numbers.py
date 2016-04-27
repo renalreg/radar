@@ -1,3 +1,5 @@
+from sqlalchemy import and_, or_
+
 from radar.groups import is_radar_group
 from radar.validation.core import Validation, pass_call, ValidationError, Field
 from radar.validation.sources import RadarSourceValidationMixin
@@ -22,9 +24,24 @@ class PatientNumberValidation(PatientValidationMixin, RadarSourceValidationMixin
     @classmethod
     def is_duplicate(cls, obj):
         q = PatientNumber.query
-        q = q.filter(PatientNumber.source_group == obj.source_group)
-        q = q.filter(PatientNumber.number_group == obj.number_group)
-        q = q.filter(PatientNumber.number == obj.number)
+
+        # Check another patient doesn't already have this number (same source)
+        c1 = and_(
+            PatientNumber.source_group == obj.source_group,
+            PatientNumber.source_type == obj.source_type,
+            PatientNumber.number_group == obj.number_group,
+            PatientNumber.number == obj.number
+        )
+
+        # Check this patient doesn't already have a number of this type (same source)
+        c2 = and_(
+            PatientNumber.patient == obj.patient,
+            PatientNumber.source_group == obj.source_group,
+            PatientNumber.source_type == obj.source_type,
+            PatientNumber.number_group == obj.number_group
+        )
+
+        q = q.filter(or_(c1, c2))
 
         if obj.id is not None:
             q = q.filter(PatientNumber.id != obj.id)
