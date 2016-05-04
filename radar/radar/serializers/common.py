@@ -206,3 +206,11 @@ class CohortGroupMixin(object):
             raise PermissionDenied()
 
         return data
+
+
+class TinyGroupPatientSerializer(serializers.Serializer):
+    id = fields.IntegerField()
+    group = TinyGroupSerializer()
+    from_date = fields.DateTimeField()
+    to_date = fields.DateTimeField()
+    current = fields.BooleanField(read_only=True)
