@@ -1,26 +1,12 @@
 from radar.auth.sessions import login, logout_other_sessions,\
     DisabledLoginError, UsernameLoginError, PasswordLoginError
 
-from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField, BooleanField, IntegerField
 from radar.validation.core import ValidationError
-from radar.validation.login import LoginValidation
 from radar.views.core import ApiView, request_json, response_json
 
 
-class LoginSerializer(Serializer):
-    username = StringField()
-    password = StringField()
-    logout_other_sessions = BooleanField()
-
-
-class TokenSerializer(Serializer):
-    user_id = IntegerField()
-    token = StringField()
-
-
 class LoginView(ApiView):
-    @request_json(LoginSerializer, LoginValidation)
+    @request_json(LoginSerializer)
     @response_json(TokenSerializer)
     def post(self, credentials):
         try:

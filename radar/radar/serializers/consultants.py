@@ -1,17 +1,17 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
 from cornflake.validators import not_empty, upper, max_length, none_if_blank, optional, lower, email_address
 from cornflake.exceptions import ValidationError
 
 from radar.serializers.validators import gmc_number
-from radar.serializers.common import GroupField, MetaMixin
-from radar.models.consultants import Consultant, GroupConsultant
+from radar.serializers.common import GroupField, MetaMixin, PatientMixin
+from radar.models.consultants import Consultant, GroupConsultant, PatientConsultant
 from radar.models.groups import GROUP_TYPE
 from radar.database import db
 
 
-class GroupConsultantSerializer(MetaMixin, ModelSerializer):
+class ChildGroupConsultantSerializer(MetaMixin, ModelSerializer):
     group = GroupField()
 
     class Meta(object):
@@ -26,7 +26,7 @@ class GroupConsultantSerializer(MetaMixin, ModelSerializer):
 
 
 class GroupConsultantListSerializer(serializers.ListSerializer):
-    child = GroupConsultantSerializer
+    child = ChildGroupConsultantSerializer
 
     def validate(self, group_consultants):
         groups = set()
@@ -76,3 +76,40 @@ class ConsultantSerializer(ModelSerializer):
         self._save(instance, data)
 
         return instance
+
+
+class ChildConsultantSerializer(MetaMixin, ModelSerializer):
+    class Meta(object):
+        model_class = Consultant
+
+
+class ConsultantField(ReferenceField):
+    model_class = Consultant
+    serializer_class = ChildConsultantSerializer
+
+
+class GroupConsultantSerializer(MetaMixin, ModelSerializer):
+    group = GroupField()
+    consultant = ConsultantField()
+
+    class Meta(object):
+        model_class = GroupConsultant
+        exclude = ['group_id', 'consultant_id']
+
+
+class PatientConsultantSerializer(PatientMixin, MetaMixin, ModelSerializer):
+    from_date = fields.DateField()
+    to_date = fields.DateField(required=False)
+    consultant = ConsultantField()
+
+    class Meta(object):
+        model_class = PatientConsultant
+        exclude = ['consultant_id']
+
+    def validate(self, data):
+        data = super(PatientConsultantSerializer, self).validate(data)
+
+        if data['to_date'] is not None and data['to_date'] < data['from_date']:
+            raise ValidationError({'to_date': 'Must be on or after from date.'})
+
+        return data

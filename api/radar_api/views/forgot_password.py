@@ -1,20 +1,12 @@
 from flask import Response
 from radar.auth.forgot_password import forgot_password, UserNotFound
 
-from radar.serializers.core import Serializer
-from radar.serializers.fields import StringField
 from radar.validation.core import ValidationError
-from radar.validation.forgot_password import ForgotPasswordValidation
 from radar.views.core import ApiView, request_json
 
 
-class ForgotPasswordSerializer(Serializer):
-    username = StringField()
-    email = StringField()
-
-
 class ForgotPasswordView(ApiView):
-    @request_json(ForgotPasswordSerializer, ForgotPasswordValidation)
+    @request_json(ForgotPasswordSerializer)
     def post(self, data):
         username = data['username']
         email = data['email']
