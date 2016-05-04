@@ -84,15 +84,15 @@ class MetaMixin(serializers.Serializer):
         return model_exclude
 
 
-class UserReferenceField(ReferenceField):
+class UserField(ReferenceField):
     model_class = User
 
 
-class UserSerializerMixin(object):
-    user = UserReferenceField()
+class UserMixin(object):
+    user = UserField()
 
     def get_model_exclude(self):
-        attrs = super(UserSerializerMixin, self).get_model_exclude()
+        attrs = super(UserMixin, self).get_model_exclude()
         attrs.add('user_id')
         return attrs
 

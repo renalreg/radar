@@ -89,7 +89,6 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         instance.date_of_failure = data['date_of_failure']
         instance.rejections = self.rejections.create(data['rejections'])
         instance.biopsies = self.biopsies.create(data['biopsies'])
-        return instance
 
     def create(self, data):
         instance = Transplant()

@@ -12,7 +12,7 @@ from radar.serializers.common import (
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import is_radar_group
 from radar.database import db
-from radar.serializers.validators import NUMBER_VALIDATORS
+from radar.serializers.validators import get_number_validators
 
 
 class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
@@ -48,7 +48,7 @@ class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSe
 
     def validate(self, data):
         number_group = data['number_group']
-        number_validators = NUMBER_VALIDATORS.get((number_group.type, number_group.code), [])
+        number_validators = get_number_validators(number_group)
         self.run_validators_on_field(data, self.number, number_validators)
 
         if self.is_duplicate(data):

@@ -3,16 +3,12 @@ from radar.validation.validators import optional, required, not_in_future, in_, 
 from radar.models.patients import GENDERS, ETHNICITIES, Patient
 from radar.permissions import has_permission_for_group
 from radar.groups import is_radar_group
-from radar.validation.number_validators import NUMBER_VALIDATORS
+from radar.validation.number_validators import get_number_validators
 from radar.roles import PERMISSION
 from radar.models.groups import GROUP_TYPE
 from radar.patient_search import filter_by_patient_number_at_group
 from radar.database import db
 from radar.exceptions import PermissionDenied
-
-
-def get_number_validators(number_group):
-    return NUMBER_VALIDATORS.get((number_group.type, number_group.code))
 
 
 class RecruitPatientSearchValidation(Validation):
@@ -34,9 +30,7 @@ class RecruitPatientSearchValidation(Validation):
         number_group = obj['number_group']
 
         number_validators = get_number_validators(number_group)
-
-        if number_validators is not None:
-            call.validators_for_field(number_validators, obj, self.number)
+        call.validators_for_field(number_validators, obj, self.number)
 
         first_name = obj['first_name']
         last_name = obj['last_name']
@@ -71,9 +65,7 @@ class PatientNumberValidation(Validation):
         number_group = obj['number_group']
 
         number_validators = get_number_validators(number_group)
-
-        if number_validators is not None:
-            call.validators_for_field(number_validators, obj, self.number)
+        call.validators_for_field(number_validators, obj, self.number)
 
         return obj
 

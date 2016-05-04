@@ -409,3 +409,7 @@ NUMBER_VALIDATORS = {
     (GROUP_TYPE.OTHER, GROUP_CODE_BAPN): [bapn_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_RADAR): [radar_no()],
 }
+
+
+def get_number_validators(group):
+    return NUMBER_VALIDATORS.get((group.type, group.code), [])

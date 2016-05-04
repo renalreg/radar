@@ -61,7 +61,6 @@ class ConsultantSerializer(ModelSerializer):
         instance.telephone_number = data['telephone_number']
         instance.gmc_number = data['gmc_number']
         instance.group_consultants = self.group_consultants.create(data['group_consultants'])
-        return instance
 
     def create(self, data):
         instance = Consultant()

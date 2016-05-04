@@ -47,7 +47,6 @@ class FamilyHistorySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeriali
         instance.family_history = data['family_history']
         instance.other_family_history = data['other_family_history']
         instance.relatives = self.relatives.create(data['relatives'])
-        return instance
 
     def create(self, data):
         instance = FamilyHistory()

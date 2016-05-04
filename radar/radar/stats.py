@@ -35,7 +35,11 @@ def recruitment_by_month(group):
         count = data.get((current_year, current_month), 0)
         total += count
 
-        results.append({'date': datetime(current_year, current_month, 1), 'newPatients': count, 'totalPatients': total})
+        results.append({
+            'date': datetime(current_year, current_month, 1),
+            'new_patients': count,
+            'total_patients': total
+        })
 
         if current_month == 12:
             current_year += 1

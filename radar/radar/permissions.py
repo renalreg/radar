@@ -27,7 +27,7 @@ def has_permission_for_user(user, other_user, permission, explicit=False):
     if user.is_admin:
         grant = True
     elif not explicit and user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):
-        # Users can view themselves
+        # Users can view and edit themselves
         grant = True
     elif other_user.is_admin and permission == PERMISSION.EDIT_USER:
         # Users can't edit admins
