@@ -11,7 +11,7 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.groups import is_radar_group
 from radar.models.logs import log_changes
-from radar.utils import seconds_to_age
+from radar.utils import seconds_to_age, uniq
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1
@@ -44,6 +44,10 @@ ETHNICITIES = OrderedDict([
     ('S', 'Other Ethnic Background'),
     ('Z', 'Refused / Not Stated'),
 ])
+
+
+def clean(items):
+    return uniq(x for x in items if x)
 
 
 @log_changes
@@ -234,6 +238,22 @@ class Patient(db.Model, MetaModelMixin):
         return self.latest_demographics_attr('gender')
 
     @hybrid_property
+    def home_number(self):
+        return self.latest_demographics_attr('home_number')
+
+    @hybrid_property
+    def work_number(self):
+        return self.latest_demographics_attr('work_number')
+
+    @hybrid_property
+    def mobile_number(self):
+        return self.latest_demographics_attr('mobile_number')
+
+    @hybrid_property
+    def email_address(self):
+        return self.latest_demographics_attr('email_address')
+
+    @hybrid_property
     def is_male(self):
         return self.gender == GENDER_MALE
 
@@ -265,6 +285,22 @@ class Patient(db.Model, MetaModelMixin):
     def gender(cls):
         return cls.latest_demographics_query(PatientDemographics.gender)
 
+    @home_number.expression
+    def home_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.home_number)
+
+    @work_number.expression
+    def work_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.work_number)
+
+    @mobile_number.expression
+    def mobile_number(cls):
+        return cls.latest_demographics_query(PatientDemographics.mobile_number)
+
+    @email_address.expression
+    def email_address(cls):
+        return cls.latest_demographics_query(PatientDemographics.email_address)
+
     @property
     def earliest_date_of_birth(self):
         earliest_date_of_birth = None
@@ -288,25 +324,28 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def first_names(self):
-        # TODO unique
         values = [x.first_name for x in self.patient_demographics]
-        values.extend(x.first_name for x in self.patient_aliases)
-        values = [x.upper() for x in values if x]
+        values += [x.first_name for x in self.patient_aliases]
+        values = clean(values)
         return values
 
     @property
     def last_names(self):
-        # TODO unique
         values = [x.last_name for x in self.patient_demographics]
-        values.extend(x.last_name for x in self.patient_aliases)
-        values = [x.upper() for x in values if x]
+        values += [x.last_name for x in self.patient_aliases]
+        values = clean(values)
         return values
 
     @property
-    def date_of_births(self):
-        # TODO unique
+    def dates_of_birth(self):
         values = [x.date_of_birth for x in self.patient_demographics]
-        values = [x for x in values if x]
+        values = clean(values)
+        return values
+
+    @property
+    def genders(self):
+        values = [x.gender for x in self.patient_demographics]
+        values = clean(values)
         return values
 
     def to_age(self, date):

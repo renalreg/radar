@@ -2,6 +2,7 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.validators import not_empty, normalise_whitespace, max_length
+from sqlalchemy import and_, or_
 
 from radar.serializers.common import (
     PatientMixin,
@@ -31,9 +32,24 @@ class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSe
 
     def is_duplicate(self, data):
         q = PatientNumber.query
-        q = q.filter(PatientNumber.source_group == data['source_group'])
-        q = q.filter(PatientNumber.number_group == data['number_group'])
-        q = q.filter(PatientNumber.number == data['number'])
+
+        # Check another patient doesn't already have this number (same source)
+        c1 = and_(
+            PatientNumber.source_group == data['source_group'],
+            PatientNumber.source_type == data['source_type'],
+            PatientNumber.number_group == data['number_group'],
+            PatientNumber.number == data['number']
+        )
+
+        # Check this patient doesn't already have a number of this type (same source)
+        c2 = and_(
+            PatientNumber.patient == data['patient'],
+            PatientNumber.source_group == data['source_group'],
+            PatientNumber.source_type == data['source_type'],
+            PatientNumber.number_group == data['number_group']
+        )
+
+        q = q.filter(or_(c1, c2))
 
         instance = self.instance
 

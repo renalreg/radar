@@ -3,6 +3,7 @@ import logging
 from flask import Flask
 from sqlalchemy import event
 
+import radar_recruitment
 from radar_api.auth import require_login, force_password_change
 from radar_api.views import consultants
 from radar_api.views import forgot_password
@@ -150,6 +151,8 @@ class RadarApi(Flask):
         transplants.register_views(self)
         users.register_views(self)
         user_sessions.register_views(self)
+
+        radar_recruitment.setup(self)
 
     def add_public_endpoint(self, endpoint):
         self.public_endpoints.append(endpoint)

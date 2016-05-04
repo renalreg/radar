@@ -160,7 +160,8 @@ class UserSerializer(MetaMixin, ModelSerializer):
         # New user
         if instance is None:
             # Password is required when creating a new user
-            self.run_validators_on_field(data, self.password, [required()])
+            if not data['is_bot']:
+                self.run_validators_on_field(data, self.password, [required()])
         else:
             # Editing yourself
             if current_user == instance:

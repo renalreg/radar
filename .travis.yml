@@ -17,6 +17,7 @@ script:
   - ( cd mock_ukrdc && tox )
   - ( cd packaging && tox )
   - ( cd fixtures && tox )
+  - ( cd ukrdc_importer && tox )
 after_success:
   - coverage combine radar/.coverage api/.coverage mock_ukrdc/.coverage
   - coveralls

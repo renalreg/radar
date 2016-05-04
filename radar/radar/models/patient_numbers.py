@@ -24,14 +24,23 @@ class PatientNumber(db.Model, MetaModelMixin):
     number_group = relationship('Group', foreign_keys=[number_group_id])
     number = Column(String, nullable=False)
 
-# TODO unique index on patient, source_group, source_type, number_group
-
-# TODO include source type
+# Ensure patient numbers are unique across a source
 Index(
     'patient_numbers_source_number_idx',
     PatientNumber.source_group_id,
+    PatientNumber.source_type,
     PatientNumber.number_group_id,
     PatientNumber.number,
+    unique=True
+)
+
+# Ensure patient's don't have more than one number for each type
+Index(
+    'patient_numbers_patient_number_idx',
+    PatientNumber.patient_id,
+    PatientNumber.source_group_id,
+    PatientNumber.source_type,
+    PatientNumber.number_group_id,
     unique=True
 )
 
