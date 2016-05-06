@@ -38,3 +38,7 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise ValidationError(e.message)
 
         return password
+
+
+class PasswordSerializer(serializers.Serializer):
+    password = fields.StringField()

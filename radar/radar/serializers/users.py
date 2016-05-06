@@ -14,6 +14,7 @@ from cornflake.exceptions import ValidationError
 from radar.serializers.common import MetaMixin
 from radar.models.users import User
 from radar.auth.passwords import check_password_strength, WeakPasswordError
+from radar.auth.sessions import logout_other_sessions, logout_user
 from radar.serializers.group_users import GroupUserSerializer
 
 
@@ -212,5 +213,16 @@ class UserSerializer(MetaMixin, ModelSerializer):
         return instance
 
     def update(self, instance, data):
+        # Changed password or email
+        if data['password'] is not None or instance.email != data['email']:
+            current_user = self.context['user']
+
+            # Changed own password or email
+            if current_user == instance:
+                logout_other_sessions()
+            else:
+                logout_user(instance)
+
         self._save(instance, data)
+
         return instance

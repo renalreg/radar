@@ -1,72 +1,53 @@
-from sqlalchemy import or_, and_
-from sqlalchemy.orm import aliased
-from flask import request
+from cornflake import fields, serializers
 
-from radar.database import db
-from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
-from radar.permissions import GroupObjectPermission
-from radar.roles import get_roles_with_permission, PERMISSION
-from radar.serializers.core import Serializer
-from radar.serializers.fields import IntegerField
-from radar.auth.sessions import current_user
-
-
-def filter_query_by_group_permissions(query, model_class):
-    # Filter the query based on the user's group membership
-    # Admins can view all data so don't filter their queries
-    if not current_user.is_admin:
-        group_a = aliased(Group)
-        group_b = aliased(Group)
-
-        # Check if the user has permission through their group membership (requires the VIEW_PATIENT permission)
-        # If the user has the VIEW_PATIENT permission on one of the patient's hospitals they can view all cohort data
-        sub_query = db.session.query(Group)\
-            .join(group_b, GroupPatient.group)\
-            .join(Group.group_users)\
-            .filter(
-                GroupPatient.patient_id == model_class.patient_id,
-                GroupUser.user == current_user,
-                GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
-                or_(
-                    GroupPatient.group_id == model_class.group_id,
-                    and_(
-                        group_a.type == GROUP_TYPE.COHORT,
-                        group_b.type == GROUP_TYPE.HOSPITAL
-                    )
-                )
-            )\
-            .exists()
-
-        # Filter the query to only include rows the user has permission to see
-        query = query.filter(sub_query)
-
-    return query
+from radar.models.groups import Group, GROUP_TYPE
+from radar.serializers.groups import GroupSerializer
+from radar.permissions import AdminWritePermission
+from radar.views.generics import (
+    ListCreateModelView,
+    RetrieveUpdateDestroyModelView,
+    parse_args
+)
 
 
-def filter_query_by_group(query, model_class):
-    serializer = GroupRequestSerializer()
-    args = serializer.to_value(request.args)
-
-    # Filter by group
-    if 'group' in args:
-        query = query.filter(model_class.group_id == args['group'])
-
-    return query
+class GroupListRequestSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    type = fields.EnumField(GROUP_TYPE, required=False)
+    is_recruitment_group = fields.BooleanField(required=False)
+    is_recruitment_number_group = fields.BooleanField(required=False)
 
 
-class GroupRequestSerializer(Serializer):
-    group = IntegerField()
-
-
-class GroupObjectViewMixin(object):
-    def get_permission_classes(self):
-        permission_classes = super(GroupObjectViewMixin, self).get_permission_classes()
-        permission_classes.append(GroupObjectPermission)
-        return permission_classes
+class GroupListView(ListCreateModelView):
+    serializer_class = GroupSerializer
+    model_class = Group
+    permission_classes = [AdminWritePermission]
 
     def filter_query(self, query):
-        query = super(GroupObjectViewMixin, self).filter_query(query)
-        model_class = self.get_model_class()
-        query = filter_query_by_group_permissions(query, model_class)
-        query = filter_query_by_group(query, model_class)
+        query = super(GroupListView, self).filter_query(query)
+
+        args = parse_args(GroupListRequestSerializer)
+
+        if args['code'] is not None:
+            query = query.filter(Group.code == args['code'])
+
+        if args['type'] is not None:
+            query = query.filter(Group.type == args['type'])
+
+        if args['is_recruitment_group'] is not None:
+            query = query.filter(Group.is_recruitment_group == args['is_recruitment_group'])
+
+        if args['is_recruitment_number_group'] is not None:
+            query = query.filter(Group.is_recruitment_number_group == args['is_recruitment_number_group'])
+
         return query
+
+
+class GroupDetailView(RetrieveUpdateDestroyModelView):
+    serializer_class = GroupSerializer
+    model_class = Group
+    permission_classes = [AdminWritePermission]
+
+
+def register_views(app):
+    app.add_url_rule('/groups', view_func=GroupListView.as_view('group_list'))
+    app.add_url_rule('/groups/<int:id>', view_func=GroupDetailView.as_view('group_detail'))

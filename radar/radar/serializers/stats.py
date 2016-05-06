@@ -22,16 +22,3 @@ class PatientsByGroupSerializer(serializers.Serializer):
 
 class PatientsByGroupListSerializer(serializers.Serializer):
     counts = fields.ListField(child=PatientsByGroupSerializer())
-
-
-class RecruitmentByMonthRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField()
-
-
-class PatientsByGroupRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField()
-    group_type = fields.EnumField(GROUP_TYPE)
-
-
-class PatientsByRecruitedGroupRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField()

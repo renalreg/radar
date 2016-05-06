@@ -59,10 +59,6 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         select([func.max(Log.date)]).where(Log.user_id == id)
     )
 
-    def __init__(self, *args, **kwargs):
-        super(User, self).__init__(*args, **kwargs)
-        self.plaintext_password = None
-
     @hybrid_property
     def username(self):
         return self._username
@@ -89,15 +85,11 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     def groups(self):
         return [x.group for x in self.group_users]
 
-    @property
-    def password(self):
-        return getattr(self, 'plaintext_password', None)
-
-    @password.setter
     def password(self, value):
-        self.plaintext_password = value
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
+
+    password = property(None, password)
 
     @property
     def password_hash(self):
