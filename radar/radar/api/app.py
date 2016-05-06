@@ -149,8 +149,8 @@ class RadarApi(Flask):
         salt_wasting_clinical_features.register_views(self)
         stats.register_views(self)
         transplants.register_views(self)
-        users.register_views(self)
         user_sessions.register_views(self)
+        users.register_views(self)
 
         radar_recruitment.setup(self)
 
