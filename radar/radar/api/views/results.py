@@ -1,33 +1,55 @@
-from flask import request
 from sqlalchemy import func
+from cornflake import serializers, fields
 
-from radar.models.results import Result, Observation
-from radar.api.views.core import ListModelView, RetrieveModelView, CreateModelView, ListView
-from radar.api.views.sources import SourceObjectViewMixin
-from radar.api.views.patients import PatientObjectDetailView, PatientObjectViewMixin
-from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
-    ResultListRequestSerializer, ObservationListRequestSerializer, TinyResultSerializer,\
-    ObservationCountSerializer, ObservationCountListRequestSerializer
-from radar.validation.results import ResultValidation
 from radar.database import db
 from radar.roles import PERMISSION
-from radar.api.permissions import has_permission_for_patient
 from radar.exceptions import PermissionDenied
 from radar.auth.sessions import current_user
+from radar.permissions import has_permission_for_patient
+from radar.models.results import Result, Observation
+from radar.api.serializers.results import (
+    ResultSerializer,
+    ObservationSerializer,
+    TinyResultSerializer,
+    ObservationCountSerializer
+)
+from radar.api.serializers.common import PatientField
+from radar.api.views.generics import (
+    ListModelView,
+    RetrieveModelView,
+    CreateModelView,
+    ListView,
+    parse_args
+)
+from radar.api.views.common import (
+    SourceObjectViewMixin,
+    PatientObjectDetailView,
+    PatientObjectViewMixin
+)
+
+
+class ObservationListRequestSerializer(serializers.Serializer):
+    value_type = fields.CommaSeparatedField(required=False, child=fields.StringField())
+
+
+class ResultListRequestSerializer(serializers.Serializer):
+    observation_id = fields.CommaSeparatedField(required=False, child=fields.IntegerField())
+
+
+class ObservationCountListRequestSerializer(serializers.Serializer):
+    patient = PatientField(required=False)
 
 
 class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelView):
     serializer_class = TinyResultSerializer
     model_class = Result
-    validation_class = ResultValidation
 
     def filter_query(self, query):
         query = super(ResultListView, self).filter_query(query)
 
-        serializer = ResultListRequestSerializer()
-        args = serializer.args_to_value(request.args)
+        args = parse_args(ResultListRequestSerializer)
 
-        observation_ids = args.get('observation_ids')
+        observation_ids = args['observation_id']
 
         if observation_ids:
             query = query.filter(Result.observation_id.in_(observation_ids))
@@ -38,13 +60,11 @@ class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelVie
 class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateModelView):
     serializer_class = ResultSerializer
     model_class = Result
-    validation_class = ResultValidation
 
 
 class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = ResultSerializer
     model_class = Result
-    validation_class = ResultValidation
 
 
 class ObservationListView(ListModelView):
@@ -52,11 +72,12 @@ class ObservationListView(ListModelView):
     model_class = Observation
 
     def filter_query(self, query):
-        serializer = ObservationListRequestSerializer()
-        args = serializer.args_to_value(request.args)
+        args = parse_args(ObservationListRequestSerializer)
 
-        if 'value_type' in args:
-            query = query.filter(Observation.type.in_(args['value_type']))
+        value_types = args['value_type']
+
+        if value_types:
+            query = query.filter(Observation.type.in_(value_types))
 
         return query
 
@@ -70,10 +91,9 @@ class ObservationCountListView(ListView):
     serializer_class = ObservationCountSerializer
 
     def get_object_list(self):
-        serializer = ObservationCountListRequestSerializer()
-        args = serializer.args_to_value(request.args)
+        args = parse_args(ObservationCountListRequestSerializer)
 
-        patient = args.get('patient')
+        patient = args['patient']
 
         if patient is not None and not has_permission_for_patient(current_user, patient, PERMISSION.VIEW_PATIENT):
             raise PermissionDenied()

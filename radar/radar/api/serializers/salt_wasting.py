@@ -10,7 +10,7 @@ from cornflake.validators import (
 )
 
 from radar.api.serializers.common import PatientMixin, MetaMixin
-from radar.models.plasmapheresis import SaltWastingClinicalFeatures
+from radar.models.salt_wasting import SaltWastingClinicalFeatures
 
 
 class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerializer):

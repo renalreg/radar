@@ -1,8 +1,10 @@
 from flask import Response
 
+from cornflake.exceptions import ValidationError
+
 from radar.auth.forgot_password import UserNotFound, reset_password, InvalidToken
-from radar.validation.core import ValidationError
-from radar.api.views.core import ApiView, request_json
+from radar.api.views.generics import ApiView, request_json
+from radar.api.serializers.auth import ResetPasswordSerializer
 
 
 class ResetPasswordView(ApiView):

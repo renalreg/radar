@@ -1,4 +1,4 @@
-from radar.api.views.codes import StringLookupListView
+from radar.api.views.common import StringLookupListView
 from radar.roles import ROLE_NAMES
 
 

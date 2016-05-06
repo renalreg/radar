@@ -196,7 +196,7 @@ class RadarSourceMixin(object):
     source_type = SourceTypeField()
 
     def get_model_exclude(self):
-        model_exclude = super(SourceMixin, self).get_model_exclude()
+        model_exclude = super(RadarSourceMixin, self).get_model_exclude()
         model_exclude.add('source_group_id')
         return model_exclude
 

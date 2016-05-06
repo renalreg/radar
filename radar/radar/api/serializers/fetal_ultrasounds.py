@@ -3,7 +3,7 @@ from cornflake import fields
 from cornflake.validators import max_length, range_, none_if_blank, optional
 
 from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
-from radar.models.plasmapheresis import FetalUltrasound, LIQUOR_VOLUMES
+from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
 from radar.api.serializers.validators import valid_date_for_patient
 
 

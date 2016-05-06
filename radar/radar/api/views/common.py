@@ -32,7 +32,7 @@ class StringLookupListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return fields.StringLookupField()
+        return fields.StringLookupField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()
@@ -45,7 +45,7 @@ class IntegerLookupListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return fields.IntegerLookupField()
+        return fields.IntegerLookupField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()

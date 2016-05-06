@@ -19,7 +19,7 @@ from radar.api.views import plasmapheresis
 from radar.api.views import posts
 from radar.api.views import renal_imaging
 from radar.api.views import results
-from radar.api.views import salt_wasting_clinical_features
+from radar.api.views import salt_wasting
 from radar.api.views import user_sessions
 from radar.api.views import transplants
 from radar.api.views import users
@@ -88,7 +88,7 @@ def setup(app):
     reset_password.register_views(app)
     results.register_views(app)
     roles.register_views(app)
-    salt_wasting_clinical_features.register_views(app)
+    salt_wasting.register_views(app)
     stats.register_views(app)
     transplants.register_views(app)
     user_sessions.register_views(app)

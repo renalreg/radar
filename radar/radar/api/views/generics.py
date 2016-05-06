@@ -19,7 +19,7 @@ def parse_args(serializer_class, args=None):
     if args is None:
         args = request.args
 
-    args = {k: v for k, v in args if len(v.strip()) > 0}
+    args = {k: v for k, v in args.items() if len(v.strip()) > 0}
 
     serializer = serializer_class(data=args)
     serializer.is_valid(raise_exception=True)
@@ -85,7 +85,7 @@ class SerializerViewMixin(object):
         serializer = serializer_class(instance=instance, data=data, context=context)
         return serializer
 
-    def get_context(self, deserialized_data):
+    def get_context(self):
         return {'user': current_user}
 
 
@@ -415,8 +415,8 @@ def response_json(serializer_class):
         @wraps(f)
         def wrapper(*args, **kwargs):
             response = f(*args, **kwargs)
-            serializer = serializer_class()
-            data = serializer.to_data(response)
+            serializer = serializer_class(response)
+            data = serializer.data
             return jsonify(data), 200
 
         return wrapper

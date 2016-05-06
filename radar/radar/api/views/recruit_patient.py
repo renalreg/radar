@@ -1,11 +1,14 @@
-from radar.auth.sessions import current_user
-from radar.api.views.core import ApiView, request_json, response_json, PermissionViewMixin
-from radar_api.serializers.patients import PatientSerializer
-from radar.validation.recruit_patient import RecruitPatientValidation, RecruitPatientSearchValidation
-from radar_api.serializers.recruit_patient import RecruitPatientSearchSerializer, RecruitPatientResultSerializer, RecruitPatientSerializer
+from cornflake.exceptions import ValidationError
+
+from radar.api.views.generics import ApiView, request_json, response_json, PermissionViewMixin
+from radar.api.serializers.patients import PatientSerializer
+from radar.api.serializers.recruit_patient import (
+    RecruitPatientSearchSerializer,
+    RecruitPatientResultSerializer,
+    RecruitPatientSerializer
+)
 from radar.api.permissions import RecruitPatientPermission
 from radar_recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
-from radar.validation.core import ValidationError
 
 
 def mismatch_error(e):
@@ -21,8 +24,8 @@ def mismatch_error(e):
 class RecruitPatientSearchView(PermissionViewMixin, ApiView):
     permission_classes = [RecruitPatientPermission]
 
-    @request_json(RecruitPatientSearchSerializer, RecruitPatientSearchValidation)
-    @response_json(lambda: RecruitPatientResultSerializer(current_user))
+    @request_json(RecruitPatientSearchSerializer)
+    @response_json(RecruitPatientResultSerializer)
     def post(self, data):
         search_patient = SearchPatient(
             first_name=data.get('first_name'),
@@ -44,23 +47,23 @@ class RecruitPatientSearchView(PermissionViewMixin, ApiView):
 class RecruitPatientView(PermissionViewMixin, ApiView):
     permission_classes = [RecruitPatientPermission]
 
-    @request_json(RecruitPatientSerializer, RecruitPatientValidation)
-    @response_json(lambda: PatientSerializer(current_user))
+    @request_json(RecruitPatientSerializer)
+    @response_json(PatientSerializer)
     def post(self, data):
         search_patient = SearchPatient(
-            first_name=data.get('first_name'),
-            last_name=data.get('last_name'),
-            date_of_birth=data.get('date_of_birth'),
-            gender=data.get('gender'),
-            number_group=data.get('number_group'),
-            number=data.get('number'),
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            date_of_birth=data['date_of_birth'],
+            gender=data['gender'],
+            number_group=data['number_group'],
+            number=data['number'],
         )
 
         recruitment_patient = RecruitmentPatient(
             search_patient=search_patient,
-            hospital_group=data.get('hospital_group'),
-            cohort_group=data.get('cohort_group'),
-            ethnicity=data.get('ethnicity')
+            hospital_group=data['hospital_group'],
+            cohort_group=data['cohort_group'],
+            ethnicity=data['ethnicity']
         )
 
         try:

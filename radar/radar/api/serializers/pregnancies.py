@@ -3,7 +3,7 @@ from cornflake import fields
 from cornflake.validators import range_, min_
 
 from radar.api.serializers.common import PatientMixin, MetaMixin
-from radar.models.plasmapheresis import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
+from radar.models.pregnancies import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
 from radar.api.serializers.validators import valid_date_for_patient
 
 
@@ -19,7 +19,7 @@ class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
     gestational_age = fields.IntegerField(required=False, validators=[range_(20 * 7, 42 * 7, 'days')])
     delivery_method = fields.StringLookupField(DELIVERY_METHODS, required=False)
     neonatal_intensive_care = fields.BooleanField(required=False)
-    pre_eclampsia = fields.StringField(PRE_ECLAMPSIA_TYPES, required=False)
+    pre_eclampsia = fields.StringLookupField(PRE_ECLAMPSIA_TYPES, required=False)
 
     class Meta(object):
         model_class = Pregnancy

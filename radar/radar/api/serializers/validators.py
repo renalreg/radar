@@ -7,9 +7,9 @@ import zxcvbn
 
 from cornflake.fields import ValidationError
 from cornflake.validators import after, not_in_future
+from cornflake.utils import safe_strftime
 
 from radar.constants import HUMAN_DATE_FORMAT
-from radar.safe_strftime import safe_strftime
 from radar.utils import datetime_to_date, is_datetime
 from radar.models.patients import Patient
 from radar.models.groups import (

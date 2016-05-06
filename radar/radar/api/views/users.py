@@ -1,5 +1,5 @@
 from cornflake import fields, serializers
-from cornflake.validators import none_if_empty
+from cornflake.validators import none_if_blank
 
 from radar.auth.sessions import current_user
 from radar.user_search import UserQueryBuilder
@@ -24,10 +24,10 @@ from radar.api.views.generics import (
 
 class UserListRequestSerializer(serializers.Serializer):
     id = fields.IntegerField(required=False)
-    username = fields.StringField(required=False, validators=[none_if_empty()])
-    email = fields.StringField(required=False, validators=[none_if_empty()])
-    first_name = fields.StringField(required=False, validators=[none_if_empty()])
-    last_name = fields.StringField(required=False, validators=[none_if_empty()])
+    username = fields.StringField(required=False, validators=[none_if_blank()])
+    email = fields.StringField(required=False, validators=[none_if_blank()])
+    first_name = fields.StringField(required=False, validators=[none_if_blank()])
+    last_name = fields.StringField(required=False, validators=[none_if_blank()])
     group = fields.CommaSeparatedField(required=False, child=GroupField())
     is_enabled = fields.BooleanField(required=False)
     is_admin = fields.BooleanField(required=False)
