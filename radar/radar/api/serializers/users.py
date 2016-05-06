@@ -11,11 +11,11 @@ from cornflake.validators import (
 )
 from cornflake.exceptions import ValidationError
 
-from radar.serializers.common import MetaMixin
+from radar.api.serializers.common import MetaMixin
 from radar.models.users import User
 from radar.auth.passwords import check_password_strength, WeakPasswordError
 from radar.auth.sessions import logout_other_sessions, logout_user
-from radar.serializers.group_users import GroupUserSerializer
+from radar.api.serializers.group_users import GroupUserSerializer
 
 
 class UserSerializer(MetaMixin, ModelSerializer):

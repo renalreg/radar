@@ -1,6 +1,6 @@
 from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
-from radar.serializers.genetics import GeneticsSerializer
-from radar.views.common import (
+from radar.api.serializers.genetics import GeneticsSerializer
+from radar.api.views.common import (
     IntegerLookupListView,
     GroupObjectViewMixin,
     PatientObjectDetailView,

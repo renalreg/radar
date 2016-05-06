@@ -1,6 +1,6 @@
 from radar.models.renal_progressions import RenalProgression
-from radar.serializers.renal_progressions import RenalProgressionSerializer
-from radar.views.common import PatientObjectDetailView, PatientObjectListView
+from radar.api.serializers.renal_progressions import RenalProgressionSerializer
+from radar.api.views.common import PatientObjectDetailView, PatientObjectListView
 
 
 class RenalProgressionListView(PatientObjectListView):

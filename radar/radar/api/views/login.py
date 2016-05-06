@@ -7,8 +7,8 @@ from radar.auth.sessions import (
     UsernameLoginError,
     PasswordLoginError
 )
-from radar.serializers.auth import LoginSerializer, TokenSerializer
-from radar.views.generics import ApiView, request_json, response_json
+from radar.api.serializers.auth import LoginSerializer, TokenSerializer
+from radar.api.views.generics import ApiView, request_json, response_json
 
 
 class LoginView(ApiView):

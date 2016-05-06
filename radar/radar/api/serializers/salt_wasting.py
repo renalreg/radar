@@ -9,7 +9,7 @@ from cornflake.validators import (
     not_empty
 )
 
-from radar.serializers.common import PatientMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, MetaMixin
 from radar.models.plasmapheresis import SaltWastingClinicalFeatures
 
 

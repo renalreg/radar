@@ -1,6 +1,6 @@
 from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant
-from radar.serializers.transplants import TransplantSerializer
-from radar.views.common import (
+from radar.api.serializers.transplants import TransplantSerializer
+from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,

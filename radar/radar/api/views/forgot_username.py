@@ -3,8 +3,8 @@ from cornflake.exceptions import ValidationError
 
 from radar.auth.exceptions import UserNotFound
 from radar.auth.forgot_username import forgot_username
-from radar.serializers.auth import ForgotUsernameSerializer
-from radar.views.generics import ApiView, request_json
+from radar.api.serializers.auth import ForgotUsernameSerializer
+from radar.api.views.generics import ApiView, request_json
 
 
 class ForgotUsernameView(ApiView):

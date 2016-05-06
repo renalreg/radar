@@ -2,7 +2,7 @@ from flask import Response
 
 from radar.auth.forgot_password import UserNotFound, reset_password, InvalidToken
 from radar.validation.core import ValidationError
-from radar.views.core import ApiView, request_json
+from radar.api.views.core import ApiView, request_json
 
 
 class ResetPasswordView(ApiView):

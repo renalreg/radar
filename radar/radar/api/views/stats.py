@@ -3,23 +3,23 @@ from cornflake import fields, serializers
 
 from radar.groups import get_radar_group
 from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group
-from radar.models.group import GROUP_TYPE
-from radar.serializers.common import GroupReferenceField
-from radar.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
-from radar.views.generics import response_json, ApiView, parse_args
+from radar.models.groups import GROUP_TYPE
+from radar.api.serializers.common import GroupField
+from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
+from radar.api.views.generics import response_json, ApiView, parse_args
 
 
 class RecruitmentByMonthRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField(required=False)
+    group = GroupField(required=False)
 
 
 class PatientsByGroupRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField(required=False)
+    group = GroupField(required=False)
     group_type = fields.EnumField(GROUP_TYPE, required=False)
 
 
 class PatientsByRecruitedGroupRequestSerializer(serializers.Serializer):
-    group = GroupReferenceField(required=False)
+    group = GroupField(required=False)
 
 
 class RecruitmentByMonthView(ApiView):

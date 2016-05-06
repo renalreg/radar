@@ -1,6 +1,6 @@
 from radar.models.renal_imaging import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
-from radar.serializers.renal_imaging import RenalImagingSerializer
-from radar.views.common import (
+from radar.api.serializers.renal_imaging import RenalImagingSerializer
+from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,

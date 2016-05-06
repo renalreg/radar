@@ -1,6 +1,6 @@
 from radar.models.patient_aliases import PatientAlias
-from radar.serializers.patient_aliases import PatientAliasSerializer
-from radar.views.common import (
+from radar.api.serializers.patient_aliases import PatientAliasSerializer
+from radar.api.views.common import (
     RadarObjectViewMixin,
     PatientObjectListView,
     PatientObjectDetailView,

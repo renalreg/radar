@@ -1,6 +1,6 @@
 from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
-from radar.serializers.fetal_ultrasounds import FetalUltrasoundSerializer
-from radar.views.common import (
+from radar.api.serializers.fetal_ultrasounds import FetalUltrasoundSerializer
+from radar.api.views.common import (
     SourceObjectViewMixin,
     IntegerLookupListView,
     PatientObjectDetailView,

@@ -1,8 +1,7 @@
 from cornflake import serializers
 from cornflake import fields
 
-from radar.models.groups import GROUP_TYPE
-from radar.serializers.common import GroupReferenceField
+from radar.api.serializers.common import GroupField
 
 
 class DataPointSerializer(serializers.Serializer):
@@ -12,11 +11,11 @@ class DataPointSerializer(serializers.Serializer):
 
 
 class DataPointListSerializer(serializers.Serializer):
-    points = fields.ListField(DataPointSerializer())
+    points = fields.ListField(child=DataPointSerializer())
 
 
 class PatientsByGroupSerializer(serializers.Serializer):
-    group = GroupReferenceField()
+    group = GroupField()
     count = fields.IntegerField()
 
 

@@ -1,9 +1,9 @@
 from radar.auth.sessions import current_user
-from radar.views.core import ApiView, request_json, response_json, PermissionViewMixin
+from radar.api.views.core import ApiView, request_json, response_json, PermissionViewMixin
 from radar_api.serializers.patients import PatientSerializer
 from radar.validation.recruit_patient import RecruitPatientValidation, RecruitPatientSearchValidation
 from radar_api.serializers.recruit_patient import RecruitPatientSearchSerializer, RecruitPatientResultSerializer, RecruitPatientSerializer
-from radar.permissions import RecruitPatientPermission
+from radar.api.permissions import RecruitPatientPermission
 from radar_recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
 from radar.validation.core import ValidationError
 

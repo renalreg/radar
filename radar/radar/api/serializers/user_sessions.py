@@ -1,6 +1,6 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.serializers.common import MetaMixin
+from radar.api.serializers.common import MetaMixin
 from radar.models.user_sessions import UserSession
 
 

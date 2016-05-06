@@ -15,10 +15,10 @@ from cornflake.validators import (
 
 from radar.models.patients import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
-from radar.serializers.validators import after_day_zero
+from radar.api.serializers.validators import after_day_zero
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
-from radar.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
 
 
 class PatientDemographicsSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
@@ -33,7 +33,7 @@ class PatientDemographicsSerializer(PatientMixin, RadarSourceMixin, MetaMixin, M
     home_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     work_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     mobile_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
-    email_address = fields.EmailField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
+    email_address = fields.StringField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
 
     class Meta(object):
         model_class = PatientDemographics

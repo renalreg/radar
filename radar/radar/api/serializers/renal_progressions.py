@@ -1,9 +1,9 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 
-from radar.serializers.common import PatientMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, MetaMixin
 from radar.models.renal_progressions import RenalProgression
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class RenalProgressionSerializer(PatientMixin, MetaMixin, ModelSerializer):

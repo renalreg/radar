@@ -4,7 +4,7 @@ from cornflake.exceptions import ValidationError
 from cornflake.validators import not_empty, normalise_whitespace, max_length
 from sqlalchemy import and_, or_
 
-from radar.serializers.common import (
+from radar.api.serializers.common import (
     PatientMixin,
     RadarSourceMixin,
     MetaMixin,
@@ -13,7 +13,7 @@ from radar.serializers.common import (
 from radar.models.patient_numbers import PatientNumber
 from radar.groups import is_radar_group
 from radar.database import db
-from radar.serializers.validators import get_number_validators
+from radar.api.serializers.validators import get_number_validators
 
 
 class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):

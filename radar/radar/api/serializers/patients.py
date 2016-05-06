@@ -4,7 +4,7 @@ from cornflake import serializers
 from cornflake.exceptions import SkipField
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.serializers.common import (
+from radar.api.serializers.common import (
     MetaMixin,
     TinyGroupSerializer,
     TinyGroupPatientSerializer,
@@ -13,7 +13,8 @@ from radar.serializers.common import (
 from radar.models.patients import Patient, GENDERS, ETHNICITIES
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
-from radar.serializers.patient_numbers import PatientNumberSerializer
+from radar.api.serializers.patient_numbers import PatientNumberSerializer
+from radar.api.serializers.group_patients import GroupPatientSerializer
 
 
 class PatientSerializer(MetaMixin, ModelSerializer):

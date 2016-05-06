@@ -3,8 +3,8 @@ from cornflake import fields
 from cornflake import serializers
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.serializers.common import PatientMixin, SourceMixin, MetaMixin
-from radar.models.family_history import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
+from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
+from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
 from radar.models.patients import Patient
 from radar.database import db
 

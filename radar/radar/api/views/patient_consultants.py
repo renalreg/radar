@@ -1,6 +1,6 @@
 from radar.models.patient_consultants import PatientConsultant
-from radar.serializers.patient_consultants import PatientConsultantSerializer
-from radar.views.common import (
+from radar.api.serializers.consultants import PatientConsultantSerializer
+from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView
 )

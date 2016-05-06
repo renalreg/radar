@@ -1,14 +1,14 @@
 from cornflake import fields, serializers
-from cornflake.validators import none_if_empty
+from cornflake.validators import none_if_blank
 
 from radar.patient_search import PatientQueryBuilder
-from radar.logs import log_view_patients, log_view_patient
+from radar.api.logs import log_view_patients, log_view_patient
 from radar.auth.sessions import current_user
 from radar.models.patients import Patient
-from radar.serializers.patients import PatientSerializer, TinyPatientSerializer
-from radar.serializers.common import GroupField
-from radar.permissions import PatientPermission, AdminPermission
-from radar.views.generics import (
+from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
+from radar.api.serializers.common import GroupField
+from radar.api.permissions import PatientPermission, AdminPermission
+from radar.api.views.generics import (
     ListModelView,
     RetrieveUpdateModelView,
     DestroyModelView,
@@ -18,14 +18,14 @@ from radar.views.generics import (
 
 class PatientListRequestSerializer(serializers.Serializer):
     id = fields.IntegerField(required=False)
-    first_name = fields.StringField(required=False, validators=[none_if_empty()])
-    last_name = fields.StringField(required=False, validators=[none_if_empty()])
+    first_name = fields.StringField(required=False, validators=[none_if_blank()])
+    last_name = fields.StringField(required=False, validators=[none_if_blank()])
     date_of_birth = fields.DateField(required=False)
     year_of_birth = fields.IntegerField(required=False)
     date_of_death = fields.DateField(required=False)
     year_of_death = fields.IntegerField(required=False)
     gender = fields.StringField(required=False)
-    patient_number = fields.StringField(required=False, validators=[none_if_empty()])
+    patient_number = fields.StringField(required=False, validators=[none_if_blank()])
     group = fields.CommaSeparatedField(required=False, child=GroupField())
     current = fields.BooleanField(required=False)
 

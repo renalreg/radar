@@ -1,12 +1,12 @@
 from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, Drug
-from radar.serializers.medications import MedicationSerializer, DrugSerializer
-from radar.views.common import (
+from radar.api.serializers.medications import MedicationSerializer, DrugSerializer
+from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
     SourceObjectViewMixin,
     StringLookupListView
 )
-from radar.views.generics import ListModelView
+from radar.api.views.generics import ListModelView
 
 
 class MedicationListView(SourceObjectViewMixin, PatientObjectListView):

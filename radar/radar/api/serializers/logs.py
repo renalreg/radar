@@ -1,6 +1,6 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.serializers.common import TinyUserSerializer
+from radar.api.serializers.common import TinyUserSerializer
 from radar.models.logs import Log
 
 

@@ -1,9 +1,9 @@
 from cornflake import fields, serializers
 
 from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE
-from radar.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer
-from radar.views.generics import ListModelView, parse_args
-from radar.views.common import (
+from radar.api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer
+from radar.api.views.generics import ListModelView, parse_args
+from radar.api.views.common import (
     IntegerLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,

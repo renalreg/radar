@@ -4,7 +4,7 @@ from cornflake import serializers
 from cornflake.validators import none_if_blank, optional, max_length
 from cornflake.exceptions import ValidationError
 
-from radar.serializers.common import (
+from radar.api.serializers.common import (
     PatientMixin,
     SourceMixin,
     MetaMixin,
@@ -16,7 +16,7 @@ from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     GROUP_DIAGNOSIS_TYPE
 )
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class GroupDiagnosisSerializer(serializers.Serializer):

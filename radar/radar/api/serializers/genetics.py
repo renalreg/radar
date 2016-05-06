@@ -2,9 +2,9 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.serializers.common import PatientMixin, CohortGroupMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, CohortGroupMixin, MetaMixin
 from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class GeneticsSerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSerializer):

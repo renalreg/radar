@@ -1,6 +1,6 @@
 from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
-from radar.serializers.dialysis import DialysisSerializer
-from radar.views.common import (
+from radar.api.serializers.dialysis import DialysisSerializer
+from radar.api.views.common import (
     IntegerLookupListView,
     PatientObjectDetailView,
     PatientObjectListView,

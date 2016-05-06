@@ -1,6 +1,6 @@
 from radar.models.mpgn import MpgnClinicalPicture
-from radar.serializers.mpgn import MpgnClinicalPictureSerializer
-from radar.views.common import PatientObjectListView, PatientObjectDetailView
+from radar.api.serializers.mpgn import MpgnClinicalPictureSerializer
+from radar.api.views.common import PatientObjectListView, PatientObjectDetailView
 
 
 class MpgnClinicalPictureListView(PatientObjectListView):

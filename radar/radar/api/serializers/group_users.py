@@ -3,7 +3,7 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.exceptions import ValidationError
 
 from radar.roles import ROLE, ROLE_NAMES
-from radar.serializers.common import UserMixin, MetaMixin, GroupField
+from radar.api.serializers.common import UserMixin, MetaMixin, GroupField
 from radar.models.groups import GroupUser
 from radar.permissions import has_permission_for_group_role
 from radar.exceptions import PermissionDenied

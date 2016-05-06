@@ -11,9 +11,9 @@ from cornflake.validators import (
 )
 from cornflake.exceptions import ValidationError, SkipField
 
-from radar.common import PatientMixin, RadarSourceMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
 from radar.models.patient_addresses import PatientAddress
-from radar.serializers.validators import remove_trailing_comma, after_date_of_birth
+from radar.api.serializers.validators import remove_trailing_comma, after_date_of_birth
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -21,14 +21,14 @@ from radar.roles import PERMISSION
 class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
     from_date = fields.DateField(required=False)
     to_date = fields.DateField(required=False)
-    address_1 = fields.StringField([
+    address_1 = fields.StringField(validators=[
         not_empty(),
         remove_trailing_comma(),
         not_empty(),
         normalise_whitespace(),
         max_length(100)
     ])
-    address_2 = fields.StringField([
+    address_2 = fields.StringField(validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -37,7 +37,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_3 = fields.StringField([
+    address_3 = fields.StringField(validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -46,7 +46,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_4 = fields.StringField([
+    address_4 = fields.StringField(validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -55,7 +55,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    postcode = fields.StringField([required(), postcode()])
+    postcode = fields.StringField(validators=[required(), postcode()])
 
     class Meta(object):
         model_class = PatientAddress

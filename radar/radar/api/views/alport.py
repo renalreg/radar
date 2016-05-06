@@ -1,6 +1,6 @@
 from radar.models.alport import AlportClinicalPicture, DEAFNESS_OPTIONS
-from radar.serializers.alport import AlportClinicalPictureSerializer
-from radar.views.common import (
+from radar.api.serializers.alport import AlportClinicalPictureSerializer
+from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView,
     IntegerLookupListView

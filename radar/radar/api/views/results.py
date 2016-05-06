@@ -2,16 +2,16 @@ from flask import request
 from sqlalchemy import func
 
 from radar.models.results import Result, Observation
-from radar.views.core import ListModelView, RetrieveModelView, CreateModelView, ListView
-from radar.views.sources import SourceObjectViewMixin
-from radar.views.patients import PatientObjectDetailView, PatientObjectViewMixin
+from radar.api.views.core import ListModelView, RetrieveModelView, CreateModelView, ListView
+from radar.api.views.sources import SourceObjectViewMixin
+from radar.api.views.patients import PatientObjectDetailView, PatientObjectViewMixin
 from radar_api.serializers.results import ResultSerializer, ObservationSerializer,\
     ResultListRequestSerializer, ObservationListRequestSerializer, TinyResultSerializer,\
     ObservationCountSerializer, ObservationCountListRequestSerializer
 from radar.validation.results import ResultValidation
 from radar.database import db
 from radar.roles import PERMISSION
-from radar.permissions import has_permission_for_patient
+from radar.api.permissions import has_permission_for_patient
 from radar.exceptions import PermissionDenied
 from radar.auth.sessions import current_user
 

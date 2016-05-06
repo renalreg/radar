@@ -4,9 +4,9 @@ from cornflake import fields, serializers
 
 from radar.models.logs import Log
 from radar.models.users import User
-from radar.serializers.logs import LogSerializer
-from radar.permissions import AdminPermission
-from radar.views.generics import ListModelView, RetrieveModelView, parse_args
+from radar.api.serializers.logs import LogSerializer
+from radar.api.permissions import AdminPermission
+from radar.api.views.generics import ListModelView, RetrieveModelView, parse_args
 
 
 class LogListRequestSerializer(serializers.Serializer):

@@ -1,7 +1,7 @@
 from flask import current_app
 from cornflake import fields, serializers
 
-from radar.views.generics import ApiView, response_json
+from radar.api.views.generics import ApiView, response_json
 
 
 class EnvironmentSerializer(serializers.Serializer):

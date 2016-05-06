@@ -3,8 +3,8 @@ from flask import Response
 from cornflake.exceptions import ValidationError
 
 from radar.auth.forgot_password import forgot_password, UserNotFound
-from radar.serializers.auth import ForgotPasswordSerializer
-from radar.views.generics import ApiView, request_json
+from radar.api.serializers.auth import ForgotPasswordSerializer
+from radar.api.views.generics import ApiView, request_json
 
 
 class ForgotPasswordView(ApiView):

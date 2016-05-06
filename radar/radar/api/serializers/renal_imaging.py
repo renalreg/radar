@@ -9,13 +9,13 @@ from cornflake.validators import (
 )
 from cornflake.exceptions import ValidationError
 
-from radar.serializers.common import PatientMixin, MetaMixin, SourceMixin
+from radar.api.serializers.common import PatientMixin, MetaMixin, SourceMixin
 from radar.models.renal_imaging import (
     RenalImaging,
     RENAL_IMAGING_TYPES,
     RENAL_IMAGING_KIDNEY_TYPES
 )
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

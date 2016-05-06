@@ -1,6 +1,6 @@
 from radar.models.family_histories import FamilyHistory, RELATIONSHIPS
-from radar.serializers.family_histories import FamilyHistorySerializer
-from radar.views.common import (
+from radar.api.serializers.family_histories import FamilyHistorySerializer
+from radar.api.views.common import (
     IntegerLookupListView,
     GroupObjectViewMixin,
     PatientObjectDetailView,

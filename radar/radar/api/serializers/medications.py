@@ -3,8 +3,8 @@ from cornflake import fields
 from cornflake.validators import none_if_blank, optional, max_length, min_, required
 from cornflake.exceptions import ValidationError
 
-from radar.serializers.common import PatientMixin, MetaMixin, SourceMixin
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.common import PatientMixin, MetaMixin, SourceMixin
+from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.medications import Medication, Drug, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 
 

@@ -1,6 +1,6 @@
 from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
-from radar.serializers.plasmapheresis import PlasmapheresisSerializer
-from radar.views.common import (
+from radar.api.serializers.plasmapheresis import PlasmapheresisSerializer
+from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView,
     StringLookupListView,

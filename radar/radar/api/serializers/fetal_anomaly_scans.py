@@ -2,7 +2,7 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import none_if_blank, optional, max_length, not_in_future, range_
 
-from radar.serializers.common import PatientMixin, SourceMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
 from radar.models.fetal_anomaly_scans import FetalAnomalyScan
 
 

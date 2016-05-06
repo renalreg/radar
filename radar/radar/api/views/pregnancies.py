@@ -1,6 +1,6 @@
 from radar.models.pregnancies import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
-from radar.serializers.pregnancies import PregnancySerializer
-from radar.views.common import (
+from radar.api.serializers.pregnancies import PregnancySerializer
+from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,

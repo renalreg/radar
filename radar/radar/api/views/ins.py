@@ -1,6 +1,6 @@
 from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
-from radar.serializers.ins import InsClinicalPictureSerializer, InsRelapseSerializer
-from radar.views.common import (
+from radar.api.serializers.ins import InsClinicalPictureSerializer, InsRelapseSerializer
+from radar.api.views.common import (
     StringLookupListView,
     PatientObjectListView,
     PatientObjectDetailView

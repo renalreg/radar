@@ -3,7 +3,7 @@ from cornflake import fields, serializers
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import aliased
 
-from radar.views.generics import (
+from radar.api.views.generics import (
     ListView,
     ListCreateModelView,
     RetrieveUpdateDestroyModelView
@@ -13,7 +13,7 @@ from radar.auth.sessions import current_user
 from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
 from radar.models.patients import Patient
 from radar.models.users import User
-from radar.permissions import (
+from radar.api.permissions import (
     GroupObjectPermission,
     PatientObjectPermission,
     RadarSourceObjectPermission,
@@ -22,7 +22,7 @@ from radar.permissions import (
 from radar.user_search import UserQueryBuilder
 from radar.patient_search import PatientQueryBuilder, filter_by_permissions
 from radar.roles import get_roles_with_permission, PERMISSION
-from radar.views.generics import parse_args
+from radar.api.views.generics import parse_args
 
 
 class StringLookupListView(ListView):

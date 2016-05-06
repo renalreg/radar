@@ -2,9 +2,9 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import range_, min_
 
-from radar.serializers.common import PatientMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, MetaMixin
 from radar.models.plasmapheresis import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):

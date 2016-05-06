@@ -1,7 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 
-from radar.serializers.common import MetaMixin
+from radar.api.serializers.common import MetaMixin
 from radar.models.groups import Group, GROUP_TYPE
 
 

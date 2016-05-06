@@ -7,9 +7,9 @@ from radar.auth.sessions import current_user
 from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.groups import Group, GroupPatient
 from radar.models.patients import Patient
-from radar.serializers.consultants import ConsultantSerializer
-from radar.permissions import AdminPermission
-from radar.views.generics import (
+from radar.api.serializers.consultants import ConsultantSerializer
+from radar.api.permissions import AdminPermission
+from radar.api.views.generics import (
     ListModelView,
     RetrieveModelView,
     UpdateModelView,

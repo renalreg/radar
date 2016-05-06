@@ -4,7 +4,7 @@ import logging
 
 import click
 
-from radar_api.app import create_app
+from radar.api.app import create_app
 
 
 @click.group()

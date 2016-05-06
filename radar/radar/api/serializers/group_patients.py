@@ -2,7 +2,7 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 
-from radar.serializers.commom import PatientMixin, MetaMixin, GroupField
+from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
 from radar.models.groups import GroupPatient
 from radar.permissions import has_permission_for_patient, has_permission_for_group
 from radar.roles import PERMISSION

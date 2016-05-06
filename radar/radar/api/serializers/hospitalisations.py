@@ -3,9 +3,9 @@ from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.serializers.common import PatientMixin, SourceMixin, MetaMixin
-from radar.models.plasmapheresis import Hospitalisation
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
+from radar.models.hospitalisations import Hospitalisation
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class HospitalisationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

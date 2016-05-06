@@ -2,9 +2,9 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import max_length, range_, none_if_blank, optional
 
-from radar.serializers.common import PatientMixin, SourceMixin, MetaMixin
+from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
 from radar.models.plasmapheresis import FetalUltrasound, LIQUOR_VOLUMES
-from radar.serializers.validators import valid_date_for_patient
+from radar.api.serializers.validators import valid_date_for_patient
 
 
 class FetalUltrasoundSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

@@ -1,7 +1,7 @@
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import GENDERS, ETHNICITIES
-from radar.serializers.patient_demographics import PatientDemographicsSerializer
-from radar.views.common import (
+from radar.api.serializers.patient_demographics import PatientDemographicsSerializer
+from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView,
     RadarObjectViewMixin,
