@@ -4,7 +4,7 @@ import logging
 
 import click
 
-from radar.api.app import Radar
+from radar.api.app import RadarAPI
 
 
 @click.group()
@@ -22,7 +22,7 @@ def runserver(host, port):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    app = Radar()
+    app = RadarAPI()
 
     with app.app_context():
         cli()

@@ -13,9 +13,9 @@ from radar.database import db
 from radar.template_filters import register_template_filters
 
 
-class RadarApi(Radar):
+class RadarAPI(Radar):
     def __init__(self, *args, **kwargs):
-        super(RadarApi, self).__init__(*args, **kwargs)
+        super(RadarAPI, self).__init__(*args, **kwargs)
 
         self.public_endpoints = []
 

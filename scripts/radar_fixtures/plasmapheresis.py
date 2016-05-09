@@ -2,8 +2,8 @@ import random
 from datetime import date
 
 from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_NO_OF_EXCHANGES, PLASMAPHERESIS_RESPONSES
-from radar_fixtures.utils import random_date
-from radar_fixtures.validation import validate_and_add
+
+from radar_fixtures.utils import random_date, add
 
 
 def create_plasmapheresis_f():
@@ -21,6 +21,6 @@ def create_plasmapheresis_f():
             plasmapheresis.no_of_exchanges = random.choice(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())
             plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES.keys())
 
-            validate_and_add(plasmapheresis)
+            add(plasmapheresis)
 
     return create_plasmapheresis

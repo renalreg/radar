@@ -31,7 +31,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
         number_group = data['number_group']
         number_validators = get_number_validators(number_group)
-        self.run_validators_on_field(data, self.number, number_validators)
+        self.run_validators_on_field(data, 'number', number_validators)
 
         return data
 

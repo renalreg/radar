@@ -92,23 +92,23 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
             })
 
         if data['right_present']:
-            self.run_validators_on_field(data, self.right_type, [required()])
-            self.run_validators_on_field(data, self.right_cysts, [required()])
-            self.run_validators_on_field(data, self.right_stones, [required()])
-            self.run_validators_on_field(data, self.right_calcification, [required()])
+            self.run_validators_on_field(data, 'right_type', [required()])
+            self.run_validators_on_field(data, 'right_cysts', [required()])
+            self.run_validators_on_field(data, 'right_stones', [required()])
+            self.run_validators_on_field(data, 'right_calcification', [required()])
 
             if data['right_calcification']:
-                self.run_validators_on_field(data, self.right_nephrocalcinosis, [required()])
-                self.run_validators_on_field(data, self.right_nephrolithiasis, [required()])
+                self.run_validators_on_field(data, 'right_nephrocalcinosis', [required()])
+                self.run_validators_on_field(data, 'right_nephrolithiasis', [required()])
 
         if data['left_present']:
-            self.run_validators_on_field(data, self.left_type, [required()])
-            self.run_validators_on_field(data, self.left_cysts, [required()])
-            self.run_validators_on_field(data, self.left_stones, [required()])
-            self.run_validators_on_field(data, self.left_calcification, [required()])
+            self.run_validators_on_field(data, 'left_type', [required()])
+            self.run_validators_on_field(data, 'left_cysts', [required()])
+            self.run_validators_on_field(data, 'left_stones', [required()])
+            self.run_validators_on_field(data, 'left_calcification', [required()])
 
             if data['left_calcification']:
-                self.run_validators_on_field(data, self.left_nephrocalcinosis, [required()])
-                self.run_validators_on_field(data, self.left_nephrolithiasis, [required()])
+                self.run_validators_on_field(data, 'left_nephrocalcinosis', [required()])
+                self.run_validators_on_field(data, 'left_nephrolithiasis', [required()])
 
         return data

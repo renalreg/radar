@@ -2,6 +2,8 @@ import difflib
 import random
 from datetime import date, timedelta
 
+from radar.database import db
+from radar.models.users import User
 from radar.utils import is_date, date_to_datetime
 
 from radar_fixtures.constants import (
@@ -15,6 +17,19 @@ from radar_fixtures.constants import (
     POSTCODES,
     TITLES
 )
+
+
+def add(obj):
+    user = User.query.filter(User.username == 'bot').first()
+
+    if hasattr(obj, 'created_user') and obj.created_user is None:
+        obj.created_user = user
+
+    if hasattr(obj, 'modified_user') and obj.modified_user is None:
+        obj.modified_user = user
+
+    db.session.add(obj)
+    db.session.flush()
 
 
 def generate_first_name_alias(gender, first_name):

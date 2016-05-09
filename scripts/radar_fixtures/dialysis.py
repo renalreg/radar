@@ -2,8 +2,8 @@ import random
 from datetime import date
 
 from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
-from radar_fixtures.utils import random_date
-from radar_fixtures.validation import validate_and_add
+
+from radar_fixtures.utils import random_date, add
 
 
 def create_dialysis_f():
@@ -20,6 +20,6 @@ def create_dialysis_f():
 
             dialysis.modality = random.choice(DIALYSIS_MODALITIES.keys())
 
-            validate_and_add(dialysis)
+            add(dialysis)
 
     return create_dialysis

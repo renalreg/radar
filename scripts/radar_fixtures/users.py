@@ -1,11 +1,16 @@
 from sqlalchemy import or_, func
 
-from radar.models.users import User
-from radar_fixtures.validation import validate_and_add
-from radar_fixtures.utils import generate_gender, generate_first_name, generate_last_name
-from radar.roles import ROLE
-from radar.models.groups import Group, GroupUser, GROUP_TYPE
 from radar.database import db
+from radar.models.groups import Group, GroupUser, GROUP_TYPE
+from radar.models.users import User
+from radar.roles import ROLE
+
+from radar_fixtures.utils import (
+    generate_gender,
+    generate_first_name,
+    generate_last_name,
+    add
+)
 
 DEFAULT_PASSWORD = 'password'
 
@@ -22,13 +27,13 @@ def create_users(password=DEFAULT_PASSWORD):
             user.username = group.code.lower() + '_' + str(role).lower()
             user.email = '%s@example.org' % user.username
             user.password = password
-            validate_and_add(user, {'allow_weak_passwords': True})
+            add(user)
 
             group_user = GroupUser()
             group_user.user = user
             group_user.group = group
             group_user.role = role
-            validate_and_add(group_user)
+            add(group_user)
 
 
 def create_bot_user(password=DEFAULT_PASSWORD):
@@ -52,7 +57,7 @@ def create_admin_user(password=DEFAULT_PASSWORD):
     user.last_name = 'Bar'
     user.is_admin = True
     user.password = password
-    validate_and_add(user, {'allow_weak_passwords': True})
+    add(user)
 
 
 def create_ukrdc_importer_user(password=DEFAULT_PASSWORD):
@@ -60,4 +65,4 @@ def create_ukrdc_importer_user(password=DEFAULT_PASSWORD):
     user.username = 'ukrdc_importer'
     user.is_admin = True
     user.is_bot = True
-    validate_and_add(user, {'allow_weak_passwords': True})
+    add(user)

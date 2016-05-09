@@ -1,5 +1,6 @@
-from radar_fixtures.validation import validate_and_add
 from radar.models.groups import Group, GROUP_TYPE
+
+from radar_fixtures.utils import add
 
 HOSPITALS = [
     ('SPRINGFIELD', 'Springfield General Hospital'),
@@ -14,4 +15,4 @@ def create_hospitals():
         group.code = code
         group.name = name
         group.short_name = name
-        validate_and_add(group)
+        add(group)

@@ -1,9 +1,19 @@
+from radar.models.groups import (
+    GROUP_CODE_RADAR,
+    GROUP_CODE_NHS,
+    GROUP_CODE_CHI,
+    GROUP_CODE_UKRR,
+    GROUP_CODE_HANDC,
+    GROUP_CODE_UKRDC,
+    GROUP_CODE_NHSBT,
+    GROUP_CODE_BAPN,
+    GROUP_TYPE,
+    Group
+)
+
 from radar_fixtures.cohorts import create_cohorts
 from radar_fixtures.hospitals import create_hospitals
-from radar.models.groups import GROUP_CODE_RADAR, GROUP_CODE_NHS, GROUP_CODE_CHI,\
-    GROUP_CODE_UKRR, GROUP_CODE_HANDC, GROUP_CODE_UKRDC, GROUP_CODE_NHSBT,\
-    GROUP_CODE_BAPN, GROUP_TYPE, Group
-from radar_fixtures.validation import validate_and_add
+from radar_fixtures.utils import add
 
 OTHER_GROUPS = [
     (GROUP_CODE_RADAR, 'RaDaR', False),
@@ -28,4 +38,4 @@ def create_groups():
         group.name = name
         group.short_name = name
         group.is_recruitment_number_group = is_recruitment_number_group
-        group = validate_and_add(group)
+        add(group)

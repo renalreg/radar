@@ -2,8 +2,8 @@ import random
 from datetime import date
 
 from radar.models.results import Result, Observation, OBSERVATION_VALUE_TYPE
-from radar_fixtures.utils import random_date
-from radar_fixtures.validation import validate_and_add
+
+from radar_fixtures.utils import random_date, add
 
 
 def create_results_f():
@@ -22,6 +22,6 @@ def create_results_f():
                 result.observation = observation
                 result.date = random_date(patient.earliest_date_of_birth, date.today())
                 result.value = '%.2f' % random.uniform(min_value, max_value)
-                validate_and_add(result)
+                add(result)
 
     return create_results

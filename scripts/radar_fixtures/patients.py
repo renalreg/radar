@@ -4,31 +4,54 @@ from datetime import timedelta, date, datetime
 from sqlalchemy import desc
 import pytz
 
-from radar.models.patients import ETHNICITIES
+from radar.database import db
+from radar.groups import get_radar_group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
-from radar.models.patients import Patient
-from radar_fixtures.utils import generate_first_name, generate_last_name, generate_first_name_alias, \
-    generate_date_of_birth, generate_date_of_death, generate_phone_number, generate_mobile_number, \
-    generate_email_address, generate_nhs_no, generate_chi_no, generate_ukrr_no, generate_nhsbt_no, \
-    generate_address_1, generate_address_2, generate_address_3, generate_postcode, random_date, \
-    random_datetime, generate_gender
+from radar.models.patients import Patient, ETHNICITIES
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.groups import (
+    Group,
+    GroupPatient,
+    GROUP_TYPE,
+    GROUP_CODE_NHS,
+    GROUP_CODE_CHI,
+    GROUP_CODE_UKRR,
+    GROUP_CODE_NHSBT
+)
+
 from radar_fixtures.constants import GENDER_FEMALE
-from radar_fixtures.validation import validate_and_add
 from radar_fixtures.dialysis import create_dialysis_f
-from radar_fixtures.medications import create_medications_f
-from radar_fixtures.transplants import create_transplants_f
-from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.hospitalisations import create_hospitalisations_f
+from radar_fixtures.medications import create_medications_f
+from radar_fixtures.plasmapheresis import create_plasmapheresis_f
 from radar_fixtures.renal_imaging import create_renal_imaging_f
 from radar_fixtures.results import create_results_f
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_NHS, GROUP_CODE_CHI, \
-    GROUP_CODE_UKRR, GROUP_CODE_NHSBT
-from radar.groups import get_radar_group
-from radar.database import db
+from radar_fixtures.transplants import create_transplants_f
+from radar_fixtures.utils import (
+    generate_first_name,
+    generate_last_name,
+    generate_first_name_alias,
+    generate_date_of_birth,
+    generate_date_of_death,
+    generate_phone_number,
+    generate_mobile_number,
+    generate_email_address,
+    generate_nhs_no,
+    generate_chi_no,
+    generate_ukrr_no,
+    generate_nhsbt_no,
+    generate_address_1,
+    generate_address_2,
+    generate_address_3,
+    generate_postcode,
+    random_date,
+    random_datetime,
+    generate_gender,
+    add
+)
 
 
 def create_demographics_f():
@@ -81,7 +104,7 @@ def create_demographics_f():
             new_d.work_number = old_d.work_number
             new_d.email_address = old_d.email_address
 
-        validate_and_add(new_d)
+        add(new_d)
 
     return create_demographics
 
@@ -107,7 +130,7 @@ def create_patient_aliases_f():
         else:
             alias.last_name = d.last_name
 
-        validate_and_add(alias)
+        add(alias)
 
     return create_patient_aliases
 
@@ -134,7 +157,7 @@ def create_patient_numbers_f():
             else:
                 new_n.number = old_n.number
 
-            validate_and_add(new_n)
+            add(new_n)
 
     return create_patient_numbers
 
@@ -174,7 +197,7 @@ def create_patient_addresses_f():
                 new_a.address_3 = old_a.address_3
                 new_a.postcode = old_a.postcode
 
-        validate_and_add(new_a)
+        add(new_a)
 
     return create_patient_addresses
 
@@ -210,7 +233,7 @@ def _create_patients(n, data):
         print 'patient #%d' % (i + 1)
 
         patient = Patient()
-        validate_and_add(patient)
+        add(patient)
 
         gender = generate_gender()
 
@@ -226,7 +249,7 @@ def _create_patients(n, data):
         radar_group_patient.group = radar_group
         radar_group_patient.from_date = recruited_date
         radar_group_patient.created_group = radar_group
-        validate_and_add(radar_group_patient)
+        add(radar_group_patient)
 
         for hospital_group in random.sample(hospital_groups, random.randint(1, min(3, len(hospital_groups)))):
             hospital_group_patient = GroupPatient()
@@ -234,7 +257,7 @@ def _create_patients(n, data):
             hospital_group_patient.patient = patient
             hospital_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
             hospital_group_patient.created_group = radar_group
-            validate_and_add(hospital_group_patient)
+            add(hospital_group_patient)
 
             if data:
                 for source_type in source_types:
@@ -257,4 +280,4 @@ def _create_patients(n, data):
         cohort_group_patient.patient = patient
         cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
         cohort_group_patient.created_group = radar_group
-        validate_and_add(cohort_group_patient)
+        add(cohort_group_patient)

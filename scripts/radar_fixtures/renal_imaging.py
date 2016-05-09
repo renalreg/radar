@@ -1,9 +1,9 @@
 import random
 from datetime import date
 
-from radar_fixtures.utils import random_bool, random_date
 from radar.models.renal_imaging import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
-from radar_fixtures.validation import validate_and_add
+
+from radar_fixtures.utils import random_bool, random_date, add
 
 
 def create_renal_imaging_f():
@@ -40,6 +40,6 @@ def create_renal_imaging_f():
                     renal_imaging.left_nephrocalcinosis = random_bool()
                     renal_imaging.left_nephrolithiasis = random_bool()
 
-            validate_and_add(renal_imaging)
+            add(renal_imaging)
 
     return create_renal_imaging

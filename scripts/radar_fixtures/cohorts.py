@@ -1,6 +1,8 @@
-from radar_fixtures.validation import validate_and_add
 from radar.models.groups import Group, GROUP_TYPE
 from radar.pages import PAGE
+
+from radar_fixtures.utils import add
+
 
 COHORTS = [
     {
@@ -32,4 +34,4 @@ def create_cohorts():
         group.name = x['name']
         group.short_name = x['short_name']
         group.pages = x['pages']
-        group = validate_and_add(group)
+        add(group)

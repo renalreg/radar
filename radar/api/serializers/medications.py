@@ -76,6 +76,6 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             })
 
         if data['dose_quantity'] is not None:
-            self.run_validators_on_field(data, self.dose_unit, [required()])
+            self.run_validators_on_field(data, 'dose_unit', [required()])
 
         return data

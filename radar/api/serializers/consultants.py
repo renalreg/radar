@@ -61,7 +61,7 @@ class ConsultantSerializer(ModelSerializer):
         instance.email = data['email']
         instance.telephone_number = data['telephone_number']
         instance.gmc_number = data['gmc_number']
-        instance.group_consultants = self.group_consultants.create(data['group_consultants'])
+        instance.group_consultants = self.fields['group_consultants'].create(data['group_consultants'])
 
     def create(self, data):
         instance = Consultant()

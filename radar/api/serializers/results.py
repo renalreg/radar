@@ -168,7 +168,7 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             if max_length_value is not None:
                 validators.append(max_length(max_length_value))
 
-        self.run_validators_on_field(data, self.value, validators)
+        self.run_validators_on_field(data, 'value', validators)
 
         return data
 

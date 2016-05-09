@@ -76,8 +76,8 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
     def validate(self, data):
         patient = data['patient']
-        self.rejections.validate_patient(data['rejections'], patient)
-        self.biopsies.validate_patient(data['biopsies'], patient)
+        self.fields['rejections'].validate_patient(data['rejections'], patient)
+        self.fields['biopsies'].validate_patient(data['biopsies'], patient)
 
         if data['date_of_recurrence'] is not None and data['date_of_recurrence'] < data['date']:
             raise ValidationError({'date_of_recurrence': 'Must be on or after transplant date.'})
@@ -92,8 +92,8 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         instance.modality = data['modality']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
-        instance.rejections = self.rejections.create(data['rejections'])
-        instance.biopsies = self.biopsies.create(data['biopsies'])
+        instance.rejections = self.fields['rejections'].create(data['rejections'])
+        instance.biopsies = self.fields['biopsies'].create(data['biopsies'])
 
     def create(self, data):
         instance = Transplant()

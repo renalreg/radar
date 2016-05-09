@@ -64,26 +64,26 @@ class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerial
 
     def validate(self, data):
         if not data['normal_pregnancy']:
-            self.run_validators_on_field(data, self.abnormal_pregnancy_text, [not_empty()])
+            self.run_validators_on_field(data, 'abnormal_pregnancy_text', [not_empty()])
 
         if data['neurological_problems']:
-            self.run_validators_on_field(data, self.seizures, [required()])
-            self.run_validators_on_field(data, self.abnormal_gait, [required()])
-            self.run_validators_on_field(data, self.deafness, [required()])
-            self.run_validators_on_field(data, self.other_neurological_problem, [required()])
+            self.run_validators_on_field(data, 'seizures', [required()])
+            self.run_validators_on_field(data, 'abnormal_gait', [required()])
+            self.run_validators_on_field(data, 'deafness', [required()])
+            self.run_validators_on_field(data, 'other_neurological_problem', [required()])
 
             if data['other_neurological_problem']:
-                self.run_validators_on_field(data, self.other_neurological_problem_text, [not_empty()])
+                self.run_validators_on_field(data, 'other_neurological_problem_text', [not_empty()])
 
         if data['joint_problems']:
-            self.run_validators_on_field(data, self.joint_problems_age, [required()])
-            self.run_validators_on_field(data, self.x_ray_abnormalities, [required()])
+            self.run_validators_on_field(data, 'joint_problems_age', [required()])
+            self.run_validators_on_field(data, 'x_ray_abnormalities', [required()])
 
             if data['x_ray_abnormalities']:
-                self.run_validators_on_field(data, self.chondrocalcinosis, [required()])
-                self.run_validators_on_field(data, self.other_x_ray_abnormality, [required()])
+                self.run_validators_on_field(data, 'chondrocalcinosis', [required()])
+                self.run_validators_on_field(data, 'other_x_ray_abnormality', [required()])
 
                 if data['other_x_ray_abnormality']:
-                    self.run_validators_on_field(data, self.other_x_ray_abnormality_text, [not_empty()])
+                    self.run_validators_on_field(data, 'other_x_ray_abnormality_text', [not_empty()])
 
         return data

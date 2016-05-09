@@ -3,8 +3,8 @@ import random
 
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.transplants import Transplant, TRANSPLANT_MODALITIES
-from radar_fixtures.utils import random_date
-from radar_fixtures.validation import validate_and_add
+
+from radar_fixtures.utils import random_date, add
 
 
 def create_transplants_f():
@@ -23,6 +23,6 @@ def create_transplants_f():
             if random.random() > 0.75:
                 transplant.date_of_failure = random_date(transplant.date, date.today())
 
-            validate_and_add(transplant)
+            add(transplant)
 
     return create_transplants
