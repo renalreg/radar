@@ -46,8 +46,7 @@ class RadarApi(Flask):
 
             self.before_request(debug_before_request)
             self.teardown_request(debug_teardown_request)
-
-        if not self.debug:
+        else:
             stream_handler = logging.StreamHandler()
             stream_handler.setLevel(logging.INFO)
             self.logger.addHandler(stream_handler)
