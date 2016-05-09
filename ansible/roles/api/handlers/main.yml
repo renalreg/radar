@@ -1,3 +1,0 @@
----
-- name: restart radar-api
-  service: name=radar-api state=restarted
