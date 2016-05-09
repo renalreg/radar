@@ -1,6 +1,6 @@
 import click
 
-from radar.app import create_app
+from radar.app import Radar
 from radar.database import db
 from radar_fixtures import create_data, create_patients, create_users, create_bot_user
 
@@ -16,7 +16,7 @@ def cli(ctx, connection_string):
         'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
     }
 
-    ctx.obj['app'] = create_app(config)
+    ctx.obj['app'] = Radar(config)
 
 
 @cli.command()

@@ -1,3 +1,4 @@
-from radar.ukrdc_importer.app import create_celery
+from radar.ukrdc_importer.app import RadarUKRDCImporter
 
-celery = create_celery()
+app = RadarUKRDCImporter()
+celery = app.celery

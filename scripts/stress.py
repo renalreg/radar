@@ -6,10 +6,9 @@ from datetime import datetime, timedelta
 
 from radar.models.groups import Group
 from radar.models.patients import Patient
-
-from radar_ukrdc_importer.tasks import import_sda
-from radar_ukrdc_importer.utils import utc
-from radar_ukrdc_importer.app import create_celery, create_app
+from radar.ukrdc_importer.app import RadarUKRDCImporter
+from radar.ukrdc_importer.tasks import import_sda
+from radar.ukrdc_importer.utils import utc
 
 
 def random_string(alphabet, n):
@@ -172,8 +171,7 @@ if __name__ == '__main__':
     parser.add_argument('n', type=int)
     args = parser.parse_args()
 
-    app = create_app()
-    create_celery(app)
+    app = RadarUKRDCImporter()
 
     with app.app_context():
         stress(args.n)
