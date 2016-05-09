@@ -2,7 +2,7 @@ language: python
 python:
   - 2.7
 addons:
-  postgresql: "9.4"
+  postgresql: 9.4
 services:
   - postgresql
 install:
@@ -12,12 +12,6 @@ before_script:
   - psql -U postgres -c 'create database radar_test;'
   - psql -U postgres -d radar_test -c 'create extension "uuid-ossp";'
 script:
-  - ( cd radar && tox )
-  - ( cd api && tox )
-  - ( cd mock_ukrdc && tox )
-  - ( cd packaging && tox )
-  - ( cd fixtures && tox )
-  - ( cd ukrdc_importer && tox )
+  - tox
 after_success:
-  - coverage combine radar/.coverage api/.coverage mock_ukrdc/.coverage
   - coveralls
