@@ -19,6 +19,8 @@ from radar.ukrdc_exporter.utils import transform_values, to_iso
 
 logger = logging.getLogger(__name__)
 
+QUEUE = 'ukrdc_exporter'
+
 
 def get_patient(patient_id):
     return Patient.query.get(patient_id)
@@ -38,7 +40,7 @@ def log_data_export(patient, group):
     db.session.add(log)
 
 
-@shared_task
+@shared_task(queue=QUEUE)
 def export_sda(patient_id):
     patient = get_patient(patient_id)
 
@@ -87,7 +89,7 @@ def _export_sda(patient, group):
 
 
 # TODO this can be done in parallel
-@shared_task(bind=True, ignore_result=True)
+@shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
     config = current_app.config['UKRDC_EXPORTER']
 

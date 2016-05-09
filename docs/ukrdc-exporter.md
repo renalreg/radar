@@ -93,7 +93,7 @@ The script will lock the state file while it is running which prevent jobs overl
 Run the worker with:
 
 ```
-RADAR_SETTINGS=$(pwd)/settings.py celery -A radar_ukrdc_exporter.worker worker
+RADAR_SETTINGS=$(pwd)/settings.py celery -A radar.ukrdc_exporter.worker worker -Q ukrdc_exporter
 ```
 
 The number of worker processes/threads can be controlled with the `--concurrency` option. By default this is the number of CPUs on the machine.

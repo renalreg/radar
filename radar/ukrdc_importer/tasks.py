@@ -20,6 +20,8 @@ from radar.ukrdc_importer.utils import load_schema, transform_values, get_import
 
 logger = logging.getLogger(__name__)
 
+QUEUE = 'ukrdc_importer'
+
 
 def find_patient_id(sda_patient_numbers):
     """Find RaDaR number in patient numbers."""
@@ -77,7 +79,7 @@ def log_data_import(patient):
     db.session.add(log)
 
 
-@shared_task(ignore_result=True)
+@shared_task(ignore_result=True, queue=QUEUE)
 def import_sda(sda_container, sequence_number, patient_id=None):
     # The code that produces SDA JSON files in the UKRDC determines types based on the
     # content of the value.
