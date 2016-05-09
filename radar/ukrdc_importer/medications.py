@@ -4,7 +4,7 @@ from radar.models.medications import Medication
 from radar.database import db
 from radar.groups import is_radar_group
 
-from radar_ukrdc_importer.utils import (
+from radar.ukrdc_importer.utils import (
     load_validator,
     validate_list,
     unique_list,

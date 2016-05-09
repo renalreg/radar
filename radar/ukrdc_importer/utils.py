@@ -12,7 +12,7 @@ from radar.database import db
 from radar.models.users import User
 from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_UKRDC
 
-import radar_ukrdc_importer
+import radar.ukrdc_importer
 
 
 NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')
@@ -39,7 +39,7 @@ def is_number(instance):
 
 def load_schema(filename):
     filename = os.path.join('schemas', filename)
-    data = pkg_resources.resource_string(radar_ukrdc_importer.__name__, filename)
+    data = pkg_resources.resource_string(radar.ukrdc_importer.__name__, filename)
     schema = json.loads(data)
     return schema
 

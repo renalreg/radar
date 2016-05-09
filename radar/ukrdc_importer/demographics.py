@@ -5,7 +5,7 @@ from jsonschema import ValidationError
 from radar.models.patient_demographics import PatientDemographics
 from radar.database import db
 
-from radar_ukrdc_importer.utils import (
+from radar.ukrdc_importer.utils import (
     load_validator,
     delete_list,
     build_id,

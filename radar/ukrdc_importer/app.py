@@ -3,7 +3,7 @@ from sqlalchemy import event
 from celery import Celery
 
 from radar.database import db
-from radar_ukrdc_importer.utils import get_import_user
+from radar.ukrdc_importer.utils import get_import_user
 
 
 def create_app():
@@ -33,7 +33,7 @@ def create_celery(app=None):
     celery = Celery()
     celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_importer'
 
-    import radar_ukrdc_importer.tasks  # noqa
+    import radar.ukrdc_importer.tasks  # noqa
 
     broker_url = app.config.get('CELERY_BROKER_URL')
 

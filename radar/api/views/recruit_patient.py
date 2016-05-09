@@ -8,7 +8,7 @@ from radar.api.serializers.recruit_patient import (
     RecruitPatientSerializer
 )
 from radar.api.views.generics import ApiView, request_json, response_json, PermissionViewMixin
-from radar_recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
+from radar.recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
 
 
 def mismatch_error(e):

@@ -3,16 +3,15 @@ import logging
 from flask import Flask
 from sqlalchemy import event
 
-import radar_recruitment
+from radar.api import views
 from radar.api.auth import require_login, force_password_change
 from radar.api.auth import set_cors_headers
-from radar.auth.sessions import refresh_token, current_user
-from radar.database import db
-from radar.template_filters import register_template_filters
-from radar.config import check_config
 from radar.api.debug import debug_before_request, debug_teardown_request
 from radar.api.logs import log_request
-from radar.api import views
+from radar.auth.sessions import refresh_token, current_user
+from radar.config import check_config
+from radar.database import db
+from radar.template_filters import register_template_filters
 
 
 class RadarApi(Flask):
@@ -42,9 +41,8 @@ class RadarApi(Flask):
                 session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user_id))
 
         if self.debug:
-            self.after_request(set_cors_headers)
-
             self.before_request(debug_before_request)
+            self.after_request(set_cors_headers)
             self.teardown_request(debug_teardown_request)
         else:
             stream_handler = logging.StreamHandler()
@@ -60,8 +58,6 @@ class RadarApi(Flask):
         register_template_filters(self)
 
         views.setup(self)
-
-        radar_recruitment.setup(self)
 
     def add_public_endpoint(self, endpoint):
         self.public_endpoints.append(endpoint)

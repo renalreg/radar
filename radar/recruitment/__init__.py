@@ -6,7 +6,6 @@ from datetime import datetime
 
 import requests
 import pytz
-from celery import Celery
 from flask import current_app
 
 from radar.models.patients import Patient, GENDERS
@@ -17,16 +16,10 @@ from radar.auth.sessions import current_user
 from radar.database import db
 from radar.groups import get_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
-
-
-__version__ = '0.1'
+from radar.ukrdc_importer.tasks import import_sda
 
 
 logger = logging.getLogger(__name__)
-
-
-celery = Celery()
-celery.conf.CELERY_DEFAULT_QUEUE = 'ukrdc_importer'
 
 
 class ApiError(Exception):
@@ -335,7 +328,7 @@ class SDAContainer(object):
 
         logger.info('Adding SDA to queue')
 
-        celery.send_task('radar_ukrdc_importer.tasks.import_sda', args=args, kwargs=kwargs)
+        import_sda.delay(*args, **kwargs)
 
 
 def _split_names(names):
@@ -347,18 +340,3 @@ def _split_name(name):
     name = re.sub('[^A-Z ]', '', name)
     parts = name.split(' ')
     return parts
-
-
-def setup(app):
-    setup_celery(app)
-
-
-def setup_celery(app):
-    config = app.config.get('UKRDC_IMPORTER', dict())
-
-    broker_url = config.get('CELERY_BROKER_URL')
-
-    if broker_url is not None:
-        celery.conf.BROKER_URL = broker_url
-
-    celery.conf.update(config)
