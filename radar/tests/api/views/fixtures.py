@@ -3,13 +3,13 @@ from datetime import datetime
 from sqlalchemy import func
 
 from radar.database import db
-from radar.models.users import User
 from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR, GROUP_CODE_NHS
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.patients import Patient
-from radar.roles import ROLE
-from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient
+from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.users import User
+from radar.roles import ROLE
 
 
 def create_user(username, **kwargs):
@@ -23,6 +23,10 @@ def create_user(username, **kwargs):
         **kwargs
     )
     db.session.add(u)
+    db.session.flush()
+
+    u.created_user = u
+    u.modified_user = u
 
     return u
 

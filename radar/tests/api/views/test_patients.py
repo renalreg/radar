@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from radar_api.tests.fixtures import get_user
+from radar.tests.api.views.fixtures import get_user
 
 matrix = [
     ('admin', True, True),

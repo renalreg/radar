@@ -29,7 +29,7 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
             raise PermissionDenied()
 
         # Check the user has permission for the group and role
-        if not has_permission_for_group_role(user, group, role):
+        if not has_permission_for_group_role(current_user, group, role):
             raise PermissionDenied()
 
     def is_duplicate(self, data):

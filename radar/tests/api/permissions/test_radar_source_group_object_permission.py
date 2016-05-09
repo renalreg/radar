@@ -1,10 +1,11 @@
 import pytest
 
-from radar.models.medications import Medication
+from radar.api.permissions import RadarSourceObjectPermission
 from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.medications import Medication
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.permissions import RadarSourceObjectPermission
-from radar.tests.permissions.helpers import MockRequest, make_user
+from radar.tests.api.permissions.helpers import MockRequest
+from radar.tests.permissions.helpers import make_user
 from radar.roles import ROLE
 
 

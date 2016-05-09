@@ -4,12 +4,17 @@ import itertools
 import pytest
 from sqlalchemy import func
 
-from radar.models.dialysis import Dialysis
 from radar.database import db
-from radar_api.tests.fixtures import get_user, set_default_source,\
-    set_default_users, get_patient, get_group
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.dialysis import Dialysis
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.tests.api.views.fixtures import (
+    get_user,
+    set_default_source,
+    set_default_users,
+    get_patient,
+    get_group
+)
 
 
 def create_dialysis(patient, **kwargs):
@@ -237,7 +242,7 @@ def test_update_dialysis(app, username, group_type, group_code, source_type, exp
     client = app.test_client()
     client.login(user)
 
-    response = client.put('/dialysis/%s' % dialysis.id, data=data)
+    response = client.patch('/dialysis/%s' % dialysis.id, data=data)
 
     assert response.status_code == expected
 

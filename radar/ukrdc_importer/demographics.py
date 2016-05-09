@@ -109,8 +109,7 @@ def parse_demographics(sda_patient):
 
     try:
         validator.validate(sda_patient)
-    except ValidationError as e:
-        print e
+    except ValidationError:
         logger.error('Ignoring invalid patient')
         return None
 

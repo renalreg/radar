@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from radar.database import db
 from radar.auth.forgot_password import generate_reset_password_token
-from radar_api.tests.fixtures import get_user
+from radar.database import db
+from radar.tests.api.views.fixtures import get_user
 
 
 STRONG_PASSWORD = 'qzm5zuLVgL1t'

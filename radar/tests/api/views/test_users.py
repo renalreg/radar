@@ -3,11 +3,11 @@ import itertools
 
 import pytest
 
-from radar_api.tests.fixtures import get_user, create_user, add_user_to_group, get_group
 from radar.database import db
 from radar.models.groups import GROUP_TYPE
-from radar.roles import ROLE
 from radar.models.users import User
+from radar.roles import ROLE
+from radar.tests.api.views.fixtures import get_user, create_user, add_user_to_group, get_group
 
 
 def get_read_list_args():
@@ -159,7 +159,7 @@ def test_update_user(app, username, group_type, group_code, role, is_admin, expe
     client = app.test_client()
     client.login(user)
 
-    response = client.put('/users/%s' % other_user.id, data={
+    response = client.patch('/users/%s' % other_user.id, data={
         'first_name': 'Bruce',
         'last_name': 'Wayne',
     })
@@ -185,7 +185,7 @@ def test_update_self(app, username):
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/users/%s' % user.id, data={
+    response = client.patch('/users/%s' % user.id, data={
         'first_name': 'Bruce',
         'last_name': 'Wayne',
     })
@@ -228,7 +228,7 @@ def test_is_admin_true(app, username, other_username, expected):
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/users/%s' % other_user.id, data={
+    response = client.patch('/users/%s' % other_user.id, data={
         'is_admin': True
     })
 
@@ -247,7 +247,7 @@ def test_is_admin_false(app, username, other_username, expected):
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/users/%s' % other_user.id, data={
+    response = client.patch('/users/%s' % other_user.id, data={
         'is_admin': False
     })
 
@@ -271,7 +271,7 @@ def test_change_password(app, username, other_username, expected):
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/users/%s' % other_user.id, data={
+    response = client.patch('/users/%s' % other_user.id, data={
         'password': 'qzm5zuLVgL1t'
     })
 
@@ -295,7 +295,7 @@ def test_change_email(app, username, other_username, expected):
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/users/%s' % other_user.id, data={
+    response = client.patch('/users/%s' % other_user.id, data={
         'email': 'bar@example.org'
     })
 

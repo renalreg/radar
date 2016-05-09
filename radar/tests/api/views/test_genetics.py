@@ -5,10 +5,10 @@ from datetime import datetime
 import pytest
 import pytz
 
-from radar.models.genetics import Genetics
 from radar.database import db
-from radar_api.tests.fixtures import get_user, get_patient, get_group, set_default_users
+from radar.models.genetics import Genetics
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.tests.api.views.fixtures import get_user, get_patient, get_group, set_default_users
 
 
 def create_genetics(patient, group, **kwargs):
@@ -225,7 +225,7 @@ def test_update_genetics(app, username, group_type, group_code, expected):
     client = app.test_client()
     client.login(user)
 
-    response = client.put('/genetics/%s' % genetics.id, data=data)
+    response = client.patch('/genetics/%s' % genetics.id, data=data)
 
     assert response.status_code == expected
 

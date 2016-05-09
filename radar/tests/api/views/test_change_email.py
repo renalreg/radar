@@ -1,7 +1,7 @@
 import json
 
-from radar_api.tests.fixtures import get_user
 from radar.models.user_sessions import UserSession
+from radar.tests.api.views.fixtures import get_user
 
 
 def get_session_count(user):
@@ -23,7 +23,7 @@ def test_change_email(app):
 
     assert get_session_count(user) == 2
 
-    assert client1.post('/users/%s' % user.id, data={
+    assert client1.patch('/users/%s' % user.id, data={
         'current_password': 'password',
         'email': 'bar@example.org'
     }).status_code == 200
@@ -56,7 +56,7 @@ def test_incorrect_password(app):
 
     assert get_session_count(user) == 2
 
-    response = client1.post('/users/%s' % user.id, data={
+    response = client1.patch('/users/%s' % user.id, data={
         'current_password': 'foobarbaz',
         'email': 'bar@example.org'
     })

@@ -1,4 +1,5 @@
 import logging
+import os
 
 from sqlalchemy import event
 
@@ -50,7 +51,9 @@ class RadarAPI(Radar):
     def setup_config(self):
         self.config.from_object('radar.default_settings')
         self.config.from_object('radar.api.default_settings')
-        self.config.from_envvar('RADAR_SETTINGS')
+
+        if 'RADAR_SETTINGS' in os.environ:
+            self.config.from_envvar('RADAR_SETTINGS')
 
     def add_public_endpoint(self, endpoint):
         self.public_endpoints.append(endpoint)

@@ -85,11 +85,10 @@ def filter_query_by_group_permissions(query, model_class):
 
 
 def filter_query_by_group(query, model_class):
-    serializer = GroupRequestSerializer()
-    args = serializer.to_value(request.args)
+    args = parse_args(GroupRequestSerializer)
 
     # Filter by group
-    if 'group' in args:
+    if args['group'] is not None:
         query = query.filter(model_class.group_id == args['group'])
 
     return query

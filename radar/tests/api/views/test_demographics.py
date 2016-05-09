@@ -3,11 +3,11 @@ import itertools
 
 import pytest
 
-from radar.models.patient_demographics import PatientDemographics
 from radar.database import db
-from radar_api.tests.fixtures import get_user, get_patient, get_group, create_demographics
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.tests.api.views.fixtures import get_user, get_patient, get_group, create_demographics
 
 
 def get_read_list_args():
@@ -238,7 +238,7 @@ def test_update_demographics(app, username, group_type, group_code, source_type,
     client = app.test_client()
     client.login(user)
 
-    response = client.put('/patient-demographics/%s' % demographics.id, data=data)
+    response = client.patch('/patient-demographics/%s' % demographics.id, data=data)
 
     assert response.status_code == expected
 

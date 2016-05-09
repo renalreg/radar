@@ -2,8 +2,14 @@ import json
 
 import pytest
 
-from radar_api.tests.fixtures import get_user, get_patient, get_group, create_patient, add_patient_to_group
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.tests.api.views.fixtures import (
+    get_user,
+    get_patient,
+    get_group,
+    create_patient,
+    add_patient_to_group
+)
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [

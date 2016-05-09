@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from celery import Celery
 
@@ -25,7 +27,9 @@ class Radar(Flask):
 
     def setup_config(self):
         self.config.from_object('radar.default_settings')
-        self.config.from_envvar('RADAR_SETTINGS')
+
+        if 'RADAR_SETTINGS' in os.environ:
+            self.config.from_envvar('RADAR_SETTINGS')
 
     def check_config(self):
         check_config(self.config)

@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-from radar_api.tests.fixtures import get_user, get_group, get_cohort, get_hospital
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_NHS
+from radar.tests.api.views.fixtures import get_user, get_group, get_cohort, get_hospital
 
 
 @pytest.mark.parametrize(['username', 'expected'], [
@@ -23,6 +23,7 @@ def test_recruit_patient_search(app, username, expected):
     response = client.post('/recruit-patient-search', data={
         'first_name': 'John',
         'last_name': 'Smith',
+        'gender': 1,
         'date_of_birth': '1990-01-01',
         'number': '9434765919',
         'number_group': nhs_group.id
@@ -33,13 +34,14 @@ def test_recruit_patient_search(app, username, expected):
 
         data = json.loads(response.data)
 
-        assert len(data['patients']) == 0
+        assert not data['patient']
     else:
         assert response.status_code == 403
 
     response = client.post('/recruit-patient-search', data={
         'first_name': 'John',
         'last_name': 'Smith',
+        'gender': 1,
         'date_of_birth': '1990-01-01',
         'number': '9434765870',
         'number_group': nhs_group.id
@@ -50,7 +52,7 @@ def test_recruit_patient_search(app, username, expected):
 
         data = json.loads(response.data)
 
-        assert len(data['patients']) == 1
+        assert data['patient']
     else:
         assert response.status_code == 403
 
@@ -88,12 +90,8 @@ def test_recruit_patient(app, username, cohort_code, hospital_code, expected):
         'gender': 1,
         'cohort_group': cohort_group.id,
         'hospital_group': hospital_group.id,
-        'patient_numbers': [
-            {
-                'number': '9434765919',
-                'number_group': nhs_group.id
-            }
-        ]
+        'number': '9434765919',
+        'number_group': nhs_group.id
     })
 
     if expected:

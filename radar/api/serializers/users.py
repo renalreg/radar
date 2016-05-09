@@ -135,6 +135,9 @@ class UserSerializer(MetaMixin, ModelSerializer):
         return is_bot
 
     def validate_password(self, password):
+        if password is None:
+            return None
+
         allow_weak_passwords = self.context.get('allow_weak_passwords', False)
 
         if not allow_weak_passwords:
@@ -194,14 +197,15 @@ class UserSerializer(MetaMixin, ModelSerializer):
         return data
 
     def _save(self, instance, data):
+        instance.username = data['username']
+        instance.email = data['email']
+        instance.first_name = data['first_name']
+        instance.last_name = data['last_name']
+        instance.telephone_number = data['telephone_number']
+        instance.force_password_change = data['force_password_change']
         instance.is_admin = data['is_admin']
-        instance.username = data['is_admin']
-        instance.email = data['is_admin']
-        instance.first_name = data['is_admin']
-        instance.last_name = data['is_admin']
-        instance.force_password_change = data['is_admin']
-        instance.telephone_number = data['is_admin']
-        instance.is_enabled = data['is_admin']
+        instance.is_enabled = data['is_enabled']
+        instance.is_bot = data['is_bot']
 
         # Password is only required for certain changes
         if data['password'] is not None:

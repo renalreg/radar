@@ -1,7 +1,8 @@
+from radar.api.permissions import PatientPermission, PatientObjectPermission
 from radar.models.groups import Group
-from radar.permissions import PatientPermission, PatientObjectPermission
 from radar.roles import ROLE
-from radar.tests.permissions.helpers import MockRequest, make_user, make_patient, make_groups
+from radar.tests.api.permissions.helpers import MockRequest
+from radar.tests.permissions.helpers import make_user, make_patient, make_groups
 
 
 class MockObj(object):

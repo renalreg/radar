@@ -80,10 +80,10 @@ class SerializerViewMixin(object):
     def get_serializer_class(self):
         return self.serializer_class
 
-    def get_serializer(self, instance=None, data=None):
+    def get_serializer(self, instance=None, data=None, partial=False):
         context = self.get_context()
         serializer_class = self.get_serializer_class()
-        serializer = serializer_class(instance=instance, data=data, context=context)
+        serializer = serializer_class(instance=instance, data=data, context=context, partial=partial)
         return serializer
 
     def get_context(self):
@@ -296,8 +296,9 @@ class UpdateModelViewMixin(object):
         if json is None:
             raise BadRequest()
 
+        partial = request.method == 'PATCH'
         obj = self.get_object()
-        serializer = self.get_serializer(obj, data=json)
+        serializer = self.get_serializer(obj, data=json, partial=partial)
         serializer.is_valid(raise_exception=True)
         obj = serializer.save()
 
@@ -344,6 +345,9 @@ class RetrieveUpdateDestroyModelView(RetrieveModelViewMixin, UpdateModelViewMixi
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
 
+    def patch(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
     def put(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
@@ -358,6 +362,9 @@ class RetrieveUpdateModelView(RetrieveModelViewMixin, UpdateModelViewMixin, Mode
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
 
+    def patch(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
     def put(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
@@ -371,6 +378,9 @@ class CreateModelView(CreateModelViewMixin, ModelView):
 
 
 class UpdateModelView(UpdateModelViewMixin, ModelView):
+    def patch(self, *args, **kwargs):
+        return self.update(*args, **kwargs)
+
     def put(self, *args, **kwargs):
         return self.update(*args, **kwargs)
 
@@ -416,8 +426,15 @@ def response_json(serializer_class):
         @wraps(f)
         def wrapper(*args, **kwargs):
             response = f(*args, **kwargs)
-            serializer = serializer_class(response)
+
+            context = {}
+
+            if current_user.is_authenticated():
+                context['user'] = current_user._get_current_object()
+
+            serializer = serializer_class(response, context=context)
             data = serializer.data
+
             return jsonify(data), 200
 
         return wrapper

@@ -37,7 +37,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
 
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
-    ethnicity = StringLookupField(ETHNICITIES)
+    ethnicity = StringLookupField(ETHNICITIES, required=False)
     cohort_group = GroupField()
     hospital_group = GroupField()
 

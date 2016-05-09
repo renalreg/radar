@@ -1,6 +1,6 @@
 import json
 
-from radar_api.tests.fixtures import get_user
+from radar.tests.api.views.fixtures import get_user
 
 
 def login(client, username, password):

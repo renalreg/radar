@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from radar_api.tests.fixtures import get_user, create_user, get_group, add_user_to_group
-from radar.roles import ROLE
 from radar.models.groups import GROUP_TYPE
+from radar.roles import ROLE
+from radar.tests.api.views.fixtures import get_user, create_user, get_group, add_user_to_group
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'expected'], [
@@ -187,7 +187,7 @@ def test_update_group_user(
     client = app.test_client()
     client.login(user)
 
-    response = client.post('/group-users/%s' % group_user.id, data={
+    response = client.patch('/group-users/%s' % group_user.id, data={
         'group': new_group.id,
         'role': str(new_role),
     })

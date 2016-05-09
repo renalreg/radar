@@ -106,7 +106,7 @@ class SearchPatient(object):
     def _check_name(self, patient, name, n):
         a = set(x[:n] for x in _split_names(patient.first_names + patient.last_names))
         b = set(x[:n] for x in _split_name(name))
-        return len(a) == 0 or a.intersect(b)
+        return len(a) == 0 or a.intersection(b)
 
     def _check_first_name(self, patient):
         return self._check_name(patient, self.first_name, 1)
