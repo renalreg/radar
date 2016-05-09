@@ -1,14 +1,14 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
+from radar.api.serializers.common import PatientMixin, MetaMixin, IntegerLookupField
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.alport import AlportClinicalPicture, DEAFNESS_OPTIONS, DEAFNESS_NO
-from radar.api.serializers.common import PatientMixin, MetaMixin
 
 
 class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     date_of_picture = fields.DateField()
-    deafness = fields.IntegerLookupField(DEAFNESS_OPTIONS)
+    deafness = IntegerLookupField(DEAFNESS_OPTIONS)
     deafness_date = fields.DateField(required=False)
     hearing_aid_date = fields.DateField(required=False)
 

@@ -1,10 +1,10 @@
-from radar.models.hospitalisations import Hospitalisation
 from radar.api.serializers.hospitalisations import HospitalisationSerializer
 from radar.api.views.common import (
     SourceObjectViewMixin,
     PatientObjectDetailView,
     PatientObjectListView
 )
+from radar.models.hospitalisations import Hospitalisation
 
 
 class HospitalisationListView(SourceObjectViewMixin, PatientObjectListView):

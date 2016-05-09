@@ -1,18 +1,17 @@
 import uuid
 from functools import wraps
 
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, abort
 from flask.views import MethodView
 from sqlalchemy import desc, inspect, Integer
 from sqlalchemy.orm.exc import NoResultFound
-from flask import abort
 from sqlalchemy.dialects import postgresql
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 
+from radar.auth.sessions import current_user
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.auth.sessions import current_user
 
 
 def parse_args(serializer_class, args=None):
@@ -21,7 +20,9 @@ def parse_args(serializer_class, args=None):
 
     args = {k: v for k, v in args.items() if len(v.strip()) > 0}
 
-    serializer = serializer_class(data=args)
+    context = {'user': current_user._get_current_object()}
+
+    serializer = serializer_class(data=args, context=context)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
 
@@ -86,7 +87,7 @@ class SerializerViewMixin(object):
         return serializer
 
     def get_context(self):
-        return {'user': current_user}
+        return {'user': current_user._get_current_object()}
 
 
 class BaseView(SerializerViewMixin, PermissionViewMixin, ApiView):
@@ -394,7 +395,7 @@ def request_json(serializer_class):
             context = {}
 
             if current_user.is_authenticated():
-                context['user'] = current_user
+                context['user'] = current_user._get_current_object()
 
             serializer = serializer_class(data=json, context=context)
             serializer.is_valid(raise_exception=True)

@@ -1,17 +1,21 @@
-from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.exceptions import ValidationError
 
-from radar.roles import ROLE, ROLE_NAMES
-from radar.api.serializers.common import UserMixin, MetaMixin, GroupField
+from radar.api.serializers.common import (
+    UserMixin,
+    MetaMixin,
+    GroupField,
+    EnumLookupField
+)
+from radar.exceptions import PermissionDenied
 from radar.models.groups import GroupUser
 from radar.permissions import has_permission_for_group_role
-from radar.exceptions import PermissionDenied
+from radar.roles import ROLE, ROLE_NAMES
 
 
 class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
     group = GroupField()
-    role = fields.EnumLookupField(ROLE, ROLE_NAMES)
+    role = EnumLookupField(ROLE, ROLE_NAMES)
 
     class Meta(object):
         model_class = GroupUser

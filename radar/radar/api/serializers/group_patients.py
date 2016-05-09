@@ -3,10 +3,10 @@ from cornflake import fields
 from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
+from radar.exceptions import PermissionDenied
 from radar.models.groups import GroupPatient
 from radar.permissions import has_permission_for_patient, has_permission_for_group
 from radar.roles import PERMISSION
-from radar.exceptions import PermissionDenied
 
 
 class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):

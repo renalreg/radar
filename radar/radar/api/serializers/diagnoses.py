@@ -8,15 +8,16 @@ from radar.api.serializers.common import (
     PatientMixin,
     SourceMixin,
     MetaMixin,
-    TinyGroupSerializer
+    TinyGroupSerializer,
+    IntegerLookupField
 )
+from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.diagnoses import (
     Diagnosis,
     PatientDiagnosis,
     BIOPSY_DIAGNOSES,
     GROUP_DIAGNOSIS_TYPE
 )
-from radar.api.serializers.validators import valid_date_for_patient
 
 
 class GroupDiagnosisSerializer(serializers.Serializer):
@@ -45,13 +46,17 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
     symptoms_date = fields.DateField(required=False)
+    symptoms_age = fields.IntegerField(read_only=True)
     from_date = fields.DateField()
+    from_age = fields.IntegerField(read_only=True)
     to_date = fields.DateField(required=False)
+    to_age = fields.IntegerField(read_only=True)
     gene_test = fields.BooleanField(required=False)
     biochemistry = fields.BooleanField(required=False)
     clinical_picture = fields.BooleanField(required=False)
     biopsy = fields.BooleanField(required=False)
-    biopsy_diagnosis = fields.IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
+    biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
+    comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     class Meta(object):
         model_class = PatientDiagnosis

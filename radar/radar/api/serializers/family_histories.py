@@ -3,10 +3,15 @@ from cornflake import fields
 from cornflake import serializers
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
+from radar.api.serializers.common import (
+    PatientMixin,
+    SourceMixin,
+    MetaMixin,
+    IntegerLookupField
+)
+from radar.database import db
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative, RELATIONSHIPS
 from radar.models.patients import Patient
-from radar.database import db
 
 
 class PatientSerializer(serializers.Serializer):
@@ -19,7 +24,7 @@ class PatientField(ReferenceField):
 
 
 class RelativeSerializer(ModelSerializer):
-    relationship = fields.IntegerLookupField(RELATIONSHIPS)
+    relationship = IntegerLookupField(RELATIONSHIPS)
     patient = PatientField(required=False)  # TODO check not own relative
 
     class Meta(object):

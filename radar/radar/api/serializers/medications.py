@@ -3,7 +3,12 @@ from cornflake import fields
 from cornflake.validators import none_if_blank, optional, max_length, min_, required
 from cornflake.exceptions import ValidationError
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, SourceMixin
+from radar.api.serializers.common import (
+    PatientMixin,
+    MetaMixin,
+    SourceMixin,
+    StringLookupField
+)
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.medications import Medication, Drug, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 
@@ -37,9 +42,9 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     to_date = fields.DateField(required=False)
     drug = DrugField(required=False)
     dose_quantity = fields.FloatField(required=False, validators=min_(0))
-    dose_unit = fields.StringLookupField(MEDICATION_DOSE_UNITS, required=False)
+    dose_unit = StringLookupField(MEDICATION_DOSE_UNITS, required=False)
     frequency = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
-    route = fields.StringLookupField(MEDICATION_ROUTES, required=False)
+    route = StringLookupField(MEDICATION_ROUTES, required=False)
     drug_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     dose_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 

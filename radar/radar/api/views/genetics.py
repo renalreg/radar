@@ -1,4 +1,3 @@
-from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
 from radar.api.serializers.genetics import GeneticsSerializer
 from radar.api.views.common import (
     IntegerLookupListView,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
 )
+from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
 
 
 class GeneticsListView(GroupObjectViewMixin, PatientObjectListView):

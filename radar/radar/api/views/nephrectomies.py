@@ -1,4 +1,3 @@
-from radar.models.nephrectomies import Nephrectomy, NEPHRECTOMY_KIDNEY_SIDES, NEPHRECTOMY_KIDNEY_TYPES, NEPHRECTOMY_ENTRY_TYPES
 from radar.api.serializers.nephrectomies import NephrectomySerializer
 from radar.api.views.common import (
     StringLookupListView,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
 )
+from radar.models.nephrectomies import Nephrectomy, NEPHRECTOMY_KIDNEY_SIDES, NEPHRECTOMY_KIDNEY_TYPES, NEPHRECTOMY_ENTRY_TYPES
 
 
 class NephrectomyListView(SourceObjectViewMixin, PatientObjectListView):

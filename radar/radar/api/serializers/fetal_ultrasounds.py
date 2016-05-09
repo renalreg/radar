@@ -2,9 +2,14 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import max_length, range_, none_if_blank, optional
 
-from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
-from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
+from radar.api.serializers.common import (
+    PatientMixin,
+    SourceMixin,
+    MetaMixin,
+    StringLookupField
+)
 from radar.api.serializers.validators import valid_date_for_patient
+from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
 
 
 class FetalUltrasoundSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -14,7 +19,7 @@ class FetalUltrasoundSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
     head_centile = fields.IntegerField(required=False, validators=[range_(0, 100)])
     abdomen_centile = fields.IntegerField(required=False, validators=[range_(0, 100)])
     uterine_artery_notched = fields.BooleanField(required=False)
-    liquor_volume = fields.StringLookupField(LIQUOR_VOLUMES, required=False)
+    liquor_volume = StringLookupField(LIQUOR_VOLUMES, required=False)
     comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     class Meta(object):

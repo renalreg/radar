@@ -1,19 +1,19 @@
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 
-from radar.patient_search import PatientQueryBuilder
-from radar.api.logs import log_view_patients, log_view_patient
 from radar.auth.sessions import current_user
-from radar.models.patients import Patient
-from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
-from radar.api.serializers.common import GroupField
+from radar.api.logs import log_view_patients, log_view_patient
 from radar.api.permissions import PatientPermission, AdminPermission
+from radar.api.serializers.common import GroupField
+from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
 from radar.api.views.generics import (
     ListModelView,
     RetrieveUpdateModelView,
     DestroyModelView,
     parse_args
 )
+from radar.models.patients import Patient
+from radar.patient_search import PatientQueryBuilder
 
 
 class PatientListRequestSerializer(serializers.Serializer):

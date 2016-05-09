@@ -4,15 +4,20 @@ from cornflake import fields
 from cornflake import serializers
 from cornflake.exceptions import ValidationError
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, SourceMixin
+from radar.api.serializers.common import (
+    PatientMixin,
+    MetaMixin,
+    SourceMixin,
+    IntegerLookupField
+)
+from radar.api.serializers.validators import valid_date_for_patient
+from radar.database import db
 from radar.models.transplants import (
     Transplant,
     TransplantRejection,
     TransplantBiopsy,
     TRANSPLANT_MODALITIES
 )
-from radar.api.serializers.validators import valid_date_for_patient
-from radar.database import db
 
 
 class ListSerializer(serializers.ListSerializer):
@@ -55,7 +60,7 @@ class TransplantBiopsySerializer(ModelSerializer):
 
 class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
-    modality = fields.IntegerLookupField(TRANSPLANT_MODALITIES)
+    modality = IntegerLookupField(TRANSPLANT_MODALITIES)
     date_of_recurrence = fields.DateField(required=False)
     date_of_failure = fields.DateField(required=False)
     rejections = ListSerializer(child=TransplantRejectionSerializer())

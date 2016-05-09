@@ -1,13 +1,13 @@
 from cornflake.exceptions import ValidationError
 
-from radar.api.views.generics import ApiView, request_json, response_json, PermissionViewMixin
+from radar.api.permissions import RecruitPatientPermission
 from radar.api.serializers.patients import PatientSerializer
 from radar.api.serializers.recruit_patient import (
     RecruitPatientSearchSerializer,
     RecruitPatientResultSerializer,
     RecruitPatientSerializer
 )
-from radar.api.permissions import RecruitPatientPermission
+from radar.api.views.generics import ApiView, request_json, response_json, PermissionViewMixin
 from radar_recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
 
 

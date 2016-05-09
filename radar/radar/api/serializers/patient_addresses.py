@@ -12,8 +12,8 @@ from cornflake.validators import (
 from cornflake.exceptions import ValidationError, SkipField
 
 from radar.api.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
-from radar.models.patient_addresses import PatientAddress
 from radar.api.serializers.validators import remove_trailing_comma, after_date_of_birth
+from radar.models.patient_addresses import PatientAddress
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 

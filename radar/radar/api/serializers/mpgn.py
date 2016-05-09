@@ -3,8 +3,8 @@ from cornflake import fields
 from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import PatientMixin, MetaMixin
-from radar.models.mpgn import MpgnClinicalPicture
 from radar.api.serializers.validators import valid_date_for_patient
+from radar.models.mpgn import MpgnClinicalPicture
 
 
 class MpgnClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):

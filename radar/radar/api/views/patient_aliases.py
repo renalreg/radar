@@ -1,4 +1,3 @@
-from radar.models.patient_aliases import PatientAlias
 from radar.api.serializers.patient_aliases import PatientAliasSerializer
 from radar.api.views.common import (
     RadarObjectViewMixin,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     DemographicsViewMixin
 )
+from radar.models.patient_aliases import PatientAlias
 
 
 class PatientAliasListView(RadarObjectViewMixin, DemographicsViewMixin, PatientObjectListView):

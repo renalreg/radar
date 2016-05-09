@@ -4,12 +4,12 @@ from cornflake import serializers
 from cornflake.validators import not_empty, upper, max_length, none_if_blank, optional, lower, email_address
 from cornflake.exceptions import ValidationError
 
-from radar.api.serializers.validators import gmc_number
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
-from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.patient_consultants import PatientConsultant
-from radar.models.groups import GROUP_TYPE
+from radar.api.serializers.validators import gmc_number
 from radar.database import db
+from radar.models.consultants import Consultant, GroupConsultant
+from radar.models.groups import GROUP_TYPE
+from radar.models.patient_consultants import PatientConsultant
 
 
 class ChildGroupConsultantSerializer(MetaMixin, ModelSerializer):

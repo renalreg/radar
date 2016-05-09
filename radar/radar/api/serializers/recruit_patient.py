@@ -2,20 +2,20 @@ from cornflake import fields, serializers
 from cornflake.validators import not_empty, upper, not_in_future
 from cornflake.exceptions import ValidationError
 
-from radar.roles import PERMISSION
+from radar.api.serializers.common import GroupField, StringLookupField, IntegerLookupField
+from radar.api.serializers.validators import get_number_validators
+from radar.exceptions import PermissionDenied
 from radar.models.patients import GENDERS, ETHNICITIES
 from radar.models.groups import GROUP_TYPE
-from radar.api.serializers.common import GroupField
-from radar.api.serializers.validators import get_number_validators
 from radar.permissions import has_permission_for_group
-from radar.exceptions import PermissionDenied
+from radar.roles import PERMISSION
 
 
 class RecruitPatientSearchSerializer(serializers.Serializer):
     first_name = fields.StringField(validators=[not_empty(), upper()])
     last_name = fields.StringField(validators=[not_empty(), upper()])
     date_of_birth = fields.DateField(validators=[not_in_future()])
-    gender = fields.IntegerLookupField(GENDERS)
+    gender = IntegerLookupField(GENDERS)
     number = fields.StringField(validators=[not_empty()])
     number_group = GroupField()
 
@@ -37,7 +37,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
 
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
-    ethnicity = fields.StringLookupField(ETHNICITIES)
+    ethnicity = StringLookupField(ETHNICITIES)
     cohort_group = GroupField()
     hospital_group = GroupField()
 

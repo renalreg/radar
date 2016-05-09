@@ -1,17 +1,14 @@
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 
-from radar.auth.sessions import current_user
-from radar.user_search import UserQueryBuilder
-from radar.models.users import User
-from radar.api.serializers.users import UserSerializer
-from radar.api.serializers.common import GroupField
 from radar.api.permissions import (
     UserRetrievePermission,
     UserCreatePermission,
     UserUpdatePermission,
     UserDestroyPermission
 )
+from radar.api.serializers.common import GroupField
+from radar.api.serializers.users import UserSerializer
 from radar.api.views.generics import (
     ListModelView,
     CreateModelView,
@@ -20,6 +17,9 @@ from radar.api.views.generics import (
     DestroyModelView,
     parse_args
 )
+from radar.auth.sessions import current_user
+from radar.user_search import UserQueryBuilder
+from radar.models.users import User
 
 
 class UserListRequestSerializer(serializers.Serializer):

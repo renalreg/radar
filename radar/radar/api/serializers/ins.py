@@ -3,9 +3,9 @@ from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.validators import none_if_blank, optional, max_length
 
-from radar.api.serializers.common import PatientMixin, MetaMixin
-from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
+from radar.api.serializers.common import PatientMixin, MetaMixin, StringLookupField
 from radar.api.serializers.validators import valid_date_for_patient
+from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 
 
 class InsClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
@@ -47,14 +47,14 @@ class InsClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
 
 class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     date_of_relapse = fields.DateField()
-    kidney_type = fields.StringLookupField(KIDNEY_TYPES)
+    kidney_type = StringLookupField(KIDNEY_TYPES)
     viral_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     immunisation_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     other_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     high_dose_oral_prednisolone = fields.BooleanField(required=False)
     iv_methyl_prednisolone = fields.BooleanField(required=False)
     date_of_remission = fields.DateField(required=False)
-    remission_type = fields.StringLookupField(REMISSION_TYPES, required=False)
+    remission_type = StringLookupField(REMISSION_TYPES, required=False)
 
     class Meta(object):
         model_class = InsRelapse

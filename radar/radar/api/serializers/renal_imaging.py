@@ -9,21 +9,26 @@ from cornflake.validators import (
 )
 from cornflake.exceptions import ValidationError
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, SourceMixin
+from radar.api.serializers.common import (
+    PatientMixin,
+    MetaMixin,
+    SourceMixin,
+    StringLookupField
+)
+from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.renal_imaging import (
     RenalImaging,
     RENAL_IMAGING_TYPES,
     RENAL_IMAGING_KIDNEY_TYPES
 )
-from radar.api.serializers.validators import valid_date_for_patient
 
 
 class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
-    imaging_type = fields.StringLookupField(RENAL_IMAGING_TYPES)
+    imaging_type = StringLookupField(RENAL_IMAGING_TYPES)
 
     right_present = fields.BooleanField(required=False)
-    right_type = fields.StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
+    right_type = StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
     right_length = fields.FloatField(required=False, validators=[range_(1, 30)])
     right_volume = fields.FloatField(required=False)  # TODO range
     right_cysts = fields.BooleanField(required=False)
@@ -34,7 +39,7 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     right_other_malformation = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     left_present = fields.BooleanField(required=False)
-    left_type = fields.StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
+    left_type = StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
     left_length = fields.FloatField(required=False, validators=[range_(1, 30)])
     left_volume = fields.FloatField(required=False)  # TODO range
     left_cysts = fields.BooleanField(required=False)

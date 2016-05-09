@@ -13,12 +13,18 @@ from cornflake.validators import (
     email_address
 )
 
+from radar.api.serializers.common import (
+    PatientMixin,
+    RadarSourceMixin,
+    MetaMixin,
+    StringLookupField,
+    IntegerLookupField
+)
+from radar.api.serializers.validators import after_day_zero
 from radar.models.patients import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
-from radar.api.serializers.validators import after_day_zero
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
-from radar.api.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
 
 
 class PatientDemographicsSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
@@ -28,8 +34,8 @@ class PatientDemographicsSerializer(PatientMixin, RadarSourceMixin, MetaMixin, M
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
     year_of_death = fields.IntegerField(read_only=True)
-    gender = fields.IntegerLookupField(GENDERS)
-    ethnicity = fields.StringLookupField(ETHNICITIES, required=False)
+    gender = IntegerLookupField(GENDERS)
+    ethnicity = StringLookupField(ETHNICITIES, required=False)
     home_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     work_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
     mobile_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])

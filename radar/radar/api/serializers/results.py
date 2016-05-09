@@ -5,6 +5,14 @@ from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
 from cornflake.validators import min_, max_, in_, min_length, max_length
 from cornflake.exceptions import ValidationError
 
+from radar.api.serializers.common import (
+    PatientMixin,
+    SourceMixin,
+    MetaMixin,
+    StringLookupField,
+    EnumLookupField
+)
+from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.results import (
     Result,
     Observation,
@@ -13,7 +21,6 @@ from radar.models.results import (
     OBSERVATION_VALUE_TYPE_NAMES,
     OBSERVATION_SAMPLE_TYPE_NAMES
 )
-from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
 
 
 def get_value_field(observation):
@@ -26,7 +33,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
         options = [(x['code'], x['description']) for x in observation.properties['options']]
         options = OrderedDict(options)
-        field = fields.StringLookupField(options, id_key='code', label_key='description')
+        field = StringLookupField(options, id_key='code', label_key='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
@@ -55,8 +62,8 @@ class BaseObservationSerializer(serializers.Serializer):
     id = fields.IntegerField()
     name = fields.StringField()
     short_name = fields.StringField()
-    value_type = fields.EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
-    sample_type = fields.EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
+    value_type = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
+    sample_type = EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
 
 
 class IntegerObservationSerializer(serializers.Serializer):
@@ -88,7 +95,7 @@ class StringObservationSerializer(serializers.Serializer):
 class ObservationSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
         super(ObservationSerializer, self).__init__(*args, **kwargs)
-        value_type_field = fields.EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
+        value_type_field = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
         value_type_field.bind(self, 'value_type')
         self.value_type_field = value_type_field
 
@@ -124,10 +131,11 @@ class ObservationField(ReferenceField):
 
 class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     observation = ObservationField()
-    date = fields.DateField()
 
     class Meta(object):
         model_class = Result
+        exclude = ['observation_id', '_value']
+        validators = [valid_date_for_patient('date')]
 
     def validate(self, data):
         data = super(BaseResultSerializer, self).validate(data)
@@ -172,7 +180,7 @@ class ResultSerializer(serializers.ProxySerializer):
         observation_field.bind(self, 'observation')
         self.observation_field = observation_field
 
-    def get_serializer(observation):
+    def get_serializer(self, observation):
         field = get_value_field(observation)
         serializer = type('CustomResultSerializer', (BaseResultSerializer,), {
             'value': field

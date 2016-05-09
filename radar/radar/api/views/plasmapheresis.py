@@ -1,4 +1,3 @@
-from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
 from radar.api.serializers.plasmapheresis import PlasmapheresisSerializer
 from radar.api.views.common import (
     PatientObjectListView,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin
 )
+from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_RESPONSES, PLASMAPHERESIS_NO_OF_EXCHANGES
 
 
 class PlasmapheresisListView(SourceObjectViewMixin, PatientObjectListView):

@@ -1,4 +1,3 @@
-from radar.models.pathology import PATHOLOGY_KIDNEY_TYPES, PATHOLOGY_KIDNEY_SIDES, Pathology
 from radar.api.serializers.pathology import PathologySerializer
 from radar.api.views.common import (
     StringLookupListView,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
 )
+from radar.models.pathology import PATHOLOGY_KIDNEY_TYPES, PATHOLOGY_KIDNEY_SIDES, Pathology
 
 
 class PathologyListView(SourceObjectViewMixin, PatientObjectListView):

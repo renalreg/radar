@@ -1,5 +1,3 @@
-from radar.models.patient_demographics import PatientDemographics
-from radar.models.patients import GENDERS, ETHNICITIES
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer
 from radar.api.views.common import (
     PatientObjectListView,
@@ -8,6 +6,8 @@ from radar.api.views.common import (
     StringLookupListView,
     IntegerLookupListView
 )
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import GENDERS, ETHNICITIES
 
 
 class PatientDemographicsListView(RadarObjectViewMixin, PatientObjectListView):

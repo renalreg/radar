@@ -2,11 +2,11 @@ from sqlalchemy import Integer, or_, and_
 from cornflake.exceptions import ValidationError
 from cornflake import fields, serializers
 
+from radar.api.permissions import AdminPermission
+from radar.api.serializers.logs import LogSerializer
+from radar.api.views.generics import ListModelView, RetrieveModelView, parse_args
 from radar.models.logs import Log
 from radar.models.users import User
-from radar.api.serializers.logs import LogSerializer
-from radar.api.permissions import AdminPermission
-from radar.api.views.generics import ListModelView, RetrieveModelView, parse_args
 
 
 class LogListRequestSerializer(serializers.Serializer):

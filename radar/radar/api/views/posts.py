@@ -1,4 +1,4 @@
-from radar.models.posts import Post
+from radar.api.permissions import AdminPermission
 from radar.api.serializers.posts import PostSerializer
 from radar.api.views.generics import (
     ListModelView,
@@ -7,7 +7,7 @@ from radar.api.views.generics import (
     UpdateModelView,
     DestroyModelView
 )
-from radar.api.permissions import AdminPermission
+from radar.models.posts import Post
 
 
 class PostListView(ListModelView):

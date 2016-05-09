@@ -1,10 +1,15 @@
-from radar.models.groups import GroupPatient
-from radar.api.serializers.group_patients import GroupPatientSerializer
+
 from radar.api.permissions import (
     GroupPatientCreatePermission,
     GroupPatientRetrievePermission,
     GroupPatientUpdatePermission,
     GroupPatientDestroyPermission
+)
+from radar.api.serializers.group_patients import GroupPatientSerializer
+from radar.api.views.common import (
+    filter_query_by_group,
+    filter_query_by_patient_permissions,
+    filter_query_by_patient
 )
 from radar.api.views.generics import (
     ListModelView,
@@ -13,11 +18,7 @@ from radar.api.views.generics import (
     UpdateModelView,
     DestroyModelView
 )
-from radar.api.views.common import (
-    filter_query_by_group,
-    filter_query_by_patient_permissions,
-    filter_query_by_patient
-)
+from radar.models.groups import GroupPatient
 
 
 class GroupPatientListView(ListModelView):

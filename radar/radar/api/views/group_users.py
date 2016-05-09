@@ -1,10 +1,14 @@
-from radar.models.groups import GroupUser
-from radar.api.serializers.group_users import GroupUserSerializer
 from radar.api.permissions import (
     GroupUserCreatePermission,
     GroupUserRetrievePermission,
     GroupUserUpdatePermission,
     GroupUserDestroyPermission
+)
+from radar.api.serializers.group_users import GroupUserSerializer
+from radar.api.views.common import (
+    filter_query_by_group,
+    filter_query_by_user_permissions,
+    filter_query_by_user
 )
 from radar.api.views.generics import (
     ListModelView,
@@ -13,11 +17,7 @@ from radar.api.views.generics import (
     UpdateModelView,
     DestroyModelView
 )
-from radar.api.views.common import (
-    filter_query_by_group,
-    filter_query_by_user_permissions,
-    filter_query_by_user
-)
+from radar.models.groups import GroupUser
 
 
 class GroupUserListView(ListModelView):

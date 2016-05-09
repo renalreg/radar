@@ -1,9 +1,9 @@
-from radar.models.hnf1b import Hnf1bClinicalPicture
 from radar.api.serializers.hnf1b import Hnf1bClinicalPictureSerializer
 from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView
 )
+from radar.models.hnf1b import Hnf1bClinicalPicture
 
 
 class Hnf1bClinicalPictureListView(PatientObjectListView):

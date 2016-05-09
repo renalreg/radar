@@ -6,14 +6,37 @@ from cornflake import serializers
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import in_
 
-from radar.permissions import has_permission_for_patient, has_permission_for_group
-from radar.roles import PERMISSION
 from radar.exceptions import PermissionDenied
-from radar.models.patients import Patient
-from radar.models.users import User
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.groups import is_radar_group
 from radar.models.groups import Group, GROUP_TYPE
+from radar.models.patients import Patient
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.users import User
+from radar.permissions import has_permission_for_patient, has_permission_for_group
+from radar.roles import PERMISSION
+
+
+def lookup_field_defaults(kwargs):
+    kwargs.setdefault('key_name', 'id')
+    kwargs.setdefault('value_name', 'label')
+
+
+class StringLookupField(fields.StringLookupField):
+    def __init__(self, *args, **kwargs):
+        lookup_field_defaults(kwargs)
+        super(StringLookupField, self).__init__(*args, **kwargs)
+
+
+class IntegerLookupField(fields.IntegerLookupField):
+    def __init__(self, *args, **kwargs):
+        lookup_field_defaults(kwargs)
+        super(IntegerLookupField, self).__init__(*args, **kwargs)
+
+
+class EnumLookupField(fields.EnumLookupField):
+    def __init__(self, *args, **kwargs):
+        lookup_field_defaults(kwargs)
+        super(EnumLookupField, self).__init__(*args, **kwargs)
 
 
 class TinyUserSerializer(ModelSerializer):
@@ -63,7 +86,7 @@ class CreatedDateField(fields.DateTimeField):
         if instance is None:
             return datetime.now(pytz.utc)
         else:
-            return self.get_attribute(self.instance)
+            return self.get_attribute(instance)
 
 
 class ModifiedDateField(fields.DateTimeField):
@@ -126,9 +149,17 @@ class TinyGroupSerializer(ModelSerializer):
         fields = ['id', 'type', 'code', 'name', 'short_name']
 
 
+class GroupSerializer(ModelSerializer):
+    type = fields.EnumField(GROUP_TYPE)
+    pages = fields.ListField(child=fields.StringField())
+
+    class Meta(object):
+        model_class = Group
+
+
 class GroupField(ReferenceField):
     model_class = Group
-    serializer_class = TinyGroupSerializer
+    serializer_class = GroupSerializer
 
 
 class SourceGroupField(GroupField):

@@ -4,14 +4,11 @@ from datetime import datetime
 import pytz
 import sqlalchemy
 import zxcvbn
-
 from cornflake.fields import ValidationError
 from cornflake.validators import after, not_in_future
 from cornflake.utils import safe_strftime
 
 from radar.constants import HUMAN_DATE_FORMAT
-from radar.utils import datetime_to_date, is_datetime
-from radar.models.patients import Patient
 from radar.models.groups import (
     GROUP_TYPE,
     GROUP_CODE_NHS,
@@ -22,6 +19,8 @@ from radar.models.groups import (
     GROUP_CODE_BAPN,
     GROUP_CODE_RADAR
 )
+from radar.models.patients import Patient
+from radar.utils import datetime_to_date, is_datetime
 
 EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
 

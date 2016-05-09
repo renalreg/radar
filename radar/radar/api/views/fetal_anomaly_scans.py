@@ -1,10 +1,10 @@
-from radar.models.fetal_anomaly_scans import FetalAnomalyScan
 from radar.api.serializers.fetal_anomaly_scans import FetalAnomalyScanSerializer
 from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
     SourceObjectViewMixin
 )
+from radar.models.fetal_anomaly_scans import FetalAnomalyScan
 
 
 class FetalAnomalyScanListView(SourceObjectViewMixin, PatientObjectListView):

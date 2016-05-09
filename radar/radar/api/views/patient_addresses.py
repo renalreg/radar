@@ -1,10 +1,10 @@
-from radar.models.patient_addresses import PatientAddress
 from radar.api.serializers.patient_addresses import PatientAddressSerializer
 from radar.api.views.common import (
     RadarObjectViewMixin,
     PatientObjectListView,
     PatientObjectDetailView
 )
+from radar.models.patient_addresses import PatientAddress
 
 
 class PatientAddressListView(RadarObjectViewMixin, PatientObjectListView):

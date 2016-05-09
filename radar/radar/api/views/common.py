@@ -3,26 +3,27 @@ from cornflake import fields, serializers
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import aliased
 
-from radar.api.views.generics import (
-    ListView,
-    ListCreateModelView,
-    RetrieveUpdateDestroyModelView
-)
-from radar.database import db
 from radar.auth.sessions import current_user
-from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
-from radar.models.patients import Patient
-from radar.models.users import User
 from radar.api.permissions import (
     GroupObjectPermission,
     PatientObjectPermission,
     RadarSourceObjectPermission,
     SourceObjectPermission
 )
-from radar.user_search import UserQueryBuilder
+from radar.api.serializers.common import StringLookupField, IntegerLookupField
+from radar.api.views.generics import (
+    ListView,
+    ListCreateModelView,
+    RetrieveUpdateDestroyModelView,
+    parse_args
+)
+from radar.database import db
+from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
+from radar.models.patients import Patient
+from radar.models.users import User
 from radar.patient_search import PatientQueryBuilder, filter_by_permissions
 from radar.roles import get_roles_with_permission, PERMISSION
-from radar.api.views.generics import parse_args
+from radar.user_search import UserQueryBuilder
 
 
 class StringLookupListView(ListView):
@@ -32,7 +33,7 @@ class StringLookupListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return fields.StringLookupField(self.get_items())
+        return StringLookupField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()
@@ -45,7 +46,7 @@ class IntegerLookupListView(ListView):
         return self.items
 
     def get_serializer(self):
-        return fields.IntegerLookupField(self.get_items())
+        return IntegerLookupField(self.get_items())
 
     def get_object_list(self):
         return self.get_items().keys()

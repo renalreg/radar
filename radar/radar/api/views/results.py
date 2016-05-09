@@ -1,19 +1,19 @@
 from sqlalchemy import func
 from cornflake import serializers, fields
 
-from radar.database import db
-from radar.roles import PERMISSION
-from radar.exceptions import PermissionDenied
-from radar.auth.sessions import current_user
-from radar.permissions import has_permission_for_patient
-from radar.models.results import Result, Observation
+
+from radar.api.serializers.common import PatientField
 from radar.api.serializers.results import (
     ResultSerializer,
     ObservationSerializer,
     TinyResultSerializer,
     ObservationCountSerializer
 )
-from radar.api.serializers.common import PatientField
+from radar.api.views.common import (
+    SourceObjectViewMixin,
+    PatientObjectDetailView,
+    PatientObjectViewMixin
+)
 from radar.api.views.generics import (
     ListModelView,
     RetrieveModelView,
@@ -21,11 +21,13 @@ from radar.api.views.generics import (
     ListView,
     parse_args
 )
-from radar.api.views.common import (
-    SourceObjectViewMixin,
-    PatientObjectDetailView,
-    PatientObjectViewMixin
-)
+
+from radar.auth.sessions import current_user
+from radar.database import db
+from radar.exceptions import PermissionDenied
+from radar.models.results import Result, Observation
+from radar.permissions import has_permission_for_patient
+from radar.roles import PERMISSION
 
 
 class ObservationListRequestSerializer(serializers.Serializer):

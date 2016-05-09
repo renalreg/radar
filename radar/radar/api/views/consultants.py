@@ -1,14 +1,9 @@
 from sqlalchemy.orm import aliased
 from cornflake import serializers, fields
 
-from radar.database import db
-from radar.patient_search import PatientQueryBuilder
 from radar.auth.sessions import current_user
-from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.groups import Group, GroupPatient
-from radar.models.patients import Patient
-from radar.api.serializers.consultants import ConsultantSerializer
 from radar.api.permissions import AdminPermission
+from radar.api.serializers.consultants import ConsultantSerializer
 from radar.api.views.generics import (
     ListModelView,
     RetrieveModelView,
@@ -17,6 +12,11 @@ from radar.api.views.generics import (
     CreateModelView,
     parse_args
 )
+from radar.database import db
+from radar.models.consultants import Consultant, GroupConsultant
+from radar.models.groups import Group, GroupPatient
+from radar.models.patients import Patient
+from radar.patient_search import PatientQueryBuilder
 
 
 class ConsultantRequestSerializer(serializers.Serializer):

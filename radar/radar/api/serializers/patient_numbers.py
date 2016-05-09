@@ -10,10 +10,10 @@ from radar.api.serializers.common import (
     MetaMixin,
     GroupField
 )
-from radar.models.patient_numbers import PatientNumber
-from radar.groups import is_radar_group
-from radar.database import db
 from radar.api.serializers.validators import get_number_validators
+from radar.database import db
+from radar.groups import is_radar_group
+from radar.models.patient_numbers import PatientNumber
 
 
 class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
