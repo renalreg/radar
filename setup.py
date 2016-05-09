@@ -19,7 +19,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-	'celery',
+        'celery',
         'click',
         'cornflake',
         'delorean',  # TODO remove
@@ -28,7 +28,7 @@ setup(
         'flask-sqlalchemy',
         'itsdangerous',
         'jinja2',
-	'jsonschema',  # TODO remove
+        'jsonschema',  # TODO remove
         'librabbitmq',
         'psycopg2',
         'python-dateutil',
@@ -37,7 +37,7 @@ setup(
         'six',
         'sqlalchemy',
         'sqlalchemy-enum34',
-	'termcolor',
+        'termcolor',
         'werkzeug',
         'zxcvbn',
     ],

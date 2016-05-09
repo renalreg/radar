@@ -1,4 +1,3 @@
-from flask import request
 from cornflake import fields, serializers
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import aliased
