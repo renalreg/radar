@@ -1,25 +1,24 @@
 import pytest
+from cornflake.exceptions import ValidationError
 
+from radar.api.serializers.group_users import GroupUserSerializer
+from radar.exceptions import PermissionDenied
 from radar.models.groups import Group, GroupUser
 from radar.models.users import User
 from radar.roles import ROLE
-from radar.validation.group_users import GroupUserValidation
-from radar.validation.core import ValidationError
-from radar.tests.validation.helpers import validation_runner
-from radar.exceptions import PermissionDenied
 
 
 @pytest.fixture
 def group_user():
-    obj = GroupUser()
-    obj.user = User()
-    obj.group = Group()
-    obj.role = ROLE.SENIOR_RESEARCHER
-    return obj
+    return {
+        'user': User(),
+        'group': Group(),
+        'role': ROLE.SENIOR_RESEARCHER
+    }
 
 
 def test_valid(group_user):
-    obj = valid(group_user)
+    obj = valid(data=group_user)
     assert obj.user is not None
     assert obj.group is not None
     assert obj.role == ROLE.SENIOR_RESEARCHER
@@ -30,18 +29,18 @@ def test_valid(group_user):
 
 
 def test_user_missing(group_user):
-    group_user.user = None
-    invalid(group_user)
+    group_user['user'] = None
+    invalid(data=group_user)
 
 
 def test_group_missing(group_user):
-    group_user.group = None
-    invalid(group_user)
+    group_user['group'] = None
+    invalid(data=group_user)
 
 
 def test_role_missing(group_user):
-    group_user.role = None
-    invalid(group_user)
+    group_user['role'] = None
+    invalid(data=group_user)
 
 
 def test_add_to_group():
@@ -54,12 +53,13 @@ def test_add_to_group():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    group_user = GroupUser()
-    group_user.group = group
-    group_user.user = User()
-    group_user.role = ROLE.RESEARCHER
+    data = {
+        'group': group,
+        'user': User(),
+        'role': ROLE.RESEARCHER
+    }
 
-    valid(group_user, user=current_user)
+    valid(data=data, user=current_user)
 
 
 def test_add_to_another_group():
@@ -70,13 +70,14 @@ def test_add_to_another_group():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    group_user = GroupUser()
-    group_user.group = Group()
-    group_user.user = User()
-    group_user.role = ROLE.RESEARCHER
+    data = {
+        'group': Group(),
+        'user': User(),
+        'role': ROLE.RESEARCHER
+    }
 
     with pytest.raises(PermissionDenied):
-        valid(group_user, user=current_user)
+        valid(data=data, user=current_user)
 
 
 def test_add_to_group_not_managed_role():
@@ -89,95 +90,104 @@ def test_add_to_group_not_managed_role():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    group_user = GroupUser()
-    group_user.group = group
-    group_user.user = User()
-    group_user.role = ROLE.SENIOR_RESEARCHER
+    data = {
+        'group': group,
+        'user': User(),
+        'role': ROLE.SENIOR_RESEARCHER
+    }
 
     with pytest.raises(PermissionDenied):
-        valid(group_user, user=current_user)
+        valid(data=data, user=current_user)
 
 
 def test_remove_own_membership():
     current_user = User()
 
-    old_group_user = GroupUser()
-    old_group_user.group = Group()
-    old_group_user.user = current_user
-    old_group_user.role = ROLE.SENIOR_RESEARCHER
-    current_user.group_users.append(old_group_user)
+    group_user = GroupUser()
+    group_user.group = Group()
+    group_user.user = current_user
+    group_user.role = ROLE.SENIOR_RESEARCHER
+    current_user.group_users.append(group_user)
 
-    new_group_user = GroupUser()
-    new_group_user.group = Group()
-    new_group_user.user = User()
-    new_group_user.role = ROLE.RESEARCHER
+    data = {
+        'group': Group(),
+        'user': User(),
+        'role': ROLE.RESEARCHER
+    }
 
     with pytest.raises(PermissionDenied):
-        valid(new_group_user, user=current_user, old_obj=old_group_user)
+        valid(group_user, data=data, user=current_user)
 
 
 def test_update_own_membership():
     current_user = User()
     group = Group()
 
-    old_group_user = GroupUser()
-    old_group_user.group = group
-    old_group_user.user = current_user
-    old_group_user.role = ROLE.SENIOR_RESEARCHER
+    group_user = GroupUser()
+    group_user.group = group
+    group_user.user = current_user
+    group_user.role = ROLE.SENIOR_RESEARCHER
+    current_user.group_users.append(group_user)
 
-    current_user.group_users.append(old_group_user)
-
-    new_group_user = GroupUser()
-    new_group_user.group = group
-    new_group_user.user = current_user
-    new_group_user.role = ROLE.RESEARCHER
+    data = {
+        'group': group,
+        'user': current_user,
+        'role': ROLE.RESEARCHER
+    }
 
     with pytest.raises(PermissionDenied):
-        valid(new_group_user, user=current_user, old_obj=old_group_user)
+        valid(group_user, data=data, user=current_user)
 
 
 def test_already_in_group():
     user = User()
     group = Group()
 
-    group_user1 = GroupUser()
-    group_user1.user = user
-    group_user1.group = group
-    group_user1.role = ROLE.RESEARCHER
-    user.group_users.append(group_user1)
+    group_user = GroupUser()
+    group_user.user = user
+    group_user.group = group
+    group_user.role = ROLE.RESEARCHER
+    user.group_users.append(group_user)
 
-    group_user2 = GroupUser()
-    group_user2.user = user
-    group_user2.group = group
-    group_user2.role = ROLE.SENIOR_RESEARCHER
+    data = {
+        'user': user,
+        'group': group,
+        'role': ROLE.SENIOR_RESEARCHER
+    }
 
-    valid(group_user2)
+    valid(data=data)
 
 
 def test_already_in_group_and_role():
     user = User()
     group = Group()
 
-    group_user1 = GroupUser()
-    group_user1.user = user
-    group_user1.group = group
-    group_user1.role = ROLE.RESEARCHER
-    user.group_users.append(group_user1)
+    group_user = GroupUser()
+    group_user.user = user
+    group_user.group = group
+    group_user.role = ROLE.RESEARCHER
+    user.group_users.append(group_user)
 
-    group_user2 = GroupUser()
-    group_user2.user = user
-    group_user2.group = group
-    group_user2.role = ROLE.RESEARCHER
+    data = {
+        'user': user,
+        'group': group,
+        'role': ROLE.RESEARCHER
+    }
 
-    invalid(group_user2)
+    invalid(data=data)
 
 
-def invalid(obj, **kwargs):
+def invalid(*args, **kwargs):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(*args, **kwargs)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(GroupUser, GroupUserValidation, obj, **kwargs)
+def valid(instance=None, data=None, user=None):
+    if user is None:
+        user = User(is_admin=True)
+
+    serializer = GroupUserSerializer(instance=instance, data=data, context={'user': user})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

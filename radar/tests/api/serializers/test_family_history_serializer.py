@@ -1,12 +1,11 @@
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
-from radar.models.family_histories import FamilyHistory
-from radar.validation.core import ValidationError
-from radar.validation.family_histories import FamilyHistoryValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.api.serializers.family_histories import FamilyHistorySerializer
 from radar.exceptions import PermissionDenied
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.patients import Patient
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -27,13 +26,13 @@ def patient(group):
 
 @pytest.fixture
 def family_history(patient, group):
-    obj = FamilyHistory()
-    obj.patient = patient
-    obj.group = group
-    obj.parental_consanguinity = True
-    obj.family_history = True
-    obj.other_family_history = 'Hello World!'
-    return obj
+    return {
+        'patient': patient,
+        'group': group,
+        'parental_consanguinity': True,
+        'family_history': True,
+        'other_family_history': 'Hello World!'
+    }
 
 
 def test_valid(family_history):
@@ -43,75 +42,77 @@ def test_valid(family_history):
     assert obj.other_family_history == 'Hello World!'
 
 
-def test_patient_missing(family_history):
-    family_history.patient = None
+def test_patient_none(family_history):
+    family_history['patient'] = None
     invalid(family_history)
 
 
-def test_group_missing(family_history):
-    family_history.group = None
+def test_group_none(family_history):
+    family_history['group'] = None
     invalid(family_history)
 
 
 def test_group_not_cohort(family_history):
-    family_history.group.type = GROUP_TYPE.OTHER
+    family_history['group'].type = GROUP_TYPE.OTHER
 
     with pytest.raises(PermissionDenied):
         valid(family_history)
 
 
-def test_parental_consanguinity_missing(family_history):
-    family_history.parental_consanguinity = None
+def test_parental_consanguinity_none(family_history):
+    family_history['parental_consanguinity'] = None
     invalid(family_history)
 
 
 def test_parental_consanguinity_true(family_history):
-    family_history.parental_consanguinity = True
+    family_history['parental_consanguinity'] = True
     obj = valid(family_history)
     assert obj.parental_consanguinity is True
 
 
 def test_parental_consanguinity_false(family_history):
-    family_history.parental_consanguinity = False
+    family_history['parental_consanguinity'] = False
     obj = valid(family_history)
     assert obj.parental_consanguinity is False
 
 
-def test_family_history_missing(family_history):
-    family_history.family_history = None
+def test_family_history_none(family_history):
+    family_history['family_history'] = None
     invalid(family_history)
 
 
 def test_family_history_true(family_history):
-    family_history.family_history = True
+    family_history['family_history'] = True
     obj = valid(family_history)
     assert obj.family_history is True
 
 
 def test_family_history_false(family_history):
-    family_history.family_history = False
+    family_history['family_history'] = False
     obj = valid(family_history)
     assert obj.family_history is False
 
 
-def test_other_family_history_missing(family_history):
-    family_history.other_family_history = None
+def test_other_family_history_none(family_history):
+    family_history['other_family_history'] = None
     obj = valid(family_history)
     obj.other_family_history = None
 
 
 def test_other_family_history_blank(family_history):
-    family_history.other_family_history = ''
+    family_history['other_family_history'] = ''
     obj = valid(family_history)
     obj.other_family_history = None
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(FamilyHistory, FamilyHistoryValidation, obj, **kwargs)
+def valid(data):
+    serializer = FamilyHistorySerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

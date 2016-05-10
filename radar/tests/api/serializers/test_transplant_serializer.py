@@ -1,13 +1,14 @@
 from datetime import date, timedelta
 
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models import Patient, PatientDemographics, Transplant
+from radar.api.serializers.transplants import TransplantSerializer
 from radar.models.groups import Group
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.validation.core import ValidationError
-from radar.validation.transplants import TransplantValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -21,14 +22,14 @@ def patient():
 
 @pytest.fixture
 def transplant(patient):
-    obj = Transplant()
-    obj.source_group = Group()
-    obj.source_type = SOURCE_TYPE_RADAR
-    obj.patient = patient
-    obj.date = date(2015, 1, 1)
-    obj.modality = 29
-    obj.date_of_failure = date(2015, 1, 2)
-    return obj
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_RADAR,
+        'patient': patient,
+        'date': date(2015, 1, 1),
+        'modality': 29,
+        'date_of_failure': date(2015, 1, 2)
+    }
 
 
 def test_valid(transplant):
@@ -42,73 +43,75 @@ def test_valid(transplant):
     assert obj.modified_user is not None
 
 
-def test_patient_missing(transplant):
-    transplant.patient = None
+def test_patient_none(transplant):
+    transplant['patient'] = None
     invalid(transplant)
 
 
-def test_source_group_missing(transplant):
-    transplant.source_group = None
+def test_source_group_none(transplant):
+    transplant['source_group'] = None
     invalid(transplant)
 
 
-def test_source_type_missing(transplant):
-    transplant.source_type = None
-    transplant = valid(transplant)
-    assert transplant.source_type == 'RADAR'
+def test_source_type_none(transplant):
+    transplant['source_type'] = None
+    obj = valid(transplant)
+    assert obj.source_type == 'RADAR'
 
 
-def test_date_missing(transplant):
-    transplant.date = None
+def test_date_none(transplant):
+    transplant['date'] = None
     invalid(transplant)
 
 
 def test_date_before_dob(transplant):
-    transplant.date = date(1999, 1, 1)
+    transplant['date'] = date(1999, 1, 1)
     invalid(transplant)
 
 
 def test_date_future(transplant):
-    transplant.date = date.today() + timedelta(days=1)
+    transplant['date'] = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
-def test_modality_missing(transplant):
-    transplant.modality = None
+def test_modality_none(transplant):
+    transplant['modality'] = None
     invalid(transplant)
 
 
 def test_modality_invalid(transplant):
-    transplant.modality = 0
+    transplant['modality'] = 0
     invalid(transplant)
 
 
-def test_date_of_failure_missing(transplant):
-    transplant.date_of_failure = None
+def test_date_of_failure_none(transplant):
+    transplant['date_of_failure'] = None
     valid(transplant)
 
 
 def test_date_of_failure_before_dob(transplant):
-    transplant.date_of_failure = date(1999, 1, 1)
+    transplant['date_of_failure'] = date(1999, 1, 1)
     invalid(transplant)
 
 
 def test_date_of_failure_future(transplant):
-    transplant.date_of_failure = date.today() + timedelta(days=1)
+    transplant['date_of_failure'] = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
 def test_date_of_failure_before_transplant_date(transplant):
-    transplant.date_of_failure = transplant.date - timedelta(days=1)
+    transplant['date_of_failure'] = transplant['date'] - timedelta(days=1)
     invalid(transplant)
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(Transplant, TransplantValidation, obj, **kwargs)
+def valid(data):
+    serializer = TransplantSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

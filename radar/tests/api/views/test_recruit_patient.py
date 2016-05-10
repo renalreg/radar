@@ -13,11 +13,11 @@ from radar.tests.api.views.fixtures import get_user, get_group, get_cohort, get_
     ('hospital1_admin', False),
     ('null', False),
 ])
-def test_recruit_patient_search(app, username, expected):
+def test_recruit_patient_search(api, username, expected):
     user = get_user(username)
     nhs_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/recruit-patient-search', data={
@@ -74,13 +74,13 @@ def get_recruit_patient_args():
 
 
 @pytest.mark.parametrize(['username', 'cohort_code', 'hospital_code', 'expected'], get_recruit_patient_args())
-def test_recruit_patient(app, username, cohort_code, hospital_code, expected):
+def test_recruit_patient(api, username, cohort_code, hospital_code, expected):
     user = get_user(username)
     cohort_group = get_cohort(cohort_code)
     hospital_group = get_hospital(hospital_code)
     nhs_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/recruit-patient', data={

@@ -15,10 +15,10 @@ def login(client, username, password):
     return response
 
 
-def test_good_login(app):
+def test_good_login(api):
     user = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
 
     response = login(client, 'admin', 'password')
 
@@ -30,8 +30,8 @@ def test_good_login(app):
     assert 'token' in data
 
 
-def test_bad_login(app):
-    client = app.test_client()
+def test_bad_login(api):
+    client = api.test_client()
 
     response = login(client, 'admin', 'foo')
 

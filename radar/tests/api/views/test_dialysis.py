@@ -121,14 +121,14 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_list_args())
-def test_read_dialysis_list(app, username, group_type, group_code, source_type, expected):
+def test_read_dialysis_list(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     create_dialysis(patient, source_group=group, source_type=source_type)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/dialysis')
@@ -144,14 +144,14 @@ def test_read_dialysis_list(app, username, group_type, group_code, source_type, 
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_args())
-def test_read_dialysis(app, username, group_type, group_code, source_type, expected):
+def test_read_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     dialysis = create_dialysis(patient, source_group=group, source_type=source_type)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/dialysis/%s' % dialysis.id)
@@ -166,14 +166,14 @@ def test_read_dialysis(app, username, group_type, group_code, source_type, expec
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
-def test_delete_dialysis(app, username, group_type, group_code, source_type, expected):
+def test_delete_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     dialysis = create_dialysis(patient, source_group=group, source_type=source_type)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/dialysis/%s' % dialysis.id)
@@ -191,7 +191,7 @@ def test_delete_dialysis(app, username, group_type, group_code, source_type, exp
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
-def test_create_dialysis(app, username, group_type, group_code, source_type, expected):
+def test_create_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -205,7 +205,7 @@ def test_create_dialysis(app, username, group_type, group_code, source_type, exp
         'modality': 1
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/dialysis', data=data)
@@ -227,7 +227,7 @@ def test_create_dialysis(app, username, group_type, group_code, source_type, exp
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
-def test_update_dialysis(app, username, group_type, group_code, source_type, expected):
+def test_update_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -239,7 +239,7 @@ def test_update_dialysis(app, username, group_type, group_code, source_type, exp
         'modality': 2,
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/dialysis/%s' % dialysis.id, data=data)

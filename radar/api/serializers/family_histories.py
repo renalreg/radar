@@ -5,7 +5,7 @@ from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import (
     PatientMixin,
-    SourceMixin,
+    CohortGroupMixin,
     MetaMixin,
     IntegerLookupField
 )
@@ -32,11 +32,11 @@ class RelativeSerializer(ModelSerializer):
         exclude = ['id', 'patient_id']
 
 
-class FamilyHistorySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class FamilyHistorySerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSerializer):
     parental_consanguinity = fields.BooleanField()
     family_history = fields.BooleanField()
     other_family_history = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
-    relatives = serializers.ListSerializer(child=RelativeSerializer())
+    relatives = serializers.ListSerializer(required=False, child=RelativeSerializer())
 
     class Meta(object):
         model_class = FamilyHistory
@@ -48,10 +48,19 @@ class FamilyHistorySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeriali
         return data
 
     def _save(self, instance, data):
+        instance.patient = data['patient']
+
+        instance.group = data['group']
+
         instance.parental_consanguinity = data['parental_consanguinity']
         instance.family_history = data['family_history']
         instance.other_family_history = data['other_family_history']
         instance.relatives = self.fields['relatives'].create(data['relatives'])
+
+        instance.created_user = data['created_user']
+        instance.modified_user = data['modified_user']
+        instance.created_date = data['created_date']
+        instance.modified_date = data['modified_date']
 
     def create(self, data):
         instance = FamilyHistory()

@@ -6,10 +6,10 @@ def get_session_count(user):
     return UserSession.query.filter(UserSession.user == user).count()
 
 
-def test_logout(app):
+def test_logout(api):
     user = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
 
     assert get_session_count(user) == 0
 

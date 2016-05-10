@@ -28,7 +28,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_2 = fields.StringField(validators=[
+    address_2 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -37,7 +37,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_3 = fields.StringField(validators=[
+    address_3 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -46,7 +46,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_4 = fields.StringField(validators=[
+    address_4 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -73,6 +73,8 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
             data['to_date'] < data['from_date']
         ):
             raise ValidationError({'to_date': 'Must be on or after from date.'})
+
+        return data
 
     def to_representation(self, value):
         user = self.context['user']

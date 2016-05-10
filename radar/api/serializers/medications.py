@@ -41,7 +41,7 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     from_date = fields.DateField()
     to_date = fields.DateField(required=False)
     drug = DrugField(required=False)
-    dose_quantity = fields.FloatField(required=False, validators=min_(0))
+    dose_quantity = fields.FloatField(required=False, validators=[min_(0)])
     dose_unit = StringLookupField(MEDICATION_DOSE_UNITS, required=False)
     frequency = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
     route = StringLookupField(MEDICATION_ROUTES, required=False)

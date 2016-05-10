@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-import radar
+__version__ = '2.2.12'
 
 # Hard linking doesn't work inside VirtualBox shared folders
 # See: https://bitbucket.org/hpk42/tox/issues/86
@@ -10,8 +10,8 @@ if os.environ.get('USER', '') == 'vagrant':
 
 setup(
     name='radar',
-    version=radar.__version__,
-    long_description=radar.__doc__,
+    version=__version__,
+    long_description=__doc__,
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
     url='https://www.radar.nhs.uk/',

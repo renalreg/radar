@@ -211,6 +211,11 @@ class UserSerializer(MetaMixin, ModelSerializer):
         if data['password'] is not None:
             instance.password = data['password']
 
+        instance.created_user = data['created_user']
+        instance.modified_user = data['modified_user']
+        instance.created_date = data['created_date']
+        instance.modified_date = data['modified_date']
+
     def create(self, data):
         instance = User()
         self._save(instance, data)

@@ -8,7 +8,8 @@ from radar.api.serializers.common import (
     PatientMixin,
     MetaMixin,
     SourceMixin,
-    IntegerLookupField
+    IntegerLookupField,
+    GroupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.database import db
@@ -60,6 +61,7 @@ class TransplantBiopsySerializer(ModelSerializer):
 
 class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
+    transplant_group = GroupField(required=False)
     modality = IntegerLookupField(TRANSPLANT_MODALITIES)
     date_of_recurrence = fields.DateField(required=False)
     date_of_failure = fields.DateField(required=False)
@@ -73,8 +75,11 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             valid_date_for_patient('date_of_recurrence'),
             valid_date_for_patient('date_of_failure'),
         ]
+        exclude = ['transplant_group_id']
 
     def validate(self, data):
+        data = super(TransplantSerializer, self).validate(data)
+
         patient = data['patient']
         self.fields['rejections'].validate_patient(data['rejections'], patient)
         self.fields['biopsies'].validate_patient(data['biopsies'], patient)
@@ -88,12 +93,22 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         return data
 
     def _save(self, instance, data):
+        instance.patient = data['patient']
+
+        instance.source_group = data['source_group']
+        instance.source_type = data['source_type']
+
         instance.date = data['date']
         instance.modality = data['modality']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
         instance.rejections = self.fields['rejections'].create(data['rejections'])
         instance.biopsies = self.fields['biopsies'].create(data['biopsies'])
+
+        instance.created_user = data['created_user']
+        instance.modified_user = data['modified_user']
+        instance.created_date = data['created_date']
+        instance.modified_date = data['modified_date']
 
     def create(self, data):
         instance = Transplant()

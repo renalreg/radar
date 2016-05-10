@@ -8,15 +8,15 @@ def get_session_count(user):
     return UserSession.query.filter(UserSession.user == user).count()
 
 
-def test_change_password(app):
+def test_change_password(api):
     user = get_user('admin')
     old_password = 'password'
     new_password = 'qzm5zuLVgL1t'
 
-    client1 = app.test_client()
+    client1 = api.test_client()
     client1.login(user)
 
-    client2 = app.test_client()
+    client2 = api.test_client()
     client2.login(user)
 
     # Check both clients are logged in
@@ -43,13 +43,13 @@ def test_change_password(app):
     assert client2.get('/patients').status_code == 200
 
 
-def test_incorrect_password(app):
+def test_incorrect_password(api):
     user = get_user('admin')
 
-    client1 = app.test_client()
+    client1 = api.test_client()
     client1.login(user)
 
-    client2 = app.test_client()
+    client2 = api.test_client()
     client2.login(user)
 
     # Check both clients are logged in
@@ -80,13 +80,13 @@ def test_incorrect_password(app):
     assert client2.get('/patients').status_code == 200
 
 
-def test_weak_password(app):
+def test_weak_password(api):
     user = get_user('admin')
 
-    client1 = app.test_client()
+    client1 = api.test_client()
     client1.login(user)
 
-    client2 = app.test_client()
+    client2 = api.test_client()
     client2.login(user)
 
     response = client1.patch('/users/%s' % user.id, data={

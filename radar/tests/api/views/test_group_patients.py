@@ -35,14 +35,14 @@ from radar.tests.api.views.fixtures import (
     ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
     ('null', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
 ])
-def test_create_group_patient(app, username, group_type, group_code, created_group_type, created_group_code, expected):
+def test_create_group_patient(api, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
 
     group = get_group(group_type, group_code)
     created_group = get_group(created_group_type, created_group_code)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/group-patients', data={
@@ -67,7 +67,7 @@ def test_create_group_patient(app, username, group_type, group_code, created_gro
     ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
     ('null', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
 ])
-def test_delete_group_patient(app, username, group_type, group_code, created_group_type, created_group_code, expected):
+def test_delete_group_patient(api, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
 
     radar_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
@@ -90,7 +90,7 @@ def test_delete_group_patient(app, username, group_type, group_code, created_gro
 
     group_patient = add_patient_to_group(patient, group, created_group=created_group)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/group-patients/%s' % group_patient.id)
@@ -108,11 +108,11 @@ def test_delete_group_patient(app, username, group_type, group_code, created_gro
     ('cohort1_researcher', 3),
     ('null', 0),
 ])
-def test_read_group_patient_list(app, username, expected):
+def test_read_group_patient_list(api, username, expected):
     user = get_user(username)
     patient = get_patient(1)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/group-patients?patient=%s' % patient.id)

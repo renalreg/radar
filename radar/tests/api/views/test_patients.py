@@ -17,10 +17,10 @@ matrix = [
 
 
 @pytest.mark.parametrize(['username', 'expected', 'expected_demographics'], matrix)
-def test_patient_read_list(app, username, expected, expected_demographics):
+def test_patient_read_list(api, username, expected, expected_demographics):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/patients?id=1')
@@ -39,10 +39,10 @@ def test_patient_read_list(app, username, expected, expected_demographics):
 
 
 @pytest.mark.parametrize(['username', 'expected', 'expected_demographics'], matrix)
-def test_patient_read(app, username, expected, expected_demographics):
+def test_patient_read(api, username, expected, expected_demographics):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/patients/1')

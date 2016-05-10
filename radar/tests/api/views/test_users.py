@@ -51,7 +51,7 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_read_list_args())
-def test_read_user_list(app, username, group_type, group_code, role, is_admin, expected):
+def test_read_user_list(api, username, group_type, group_code, role, is_admin, expected):
     user = get_user(username)
 
     other_user = create_user('test', is_admin=is_admin)
@@ -60,7 +60,7 @@ def test_read_user_list(app, username, group_type, group_code, role, is_admin, e
         group = get_group(group_type, group_code)
         add_user_to_group(other_user, group, role)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/users?id=%s' % other_user.id)
@@ -76,7 +76,7 @@ def test_read_user_list(app, username, group_type, group_code, role, is_admin, e
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_read_args())
-def test_read_user(app, username, group_type, group_code, role, is_admin, expected):
+def test_read_user(api, username, group_type, group_code, role, is_admin, expected):
     user = get_user(username)
 
     other_user = create_user('test', is_admin=is_admin)
@@ -85,7 +85,7 @@ def test_read_user(app, username, group_type, group_code, role, is_admin, expect
         group = get_group(group_type, group_code)
         add_user_to_group(other_user, group, role)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/users/%s' % other_user.id)
@@ -97,10 +97,10 @@ def test_read_user(app, username, group_type, group_code, role, is_admin, expect
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
-def test_read_self(app, username):
+def test_read_self(api, username):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/users/%s' % user.id)
@@ -119,10 +119,10 @@ def test_read_self(app, username):
     ('hospital1_admin', True),
     ('null', False),
 ])
-def test_create_user(app, username, expected):
+def test_create_user(api, username, expected):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/users', data={
@@ -145,7 +145,7 @@ def test_create_user(app, username, expected):
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'is_admin', 'expected'], get_update_args())
-def test_update_user(app, username, group_type, group_code, role, is_admin, expected):
+def test_update_user(api, username, group_type, group_code, role, is_admin, expected):
     user = get_user(username)
 
     other_user = create_user('test', first_name='Foo', last_name='Bar', is_admin=is_admin)
@@ -156,7 +156,7 @@ def test_update_user(app, username, group_type, group_code, role, is_admin, expe
 
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % other_user.id, data={
@@ -179,10 +179,10 @@ def test_update_user(app, username, group_type, group_code, role, is_admin, expe
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
-def test_update_self(app, username):
+def test_update_self(api, username):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % user.id, data={
@@ -199,10 +199,10 @@ def test_update_self(app, username):
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_senior_clinician', 'hospital1_admin', 'null'])
-def test_delete_self(app, username):
+def test_delete_self(api, username):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/users/%s' % user.id)
@@ -221,11 +221,11 @@ def test_delete_self(app, username):
     ('hospital1_admin', 'hospital1_clinician', 422),
     ('hospital1_admin', 'hospital1_admin', 422),
 ])
-def test_is_admin_true(app, username, other_username, expected):
+def test_is_admin_true(api, username, other_username, expected):
     user = get_user(username)
     other_user = get_user(other_username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % other_user.id, data={
@@ -240,11 +240,11 @@ def test_is_admin_true(app, username, other_username, expected):
     ('hospital1_admin', 'admin', 403),
     ('hospital1_admin', 'hospital1_admin', 200),
 ])
-def test_is_admin_false(app, username, other_username, expected):
+def test_is_admin_false(api, username, other_username, expected):
     user = get_user(username)
     other_user = get_user(other_username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % other_user.id, data={
@@ -264,11 +264,11 @@ def test_is_admin_false(app, username, other_username, expected):
     ('hospital1_clinician', 'hospital1_clinician', 422),
     ('hospital1_clinician', 'hospital1_admin', 403),
 ])
-def test_change_password(app, username, other_username, expected):
+def test_change_password(api, username, other_username, expected):
     user = get_user(username)
     other_user = get_user(other_username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % other_user.id, data={
@@ -288,11 +288,11 @@ def test_change_password(app, username, other_username, expected):
     ('hospital1_clinician', 'hospital1_clinician', 422),
     ('hospital1_clinician', 'hospital1_admin', 403),
 ])
-def test_change_email(app, username, other_username, expected):
+def test_change_email(api, username, other_username, expected):
     user = get_user(username)
     other_user = get_user(other_username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/users/%s' % other_user.id, data={
@@ -302,10 +302,10 @@ def test_change_email(app, username, other_username, expected):
     assert response.status_code == expected
 
 
-def test_serialization(app):
+def test_serialization(api):
     admin = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(admin)
 
     response = client.get('/users')

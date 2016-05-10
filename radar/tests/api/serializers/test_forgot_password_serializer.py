@@ -1,8 +1,7 @@
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.validation.forgot_password import ForgotPasswordValidation
-from radar.validation.core import ValidationError
-from radar.tests.validation.helpers import validation_runner
+from radar.api.serializers.auth import ForgotPasswordSerializer
 
 
 def test_valid():
@@ -21,12 +20,14 @@ def test_email_missing():
     invalid({'email': None})
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(dict, ForgotPasswordValidation, obj, **kwargs)
+def valid(data):
+    serializer = ForgotPasswordSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    return serializer.validated_data

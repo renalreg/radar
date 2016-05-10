@@ -73,8 +73,6 @@ class after_date_of_birth(object):
     def __call__(self, data):
         field = self.parent.fields[self.field_name]
 
-        print data, field.source
-
         value = field.get_attribute(data)
 
         if value is None:

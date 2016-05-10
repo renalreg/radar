@@ -1,13 +1,14 @@
 from datetime import date, timedelta
 
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models import Nephrectomy, Patient, PatientDemographics
+from radar.api.serializers.nephrectomies import NephrectomySerializer
 from radar.models.groups import Group
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.validation.core import ValidationError
-from radar.validation.nephrectomies import NephrectomyValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -21,15 +22,15 @@ def patient():
 
 @pytest.fixture
 def nephrectomy(patient):
-    obj = Nephrectomy()
-    obj.source_group = Group()
-    obj.source_type = SOURCE_TYPE_RADAR
-    obj.patient = patient
-    obj.date = date(2015, 1, 1)
-    obj.kidney_side = 'LEFT'
-    obj.kidney_type = 'NATIVE'
-    obj.entry_type = 'HA'
-    return obj
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_RADAR,
+        'patient': patient,
+        'date': date(2015, 1, 1),
+        'kidney_side': 'LEFT',
+        'kidney_type': 'NATIVE',
+        'entry_type': 'HA'
+    }
 
 
 def test_valid(nephrectomy):
@@ -44,73 +45,75 @@ def test_valid(nephrectomy):
     assert obj.modified_user is not None
 
 
-def test_patient_missing(nephrectomy):
-    nephrectomy.patient = None
+def test_patient_none(nephrectomy):
+    nephrectomy['patient'] = None
     invalid(nephrectomy)
 
 
-def test_source_group_missing(nephrectomy):
-    nephrectomy.source_group = None
+def test_source_group_none(nephrectomy):
+    nephrectomy['source_group'] = None
     invalid(nephrectomy)
 
 
-def test_source_type_missing(nephrectomy):
-    nephrectomy.source_type = None
+def test_source_type_none(nephrectomy):
+    nephrectomy['source_type'] = None
     nephrectomy = valid(nephrectomy)
     assert nephrectomy.source_type == 'RADAR'
 
 
-def test_date_missing(nephrectomy):
-    nephrectomy.date = None
+def test_date_none(nephrectomy):
+    nephrectomy['date'] = None
     invalid(nephrectomy)
 
 
 def test_date_before_dob(nephrectomy):
-    nephrectomy.date = date(1999, 1, 1)
+    nephrectomy['date'] = date(1999, 1, 1)
     invalid(nephrectomy)
 
 
 def test_date_future(nephrectomy):
-    nephrectomy.date = date.today() + timedelta(days=1)
+    nephrectomy['date'] = date.today() + timedelta(days=1)
     invalid(nephrectomy)
 
 
-def test_kidney_side_missing(nephrectomy):
-    nephrectomy.kidney_side = None
+def test_kidney_side_none(nephrectomy):
+    nephrectomy['kidney_side'] = None
     invalid(nephrectomy)
 
 
 def test_kidney_side_invalid(nephrectomy):
-    nephrectomy.kidney_side = 'HELLO'
+    nephrectomy['kidney_side'] = 'HELLO'
     invalid(nephrectomy)
 
 
-def test_kidney_type_missing(nephrectomy):
-    nephrectomy.kidney_type = None
+def test_kidney_type_none(nephrectomy):
+    nephrectomy['kidney_type'] = None
     invalid(nephrectomy)
 
 
 def test_kidney_type_invalid(nephrectomy):
-    nephrectomy.kidney_type = 'HELLO'
+    nephrectomy['kidney_type'] = 'HELLO'
     invalid(nephrectomy)
 
 
-def test_entry_type_missing(nephrectomy):
-    nephrectomy.entry_type = None
+def test_entry_type_none(nephrectomy):
+    nephrectomy['entry_type'] = None
     invalid(nephrectomy)
 
 
 def test_entry_type_invalid(nephrectomy):
-    nephrectomy.entry_type = 'HELLO'
+    nephrectomy['entry_type'] = 'HELLO'
     invalid(nephrectomy)
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(Nephrectomy, NephrectomyValidation, obj, **kwargs)
+def valid(data):
+    serializer = NephrectomySerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

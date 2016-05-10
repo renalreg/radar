@@ -106,14 +106,14 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'expected'], get_read_list_args())
-def test_read_genetics_list(app, username, group_type, group_code, expected):
+def test_read_genetics_list(api, username, group_type, group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     create_genetics(patient, group)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/genetics?patient=%s' % patient.id)
@@ -129,14 +129,14 @@ def test_read_genetics_list(app, username, group_type, group_code, expected):
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'expected'], get_read_args())
-def test_read_genetics(app, username, group_type, group_code, expected):
+def test_read_genetics(api, username, group_type, group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     genetics = create_genetics(patient, group)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/genetics/%s' % genetics.id)
@@ -151,14 +151,14 @@ def test_read_genetics(app, username, group_type, group_code, expected):
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'expected'], get_delete_args())
-def test_delete_genetics(app, username, group_type, group_code, expected):
+def test_delete_genetics(api, username, group_type, group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
     genetics = create_genetics(patient, group)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/genetics/%s' % genetics.id)
@@ -176,7 +176,7 @@ def test_delete_genetics(app, username, group_type, group_code, expected):
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'expected'], get_create_args())
-def test_create_genetics(app, username, group_type, group_code, expected):
+def test_create_genetics(api, username, group_type, group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -188,7 +188,7 @@ def test_create_genetics(app, username, group_type, group_code, expected):
         'date_sent': '2016-01-01',
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/genetics', data=data)
@@ -210,7 +210,7 @@ def test_create_genetics(app, username, group_type, group_code, expected):
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'expected'], get_update_args())
-def test_update_genetics(app, username, group_type, group_code, expected):
+def test_update_genetics(api, username, group_type, group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -222,7 +222,7 @@ def test_update_genetics(app, username, group_type, group_code, expected):
         'date_sent': '2016-01-02'
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/genetics/%s' % genetics.id, data=data)

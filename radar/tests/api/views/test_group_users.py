@@ -22,12 +22,12 @@ from radar.tests.api.views.fixtures import get_user, create_user, get_group, add
     ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN, 403),
     ('hospital1_senior_clinician', GROUP_TYPE.COHORT, 'COHORT1', ROLE.RESEARCHER, 403),
 ])
-def test_create_group_user(app, username, group_type, group_code, role, expected):
+def test_create_group_user(api, username, group_type, group_code, role, expected):
     user = get_user(username)
     group = get_group(group_type, group_code)
     other_user = create_user('test')
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/group-users', data={
@@ -54,14 +54,14 @@ def test_create_group_user(app, username, group_type, group_code, role, expected
     ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN, 403),
     ('hospital1_senior_clinician', GROUP_TYPE.COHORT, 'COHORT1', ROLE.RESEARCHER, 403),
 ])
-def test_delete_group_user(app, username, group_type, group_code, role, expected):
+def test_delete_group_user(api, username, group_type, group_code, role, expected):
     user = get_user(username)
 
     other_user = create_user('test')
     group = get_group(group_type, group_code)
     group_user = add_user_to_group(other_user, group, role)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/group-users/%s' % group_user.id)
@@ -84,14 +84,14 @@ def test_delete_group_user(app, username, group_type, group_code, role, expected
     ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.SENIOR_CLINICIAN, True),
     ('hospital1_senior_clinician', GROUP_TYPE.COHORT, 'COHORT1', ROLE.RESEARCHER, True),
 ])
-def test_read_group_user(app, username, group_type, group_code, role, expected):
+def test_read_group_user(api, username, group_type, group_code, role, expected):
     user = get_user(username)
 
     other_user = create_user('test')
     group = get_group(group_type, group_code)
     group_user = add_user_to_group(other_user, group, role)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/group-users/%s' % group_user.id)
@@ -170,7 +170,7 @@ def test_read_group_user(app, username, group_type, group_code, role, expected):
     ),
 ])
 def test_update_group_user(
-    app,
+    api,
     username,
     old_group_type, old_group_code, old_role,
     new_group_type, new_group_code, new_role,
@@ -184,7 +184,7 @@ def test_update_group_user(
 
     new_group = get_group(new_group_type, new_group_code)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/group-users/%s' % group_user.id, data={
@@ -196,10 +196,10 @@ def test_update_group_user(
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_clinician', 'cohort1_researcher', 'null'])
-def test_view_self(app, username):
+def test_view_self(api, username):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/group-users?user=%s' % user.id)
@@ -216,10 +216,10 @@ def test_view_self(app, username):
 
 
 @pytest.mark.parametrize('username', ['admin', 'hospital1_clinician', 'cohort1_researcher', 'null'])
-def test_delete_self(app, username):
+def test_delete_self(api, username):
     user = get_user(username)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     for group_user in user.group_users:
@@ -245,11 +245,11 @@ def test_delete_self(app, username):
     ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', ROLE.CLINICIAN, 403),
     ('hospital1_senior_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', ROLE.CLINICIAN, 403),
 ])
-def test_create_self(app, username, group_type, group_code, role, expected):
+def test_create_self(api, username, group_type, group_code, role, expected):
     user = get_user(username)
     group = get_group(group_type, group_code)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/group-users', data={
@@ -311,7 +311,7 @@ def test_create_self(app, username, group_type, group_code, role, expected):
     ),
 ])
 def test_update_self(
-    app,
+    api,
     is_admin,
     old_group_type, old_group_code, old_role,
     new_group_type, new_group_code, new_role,
@@ -323,7 +323,7 @@ def test_update_self(
 
     new_group = get_group(new_group_type, new_group_code)
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/group-users/%s' % group_user.id, data={

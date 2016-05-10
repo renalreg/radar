@@ -1,15 +1,14 @@
 from datetime import date, timedelta
 
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models.patients import Patient
-from radar.models.patient_demographics import PatientDemographics
-from radar.models.dialysis import Dialysis
+from radar.api.serializers.dialysis import DialysisSerializer
 from radar.models.groups import Group
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.validation.core import ValidationError
-from radar.validation.dialysis import DialysisValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -23,14 +22,14 @@ def patient():
 
 @pytest.fixture
 def dialysis(patient):
-    obj = Dialysis()
-    obj.source_group = Group()
-    obj.source_type = SOURCE_TYPE_RADAR
-    obj.patient = patient
-    obj.from_date = date(2015, 1, 1)
-    obj.to_date = date(2015, 1, 2)
-    obj.modality = 1
-    return obj
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_RADAR,
+        'patient': patient,
+        'from_date': date(2015, 1, 1),
+        'to_date': date(2015, 1, 2),
+        'modality': 1
+    }
 
 
 def test_valid(dialysis):
@@ -44,73 +43,81 @@ def test_valid(dialysis):
     assert obj.modified_user is not None
 
 
-def test_patient_missing(dialysis):
-    dialysis.patient = None
+def test_patient_none(dialysis):
+    dialysis['patient'] = None
     invalid(dialysis)
 
 
-def test_source_group_missing(dialysis):
-    dialysis.source_group = None
+def test_source_group_none(dialysis):
+    dialysis['source_group'] = None
     invalid(dialysis)
+
+
+def test_source_type_none(dialysis):
+    dialysis['source_type'] = None
+    dialysis = valid(dialysis)
+    assert dialysis.source_type == SOURCE_TYPE_RADAR
 
 
 def test_source_type_missing(dialysis):
-    dialysis.source_type = None
+    dialysis.pop('source_type')
     dialysis = valid(dialysis)
-    assert dialysis.source_type == 'RADAR'
+    assert dialysis.source_type == SOURCE_TYPE_RADAR
 
 
-def test_from_date_missing(dialysis):
-    dialysis.from_date = None
+def test_from_date_none(dialysis):
+    dialysis['from_date'] = None
     invalid(dialysis)
 
 
 def test_from_date_before_dob(dialysis):
-    dialysis.from_date = date(1999, 1, 1)
+    dialysis['from_date'] = date(1999, 1, 1)
     invalid(dialysis)
 
 
 def test_from_date_future(dialysis):
-    dialysis.from_date = date.today() + timedelta(days=1)
+    dialysis['from_date'] = date.today() + timedelta(days=1)
     invalid(dialysis)
 
 
-def test_to_date_missing(dialysis):
-    dialysis.to_date = None
+def test_to_date_none(dialysis):
+    dialysis['to_date'] = None
     valid(dialysis)
 
 
 def test_to_date_before_dob(dialysis):
-    dialysis.to_date = date(1999, 1, 1)
+    dialysis['to_date'] = date(1999, 1, 1)
     invalid(dialysis)
 
 
 def test_to_date_future(dialysis):
-    dialysis.to_date = date.today() + timedelta(days=1)
+    dialysis['to_date'] = date.today() + timedelta(days=1)
     invalid(dialysis)
 
 
 def test_to_date_before_from_date(dialysis):
-    dialysis.to_date = dialysis.from_date - timedelta(days=1)
+    dialysis['to_date'] = dialysis['from_date'] - timedelta(days=1)
     invalid(dialysis)
 
 
-def test_modality_missing(dialysis):
-    dialysis.modality = None
+def test_modality_none(dialysis):
+    dialysis['modality'] = None
     invalid(dialysis)
 
 
 def test_modality_invalid(dialysis):
-    dialysis.modality = 0
+    dialysis['modality'] = 0
     invalid(dialysis)
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(Dialysis, DialysisValidation, obj, **kwargs)
+def valid(data):
+    serializer = DialysisSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

@@ -1,13 +1,14 @@
 from datetime import date
 
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models import Patient, PatientDemographics, Pathology
+from radar.api.serializers.pathology import PathologySerializer
 from radar.models.groups import Group
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.validation.core import ValidationError
-from radar.validation.pathology import PathologyValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -21,16 +22,16 @@ def patient():
 
 @pytest.fixture
 def pathology(patient):
-    obj = Pathology()
-    obj.source_group = Group()
-    obj.source_type = SOURCE_TYPE_RADAR
-    obj.patient = patient
-    obj.date = date(2015, 1, 1)
-    obj.kidney_type = 'NATIVE'
-    obj.kidney_side = 'RIGHT'
-    obj.reference_number = '12345'
-    obj.histological_summary = 'foo bar baz'
-    return obj
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_RADAR,
+        'patient': patient,
+        'date': date(2015, 1, 1),
+        'kidney_type': 'NATIVE',
+        'kidney_side': 'RIGHT',
+        'reference_number': '12345',
+        'histological_summary': 'foo bar baz'
+    }
 
 
 def test_valid(pathology):
@@ -42,104 +43,106 @@ def test_valid(pathology):
     assert obj.histological_summary == 'foo bar baz'
 
 
-def test_patient_missing(pathology):
-    pathology.patient = None
+def test_patient_none(pathology):
+    pathology['patient'] = None
     invalid(pathology)
 
 
-def test_source_group_missing(pathology):
-    pathology.source_group = None
+def test_source_group_none(pathology):
+    pathology['source_group'] = None
     invalid(pathology)
 
 
-def test_source_type_missing(pathology):
-    pathology.source_type = None
+def test_source_type_none(pathology):
+    pathology['source_type'] = None
     pathology = valid(pathology)
     assert pathology.source_type == 'RADAR'
 
 
-def test_kidney_type_missing(pathology):
-    pathology.kidney_type = None
+def test_kidney_type_none(pathology):
+    pathology['kidney_type'] = None
     valid(pathology)
 
 
 def test_kidney_type_blank(pathology):
-    pathology.kidney_type = ''
+    pathology['kidney_type'] = ''
     invalid(pathology)
 
 
 def test_kidney_type_native(pathology):
-    pathology.kidney_type = 'NATIVE'
+    pathology['kidney_type'] = 'NATIVE'
     obj = valid(pathology)
     assert obj.kidney_type == 'NATIVE'
 
 
 def test_kidney_type_transplant(pathology):
-    pathology.kidney_type = 'TRANSPLANT'
+    pathology['kidney_type'] = 'TRANSPLANT'
     obj = valid(pathology)
     assert obj.kidney_type == 'TRANSPLANT'
 
 
 def test_kidney_type_invalid(pathology):
-    pathology.kidney_type = 'HELLO'
+    pathology['kidney_type'] = 'HELLO'
     invalid(pathology)
 
 
-def test_kidney_side_missing(pathology):
-    pathology.kidney_side = None
+def test_kidney_side_none(pathology):
+    pathology['kidney_side'] = None
     valid(pathology)
 
 
 def test_kidney_side_blank(pathology):
-    pathology.kidney_side = ''
+    pathology['kidney_side'] = ''
     invalid(pathology)
 
 
 def test_kidney_side_left(pathology):
-    pathology.kidney_side = 'LEFT'
+    pathology['kidney_side'] = 'LEFT'
     obj = valid(pathology)
     assert obj.kidney_side == 'LEFT'
 
 
 def test_kidney_side_right(pathology):
-    pathology.kidney_side = 'RIGHT'
+    pathology['kidney_side'] = 'RIGHT'
     obj = valid(pathology)
     assert obj.kidney_side == 'RIGHT'
 
 
 def test_kidney_side_invalid(pathology):
-    pathology.kidney_side = 'HELLO'
+    pathology['kidney_side'] = 'HELLO'
     invalid(pathology)
 
 
-def test_reference_number_missing(pathology):
-    pathology.reference_number = None
+def test_reference_number_none(pathology):
+    pathology['reference_number'] = None
     valid(pathology)
 
 
 def test_reference_number_blank(pathology):
-    pathology.reference_number = ''
+    pathology['reference_number'] = ''
     valid(pathology)
 
 
-def test_histological_summary_missing(pathology):
-    pathology.histological_summary = None
+def test_histological_summary_none(pathology):
+    pathology['histological_summary'] = None
     obj = valid(pathology)
     assert obj.histological_summary is None
 
 
 def test_histological_summary_blank(pathology):
-    pathology.histological_summary = ''
+    pathology['histological_summary'] = ''
     obj = valid(pathology)
     assert obj.histological_summary is None
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(Pathology, PathologyValidation, obj, **kwargs)
+def valid(data):
+    serializer = PathologySerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

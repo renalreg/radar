@@ -1,13 +1,14 @@
 from datetime import date, timedelta
 
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.models import Patient, PatientDemographics, Plasmapheresis
+from radar.api.serializers.plasmapheresis import PlasmapheresisSerializer
 from radar.models.groups import Group
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.validation.core import ValidationError
-from radar.validation.plasmapheresis import PlasmapheresisValidation
-from radar.tests.validation.helpers import validation_runner
+from radar.models.users import User
 
 
 @pytest.fixture
@@ -21,15 +22,15 @@ def patient():
 
 @pytest.fixture
 def plasmapheresis(patient):
-    obj = Plasmapheresis()
-    obj.source_group = Group()
-    obj.source_type = SOURCE_TYPE_RADAR
-    obj.patient = patient
-    obj.from_date = date(2015, 1, 1)
-    obj.to_date = date(2015, 1, 2)
-    obj.no_of_exchanges = '1/1D'
-    obj.response = 'COMPLETE'
-    return obj
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_RADAR,
+        'patient': patient,
+        'from_date': date(2015, 1, 1),
+        'to_date': date(2015, 1, 2),
+        'no_of_exchanges': '1/1D',
+        'response': 'COMPLETE'
+    }
 
 
 def test_valid(plasmapheresis):
@@ -44,83 +45,85 @@ def test_valid(plasmapheresis):
     assert obj.modified_user is not None
 
 
-def test_patient_missing(plasmapheresis):
-    plasmapheresis.patient = None
+def test_patient_none(plasmapheresis):
+    plasmapheresis['patient'] = None
     invalid(plasmapheresis)
 
 
-def test_source_group_missing(plasmapheresis):
-    plasmapheresis.source_group = None
+def test_source_group_none(plasmapheresis):
+    plasmapheresis['source_group'] = None
     invalid(plasmapheresis)
 
 
-def test_source_type_missing(plasmapheresis):
-    plasmapheresis.source_type = None
-    plasmapheresis = valid(plasmapheresis)
-    assert plasmapheresis.source_type == 'RADAR'
+def test_source_type_none(plasmapheresis):
+    plasmapheresis['source_type'] = None
+    obj = valid(plasmapheresis)
+    assert obj.source_type == 'RADAR'
 
 
-def test_from_date_missing(plasmapheresis):
-    plasmapheresis.from_date = None
+def test_from_date_none(plasmapheresis):
+    plasmapheresis['from_date'] = None
     invalid(plasmapheresis)
 
 
 def test_from_date_before_dob(plasmapheresis):
-    plasmapheresis.from_date = date(1999, 1, 1)
+    plasmapheresis['from_date'] = date(1999, 1, 1)
     invalid(plasmapheresis)
 
 
 def test_from_date_future(plasmapheresis):
-    plasmapheresis.from_date = date.today() + timedelta(days=1)
+    plasmapheresis['from_date'] = date.today() + timedelta(days=1)
     invalid(plasmapheresis)
 
 
-def test_to_date_missing(plasmapheresis):
-    plasmapheresis.to_date = None
+def test_to_date_none(plasmapheresis):
+    plasmapheresis['to_date'] = None
     valid(plasmapheresis)
 
 
 def test_to_date_before_dob(plasmapheresis):
-    plasmapheresis.to_date = date(1999, 1, 1)
+    plasmapheresis['to_date'] = date(1999, 1, 1)
     invalid(plasmapheresis)
 
 
 def test_to_date_future(plasmapheresis):
-    plasmapheresis.to_date = date.today() + timedelta(days=1)
+    plasmapheresis['to_date'] = date.today() + timedelta(days=1)
     invalid(plasmapheresis)
 
 
 def test_to_date_before_from_date(plasmapheresis):
-    plasmapheresis.to_date = plasmapheresis.from_date - timedelta(days=1)
+    plasmapheresis['to_date'] = plasmapheresis['from_date'] - timedelta(days=1)
     invalid(plasmapheresis)
 
 
-def test_no_of_exchanges_missing(plasmapheresis):
-    plasmapheresis.no_of_exchanges = None
+def test_no_of_exchanges_none(plasmapheresis):
+    plasmapheresis['no_of_exchanges'] = None
     valid(plasmapheresis)
 
 
 def test_no_of_exchanges_invalid(plasmapheresis):
-    plasmapheresis.no_of_exchanges = 'FOO'
+    plasmapheresis['no_of_exchanges'] = 'FOO'
     invalid(plasmapheresis)
 
 
-def test_response_missing(plasmapheresis):
-    plasmapheresis.response = None
+def test_response_none(plasmapheresis):
+    plasmapheresis['response'] = None
     valid(plasmapheresis)
 
 
 def test_response_invalid(plasmapheresis):
-    plasmapheresis.response = 'FOO'
+    plasmapheresis['response'] = 'FOO'
     invalid(plasmapheresis)
 
 
-def invalid(obj, **kwargs):
+def invalid(data):
     with pytest.raises(ValidationError) as e:
-        valid(obj, **kwargs)
+        valid(data)
 
     return e
 
 
-def valid(obj, **kwargs):
-    return validation_runner(Plasmapheresis, PlasmapheresisValidation, obj, **kwargs)
+def valid(data):
+    serializer = PlasmapheresisSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer.is_valid(raise_exception=True)
+    return serializer.save()

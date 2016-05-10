@@ -35,10 +35,12 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
     def is_duplicate(self, data):
         group = data['group']
         user = data['user']
+        role = data['role']
         instance = self.instance
 
         duplicate = any(
             group == x.group and
+            role == x.role and
             (instance is None or instance != x)
             for x in user.group_users
         )

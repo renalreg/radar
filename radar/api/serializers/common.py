@@ -95,9 +95,9 @@ class ModifiedDateField(fields.DateTimeField):
 
 
 class MetaMixin(serializers.Serializer):
-    created_user = CreatedUserField()
+    created_user = CreatedUserField(required=False)
     modified_user = ModifiedUserField()
-    created_date = CreatedDateField()
+    created_date = CreatedDateField(required=False)
     modified_date = ModifiedDateField()
 
     def get_model_exclude(self):

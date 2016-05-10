@@ -104,14 +104,14 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_list_args())
-def test_read_demographics_list(app, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics_list(api, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
     create_demographics(patient, source_group=group, source_type=source_type)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/patient-demographics?patient=%s' % patient.id)
@@ -132,14 +132,14 @@ def test_read_demographics_list(app, username, group_type, group_code, source_ty
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_args())
-def test_read_demographics(app, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics(api, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
     demographics = create_demographics(patient, source_group=group, source_type=source_type, first_name='JOHN', last_name='SMITH')
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.get('/patient-demographics/%s' % demographics.id)
@@ -159,14 +159,14 @@ def test_read_demographics(app, username, group_type, group_code, source_type, e
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
-def test_delete_demographics(app, username, group_type, group_code, source_type, expected):
+def test_delete_demographics(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
     demographics = create_demographics(patient, source_group=group, source_type=source_type)
     db.session.commit()
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.delete('/patient-demographics/%s' % demographics.id)
@@ -184,7 +184,7 @@ def test_delete_demographics(app, username, group_type, group_code, source_type,
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
-def test_create_demographics(app, username, group_type, group_code, source_type, expected):
+def test_create_demographics(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -200,7 +200,7 @@ def test_create_demographics(app, username, group_type, group_code, source_type,
         'date_of_birth': '2016-01-01',
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.post('/patient-demographics', data=data)
@@ -222,7 +222,7 @@ def test_create_demographics(app, username, group_type, group_code, source_type,
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
-def test_update_demographics(app, username, group_type, group_code, source_type, expected):
+def test_update_demographics(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -235,7 +235,7 @@ def test_update_demographics(app, username, group_type, group_code, source_type,
         'last_name': 'WAYNE',
     }
 
-    client = app.test_client()
+    client = api.test_client()
     client.login(user)
 
     response = client.patch('/patient-demographics/%s' % demographics.id, data=data)

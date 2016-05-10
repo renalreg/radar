@@ -4,10 +4,10 @@ from radar.database import db
 from radar.tests.api.views.fixtures import get_user
 
 
-def test_forgot_password(app):
+def test_forgot_password(api):
     user = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
 
     assert user.reset_password_token is None
     assert user.reset_password_date is None
@@ -25,10 +25,10 @@ def test_forgot_password(app):
     assert user.reset_password_date is not None
 
 
-def test_missing_username(app):
+def test_missing_username(api):
     user = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
 
     response = client.post('/forgot-password', data={
         'email': user.email,
@@ -45,10 +45,10 @@ def test_missing_username(app):
     }
 
 
-def test_missing_email(app):
+def test_missing_email(api):
     user = get_user('admin')
 
-    client = app.test_client()
+    client = api.test_client()
 
     response = client.post('/forgot-password', data={
         'username': user.username,
@@ -65,8 +65,8 @@ def test_missing_email(app):
     }
 
 
-def test_user_not_found(app):
-    client = app.test_client()
+def test_user_not_found(api):
+    client = api.test_client()
 
     response = client.post('/forgot-password', data={
         'username': '404',
