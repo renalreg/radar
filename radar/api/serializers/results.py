@@ -99,19 +99,19 @@ class ObservationSerializer(serializers.ProxySerializer):
         value_type_field.bind(self, 'value_type')
         self.value_type_field = value_type_field
 
-    def get_serializer(self, value_type):
+    def create_serializer(self, value_type):
         properties_serializer = get_properties_serializer(value_type)
         serializer = type('CustomObservationSerializer', (BaseObservationSerializer,), {
             'properties': properties_serializer
         })()
         return serializer
 
-    def get_internal_serializer(self, data):
+    def get_serializer(self, data):
         value_type = self.value_type_field.get_attribute(data)
-        serializer = self.get_serializer(value_type)
+        serializer = self.create_serializer(value_type)
         return serializer
 
-    def get_external_serializer(self, data):
+    def get_deserializer(self, data):
         value_type_data = self.value_type_field.get_attribute(data)
 
         try:
@@ -119,7 +119,7 @@ class ObservationSerializer(serializers.ProxySerializer):
         except ValidationError as e:
             raise ValidationError({self.value_type_field.field_name: e.errors})
 
-        serializer = self.get_serializer(value_type)
+        serializer = self.create_serializer(value_type)
 
         return serializer
 
@@ -180,19 +180,19 @@ class ResultSerializer(serializers.ProxySerializer):
         observation_field.bind(self, 'observation')
         self.observation_field = observation_field
 
-    def get_serializer(self, observation):
+    def create_serializer(self, observation):
         field = get_value_field(observation)
         serializer = type('CustomResultSerializer', (BaseResultSerializer,), {
             'value': field
         })()
         return serializer
 
-    def get_internal_serializer(self, data):
+    def get_serializer(self, data):
         observation = self.observation_field.get_attribute(data)
-        serializer = self.get_serializer(observation)
+        serializer = self.create_serializer(observation)
         return serializer
 
-    def get_external_serializer(self, data):
+    def get_deserializer(self, data):
         observation_data = self.observation_field.get_attribute(data)
 
         try:
@@ -200,7 +200,7 @@ class ResultSerializer(serializers.ProxySerializer):
         except ValidationError as e:
             raise ValidationError({self.observation_field.field_name: e.errors})
 
-        serializer = self.get_serializer(observation)
+        serializer = self.create_serializer(observation)
 
         return serializer
 
