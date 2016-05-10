@@ -1,4 +1,0 @@
----
-dependencies:
-  - { role: epel_repo }
-  - { role: postgresql }

@@ -1,28 +1,10 @@
-.bundle/
 .cache/
 .idea/
-.tmp/
-build/
-dist/
-*.rpm
-*.tar.gz
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-coveralls.json
-
-# Vagrant
-.vagrant/
-
-# Python
 .tox/
+build/
+coverage/
+dist/
 venv/
+.coverage
 *.egg-info
 *.pyc
-
-# JavaScript
-bower_components/
-node_modules/
-npm-debug.log*

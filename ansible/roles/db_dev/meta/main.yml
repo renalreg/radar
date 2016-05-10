@@ -1,5 +1,0 @@
----
-dependencies:
-  - { role: dev }
-  - { role: db }
-  - { role: python }

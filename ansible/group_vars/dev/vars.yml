@@ -1,5 +1,0 @@
----
-db_host: localhost
-db_password: password
-db_api_address: 127.0.0.1/32 # localhost
-web_base_url: 'http://localhost/#'

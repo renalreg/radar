@@ -1,6 +1,0 @@
-[run]
-branch = true
-omit = radar_mock_ukrdc/tests/*
-
-[html]
-directory = coverage
