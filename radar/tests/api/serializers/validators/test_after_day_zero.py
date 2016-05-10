@@ -2,9 +2,9 @@ from datetime import date, datetime
 
 import pytest
 import pytz
+from cornflake.exceptions import ValidationError
 
-from radar.validation.core import ValidationError
-from radar.validation.validators import after_day_zero
+from radar.api.serializers.validators import after_day_zero
 
 
 def test_before():

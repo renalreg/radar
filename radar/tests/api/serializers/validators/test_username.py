@@ -1,6 +1,7 @@
 import pytest
-from radar.validation.core import ValidationError
-from radar.validation.validators import username
+from cornflake.exceptions import ValidationError
+
+from radar.api.serializers.validators import username
 
 
 def test_valid():

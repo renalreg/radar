@@ -1,44 +1,61 @@
 from datetime import datetime, date
+
 import pytest
 import pytz
-from radar.models import Patient, PatientDemographics
-from radar.validation.core import ValidationError, ValidatorCall
-from radar.validation.validators import after_date_of_birth
+from cornflake import serializers, fields
+from cornflake.exceptions import ValidationError
+
+from radar.api.serializers.validators import after_date_of_birth
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patients import Patient
 
 
 def test_valid():
-    value = call_after_date_of_birth(date(1999, 1, 1), date(2000, 1, 1))
+    value = run(date(1999, 1, 1), date(2000, 1, 1))
     assert value == date(2000, 1, 1)
 
 
 def test_no_date_of_birth():
-    call_after_date_of_birth(None, date(1999, 1, 1))
+    run(None, date(1999, 1, 1))
 
 
 def test_less_than():
     with pytest.raises(ValidationError):
-        call_after_date_of_birth(date(2000, 1, 1), date(1999, 12, 31))
+        run(date(2000, 1, 1), date(1999, 12, 31))
 
 
 def test_equal():
-    call_after_date_of_birth(date(2000, 1, 1), date(2000, 1, 1))
+    run(date(2000, 1, 1), date(2000, 1, 1))
 
 
 def test_greater_than():
-    call_after_date_of_birth(date(2000, 1, 1), date(2000, 1, 2))
+    run(date(2000, 1, 1), date(2000, 1, 2))
 
 
 def test_datetime():
-    call_after_date_of_birth(date(2000, 1, 1), datetime(2000, 1, 2, tzinfo=pytz.utc))
+    run(date(2000, 1, 1), datetime(2000, 1, 2, tzinfo=pytz.utc))
 
 
-def call_after_date_of_birth(date_of_birth, value):
+def run(date_of_birth, value):
     patient = Patient()
     patient_demographics = PatientDemographics()
     patient_demographics.date_of_birth = date_of_birth
     patient.patient_demographics.append(patient_demographics)
 
-    ctx = {'patient': patient}
-    call = ValidatorCall(ctx, None)
+    class Serializer(serializers.Serializer):
+        patient = fields.Field()
+        date = fields.Field()
 
-    return call(after_date_of_birth(), value)
+        class Meta:
+            validators = [after_date_of_birth('date')]
+
+    print patient.earliest_date_of_birth
+
+    serializer = Serializer(data={
+        'patient': patient,
+        'date': value
+    })
+
+    serializer.is_valid(raise_exception=True)
+
+    return serializer.validated_data['date']

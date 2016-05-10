@@ -1,7 +1,7 @@
 import pytest
+from cornflake.exceptions import ValidationError
 
-from radar.validation.core import ValidationError
-from radar.validation.number_validators import nhs_no
+from radar.api.serializers.validators import nhs_no
 
 
 def test_valid_int():

@@ -74,9 +74,11 @@ class after_date_of_birth(object):
         self.parent = parent
 
     def __call__(self, data):
-        field = getattr(self.parent, self.field_name)
-        source = field.source
-        value = data.get(source)
+        field = self.parent.fields[self.field_name]
+
+        print data, field.source
+
+        value = field.get_attribute(data)
 
         if value is None:
             return data
@@ -86,9 +88,8 @@ class after_date_of_birth(object):
         elif isinstance(self.patient, Patient):
             patient = self.patient
         else:
-            patient_field = getattr(self.parent, self.patient)
-            patient_source = patient_field.source
-            patient = data.get(patient_source)
+            patient_field = self.parent.fields[self.patient]
+            patient = patient_field.get_attribute(data)
 
         if patient is None:
             return data
@@ -114,14 +115,14 @@ class after_date_of_birth(object):
 
 
 class valid_date_for_patient(object):
-    def __init__(self, field_name=None, patient='patient', parent=None):
+    def __init__(self, field_name, patient='patient', parent=None):
         self.field_name = field_name
         self.patient = patient
         self.parent = parent
 
     def __call__(self, data):
-        source = getattr(self.parent, self.field_name).source
-        value = data.get(source)
+        field = self.parent.fields[self.field_name]
+        value = field.get_attribute(data)
 
         if value is None:
             return data
@@ -132,7 +133,7 @@ class valid_date_for_patient(object):
         except ValidationError as e:
             raise ValidationError({self.field_name: e.errors})
 
-        data[source] = value
+        data[field.source] = value
 
         data = after_date_of_birth(self.field_name, self.patient, self.parent)(data)
 
@@ -166,40 +167,6 @@ def remove_trailing_comma():
         return value
 
     return remove_trailing_comma_f
-
-
-def sqlalchemy_connection_string():
-    def sqlalchemy_connection_string_f(value):
-        try:
-            sqlalchemy.engine.url.make_url(value)
-        except sqlalchemy.exc.ArgumentError:
-            raise ValidationError('Not a valid SQLAlchemy connection string.')
-
-        return value
-
-    return sqlalchemy_connection_string_f
-
-
-def min_crack_time(min_seconds):
-    def min_crack_time_f(value):
-        seconds = zxcvbn.password_strength(value)['crack_time']
-
-        if seconds < min_seconds:
-            raise ValidationError('Crack time of %d seconds is less than minimum of %d seconds.' % (seconds, min_seconds))
-
-        return value
-
-    return min_crack_time_f
-
-
-def no_trailing_slash():
-    def no_trailing_slash_f(value):
-        if TRAILING_SLASH_REGEX.match(value):
-            raise ValidationError("Shouldn't have a trailing slash.")
-
-        return value
-
-    return no_trailing_slash_f
 
 
 def clean_int(value):
