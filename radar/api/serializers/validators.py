@@ -2,8 +2,6 @@ import re
 from datetime import datetime
 
 import pytz
-import sqlalchemy
-import zxcvbn
 from cornflake.fields import ValidationError
 from cornflake.validators import after, not_in_future
 from cornflake.utils import safe_strftime
@@ -29,7 +27,6 @@ USERNAME_MIN_LENGTH = 4
 USERNAME_MAX_LENGTH = 32
 
 TRAILING_COMMA_REGEX = re.compile('\s*,$')
-TRAILING_SLASH_REGEX = re.compile('.*/$')
 
 DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
 
