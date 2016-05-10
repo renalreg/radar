@@ -1,6 +1,0 @@
----
-api_dev_config_path: "/etc/radar-api-dev"
-api_dev_systemd_path: "/etc/systemd/system/radar-api-dev.service"
-api_dev_settings_path: "{{ api_dev_config_path }}/settings.py"
-api_dev_uwsgi_path: "{{ api_dev_config_path }}/uwsgi.ini"
-api_dev_secret_key_path: "{{ api_dev_config_path }}/secret_key"

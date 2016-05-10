@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "patient": {
+            "type": "object",
+            "properties": {
+                "patient_numbers": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "number": {
+                                "type": "string"
+                            },
+                            "number_type": {
+                                "type": "string"
+                            },
+                            "organization": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "organization": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "required": ["number", "number_type", "organization"]
+                    }
+                },
+                "aliases": {
+                    "type": "array"
+                }
+            },
+            "required": ["patient_numbers"]
+        },
+        "lab_orders": {
+            "type": "array"
+        },
+        "medications": {
+            "type": "array"
+        },
+        "program_memberships": {
+            "type": "array"
+        }
+    },
+    "required": ["patient"]
+}

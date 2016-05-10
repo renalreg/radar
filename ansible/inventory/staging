@@ -1,9 +1,0 @@
-[web]
-nww.staging.radar.nhs.uk
-
-[db]
-db.staging.radar.nhs.uk
-
-[staging]
-nww.staging.radar.nhs.uk
-db.staging.radar.nhs.uk

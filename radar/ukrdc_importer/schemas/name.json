@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "given_name": {
+            "type": "string"
+        },
+        "family_name": {
+            "type": "string"
+        }
+    },
+    "required": ["given_name", "family_name"]
+}

@@ -1,4 +1,0 @@
-{% if http_proxy %}
-Host *
-  ProxyCommand nc --proxy-type http --proxy {{ http_proxy }} %h %p
-{% endif %}
