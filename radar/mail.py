@@ -6,6 +6,7 @@ from jinja2 import Environment, PackageLoader
 
 from radar.config import config
 
+
 COMMA_SPACE = ', '
 
 env = Environment(

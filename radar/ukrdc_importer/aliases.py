@@ -1,10 +1,9 @@
 import logging
 
-from radar.models.patient_aliases import PatientAlias
 from radar.database import db
-
+from radar.models.patient_aliases import PatientAlias
+from radar.ukrdc_importer.serializers import NameSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     validate_list,
     unique_list,
     delete_list,
@@ -31,11 +30,11 @@ class SDAName(object):
 
 
 def parse_aliases(sda_names):
-    def log(index, sda_name, error):
-        logger.error('Ignoring invalid alias index={index}'.format(index=index))
+    def log(index, sda_name, e):
+        logger.error('Ignoring invalid alias index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
-    validator = load_validator('name.json')
-    sda_names = validate_list(sda_names, validator, invalid_f=log)
+    serializer = NameSerializer()
+    sda_names = validate_list(sda_names, serializer, invalid_f=log)
     sda_names = map(SDAName, sda_names)
 
     return sda_names

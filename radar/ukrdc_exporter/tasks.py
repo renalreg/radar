@@ -1,19 +1,20 @@
 import logging
 import requests
+import json
+from decimal import Decimal
 
 from celery import shared_task, chain
-from flask import current_app
 
-from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE
-from radar.models.logs import Log
+from radar.config import config
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.groups import Group, GROUP_TYPE
+from radar.models.logs import Log
+from radar.models.patients import Patient
+from radar.ukrdc_exporter.groups import export_program_memberships
 from radar.ukrdc_exporter.medications import export_medications
 from radar.ukrdc_exporter.patients import export_patient
 from radar.ukrdc_exporter.results import export_lab_orders
-from radar.ukrdc_exporter.groups import export_program_memberships
 from radar.ukrdc_exporter.utils import transform_values, to_iso
 
 
@@ -74,12 +75,11 @@ def _export_sda(patient, group):
         'sending_facility': facility
     }
 
-    export_patient(sda_container, patient)
-
+    export_patient(sda_container, patient, group)
     export_medications(sda_container, patient, group)
     export_lab_orders(sda_container, patient, group)
 
-    if group is None:
+    if is_radar_group(group):
         export_program_memberships(sda_container, patient)
 
     # Convert date/datetime objects to ISO strings
@@ -88,19 +88,27 @@ def _export_sda(patient, group):
     return sda_container
 
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return float(o)
+
+        return super(DecimalEncoder, self).default(o)
+
+
 # TODO this can be done in parallel
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
-    config = current_app.config['UKRDC_EXPORTER']
-
-    url = config['URL']
-    timeout = config.get('TIMEOUT', 10)
-    retry_countdown = config.get('RETRY_COUNTDOWN', 60)
+    url = config['UKRDC_IMPORT_URL']
+    timeout = config.get('UKRDC_IMPORT_TIMEOUT', 10)
+    retry_countdown = config.get('UKRDC_IMPORT_COUNTDOWN', 60)
 
     for sda_container in sda_containers:
+        data = json.dumps(sda_container, cls=DecimalEncoder)
+
         try:
             # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
-            r = requests.post(url, json=sda_container, timeout=timeout)
+            r = requests.post(url, data=data, timeout=timeout)
             r.raise_for_status()
         except requests.exceptions.RequestException as e:
             self.retry(exc=e, countdown=retry_countdown)

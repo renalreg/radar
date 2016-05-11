@@ -1,6 +1,5 @@
 from sqlalchemy import null
 
-
 from radar.models.results import Result, Observation
 
 

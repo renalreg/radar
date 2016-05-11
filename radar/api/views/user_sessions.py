@@ -1,7 +1,7 @@
-from radar.auth.sessions import current_user
-from radar.models.user_sessions import UserSession
 from radar.api.serializers.user_sessions import UserSessionSerializer
 from radar.api.views.generics import ListModelView
+from radar.auth.sessions import current_user
+from radar.models.user_sessions import UserSession
 
 
 class UserSessionListView(ListModelView):

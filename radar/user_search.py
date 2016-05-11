@@ -4,8 +4,8 @@ from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models.groups import GroupUser, Group
 from radar.models.users import User
-from radar.roles import get_roles_with_permission, PERMISSION
 from radar.permissions import has_permission
+from radar.roles import get_roles_with_permission, PERMISSION
 
 
 class UserQueryBuilder(object):

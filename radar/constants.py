@@ -1,2 +1,0 @@
-HUMAN_DATE_FORMAT = '%d/%m/%Y'
-SECONDS_IN_YEAR = 365 * 24 * 60 * 60

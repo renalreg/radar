@@ -1,15 +1,13 @@
 import logging
 from functools import partial
 
-from radar.models.results import Result, Observation
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.results import Result, Observation
+from radar.ukrdc_importer.serializers import LabOrderSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     validate_list,
     unique_list,
-    parse_datetime_path,
     delete_list,
     build_id,
     get_path,
@@ -60,18 +58,11 @@ class SDALabOrder(object):
 
 
 def parse_results(sda_lab_orders):
-    def log(index, sda_lab_order, error):
-        logger.error('Ignoring invalid lab order index={index}'.format(index=index))
+    def log(index, sda_lab_order, e):
+        logger.error('Ignoring invalid lab order index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
-    validator = load_validator('lab_order.json')
-    sda_lab_orders = validate_list(sda_lab_orders, validator, invalid_f=log)
-
-    for sda_lab_order in sda_lab_orders:
-        parse_datetime_path(sda_lab_order, 'from_time')
-
-        for sda_lab_result_item in sda_lab_order['result']['result_items']:
-            parse_datetime_path(sda_lab_order, 'observation_time')
-
+    serializer = LabOrderSerializer()
+    sda_lab_orders = validate_list(sda_lab_orders, serializer, invalid_f=log)
     sda_lab_orders = map(SDALabOrder, sda_lab_orders)
 
     return sda_lab_orders

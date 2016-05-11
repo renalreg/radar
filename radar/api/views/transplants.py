@@ -1,4 +1,3 @@
-from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant
 from radar.api.serializers.transplants import TransplantSerializer
 from radar.api.views.common import (
     StringLookupListView,
@@ -6,6 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
 )
+from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant
 
 
 class TransplantListView(SourceObjectViewMixin, PatientObjectListView):

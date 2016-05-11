@@ -5,8 +5,8 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import not_empty, sanitize_html
 
-from radar.models.posts import Post
 from radar.api.serializers.common import MetaMixin
+from radar.models.posts import Post
 
 
 class PostSerializer(MetaMixin, ModelSerializer):

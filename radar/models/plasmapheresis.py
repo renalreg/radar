@@ -1,4 +1,5 @@
 from collections import OrderedDict
+
 from sqlalchemy import Column, Integer, ForeignKey, String, Index
 from sqlalchemy import Date
 from sqlalchemy.orm import relationship
@@ -6,6 +7,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
+
 
 PLASMAPHERESIS_RESPONSES = OrderedDict([
     ('COMPLETE', 'Complete'),

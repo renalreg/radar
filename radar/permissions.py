@@ -1,5 +1,5 @@
-from radar.models.groups import GROUP_TYPE
 from radar.groups import is_radar_group
+from radar.models.groups import GROUP_TYPE
 from radar.roles import PERMISSION
 
 

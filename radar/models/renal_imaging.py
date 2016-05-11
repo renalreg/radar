@@ -1,10 +1,12 @@
 from collections import OrderedDict
+
 from sqlalchemy import Column, Integer, ForeignKey, String, Numeric, Boolean, DateTime, Index
 from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
+
 
 RENAL_IMAGING_TYPES = OrderedDict([
     ('USS', 'USS'),

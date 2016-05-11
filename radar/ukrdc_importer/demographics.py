@@ -1,16 +1,14 @@
 import logging
 
-from jsonschema import ValidationError
+from cornflake.exceptions import ValidationError
 
-from radar.models.patient_demographics import PatientDemographics
 from radar.database import db
-
+from radar.models.patient_demographics import PatientDemographics
+from radar.ukrdc_importer.serializers import PatientSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     delete_list,
     build_id,
     get_path,
-    parse_datetime_path,
     get_import_user,
     get_import_group
 )
@@ -105,16 +103,13 @@ class SDAPatient(object):
 
 
 def parse_demographics(sda_patient):
-    validator = load_validator('patient.json')
+    serializer = PatientSerializer()
 
     try:
-        validator.validate(sda_patient)
-    except ValidationError:
-        logger.error('Ignoring invalid patient')
+        sda_patient = serializer.run_validation(sda_patient)
+    except ValidationError as e:
+        logger.error('Ignoring invalid patient errors={errors}'.format(errors=e.flatten()))
         return None
-
-    for key in ['birth_time', 'death_time']:
-        parse_datetime_path(sda_patient, key)
 
     sda_patient = SDAPatient(sda_patient)
 

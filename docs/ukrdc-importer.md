@@ -32,10 +32,10 @@ The UKRDC importer imports patient records from the UKRDC into RaDaR.
 |----------------|----------------------------------|-------------------------------|
 | From date      | `Patient.Addresses.FromTime`     | `patient_addresses.from_date` |
 | To date        | `Patient.Addresses.ToTime`       | `patient_addresses.to_date`   |
-| Address Line 1 | `Patient.Addresses.Street`       | `patient_addresses.address_1` |
-| Address Line 2 | `Patient.Addresses.City.Code`    | `patient_addresses.address_2` |
-| Address Line 3 | `Patient.Addresses.State.Code`   | `patient_addresses.address_3` |
-| Address Line 4 | `Patient.Addresses.Country.Code` | `patient_addresses.address_4` |
+| Address line 1 | `Patient.Addresses.Street`       | `patient_addresses.address_1` |
+| Address line 2 | `Patient.Addresses.City.Code`    | `patient_addresses.address_2` |
+| Address line 3 | `Patient.Addresses.State.Code`   | `patient_addresses.address_3` |
+| Address line 4 | `Patient.Addresses.Country.Code` | `patient_addresses.address_4` |
 | Postcode       | `Patient.Addresses.Zip.Code`     | `patient_addresses.postcode`  |
 
 ### Patient Numbers

@@ -1,13 +1,12 @@
-from flask import request, abort, Blueprint, Flask
-from jsonschema import ValidationError
+from flask import request, abort, Blueprint
 
-from radar.database import db
-
-from radar.ukrdc_importer.utils import utc, load_validator
+from radar.app import Radar
+from radar.ukrdc_importer.serializers import ContainerSerializer
+from radar.ukrdc_importer.utils import utc
 from radar.ukrdc_importer.tasks import import_sda
 
 
-api = Blueprint('importer', __name__)
+api = Blueprint('ukrdc_importer', __name__)
 
 
 @api.route('/import', methods=['POST'])
@@ -17,13 +16,12 @@ def import_():
     if sda_container is None:
         abort(400)
 
-    try:
-        load_validator('schema.json').validate(sda_container)
-    except ValidationError:
+    serializer = ContainerSerializer(data=sda_container)
+
+    if not serializer.is_valid():
         abort(400)
 
     sequence_number = utc()
-
     task = import_sda.delay(sda_container, sequence_number)
     task_id = task.id
 
@@ -38,16 +36,8 @@ def status(task_id):
 
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_envvar('RADAR_SETTINGS')
-
-    # noinspection PyUnresolvedReferences
-    from radar import models  # noqa
-
-    db.init_app(app)
-
+    app = Radar()
     app.register_blueprint(api)
-
     return app
 
 

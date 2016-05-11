@@ -1,14 +1,12 @@
 import logging
 
-from radar.models.medications import Medication
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.medications import Medication
+from radar.ukrdc_importer.serializers import MedicationSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     validate_list,
     unique_list,
-    parse_datetime_path,
     delete_list,
     build_id,
     get_path,
@@ -63,16 +61,11 @@ class SDAMedication(object):
 
 
 def parse_medications(sda_medications):
-    def log(index, sda_medication, error):
-        logger.error('Ignoring invalid medication index={index}'.format(index=index))
+    def log(index, sda_medication, e):
+        logger.error('Ignoring invalid medication index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
-    validator = load_validator('medication.json')
-    sda_medications = validate_list(sda_medications, validator, invalid_f=log)
-
-    for sda_medication in sda_medications:
-        parse_datetime_path(sda_medication, 'from_time')
-        parse_datetime_path(sda_medication, 'to_time')
-
+    serializer = MedicationSerializer()
+    sda_medications = validate_list(sda_medications, serializer, invalid_f=log)
     sda_medications = map(SDAMedication, sda_medications)
 
     return sda_medications

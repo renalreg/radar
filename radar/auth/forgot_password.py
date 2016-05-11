@@ -5,10 +5,10 @@ from datetime import datetime
 from radar.auth.exceptions import UserNotFound, InvalidToken
 from radar.auth.passwords import generate_password_hash, check_password_hash
 from radar.auth.sessions import logout_user
-from radar.database import db
-from radar.models.users import User
-from radar.mail import send_email_from_template
 from radar.config import config
+from radar.database import db
+from radar.mail import send_email_from_template
+from radar.models.users import User
 
 
 def get_password_reset_max_age():
