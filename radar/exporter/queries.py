@@ -2,26 +2,25 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import or_, and_
 
 from radar.database import db
-from radar.models.patients import Patient
-from radar.models.medications import Medication
-from radar.models.genetics import Genetics
-from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
-from radar.models.patient_demographics import PatientDemographics
-from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_addresses import PatientAddress
-from radar.models.patient_numbers import PatientNumber
-from radar.models.diagnoses import PatientDiagnosis
-from radar.models.pathology import Pathology
-from radar.models.groups import Group, GroupPatient, GroupUser
-from radar.models.ins import InsClinicalPicture, InsRelapse
 from radar.models.dialysis import Dialysis
-from radar.models.plasmapheresis import Plasmapheresis
-from radar.models.transplants import Transplant, TransplantRejection, TransplantBiopsy
+from radar.models.diagnoses import PatientDiagnosis
+from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
+from radar.models.genetics import Genetics
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
-from radar.roles import PERMISSION, get_roles_with_permission
-from radar.models.groups import GROUP_TYPE
-from radar.models.renal_progressions import RenalProgression
+from radar.models.ins import InsClinicalPicture, InsRelapse
+from radar.models.medications import Medication
 from radar.models.mpgn import MpgnClinicalPicture
+from radar.models.pathology import Pathology
+from radar.models.patient_addresses import PatientAddress
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient
+from radar.models.plasmapheresis import Plasmapheresis
+from radar.models.renal_progressions import RenalProgression
+from radar.models.transplants import Transplant, TransplantRejection, TransplantBiopsy
+from radar.roles import PERMISSION, get_roles_with_permission
 
 
 def filter_by_patient_permissions(query, user, patient_id, demographics=False):

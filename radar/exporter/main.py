@@ -4,11 +4,10 @@ import os
 import tablib
 
 from radar.app import create_app
+from radar.exporter import exporters
+from radar.exporter.config import Config
 from radar.models.users import User
 from radar.models.groups import Group
-
-from radar_exporter.config import Config
-from radar_exporter import exporters
 
 
 def get_user(value):

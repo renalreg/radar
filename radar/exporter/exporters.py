@@ -1,9 +1,8 @@
 import tablib
 
-from radar.roles import PERMISSION
+from radar.exporter import queries
 from radar.permissions import has_permission_for_patient
-
-from radar_exporter import queries
+from radar.roles import PERMISSION
 
 
 class ExporterRegistry(object):
