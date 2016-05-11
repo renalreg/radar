@@ -3,11 +3,12 @@ from itsdangerous import BadSignature, TimestampSigner
 from sqlalchemy import func
 from werkzeug.local import LocalProxy
 
+from radar.config import config
 from radar.database import db
+from radar.models.logs import Log
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
-from radar.config import config
-from radar.models.logs import Log
+
 
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())

@@ -1,4 +1,5 @@
 from flask import request, current_app, abort
+
 from radar.auth.sessions import current_user
 
 

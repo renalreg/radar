@@ -6,6 +6,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
 
+
 DEAFNESS_NO = 1
 DEAFNESS_MINOR = 2
 DEAFNESS_HEARING_AID = 3

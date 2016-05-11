@@ -8,10 +8,10 @@ from radar.database import db
 from radar.models.patient_locks import PatientLock
 from radar.models.patients import Patient
 from radar.models.logs import Log
-from radar.ukrdc_importer.aliases import import_aliases
-from radar.ukrdc_importer.medications import import_medications
 from radar.ukrdc_importer.addresses import import_addresses
+from radar.ukrdc_importer.aliases import import_aliases
 from radar.ukrdc_importer.demographics import import_demographics
+from radar.ukrdc_importer.medications import import_medications
 from radar.ukrdc_importer.patient_numbers import import_patient_numbers
 from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer

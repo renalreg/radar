@@ -6,7 +6,6 @@ from cornflake.fields import ValidationError
 from cornflake.validators import after, not_in_future
 from cornflake.utils import safe_strftime
 
-from radar.constants import HUMAN_DATE_FORMAT
 from radar.models.groups import (
     GROUP_TYPE,
     GROUP_CODE_NHS,
@@ -19,6 +18,9 @@ from radar.models.groups import (
 )
 from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime
+
+
+HUMAN_DATE_FORMAT = '%d/%m/%Y'
 
 EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
 

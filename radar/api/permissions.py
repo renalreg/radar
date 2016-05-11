@@ -1,6 +1,5 @@
-from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.roles import PERMISSION
 from radar.groups import is_radar_group
+from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.permissions import (
     has_permission_for_patient,
     has_permission_for_group,
@@ -8,6 +7,7 @@ from radar.permissions import (
     has_permission_for_group_role,
     has_permission
 )
+from radar.roles import PERMISSION
 
 
 def is_safe_method(request):

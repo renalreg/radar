@@ -4,18 +4,17 @@ import json
 from decimal import Decimal
 
 from celery import shared_task, chain
-from flask import current_app
 
-from radar.models.patients import Patient
-from radar.models.groups import Group, GROUP_TYPE
-from radar.models.logs import Log
+from radar.config import config
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.groups import Group, GROUP_TYPE
+from radar.models.logs import Log
+from radar.models.patients import Patient
+from radar.ukrdc_exporter.groups import export_program_memberships
 from radar.ukrdc_exporter.medications import export_medications
 from radar.ukrdc_exporter.patients import export_patient
 from radar.ukrdc_exporter.results import export_lab_orders
-from radar.ukrdc_exporter.groups import export_program_memberships
 from radar.ukrdc_exporter.utils import transform_values, to_iso
 
 
@@ -100,8 +99,6 @@ class DecimalEncoder(json.JSONEncoder):
 # TODO this can be done in parallel
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
-    config = current_app.config
-
     url = config['UKRDC_IMPORT_URL']
     timeout = config.get('UKRDC_IMPORT_TIMEOUT', 10)
     retry_countdown = config.get('UKRDC_IMPORT_COUNTDOWN', 60)

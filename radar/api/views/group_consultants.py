@@ -1,5 +1,5 @@
-from radar.api.serializers.consultants import GroupConsultantSerializer
 from radar.api.permissions import AdminPermission
+from radar.api.serializers.consultants import GroupConsultantSerializer
 from radar.api.views.generics import (
     RetrieveUpdateDestroyModelView,
     ListCreateModelView

@@ -57,8 +57,5 @@ def check_config(config):
 
     config.setdefault('UKRDC_SEARCH_ENABLED', False)
 
-    if config['UKRDC_SEARCH_ENABLED']:
-        config.setdefault('UKRDC_SEARCH_TIMEOUT', 10)
-
-        if config.get('UKRDC_SEARCH_URL') is None:
-            raise ConfigError('Missing UKRDC_SEARCH_URL')
+    if config['UKRDC_SEARCH_ENABLED'] and config.get('UKRDC_SEARCH_URL') is None:
+        raise ConfigError('Missing UKRDC_SEARCH_URL')

@@ -8,11 +8,11 @@ from sqlalchemy.ext.hybrid import hybrid_property
 import pytz
 
 from radar.database import db
-from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
-from radar.pages import PAGE
 from radar.models.types import EnumType, EnumToStringType
 from radar.models.logs import log_changes
+from radar.pages import PAGE
+from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
 
 
 class GROUP_TYPE(Enum):

@@ -1,12 +1,13 @@
 from sqlalchemy import or_, case, desc, extract, null, func, and_
-
 from sqlalchemy.orm import aliased, subqueryload
-from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_numbers import PatientNumber
-from radar.roles import get_roles_with_permission, PERMISSION
+
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser
-from radar.models.patients import Patient, PatientDemographics
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient
+from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_year_filter, sql_date_filter
 
 
@@ -97,7 +98,6 @@ class PatientQueryBuilder(object):
 
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
-
         return self
 
     def build(self, permissions=True, current=None):

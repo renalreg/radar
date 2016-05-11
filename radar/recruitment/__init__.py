@@ -6,15 +6,15 @@ from datetime import datetime
 
 import requests
 import pytz
-from flask import current_app
 
-from radar.models.patients import Patient, GENDERS
-from radar.models.patient_numbers import PatientNumber
-from radar.models.groups import GroupPatient
-from radar.models.patient_demographics import PatientDemographics
 from radar.auth.sessions import current_user
+from radar.config import config
 from radar.database import db
 from radar.groups import get_radar_group
+from radar.models.groups import GroupPatient
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient, GENDERS
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.ukrdc_importer.tasks import import_sda
 
@@ -44,7 +44,7 @@ class SearchPatient(object):
         self.number = number
 
     def search_ukrdc(self):
-        enabled = current_app.config.get('UKRDC_SEARCH_ENABLED', False)
+        enabled = config['UKRDC_SEARCH_ENABLED']
 
         if not enabled:
             logger.info('UKRDC search is disabled')
@@ -52,10 +52,10 @@ class SearchPatient(object):
 
         logger.info('Searching UKRDC number={}'.format(self.number))
 
-        url = current_app.config['UKRDC_SEARCH_URL']
-        timeout = current_app.config.get('UKRDC_SEARCH_TIMEOUT', 60)
-        username = current_app.config.get('UKRDC_SEARCH_USERNAME', 'RADAR')
-        password = current_app.config.get('UKRDC_SEARCH_PASSWORD', 'password')
+        url = config['UKRDC_SEARCH_URL']
+        timeout = config.get('UKRDC_SEARCH_TIMEOUT', 60)
+        username = config.get('UKRDC_SEARCH_USERNAME', 'RADAR')
+        password = config.get('UKRDC_SEARCH_PASSWORD', 'password')
 
         data = {
             'patient': {

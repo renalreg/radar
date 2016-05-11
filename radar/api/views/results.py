@@ -1,7 +1,6 @@
 from sqlalchemy import func
 from cornflake import serializers, fields
 
-
 from radar.api.serializers.common import PatientField
 from radar.api.serializers.results import (
     ResultSerializer,
@@ -21,7 +20,6 @@ from radar.api.views.generics import (
     ListView,
     parse_args
 )
-
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.exceptions import PermissionDenied

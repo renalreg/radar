@@ -1,17 +1,19 @@
 from collections import OrderedDict
 from datetime import datetime
-from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence
 
+from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
+
 from radar.database import db
+from radar.groups import is_radar_group
 from radar.models.common import MetaModelMixin
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.logs import log_changes
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
-from radar.groups import is_radar_group
-from radar.models.logs import log_changes
 from radar.utils import seconds_to_age, uniq
+
 
 GENDER_NOT_KNOWN = 0
 GENDER_MALE = 1

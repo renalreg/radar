@@ -5,6 +5,7 @@ from celery import Celery
 
 from radar.config import check_config
 from radar.database import db
+from radar.template_filters import register_template_filters
 
 
 class Radar(Flask):
@@ -25,9 +26,9 @@ class Radar(Flask):
 
         self.celery = self.setup_celery()
 
-    def setup_config(self):
-        self.config.from_object('radar.default_settings')
+        register_template_filters(self)
 
+    def setup_config(self):
         if 'RADAR_SETTINGS' in os.environ:
             self.config.from_envvar('RADAR_SETTINGS')
 

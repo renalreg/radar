@@ -18,8 +18,8 @@ from radar.api.views.generics import (
     parse_args
 )
 from radar.auth.sessions import current_user
-from radar.user_search import UserQueryBuilder
 from radar.models.users import User
+from radar.user_search import UserQueryBuilder
 
 
 class UserListRequestSerializer(serializers.Serializer):

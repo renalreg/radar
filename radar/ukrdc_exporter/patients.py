@@ -1,15 +1,15 @@
 import logging
 
-from radar.models.patients import GENDERS, ETHNICITIES
-from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_addresses import PatientAddress
-from radar.models.patient_numbers import PatientNumber
 from radar.models.groups import (
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
     GROUP_CODE_HANDC,
     GROUP_TYPE
 )
+from radar.models.patient_addresses import PatientAddress
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import GENDERS, ETHNICITIES
 
 
 logger = logging.getLogger(__name__)

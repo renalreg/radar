@@ -9,6 +9,7 @@ from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_colum
 from radar.models.types import EnumType
 from radar.models.logs import log_changes
 
+
 BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
     (2, 'FSGS'),

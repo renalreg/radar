@@ -1,7 +1,7 @@
-from flask import current_app
 from cornflake import fields, serializers
 
 from radar.api.views.generics import ApiView, response_json
+from radar.config import config
 
 
 class EnvironmentSerializer(serializers.Serializer):
@@ -13,8 +13,8 @@ class EnvironmentView(ApiView):
     @response_json(EnvironmentSerializer)
     def get(self):
         return {
-            'live': current_app.config.get('LIVE', False),
-            'session_timeout': current_app.config['SESSION_TIMEOUT']
+            'live': config.get('LIVE', False),
+            'session_timeout': config['SESSION_TIMEOUT']
         }
 
 

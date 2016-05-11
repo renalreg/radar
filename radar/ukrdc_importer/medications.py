@@ -1,9 +1,8 @@
 import logging
 
-from radar.models.medications import Medication
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.medications import Medication
 from radar.ukrdc_importer.serializers import MedicationSerializer
 from radar.ukrdc_importer.utils import (
     validate_list,

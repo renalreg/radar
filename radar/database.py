@@ -1,9 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy as SQLAlchemyBase
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as SessionBase
-from sqlalchemy import exc
-from sqlalchemy import event
-from sqlalchemy import select
+from sqlalchemy import exc, event, select
+
 
 # Session and SQLAlchemy classes that allow transactions to be rolled back in pytest
 # TODO report flask_sqlalchemy bug
@@ -29,6 +28,7 @@ class Session(SessionBase):
 
 class SQLAlchemy(SQLAlchemyBase):
     def create_session(self, options):
+        # Use our custom session
         return sessionmaker(class_=Session, db=self, **options)
 
     # Overridden so we can listen for events on the engine
@@ -45,26 +45,15 @@ db = SQLAlchemy()
 # http://docs.sqlalchemy.org/en/latest/core/pooling.html#disconnect-handling-pessimistic
 def ping_connection(connection, branch):
     if branch:
-        # "branch" refers to a sub-connection of a connection,
-        # we don't want to bother pinging on these.
+        # Don't ping sub-connections
         return
 
     try:
-        # run a SELECT 1.   use a core select() so that
-        # the SELECT of a scalar value without a table is
-        # appropriately formatted for the backend
+        # Test the connection
         connection.scalar(select([1]))
-    except exc.DBAPIError as err:
-        # catch SQLAlchemy's DBAPIError, which is a wrapper
-        # for the DBAPI's exception.  It includes a .connection_invalidated
-        # attribute which specifies if this connection is a "disconnect"
-        # condition, which is based on inspection of the original exception
-        # by the dialect in use.
-        if err.connection_invalidated:
-            # run the same SELECT again - the connection will re-validate
-            # itself and establish a new connection.  The disconnect detection
-            # here also causes the whole connection pool to be invalidated
-            # so that all stale connections are discarded.
+    except exc.DBAPIError as e:
+        if e.connection_invalidated:
+            # Establish a new connection
             connection.scalar(select([1]))
         else:
             raise
