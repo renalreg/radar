@@ -2,6 +2,13 @@
 
 [![Build Status](https://img.shields.io/travis/renalreg/radar/master.svg)](https://travis-ci.org/renalreg/radar) [![Code Climate](https://img.shields.io/codeclimate/github/renalreg/radar.svg)](https://codeclimate.com/github/renalreg/radar) [![Coveralls](https://img.shields.io/coveralls/renalreg/radar.svg)](https://coveralls.io/github/renalreg/radar)
 
+## Develop
+
+```
+virtualenv venv
+pip install -e .
+```
+
 ## Test
 
 With tox:
@@ -36,6 +43,8 @@ This will create a `.tar.gz` file in the `dist` folder.
 
 
 ## Remote Build
+
+A remote build is useful when you are developing on a different operating system to the one you want to deploy to.
 
 Install dependencies on remote machine:
 
