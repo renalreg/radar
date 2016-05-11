@@ -1,13 +1,11 @@
 import argparse
 import logging
 import os
-
-from radar.database import db
-
-from radar_ukrdc_exporter.tasks import export_to_ukrdc
 import fcntl
 
-from radar_ukrdc_exporter.app import create_celery, create_app
+from radar.database import db
+from radar.ukrdc_exporter.app import RadarUKRDCExporter
+from radar.ukrdc_exporter.tasks import export_to_ukrdc
 
 
 logger = logging.getLogger()
@@ -67,8 +65,7 @@ if __name__ == '__main__':
     parser.add_argument('--all', action='store_true')
     args = parser.parse_args()
 
-    app = create_app()
-    celery = create_celery(app)
+    app = RadarUKRDCExporter()
 
     if args.state_file:
         if not os.path.exists(args.state_file):

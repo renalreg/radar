@@ -76,12 +76,11 @@ def _export_sda(patient, group):
         'sending_facility': facility
     }
 
-    export_patient(sda_container, patient)
-
+    export_patient(sda_container, patient, group)
     export_medications(sda_container, patient, group)
     export_lab_orders(sda_container, patient, group)
 
-    if group is None:
+    if is_radar_group(group):
         export_program_memberships(sda_container, patient)
 
     # Convert date/datetime objects to ISO strings

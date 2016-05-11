@@ -12,12 +12,6 @@ from radar.models.groups import (
 )
 
 
-NATIONAL_IDENTIFIERS = [
-    GROUP_CODE_NHS,
-    GROUP_CODE_CHI,
-    GROUP_CODE_HANDC
-]
-
 logger = logging.getLogger(__name__)
 
 
@@ -160,7 +154,7 @@ def export_addresses(sda_patient, patient):
         sda_addresses.append(sda_address)
 
 
-def export_patient_numbers(sda_patient, patient):
+def export_patient_numbers(sda_patient, patient, group):
     q = PatientNumber.query
     q = q.filter(PatientNumber.patient == patient)
     q = q.filter(PatientNumber.source_type == 'RADAR')
@@ -179,11 +173,21 @@ def export_patient_numbers(sda_patient, patient):
 
     sda_patient_numbers.append(sda_patient_number)
 
+    national_identifiers = {
+        (GROUP_TYPE.OTHER, GROUP_CODE_NHS),
+        (GROUP_TYPE.OTHER, GROUP_CODE_CHI),
+        (GROUP_TYPE.OTHER, GROUP_CODE_HANDC),
+    }
+
     for patient_number in patient_numbers:
-        if patient_number.number_group.type == GROUP_TYPE.OTHER and patient_number.number_group.code in NATIONAL_IDENTIFIERS:
+        key = (patient_number.number_group.type, patient_number.number_group.code)
+
+        if key in national_identifiers:
             number_type = 'NI'
-        else:
+        elif key == group:
             number_type = 'MRN'
+        else:
+            continue
 
         sda_patient_number = {
             'number': patient_number.number,
@@ -197,7 +201,7 @@ def export_patient_numbers(sda_patient, patient):
         sda_patient_numbers.append(sda_patient_number)
 
 
-def export_patient(sda_container, patient):
+def export_patient(sda_container, patient, group):
     sda_patient = sda_container.setdefault('patient', dict())
     export_name(sda_patient, patient)
     export_date_birth(sda_patient, patient)
@@ -207,4 +211,4 @@ def export_patient(sda_container, patient):
     export_contact_info(sda_patient, patient)
     export_aliases(sda_patient, patient)
     export_addresses(sda_patient, patient)
-    export_patient_numbers(sda_patient, patient)
+    export_patient_numbers(sda_patient, patient, group)
