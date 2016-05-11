@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-__version__ = '2.2.12'
+__version__ = '2.3.0'
 
 # Hard linking doesn't work inside VirtualBox shared folders
 # See: https://bitbucket.org/hpk42/tox/issues/86
