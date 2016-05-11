@@ -1,8 +1,7 @@
 import logging
 
-from radar.models.patient_aliases import PatientAlias
 from radar.database import db
-
+from radar.models.patient_aliases import PatientAlias
 from radar.ukrdc_importer.serializers import NameSerializer
 from radar.ukrdc_importer.utils import (
     validate_list,

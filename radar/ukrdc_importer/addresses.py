@@ -1,8 +1,7 @@
 import logging
 
-from radar.models.patient_addresses import PatientAddress
 from radar.database import db
-
+from radar.models.patient_addresses import PatientAddress
 from radar.ukrdc_importer.serializers import AddressSerializer
 from radar.ukrdc_importer.utils import (
     validate_list,

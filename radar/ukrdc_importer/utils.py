@@ -5,8 +5,8 @@ from datetime import datetime
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
-from radar.models.users import User
 from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_UKRDC
+from radar.models.users import User
 
 
 NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')

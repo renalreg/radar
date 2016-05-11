@@ -4,11 +4,10 @@ import sqlalchemy
 from celery import shared_task
 from cornflake.exceptions import ValidationError
 
-from radar.models.patients import Patient
-from radar.models.patient_locks import PatientLock
-from radar.models.logs import Log
 from radar.database import db
-
+from radar.models.patient_locks import PatientLock
+from radar.models.patients import Patient
+from radar.models.logs import Log
 from radar.ukrdc_importer.aliases import import_aliases
 from radar.ukrdc_importer.medications import import_medications
 from radar.ukrdc_importer.addresses import import_addresses

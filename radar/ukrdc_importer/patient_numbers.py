@@ -1,9 +1,8 @@
 import logging
 
-from radar.models.patient_numbers import PatientNumber
 from radar.database import db
 from radar.groups import is_radar_group
-
+from radar.models.patient_numbers import PatientNumber
 from radar.ukrdc_importer.serializers import PatientNumberSerializer
 from radar.ukrdc_importer.utils import (
     validate_list,
