@@ -52,7 +52,7 @@ pip install git+https://github.com/mitsuhiko/platter
 Build:
 
 ```
-fab -H $HOSTNAME -u $USER deploy
+fab -H $HOSTNAME -u $USER build
 ```
 
 ## Deploy
