@@ -1,13 +1,12 @@
-from flask import request, abort, Blueprint, Flask
+from flask import request, abort, Blueprint
 from jsonschema import ValidationError
 
-from radar.database import db
-
+from radar.app import Radar
 from radar.ukrdc_importer.utils import utc, load_validator
 from radar.ukrdc_importer.tasks import import_sda
 
 
-api = Blueprint('importer', __name__)
+api = Blueprint('ukrdc_importer', __name__)
 
 
 @api.route('/import', methods=['POST'])
@@ -38,16 +37,8 @@ def status(task_id):
 
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_envvar('RADAR_SETTINGS')
-
-    # noinspection PyUnresolvedReferences
-    from radar import models  # noqa
-
-    db.init_app(app)
-
+    app = Radar()
     app.register_blueprint(api)
-
     return app
 
 

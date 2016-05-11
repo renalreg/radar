@@ -2,7 +2,7 @@ import logging
 
 import sqlalchemy
 from celery import shared_task
-from jsonschema import validate, ValidationError
+from cornflake.exceptions import ValidationError
 
 from radar.models.patients import Patient
 from radar.models.patient_locks import PatientLock
@@ -15,7 +15,8 @@ from radar.ukrdc_importer.addresses import import_addresses
 from radar.ukrdc_importer.demographics import import_demographics
 from radar.ukrdc_importer.patient_numbers import import_patient_numbers
 from radar.ukrdc_importer.results import import_results
-from radar.ukrdc_importer.utils import load_schema, transform_values, get_import_user
+from radar.ukrdc_importer.serializers import ContainerSerializer
+from radar.ukrdc_importer.utils import get_import_user
 
 
 logger = logging.getLogger(__name__)
@@ -80,7 +81,8 @@ def log_data_import(patient):
 
 
 @shared_task(ignore_result=True, queue=QUEUE)
-def import_sda(sda_container, sequence_number, patient_id=None):
+def import_sda(data, sequence_number, patient_id=None):
+    # Note about data types:
     # The code that produces SDA JSON files in the UKRDC determines types based on the
     # content of the value.
     # A value that is all digits will be sent as a JSON number.
@@ -88,17 +90,14 @@ def import_sda(sda_container, sequence_number, patient_id=None):
     # Potentially any value in the SDA JSON can be sent as a JSON number.
     # There seem to be only two data types in SDA: numbers (%Library.Numeric) and strings (%Library.String).
     # Almost all values are strings (%Library.String).
-    # Here we convert all values to strings and then cast later (int, float, Decimal).
-    # The few fields that are expected to be numbers are validated by the schema.
-    sda_container = transform_values(sda_container, str)
 
-    schema = load_schema('schema.json')
+    serializer = ContainerSerializer()
 
     # Check the file matches enough of the schema to be imported
     try:
-        validate(sda_container, schema)
-    except ValidationError:
-        logger.exception('Container is invalid')
+        sda_container = serializer.run_validation(data)
+    except ValidationError as e:
+        logger.error('Container is invalid errors={errors}'.format(errors=e.flatten()))
         return False
 
     sda_patient = sda_container['patient']
@@ -144,7 +143,7 @@ def import_sda(sda_container, sequence_number, patient_id=None):
     sda_medications = sda_container.get('medications', list())
     sda_lab_orders = sda_container.get('lab_orders', list())
 
-    import_demographics(patient, sda_patient)
+    import_demographics(patient, data['patient'])
     import_patient_numbers(patient, sda_patient_numbers)
     import_aliases(patient, sda_names)
     import_addresses(patient, sda_addresses)

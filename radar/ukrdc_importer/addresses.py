@@ -3,16 +3,15 @@ import logging
 from radar.models.patient_addresses import PatientAddress
 from radar.database import db
 
+from radar.ukrdc_importer.serializers import AddressSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     validate_list,
     unique_list,
     delete_list,
     build_id,
     get_path,
     get_import_group,
-    get_import_user,
-    parse_datetime_path
+    get_import_user
 )
 
 
@@ -71,16 +70,11 @@ class SDAAddress(object):
 
 
 def parse_addresses(sda_addresses):
-    def log(index, sda_address, error):
-        logger.error('Ignoring invalid address index={index}'.format(index=index))
+    def log(index, sda_address, e):
+        logger.error('Ignoring invalid address index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
-    validator = load_validator('address.json')
-    sda_addresses = validate_list(sda_addresses, validator, invalid_f=log)
-
-    for sda_address in sda_addresses:
-        parse_datetime_path(sda_address, 'from_time')
-        parse_datetime_path(sda_address, 'to_time')
-
+    serializer = AddressSerializer()
+    sda_addresses = validate_list(sda_addresses, serializer, invalid_f=log)
     sda_addresses = map(SDAAddress, sda_addresses)
 
     return sda_addresses

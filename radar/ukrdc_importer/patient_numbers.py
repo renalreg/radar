@@ -4,8 +4,8 @@ from radar.models.patient_numbers import PatientNumber
 from radar.database import db
 from radar.groups import is_radar_group
 
+from radar.ukrdc_importer.serializers import PatientNumberSerializer
 from radar.ukrdc_importer.utils import (
-    load_validator,
     validate_list,
     unique_list,
     delete_list,
@@ -37,11 +37,11 @@ class SDAPatientNumber(object):
 
 
 def parse_patient_numbers(sda_patient_numbers):
-    def log(index, sda_medication, error):
-        logger.error('Ignoring invalid patient number index={index}'.format(index=index))
+    def log(index, sda_medication, e):
+        logger.error('Ignoring invalid patient number index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
-    validator = load_validator('patient_number.json')
-    sda_patient_numbers = validate_list(sda_patient_numbers, validator, invalid_f=log)
+    serializer = PatientNumberSerializer()
+    sda_patient_numbers = validate_list(sda_patient_numbers, serializer, invalid_f=log)
     sda_patient_numbers = map(SDAPatientNumber, sda_patient_numbers)
 
     return sda_patient_numbers
