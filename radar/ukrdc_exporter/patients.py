@@ -182,16 +182,12 @@ def export_patient_numbers(sda_patient, patient, group):
     for patient_number in patient_numbers:
         key = (patient_number.number_group.type, patient_number.number_group.code)
 
-        if key in national_identifiers:
-            number_type = 'NI'
-        elif key == group:
-            number_type = 'MRN'
-        else:
+        if key not in national_identifiers:
             continue
 
         sda_patient_number = {
             'number': patient_number.number,
-            'number_type': number_type,
+            'number_type': 'NI',
             'organization': {
                 'code': patient_number.number_group.code,
                 'description': patient_number.number_group.name
