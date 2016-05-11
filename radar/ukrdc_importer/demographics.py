@@ -1,6 +1,6 @@
 import logging
 
-from jsonschema import ValidationError
+from cornflake import ValidationError
 
 from radar.models.patient_demographics import PatientDemographics
 from radar.database import db

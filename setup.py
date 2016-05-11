@@ -22,13 +22,11 @@ setup(
         'celery',
         'click',
         'cornflake',
-        'delorean',  # TODO remove
         'enum34',
         'flask',
         'flask-sqlalchemy',
         'itsdangerous',
         'jinja2',
-        'jsonschema',  # TODO remove
         'librabbitmq',
         'psycopg2',
         'python-dateutil',

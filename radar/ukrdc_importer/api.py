@@ -1,8 +1,8 @@
 from flask import request, abort, Blueprint
-from jsonschema import ValidationError
 
 from radar.app import Radar
-from radar.ukrdc_importer.utils import utc, load_validator
+from radar.ukrdc_importer.serializers import ContainerSerializer
+from radar.ukrdc_importer.utils import utc
 from radar.ukrdc_importer.tasks import import_sda
 
 
@@ -16,13 +16,12 @@ def import_():
     if sda_container is None:
         abort(400)
 
-    try:
-        load_validator('schema.json').validate(sda_container)
-    except ValidationError:
+    serializer = ContainerSerializer(data=sda_container)
+
+    if not serializer.is_valid():
         abort(400)
 
     sequence_number = utc()
-
     task = import_sda.delay(sda_container, sequence_number)
     task_id = task.id
 
