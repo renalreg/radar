@@ -6,6 +6,7 @@
 
 ```
 virtualenv venv
+source venv/bin/activate
 pip install -r dev-requirements.txt
 pip install -e .
 ```
