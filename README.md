@@ -22,7 +22,7 @@ tox
 Or using `py.test` directly:
 
 ```
-py.test radar
+py.test tests
 ```
 
 ## Local Build
