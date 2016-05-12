@@ -2,8 +2,8 @@ import pytest
 
 from radar.api.app import RadarAPI
 from radar.database import db
-from radar.tests.api.client import TestClient
-from radar.tests.api.fixtures import create_fixtures
+from tests.api.client import TestClient
+from tests.api.fixtures import create_fixtures
 
 
 @pytest.yield_fixture(scope='session')

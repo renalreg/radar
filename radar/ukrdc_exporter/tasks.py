@@ -7,7 +7,6 @@ from celery import shared_task, chain
 
 from radar.config import config
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.models.patients import Patient
@@ -53,7 +52,7 @@ def export_sda(patient_id):
     sda_containers = []
 
     for group in groups:
-        if not is_radar_group(group) and group.type != GROUP_TYPE.HOSPITAL:
+        if not group.is_radar() and group.type != GROUP_TYPE.HOSPITAL:
             continue
 
         sda_container = _export_sda(patient, group)
@@ -66,7 +65,7 @@ def export_sda(patient_id):
 
 
 def _export_sda(patient, group):
-    if is_radar_group(group):
+    if group.is_radar():
         facility = 'RADAR'
     else:
         facility = 'RADAR.{type}.{code}'.format(type=group.type, code=group.code)
@@ -79,7 +78,7 @@ def _export_sda(patient, group):
     export_medications(sda_container, patient, group)
     export_lab_orders(sda_container, patient, group)
 
-    if is_radar_group(group):
+    if group.is_radar():
         export_program_memberships(sda_container, patient)
 
     # Convert date/datetime objects to ISO strings

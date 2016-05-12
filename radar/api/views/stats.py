@@ -3,8 +3,7 @@ from cornflake import fields, serializers
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
 from radar.api.views.generics import response_json, ApiView, parse_args
-from radar.groups import get_radar_group
-from radar.models.groups import GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE
 from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group
 
 
@@ -29,7 +28,7 @@ class RecruitmentByMonthView(ApiView):
         if args['group'] is not None:
             group = args['group']
         else:
-            group = get_radar_group()
+            group = Group.get_radar()
 
         points = recruitment_by_month(group)
 
@@ -55,7 +54,7 @@ class PatientsByRecruitedGroupView(ApiView):
         if args['group'] is not None:
             group = args['group']
         else:
-            group = get_radar_group()
+            group = Group.get_radar()
 
         counts = patients_by_recruited_group(group)
         counts = [{'group': x, 'count': y} for x, y in counts]

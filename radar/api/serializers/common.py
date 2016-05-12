@@ -7,7 +7,6 @@ from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import in_
 
 from radar.exceptions import PermissionDenied
-from radar.groups import is_radar_group
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
@@ -166,7 +165,7 @@ class SourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
-        if not user.is_admin and not is_radar_group(group) and group.type != GROUP_TYPE.HOSPITAL:
+        if not user.is_admin and not group.is_radar() and group.type != GROUP_TYPE.HOSPITAL:
             raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
@@ -179,7 +178,7 @@ class RadarSourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
-        if not user.is_admin and not is_radar_group(group):
+        if not user.is_admin and not group.is_radar():
             raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):

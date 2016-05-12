@@ -1,5 +1,5 @@
 from radar.permissions import has_permission_for_patient
-from radar.tests.permissions.helpers import make_user, make_patient, make_groups
+from tests.permissions.helpers import make_user, make_patient, make_groups
 from radar.models.groups import Group
 from radar.roles import ROLE, PERMISSION
 

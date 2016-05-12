@@ -6,7 +6,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.common import MetaModelMixin
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.logs import log_changes
@@ -73,7 +72,7 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def recruited_date(self):
-        from_dates = [x.from_date for x in self.group_patients if is_radar_group(x.group)]
+        from_dates = [x.from_date for x in self.group_patients if x.group.is_radar()]
 
         if from_dates:
             return max(from_dates)
@@ -91,7 +90,7 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def current(self):
-        return any(is_radar_group(x) for x in self.current_groups)
+        return any(x.is_radar() for x in self.current_groups)
 
     @current.expression
     def current(cls):
@@ -110,7 +109,7 @@ class Patient(db.Model, MetaModelMixin):
 
         for group_patient in self.group_patients:
             if (
-                is_radar_group(group_patient.group) and
+                group_patient.group.is_radar() and
                 (
                     from_date is None or
                     group_patient.from_date < from_date

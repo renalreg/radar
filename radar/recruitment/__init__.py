@@ -10,8 +10,7 @@ import pytz
 from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
-from radar.groups import get_radar_group
-from radar.models.groups import GroupPatient
+from radar.models.groups import Group, GroupPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient, GENDERS
@@ -231,7 +230,7 @@ class RecruitmentPatient(object):
     def _create_patient(self):
         logger.info('Creating patient number={}'.format(self.number))
 
-        radar_group = get_radar_group()
+        radar_group = Group.get_radar()
 
         patient = Patient()
         patient.created_user = current_user

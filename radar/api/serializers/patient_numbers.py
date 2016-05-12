@@ -12,7 +12,6 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import get_number_validators
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.patient_numbers import PatientNumber
 
 
@@ -25,7 +24,7 @@ class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSe
         exclude = ['number_group_id']
 
     def validate_number_group(self, number_group):
-        if is_radar_group(number_group):
+        if number_group.is_radar():
             raise ValidationError("Can't add RaDaR numbers.")
 
         return number_group

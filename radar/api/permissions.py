@@ -1,4 +1,3 @@
-from radar.groups import is_radar_group
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.permissions import (
     has_permission_for_patient,
@@ -146,7 +145,7 @@ class RadarSourceObjectPermission(Permission):
                     return False
 
                 # Can only modify data from the RaDaR group
-                if not is_radar_group(source_group):
+                if not source_group.is_radar():
                     return False
 
             # Check permissions

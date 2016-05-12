@@ -47,7 +47,7 @@ This will create a `.tar.gz` file in the `dist` folder.
 
 A remote build is useful when you are developing on a different operating system to the one you want to deploy to.
 
-Install dependencies on remote machine:
+Install dependencies on the remote machine:
 
 ```
 yum install https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-2.noarch.rpm
@@ -64,6 +64,8 @@ Build:
 ```
 fab -H $HOSTNAME -u $USER build
 ```
+
+The built `.tar.gz` will be downloaded into the `dist` folder on the local machine.
 
 ## Deploy
 

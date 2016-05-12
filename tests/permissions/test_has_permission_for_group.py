@@ -1,7 +1,7 @@
 from radar.permissions import has_permission_for_group
 from radar.models.groups import Group
 from radar.roles import ROLE, PERMISSION
-from radar.tests.permissions.helpers import make_user, make_groups
+from tests.permissions.helpers import make_user, make_groups
 
 
 def test_admin():
