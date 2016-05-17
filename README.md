@@ -7,7 +7,7 @@
 ```
 virtualenv venv
 source venv/bin/activate
-pip install -r dev-requirements.txt
+PATH=/usr/pgsql-9.4/bin:$PATH pip install -r dev-requirements.txt
 pip install -e .
 ```
 
