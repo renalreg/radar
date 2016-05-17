@@ -1,11 +1,9 @@
 from setuptools import setup, find_packages
 
-__version__ = '2.3.0'
-
 setup(
     name='radar',
-    version=__version__,
-    long_description=__doc__,
+    version='2.3.0',
+    description='RaDaR - Rare Disease Registry',
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
     url='https://www.radar.nhs.uk/',
