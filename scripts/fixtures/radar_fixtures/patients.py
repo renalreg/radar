@@ -5,7 +5,6 @@ from sqlalchemy import desc
 import pytz
 
 from radar.database import db
-from radar.groups import get_radar_group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
@@ -210,7 +209,7 @@ def create_patients(n, data=True):
 
 
 def _create_patients(n, data):
-    radar_group = get_radar_group()
+    radar_group = Group.get_radar()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
     cohort_groups = Group.query.filter(Group.type == GROUP_TYPE.COHORT).all()
