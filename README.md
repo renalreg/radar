@@ -4,6 +4,8 @@
 
 ## Develop
 
+Use [radar-ansible](https://github.com/renalreg/radar-ansible) to create a development VM.
+
 ```
 virtualenv venv
 source venv/bin/activate
