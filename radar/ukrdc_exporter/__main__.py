@@ -71,7 +71,7 @@ def main():
     state = app.config['EXPORT_STATE']
 
     if state is not None:
-        if not os.path.exists(args.config):
+        if not os.path.exists(state):
             with open(state, 'w') as state_f:
                 state_f.write(str(0))
                 state_f.write('\n')
