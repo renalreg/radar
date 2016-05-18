@@ -38,3 +38,14 @@ def deploy(archive=None):
         run('ln -sfn /srv/radar/%s /srv/radar/current' % version)
 
     run('rm -rf /tmp/radar /tmp/radar.tar.gz')
+
+    services = [
+        'radar-api',
+        'radar-ukrdc-exporter-celery',
+        'radar-ukrdc-importer-api',
+        'radar-ukrdc-importer-celery',
+    ]
+
+    # Restart services
+    for service in services:
+        run('if systemctl is-active {0} >/dev/null; then systemctl restart {0}; fi'.format(service))
