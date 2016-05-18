@@ -59,23 +59,24 @@ def lock(f):
     fcntl.flock(f.fileno(), fcntl.LOCK_EX)
 
 
-if __name__ == '__main__':
+def main():
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--state-file')
     parser.add_argument('--all', action='store_true')
     args = parser.parse_args()
 
     app = RadarUKRDCExporter()
 
-    if args.state_file:
-        if not os.path.exists(args.state_file):
-            with open(args.state_file, 'w') as state_f:
+    state = app.config['EXPORT_STATE']
+
+    if state is not None:
+        if not os.path.exists(args.config):
+            with open(state, 'w') as state_f:
                 state_f.write(str(0))
                 state_f.write('\n')
 
-        state_f = open(args.state_file, 'r+')
+        state_f = open(state, 'r+')
         lock(state_f)
 
         if args.all:
@@ -95,3 +96,7 @@ if __name__ == '__main__':
         state_f.write('\n')
         state_f.truncate()
         state_f.close()
+
+
+if __name__ == '__main__':
+    main()

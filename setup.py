@@ -10,6 +10,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    entry_points={
+        'console_scripts': [
+            'radar-ukrdc-exporter = radar.ukrdc_exporter.__main__:main'
+        ]
+    },
     install_requires=[
         'celery',
         'click',
@@ -28,6 +33,7 @@ setup(
         'sqlalchemy',
         'sqlalchemy-enum34',
         'termcolor',
+        'uwsgi',
         'werkzeug',
         'zxcvbn',
     ],
