@@ -33,6 +33,7 @@ def deploy(archive=None):
     with cd('/tmp/radar'):
         run('tar --strip-components=1 -xzf /tmp/radar.tar.gz')
         version = str(run('cat VERSION'))
+        run('rm -rf /srv/radar/%s' % version)
         run('./install.sh /srv/radar/%s' % version)
         run('ln -sfn /srv/radar/%s /srv/radar/current' % version)
 
