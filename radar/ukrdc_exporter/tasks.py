@@ -98,9 +98,9 @@ class DecimalEncoder(json.JSONEncoder):
 # TODO this can be done in parallel
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
-    url = config['UKRDC_IMPORT_URL']
-    timeout = config.get('UKRDC_IMPORT_TIMEOUT', 10)
-    retry_countdown = config.get('UKRDC_IMPORT_COUNTDOWN', 60)
+    url = config['EXPORT_URL']
+    timeout = config.get('EXPORT_TIMEOUT', 10)
+    retry_countdown = config.get('EXPORT_COUNTDOWN', 60)
 
     for sda_container in sda_containers:
         data = json.dumps(sda_container, cls=DecimalEncoder)
