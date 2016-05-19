@@ -224,16 +224,16 @@ class TinyResultSerializer(serializers.ProxySerializer):
         observation_field.bind(self, 'observation')
         self.observation_field = observation_field
 
-    def get_serializer(self, observation):
+    def create_serializer(self, observation):
         field = get_value_field(observation)
         serializer = type('CustomTinyResultSerializer', (BaseTinyResultSerializer,), {
             'value': field
         })()
         return serializer
 
-    def get_internal_serializer(self, data):
+    def get_serializer(self, data):
         observation = self.observation_field.get_attribute(data)
-        serializer = self.get_serializer(observation)
+        serializer = self.create_serializer(observation)
         return serializer
 
 
