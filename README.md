@@ -73,7 +73,7 @@ The built `.tar.gz` will be downloaded into the `dist` folder on the local machi
 ## Deploy
 
 ```
-HOSTNAME=nww.radar.nhs.uk
-USER=root
-fab -H $HOSTNAME -u $USER deploy
+fab -H nww.radar.nhs.uk -u root deploy
 ```
+
+The `--gateway` option is useful for tunneling through another server.
