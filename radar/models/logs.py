@@ -103,7 +103,7 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
             );
             RETURN NEW;
         ELSE
-            RAISE WARNING '[log_action] Unknown action: % at %', TG_OP, now();
+            RAISE WARNING '[log_action] Unknown action: %% at %%', TG_OP, now();
             RETURN NULL;
         END IF;
     END;
