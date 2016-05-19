@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='radar',
-    version='2.3.1',
+    version='2.3.2',
     description='RaDaR - Rare Disease Registry',
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
