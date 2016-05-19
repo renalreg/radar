@@ -33,7 +33,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
         options = [(x['code'], x['description']) for x in observation.properties['options']]
         options = OrderedDict(options)
-        field = StringLookupField(options, id_key='code', label_key='description')
+        field = StringLookupField(options, key_name='code', value_name='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
