@@ -195,7 +195,7 @@ class RecruitmentPatient(object):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
-        self.ethnicity = None
+        self.ethnicity = ethnicity
 
     @property
     def first_name(self):
