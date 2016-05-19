@@ -34,14 +34,15 @@ Index(
 )
 
 # Ensure patient's don't have more than one number for each type
-Index(
-    'patient_numbers_patient_number_idx',
-    PatientNumber.patient_id,
-    PatientNumber.source_group_id,
-    PatientNumber.source_type,
-    PatientNumber.number_group_id,
-    unique=True
-)
+# TODO disabled until existing data is cleaned up
+# Index(
+#    'patient_numbers_patient_number_idx',
+#    PatientNumber.patient_id,
+#    PatientNumber.source_group_id,
+#    PatientNumber.source_type,
+#    PatientNumber.number_group_id,
+#    unique=True
+# )
 
 Index('patient_numbers_patient_idx', PatientNumber.patient_id)
 Index('patient_numbers_source_group_idx', PatientNumber.source_group_id)
