@@ -68,7 +68,7 @@ def main():
 
     app = RadarUKRDCExporter()
 
-    state = app.config['EXPORT_STATE']
+    state = app.config['UKRDC_EXPORTER_STATE']
 
     if state is not None:
         if not os.path.exists(state):

@@ -73,7 +73,7 @@ def lock_patient(patient):
 
 def log_data_import(patient):
     log = Log()
-    log.type = 'DATA_IMPORT'
+    log.type = 'UKRDC_IMPORTER'
     log.user = get_import_user()
     log.data = dict(patient_id=patient.id)
     db.session.add(log)
