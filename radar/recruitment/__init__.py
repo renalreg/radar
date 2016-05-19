@@ -278,7 +278,7 @@ class RecruitmentPatient(object):
 
             group_patient = GroupPatient()
             group_patient.patient = patient
-            group_patient.group = self.cohort_group
+            group_patient.group = group
             group_patient.created_group = self.hospital_group
             group_patient.from_date = datetime.now(pytz.UTC)
             group_patient.created_user = current_user
