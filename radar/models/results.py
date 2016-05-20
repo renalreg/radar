@@ -53,6 +53,34 @@ class Observation(db.Model):
     pv_code = Column(String)
     properties = Column(postgresql.JSONB, nullable=False)
 
+    @property
+    def min_value(self):
+        return self.properties.get('min_value')
+
+    @property
+    def max_value(self):
+        return self.properties.get('max_value')
+
+    @property
+    def min_length(self):
+        return self.properties.get('min_length')
+
+    @property
+    def max_length(self):
+        return self.properties.get('max_length')
+
+    @property
+    def units(self):
+        return self.properties.get('units')
+
+    @property
+    def options(self):
+        return self.properties.get('options', [])
+
+    @property
+    def options_map(self):
+        return dict((x['code'], x['description']) for x in self.options)
+
 
 @log_changes
 class Result(db.Model, MetaModelMixin):
@@ -93,5 +121,12 @@ class Result(db.Model, MetaModelMixin):
             x = str(x)
 
         self._value = x
+
+    @property
+    def value_description(self):
+        if self.observation.value_type == OBSERVATION_VALUE_TYPE.ENUM:
+            return self.observation.options_map.get(self.value)
+        else:
+            return None
 
 Index('results_patient_idx', Result.patient_id)

@@ -42,20 +42,34 @@ def get_value_field(observation):
     return field
 
 
-def get_properties_serializer(value_type):
-    serializers = {
-        OBSERVATION_VALUE_TYPE.INTEGER: IntegerObservationSerializer,
-        OBSERVATION_VALUE_TYPE.REAL: RealObservationSerializer,
-        OBSERVATION_VALUE_TYPE.ENUM: LookupObservationSerializer,
-        OBSERVATION_VALUE_TYPE.STRING: StringObservationSerializer,
-    }
+class OptionSerializer(serializers.Serializer):
+    code = fields.StringField()
+    description = fields.StringField()
 
-    try:
-        serializer = serializers[value_type]()
-    except KeyError:
-        raise ValueError('Unknown value type: %s' % value_type)
 
-    return serializer
+_property_fields = {
+    OBSERVATION_VALUE_TYPE.INTEGER: {
+        'min_value': fields.IntegerField(required=False),
+        'max_value': fields.IntegerField(required=False),
+        'units': fields.StringField(required=False),
+    },
+    OBSERVATION_VALUE_TYPE.REAL: {
+        'min_value': fields.FloatField(required=False),
+        'max_value': fields.FloatField(required=False),
+        'units': fields.StringField(required=False),
+    },
+    OBSERVATION_VALUE_TYPE.ENUM: {
+        'options': fields.ListField(child=OptionSerializer()),
+    },
+    OBSERVATION_VALUE_TYPE.STRING: {
+        'min_length': fields.IntegerField(required=False),
+        'max_length': fields.IntegerField(required=False),
+    },
+}
+
+
+def get_property_fields(value_type):
+    return _property_fields.get(value_type, {})
 
 
 class BaseObservationSerializer(serializers.Serializer):
@@ -66,32 +80,6 @@ class BaseObservationSerializer(serializers.Serializer):
     sample_type = EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
 
 
-class IntegerObservationSerializer(serializers.Serializer):
-    min_value = fields.IntegerField(required=False)
-    max_value = fields.IntegerField(required=False)
-    units = fields.StringField(required=False)
-
-
-class RealObservationSerializer(serializers.Serializer):
-    min_value = fields.FloatField(required=False)
-    max_value = fields.FloatField(required=False)
-    units = fields.StringField(required=False)
-
-
-class OptionSerializer(serializers.Serializer):
-    code = fields.StringField()
-    description = fields.StringField()
-
-
-class LookupObservationSerializer(serializers.Serializer):
-    options = fields.ListField(child=OptionSerializer())
-
-
-class StringObservationSerializer(serializers.Serializer):
-    min_length = fields.IntegerField(required=False)
-    max_length = fields.IntegerField(required=False)
-
-
 class ObservationSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
         super(ObservationSerializer, self).__init__(*args, **kwargs)
@@ -100,10 +88,8 @@ class ObservationSerializer(serializers.ProxySerializer):
         self.value_type_field = value_type_field
 
     def create_serializer(self, value_type):
-        properties_serializer = get_properties_serializer(value_type)
-        serializer = type('CustomObservationSerializer', (BaseObservationSerializer,), {
-            'properties': properties_serializer
-        })()
+        property_fields = get_property_fields(value_type)
+        serializer = type('CustomObservationSerializer', (BaseObservationSerializer,), property_fields)()
         return serializer
 
     def get_serializer(self, data):
