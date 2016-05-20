@@ -160,7 +160,7 @@ def get_transplant_biopsies(config):
     q = db.session.query(TransplantBiopsy)
     q = q.join(TransplantBiopsy.transplant)
     q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
-    q = q.order_by(Transplant.patient_id. Transplant.id, TransplantBiopsy.id)
+    q = q.order_by(Transplant.patient_id, Transplant.id, TransplantBiopsy.id)
     return q
 
 
@@ -168,7 +168,7 @@ def get_transplant_rejections(config):
     q = db.session.query(TransplantRejection)
     q = q.join(TransplantRejection.transplant)
     q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
-    q = q.order_by(Transplant.patient_id. Transplant.id, TransplantRejection.id)
+    q = q.order_by(Transplant.patient_id, Transplant.id, TransplantRejection.id)
     return q
 
 
