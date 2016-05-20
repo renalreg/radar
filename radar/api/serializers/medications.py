@@ -34,7 +34,7 @@ class DrugSerializer(ModelSerializer):
 
 class DrugField(ReferenceField):
     model_class = Drug
-    serializer = DrugSerializer
+    serializer_class = DrugSerializer
 
 
 class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
