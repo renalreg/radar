@@ -60,6 +60,13 @@ class Group(db.Model):
     def users(self):
         return [x.user for x in self.group_users]
 
+    @classmethod
+    def get_radar(cls):
+        return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.OTHER).one()
+
+    def is_radar(self):
+        return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.OTHER
+
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
 

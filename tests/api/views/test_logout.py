@@ -1,5 +1,5 @@
 from radar.models.user_sessions import UserSession
-from radar.tests.api.views.fixtures import get_user
+from tests.api.views.fixtures import get_user
 
 
 def get_session_count(user):

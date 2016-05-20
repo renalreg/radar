@@ -1,4 +1,3 @@
-from radar.groups import is_radar_group
 from radar.models.groups import GROUP_TYPE
 from radar.roles import PERMISSION
 
@@ -68,7 +67,7 @@ def has_permission_for_group(user, group, permission, explicit=False):
         return True
     else:
         # Users get permissions on the RaDaR group through their other groups
-        if not explicit and is_radar_group(group) and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
+        if not explicit and group.is_radar() and permission in (PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT):
             return has_permission(user, permission)
 
         # Users get permissions on cohort groups through their hospital groups

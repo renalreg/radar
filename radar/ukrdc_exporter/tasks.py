@@ -7,7 +7,6 @@ from celery import shared_task, chain
 
 from radar.config import config
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.models.patients import Patient
@@ -33,7 +32,7 @@ def get_group(group_id):
 
 def log_data_export(patient, group):
     log = Log()
-    log.type = 'DATA_EXPORT'
+    log.type = 'UKRDC_EXPORTER'
     log.data = dict(
         patient_id=patient.id,
         group_id=group.id
@@ -53,7 +52,7 @@ def export_sda(patient_id):
     sda_containers = []
 
     for group in groups:
-        if not is_radar_group(group) and group.type != GROUP_TYPE.HOSPITAL:
+        if not group.is_radar() and group.type != GROUP_TYPE.HOSPITAL:
             continue
 
         sda_container = _export_sda(patient, group)
@@ -66,7 +65,7 @@ def export_sda(patient_id):
 
 
 def _export_sda(patient, group):
-    if is_radar_group(group):
+    if group.is_radar():
         facility = 'RADAR'
     else:
         facility = 'RADAR.{type}.{code}'.format(type=group.type, code=group.code)
@@ -79,7 +78,7 @@ def _export_sda(patient, group):
     export_medications(sda_container, patient, group)
     export_lab_orders(sda_container, patient, group)
 
-    if is_radar_group(group):
+    if group.is_radar():
         export_program_memberships(sda_container, patient)
 
     # Convert date/datetime objects to ISO strings
@@ -99,9 +98,9 @@ class DecimalEncoder(json.JSONEncoder):
 # TODO this can be done in parallel
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
-    url = config['UKRDC_IMPORT_URL']
-    timeout = config.get('UKRDC_IMPORT_TIMEOUT', 10)
-    retry_countdown = config.get('UKRDC_IMPORT_COUNTDOWN', 60)
+    url = config['UKRDC_EXPORTER_URL']
+    timeout = config.get('UKRDC_EXPORTER_TIMEOUT', 10)
+    retry_countdown = config.get('UKRDC_EXPORTER_COUNTDOWN', 60)
 
     for sda_container in sda_containers:
         data = json.dumps(sda_container, cls=DecimalEncoder)

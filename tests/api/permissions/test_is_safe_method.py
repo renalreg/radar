@@ -1,7 +1,7 @@
 import pytest
 
 from radar.api.permissions import is_safe_method
-from radar.tests.api.permissions.helpers import MockRequest
+from tests.api.permissions.helpers import MockRequest
 
 
 @pytest.mark.parametrize('method', ['GET', 'HEAD'])

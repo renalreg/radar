@@ -4,7 +4,7 @@ import pytest
 
 from radar.models.groups import GROUP_TYPE
 from radar.roles import ROLE
-from radar.tests.api.views.fixtures import get_user, create_user, get_group, add_user_to_group
+from tests.api.views.fixtures import get_user, create_user, get_group, add_user_to_group
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'role', 'expected'], [

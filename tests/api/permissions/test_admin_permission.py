@@ -1,6 +1,6 @@
 from radar.api.permissions import AdminPermission
-from radar.tests.api.permissions.helpers import MockRequest, MockPermission
-from radar.tests.permissions.helpers import make_user
+from tests.api.permissions.helpers import MockRequest, MockPermission
+from tests.permissions.helpers import make_user
 
 
 def test_super():

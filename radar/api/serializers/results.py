@@ -33,7 +33,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
         options = [(x['code'], x['description']) for x in observation.properties['options']]
         options = OrderedDict(options)
-        field = StringLookupField(options, id_key='code', label_key='description')
+        field = StringLookupField(options, key_name='code', value_name='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
@@ -224,16 +224,16 @@ class TinyResultSerializer(serializers.ProxySerializer):
         observation_field.bind(self, 'observation')
         self.observation_field = observation_field
 
-    def get_serializer(self, observation):
+    def create_serializer(self, observation):
         field = get_value_field(observation)
         serializer = type('CustomTinyResultSerializer', (BaseTinyResultSerializer,), {
             'value': field
         })()
         return serializer
 
-    def get_internal_serializer(self, data):
+    def get_serializer(self, data):
         observation = self.observation_field.get_attribute(data)
-        serializer = self.get_serializer(observation)
+        serializer = self.create_serializer(observation)
         return serializer
 
 

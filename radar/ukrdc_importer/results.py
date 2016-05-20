@@ -2,7 +2,6 @@ import logging
 from functools import partial
 
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.results import Result, Observation
 from radar.ukrdc_importer.serializers import LabOrderSerializer
 from radar.ukrdc_importer.utils import (
@@ -148,7 +147,7 @@ def convert_results(patient, sda_lab_orders):
             continue
 
         # Ignore RaDaR data
-        if is_radar_group(source_group):
+        if source_group.is_radar():
             continue
 
         for sda_lab_result_item in sda_lab_order.results:

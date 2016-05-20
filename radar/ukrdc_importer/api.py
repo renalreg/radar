@@ -1,4 +1,6 @@
-from flask import request, abort, Blueprint
+import logging
+
+from flask import request, abort, Blueprint, Response
 
 from radar.app import Radar
 from radar.ukrdc_importer.serializers import ContainerSerializer
@@ -22,25 +24,24 @@ def import_():
         abort(400)
 
     sequence_number = utc()
-    task = import_sda.delay(sda_container, sequence_number)
-    task_id = task.id
+    import_sda.delay(sda_container, sequence_number)
 
-    return str(task_id)
-
-
-@api.route('/status/<task_id>')
-def status(task_id):
-    result = import_sda.AsyncResult(task_id)
-    done = int(result.ready())
-    return str(done)
+    return Response(status=200)
 
 
 def create_app():
     app = Radar()
+
     app.register_blueprint(api)
+
+    if not app.debug:
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.INFO)
+        app.logger.addHandler(stream_handler)
+
     return app
 
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=5001)

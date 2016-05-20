@@ -1,7 +1,6 @@
 import logging
 
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.patient_numbers import PatientNumber
 from radar.ukrdc_importer.serializers import PatientNumberSerializer
 from radar.ukrdc_importer.utils import (
@@ -97,7 +96,7 @@ def convert_patient_numbers(patient, sda_patient_numbers):
             continue
 
         # Ignore RaDaR patient numbers
-        if is_radar_group(number_group):
+        if number_group.is_radar():
             continue
 
         patient_number_id = build_patient_number_id(patient, sda_patient_number)

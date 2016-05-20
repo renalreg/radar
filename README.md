@@ -4,8 +4,12 @@
 
 ## Develop
 
+Use [radar-ansible](https://github.com/renalreg/radar-ansible) to create a development VM.
+
 ```
 virtualenv venv
+source venv/bin/activate
+pip install -r dev-requirements.txt
 pip install -e .
 ```
 
@@ -20,7 +24,7 @@ tox
 Or using `py.test` directly:
 
 ```
-py.test radar
+py.test tests
 ```
 
 ## Local Build
@@ -46,7 +50,7 @@ This will create a `.tar.gz` file in the `dist` folder.
 
 A remote build is useful when you are developing on a different operating system to the one you want to deploy to.
 
-Install dependencies on remote machine:
+Install dependencies on the remote machine:
 
 ```
 yum install https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-2.noarch.rpm
@@ -64,10 +68,12 @@ Build:
 fab -H $HOSTNAME -u $USER build
 ```
 
+The built `.tar.gz` will be downloaded into the `dist` folder on the local machine.
+
 ## Deploy
 
 ```
-HOSTNAME=nww.radar.nhs.uk
-USER=root
-fab -H $HOSTNAME -u $USER deploy
+fab -H nww.radar.nhs.uk -u root deploy
 ```
+
+The `--gateway` option is useful for tunneling through another server.

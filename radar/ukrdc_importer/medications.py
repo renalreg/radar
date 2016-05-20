@@ -1,7 +1,6 @@
 import logging
 
 from radar.database import db
-from radar.groups import is_radar_group
 from radar.models.medications import Medication
 from radar.ukrdc_importer.serializers import MedicationSerializer
 from radar.ukrdc_importer.utils import (
@@ -125,7 +124,7 @@ def convert_medications(patient, sda_medications):
             continue
 
         # Ignore RaDaR data
-        if is_radar_group(source_group):
+        if source_group.is_radar():
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)

@@ -1,5 +1,5 @@
 from radar.permissions import intersect_groups_with_patient
-from radar.tests.permissions.helpers import make_patient, make_user, make_groups
+from tests.permissions.helpers import make_patient, make_user, make_groups
 
 
 def test_empty():

@@ -7,7 +7,7 @@ from radar.database import db
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.tests.api.views.fixtures import get_user, get_patient, get_group, create_demographics
+from tests.api.views.fixtures import get_user, get_patient, get_group, create_demographics
 
 
 def get_read_list_args():
