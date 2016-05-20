@@ -212,6 +212,59 @@ class PatientAddressExporter(Exporter):
         return query_to_dataset(q, columns)
 
 
+@register('patient_aliases')
+class PatientAliasExporter(Exporter):
+    def run(self):
+        d = demographics_column_factory(self.config)
+
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            d('first_name'),
+            d('last_name'),
+        ]
+        columns.extend(get_meta_columns())
+
+        q = queries.get_patient_aliases(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('patient_demographics')
+class PatientDemographicsExporter(Exporter):
+    def run(self):
+        d = demographics_column_factory(self.config)
+
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            d('first_name'),
+            d('last_name'),
+            d('date_of_birth'),
+            column('year_of_birth'),
+            d('date_of_death'),
+            column('year_of_death'),
+            column('gender'),
+            column('ethnicity'),
+            d('home_number'),
+            d('work_number'),
+            d('mobile_number'),
+            d('email_address'),
+        ]
+
+        columns.extend(get_meta_columns())
+
+        q = queries.get_patient_demographics(self.config)
+
+        return query_to_dataset(q, columns)
+
+
 @register('medications')
 class MedicationExporter(Exporter):
     def run(self):

@@ -65,13 +65,12 @@ def main():
     with app.app_context():
         config = parse_config(config_parser)
 
-        datasets = []
+        exporters = []
 
+        # Create exporters
         for name in config_parser.sections():
             if name == 'globals':
                 continue
-
-            print 'Exporting {0}...'.format(name)
 
             exporter_class = exporter_map[name]
 
@@ -83,6 +82,14 @@ def main():
             )
 
             exporter = exporter_class(exporter_config)
+
+            exporters.append((name, exporter))
+
+        datasets = []
+
+        # Export data
+        for name, exporter in exporters:
+            print 'Exporting {0}...'.format(name)
             dataset = exporter.run()
             dataset.title = name
             datasets.append(dataset)
@@ -109,6 +116,7 @@ def main():
             elif len(datasets) == 1:
                 save(datasets[0], args.format, args.dest)
             elif len(datasets):
+                # TODO raise this error earlier
                 argument_parser.error('dest is not a directory')
 
 
