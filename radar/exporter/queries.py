@@ -19,6 +19,7 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.renal_progressions import RenalProgression
+from radar.models.results import Result
 from radar.models.transplants import Transplant, TransplantRejection, TransplantBiopsy
 from radar.roles import PERMISSION, get_roles_with_permission
 
@@ -103,7 +104,7 @@ def filter_by_data_group(query, group, group_id):
 def patient_helper(klass):
     def f(config):
         q = db.session.query(klass).order_by(klass.patient_id, klass.id)
-        q = _patient_filter(q, klass.patient_id, config.user, config.patient_group)
+        q = _patient_filter(q, klass.patient_id, config['user'], config['patient_group'])
         return q
 
     return f
@@ -122,7 +123,7 @@ def _patient_filter(query, patient_id, user, patient_group):
 def patient_group_helper(klass):
     def f(config):
         q = db.session.query(klass).order_by(klass.patient_id, klass.id)
-        q = _patient_group_filter(q, klass.patient_id, klass.group_id, config.user, config.patient_group, config.data_group)
+        q = _patient_group_filter(q, klass.patient_id, klass.group_id, config['user'], config['patient_group'], config['data_group'])
         return q
 
     return f
@@ -143,14 +144,14 @@ def _patient_group_filter(query, patient_id, group_id, user, patient_group, data
 
 def get_patients(config):
     q = db.session.query(Patient).order_by(Patient.id)
-    q = _patient_filter(q, Patient.id, config.user, config.patient_group)
+    q = _patient_filter(q, Patient.id, config['user'], config['patient_group'])
     return q
 
 
 def get_family_history_relatives(config):
     q = db.session.query(FamilyHistoryRelative)
     q = q.join(FamilyHistoryRelative.family_history)
-    q = _patient_group_filter(q, FamilyHistory.patient_id, FamilyHistory.group_id, config.user, config.patient_group, config.data_group)
+    q = _patient_group_filter(q, FamilyHistory.patient_id, FamilyHistory.group_id, config['user'], config['patient_group'], config['data_group'])
     q = q.order_by(FamilyHistory.patient_id, FamilyHistory.id, FamilyHistoryRelative.id)
     return q
 
@@ -158,7 +159,7 @@ def get_family_history_relatives(config):
 def get_transplant_biopsies(config):
     q = db.session.query(TransplantBiopsy)
     q = q.join(TransplantBiopsy.transplant)
-    q = _patient_filter(q, Transplant.patient_id, config.user, config.patient_group)
+    q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
     q = q.order_by(Transplant.patient_id. Transplant.id, TransplantBiopsy.id)
     return q
 
@@ -166,7 +167,7 @@ def get_transplant_biopsies(config):
 def get_transplant_rejections(config):
     q = db.session.query(TransplantRejection)
     q = q.join(TransplantRejection.transplant)
-    q = _patient_filter(q, Transplant.patient_id, config.user, config.patient_group)
+    q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
     q = q.order_by(Transplant.patient_id. Transplant.id, TransplantRejection.id)
     return q
 
@@ -189,3 +190,4 @@ get_hospitalisations = patient_helper(Hospitalisation)
 get_group_patients = patient_helper(GroupPatient)
 get_renal_progressions = patient_helper(RenalProgression)
 get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
+get_results = patient_helper(Result)

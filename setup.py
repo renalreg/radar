@@ -12,7 +12,8 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'radar-ukrdc-exporter = radar.ukrdc_exporter.__main__:main'
+            'radar-exporter = radar.exporter.__main__:main',
+            'radar-ukrdc-exporter = radar.ukrdc_exporter.__main__:main',
         ]
     },
     install_requires=[
