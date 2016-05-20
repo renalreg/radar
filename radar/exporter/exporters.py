@@ -499,7 +499,8 @@ class TransplantBiopsyExporter(Exporter):
         columns = [
             column('id'),
             column('transplant_id'),
-            column('date_of_rejection'),
+            column('date_of_biopsy'),
+            column('recurrence'),
         ]
 
         q = queries.get_transplant_biopsies(self.config)
@@ -513,8 +514,7 @@ class TransplantRejectionExporter(Exporter):
         columns = [
             column('id'),
             column('transplant_id'),
-            column('date_of_biopsy'),
-            column('recurrence'),
+            column('date_of_rejection'),
         ]
 
         q = queries.get_transplant_rejections(self.config)
