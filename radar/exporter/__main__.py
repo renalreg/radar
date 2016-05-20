@@ -34,8 +34,8 @@ class ConfigSerializer(serializers.Serializer):
 
 
 def parse_config(config_parser):
-    if config_parser.has_section('globals'):
-        data = dict(config_parser.items('globals'))
+    if config_parser.has_section('global'):
+        data = dict(config_parser.items('global'))
     else:
         data = dict()
 
@@ -69,7 +69,7 @@ def main():
 
         # Create exporters
         for name in config_parser.sections():
-            if name == 'globals':
+            if name == 'global':
                 continue
 
             exporter_class = exporter_map[name]
