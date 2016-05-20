@@ -74,7 +74,7 @@ def main():
 
             exporter_class = exporter_map[name]
 
-            data = config_parser.items(name)
+            data = dict(config_parser.items(name))
             exporter_config = exporter_class.parse_config(data)
             exporter_config = dict(
                 config.items() +

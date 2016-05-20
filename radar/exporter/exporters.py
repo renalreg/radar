@@ -1,6 +1,10 @@
+from datetime import date, timedelta
+
 import tablib
+from cornflake import fields, serializers
 
 from radar.exporter import queries
+from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -648,5 +652,41 @@ class ResultExporter(Exporter):
         columns.extend(get_meta_columns())
 
         q = queries.get_results(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+def previous_month():
+    now = date.today()
+    previous_end = now.replace(day=1) - timedelta(days=1)
+    previous_start = previous_end.replace(day=1)
+    return previous_start
+
+
+class NIHRConfigSerializer(serializers.Serializer):
+    from_date = fields.DateField(default=previous_month)
+
+
+@register('nihr')
+class NIHRExporter(Exporter):
+    @classmethod
+    def parse_config(cls, data):
+        serializer = NIHRConfigSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data
+
+    def run(self):
+        columns = [
+            column('id'),
+            column('recruited_date'),
+            column('recruited_group_id', 'recruited_group.id'),
+            column('recruited_group', 'recruited_group.name'),
+        ]
+
+        from_date = self.config['from_date']
+
+        q = Patient.query
+        q = q.filter(Patient.recruited_date >= from_date)
+        q = q.order_by(Patient.recruited_date)
 
         return query_to_dataset(q, columns)
