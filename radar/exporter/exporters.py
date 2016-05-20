@@ -202,12 +202,17 @@ class PatientAddressExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            d('first_name'),
-            d('last_name'),
+            column('from_date'),
+            column('to_date'),
+            d('address_1'),
+            d('address_2'),
+            d('address_3'),
+            d('address_4'),
+            d('postcode', anonymised_getter='anonymised_postcode'),
         ]
         columns.extend(get_meta_columns())
 
-        q = queries.get_patient_aliases(self.config)
+        q = queries.get_patient_addresses(self.config)
 
         return query_to_dataset(q, columns)
 
@@ -632,6 +637,9 @@ class ResultExporter(Exporter):
         columns = [
             column('id'),
             column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
             column('date'),
             column('observation_name', 'observation.name'),
             column('value_code', 'value'),
