@@ -631,6 +631,7 @@ class ResultExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date'),
             column('observation_name', 'observation.name'),
             column('value_code', 'value'),
