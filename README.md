@@ -84,4 +84,23 @@ Deploy the latest build (`.tar.gz` in `dist`) and reload/restart the services:
 fab -H nww.radar.nhs.uk -u root deploy
 ```
 
-The `--gateway` option is useful for tunneling through another server.
+Deploy to multiple servers by separating their hostnames with commas. The `--gateway` option is useful for tunneling through another server.
+
+### Downgrading
+
+For example if you have deployed version `2.0.0` but need to downgrade to version `1.0.0`.
+
+If `/srv/radar/1.0.0` exists you can simply:
+
+```
+ln -sfn /srv/radar/1.0.0 /srv/radar/current
+systemctl reload radar-api
+```
+
+Otherwise you'll need to rebuild the `.tar.gz`:
+
+```
+git checkout tags/v1.0.0
+platter build -r requirements.txt .
+fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
+```
