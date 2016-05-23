@@ -1,5 +1,6 @@
 import os
 import tempfile
+from pkg_resources import parse_version
 
 from fabric.api import task, local, run, cd, get, put
 
@@ -25,7 +26,7 @@ def build(rev='HEAD'):
 @task
 def deploy(archive=None, name='radar'):
     if archive is None:
-        archive = os.path.join('dist', sorted(os.listdir('dist'))[-1])
+        archive = os.path.join('dist', sorted(os.listdir('dist'), key=parse_version)[-1])
 
     tmp = '/tmp/deploy-{0}'.format(os.urandom(20).encode('hex'))
     run('mkdir {0}'.format(tmp))
