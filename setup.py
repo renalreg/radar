@@ -1,8 +1,12 @@
+import re
 from setuptools import setup, find_packages
+
+with open('radar/__init__.py', 'r') as f:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
 
 setup(
     name='radar',
-    version='2.3.13',
+    version=version,
     description='RaDaR - Rare Disease Registry',
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
