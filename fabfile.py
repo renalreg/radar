@@ -51,6 +51,7 @@ def deploy(archive=None, name='radar'):
         'radar-ukrdc-importer-celery',
     ]
 
-    # Reload/restart services
+    # Restart services
+    # TODO replace with try-reload-or-restart when available in our version of systemd
     for service in services:
-        run('systemctl try-reload-or-restart {0}'.format(service))
+        run('if systemctl is-active {0} >/dev/null; then systemctl reload-or-restart {0}; fi'.format(service))
