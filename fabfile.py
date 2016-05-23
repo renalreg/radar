@@ -51,7 +51,6 @@ def deploy(archive=None, name='radar'):
         'radar-ukrdc-importer-celery',
     ]
 
-    # Restart services
-    # TODO http://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#standard-default-boring-graceful-reload-aka-sighup
+    # Reload/restart services
     for service in services:
-        run('if systemctl is-active {0} >/dev/null; then systemctl restart {0}; fi'.format(service))
+        run('systemctl try-reload-or-restart {0}'.format(service))
