@@ -11,7 +11,7 @@ setup(
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
     url='https://www.radar.nhs.uk/',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     zip_safe=False,
     entry_points={
