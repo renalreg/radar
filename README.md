@@ -72,11 +72,13 @@ The built `.tar.gz` will be downloaded into the `dist` folder on the local machi
 
 ## Deploy
 
-You'll need to create the `/srv/radar` folder if it doesn't already exist:
+You'll need to create the `/srv/radar` folder if it doesn't exist:
 
 ```
 ssh nww.radar.nhs.uk mkdir -p /srv/radar
 ```
+
+Each deployed version is kept in its own folder in `/srv/radar`, for example `/srv/radar/1.0.0` and `/srv/radar/2.0.0`. The `/srv/radar/current` symlink points to the latest version of the code.
 
 Deploy the latest build (`.tar.gz` in `dist`) and reload/restart the services:
 
