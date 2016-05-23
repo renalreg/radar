@@ -135,3 +135,10 @@ Once the worker has the lock, it imports the patient record and commits the tran
 
 When the log level is set to `INFO` the worker will output details of the records being created, updated and deleted.
 Regardless of the log level changes are logged to the `logs` table.
+
+## Services
+
+The `ukrdc_importer` role in [radar-ansible](https://github.com/renalreg/radar-ansible) installs two systemd services:
+
+* `radar-ukrdc-importer-api` - runs the API on port 5001.
+* `radar-ukrdc-importer-celery` - runs the celery workers.

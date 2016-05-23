@@ -99,3 +99,15 @@ RADAR_SETTINGS=$(pwd)/settings.py celery -A radar.ukrdc_exporter.worker worker -
 The number of worker processes/threads can be controlled with the `--concurrency` option. By default this is the number of CPUs on the machine.
 
 The log level can be controlled using the `--loglevel` option, for example `INFO` level is set using `--loglevel=INFO`.
+
+## Services
+
+The `ukrdc_exporter` role in [radar-ansible](https://github.com/renalreg/radar-ansible) installs three systemd services:
+
+* `radar-ukrdc-importer-celery` - runs the celery workers.
+* `radar-ukrdc-importer-changed` - hourly job to add modified patients to the export queue.
+* `radar-ukrdc-importer-all` - daily job to add all patients to the export queue.
+
+`radar-ukrdc-importer-changed` and `radar-ukrdc-importer-all` are run using systemd timers (see the corresponding `.timer` files).
+
+You can view timers with `systemctl list-timers` and disable them with `systemctl disable $NAME.timer`.
