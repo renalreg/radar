@@ -4,7 +4,7 @@ from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
 from radar.exceptions import PermissionDenied
-from radar.models.groups import GroupPatient
+from radar.models.groups import GroupPatient, check_dependencies, DependencyError
 from radar.permissions import has_permission_for_patient, has_permission_for_group
 from radar.roles import PERMISSION
 
@@ -32,6 +32,24 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         )
 
         return duplicate
+
+    def check_dependencies(self, data):
+        group = data['group']
+        patient = data['patient']
+
+        groups = patient.groups
+
+        instance = self.root.instance
+
+        if instance is not None:
+            groups.remove(instance.group)
+
+        groups.append(group)
+
+        try:
+            check_dependencies(groups)
+        except DependencyError as e:
+            raise ValidationError({'group': e.message})
 
     def validate(self, data):
         data = super(GroupPatientSerializer, self).validate(data)
@@ -74,6 +92,8 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             )
         ):
             raise PermissionDenied()
+
+        self.check_dependencies(data)
 
         # Check that the patient doesn't already belong to this group
         # Note: it's important this check happens after the permission checks to prevent membership enumeration

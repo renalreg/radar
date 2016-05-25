@@ -49,7 +49,6 @@ class Group(db.Model):
     instructions = Column(String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
-    is_recruitment_group = Column(Boolean, nullable=False, default=True, server_default=text('true'))
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
@@ -64,8 +63,18 @@ class Group(db.Model):
     def get_radar(cls):
         return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.OTHER).one()
 
+    # TODO @property
     def is_radar(self):
         return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.OTHER
+
+    @property
+    def has_dependencies(self):
+        try:
+            check_dependencies([self])
+        except DependencyError:
+            return True
+        else:
+            return False
 
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
@@ -136,6 +145,25 @@ class GroupUser(db.Model, MetaModelMixin):
     def managed_roles(self):
         return get_roles_managed_by_role(self.role)
 
+
 Index('group_users_group_idx', GroupUser.group_id)
 Index('group_users_user_idx', GroupUser.user_id)
 Index('group_patients_group_user_role_idx', GroupUser.group_id, GroupUser.user_id, GroupUser.role, unique=True)
+
+
+dependencies = [
+    ((GROUP_TYPE.COHORT, 'NEPHROS'), (GROUP_TYPE.COHORT, 'INS')),
+    ((GROUP_TYPE.COHORT, 'NSMPGNC3'), (GROUP_TYPE.COHORT, 'MPGN')),
+]
+
+
+class DependencyError(Exception):
+    pass
+
+
+def check_dependencies(groups):
+    groups = set((group.type, group.code) for group in groups)
+
+    for x, y in dependencies:
+        if x in groups and y not in groups:
+            raise DependencyError('Must be in {0}'.format(y[1]))

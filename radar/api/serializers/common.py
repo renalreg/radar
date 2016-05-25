@@ -151,6 +151,7 @@ class TinyGroupSerializer(ModelSerializer):
 class GroupSerializer(ModelSerializer):
     type = fields.EnumField(GROUP_TYPE)
     pages = fields.ListField(child=fields.StringField())
+    has_dependencies = fields.BooleanField(read_only=True)
 
     class Meta(object):
         model_class = Group
