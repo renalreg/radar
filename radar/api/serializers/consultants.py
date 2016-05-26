@@ -95,6 +95,7 @@ class ChildConsultantSerializer(MetaMixin, ModelSerializer):
 
     class Meta(object):
         model_class = Consultant
+        exclude = ['specialty_id']
 
 
 class ConsultantField(ReferenceField):
