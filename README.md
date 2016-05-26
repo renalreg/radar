@@ -27,7 +27,11 @@ Or using `py.test` directly:
 py.test tests
 ```
 
-## Local Build
+## Build
+
+Before releasing a new build increment the version number in `radar/__init__.py`. Only change the version number and deploy to production from the `master` branch.
+
+### Local
 
 Install [platter](https://github.com/mitsuhiko/platter):
 
@@ -46,7 +50,7 @@ platter build -r requirements.txt .
 This will create a `.tar.gz` file in the `dist` folder.
 
 
-## Remote Build
+### Remote
 
 A remote build is useful when you are developing on a different operating system to the one you want to deploy to.
 
