@@ -166,4 +166,4 @@ def check_dependencies(groups):
 
     for x, y in dependencies:
         if x in groups and y not in groups:
-            raise DependencyError('Must be in {0}'.format(y[1]))
+            raise DependencyError('Must be in {0}.'.format(y[1]))
