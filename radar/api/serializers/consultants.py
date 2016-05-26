@@ -43,7 +43,7 @@ class GroupConsultantListSerializer(serializers.ListSerializer):
         groups = set()
 
         for i, group_consultant in enumerate(group_consultants):
-            group = group_consultant.group
+            group = group_consultant['group']
 
             if group in groups:
                 raise ValidationError({i: {'group': 'Consultant already in group.'}})
@@ -60,7 +60,7 @@ class ConsultantSerializer(ModelSerializer):
     email = fields.StringField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
     telephone_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(100)])
     gmc_number = fields.StringField(required=False, validators=[gmc_number()])
-    group_consultants = GroupConsultantListSerializer()
+    groups = GroupConsultantListSerializer(source='group_consultants')
     specialty = SpeciailtyField()
 
     class Meta(object):
@@ -72,8 +72,8 @@ class ConsultantSerializer(ModelSerializer):
         instance.email = data['email']
         instance.telephone_number = data['telephone_number']
         instance.gmc_number = data['gmc_number']
-        instance.speciality = data['speciality']
-        instance.group_consultants = self.fields['group_consultants'].create(data['group_consultants'])
+        instance.specialty = data['specialty']
+        instance.group_consultants = self.fields['groups'].create(data['group_consultants'])
 
     def create(self, data):
         instance = Consultant()
