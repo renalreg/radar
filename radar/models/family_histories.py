@@ -63,7 +63,7 @@ class FamilyHistoryRelative(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    family_history_id = Column(postgresql.UUID, ForeignKey('family_histories.id'), nullable=False)
+    family_history_id = Column(postgresql.UUID, ForeignKey('family_histories.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     family_history = orm.relationship('FamilyHistory', backref=orm.backref('relatives', cascade='all, delete-orphan', passive_deletes=True))
 
     relationship = Column(Integer, nullable=False)
