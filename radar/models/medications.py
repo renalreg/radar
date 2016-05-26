@@ -64,5 +64,16 @@ class Drug(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    parent_drug_id = Column(Integer, ForeignKey('drugs.id'))
-    parent_drug = relationship('Drug', remote_side=[id])
+    drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
+    drug_group = relationship('DrugGroup')
+
+
+@log_changes
+class DrugGroup(db.Model):
+    __tablename__ = 'drug_groups'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+
+    parent_drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
+    parent_drug_group = relationship('DrugGroup', remote_side=[id])

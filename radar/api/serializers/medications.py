@@ -10,26 +10,26 @@ from radar.api.serializers.common import (
     StringLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.medications import Medication, Drug, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
+from radar.models.medications import Medication, Drug, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, DrugGroup
 
 
-class ParentDrugSerializer(ModelSerializer):
+class DrugGroupSerializer(ModelSerializer):
     class Meta(object):
-        model_class = Drug
-        exclude = ['parent_drug_id']
+        model_class = DrugGroup
+        exclude = ['parent_drug_group_id']
 
 
-class ParentDrugField(ReferenceField):
-    model_class = Drug
-    serializer_class = ParentDrugSerializer
+class DrugGroupField(ReferenceField):
+    model_class = DrugGroup
+    serializer_class = DrugGroupSerializer
 
 
 class DrugSerializer(ModelSerializer):
-    parent_drug = ParentDrugField()
+    drug_group = DrugGroupField()
 
     class Meta(object):
         model_class = Drug
-        exclude = ['parent_drug_id']
+        exclude = ['drug_group_id']
 
 
 class DrugField(ReferenceField):
