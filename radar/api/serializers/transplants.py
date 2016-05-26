@@ -37,7 +37,7 @@ class TransplantRejectionSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantRejection
-        exclude = ['id']
+        exclude = ['id', 'transplant_id']
 
     def validate_patient(self, data, patient):
         return self.run_validators_on_serializer(data, [
@@ -51,7 +51,7 @@ class TransplantBiopsySerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantBiopsy
-        exclude = ['id']
+        exclude = ['id', 'transplant_id']
 
     def validate_patient(self, data, patient):
         return self.run_validators_on_serializer(data, [
@@ -81,8 +81,17 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         data = super(TransplantSerializer, self).validate(data)
 
         patient = data['patient']
-        self.fields['rejections'].validate_patient(data['rejections'], patient)
-        self.fields['biopsies'].validate_patient(data['biopsies'], patient)
+
+        # TODO wrap this with a context manager
+        try:
+            self.fields['rejections'].validate_patient(data['rejections'], patient)
+        except ValidationError as e:
+            raise ValidationError({'rejections': e.errors})
+
+        try:
+            self.fields['biopsies'].validate_patient(data['biopsies'], patient)
+        except ValidationError as e:
+            raise ValidationError({'biopsies': e.errors})
 
         if data['date_of_recurrence'] is not None and data['date_of_recurrence'] < data['date']:
             raise ValidationError({'date_of_recurrence': 'Must be on or after transplant date.'})

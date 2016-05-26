@@ -3,7 +3,7 @@ from cornflake import serializers, fields
 
 from radar.auth.sessions import current_user
 from radar.api.permissions import AdminPermission
-from radar.api.serializers.consultants import ConsultantSerializer
+from radar.api.serializers.consultants import ConsultantSerializer, SpecialtySerializer
 from radar.api.views.generics import (
     ListModelView,
     RetrieveModelView,
@@ -13,7 +13,7 @@ from radar.api.views.generics import (
     parse_args
 )
 from radar.database import db
-from radar.models.consultants import Consultant, GroupConsultant
+from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.groups import Group, GroupPatient
 from radar.models.patients import Patient
 from radar.patient_search import PatientQueryBuilder
@@ -83,9 +83,15 @@ class ConsultantDestroyView(DestroyModelView):
     permissions = [AdminPermission]
 
 
+class SpecialtyListView(ListModelView):
+    serializer_class = SpecialtySerializer
+    model_class = Specialty
+
+
 def register_views(app):
     app.add_url_rule('/consultants', view_func=ConsultantListView.as_view('consultant_list'))
     app.add_url_rule('/consultants', view_func=ConsultantCreateView.as_view('consultant_create'))
     app.add_url_rule('/consultants/<id>', view_func=ConsultantRetrieveView.as_view('consultant_retrieve'))
     app.add_url_rule('/consultants/<id>', view_func=ConsultantUpdateView.as_view('consultant_update'))
     app.add_url_rule('/consultants/<id>', view_func=ConsultantDestroyView.as_view('consultant_destroy'))
+    app.add_url_rule('/specialties', view_func=SpecialtyListView.as_view('specialty_list'))

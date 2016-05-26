@@ -1,4 +1,5 @@
 from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.groups import check_dependencies, DependencyError
 from radar.permissions import (
     has_permission_for_patient,
     has_permission_for_group,
@@ -273,6 +274,16 @@ class GroupPatientUpdatePermission(Permission):
 class GroupPatientDestroyPermission(Permission):
     def has_object_permission(self, request, user, obj):
         if not super(GroupPatientDestroyPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        patient = obj.patient
+        groups = patient.groups
+        groups.remove(obj.group)
+
+        # Check deleting this group wouldn't break any dependencies
+        try:
+            check_dependencies(groups)
+        except DependencyError:
             return False
 
         # Has the view demographics permission and explicit permission on the group or permission

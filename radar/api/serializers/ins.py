@@ -60,7 +60,7 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
         model_class = InsRelapse
         validators = [
             valid_date_for_patient('date_of_relapse'),
-            valid_date_for_patient('remission_type'),
+            valid_date_for_patient('date_of_remission'),
         ]
 
     def pre_validate(self, data):

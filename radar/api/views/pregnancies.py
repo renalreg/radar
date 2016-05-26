@@ -1,19 +1,18 @@
 from radar.api.serializers.pregnancies import PregnancySerializer
 from radar.api.views.common import (
     StringLookupListView,
-    SourceObjectViewMixin,
     PatientObjectDetailView,
     PatientObjectListView
 )
 from radar.models.pregnancies import Pregnancy, OUTCOMES, DELIVERY_METHODS, PRE_ECLAMPSIA_TYPES
 
 
-class PregnancyListView(SourceObjectViewMixin, PatientObjectListView):
+class PregnancyListView(PatientObjectListView):
     serializer_class = PregnancySerializer
     model_class = Pregnancy
 
 
-class PregnancyDetailView(SourceObjectViewMixin, PatientObjectDetailView):
+class PregnancyDetailView(PatientObjectDetailView):
     serializer_class = PregnancySerializer
     model_class = Pregnancy
 

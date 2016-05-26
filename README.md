@@ -99,6 +99,12 @@ ln -sfn /srv/radar/1.0.0 /srv/radar/current
 systemctl reload radar-api
 ```
 
+If you still have the `.tar.gz` file locally:
+
+```
+fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
+```
+
 Otherwise you'll need to rebuild the `.tar.gz`:
 
 ```

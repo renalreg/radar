@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, Date, Index, Boolean
+from sqlalchemy import Column, Integer, Date, Index, Boolean, String
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
@@ -44,12 +44,12 @@ class Pregnancy(db.Model, MetaModelMixin):
     gravidity = Column(Integer)
     parity_1 = Column(Integer)
     parity_2 = Column(Integer)
-    outcome = Column(Integer)
+    outcome = Column(String)
     weight = Column(Integer)
     weight_centile = Column(Integer)
     gestational_age = Column(Integer)
-    delivery_method = Column(Integer)
+    delivery_method = Column(String)
     neonatal_intensive_care = Column(Boolean)
-    pre_eclampsia = Column(Integer)
+    pre_eclampsia = Column(String)
 
 Index('pregnancies_patient_idx', Pregnancy.patient_id)

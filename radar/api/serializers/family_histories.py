@@ -29,7 +29,7 @@ class RelativeSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = FamilyHistoryRelative
-        exclude = ['id', 'patient_id']
+        exclude = ['id', 'patient_id', 'family_history_id']
 
 
 class FamilyHistorySerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSerializer):

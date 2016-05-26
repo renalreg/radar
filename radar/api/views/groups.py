@@ -13,7 +13,6 @@ from radar.models.groups import Group, GROUP_TYPE
 class GroupListRequestSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     type = fields.EnumField(GROUP_TYPE, required=False)
-    is_recruitment_group = fields.BooleanField(required=False)
     is_recruitment_number_group = fields.BooleanField(required=False)
 
 
@@ -32,9 +31,6 @@ class GroupListView(ListCreateModelView):
 
         if args['type'] is not None:
             query = query.filter(Group.type == args['type'])
-
-        if args['is_recruitment_group'] is not None:
-            query = query.filter(Group.is_recruitment_group == args['is_recruitment_group'])
 
         if args['is_recruitment_number_group'] is not None:
             query = query.filter(Group.is_recruitment_number_group == args['is_recruitment_number_group'])

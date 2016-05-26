@@ -1,7 +1,7 @@
 from radar.api.serializers.fetal_ultrasounds import FetalUltrasoundSerializer
 from radar.api.views.common import (
     SourceObjectViewMixin,
-    IntegerLookupListView,
+    StringLookupListView,
     PatientObjectDetailView,
     PatientObjectListView
 )
@@ -18,7 +18,7 @@ class FetalUltrasoundDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     model_class = FetalUltrasound
 
 
-class FetalUltrasoundLiquorVolumeListView(IntegerLookupListView):
+class FetalUltrasoundLiquorVolumeListView(StringLookupListView):
     items = LIQUOR_VOLUMES
 
 

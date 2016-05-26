@@ -6,7 +6,7 @@ from radar.api.serializers.common import GroupField, StringLookupField, IntegerL
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
 from radar.models.patients import GENDERS, ETHNICITIES
-from radar.models.groups import GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, check_dependencies, DependencyError
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
 
@@ -52,9 +52,11 @@ class RecruitPatientSerializer(RecruitPatientSearchSerializer):
         if cohort_group.type != GROUP_TYPE.COHORT:
             raise ValidationError('Must be a cohort.')
 
-        # Check this is a recruitment group
-        if not cohort_group.is_recruitment_group:
-            raise ValidationError('Cannot recruit into this cohort.')
+        # Check group dependencies
+        try:
+            check_dependencies([cohort_group])
+        except DependencyError as e:
+            raise ValidationError(e.message)
 
         return cohort_group
 

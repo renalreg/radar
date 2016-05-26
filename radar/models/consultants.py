@@ -17,6 +17,9 @@ class Consultant(db.Model, MetaModelMixin):
     telephone_number = Column(String)
     gmc_number = Column(Integer, unique=True)
 
+    specialty_id = Column(Integer, ForeignKey('specialties.id'), nullable=False)
+    specialty = relationship('Specialty')
+
     @property
     def groups(self):
         return [x.group for x in self.group_consultants]
@@ -40,3 +43,11 @@ Index(
     GroupConsultant.consultant_id,
     unique=True
 )
+
+
+@log_changes
+class Specialty(db.Model):
+    __tablename__ = 'specialties'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)

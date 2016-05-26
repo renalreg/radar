@@ -17,6 +17,9 @@ class OBSERVATION_VALUE_TYPE(Enum):
     ENUM = 'ENUM'
     STRING = 'STRING'
 
+    def __str__(self):
+        return str(self.value)
+
 
 OBSERVATION_VALUE_TYPE_NAMES = OrderedDict([
     (OBSERVATION_VALUE_TYPE.INTEGER, 'Integer'),
@@ -31,6 +34,9 @@ class OBSERVATION_SAMPLE_TYPE(Enum):
     BLOOD = 'BLOOD'
     URINE_DIPSTICK = 'URINE_DIPSTICK'
     OBSERVATION = 'OBSERVATION'
+
+    def __str__(self):
+        return str(self.value)
 
 
 OBSERVATION_SAMPLE_TYPE_NAMES = OrderedDict([

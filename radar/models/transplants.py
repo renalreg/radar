@@ -59,7 +59,7 @@ class TransplantRejection(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id'), nullable=False)
+    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     transplant = relationship('Transplant', backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_rejection = Column(Date, nullable=False)
@@ -73,7 +73,7 @@ class TransplantBiopsy(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id'), nullable=False)
+    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     transplant = relationship('Transplant', backref=backref('biopsies', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_biopsy = Column(Date, nullable=False)

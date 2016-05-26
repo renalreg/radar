@@ -5,6 +5,7 @@ from cornflake import fields, serializers
 
 from radar.exporter import queries
 from radar.models.patients import Patient
+from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -688,5 +689,28 @@ class NIHRExporter(Exporter):
         q = Patient.query
         q = q.filter(Patient.recruited_date >= from_date)
         q = q.order_by(Patient.recruited_date)
+
+        return query_to_dataset(q, columns)
+
+
+@register('observations')
+class ObservationExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('name'),
+            column('short_name'),
+            column('value_type'),
+            column('sample_type'),
+            column('pv_code'),
+            column('min_value'),
+            column('max_value'),
+            column('min_length'),
+            column('max_length'),
+            column('units'),
+            column('options_map'),
+        ]
+
+        q = Observation.query.order_by(Observation.id)
 
         return query_to_dataset(q, columns)
