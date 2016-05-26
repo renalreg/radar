@@ -7,9 +7,19 @@ from cornflake.exceptions import ValidationError
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import gmc_number
 from radar.database import db
-from radar.models.consultants import Consultant, GroupConsultant
+from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.groups import GROUP_TYPE
 from radar.models.patient_consultants import PatientConsultant
+
+
+class SpecialtySerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Specialty
+
+
+class SpeciailtyField(ReferenceField):
+    model_class = Specialty
+    serializer_class = SpecialtySerializer
 
 
 class ChildGroupConsultantSerializer(MetaMixin, ModelSerializer):
@@ -51,6 +61,7 @@ class ConsultantSerializer(ModelSerializer):
     telephone_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(100)])
     gmc_number = fields.StringField(required=False, validators=[gmc_number()])
     group_consultants = GroupConsultantListSerializer()
+    specialty = SpeciailtyField()
 
     class Meta(object):
         model_class = Consultant
@@ -61,6 +72,7 @@ class ConsultantSerializer(ModelSerializer):
         instance.email = data['email']
         instance.telephone_number = data['telephone_number']
         instance.gmc_number = data['gmc_number']
+        instance.speciality = data['speciality']
         instance.group_consultants = self.fields['group_consultants'].create(data['group_consultants'])
 
     def create(self, data):
