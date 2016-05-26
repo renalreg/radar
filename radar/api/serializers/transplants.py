@@ -37,7 +37,7 @@ class TransplantRejectionSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantRejection
-        exclude = ['id']
+        exclude = ['id', 'transplant_id']
 
     def validate_patient(self, data, patient):
         return self.run_validators_on_serializer(data, [
@@ -51,7 +51,7 @@ class TransplantBiopsySerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantBiopsy
-        exclude = ['id']
+        exclude = ['id', 'transplant_id']
 
     def validate_patient(self, data, patient):
         return self.run_validators_on_serializer(data, [
