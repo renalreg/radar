@@ -91,6 +91,8 @@ class ConsultantSerializer(ModelSerializer):
 
 
 class ChildConsultantSerializer(MetaMixin, ModelSerializer):
+    specialty = SpeciailtyField()
+
     class Meta(object):
         model_class = Consultant
 
