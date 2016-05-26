@@ -9,7 +9,15 @@ from radar.api.serializers.common import (
     StringLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.pkd import LiverImaging, LIVER_IMAGING_TYPES, LiverSymptoms
+from radar.models.pkd import (
+    LiverImaging,
+    LIVER_IMAGING_TYPES,
+    LiverSymptoms,
+    LiverTransplant,
+    FIRST_GRAFT_SOURCES,
+    LOSS_REASONS,
+    INDICATIONS
+)
 
 
 class LiverImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -83,3 +91,20 @@ class LiverSymptomsSerializer(PatientMixin, MetaMixin, ModelSerializer):
                 data[b] = None
 
         return data
+
+
+class LiverTransplantSerializer(PatientMixin, MetaMixin, ModelSerializer):
+    registration_date = fields.DateField(required=False)
+    transplant_date = fields.DateField()
+    indications = fields.ListField(required=False, child=StringLookupField(INDICATIONS))
+    other_indications = fields.StringField(required=False)
+    first_graft_source = StringLookupField(FIRST_GRAFT_SOURCES, required=False)
+    reason_for_loss = StringLookupField(LOSS_REASONS, required=False)
+    other_reasons_for_loss = fields.StringField(required=False)
+
+    class Meta(object):
+        model_class = LiverTransplant
+        validators = [
+            valid_date_for_patient('registration_date'),
+            valid_date_for_patient('transplant_date'),
+        ]
