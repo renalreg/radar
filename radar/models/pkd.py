@@ -106,14 +106,16 @@ class LiverTransplant(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('liver_transplants')
 
-    # TODO nullable?
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
 
     registration_date = Column(Date)
-    transplant_date = Column(Date)
+    transplant_date = Column(Date, nullable=False)
     indications = Column(postgresql.ARRAY(String))
     other_indications = Column(String)
     first_graft_source = Column(String)
-    reason_for_loss = Column(String)
-    other_reasons_for_loss = Column(String)
+    loss_reason = Column(String)
+    other_loss_reason = Column(String)
 
 Index('liver_transplants_patient_idx', LiverTransplant.patient_id)

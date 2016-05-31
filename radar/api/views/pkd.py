@@ -40,12 +40,12 @@ class LiverSymptomsDetailView(PatientObjectDetailView):
     model_class = LiverSymptoms
 
 
-class LiverTransplantListView(PatientObjectListView):
+class LiverTransplantListView(SourceObjectViewMixin, PatientObjectListView):
     serializer_class = LiverTransplantSerializer
     model_class = LiverTransplant
 
 
-class LiverTransplantDetailView(PatientObjectDetailView):
+class LiverTransplantDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = LiverTransplantSerializer
     model_class = LiverTransplant
 

@@ -1,6 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import range_
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
     PatientMixin,
@@ -93,14 +94,14 @@ class LiverSymptomsSerializer(PatientMixin, MetaMixin, ModelSerializer):
         return data
 
 
-class LiverTransplantSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     registration_date = fields.DateField(required=False)
     transplant_date = fields.DateField()
     indications = fields.ListField(required=False, child=StringLookupField(INDICATIONS))
     other_indications = fields.StringField(required=False)
     first_graft_source = StringLookupField(FIRST_GRAFT_SOURCES, required=False)
-    reason_for_loss = StringLookupField(LOSS_REASONS, required=False)
-    other_reasons_for_loss = fields.StringField(required=False)
+    loss_reason = StringLookupField(LOSS_REASONS, required=False)
+    other_loss_reason = fields.StringField(required=False)
 
     class Meta(object):
         model_class = LiverTransplant
@@ -108,3 +109,11 @@ class LiverTransplantSerializer(PatientMixin, MetaMixin, ModelSerializer):
             valid_date_for_patient('registration_date'),
             valid_date_for_patient('transplant_date'),
         ]
+
+    def validate(self, data):
+        data = super(LiverTransplantSerializer, self).validate(data)
+
+        if data['registration_date'] is not None and data['transplant_date'] < data['registration_date']:
+            raise ValidationError({'transplant_date': 'Must be on or after registration date.'})
+
+        return data
