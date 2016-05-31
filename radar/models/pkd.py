@@ -78,8 +78,8 @@ Index('liver_symptoms_patient_idx', LiverSymptoms.patient_id, unique=True)
 
 INDICATIONS = OrderedDict([
     ('RECURRENT_CHOLANGITIS', 'Recurrent Cholangitis'),
-    ('INTRACTIBLE_VARICEAL_BLEEDING', 'Intractible Variceal Bleeding'),
-    ('INTRACTIBLE_ASCITES', 'Intractible Ascites'),
+    ('INTRACTABLE_VARICEAL_BLEEDING', 'Intractable Variceal Bleeding'),
+    ('INTRACTABLE_ASCITES', 'Intractable Ascites'),
 ])
 
 FIRST_GRAFT_SOURCES = OrderedDict([
