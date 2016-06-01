@@ -3,7 +3,7 @@ import logging
 from radar.models.groups import (
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
-    GROUP_CODE_HANDC,
+    GROUP_CODE_HSC,
     GROUP_TYPE
 )
 from radar.models.patient_addresses import PatientAddress
@@ -176,7 +176,7 @@ def export_patient_numbers(sda_patient, patient, group):
     national_identifiers = {
         (GROUP_TYPE.OTHER, GROUP_CODE_NHS),
         (GROUP_TYPE.OTHER, GROUP_CODE_CHI),
-        (GROUP_TYPE.OTHER, GROUP_CODE_HANDC),
+        (GROUP_TYPE.OTHER, GROUP_CODE_HSC),
     }
 
     for patient_number in patient_numbers:
