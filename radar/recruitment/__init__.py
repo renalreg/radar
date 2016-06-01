@@ -53,8 +53,6 @@ class SearchPatient(object):
 
         url = config['UKRDC_SEARCH_URL']
         timeout = config.get('UKRDC_SEARCH_TIMEOUT', 60)
-        username = config.get('UKRDC_SEARCH_USERNAME', 'RADAR')
-        password = config.get('UKRDC_SEARCH_PASSWORD', 'password')
 
         data = {
             'patient': {
@@ -81,7 +79,7 @@ class SearchPatient(object):
         }
 
         try:
-            r = requests.post(url, json=data, timeout=timeout, auth=(username, password))
+            r = requests.post(url, json=data, timeout=timeout)
 
             if r.status_code == 404:
                 logger.info('UKRDC patient not found')
