@@ -1,4 +1,4 @@
-from radar.api.serializers.pkd import LiverImagingSerializer, LiverSymptomsSerializer, LiverTransplantSerializer
+from radar.api.serializers.pkd import LiverImagingSerializer, LiverDiseasesSerializer, LiverTransplantSerializer
 from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin,
@@ -8,7 +8,7 @@ from radar.api.views.common import (
 from radar.models.pkd import (
     LiverImaging,
     LIVER_IMAGING_TYPES,
-    LiverSymptoms,
+    LiverDiseases,
     LiverTransplant,
     INDICATIONS,
     FIRST_GRAFT_SOURCES,
@@ -30,14 +30,14 @@ class LiverImagingTypeListView(StringLookupListView):
     items = LIVER_IMAGING_TYPES
 
 
-class LiverSymptomsListView(PatientObjectListView):
-    serializer_class = LiverSymptomsSerializer
-    model_class = LiverSymptoms
+class LiverDiseasesListView(PatientObjectListView):
+    serializer_class = LiverDiseasesSerializer
+    model_class = LiverDiseases
 
 
-class LiverSymptomsDetailView(PatientObjectDetailView):
-    serializer_class = LiverSymptomsSerializer
-    model_class = LiverSymptoms
+class LiverDiseasesDetailView(PatientObjectDetailView):
+    serializer_class = LiverDiseasesSerializer
+    model_class = LiverDiseases
 
 
 class LiverTransplantListView(SourceObjectViewMixin, PatientObjectListView):
@@ -67,8 +67,8 @@ def register_views(app):
     app.add_url_rule('/liver-imaging/<id>', view_func=LiverImagingDetailView.as_view('liver_imaging_detail'))
     app.add_url_rule('/liver-imaging-types', view_func=LiverImagingTypeListView.as_view('liver_imaging_type_list'))
 
-    app.add_url_rule('/liver-symptoms', view_func=LiverSymptomsListView.as_view('liver_symptoms_list'))
-    app.add_url_rule('/liver-symptoms/<id>', view_func=LiverSymptomsDetailView.as_view('liver_symptoms_detail'))
+    app.add_url_rule('/liver-diseases', view_func=LiverDiseasesListView.as_view('liver_diseases_list'))
+    app.add_url_rule('/liver-diseases/<id>', view_func=LiverDiseasesDetailView.as_view('liver_diseases_detail'))
 
     app.add_url_rule('/liver-transplants', view_func=LiverTransplantListView.as_view('liver_transplant_list'))
     app.add_url_rule('/liver-transplants/<id>', view_func=LiverTransplantDetailView.as_view('liver_transplant_detail'))

@@ -13,7 +13,7 @@ from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.pkd import (
     LiverImaging,
     LIVER_IMAGING_TYPES,
-    LiverSymptoms,
+    LiverDiseases,
     LiverTransplant,
     FIRST_GRAFT_SOURCES,
     LOSS_REASONS,
@@ -36,7 +36,7 @@ class LiverImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
         validators = [valid_date_for_patient('date')]
 
 
-class LiverSymptomsSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     portal_hypertension = fields.BooleanField(required=False)
     portal_hypertension_date = fields.DateField(required=False)
     oesophageal = fields.BooleanField(required=False)
@@ -59,7 +59,7 @@ class LiverSymptomsSerializer(PatientMixin, MetaMixin, ModelSerializer):
     spleen_palpable_date = fields.DateField(required=False)
 
     class Meta(object):
-        model_class = LiverSymptoms
+        model_class = LiverDiseases
         validators = [
             valid_date_for_patient('portal_hypertension_date'),
             valid_date_for_patient('oesophageal_date'),

@@ -44,13 +44,13 @@ Index('liver_imaging_patient_idx', LiverImaging.patient_id)
 
 
 @log_changes
-class LiverSymptoms(db.Model, MetaModelMixin):
-    __tablename__ = 'liver_symptoms'
+class LiverDiseases(db.Model, MetaModelMixin):
+    __tablename__ = 'liver_diseases'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('liver_symptoms')
+    patient = patient_relationship('liver_diseases')
 
     portal_hypertension = Column(Boolean)
     portal_hypertension_date = Column(Date)
@@ -73,7 +73,7 @@ class LiverSymptoms(db.Model, MetaModelMixin):
     spleen_palpable = Column(Boolean)
     spleen_palpable_date = Column(Date)
 
-Index('liver_symptoms_patient_idx', LiverSymptoms.patient_id, unique=True)
+Index('liver_diseases_patient_idx', LiverDiseases.patient_id, unique=True)
 
 
 INDICATIONS = OrderedDict([
