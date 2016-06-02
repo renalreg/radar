@@ -6,6 +6,17 @@ from radar.database import db
 from radar_fixtures import create_data, create_patients, create_users, create_bot_user
 
 
+def do_drop():
+    # Reflect will discover tables that aren't mapped - useful when switching branches
+    db.reflect()
+    db.drop_all()
+
+
+def do_create():
+    db.create_all()
+
+
+
 @click.group()
 @click.option('--connection-string', default='postgresql://radar:password@localhost/radar')
 @click.pass_context
@@ -24,7 +35,7 @@ def cli(ctx, connection_string):
 @click.pass_context
 def drop(ctx):
     with ctx.obj['app'].app_context():
-        db.drop_all()
+        do_drop()
         db.session.commit()
 
 
@@ -32,7 +43,7 @@ def drop(ctx):
 @click.pass_context
 def create(ctx):
     with ctx.obj['app'].app_context():
-        db.create_all()
+        do_create()
         db.session.commit()
 
 
@@ -42,8 +53,8 @@ def create(ctx):
 @click.pass_context
 def all(ctx, patients, password):
     with ctx.obj['app'].app_context():
-        db.drop_all()
-        db.create_all()
+        do_drop()
+        do_create()
         create_data(patients=patients, password=password)
         db.session.commit()
 
