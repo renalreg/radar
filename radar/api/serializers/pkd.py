@@ -7,7 +7,8 @@ from radar.api.serializers.common import (
     PatientMixin,
     MetaMixin,
     SourceMixin,
-    StringLookupField
+    StringLookupField,
+    GroupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.pkd import (
@@ -97,6 +98,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
 class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     registration_date = fields.DateField(required=False)
     transplant_date = fields.DateField()
+    transplant_group = GroupField(required=False)
     indications = fields.ListField(required=False, child=StringLookupField(INDICATIONS))
     other_indications = fields.StringField(required=False)
     first_graft_source = StringLookupField(FIRST_GRAFT_SOURCES, required=False)
@@ -109,6 +111,7 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
             valid_date_for_patient('registration_date'),
             valid_date_for_patient('transplant_date'),
         ]
+        exclude = ['transplant_group_id']
 
     def validate(self, data):
         data = super(LiverTransplantSerializer, self).validate(data)

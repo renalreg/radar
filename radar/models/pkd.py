@@ -107,8 +107,11 @@ class LiverTransplant(db.Model, MetaModelMixin):
     patient = patient_relationship('liver_transplants')
 
     source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group = relationship('Group', foreign_keys=[source_group_id])
     source_type = Column(String, nullable=False)
+
+    transplant_group_id = Column(Integer, ForeignKey('groups.id'))
+    transplant_group = relationship('Group', foreign_keys=[transplant_group_id])
 
     registration_date = Column(Date)
     transplant_date = Column(Date, nullable=False)
