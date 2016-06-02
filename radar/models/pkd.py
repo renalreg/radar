@@ -122,3 +122,30 @@ class LiverTransplant(db.Model, MetaModelMixin):
     other_loss_reason = Column(String)
 
 Index('liver_transplants_patient_idx', LiverTransplant.patient_id)
+
+
+FEEDING_TYPES = OrderedDict([
+    ('NASOGASTRIC', 'Nasogastric'),
+    ('PARENTERAL', 'Parenteral'),
+    ('PEG', 'PEG - Gastric Tube'),
+])
+
+
+@log_changes
+class Nutrition(db.Model, MetaModelMixin):
+    __tablename__ = 'nutrition'
+
+    id = uuid_pk_column()
+
+    patient_id = patient_id_column()
+    patient = patient_relationship('nutrition')
+
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
+
+    feeding_type = Column(String, nullable=False)
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date)
+
+Index('nutrition_patient_idx', Nutrition.patient_id)

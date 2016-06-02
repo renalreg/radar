@@ -1,4 +1,9 @@
-from radar.api.serializers.pkd import LiverImagingSerializer, LiverDiseasesSerializer, LiverTransplantSerializer
+from radar.api.serializers.pkd import (
+    LiverImagingSerializer,
+    LiverDiseasesSerializer,
+    LiverTransplantSerializer,
+    NutritionSerializer
+)
 from radar.api.views.common import (
     StringLookupListView,
     SourceObjectViewMixin,
@@ -12,7 +17,9 @@ from radar.models.pkd import (
     LiverTransplant,
     INDICATIONS,
     FIRST_GRAFT_SOURCES,
-    LOSS_REASONS
+    LOSS_REASONS,
+    Nutrition,
+    FEEDING_TYPES
 )
 
 
@@ -58,8 +65,23 @@ class LiverTransplantFirstGraftSourceListView(StringLookupListView):
     items = FIRST_GRAFT_SOURCES
 
 
+# TODO rename to failure reason?
 class LiverTransplantLossReasonListView(StringLookupListView):
     items = LOSS_REASONS
+
+
+class NutritionListView(SourceObjectViewMixin, PatientObjectListView):
+    serializer_class = NutritionSerializer
+    model_class = Nutrition
+
+
+class NutritionDetailView(SourceObjectViewMixin, PatientObjectDetailView):
+    serializer_class = NutritionSerializer
+    model_class = Nutrition
+
+
+class NutritionFeedingTypeListView(StringLookupListView):
+    items = FEEDING_TYPES
 
 
 def register_views(app):
@@ -84,3 +106,7 @@ def register_views(app):
         '/liver-transplant-loss-reasons',
         view_func=LiverTransplantLossReasonListView.as_view('liver_transplant_loss_reason_list')
     )
+
+    app.add_url_rule('/nutrition', view_func=NutritionListView.as_view('nutrition_list'))
+    app.add_url_rule('/nutrition/<id>', view_func=NutritionDetailView.as_view('nutrition_detail'))
+    app.add_url_rule('/nutrition-feeding-types', view_func=NutritionFeedingTypeListView.as_view('nutrition_feeding_type_list'))

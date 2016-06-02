@@ -18,7 +18,9 @@ from radar.models.pkd import (
     LiverTransplant,
     FIRST_GRAFT_SOURCES,
     LOSS_REASONS,
-    INDICATIONS
+    INDICATIONS,
+    Nutrition,
+    FEEDING_TYPES
 )
 
 
@@ -118,5 +120,26 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
 
         if data['registration_date'] is not None and data['transplant_date'] < data['registration_date']:
             raise ValidationError({'transplant_date': 'Must be on or after registration date.'})
+
+        return data
+
+
+class NutritionSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+    feeding_type = StringLookupField(FEEDING_TYPES)
+    from_date = fields.DateField()
+    to_date = fields.DateField(required=False)
+
+    class Meta(object):
+        model_class = Nutrition
+        validators = [
+            valid_date_for_patient('from_date'),
+            valid_date_for_patient('to_date'),
+        ]
+
+    def validate(self, data):
+        data = super(NutritionSerializer, self).validate(data)
+
+        if data['to_date'] is not None and data['to_date'] < data['from_date']:
+            raise ValidationError({'to_date': 'Must be on or after from date.'})
 
         return data
