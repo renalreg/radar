@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Boolean, String, Date, Index
+from sqlalchemy import Column, Boolean, String, Date, Index, Integer
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
@@ -49,7 +49,7 @@ class FuanClinicalPicture(db.Model, MetaModelMixin):
     gout = Column(Boolean)
     gout_date = Column(Date)
     family_gout = Column(Boolean)
-    family_gout_relatives = Column(postgresql.ARRAY(String))
+    family_gout_relatives = Column(postgresql.ARRAY(Integer))
     thp = Column(String)
     comments = Column(String)
 
