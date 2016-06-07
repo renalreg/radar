@@ -10,7 +10,7 @@ from radar.models.groups import (
     GROUP_TYPE,
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
-    GROUP_CODE_HANDC,
+    GROUP_CODE_HSC,
     GROUP_CODE_UKRR,
     GROUP_CODE_UKRDC,
     GROUP_CODE_BAPN,
@@ -53,8 +53,8 @@ MIN_NHS_NO = 4000000000
 MIN_CHI_NO = 101000000
 MAX_CHI_NO = 3112999999
 
-MIN_HANDC_NO = 3200000010
-MAX_HANDC_NO = 3999999999
+MIN_HSC_NO = 3200000010
+MAX_HSC_NO = 3999999999
 
 
 def after_day_zero(dt_format=HUMAN_DATE_FORMAT):
@@ -254,10 +254,10 @@ def chi_no():
     return chi_no_f
 
 
-def handc_no():
-    def handc_no_f(value):
+def hsc_no():
+    def hsc_no_f(value):
         try:
-            new_value = _nhs_no(value, MIN_HANDC_NO, MAX_HANDC_NO)
+            new_value = _nhs_no(value, MIN_HSC_NO, MAX_HSC_NO)
         except ValueError:
             raise ValidationError('Not a valid H&C number.')
 
@@ -266,7 +266,7 @@ def handc_no():
 
         return value
 
-    return handc_no_f
+    return hsc_no_f
 
 
 def ukrr_no():
@@ -366,7 +366,7 @@ def radar_no():
 NUMBER_VALIDATORS = {
     (GROUP_TYPE.OTHER, GROUP_CODE_NHS): [nhs_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_CHI): [chi_no()],
-    (GROUP_TYPE.OTHER, GROUP_CODE_HANDC): [handc_no()],
+    (GROUP_TYPE.OTHER, GROUP_CODE_HSC): [hsc_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_UKRR): [ukrr_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_UKRDC): [ukrdc_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_BAPN): [bapn_no()],

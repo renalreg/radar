@@ -1,7 +1,7 @@
 import pytest
 from cornflake.exceptions import ValidationError
 
-from radar.api.serializers.validators import handc_no
+from radar.api.serializers.validators import hsc_no
 
 
 def test_valid_int():
@@ -23,11 +23,11 @@ def test_chi_no():
 
 
 def valid(value):
-    return handc_no()(value)
+    return hsc_no()(value)
 
 
 def invalid(value):
     with pytest.raises(ValidationError) as e:
-        handc_no()(value)
+        hsc_no()(value)
 
     return e

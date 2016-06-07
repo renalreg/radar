@@ -8,7 +8,7 @@ from radar.models.groups import (
     GROUP_CODE_RADAR,
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
-    GROUP_CODE_HANDC,
+    GROUP_CODE_HSC,
     GROUP_CODE_UKRR
 )
 from radar.models.patients import Patient
@@ -110,14 +110,14 @@ def test_chi_no_invalid(number):
     invalid(number)
 
 
-def test_handc_no_valid(number):
-    number['number_group'] = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE.OTHER)
+def test_hsc_no_valid(number):
+    number['number_group'] = Group(code=GROUP_CODE_HSC, type=GROUP_TYPE.OTHER)
     number['number'] = '3232255825'
     valid(number)
 
 
-def test_handc_no_invalid(number):
-    number['number_group'] = Group(code=GROUP_CODE_HANDC, type=GROUP_TYPE.OTHER)
+def test_hsc_no_invalid(number):
+    number['number_group'] = Group(code=GROUP_CODE_HSC, type=GROUP_TYPE.OTHER)
     number['number'] = '9434765918'
     invalid(number)
 

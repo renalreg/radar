@@ -100,4 +100,11 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         if self.is_duplicate(data):
             raise ValidationError({'group': 'Patient already belongs to this group.'})
 
+        # Check the from date isn't before the date the patient was added to RaDaR
+        if not data['group'].is_radar():
+            recruited_date = data['patient'].recruited_date
+
+            if recruited_date is not None and data['from_date'] < recruited_date.date():
+                raise ValidationError({'from_date': "Must be on or after the recruitment date."})
+
         return data

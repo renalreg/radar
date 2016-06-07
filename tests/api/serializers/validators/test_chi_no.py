@@ -24,7 +24,7 @@ def test_nhs_no():
     invalid('9434765919')
 
 
-def test_handc_no():
+def test_hsc_no():
     invalid('3232255825')
 
 

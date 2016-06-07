@@ -39,7 +39,7 @@ def test_chi_no():
     invalid('101299877')
 
 
-def test_handc_no():
+def test_hsc_no():
     invalid('3232255825')
 
 
