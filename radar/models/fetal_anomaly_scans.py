@@ -26,5 +26,13 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     right_ultrasound_details = Column(String)
     left_anomaly_details = Column(String)
     left_ultrasound_details = Column(String)
+    hypoplasia = Column(Boolean)
+    echogenicity = Column(Boolean)
+    hepatic_abnormalities = Column(Boolean)
+    hepatic_abnormality_details = Column(String)
+    lung_abnormalities = Column(Boolean)
+    lung_abnormality_details = Column(String)
+    amnioinfusion = Column(Boolean)
+    amnioinfusion_count = Column(Integer)
 
 Index('fetal_anomaly_scans_patient_idx', FetalAnomalyScan.patient_id)
