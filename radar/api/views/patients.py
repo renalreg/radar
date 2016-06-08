@@ -1,3 +1,5 @@
+import re
+
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 
@@ -13,6 +15,7 @@ from radar.api.views.generics import (
     parse_args
 )
 from radar.models.patients import Patient
+from radar.models.groups import Group
 from radar.patient_search import PatientQueryBuilder
 
 
@@ -85,7 +88,15 @@ class PatientListView(ListModelView):
         sort, reverse = self.get_sort_args()
 
         if sort is not None:
-            builder.sort(sort, reverse)
+            m = re.match('^group_([0-9]+)', sort)
+
+            if m:
+                group = Group.query.get(int(m.group(1)))
+
+                if group is not None:
+                    builder.sort_by_group(group, reverse)
+            else:
+                builder.sort(sort, reverse)
 
         query = builder.build(current=current)
 

@@ -100,6 +100,16 @@ class PatientQueryBuilder(object):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
         return self
 
+    def sort_by_group(self, group, reverse=False):
+        clause = sort_by_group(group)
+
+        if reverse:
+            clause = clause.desc()
+
+        self.query = self.query.order_by(clause)
+
+        return self
+
     def build(self, permissions=True, current=None):
         query = self.query
 
@@ -183,6 +193,7 @@ def filter_by_patient_number(number, exact=False):
         # Also search RaDaR IDs
         query = or_(query, filter_by_patient_id(int(number)))
     except ValueError:
+        # Not a valid RaDaR ID
         pass
 
     return query
@@ -317,3 +328,10 @@ def sort_patients(user, sort_by, reverse=False):
     clauses.append(sort_by_radar_id())
 
     return clauses
+
+
+def sort_by_group(group):
+    q = db.session.query(func.min(GroupPatient.from_date))
+    q = q.filter(GroupPatient.patient_id == Patient.id)
+    q = q.filter(GroupPatient.group_id == group.id)
+    return q.as_scalar()

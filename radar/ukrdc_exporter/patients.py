@@ -162,6 +162,8 @@ def export_patient_numbers(sda_patient, patient, group):
 
     sda_patient_numbers = sda_patient.setdefault('patient_numbers', list())
 
+    # The SDA must include a MRN otherwise all patients will be grouped under a NULL MRN
+    # The MRN must appear first in the list of numbers as the organization code is used as the facility
     sda_patient_number = {
         'number': str(patient.id),
         'number_type': 'MRN',
@@ -170,7 +172,6 @@ def export_patient_numbers(sda_patient, patient, group):
             'description': 'RaDaR'
         }
     }
-
     sda_patient_numbers.append(sda_patient_number)
 
     national_identifiers = {
@@ -179,6 +180,7 @@ def export_patient_numbers(sda_patient, patient, group):
         (GROUP_TYPE.OTHER, GROUP_CODE_HSC),
     }
 
+    # Export national identifiers
     for patient_number in patient_numbers:
         key = (patient_number.number_group.type, patient_number.number_group.code)
 
