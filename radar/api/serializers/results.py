@@ -10,7 +10,8 @@ from radar.api.serializers.common import (
     SourceMixin,
     MetaMixin,
     StringLookupField,
-    EnumLookupField
+    EnumLookupField,
+    GroupSerializer
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.results import (
@@ -78,6 +79,7 @@ class BaseObservationSerializer(serializers.Serializer):
     short_name = fields.StringField()
     value_type = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
     sample_type = EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
+    groups = fields.ListField(child=GroupSerializer())
 
 
 class ObservationSerializer(serializers.ProxySerializer):
