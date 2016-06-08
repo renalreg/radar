@@ -59,6 +59,12 @@ class Observation(db.Model):
     pv_code = Column(String)
     properties = Column(postgresql.JSONB, nullable=False)
 
+    group_observations = relationship('GroupObservation')
+
+    @property
+    def groups(self):
+        return [x.group for x in self.group_observations]
+
     @property
     def min_value(self):
         return self.properties.get('min_value')
