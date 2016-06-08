@@ -136,3 +136,20 @@ class Result(db.Model, MetaModelMixin):
             return None
 
 Index('results_patient_idx', Result.patient_id)
+
+
+@log_changes
+class GroupObservation(db.Model):
+    __tablename__ = 'group_observations'
+
+    id = Column(Integer, primary_key=True)
+
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
+
+    observation_id = Column(Integer, ForeignKey('observations.id'), nullable=False)
+    observation = relationship('Observation')
+
+Index('group_observations_group_idx', GroupObservation.group_id)
+Index('group_observations_observation_idx', GroupObservation.observation_id)
+Index('group_observations_observation_group_idx', GroupObservation.observation_id, GroupObservation.group_id, unique=True)
