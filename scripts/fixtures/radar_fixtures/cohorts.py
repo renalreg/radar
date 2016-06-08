@@ -23,6 +23,43 @@ COHORTS = [
             PAGE.DIAGNOSES,
         ],
     },
+    {
+        'code': 'ADPKD',
+        'name': 'Autosomal Dominant Polycystic Kidney Disease',
+        'short_name': 'ADPKD',
+        'pages': [
+            PAGE.PRIMARY_DIAGNOSIS,
+            PAGE.DIAGNOSES,
+            PAGE.GENETICS,
+            PAGE.FAMILY_HISTORY,
+            PAGE.RENAL_IMAGING,
+            PAGE.LIVER_IMAGING,
+            PAGE.LIVER_DISEASES,
+            PAGE.RESULTS,
+            PAGE.TRANSPLANTS,
+            PAGE.LIVER_TRANSPLANTS,
+        ]
+    },
+    {
+        'code': 'ARPKD',
+        'name': 'Autosomal Recessive Polycystic Kidney Disease',
+        'short_name': 'ARPKD',
+        'pages': [
+            PAGE.PRIMARY_DIAGNOSIS,
+            PAGE.DIAGNOSES,
+            PAGE.GENETICS,
+            PAGE.FAMILY_HISTORY,
+            PAGE.FETAL_ULTRASOUNDS,
+            PAGE.FETAL_ANOMALY_SCANS,
+            PAGE.RENAL_IMAGING,
+            PAGE.LIVER_IMAGING,
+            PAGE.LIVER_DISEASES,
+            PAGE.RESULTS,
+            PAGE.NUTRITION,
+            PAGE.LIVER_TRANSPLANTS,
+            PAGE.NEPHRECTOMIES,
+        ]
+    }
 ]
 
 
