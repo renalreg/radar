@@ -106,5 +106,5 @@ class GroupDiagnosis(db.Model):
     type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
-Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.group_id)
+Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)
 Index('group_diagnoses_diagnosis_group_idx', GroupDiagnosis.diagnosis_id, GroupDiagnosis.group_id, unique=True)
