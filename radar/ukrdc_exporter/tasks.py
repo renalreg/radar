@@ -46,7 +46,7 @@ def export_sda(patient_id):
 
     if patient is None:
         logger.error('Patient not found id={}'.format(patient_id))
-        return
+        return []
 
     groups = set(patient.groups)
     sda_containers = []
@@ -107,7 +107,7 @@ def send_to_ukrdc(self, sda_containers):
 
         try:
             # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
-            r = requests.post(url, data=data, timeout=timeout)
+            r = requests.post(url, data=data, timeout=timeout, headers={'Content-Type': 'application/json'})
             r.raise_for_status()
         except requests.exceptions.RequestException as e:
             self.retry(exc=e, countdown=retry_countdown)

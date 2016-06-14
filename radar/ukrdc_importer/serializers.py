@@ -68,7 +68,7 @@ class MedicationSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField()
     to_time = SDADateTimeField(required=False)
-    dose_u_o_m = CodeDescriptionSerializer()
+    dose_uom = CodeDescriptionSerializer()
     drug_product = DrugProductSerializer()
     entering_organization = CodeDescriptionSerializer()
 

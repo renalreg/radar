@@ -51,8 +51,8 @@ class SDAMedication(object):
         return get_path(self.data, 'drug_product', 'product_name')
 
     @property
-    def dose_u_o_m(self):
-        return get_path(self.data, 'dose_u_o_m', 'code')
+    def dose_uom(self):
+        return get_path(self.data, 'dose_uom', 'code')
 
     @property
     def entering_organization(self):
@@ -145,7 +145,7 @@ def convert_medications(patient, sda_medications):
         medication.from_date = sda_medication.from_date
         medication.to_date = sda_medication.to_date
         medication.drug_text = sda_medication.drug_product
-        medication.dose_text = sda_medication.dose_u_o_m
+        medication.dose_text = sda_medication.dose_uom
 
         db.session.add(medication)
         medications.append(medication)

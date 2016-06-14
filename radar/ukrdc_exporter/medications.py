@@ -38,7 +38,7 @@ def export_medications(sda_container, patient, group):
             continue
 
         if medication.dose_text:
-            sda_medication['dose_u_o_m'] = {
+            sda_medication['dose_uom'] = {
                 'code': medication.dose_text,
                 'description': medication.dose_text
             }
@@ -51,7 +51,7 @@ def export_medications(sda_container, patient, group):
                 description = MEDICATION_DOSE_UNITS.get(code)
 
                 if description:
-                    sda_medication['dose_u_o_m'] = {
+                    sda_medication['dose_uom'] = {
                         'sda_coding_standard': 'RADAR',
                         'code': code,
                         'description': description,

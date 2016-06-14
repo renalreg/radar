@@ -26,14 +26,14 @@ def export_name(sda_patient, patient):
             sda_name['family_name'] = patient.last_name
 
 
-def export_date_birth(sda_patient, patient):
+def export_birth_time(sda_patient, patient):
     if patient.date_of_birth:
-        sda_patient['date_birth'] = patient.date_of_birth
+        sda_patient['birth_time'] = patient.date_of_birth
 
 
-def export_date_death(sda_patient, patient):
+def export_death_time(sda_patient, patient):
     if patient.date_of_death:
-        sda_patient['date_death'] = patient.date_of_death
+        sda_patient['death_time'] = patient.date_of_death
 
 
 def export_gender(sda_patient, patient):
@@ -202,8 +202,8 @@ def export_patient_numbers(sda_patient, patient, group):
 def export_patient(sda_container, patient, group):
     sda_patient = sda_container.setdefault('patient', dict())
     export_name(sda_patient, patient)
-    export_date_birth(sda_patient, patient)
-    export_date_death(sda_patient, patient)
+    export_birth_time(sda_patient, patient)
+    export_death_time(sda_patient, patient)
     export_gender(sda_patient, patient)
     export_ethnic_group(sda_patient, patient)
     export_contact_info(sda_patient, patient)
