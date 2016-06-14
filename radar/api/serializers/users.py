@@ -20,7 +20,7 @@ from radar.models.users import User
 
 class UserSerializer(MetaMixin, ModelSerializer):
     id = fields.IntegerField(read_only=True)
-    username = fields.StringField()  # TODO username()
+    username = fields.StringField(validators=[lower()])
     email = fields.StringField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
     first_name = fields.StringField(required=False, validators=[none_if_blank(), optional()])
     last_name = fields.StringField(required=False, validators=[none_if_blank(), optional()])
