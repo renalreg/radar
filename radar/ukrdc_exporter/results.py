@@ -26,6 +26,7 @@ def export_lab_orders(sda_container, patient, group):
                 'description': result.observation.pv_code
             },
             'result': {
+                'result_time': result.date,
                 'result_items': [
                     {
                         'observation_time': result.date,
