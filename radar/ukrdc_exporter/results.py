@@ -42,6 +42,10 @@ def export_lab_orders(sda_container, patient, group):
             'entering_organization': {
                 'code': result.source_group.code,
                 'description': result.source_group.name
+            },
+            'entered_at': {
+                'code': 'RADAR',
+                'description': 'RaDaR'
             }
         }
 

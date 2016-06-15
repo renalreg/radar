@@ -67,6 +67,7 @@ class MedicationSerializer(serializers.Serializer):
     dose_uom = CodeDescriptionSerializer(required=False)
     order_item = CodeDescriptionSerializer()
     entering_organization = CodeDescriptionSerializer()
+    entered_at = CodeDescriptionSerializer(required=False)
 
 
 class LabResultItemSerializer(serializers.Serializer):
@@ -84,6 +85,7 @@ class LabOrderSerializer(serializers.Serializer):
     from_time = SDADateTimeField(required=False)
     entering_organization = CodeDescriptionSerializer()
     result = ResultSerializer()
+    entered_at = CodeDescriptionSerializer(required=False)
 
 
 class ContainerSerializer(serializers.Serializer):

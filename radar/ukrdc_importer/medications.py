@@ -58,6 +58,10 @@ class SDAMedication(object):
     def entering_organization(self):
         return get_path(self.data, 'entering_organization', 'code')
 
+    @property
+    def entered_at(self):
+        return get_path(self.data, 'entered_at', 'code')
+
 
 def parse_medications(sda_medications):
     def log(index, sda_medication, e):
@@ -116,15 +120,15 @@ def convert_medications(patient, sda_medications):
     medications = list()
 
     for sda_medication in sda_medications:
+        # Ignore RaDaR data
+        if sda_medication.entered_at == 'RADAR':
+            continue
+
         code = sda_medication.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
             logger.error('Ignoring medication due to unknown entering organization code={code}'.format(code=code))
-            continue
-
-        # Ignore RaDaR data
-        if source_group.is_radar():
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)

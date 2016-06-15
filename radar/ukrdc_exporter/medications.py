@@ -94,4 +94,9 @@ def export_medications(sda_container, patient, group):
             'description': medication.source_group.name
         }
 
+        sda_medication['entered_at'] = {
+            'code': 'RADAR',
+            'description': 'RaDaR'
+        }
+
         sda_medications.append(sda_medication)

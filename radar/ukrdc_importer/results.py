@@ -57,6 +57,10 @@ class SDALabOrder(object):
     def entering_organization(self):
         return get_path(self.data, 'entering_organization', 'code')
 
+    @property
+    def entered_at(self):
+        return get_path(self.data, 'entered_at', 'code')
+
 
 def parse_results(sda_lab_orders):
     def log(index, sda_lab_order, e):
@@ -165,15 +169,15 @@ def convert_results(patient, sda_lab_orders):
     results = list()
 
     for sda_lab_order in sda_lab_orders:
+        # Ignore RaDaR data
+        if sda_lab_order.entered_at == 'RADAR':
+            continue
+
         code = sda_lab_order.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
             logger.error('Ignoring lab order due to unknown entering organization code={code}'.format(code=code))
-            continue
-
-        # Ignore RaDaR data
-        if source_group.is_radar():
             continue
 
         for sda_lab_result_item in sda_lab_order.results:
