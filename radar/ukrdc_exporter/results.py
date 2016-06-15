@@ -41,8 +41,8 @@ def export_lab_orders(sda_container, patient, group):
             },
             'entering_organization': {
                 'code': result.source_group.code,
-                'description': result.source_group.description
+                'description': result.source_group.name
             }
         }
 
-        sda_lab_orders.appned(sda_lab_order)
+        sda_lab_orders.append(sda_lab_order)
