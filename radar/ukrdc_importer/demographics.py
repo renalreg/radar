@@ -116,41 +116,24 @@ def parse_demographics(sda_patient):
     return sda_patient
 
 
-def get_demographics(demographics_id):
-    return PatientDemographics.query.get(demographics_id)
-
-
-def get_demographics_list(patient):
+def get_demographics(patient):
     q = PatientDemographics.query
     q = q.filter(PatientDemographics.source_type == 'UKRDC')
     q = q.filter(PatientDemographics.patient == patient)
-    return q.all()
-
-
-def sync_demographics(patient, demographics_to_keep):
-    def log(demographics):
-        logger.info('Deleting demographics id={}'.format(demographics.id))
-
-    demographics_list = get_demographics_list(patient)
-    delete_list(demographics_list, [demographics_to_keep], delete_f=log)
-
-
-def build_demographics_id(patient, sda_patient):
-    return build_id(patient.id, PatientDemographics.__tablename__)
+    return q.first()
 
 
 def convert_demographics(patient, sda_patient):
     source_group = get_import_group()
     user = get_import_user()
 
-    demographics_id = build_demographics_id(patient, sda_patient)
-    demographics = get_demographics(demographics_id)
+    demographics = get_demographics(patient)
 
     if demographics is None:
-        logger.info('Creating demographics id={id}'.format(id=demographics_id))
-        demographics = PatientDemographics(id=demographics_id)
+        logger.info('Creating demographics')
+        demographics = PatientDemographics()
     else:
-        logger.info('Updating demographics id={id}'.format(id=demographics_id))
+        logger.info('Updating demographics id={id}'.format(id=demographics.id))
 
     demographics.patient = patient
     demographics.source_group = source_group
@@ -180,8 +163,7 @@ def import_demographics(patient, sda_patient):
     sda_patient = parse_demographics(sda_patient)
 
     if sda_patient:
-        demographics = convert_demographics(patient, sda_patient)
-        sync_demographics(patient, demographics)
+        convert_demographics(patient, sda_patient)
         n = 1
     else:
         n = 0
