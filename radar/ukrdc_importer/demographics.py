@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class SDAPatient(object):
-    MALE = ['0', 'M', 'MALE']
-    FEMALE = ['1', 'F', 'FEMALE']
+    MALE = ['1', 'M', 'MALE']
+    FEMALE = ['2', 'F', 'FEMALE']
     ETHNICITY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'Z']
 
     def __init__(self, data):
