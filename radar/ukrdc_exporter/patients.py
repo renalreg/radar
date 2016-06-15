@@ -10,6 +10,7 @@ from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import GENDERS, ETHNICITIES
+from radar.utils import date_to_datetime
 
 
 logger = logging.getLogger(__name__)
@@ -28,12 +29,12 @@ def export_name(sda_patient, patient):
 
 def export_birth_time(sda_patient, patient):
     if patient.date_of_birth:
-        sda_patient['birth_time'] = patient.date_of_birth
+        sda_patient['birth_time'] = date_to_datetime(patient.date_of_birth)
 
 
 def export_death_time(sda_patient, patient):
     if patient.date_of_death:
-        sda_patient['death_time'] = patient.date_of_death
+        sda_patient['death_time'] = date_to_datetime(patient.date_of_death)
 
 
 def export_gender(sda_patient, patient):

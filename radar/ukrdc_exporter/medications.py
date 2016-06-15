@@ -1,6 +1,7 @@
 import logging
 
 from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
+from radar.utils import date_to_datetime
 
 
 logger = logging.getLogger(__name__)
@@ -21,10 +22,10 @@ def export_medications(sda_container, patient, group):
     for medication in medications:
         sda_medication = dict()
         sda_medication['external_id'] = str(medication.id)
-        sda_medication['from_time'] = medication.from_date
+        sda_medication['from_time'] = date_to_datetime(medication.from_date)
 
         if medication.to_date:
-            sda_medication['to_time'] = medication.to_date
+            sda_medication['to_time'] = date_to_datetime(medication.to_date)
 
         if medication.drug_text:
             sda_medication['drug_product'] = {
