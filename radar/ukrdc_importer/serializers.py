@@ -60,16 +60,12 @@ class PatientNumberSerializer(serializers.Serializer):
     organization = CodeDescriptionSerializer()
 
 
-class DrugProductSerializer(serializers.Serializer):
-    product_name = fields.StringField()
-
-
 class MedicationSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField()
     to_time = SDADateTimeField(required=False)
-    dose_uom = CodeDescriptionSerializer()
-    drug_product = DrugProductSerializer()
+    dose_uom = CodeDescriptionSerializer(required=False)
+    order_item = CodeDescriptionSerializer()
     entering_organization = CodeDescriptionSerializer()
 
 
