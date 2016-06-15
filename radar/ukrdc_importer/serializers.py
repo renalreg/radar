@@ -83,6 +83,7 @@ class LabOrderSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField(required=False)
     entering_organization = CodeDescriptionSerializer()
+    result = ResultSerializer()
 
 
 class ContainerSerializer(serializers.Serializer):
