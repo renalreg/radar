@@ -30,9 +30,19 @@ def export_medications(sda_container, patient, group):
             sda_medication['drug_product'] = {
                 'product_name': medication.drug_text
             }
+
+            sda_medication['order_item'] = {
+                'code': medication.drug_text,
+                'description': medication.drug_text
+            }
         elif medication.drug:
             sda_medication['drug_product'] = {
                 'product_name': medication.drug.name
+            }
+
+            sda_medication['order_item'] = {
+                'code': medication.drug.name,
+                'description': medication.drug.name
             }
         else:
             continue
