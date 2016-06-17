@@ -77,6 +77,6 @@ class TransplantBiopsy(db.Model):
     transplant = relationship('Transplant', backref=backref('biopsies', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_biopsy = Column(Date, nullable=False)
-    recurrence = Column(Boolean, nullable=False)
+    recurrence = Column(Boolean)
 
 Index('transplant_biopsies_transplant_idx', TransplantBiopsy.transplant_id)
