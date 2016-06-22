@@ -118,6 +118,7 @@ def parse_demographics(sda_patient):
 
 def get_demographics(patient):
     q = PatientDemographics.query
+    q = q.filter(PatientDemographics.source_group == get_import_group())
     q = q.filter(PatientDemographics.source_type == 'UKRDC')
     q = q.filter(PatientDemographics.patient == patient)
     return q.first()
