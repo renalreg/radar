@@ -76,6 +76,12 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
 
         return data
 
+    def validate_diagnosis(self, diagnosis):
+        if diagnosis.retired:
+            raise ValidationError('Diagnosis has been retired, please choose another diagnosis.')
+
+        return diagnosis
+
     def validate(self, data):
         if data['diagnosis'] is None and data['diagnosis_text'] is None:
             raise ValidationError({

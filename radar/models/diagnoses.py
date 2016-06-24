@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text
 from sqlalchemy.orm import relationship
 from enum import Enum
 
@@ -78,6 +78,7 @@ class Diagnosis(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    retired = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     group_diagnoses = relationship('GroupDiagnosis')
 
