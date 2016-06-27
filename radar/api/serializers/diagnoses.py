@@ -1,7 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import none_if_blank, optional, max_length
+from cornflake.validators import none_if_blank, optional, max_length, min_length
 from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
@@ -26,6 +26,7 @@ class GroupDiagnosisSerializer(serializers.Serializer):
 
 
 class DiagnosisSerializer(ModelSerializer):
+    name = fields.StringField(validators=[min_length(1), max_length(1000)])
     groups = fields.ListField(child=GroupDiagnosisSerializer(), source='group_diagnoses')
 
     class Meta(object):
