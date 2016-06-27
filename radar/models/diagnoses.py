@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from enum import Enum
 
 from radar.database import db
@@ -80,8 +80,6 @@ class Diagnosis(db.Model):
     name = Column(String, nullable=False)
     retired = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
-    group_diagnoses = relationship('GroupDiagnosis')
-
     @property
     def groups(self):
         return [x.group for x in self.group_diagnoses]
@@ -95,6 +93,12 @@ class GROUP_DIAGNOSIS_TYPE(Enum):
         return self.value
 
 
+GROUP_DIAGNOSIS_TYPE_NAMES = OrderedDict([
+    (GROUP_DIAGNOSIS_TYPE.PRIMARY, 'Primary'),
+    (GROUP_DIAGNOSIS_TYPE.SECONDARY, 'Secondary'),
+])
+
+
 @log_changes
 class GroupDiagnosis(db.Model):
     __tablename__ = 'group_diagnoses'
@@ -105,7 +109,7 @@ class GroupDiagnosis(db.Model):
     group = relationship('Group')
 
     diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'), nullable=False)
-    diagnosis = relationship('Diagnosis')
+    diagnosis = relationship('Diagnosis', backref=backref('group_diagnoses', cascade='all, delete-orphan', passive_deletes=True))
 
     type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
 

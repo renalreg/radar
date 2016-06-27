@@ -8,29 +8,74 @@ from radar.api.serializers.common import (
     PatientMixin,
     SourceMixin,
     MetaMixin,
-    TinyGroupSerializer,
-    IntegerLookupField
+    IntegerLookupField,
+    GroupField,
+    EnumLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
+from radar.database import db
 from radar.models.diagnoses import (
     Diagnosis,
     PatientDiagnosis,
     BIOPSY_DIAGNOSES,
-    GROUP_DIAGNOSIS_TYPE
+    GROUP_DIAGNOSIS_TYPE,
+    GROUP_DIAGNOSIS_TYPE_NAMES,
+    GroupDiagnosis
 )
 
 
-class GroupDiagnosisSerializer(serializers.Serializer):
-    group = TinyGroupSerializer()
-    type = fields.EnumField(GROUP_DIAGNOSIS_TYPE)
+class GroupDiagnosisSerializer(ModelSerializer):
+    group = GroupField()
+    type = EnumLookupField(GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES)
+
+    class Meta(object):
+        model_class = GroupDiagnosis
+        exclude = ['id', 'group_id', 'diagnosis_id']
+
+
+class GroupDiagnosisListSerializer(serializers.ListSerializer):
+    child = GroupDiagnosisSerializer()
+
+    def validate(self, group_diagnoses):
+        groups = set()
+
+        for i, group_diagnosis in enumerate(group_diagnoses):
+            group = group_diagnosis['group']
+
+            if group in groups:
+                raise ValidationError({i: {'group': 'Duplicate group.'}})
+            else:
+                groups.add(group)
+
+        return group_diagnoses
 
 
 class DiagnosisSerializer(ModelSerializer):
     name = fields.StringField(validators=[min_length(1), max_length(1000)])
-    groups = fields.ListField(child=GroupDiagnosisSerializer(), source='group_diagnoses')
+    groups = GroupDiagnosisListSerializer(source='group_diagnoses')
+    retired = fields.BooleanField()
 
     class Meta(object):
         model_class = Diagnosis
+
+    def _save(self, instance, data):
+        instance.name = data['name']
+        instance.retired = data['retired']
+        instance.group_diagnoses = self.fields['groups'].create(data['group_diagnoses'])
+
+    def create(self, data):
+        instance = Diagnosis()
+        self._save(instance, data)
+        return instance
+
+    def update(self, instance, data):
+        # Unique constraint fails unless we flush the deletes before the inserts
+        instance.group_diagnoses = []
+        db.session.flush()
+
+        self._save(instance, data)
+
+        return instance
 
 
 class TinyDiagnosisSerializer(ModelSerializer):
