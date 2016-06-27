@@ -53,7 +53,7 @@ class GroupDiagnosisListSerializer(serializers.ListSerializer):
 class DiagnosisSerializer(ModelSerializer):
     name = fields.StringField(validators=[min_length(1), max_length(1000)])
     groups = GroupDiagnosisListSerializer(source='group_diagnoses')
-    retired = fields.BooleanField()
+    retired = fields.BooleanField(default=False)
 
     class Meta(object):
         model_class = Diagnosis
