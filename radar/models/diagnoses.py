@@ -91,6 +91,9 @@ class GROUP_DIAGNOSIS_TYPE(Enum):
     PRIMARY = 'PRIMARY'
     SECONDARY = 'SECONDARY'
 
+    def __str__(self):
+        return self.value
+
 
 @log_changes
 class GroupDiagnosis(db.Model):
