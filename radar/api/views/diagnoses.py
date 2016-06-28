@@ -1,14 +1,22 @@
 from cornflake import fields, serializers
 
+from radar.api.permissions import AdminPermission
 from radar.api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer
 from radar.api.views.common import (
     IntegerLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,
-    PatientObjectListView
+    PatientObjectListView,
+    StringLookupListView
+)
+from radar.api.views.generics import (
+    CreateModelView,
+    RetrieveModelView,
+    UpdateModelView,
+    DestroyModelView
 )
 from radar.api.views.generics import ListModelView, parse_args
-from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE
+from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES
 
 
 class DiagnosisRequestSerializer(serializers.Serializer):
@@ -84,12 +92,43 @@ class DiagnosisListView(ListModelView):
         return query
 
 
+class DiagnosisCreateView(CreateModelView):
+    serializer_class = DiagnosisSerializer
+    model_class = Diagnosis
+    permissions = [AdminPermission]
+
+
+class DiagnosisRetrieveView(RetrieveModelView):
+    serializer_class = DiagnosisSerializer
+    model_class = Diagnosis
+
+
+class DiagnosisUpdateView(UpdateModelView):
+    serializer_class = DiagnosisSerializer
+    model_class = Diagnosis
+    permissions = [AdminPermission]
+
+
+class DiagnosisDestroyView(DestroyModelView):
+    model_class = Diagnosis
+    permissions = [AdminPermission]
+
+
 class BiopsyDiagnosisListView(IntegerLookupListView):
     items = BIOPSY_DIAGNOSES
+
+
+class GroupDiagnosisTypeListView(StringLookupListView):
+    items = GROUP_DIAGNOSIS_TYPE_NAMES
 
 
 def register_views(app):
     app.add_url_rule('/patient-diagnoses', view_func=PatientDiagnosisListView.as_view('patient_diagnosis_list'))
     app.add_url_rule('/patient-diagnoses/<id>', view_func=PatientDiagnosisDetailView.as_view('patient_diagnosis_detail'))
     app.add_url_rule('/diagnoses', view_func=DiagnosisListView.as_view('diagnosis_list'))
+    app.add_url_rule('/diagnoses', view_func=DiagnosisCreateView.as_view('diagnosis_create'))
+    app.add_url_rule('/diagnoses/<id>', view_func=DiagnosisRetrieveView.as_view('diagnosis_retrieve'))
+    app.add_url_rule('/diagnoses/<id>', view_func=DiagnosisUpdateView.as_view('diagnosis_update'))
+    app.add_url_rule('/diagnoses/<id>', view_func=DiagnosisDestroyView.as_view('diagnosis_destroy'))
     app.add_url_rule('/biopsy-diagnoses', view_func=BiopsyDiagnosisListView.as_view('biopsy_diagnosis_list'))
+    app.add_url_rule('/group-diagnosis-types', view_func=GroupDiagnosisTypeListView.as_view('group_diagnosis_type_list'))

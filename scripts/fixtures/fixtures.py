@@ -16,7 +16,6 @@ def do_create():
     db.create_all()
 
 
-
 @click.group()
 @click.option('--connection-string', default='postgresql://radar:password@localhost/radar')
 @click.pass_context

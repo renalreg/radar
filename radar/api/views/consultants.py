@@ -64,6 +64,7 @@ class ConsultantListView(ListModelView):
 class ConsultantCreateView(CreateModelView):
     serializer_class = ConsultantSerializer
     model_class = Consultant
+    permissions = [AdminPermission]
 
 
 class ConsultantRetrieveView(RetrieveModelView):

@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from sqlalchemy import func
-
 from radar.database import db
 from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR, GROUP_CODE_NHS
 from radar.models.patient_demographics import PatientDemographics
@@ -80,7 +78,7 @@ def add_user_to_group(user, group, role, **kwargs):
 
 
 def add_patient_to_group(patient, group, **kwargs):
-    kwargs.setdefault('from_date', func.now())
+    kwargs.setdefault('from_date', datetime(2000, 1, 1))
     kwargs.setdefault('created_group', group)
     set_default_users(kwargs)
 
