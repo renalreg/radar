@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytz
 from cornflake import fields, serializers
+from cornflake.exceptions import ValidationError
 
 
 def parse_sda_datetime(value):
@@ -21,6 +22,28 @@ class SDADateTimeField(fields.DateTimeField):
 class CodeDescriptionSerializer(serializers.Serializer):
     code = fields.StringField()
     description = fields.StringField()
+
+
+class LooseCodeDescriptionSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    description = fields.StringField(required=False)
+
+
+class _OrganizationSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    description = fields.StringField(required=False)
+
+
+class EnteringOrganizationSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    description = fields.StringField(required=False)
+    organization = _OrganizationSerializer(required=False)
+
+    def validate(self, data):
+        if data['code'] is None and (data['organization'] is None or data['organization']['code'] is None):
+            raise ValidationError({'code': 'This field is required.'})
+
+        return data
 
 
 class AddressSerializer(serializers.Serializer):
@@ -64,9 +87,9 @@ class MedicationSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField()
     to_time = SDADateTimeField(required=False)
-    dose_uom = CodeDescriptionSerializer(required=False)
+    dose_uom = LooseCodeDescriptionSerializer(required=False)
     order_item = CodeDescriptionSerializer()
-    entering_organization = CodeDescriptionSerializer()
+    entering_organization = EnteringOrganizationSerializer()
     entered_at = CodeDescriptionSerializer(required=False)
 
 
@@ -83,7 +106,7 @@ class ResultSerializer(serializers.Serializer):
 class LabOrderSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField(required=False)
-    entering_organization = CodeDescriptionSerializer()
+    entering_organization = EnteringOrganizationSerializer()
     result = ResultSerializer()
     entered_at = CodeDescriptionSerializer(required=False)
 

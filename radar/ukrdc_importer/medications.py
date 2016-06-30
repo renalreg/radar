@@ -52,11 +52,17 @@ class SDAMedication(object):
 
     @property
     def dose_uom(self):
-        return get_path(self.data, 'dose_uom', 'code')
+        return (
+            get_path(self.data, 'dose_uom', 'code') or
+            get_path(self.data, 'dose_uom', 'description')
+        )
 
     @property
     def entering_organization(self):
-        return get_path(self.data, 'entering_organization', 'code')
+        return (
+            get_path(self.data, 'entering_organization', 'organization', 'code') or
+            get_path(self.data, 'entering_organization', 'code')
+        )
 
     @property
     def entered_at(self):
