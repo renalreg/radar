@@ -106,7 +106,7 @@ def get_results(patient):
 
 
 def get_observation(code):
-    return Observation.query.filter(Observation.pv_code == code).first()
+    return Observation.query.filter(Observation.pv_code == code.upper()).first()
 
 
 def find_earliest_observations(results):
