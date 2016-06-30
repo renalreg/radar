@@ -233,4 +233,4 @@ def import_results(patient, sda_lab_orders):
     results = convert_results(patient, sda_lab_orders)
     sync_results(patient, results)
 
-    logger.info('Imported {n} results(s)'.format(n=len(results)))
+    logger.info('Imported {n} result(s)'.format(n=len(results)))
