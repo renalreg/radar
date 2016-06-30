@@ -47,16 +47,20 @@ class SDAMedication(object):
             return to_time.date()
 
     @property
-    def drug_product(self):
-        return get_path(self.data, 'drug_product', 'product_name')
+    def order_item_description(self):
+        return get_path(self.data, 'order_item', 'description')
 
     @property
-    def dose_u_o_m(self):
-        return get_path(self.data, 'dose_u_o_m', 'code')
+    def dose_uom(self):
+        return get_path(self.data, 'dose_uom', 'code')
 
     @property
     def entering_organization(self):
         return get_path(self.data, 'entering_organization', 'code')
+
+    @property
+    def entered_at(self):
+        return get_path(self.data, 'entered_at', 'code')
 
 
 def parse_medications(sda_medications):
@@ -116,15 +120,15 @@ def convert_medications(patient, sda_medications):
     medications = list()
 
     for sda_medication in sda_medications:
+        # Ignore RaDaR data
+        if sda_medication.entered_at == 'RADAR':
+            continue
+
         code = sda_medication.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
             logger.error('Ignoring medication due to unknown entering organization code={code}'.format(code=code))
-            continue
-
-        # Ignore RaDaR data
-        if source_group.is_radar():
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)
@@ -144,8 +148,8 @@ def convert_medications(patient, sda_medications):
 
         medication.from_date = sda_medication.from_date
         medication.to_date = sda_medication.to_date
-        medication.drug_text = sda_medication.drug_product
-        medication.dose_text = sda_medication.dose_u_o_m
+        medication.drug_text = sda_medication.order_item_description
+        medication.dose_text = sda_medication.dose_uom
 
         db.session.add(medication)
         medications.append(medication)

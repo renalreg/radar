@@ -82,7 +82,7 @@ CELERY_RESULT_PERSISTENT = False
 Run the API with:
 
 ```
-RADAR_SETTINGS=$(pwd)/settings.py python radar_ukrdc/api.py
+RADAR_SETTINGS=/path/to/settings.py python radar_ukrdc/api.py
 ```
 
 | URL            | HTTP Method | Input                                          | Output                                    |

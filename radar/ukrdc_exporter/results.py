@@ -26,6 +26,7 @@ def export_lab_orders(sda_container, patient, group):
                 'description': result.observation.pv_code
             },
             'result': {
+                'result_time': result.date,
                 'result_items': [
                     {
                         'observation_time': result.date,
@@ -40,8 +41,12 @@ def export_lab_orders(sda_container, patient, group):
             },
             'entering_organization': {
                 'code': result.source_group.code,
-                'description': result.source_group.description
+                'description': result.source_group.name
+            },
+            'entered_at': {
+                'code': 'RADAR',
+                'description': 'RaDaR'
             }
         }
 
-        sda_lab_orders.appned(sda_lab_order)
+        sda_lab_orders.append(sda_lab_order)

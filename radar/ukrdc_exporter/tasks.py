@@ -2,6 +2,7 @@ import logging
 import requests
 import json
 from decimal import Decimal
+from datetime import date, datetime
 
 from celery import shared_task, chain
 
@@ -46,7 +47,7 @@ def export_sda(patient_id):
 
     if patient is None:
         logger.error('Patient not found id={}'.format(patient_id))
-        return
+        return []
 
     groups = set(patient.groups)
     sda_containers = []
@@ -87,12 +88,18 @@ def _export_sda(patient, group):
     return sda_container
 
 
-class DecimalEncoder(json.JSONEncoder):
+class Encoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Decimal):
             return float(o)
+        elif isinstance(o, datetime):
+            # HS doesn't handle microseconds
+            o = o.replace(microsecond=0)
+            return o.isoformat()
+        elif isinstance(o, date):
+            return o.isoformat()
 
-        return super(DecimalEncoder, self).default(o)
+        return super(Encoder, self).default(o)
 
 
 # TODO this can be done in parallel
@@ -103,11 +110,11 @@ def send_to_ukrdc(self, sda_containers):
     retry_countdown = config.get('UKRDC_EXPORTER_COUNTDOWN', 60)
 
     for sda_container in sda_containers:
-        data = json.dumps(sda_container, cls=DecimalEncoder)
+        data = json.dumps(sda_container, cls=Encoder)
 
         try:
             # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
-            r = requests.post(url, data=data, timeout=timeout)
+            r = requests.post(url, data=data, timeout=timeout, headers={'Content-Type': 'application/json'})
             r.raise_for_status()
         except requests.exceptions.RequestException as e:
             self.retry(exc=e, countdown=retry_countdown)

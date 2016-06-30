@@ -9,9 +9,7 @@ SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 
 
 def date_to_datetime(d):
-    dt = datetime(year=d.year, month=d.month, day=d.day)
-    dt = pytz.timezone('Europe/London').localize(dt)
-    return dt
+    return datetime(year=d.year, month=d.month, day=d.day, tzinfo=pytz.utc)
 
 
 def is_date(x):
