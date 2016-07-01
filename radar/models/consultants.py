@@ -34,7 +34,7 @@ class GroupConsultant(db.Model, MetaModelMixin):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    consultant_id = Column(Integer, ForeignKey('consultants.id'), nullable=False)
+    consultant_id = Column(Integer, ForeignKey('consultants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     consultant = relationship('Consultant', backref=backref('group_consultants', cascade='all, delete-orphan', passive_deletes=True))
 
 Index(
