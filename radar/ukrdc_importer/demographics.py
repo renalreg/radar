@@ -6,8 +6,6 @@ from radar.database import db
 from radar.models.patient_demographics import PatientDemographics
 from radar.ukrdc_importer.serializers import PatientSerializer
 from radar.ukrdc_importer.utils import (
-    delete_list,
-    build_id,
     get_path,
     get_import_user,
     get_import_group
