@@ -13,7 +13,7 @@ from radar.ukrdc_exporter.tasks import export_to_ukrdc
 logger = logging.getLogger()
 
 
-sql = """
+changed_sql = """
 select id, patient_id from (
     select distinct
         id, (data->'new_data'->>'patient_id')::integer as patient_id
@@ -37,13 +37,26 @@ select id, patient_id from (
 ) as x order by id
 """
 
+all_sql = """
+select x.id, patients.id from patients
+left join ({0}) as x on patients.id = x.patient_id
+order by x.id, patients.id
+""".format(changed_sql)
+
 
 def export_patients(last_log_id=0):
+    if last_log_id == 0:
+        sql = all_sql
+    else:
+        sql = changed_sql
+
     rows = db.session.execute(sql, {'last_log_id': last_log_id})
+
     patient_ids = set()
 
     for log_id, patient_id in rows:
-        last_log_id = log_id
+        if log_id is not None:
+            last_log_id = log_id
 
         if patient_id in patient_ids:
             continue
