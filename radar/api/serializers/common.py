@@ -119,6 +119,18 @@ class UserMixin(object):
         return attrs
 
 
+class QueryPatientField(ReferenceField):
+    model_class = Patient
+
+    def validate(self, patient):
+        user = self.context['user']
+
+        if not has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT):
+            raise PermissionDenied()
+
+        return patient
+
+
 class PatientField(ReferenceField):
     model_class = Patient
 

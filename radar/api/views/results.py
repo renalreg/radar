@@ -1,7 +1,7 @@
 from sqlalchemy import func
 from cornflake import serializers, fields
 
-from radar.api.serializers.common import PatientField
+from radar.api.serializers.common import QueryPatientField
 from radar.api.serializers.results import (
     ResultSerializer,
     ObservationSerializer,
@@ -20,12 +20,8 @@ from radar.api.views.generics import (
     ListView,
     parse_args
 )
-from radar.auth.sessions import current_user
 from radar.database import db
-from radar.exceptions import PermissionDenied
 from radar.models.results import Result, Observation
-from radar.permissions import has_permission_for_patient
-from radar.roles import PERMISSION
 
 
 class ObservationListRequestSerializer(serializers.Serializer):
@@ -37,7 +33,7 @@ class ResultListRequestSerializer(serializers.Serializer):
 
 
 class ObservationCountListRequestSerializer(serializers.Serializer):
-    patient = PatientField(required=False)
+    patient = QueryPatientField(required=False)
 
 
 class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelView):
@@ -94,9 +90,6 @@ class ObservationCountListView(ListView):
         args = parse_args(ObservationCountListRequestSerializer)
 
         patient = args['patient']
-
-        if patient is not None and not has_permission_for_patient(current_user, patient, PERMISSION.VIEW_PATIENT):
-            raise PermissionDenied()
 
         count_query = db.session.query(
             Result.observation_id.label('observation_id'),
