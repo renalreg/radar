@@ -114,7 +114,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         ]
 
     def pre_validate(self, data):
-        if data['diagnosis'] is not None:
+        if data['diagnosis']:
             data['diagnosis_text'] = None
 
         if not data['biopsy']:
