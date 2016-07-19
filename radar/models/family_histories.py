@@ -28,6 +28,8 @@ RELATIONSHIPS = OrderedDict([
     (14, 'Half Brother'),
     (17, 'Daughter'),
     (18, 'Son'),
+    (19, 'Granddaughter'),
+    (20, 'Grandson'),
 ])
 
 
