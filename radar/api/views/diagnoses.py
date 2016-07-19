@@ -2,6 +2,7 @@ from cornflake import fields, serializers
 
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.diagnoses import DiagnosisSerializer, PatientDiagnosisSerializer
+from radar.api.serializers.common import QueryPatientField
 from radar.api.views.common import (
     IntegerLookupListView,
     SourceObjectViewMixin,
@@ -17,6 +18,7 @@ from radar.api.views.generics import (
 )
 from radar.api.views.generics import ListModelView, parse_args
 from radar.models.diagnoses import Diagnosis, PatientDiagnosis, BIOPSY_DIAGNOSES, GroupDiagnosis, GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES
+from radar.models.groups import Group
 
 
 class DiagnosisRequestSerializer(serializers.Serializer):
@@ -27,6 +29,9 @@ class DiagnosisRequestSerializer(serializers.Serializer):
 class PatientDiagnosisRequestSerializer(serializers.Serializer):
     primary_group = fields.CommaSeparatedField(child=fields.IntegerField(), required=False)
     secondary_group = fields.CommaSeparatedField(child=fields.IntegerField(), required=False)
+    include_primary = fields.BooleanField(default=True)
+    include_secondary = fields.BooleanField(default=True)
+    patient = QueryPatientField(required=False)
 
 
 def patient_diagnosis_group_type_filter(group_ids, group_diagnosis_type):
@@ -56,12 +61,35 @@ class PatientDiagnosisListView(SourceObjectViewMixin, PatientObjectListView):
 
         primary_group_ids = args['primary_group']
         secondary_group_ids = args['secondary_group']
+        include_primary = args['include_primary']
+        include_secondary = args['include_secondary']
+        patient = args['patient']
 
+        # Primary diagnosis for any of these groups
         if primary_group_ids:
             query = query.filter(patient_diagnosis_group_type_filter(primary_group_ids, GROUP_DIAGNOSIS_TYPE.PRIMARY))
 
+        # Secondary diagnosis for any of these groups
         if secondary_group_ids:
             query = query.filter(patient_diagnosis_group_type_filter(secondary_group_ids, GROUP_DIAGNOSIS_TYPE.SECONDARY))
+
+        # Excluding primary or secondary diagnoses
+        if not include_primary or not include_secondary:
+            # Only exclude diagnoses that are primary/secondary for this patient
+            if patient:
+                groups = patient.groups
+            else:
+                groups = Group.query.all()
+
+            group_ids = [x.id for x in groups]
+
+            if not include_primary:
+                # Exclude primary diagnoses
+                query = query.filter(~patient_diagnosis_group_type_filter(group_ids, GROUP_DIAGNOSIS_TYPE.PRIMARY))
+
+            if not include_secondary:
+                # Exclude secondary diagnoses
+                query = query.filter(~patient_diagnosis_group_type_filter(group_ids, GROUP_DIAGNOSIS_TYPE.SECONDARY))
 
         return query
 
