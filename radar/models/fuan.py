@@ -32,7 +32,7 @@ RELATIVES = OrderedDict([
 THP_RESULTS = OrderedDict([
     ('NOT_TESTED', 'Not Tested'),
     ('NORMAL', 'Normal'),
-    ('LOW', 'Very Low - Absent'),
+    ('LOW', 'Low - Absent'),
 ])
 
 
