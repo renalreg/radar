@@ -51,6 +51,7 @@ class FuanClinicalPicture(db.Model, MetaModelMixin):
     family_gout = Column(Boolean)
     family_gout_relatives = Column(postgresql.ARRAY(Integer))
     thp = Column(String)
+    uti = Column(Boolean)
     comments = Column(String)
 
 

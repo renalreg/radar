@@ -14,6 +14,7 @@ class FuanClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     family_gout = fields.BooleanField(required=False)
     family_gout_relatives = fields.ListField(required=False, child=IntegerLookupField(RELATIVES))
     thp = StringLookupField(THP_RESULTS, required=False)
+    uti = fields.BooleanField(required=False)
     comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     def pre_validate(self, data):
