@@ -8,6 +8,7 @@ from radar.models.dialysis import *
 from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
+from radar.models.fuan import *
 from radar.models.genetics import *
 from radar.models.groups import *
 from radar.models.hnf1b import *

@@ -44,6 +44,7 @@ from radar.api.views import roles
 from radar.api.views import logs
 from radar.api.views import renal_progressions
 from radar.api.views import random_password
+from radar.api.views import fuan
 
 
 def setup(app):
@@ -57,6 +58,7 @@ def setup(app):
     fetal_ultrasounds.register_views(app)
     forgot_password.register_views(app)
     forgot_username.register_views(app)
+    fuan.register_views(app)
     genetics.register_views(app)
     groups.register_views(app)
     group_consultants.register_views(app)

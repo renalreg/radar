@@ -23,6 +23,21 @@ COHORTS = [
             PAGE.DIAGNOSES,
         ],
     },
+    {
+        'code': 'ADTKD',
+        'name': 'Autosomal Dominant Tubulointerstitial Kidney Disease (FUAN)',
+        'short_name': 'ADTKD (FUAN)',
+        'pages': [
+            PAGE.PRIMARY_DIAGNOSIS,
+            PAGE.DIAGNOSES,
+            PAGE.GENETICS,
+            PAGE.FAMILY_HISTORY,
+            PAGE.FUAN_CLINICAL_PICTURES,
+            PAGE.RESULTS,
+            PAGE.DIALYSIS,
+            PAGE.TRANSPLANTS,
+        ]
+    }
 ]
 
 
