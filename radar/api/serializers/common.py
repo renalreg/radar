@@ -164,9 +164,11 @@ class GroupSerializer(ModelSerializer):
     type = fields.EnumField(GROUP_TYPE)
     pages = fields.ListField(child=fields.StringField())
     has_dependencies = fields.BooleanField(read_only=True)
+    instructions = fields.StringField()
 
     class Meta(object):
         model_class = Group
+        exclude = ['_instructions']
 
 
 class GroupField(ReferenceField):

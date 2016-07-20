@@ -11,6 +11,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.types import EnumType, EnumToStringType
 from radar.models.logs import log_changes
+from radar.models.settings import get_setting
 from radar.pages import PAGE
 from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
 
@@ -45,8 +46,8 @@ class Group(db.Model):
     short_name = Column(String, nullable=False)
 
     # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
-    pages = Column('pages', postgresql.ARRAY(EnumToStringType(PAGE)))
-    instructions = Column(String)
+    pages = Column(postgresql.ARRAY(EnumToStringType(PAGE)))
+    _instructions = Column('instructions', String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
@@ -75,6 +76,17 @@ class Group(db.Model):
             return True
         else:
             return False
+
+    @property
+    def instructions(self):
+        if self._instructions is not None:
+            return self._instructions
+        else:
+            return get_setting("DEFAULT_INSTRUCTIONS")
+
+    @instructions.setter
+    def instructions(self, value):
+        self._instructions = value
 
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
