@@ -106,7 +106,7 @@ class Encoder(json.JSONEncoder):
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
 def send_to_ukrdc(self, sda_containers):
     url = config['UKRDC_EXPORTER_URL']
-    timeout = config.get('UKRDC_EXPORTER_TIMEOUT', 10)
+    timeout = config.get('UKRDC_EXPORTER_TIMEOUT', 60)
     retry_countdown = config.get('UKRDC_EXPORTER_COUNTDOWN', 60)
 
     for sda_container in sda_containers:
