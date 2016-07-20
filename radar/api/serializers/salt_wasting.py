@@ -63,7 +63,7 @@ class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerial
         return data
 
     def validate(self, data):
-        if not data['normal_pregnancy']:
+        if data['normal_pregnancy'] is False:
             self.run_validators_on_field(data, 'abnormal_pregnancy_text', [not_empty()])
 
         if data['neurological_problems']:
