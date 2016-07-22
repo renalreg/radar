@@ -49,7 +49,7 @@ def check_config(config):
     config.setdefault('PASSWORD_HASH_METHOD', 'pbkdf2:sha1:50000')
 
     config.setdefault('EMAIL_ENABLED', not (debug or testing))
-    config.setdefault('EMAIL_FROM_ADDRESS', 'RaDaR <radar@radar.nhs.uk>')  # TODO
+    config.setdefault('EMAIL_FROM_ADDRESS', 'RaDaR <radar@radar.nhs.uk>')  # TODO MX record
     config.setdefault('EMAIL_SMTP_HOST', 'localhost')
     config.setdefault('EMAIL_SMTP_PORT', 25)
 
