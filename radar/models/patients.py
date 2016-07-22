@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence
+from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 
@@ -57,6 +57,7 @@ class Patient(db.Model, MetaModelMixin):
 
     id = Column(Integer, Sequence('patients_seq'), primary_key=True)
     comments = Column(String)
+    test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     @property
     def groups(self):
