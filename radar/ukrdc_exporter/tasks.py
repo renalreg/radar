@@ -49,6 +49,10 @@ def export_sda(patient_id):
         logger.error('Patient not found id={}'.format(patient_id))
         return []
 
+    if patient.test:
+        logger.info('Skipping test patient id={}'.format(patient_id))
+        return []
+
     groups = set(patient.groups)
     sda_containers = []
 
