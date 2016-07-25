@@ -18,6 +18,7 @@ MEDICATION_ROUTES = OrderedDict([
     ('PR', 'Per Rectum'),
     ('TOPICAL', 'Topical'),
     ('PATCH', 'Patch'),
+    ('INHALE', 'Inhale'),
 ])
 
 MEDICATION_DOSE_UNITS = OrderedDict([
@@ -26,6 +27,9 @@ MEDICATION_DOSE_UNITS = OrderedDict([
     ('MG', 'mg'),
     ('G', 'g'),
     ('IU', 'IU'),
+    ('MMOL', 'mmol'),
+    ('PUFF', 'puff'),
+    ('UNIT', 'unit'),
 ])
 
 
