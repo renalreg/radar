@@ -8,6 +8,9 @@ def has_permission_for_patient(user, patient, permission):
 
     if user.is_admin:
         grant = True
+    elif permission == PERMISSION.EDIT_PATIENT and patient.frozen:
+        # Can't edit frozen patients
+        grant = False
     else:
         # Groups in common with the patient
         group_users = intersect_groups_with_patient(user, patient, user_membership=True)
