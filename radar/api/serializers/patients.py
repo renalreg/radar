@@ -36,6 +36,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     current = fields.BooleanField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
+    frozen = fields.BooleanField(read_only=True)
 
     class Meta(object):
         model_class = Patient
@@ -80,6 +81,7 @@ class TinyPatientSerializer(serializers.Serializer):
     current = fields.BooleanField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
+    frozen = fields.BooleanField(read_only=True)
 
     def to_representation(self, value):
         user = self.context['user']

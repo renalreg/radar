@@ -382,3 +382,8 @@ class Patient(db.Model, MetaModelMixin):
             seconds = seconds_to_age(seconds)
 
         return seconds
+
+    @property
+    def frozen(self):
+        # TODO
+        return False
