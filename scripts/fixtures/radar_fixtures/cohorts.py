@@ -65,7 +65,6 @@ COHORTS = [
             PAGE.GENETICS,
             PAGE.FAMILY_HISTORY,
             PAGE.FETAL_ULTRASOUNDS,
-            PAGE.FETAL_ANOMALY_SCANS,
             PAGE.RENAL_IMAGING,
             PAGE.LIVER_IMAGING,
             PAGE.LIVER_DISEASES,
