@@ -81,8 +81,10 @@ class Group(db.Model):
     def instructions(self):
         if self._instructions is not None:
             return self._instructions
-        else:
+        elif self.type == GROUP_TYPE.COHORT:
             return get_setting("DEFAULT_INSTRUCTIONS")
+        else:
+            return None
 
     @instructions.setter
     def instructions(self, value):
