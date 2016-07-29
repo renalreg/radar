@@ -45,6 +45,7 @@ from radar.api.views import logs
 from radar.api.views import renal_progressions
 from radar.api.views import random_password
 from radar.api.views import fuan
+from radar.api.views import pkd
 
 
 def setup(app):
@@ -80,6 +81,7 @@ def setup(app):
     patient_demographics.register_views(app)
     patient_numbers.register_views(app)
     patients.register_views(app)
+    pkd.register_views(app)
     plasmapheresis.register_views(app)
     posts.register_views(app)
     pregnancies.register_views(app)
