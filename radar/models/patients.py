@@ -385,5 +385,11 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def frozen(self):
+        """True if the patient is frozen."""
         # TODO
         return False
+
+    @property
+    def ukrdc(self):
+        """True if the patient is receiving data from the UKRDC."""
+        return self.ukrdc_patient is not None
