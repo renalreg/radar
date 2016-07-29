@@ -42,6 +42,8 @@ class LiverImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
 class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     portal_hypertension = fields.BooleanField(required=False)
     portal_hypertension_date = fields.DateField(required=False)
+    ascites = fields.BooleanField(required=False)
+    ascites_date = fields.DateField(required=False)
     oesophageal = fields.BooleanField(required=False)
     oesophageal_date = fields.DateField(required=False)
     oesophageal_bleeding = fields.BooleanField(required=False)
@@ -65,6 +67,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
         model_class = LiverDiseases
         validators = [
             valid_date_for_patient('portal_hypertension_date'),
+            valid_date_for_patient('ascites_date'),
             valid_date_for_patient('oesophageal_date'),
             valid_date_for_patient('oesophageal_bleeding_date'),
             valid_date_for_patient('gastric_date'),
@@ -79,6 +82,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     def pre_validate(self, data):
         pairs = [
             ('portal_hypertension', 'portal_hypertension_date'),
+            ('ascites', 'ascites_date'),
             ('oesophageal', 'oesophageal_date'),
             ('oesophageal_bleeding', 'oesophageal_bleeding_date'),
             ('gastric', 'gastric_date'),

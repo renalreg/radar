@@ -54,6 +54,8 @@ class LiverDiseases(db.Model, MetaModelMixin):
 
     portal_hypertension = Column(Boolean)
     portal_hypertension_date = Column(Date)
+    ascites = Column(Boolean)
+    ascites_date = Column(Date)
     oesophageal = Column(Boolean)
     oesophageal_date = Column(Date)
     oesophageal_bleeding = Column(Boolean)
