@@ -3,6 +3,7 @@ from datetime import datetime
 import pytz
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
+from cornflake.validators import upper
 
 
 def parse_sda_datetime(value):
