@@ -4,6 +4,8 @@ from sqlalchemy import Integer, Column, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.associationproxy import association_proxy
+
 
 
 def uuid_pk_column():
@@ -27,6 +29,10 @@ class CreatedUserMixin(object):
     def created_user(cls):
         return relationship('User', primaryjoin="User.id == %s.created_user_id" % cls.__name__)
 
+    @declared_attr
+    def created_username(cls):
+        return association_proxy('created_user', 'username')
+
 
 class CreatedDateMixin(object):
     @declared_attr
@@ -42,6 +48,10 @@ class ModifiedUserMixin(object):
     @declared_attr
     def modified_user(cls):
         return relationship('User', primaryjoin="User.id == %s.modified_user_id" % cls.__name__)
+
+    @declared_attr
+    def modified_username(cls):
+        return association_proxy('modified_user', 'username')
 
 
 class ModifiedDateMixin(object):

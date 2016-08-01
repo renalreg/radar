@@ -8,15 +8,17 @@ from radar.models.results import Result
 from radar.models.views import create_view
 
 
-# TODO use ukrdc_importer username rather than hard-coding the ID
+username = 'ukrdc_importer'
+
+
 class UKRDCPatient(db.Model):
     __table__ = create_view(
         'ukrdc_patients',
         select([Patient.id])
         .where(
             or_(
-                exists().where(and_(Result.patient_id == Patient.id, Result.created_user_id == 1658)),
-                exists().where(and_(Medication.patient_id == Patient.id, Medication.created_user_id == 1658))
+                exists().where(and_(Result.patient_id == Patient.id, Result.created_username == username)),
+                exists().where(and_(Medication.patient_id == Patient.id, Medication.created_username == username))
             )
         ),
         PrimaryKeyConstraint('id')

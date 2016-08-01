@@ -1,5 +1,7 @@
 # flake8: noqa
 
+from radar.models.users import *
+
 from radar.models.alport import *
 from radar.models.common import *
 from radar.models.consultants import *
@@ -38,5 +40,4 @@ from radar.models.settings import *
 from radar.models.source_types import *
 from radar.models.transplants import *
 from radar.models.ukrdc_patients import *
-from radar.models.users import *
 from radar.models.user_sessions import *
