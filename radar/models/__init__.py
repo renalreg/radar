@@ -37,5 +37,6 @@ from radar.models.salt_wasting import *
 from radar.models.settings import *
 from radar.models.source_types import *
 from radar.models.transplants import *
+from radar.models.ukrdc_patients import *
 from radar.models.users import *
 from radar.models.user_sessions import *

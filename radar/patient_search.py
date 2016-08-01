@@ -21,7 +21,8 @@ class PatientQueryBuilder(object):
         self.query = Patient.query\
             .options(subqueryload('patient_demographics'))\
             .options(subqueryload('patient_numbers'))\
-            .options(subqueryload('group_patients').joinedload('group'))
+            .options(subqueryload('group_patients').joinedload('group'))\
+            .options(subqueryload('ukrdc_patient'))
 
     def first_name(self, first_name):
         self.filtering_by_demographics = True
@@ -94,6 +95,10 @@ class PatientQueryBuilder(object):
 
         self.query = self.query.filter(sub_query.exists())
 
+        return self
+
+    def ukrdc(self, value):
+        self.query = self.query.filter(Patient.ukrdc == value)
         return self
 
     def sort(self, column, reverse=False):
