@@ -9,7 +9,7 @@ from radar.models.views import create_view
 
 
 # TODO use ukrdc_importer username rather than hard-coding the ID
-class UKRDCPatients(db.Model):
+class UKRDCPatient(db.Model):
     __table__ = create_view(
         'ukrdc_patients',
         select([Patient.id])
@@ -19,8 +19,12 @@ class UKRDCPatients(db.Model):
                 exists().where(and_(Medication.patient_id == Patient.id, Medication.created_user_id == 1658))
             )
         ),
-        PrimaryKeyConstraint('id'),
-        ForeignKeyConstraint(['id'], ['patients.id'])
+        PrimaryKeyConstraint('id')
     )
 
-    patient = relationship('Patient', backref=backref('ukrdc_patient', uselist=False))
+    patient = relationship('Patient',
+        primaryjoin='UKRDCPatient.id == Patient.id',
+        uselist=False,
+        backref='ukrdc_patient',
+        foreign_keys='Patient.id'
+    )

@@ -31,6 +31,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     patient_number = fields.StringField(required=False, validators=[none_if_blank()])
     group = fields.CommaSeparatedField(required=False, child=GroupField())
     current = fields.BooleanField(required=False)
+    ukrdc = fields.BooleanField(required=False)
 
 
 class PatientListView(ListModelView):
@@ -54,6 +55,7 @@ class PatientListView(ListModelView):
         year_of_death = args['year_of_death']
         groups = args['group']
         current = args['current']
+        ukrdc = args['ukrdc']
 
         if patient_id is not None:
             builder.patient_id(patient_id)
@@ -81,6 +83,9 @@ class PatientListView(ListModelView):
 
         if year_of_death is not None:
             builder.year_of_death(year_of_death)
+
+        if ukrdc is not None:
+            builder.ukrdc(ukrdc)
 
         for group in groups:
             builder.group(group, current=current)

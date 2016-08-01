@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
+from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text, null
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 
@@ -389,7 +389,11 @@ class Patient(db.Model, MetaModelMixin):
         # TODO
         return False
 
-    @property
+    @hybrid_property
     def ukrdc(self):
         """True if the patient is receiving data from the UKRDC."""
         return self.ukrdc_patient is not None
+
+    @ukrdc.expression
+    def ukrdc(cls):
+        return cls.ukrdc_patient.has()
