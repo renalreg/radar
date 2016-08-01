@@ -113,6 +113,8 @@ class LabOrderSerializer(serializers.Serializer):
 
 class ContainerSerializer(serializers.Serializer):
     class PatientSerializer(serializers.Serializer):
+        aliases = fields.ListField(child=fields.Field(), required=False)
+        addresses = fields.ListField(child=fields.Field(), required=False)
         patient_numbers = fields.ListField(child=PatientNumberSerializer())
 
     patient = PatientSerializer()
