@@ -64,8 +64,8 @@ class ContactInfoSerializer(serializers.Serializer):
 
 
 class NameSerializer(serializers.Serializer):
-    given_name = fields.StringField(required=False)
-    family_name = fields.StringField(required=False)
+    given_name = fields.StringField(required=False, validators=[upper()])
+    family_name = fields.StringField(required=False, validators=[upper()])
 
 
 class PatientSerializer(serializers.Serializer):
