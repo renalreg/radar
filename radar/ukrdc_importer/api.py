@@ -21,6 +21,7 @@ def import_():
     serializer = ContainerSerializer(data=sda_container)
 
     if not serializer.is_valid():
+        print serializer.errors
         abort(400)
 
     sequence_number = utc()
