@@ -1,6 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
+from cornflake.validators import not_in_future
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
 from radar.exceptions import PermissionDenied
@@ -11,8 +12,8 @@ from radar.roles import PERMISSION
 
 class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
     group = GroupField()
-    from_date = fields.DateField()
-    to_date = fields.DateField(required=False)
+    from_date = fields.DateField(validators=[not_in_future()])
+    to_date = fields.DateField(required=False, validators=[not_in_future()])
     created_group = GroupField()
     current = fields.BooleanField(read_only=True)
 
