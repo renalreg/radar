@@ -14,11 +14,16 @@ Note: you'll probably need to specify the `--connection-string` argument to
       --disable-triggers \
       --table consultants \
       --table diagnoses \
+      --table drug_groups \
       --table drugs \
       --table group_consultants \
       --table group_diagnoses \
+      --table group_observations \
       --table groups \
       --table observations \
+      --table posts \
+      --table settings \
+      --table specialties \
       > radar.sql
     ```
 
@@ -38,7 +43,7 @@ Note: you'll probably need to specify the `--connection-string` argument to
 1. Import the data we exported earlier:
 
     ```bash
-    cat radar.sql | sudo -u postgres radar
+    cat radar.sql | sudo -u postgres psql radar
     ```
 
     Note: we need to import the data as a super-user so triggers can be
@@ -48,6 +53,15 @@ Note: you'll probably need to specify the `--connection-string` argument to
 
    ```bash
    python fixtures.py users --password password123
+   ```
+
+1. Update user IDs:
+
+   ```sql
+   select id from users where username = 'admin' \gset
+   update consultants set created_user_id = :id, modified_user_id = :id;
+   update group_consultants set created_user_id = :id, modified_user_id = :id;
+   update posts set created_user_id = :id, modified_user_id = :id;
    ```
 
 1. Create patients:
