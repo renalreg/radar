@@ -4,7 +4,7 @@ from datetime import timedelta, date, datetime
 from sqlalchemy import desc
 import pytz
 
-from radar.database import db
+from radar.database import db, no_autoflush
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
@@ -201,14 +201,8 @@ def create_patient_addresses_f():
     return create_patient_addresses
 
 
-def create_patients(n, data=True):
-    with db.session.no_autoflush:
-        _create_patients(n, data)
-
-    db.session.flush()
-
-
-def _create_patients(n, data):
+@no_autoflush
+def create_patients(n, data):
     radar_group = Group.get_radar()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()

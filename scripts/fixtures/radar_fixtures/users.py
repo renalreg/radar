@@ -1,6 +1,6 @@
 from sqlalchemy import or_, func
 
-from radar.database import db
+from radar.database import db, no_autoflush
 from radar.models.groups import Group, GroupUser, GROUP_TYPE
 from radar.models.users import User
 from radar.roles import ROLE
@@ -15,6 +15,7 @@ from radar_fixtures.utils import (
 DEFAULT_PASSWORD = 'password'
 
 
+@no_autoflush
 def create_users(password=DEFAULT_PASSWORD):
     create_admin_user(password)
     create_ukrdc_importer_user(password)

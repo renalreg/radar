@@ -1,3 +1,5 @@
+from functools import update_wrapper
+
 from flask_sqlalchemy import SQLAlchemy as SQLAlchemyBase
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as SessionBase
@@ -57,3 +59,13 @@ def ping_connection(connection, branch):
             connection.scalar(select([1]))
         else:
             raise
+
+
+def no_autoflush(f):
+    """Decorator to disable autoflush for the duration of the function."""
+
+    def wrapper(*args, **kwargs):
+        with db.session.no_autoflush:
+            return f(*args, **kwargs)
+
+    return update_wrapper(wrapper, f)
