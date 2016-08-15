@@ -65,7 +65,7 @@ def test_normal_pregnancy_true(clinical_features):
 
 def test_normal_pregnancy_true_none(clinical_features):
     clinical_features['normal_pregnancy'] = None
-    invalid(clinical_features)
+    valid(clinical_features)
 
 
 def test_normal_pregnancy_true_text_none(clinical_features):
@@ -103,7 +103,7 @@ def test_neurological_problems_false(clinical_features):
 
 def test_neurological_problems_none(clinical_features):
     clinical_features['neurological_problems'] = None
-    invalid(clinical_features)
+    valid(clinical_features)
 
 
 def test_neurological_problems_true_seizures_none(clinical_features):
@@ -172,7 +172,7 @@ def test_joint_problems_false(clinical_features):
 
 def test_joint_problems_none(clinical_features):
     clinical_features['neurological_problems'] = None
-    invalid(clinical_features)
+    valid(clinical_features)
 
 
 def test_joint_problems_true_joint_problems_age_none(clinical_features):
