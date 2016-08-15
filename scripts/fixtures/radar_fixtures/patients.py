@@ -4,7 +4,7 @@ from datetime import timedelta, date, datetime
 from sqlalchemy import desc
 import pytz
 
-from radar.database import db, no_autoflush
+from radar.database import no_autoflush
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
