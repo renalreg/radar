@@ -7,7 +7,6 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.associationproxy import association_proxy
 
 
-
 def uuid_pk_column():
     return Column(postgresql.UUID, primary_key=True, server_default=text('uuid_generate_v4()'))
 

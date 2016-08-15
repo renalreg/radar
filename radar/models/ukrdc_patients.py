@@ -1,5 +1,5 @@
-from sqlalchemy import select, and_, or_, exists, PrimaryKeyConstraint, ForeignKeyConstraint
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import select, and_, or_, exists, PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.medications import Medication
@@ -24,7 +24,8 @@ class UKRDCPatient(db.Model):
         PrimaryKeyConstraint('id')
     )
 
-    patient = relationship('Patient',
+    patient = relationship(
+        'Patient',
         primaryjoin='UKRDCPatient.id == Patient.id',
         uselist=False,
         backref='ukrdc_patient',
