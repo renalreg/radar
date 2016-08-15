@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text, null
+from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 
