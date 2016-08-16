@@ -9,6 +9,9 @@
             "type": {
                 "type": "string"
             },
+            "label": {
+                "type": "string"
+            },
             "default": {
                 "oneOf": [
                     {
@@ -56,9 +59,12 @@
                     "additionalProperties": false
                 },
                 "minItems": 1
+            },
+            "formula": {
+                "type": "string"
             }
         },
-        "required": ["name", "type"],
+        "required": ["name", "type", "label"],
         "additionalProperties": false
     }
 }
