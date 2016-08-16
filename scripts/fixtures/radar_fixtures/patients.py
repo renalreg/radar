@@ -202,7 +202,7 @@ def create_patient_addresses_f():
 
 
 @no_autoflush
-def create_patients(n, data):
+def create_patients(n, data=True):
     radar_group = Group.get_radar()
 
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
