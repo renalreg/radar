@@ -34,24 +34,16 @@ class Registry(BaseRegistry):
     def __init__(self):
         super(Registry, self).__init__()
 
-        # Add parsers
-        self.add_parser('string', parse_string)
-        self.add_parser('int', parse_int)
-        self.add_parser('float', parse_float)
-        self.add_parser('boolean', parse_boolean)
-        self.add_parser('date', parse_date)
-        self.add_parser('datetime', parse_datetime)
-
-        # Add formatters
-        self.add_formatter('string', format_string)
-        self.add_formatter('int', format_int)
-        self.add_formatter('float', format_float)
-        self.add_formatter('boolean', format_boolean)
-        self.add_formatter('date', format_date)
-        self.add_formatter('datetime', format_datetime)
+        # Add types
+        self.add_type('string', parse_string, format_string)
+        self.add_type('int', parse_int, format_int)
+        self.add_type('float', parse_float, format_float)
+        self.add_type('boolean', parse_boolean, format_boolean)
+        self.add_type('date', parse_date, format_date)
+        self.add_type('datetime', parse_datetime, format_datetime)
 
         # Add default handlers
-        self.add_default('foo', 'js', JSDefaultHandler)  # TODO
+        self.add_default('js', JSDefaultHandler)
 
         # Add required handlers
         self.add_required('js', JSRequiredHandler)
@@ -60,10 +52,11 @@ class Registry(BaseRegistry):
         self.add_visible('js', JSVisibleHandler)
 
         # Add validators
-        self.add_validator('int', 'in', InValidator)
-        self.add_validator('int', 'min', MinValidator)
-        self.add_validator('int', 'max', MaxValidator)
-        self.add_validator('date', 'notInFuture', NotInFutureValidator)
+        self.add_validator('in', InValidator)
+        self.add_validator('min', MinValidator)
+        self.add_validator('max', MaxValidator)
+        self.add_validator('notInFuture', NotInFutureValidator, type='date')
+        self.add_validator('notInFuture', NotInFutureValidator, type='datetime')
 
         # Add helpers
         self.add_js(HELPERS)

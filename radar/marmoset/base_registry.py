@@ -12,19 +12,27 @@ SCHEMA = json.load(pkg_resources.resource_stream(__name__, 'schema.json'))
 class BaseRegistry(object):
     def __init__(self):
         self.schema = copy.deepcopy(SCHEMA)
+
         self.parsers = {}
         self.formatters = {}
-        self.validators = {}
+
+        self.seen_defaults = set()
         self.defaults = {}
+
         self.required = {}
         self.visible = {}
+
+        self.seen_validators = set()
+        self.validators = {}
+
         self.helpers = []
 
-    def _get_schema(self, name):
-        return self.schema['items']['properties'][name]
+    def _get_property(self, name, index=0):
+        return self.schema['items']['oneOf'][index]['properties'][name]
 
-    def add_parser(self, type, f):
-        self.parsers[type] = f
+    def add_type(self, type, parser, formatter):
+        self.parsers[type] = parser
+        self.formatters[type] = formatter
 
     def get_parser(self, type):
         try:
@@ -32,29 +40,38 @@ class BaseRegistry(object):
         except KeyError:
             raise SchemaError()
 
-    def add_formatter(self, type, f):
-        self.formatters[type] = f
-
     def get_formatter(self, type):
         try:
             return self.formatters[type]
         except KeyError:
             raise SchemaError()
 
-    def add_default(self, type, name, f):
-        schema = f.get_schema()
-        self._get_schema('default')['oneOf'].append(schema)
+    def add_default(self, name, f, type=None):
+        if name not in self.seen_defaults:
+            schema = f.get_schema()
+            p = self._get_property('default')
+            schemas = p['oneOf']
+            schemas.append(schema)
+            self.seen_defaults.add(name)
+
         self.defaults.setdefault(type, {})[name] = f
 
     def get_default(self, type, name):
         try:
             return self.defaults[type][name]
         except KeyError:
-            raise SchemaError()
+            try:
+                return self.defaults[None][name]
+            except KeyError:
+                raise SchemaError()
 
     def add_required(self, name, f):
-        schema = f.get_schema()
-        self._get_schema('required')['oneOf'].append(schema)
+        if name not in self.required:
+            schema = f.get_schema()
+            p = self._get_property('required')
+            schemas = p['oneOf']
+            schemas.append(schema)
+
         self.required[name] = f
 
     def get_required(self, name):
@@ -64,8 +81,12 @@ class BaseRegistry(object):
             raise SchemaError()
 
     def add_visible(self, name, f):
-        schema = f.get_schema()
-        self._get_schema('visible')['oneOf'].append(schema)
+        if name not in self.visible:
+            schema = f.get_schema()
+            p = self._get_property('visible')
+            schemas = p['oneOf']
+            schemas.append(schema)
+
         self.visible[name] = f
 
     def get_visible(self, name):
@@ -74,19 +95,27 @@ class BaseRegistry(object):
         except KeyError:
             raise SchemaError()
 
-    def add_validator(self, type, name, f):
-        schema = f.get_schema()
-        self._get_schema('validators')['items']['oneOf'].append(schema)
+    def add_validator(self, name, f, type=None):
+        if name not in self.seen_validators:
+            p = self._get_property('validators')
+            schema = f.get_schema()
+            schemas = p['items']['oneOf']
+            schemas.append(schema)
+            self.seen_validators.add(name)
+
         self.validators.setdefault(type, {})[name] = f
 
     def get_validator(self, type, name):
         try:
             return self.validators[type][name]
         except KeyError:
-            raise SchemaError()
+            try:
+                return self.validators[None][name]
+            except KeyError:
+                raise SchemaError()
 
-    def add_js(self, value):
-        self.helpers.append(value)
+    def add_js(self, code):
+        self.helpers.append(code)
 
     def get_js_context(self):
         context = js2py.EvalJs()

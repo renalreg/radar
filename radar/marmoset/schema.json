@@ -1,70 +1,90 @@
 {
     "type": "array",
     "items": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "type": {
-                "type": "string"
-            },
-            "label": {
-                "type": "string"
-            },
-            "default": {
-                "oneOf": [
-                    {
+        "oneOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "name": {
                         "type": "string"
                     },
-                    {
-                        "type": "boolean"
-                    },
-                    {
-                        "type": "number"
-                    }
-                ]
-            },
-            "required": {
-                "oneOf": [
-                    {
-                        "type": "boolean"
-                    }
-                ]
-            },
-            "visible": {
-                "oneOf": [
-                    {
-                        "type": "boolean"
-                    }
-                ]
-            },
-            "validators": {
-                "type": "array",
-                "items": {
-                    "oneOf": []
-                }
-            },
-            "options": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "value": {},
-                        "label": {
+                    "type": {
                         "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "default": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ]
+                    },
+                    "required": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            }
+                        ]
+                    },
+                    "visible": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            }
+                        ]
+                    },
+                    "validators": {
+                        "type": "array",
+                        "items": {
+                            "oneOf": []
                         }
                     },
-                    "required": ["value", "label"],
-                    "additionalProperties": false
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "value": {},
+                                "label": {
+                                "type": "string"
+                                }
+                            },
+                            "required": ["value", "label"],
+                            "additionalProperties": false
+                        },
+                        "minItems": 1
+                    }
                 },
-                "minItems": 1
+                "required": ["name", "type", "label"],
+                "additionalProperties": false
             },
-            "formula": {
-                "type": "string"
+            {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "formula": {
+                        "type": "string"
+                    }
+                },
+                "required": ["name", "type", "label", "formula"],
+                "additionalProperties": false
             }
-        },
-        "required": ["name", "type", "label"],
-        "additionalProperties": false
+        ]
     }
 }

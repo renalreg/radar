@@ -1,5 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 
+import pytz
 from cornflake.exceptions import ValidationError
 
 
@@ -107,5 +108,10 @@ class NotInFutureValidator(Validator):
         }
 
     def __call__(self, value):
-        if value > date.today():
+        if isinstance(value, datetime):
+            now = datetime.now(tz=pytz.UTC)
+        else:
+            now = date.today()
+
+        if value > now:
             raise ValidationError("Can't be in the future.")
