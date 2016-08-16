@@ -1,14 +1,19 @@
 from radar.api.serializers.forms import FormSerializer, EntrySerializer
-from radar.api.views.generics import ListCreateModelView, RetrieveUpdateDestroyModelView
+from radar.api.views.generics import (
+    ListModelView,
+    RetrieveModelView,
+    ListCreateModelView,
+    RetrieveUpdateDestroyModelView
+)
 from radar.models.forms import Entry, Form
 
 
-class FormListView(ListCreateModelView):
+class FormListView(ListModelView):
     serializer_class = FormSerializer
     model_class = Form
 
 
-class FormDetailView(RetrieveUpdateDestroyModelView):
+class FormDetailView(RetrieveModelView):
     serializer_class = FormSerializer
     model_class = Form
 
