@@ -72,7 +72,8 @@
                                 "type": "string"
                             }
                         },
-                        "required": ["type"]
+                        "required": ["name"],
+                        "additionalProperties": true
                     }
                 },
                 "required": ["name", "type", "label"],
