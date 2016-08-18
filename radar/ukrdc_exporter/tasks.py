@@ -41,32 +41,29 @@ def log_data_export(patient, group):
     db.session.add(log)
 
 
-@shared_task(queue=QUEUE)
+@shared_task(ignore_result=True, queue=QUEUE)
 def export_sda(patient_id):
     patient = get_patient(patient_id)
 
     if patient is None:
         logger.error('Patient not found id={}'.format(patient_id))
-        return []
+        return
 
     if patient.test:
         logger.info('Skipping test patient id={}'.format(patient_id))
-        return []
+        return
 
     groups = set(patient.groups)
-    sda_containers = []
 
     for group in groups:
         if not group.is_radar() and group.type != GROUP_TYPE.HOSPITAL:
             continue
 
         sda_container = _export_sda(patient, group)
-        sda_containers.append(sda_container)
+        send_to_ukrdc.delay(sda_container)
         log_data_export(patient, group)
 
     db.session.commit()
-
-    return sda_containers
 
 
 def _export_sda(patient, group):
@@ -106,23 +103,21 @@ class Encoder(json.JSONEncoder):
         return super(Encoder, self).default(o)
 
 
-# TODO this can be done in parallel
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)
-def send_to_ukrdc(self, sda_containers):
+def send_to_ukrdc(self, sda_container):
     url = config['UKRDC_EXPORTER_URL']
     timeout = config.get('UKRDC_EXPORTER_TIMEOUT', 60)
     retry_countdown = config.get('UKRDC_EXPORTER_COUNTDOWN', 60)
 
-    for sda_container in sda_containers:
-        data = json.dumps(sda_container, cls=Encoder)
+    data = json.dumps(sda_container, cls=Encoder)
 
-        try:
-            # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
-            r = requests.post(url, data=data, timeout=timeout, headers={'Content-Type': 'application/json'})
-            r.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            self.retry(exc=e, countdown=retry_countdown)
+    try:
+        # Timeout if no bytes have been received on the underlying socket for TIMEOUT seconds
+        r = requests.post(url, data=data, timeout=timeout, headers={'Content-Type': 'application/json'})
+        r.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        self.retry(exc=e, countdown=retry_countdown)
 
 
 def export_to_ukrdc(patient_id):
-    chain(export_sda.s(patient_id), send_to_ukrdc.s())()
+    export_sda.delay(patient_id)
