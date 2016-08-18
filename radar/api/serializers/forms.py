@@ -13,7 +13,7 @@ from radar.models import Entry, Form
 
 class FormSerializer(ModelSerializer):
     name = fields.StringField()
-    data = fields.Field()
+    data_ = fields.Field(field_name='data', source='data')
 
     class Meta(object):
         model_class = Form
