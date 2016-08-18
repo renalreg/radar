@@ -64,6 +64,15 @@
                             "additionalProperties": false
                         },
                         "minItems": 1
+                    },
+                    "widget": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["type"]
                     }
                 },
                 "required": ["name", "type", "label"],
