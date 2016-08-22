@@ -31,14 +31,14 @@ class InValidator(Validator):
         return {
             'type': 'object',
             'properties': {
-                'type': {
+                'name': {
                     'enum': ['in']
                 },
                 'values': {
                     'type': 'array'
                 }
             },
-            'required': ['type', 'values'],
+            'required': ['name', 'values'],
             'additionalProperties': False
         }
 
@@ -56,12 +56,12 @@ class MinValidator(Validator):
         return {
             'type': 'object',
             'properties': {
-                'type': {
+                'name': {
                     'enum': ['min']
                 },
                 'value': {}
             },
-            'required': ['type', 'value'],
+            'required': ['name', 'value'],
             'additionalProperties': False
         }
 
@@ -79,12 +79,12 @@ class MaxValidator(Validator):
         return {
             'type': 'object',
             'properties': {
-                'type': {
+                'name': {
                     'enum': ['max']
                 },
                 'value': {}
             },
-            'required': ['type', 'value'],
+            'required': ['name', 'value'],
             'additionalProperties': False
         }
 
@@ -99,11 +99,11 @@ class NotInFutureValidator(Validator):
         return {
             'type': 'object',
             'properties': {
-                'type': {
+                'name': {
                     'enum': ['notInFuture']
                 }
             },
-            'required': ['type'],
+            'required': ['name'],
             'additionalProperties': False
         }
 

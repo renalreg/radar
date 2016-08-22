@@ -24,11 +24,25 @@ class Schema(object):
         for field_data in schema_data:
             self.fields.append(Field(self, field_data))
 
+    @property
+    def writable_fields(self):
+        # Fields that aren't read only
+        for field in self.fields:
+            if not field.read_only:
+                yield field
+
+    @property
+    def calculated_fields(self):
+        # Fields with a formula
+        for field in self.fields:
+            if field.formula:
+                yield field
+
     def parse(self, raw_data):
         errors = {}
         data = {}
 
-        for field in self.fields:
+        for field in self.writable_fields:
             name = field.name
             parser = field.parser
 
@@ -63,7 +77,7 @@ class Schema(object):
         return raw_data
 
     def check_default(self, data):
-        for field in self.fields:
+        for field in self.writable_fields:
             name = field.name
             value = data[name]
 
@@ -73,7 +87,7 @@ class Schema(object):
     def check_required(self, data):
         errors = {}
 
-        for field in self.fields:
+        for field in self.writable_fields:
             name = field.name
             required = field.required
             value = data[name]
@@ -85,7 +99,7 @@ class Schema(object):
             raise ValidationError(errors)
 
     def check_visible(self, data):
-        for field in self.fields:
+        for field in self.writable_fields:
             name = field.name
             visible = field.visible
 
@@ -95,7 +109,7 @@ class Schema(object):
     def check_validators(self, data):
         errors = {}
 
-        for field in self.fields:
+        for field in self.writable_fields:
             name = field.name
             value = data[name]
             validators = field.validators
@@ -110,11 +124,9 @@ class Schema(object):
             raise ValidationError(errors)
 
     def check_formula(self, data):
-        for field in self.fields:
+        for field in self.calculated_fields:
             name = field.name
-
-            if field.formula:
-                data[name] = field.formula(data, name)
+            data[name] = field.formula(data, name)
 
     def validate(self, raw_data):
         data = self.parse(raw_data)
@@ -139,10 +151,19 @@ class Field(object):
         default_data = field_data.get('default')
         self.default = self.parse_default(default_data)
 
+        # Field is read only if it has a formula
+        self.read_only = bool(field_data.get('formula'))
+
         # Required by default
         # Required fields will return an error if the value is None
         # Setting required has no effect on fields with a default
-        required_data = field_data.get('required', True)
+        # Read only fields (e.g. formula) are never required
+
+        if self.read_only:
+            required_data = False
+        else:
+            required_data = field_data.get('required', True)
+
         self.required = self.parse_required(required_data)
 
         # Visible by default
@@ -239,13 +260,8 @@ class Field(object):
             return optional_f
         elif isinstance(required_data, dict):
             # Run a function to determine if this field is required
-            name = required_data.get('name')
-
-            if name is None:
-                raise SchemaError()
-
+            name = required_data['name']
             required = self.registry.get_required(name)
-
             return required
         else:
             # Should never reach here
@@ -283,13 +299,8 @@ class Field(object):
             return hidden_f
         elif isinstance(visible_data, dict):
             # Run a function to determine if this field is visible
-            name = visible_data.get('name')
-
-            if name is None:
-                raise SchemaError()
-
+            name = visible_data['name']
             visible = self.registry.get_visible(name)
-
             return visible
         else:
             # Should never reach here
@@ -301,7 +312,7 @@ class Field(object):
         # TODO validate options
 
         return self.parse_validator({
-            'type': 'in',
+            'name': 'in',
             'values': [x['value'] for x in options_data],
         })
 
@@ -318,10 +329,8 @@ class Field(object):
         * value - parsed value of the current field.
         """
 
-        type = validator_data['type']
-
-        validator = self.registry.get_validator(self.type, type)(self, validator_data)
-
+        name = validator_data['name']
+        validator = self.registry.get_validator(self.type, name)(self, validator_data)
         return validator
 
     def parse_validators(self, validators_data):
@@ -338,10 +347,8 @@ class Field(object):
         return validators
 
     def parse_formula(self, formula_data):
-        # TODO use functions
-        context = self.registry.get_js_context()
-        # TODO catch errors
-        formula = context.eval('function f(form, path) {{ {} }}'.format(formula_data))
+        name = formula_data['name']
+        formula = self.registry.get_formula(name)
         return formula
 
     @property

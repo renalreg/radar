@@ -94,8 +94,15 @@
                     "help": {
                         "type": "string"
                     },
+                    "visible": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            }
+                        ]
+                    },
                     "formula": {
-                        "type": "string"
+                        "oneOf": []
                     }
                 },
                 "required": ["name", "type", "label", "formula"],

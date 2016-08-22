@@ -25,6 +25,8 @@ class BaseRegistry(object):
         self.seen_validators = set()
         self.validators = {}
 
+        self.formula = {}
+
         self.helpers = []
 
     def _get_property(self, name, index=0):
@@ -83,9 +85,11 @@ class BaseRegistry(object):
     def add_visible(self, name, f):
         if name not in self.visible:
             schema = f.get_schema()
-            p = self._get_property('visible')
-            schemas = p['oneOf']
-            schemas.append(schema)
+
+            for index in (0, 1):
+                p = self._get_property('visible', index=0)
+                schemas = p['oneOf']
+                schemas.append(schema)
 
         self.visible[name] = f
 
@@ -113,6 +117,21 @@ class BaseRegistry(object):
                 return self.validators[None][name]
             except KeyError:
                 raise SchemaError()
+
+    def add_formula(self, name, f):
+        if name not in self.formula:
+            schema = f.get_schema()
+            p = self._get_property('formula', index=1)
+            schemas = p['oneOf']
+            schemas.append(schema)
+
+        self.formula[name] = f
+
+    def get_formula(self, name):
+        try:
+            return self.formula[name]
+        except KeyError:
+            raise SchemaError()
 
     def add_js(self, code):
         self.helpers.append(code)

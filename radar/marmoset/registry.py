@@ -5,6 +5,7 @@ from radar.marmoset.handlers import (
     JSDefaultHandler,
     JSRequiredHandler,
     JSVisibleHandler,
+    JSFormulaHandler,
 )
 from radar.marmoset.types import (
     format_boolean,
@@ -57,6 +58,9 @@ class Registry(BaseRegistry):
         self.add_validator('max', MaxValidator)
         self.add_validator('notInFuture', NotInFutureValidator, type='date')
         self.add_validator('notInFuture', NotInFutureValidator, type='datetime')
+
+        # Add formula handlers
+        self.add_formula('js', JSFormulaHandler)
 
         # Add helpers
         self.add_js(HELPERS)

@@ -9,14 +9,14 @@ class JSHandler(object):
         return {
             'type': 'object',
             'properties': {
-                'type': {
+                'name': {
                     'enum': ['js']
                 },
                 'value': {
                     'type': 'string'
                 }
             },
-            'required': ['type', 'value'],
+            'required': ['name', 'value'],
             'additionalProperties': False
         }
 
