@@ -67,7 +67,11 @@ class Schema(object):
 
         for field in self.fields:
             name = field.name
-            value = data.get(name)
+
+            if field.formula:
+                value = field.formula(data, [name])
+            else:
+                value = data.get(name)
 
             if value is not None:
                 value = field.formatter(value)
@@ -82,7 +86,7 @@ class Schema(object):
             value = data[name]
 
             if value is None:
-                data[name] = field.default(data, name)
+                data[name] = field.default(data, [name])
 
     def check_required(self, data):
         errors = {}
@@ -92,7 +96,7 @@ class Schema(object):
             required = field.required
             value = data[name]
 
-            if required(data, name) and value is None:
+            if required(data, [name]) and value is None:
                 errors[name] = 'This field is required.'
 
         if errors:
@@ -103,7 +107,7 @@ class Schema(object):
             name = field.name
             visible = field.visible
 
-            if not visible(data, name):
+            if not visible(data, [name]):
                 data[name] = None
 
     def check_validators(self, data):
@@ -126,7 +130,7 @@ class Schema(object):
     def check_formula(self, data):
         for field in self.calculated_fields:
             name = field.name
-            data[name] = field.formula(data, name)
+            data[name] = field.formula(data, [name])
 
     def validate(self, raw_data):
         data = self.parse(raw_data)
@@ -216,7 +220,7 @@ class Field(object):
             if name is None:
                 raise SchemaError()
 
-            default = self.registry.get_default(self.type, name)(self)
+            default = self.registry.get_default(self.type, name)(self, default_data)
 
             return default
         else:
@@ -261,7 +265,7 @@ class Field(object):
         elif isinstance(required_data, dict):
             # Run a function to determine if this field is required
             name = required_data['name']
-            required = self.registry.get_required(name)
+            required = self.registry.get_required(name)(self, required_data)
             return required
         else:
             # Should never reach here
@@ -300,7 +304,7 @@ class Field(object):
         elif isinstance(visible_data, dict):
             # Run a function to determine if this field is visible
             name = visible_data['name']
-            visible = self.registry.get_visible(name)
+            visible = self.registry.get_visible(name)(self, visible_data)
             return visible
         else:
             # Should never reach here
@@ -348,7 +352,7 @@ class Field(object):
 
     def parse_formula(self, formula_data):
         name = formula_data['name']
-        formula = self.registry.get_formula(name)
+        formula = self.registry.get_formula(name)(self, formula_data)
         return formula
 
     @property
