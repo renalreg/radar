@@ -23,6 +23,7 @@ class EntryListView(ListCreateModelView):
     model_class = Entry
 
 
+# TODO filter by form
 class EntryDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = EntrySerializer
     model_class = Entry
