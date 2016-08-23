@@ -28,3 +28,15 @@ class Entry(db.Model, MetaModelMixin):
     form = relationship('Form')
 
     data = Column(postgresql.JSONB, nullable=False)
+
+
+class GroupForm(db.Model):
+    __tablename__ = 'group_forms'
+
+    id = Column(Integer, primary_key=True)
+
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
+
+    form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
+    form = relationship('Form')
