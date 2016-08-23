@@ -1,7 +1,7 @@
-from cornflake import serializers
+from cornflake import serializers, fields
 
 from radar.api.serializers.common import QueryPatientField
-from radar.api.serializers.forms import FormSerializer, EntrySerializer
+from radar.api.serializers.forms import FormSerializer, EntrySerializer, FormField
 from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
@@ -20,6 +20,10 @@ class FormRequestSerializer(serializers.Serializer):
     patient = QueryPatientField(required=False)
 
 
+class EntryRequestSerializer(serializers.Serializer):
+    form = fields.IntegerField(required=False)
+
+
 class FormListView(ListModelView):
     serializer_class = FormSerializer
     model_class = Form
@@ -32,7 +36,7 @@ class FormListView(ListModelView):
         patient = args['patient']
 
         # Filter by forms relevant to patient
-        if patient:
+        if patient is not None:
             group_ids = [x.id for x in patient.groups]
 
             q = GroupForm.query\
@@ -54,8 +58,20 @@ class EntryListView(PatientObjectListView):
     serializer_class = EntrySerializer
     model_class = Entry
 
+    def filter_query(self, query):
+        query = super(EntryListView, self).filter_query(query)
 
-# TODO filter by form
+        args = parse_args(EntryRequestSerializer)
+
+        form_id = args['form']
+
+        # Filter by entries by form
+        if form_id is not None:
+            query = query.filter(Entry.form_id == form_id)
+
+        return query
+
+
 class EntryDetailView(PatientObjectDetailView):
     serializer_class = EntrySerializer
     model_class = Entry
