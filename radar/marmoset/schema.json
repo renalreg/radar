@@ -74,6 +74,19 @@
                         },
                         "required": ["name"],
                         "additionalProperties": true
+                    },
+                    "view": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["name"],
+                        "additionalProperties": true
+                    },
+                    "column": {
+                        "type": "boolean"
                     }
                 },
                 "required": ["name", "type", "label"],
