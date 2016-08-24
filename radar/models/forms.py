@@ -29,6 +29,8 @@ class Entry(db.Model, MetaModelMixin):
 
     data = Column(postgresql.JSONB, nullable=False)
 
+Index('entries_patient_idx', Entry.patient_id)
+
 
 class GroupForm(db.Model):
     __tablename__ = 'group_forms'
