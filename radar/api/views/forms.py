@@ -6,7 +6,6 @@ from radar.api.serializers.common import QueryPatientField
 from radar.api.serializers.forms import (
     FormSerializer,
     EntrySerializer,
-    FormField,
     FormCountSerializer
 )
 from radar.api.views.common import (
@@ -17,8 +16,6 @@ from radar.api.views.generics import (
     ListView,
     ListModelView,
     RetrieveModelView,
-    ListCreateModelView,
-    RetrieveUpdateDestroyModelView,
     parse_args
 )
 from radar.models.forms import Entry, Form, GroupForm
