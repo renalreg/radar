@@ -29,3 +29,5 @@ Werkzeug==0.11.10
 zxcvbn==1.0
 Js2Py==0.39
 tzlocal==1.2.2
+functools32==3.2.3.post2
+jsonschema==2.5.1
