@@ -42,3 +42,7 @@ class GroupForm(db.Model):
 
     form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
     form = relationship('Form')
+
+Index('group_forms_group_idx', GroupForm.group_id)
+Index('group_forms_form_idx', GroupForm.form_id)
+Index('group_forms_form_group_idx', GroupForm.form_id, GroupForm.group_id, unique=True)
