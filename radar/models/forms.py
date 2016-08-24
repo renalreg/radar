@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey, String, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
 
