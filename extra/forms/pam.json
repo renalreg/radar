@@ -1,221 +1,225 @@
-[
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "fields": [
     {
-        "name": "date",
-        "type": "date",
-        "label": "Date",
-        "validators": [
-            {
-                "name": "notInFuture"
-            }    
-        ],
-        "column": true
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
     },
     {
-        "name": "q1",
-        "type": "int",
-        "label": "I am the person who is responsible for taking care of my health",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q1",
+      "type": "int",
+      "label": "I am the person who is responsible for taking care of my health",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q2",
-        "type": "int",
-        "label": "Taking an active role in my own healthcare is the most important thing that affects my health",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q2",
+      "type": "int",
+      "label": "Taking an active role in my own healthcare is the most important thing that affects my health",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q3",
-        "type": "int",
-        "label": "I am confident I can help prevent or reduce problems associated with my health",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q3",
+      "type": "int",
+      "label": "I am confident I can help prevent or reduce problems associated with my health",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q4",
-        "type": "int",
-        "label": "I know what each of my prescribed medications do",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q4",
+      "type": "int",
+      "label": "I know what each of my prescribed medications do",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q5",
-        "type": "int",
-        "label": "I am confident that I can tell whether I need to go to the doctor or whether I can take care of a health problem myself",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q5",
+      "type": "int",
+      "label": "I am confident that I can tell whether I need to go to the doctor or whether I can take care of a health problem myself",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q6",
-        "type": "int",
-        "label": "I am confident that I can tell a doctor or nurse concerns I have even when he or she does not ask",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q6",
+      "type": "int",
+      "label": "I am confident that I can tell a doctor or nurse concerns I have even when he or she does not ask",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q7",
-        "type": "int",
-        "label": "I am confident that I can carry out medical treatments I may need to do at home",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q7",
+      "type": "int",
+      "label": "I am confident that I can carry out medical treatments I may need to do at home",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q8",
-        "type": "int",
-        "label": "I understand my health problems and what causes them",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q8",
+      "type": "int",
+      "label": "I understand my health problems and what causes them",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q9",
-        "type": "int",
-        "label": "I know what treatments are available for my health problems",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q9",
+      "type": "int",
+      "label": "I know what treatments are available for my health problems",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q10",
-        "type": "int",
-        "label": "I have been able to maintain lifestyle changes, like healthy eating or exercising",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q10",
+      "type": "int",
+      "label": "I have been able to maintain lifestyle changes, like healthy eating or exercising",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q11",
-        "type": "int",
-        "label": "I know how to prevent problems with my health",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q11",
+      "type": "int",
+      "label": "I know how to prevent problems with my health",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q12",
-        "type": "int",
-        "label": "I am confident I can work out solutions when new problems arise with my health",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q12",
+      "type": "int",
+      "label": "I am confident I can work out solutions when new problems arise with my health",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     },
     {
-        "name": "q13",
-        "type": "int",
-        "label": "I am confident that I can maintain lifestyle changes, like healthy eating and exercising, even during times of stress",
-        "options": [
-            {"value": 1, "label": "Disagree Strongly"},
-            {"value": 2, "label": "Disagree"},
-            {"value": 3, "label": "Agree"},
-            {"value": 4, "label": "Agree Strongly"},
-            {"value": 5, "label": "N/A"}
-        ],
-        "widget": {
-            "name": "checkboxes",
-            "inline": true
-        }
+      "name": "q13",
+      "type": "int",
+      "label": "I am confident that I can maintain lifestyle changes, like healthy eating and exercising, even during times of stress",
+      "options": [
+        {"value": 1, "label": "Disagree Strongly"},
+        {"value": 2, "label": "Disagree"},
+        {"value": 3, "label": "Agree"},
+        {"value": 4, "label": "Agree Strongly"},
+        {"value": 5, "label": "N/A"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
     }
-]
+  ]
+}
