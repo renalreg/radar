@@ -1,12 +1,20 @@
 from cornflake import serializers, fields
+from sqlalchemy import func
 
+from radar.database import db
 from radar.api.serializers.common import QueryPatientField
-from radar.api.serializers.forms import FormSerializer, EntrySerializer, FormField
+from radar.api.serializers.forms import (
+    FormSerializer,
+    EntrySerializer,
+    FormField,
+    FormCountSerializer
+)
 from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView
 )
 from radar.api.views.generics import (
+    ListView,
     ListModelView,
     RetrieveModelView,
     ListCreateModelView,
@@ -16,7 +24,11 @@ from radar.api.views.generics import (
 from radar.models.forms import Entry, Form, GroupForm
 
 
-class FormRequestSerializer(serializers.Serializer):
+class FormListRequestSerializer(serializers.Serializer):
+    patient = QueryPatientField(required=False)
+
+
+class FormCountListRequestSerializer(serializers.Serializer):
     patient = QueryPatientField(required=False)
 
 
@@ -31,7 +43,7 @@ class FormListView(ListModelView):
     def filter_query(self, query):
         query = super(FormListView, self).filter_query(query)
 
-        args = parse_args(FormRequestSerializer)
+        args = parse_args(FormListRequestSerializer)
 
         patient = args['patient']
 
@@ -47,6 +59,35 @@ class FormListView(ListModelView):
             query = query.filter(q)
 
         return query
+
+
+class FormCountListView(ListView):
+    serializer_class = FormCountSerializer
+
+    def get_object_list(self):
+        args = parse_args(FormCountListRequestSerializer)
+
+        patient = args['patient']
+
+        count_query = db.session.query(
+            Entry.form_id.label('form_id'),
+            func.count().label('entry_count')
+        )
+        count_query = count_query.select_from(Entry)
+
+        if patient is not None:
+            count_query = count_query.filter(Entry.patient == patient)
+
+        count_query = count_query.group_by(Entry.form_id)
+        count_subquery = count_query.subquery()
+
+        q = db.session.query(Form, count_subquery.c.entry_count)
+        q = q.join(count_subquery, Form.id == count_subquery.c.form_id)
+        q = q.order_by(Form.id)
+
+        results = [dict(form=form, count=count) for form, count in q]
+
+        return results
 
 
 class FormDetailView(RetrieveModelView):
@@ -82,3 +123,4 @@ def register_views(app):
     app.add_url_rule('/forms/<id>', view_func=FormDetailView.as_view('form_detail'))
     app.add_url_rule('/entries', view_func=EntryListView.as_view('entry_list'))
     app.add_url_rule('/entries/<id>', view_func=EntryDetailView.as_view('entry_detail'))
+    app.add_url_rule('/form-counts', view_func=FormCountListView.as_view('form_count_list'))

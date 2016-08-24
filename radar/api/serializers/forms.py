@@ -113,3 +113,8 @@ class EntrySerializer(serializers.ProxySerializer):
         serializer = self.create_serializer(form)
 
         return serializer
+
+
+class FormCountSerializer(serializers.Serializer):
+    form = FormSerializer()
+    count = fields.IntegerField()
