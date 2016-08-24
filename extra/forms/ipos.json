@@ -1,0 +1,284 @@
+[
+    {
+        "name": "date",
+        "type": "date",
+        "label": "Date",
+        "validators": [
+            {
+                "name": "notInFuture"
+            }    
+        ]
+    },
+    {
+        "name": "q1",
+        "type": "int",
+        "label": "Pain",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q2",
+        "type": "int",
+        "label": "Shortness of breath",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q3",
+        "type": "int",
+        "label": "Weakness or lack of energy",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q4",
+        "type": "int",
+        "label": "Nausea (feeling like you are going to be sick)",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q5",
+        "type": "int",
+        "label": "Vomiting (being sick)",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q6",
+        "type": "int",
+        "label": "Poor appetite",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q7",
+        "type": "int",
+        "label": "Constipation",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q8",
+        "type": "int",
+        "label": "Sore or dry mouth",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q9",
+        "type": "int",
+        "label": "Drowsiness",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q10",
+        "type": "int",
+        "label": "Poor mobility",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q11",
+        "type": "int",
+        "label": "Itching",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q12",
+        "type": "int",
+        "label": "Difficulty sleeping",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q13",
+        "type": "int",
+        "label": "Restless legs or difficulty keeping legs still",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q14",
+        "type": "int",
+        "label": "Changes in skin",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q15",
+        "type": "int",
+        "label": "Diarrhoea",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q16",
+        "type": "int",
+        "label": "Feeling anxious or worried about your illness or treatment",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    },
+    {
+        "name": "q17",
+        "type": "int",
+        "label": "Feeling depressed",
+        "options": [
+            {"value": 0, "label": "Not at all"},
+            {"value": 1, "label": "Slightly"},
+            {"value": 2, "label": "Moderately"},
+            {"value": 3, "label": "Severely"},
+            {"value": 4, "label": "Overwhelmingly"}
+        ],
+        "widget": {
+            "name": "checkboxes",
+            "inline": true
+        }
+    }
+]
