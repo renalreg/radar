@@ -1,0 +1,89 @@
+[
+    {
+        "name": "date",
+        "type": "date",
+        "label": "Date",
+        "validators": [
+            {
+                "name": "notInFuture"
+            }    
+        ],
+        "column": true
+    },
+    {
+        "name": "q1",
+        "type": "int",
+        "label": "What year is it?",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 4]
+            }
+        ]
+    },
+    {
+        "name": "q2",
+        "type": "int",
+        "label": "What month is it?",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 3]
+            }
+        ]
+    },
+    {
+        "name": "q4",
+        "type": "int",
+        "label": "About what time is it",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 3]
+            }
+        ]
+    },
+    {
+        "name": "q5",
+        "type": "int",
+        "label": "Count backwards from 20-1",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 2, 4]
+            }
+        ]
+    },
+    {
+        "name": "q6",
+        "type": "int",
+        "label": "Say the months of the year in reverse",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 2, 4]
+            }
+        ]
+    },
+    {
+        "name": "q7",
+        "type": "int",
+        "label": "Repeat address phrase",
+        "validators": [
+            {
+                "name": "in",
+                "values": [0, 2, 4, 6, 8, 10]
+            }
+        ]
+    },
+    {
+        "name": "score",
+        "type": "int",
+        "label": "Score",
+        "formula": {
+            "name": "js",
+            "value": "return (form.q1 || 0) + (form.q2 || 0) + (form.q4 || 0) + (form.q5 || 0) + (form.q6 || 0) + (form.q7 || 0);"
+        },
+        "column": true
+    }
+]
