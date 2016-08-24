@@ -214,7 +214,8 @@
         "formula": {
             "name": "js",
             "value": "return (form.a1 || 0) + (form.a2 || 0) + (form.a3 || 0) + (form.a4 || 0) + (form.a5 || 0) + (form.a6 || 0) + (form.a7 || 0);" 
-        }
+        },
+        "column": true
     },
     {
         "name": "depressionScore",
@@ -223,6 +224,7 @@
         "formula": {
             "name": "js",
             "value": "return (form.d1 || 0) + (form.d2 || 0) + (form.d3 || 0) + (form.d4 || 0) + (form.d5 || 0) + (form.d6 || 0) + (form.d7 || 0);"
-        }
+        },
+        "column": true
     }
 ]
