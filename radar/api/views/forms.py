@@ -36,6 +36,15 @@ class EntryRequestSerializer(serializers.Serializer):
     form = fields.IntegerField(required=False)
 
 
+def filter_by_patient(patient):
+    group_ids = [x.id for x in patient.groups]
+
+    return GroupForm.query\
+        .filter(GroupForm.group_id.in_(group_ids))\
+        .filter(GroupForm.form_id == Form.id)\
+        .exists()
+
+
 class FormListView(ListModelView):
     serializer_class = FormSerializer
     model_class = Form
@@ -47,16 +56,9 @@ class FormListView(ListModelView):
 
         patient = args['patient']
 
-        # Filter by forms relevant to patient
         if patient is not None:
-            group_ids = [x.id for x in patient.groups]
-
-            q = GroupForm.query\
-                .filter(GroupForm.group_id.in_(group_ids))\
-                .filter(GroupForm.form_id == Form.id)\
-                .exists()
-
-            query = query.filter(q)
+            # Filter by forms relevant to patient
+            query = query.filter(filter_by_patient(patient))
 
         return query
 
@@ -76,13 +78,19 @@ class FormCountListView(ListView):
         count_query = count_query.select_from(Entry)
 
         if patient is not None:
+            # Only include entries that belong to this patient
             count_query = count_query.filter(Entry.patient == patient)
 
         count_query = count_query.group_by(Entry.form_id)
         count_subquery = count_query.subquery()
 
-        q = db.session.query(Form, count_subquery.c.entry_count)
-        q = q.join(count_subquery, Form.id == count_subquery.c.form_id)
+        q = db.session.query(Form, func.coalesce(count_subquery.c.entry_count, 0))
+        q = q.outerjoin(count_subquery, Form.id == count_subquery.c.form_id)
+
+        if patient is not None:
+            # Filter by forms relevant to patient
+            q = q.filter(filter_by_patient(patient))
+
         q = q.order_by(Form.id)
 
         results = [dict(form=form, count=count) for form, count in q]
