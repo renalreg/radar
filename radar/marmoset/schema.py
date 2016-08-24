@@ -15,13 +15,13 @@ class Schema(object):
         try:
             jsonschema.validate(schema_data, registry.schema)
         except jsonschema.SchemaError as e:
-            print e
+            print e  # TODO
             raise SchemaError()
 
         self.registry = registry
         self.fields = []
 
-        for field_data in schema_data:
+        for field_data in schema_data['fields']:
             self.fields.append(Field(self, field_data))
 
     @property

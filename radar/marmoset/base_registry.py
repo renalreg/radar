@@ -30,7 +30,7 @@ class BaseRegistry(object):
         self.helpers = []
 
     def _get_property(self, name, index=0):
-        return self.schema['items']['oneOf'][index]['properties'][name]
+        return self.schema['properties']['fields']['items']['oneOf'][index]['properties'][name]
 
     def add_type(self, type, parser, formatter):
         self.parsers[type] = parser
