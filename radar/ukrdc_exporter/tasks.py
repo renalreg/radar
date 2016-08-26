@@ -4,7 +4,7 @@ import json
 from decimal import Decimal
 from datetime import date, datetime
 
-from celery import shared_task, chain
+from celery import shared_task
 
 from radar.config import config
 from radar.database import db
