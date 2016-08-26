@@ -1,3 +1,7 @@
+from datetime import datetime
+
+import pytz
+
 from radar.models.groups import Group, GroupPatient, GroupUser
 from radar.models.patients import Patient
 from radar.models.users import User
@@ -17,6 +21,7 @@ def make_patient(groups=None):
         group_patient = GroupPatient()
         group_patient.group = group
         group_patient.patient = patient
+        group_patient.from_date = datetime(2000, 1, 1, tzinfo=pytz.UTC)
 
     return patient
 
