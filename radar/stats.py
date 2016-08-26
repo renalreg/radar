@@ -10,27 +10,41 @@ from radar.models.patients import Patient
 
 
 def recruitment_by_month(group):
-    year_column = cast(extract('year', GroupPatient.from_date), Integer)
-    month_column = cast(extract('month', GroupPatient.from_date), Integer)
+    # Earliest from date for each patient for this group.
+    # It's possible for a patient to have multiple membership records.
+    # For example a patient may withdraw their consent and then later re-consent.
+    q1 = db.session.query(func.min(GroupPatient.from_date).label('from_date'))\
+        .filter(GroupPatient.group_id == group.id)\
+        .group_by(GroupPatient.patient_id)\
+        .subquery()
 
-    # TODO this needs to use the earliest from_date
-    query = db.session\
-        .query(year_column, month_column, func.count())\
-        .filter(GroupPatient.group == group)\
+    # Extract the year and month from the from date.
+    year_column = cast(extract('year', q1.c.from_date), Integer)
+    month_column = cast(extract('month', q1.c.from_date), Integer)
+
+    # Aggregate results by month.
+    q2 = db.session.query(year_column, month_column, func.count())\
         .group_by(year_column, month_column)\
         .order_by(year_column, month_column)
 
-    data = {(year, month): count for year, month, count in query.all()}
+    # Convert the results into a map indexed by month.
+    data = {(year, month): count for year, month, count in q2.all()}
 
+    # No patients recruited.
+    # Exit early as min/max will fail on an empty list.
     if not data:
         return []
 
+    # Find the earliest and latest months where a patient was recuited.
     current_year, current_month = min(data.keys())
     last_year, last_month = max(data.keys())
 
+    # Keep a running total of the number of patients recruited.
     total = 0
     results = []
 
+    # Fill in gaps (months where no patients were recruited) and calculate
+    # cumulative totals.
     while current_year < last_year or (current_year == last_year and current_month <= last_month):
         count = data.get((current_year, current_month), 0)
         total += count
@@ -41,6 +55,7 @@ def recruitment_by_month(group):
             'total_patients': total
         })
 
+        # Move to the next month.
         if current_month == 12:
             current_year += 1
             current_month = 1
