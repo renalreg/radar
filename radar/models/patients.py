@@ -386,8 +386,7 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def frozen(self):
         """True if the patient is frozen."""
-        # TODO
-        return False
+        return not self.current
 
     @hybrid_property
     def ukrdc(self):
