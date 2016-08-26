@@ -60,17 +60,31 @@ def recruitment_by_month(group):
             'total_patients': total
         })
 
-        # Move to the next month.
+        # Reached end of the current year
         if current_month == 12:
+            # Wrap around
             current_year += 1
             current_month = 1
         else:
+            # Next month
             current_month += 1
 
     return results
 
 
 def patients_by_group(group=None, group_type=None):
+    """
+    Calculate the number of patients in each group.
+
+    Optionally specify a group to only include patients that
+    are a member of that group.
+
+    You can also specify a group type so only groups of that
+    type are included in the results.
+    """
+
+    # Count the number of distinct patients in each group. Patients can have
+    # multiple memberships for each group but should only be counted once.
     count_query = db.session.query(
         GroupPatient.group_id.label('group_id'),
         func.count(distinct(Patient.id)).label('patient_count')
@@ -79,7 +93,8 @@ def patients_by_group(group=None, group_type=None):
     count_query = count_query.join(Patient.group_patients)
     count_query = count_query.group_by(GroupPatient.group_id)
 
-    # Filter by patients belonging to the specified group
+    # Filter the results to only include patients belonging to the
+    # specified group.
     if group is not None:
         patient_alias = aliased(Patient)
         group_subquery = db.session.query(patient_alias)\
@@ -91,16 +106,21 @@ def patients_by_group(group=None, group_type=None):
             .exists()
 
         count_query = count_query.filter(group_subquery)
+
+        # We are only interested in groups other than the specified
+        # group so exclude it from the results.
         count_query = count_query.filter(GroupPatient.group != group)
 
     count_subquery = count_query.subquery()
 
+    # Join the results with the groups table.
     query = db.session\
         .query(Group, count_subquery.c.patient_count)\
         .join(count_subquery, Group.id == count_subquery.c.group_id)\
         .order_by(Group.id)
 
-    # Filter by groups of a particular type
+    # Filter the results to only include groups of the specified
+    # type (e.g. COHORT). By default all group types are included.
     if group_type is not None:
         query = query.filter(Group.type == group_type)
 
