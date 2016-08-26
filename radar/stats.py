@@ -10,6 +10,11 @@ from radar.models.patients import Patient
 
 
 def recruitment_by_month(group):
+    """
+    Calculate the number of patients recruited each month to the
+    specified group.
+    """
+
     # Earliest from date for each patient for this group.
     # It's possible for a patient to have multiple membership records.
     # For example a patient may withdraw their consent and then later re-consent.
@@ -103,19 +108,39 @@ def patients_by_group(group=None, group_type=None):
 
 
 def patients_by_recruited_group(group):
-    # TODO only count the first created_group (by from_date)
-    count_query = db.session.query(
-        GroupPatient.created_group_id.label('created_group_id'),
-        func.count(distinct(GroupPatient.patient_id)).label('patient_count')
-    )
-    count_query = count_query.select_from(GroupPatient)
-    count_query = count_query.filter(GroupPatient.group == group)
-    count_query = count_query.group_by(GroupPatient.created_group_id)
-    count_subquery = count_query.subquery()
+    """
+    Calculate the number of patients each group has recruited to
+    the specified group.
 
-    query = db.session\
-        .query(Group, count_subquery.c.patient_count)\
-        .join(count_subquery, Group.id == count_subquery.c.created_group_id)\
+    The recruiting group is the first group to add the patient to
+    the group we're querying. In practice this is the membership record
+    with the earliest from date.
+    """
+
+    # Use a window function to find the group that recruited each
+    # patient. The recruiting group is the group that created the
+    # earliest membership record (determined by from date). The query
+    # is filtered by the specified group and the distinct clause ensures
+    # we only get one result per patient.
+    first_created_group_id_column = func.first_value(GroupPatient.created_group_id)\
+        .over(partition_by=GroupPatient.patient_id, order_by=GroupPatient.from_date)\
+        .label('created_group_id')
+    q1 = db.session.query(first_created_group_id_column)\
+        .distinct(GroupPatient.patient_id)\
+        .filter(GroupPatient.group_id == group.id)\
+        .subquery()
+
+    # Aggregate the results by recruiting group to get the number of
+    # patients recruited by each group.
+    created_group_id_column = q1.c.created_group_id.label('created_group_id')
+    patient_count_column = func.count().label('patient_count')
+    q2 = db.session.query(created_group_id_column, patient_count_column)\
+        .group_by(created_group_id_column)\
+        .subquery()
+
+    # Join the results with the groups table.
+    q3 = db.session.query(Group, q2.c.patient_count)\
+        .join(q2, Group.id == q2.c.created_group_id)\
         .order_by(Group.id)
 
-    return query.all()
+    return q3.all()
