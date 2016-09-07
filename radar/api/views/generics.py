@@ -12,7 +12,7 @@ from cornflake.exceptions import ValidationError
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.utils import snake_case_keys, camel_case_keys
+from radar.utils import snake_case_keys, camel_case_keys, snake_case
 
 
 def parse_args(serializer_class, args=None):
@@ -132,9 +132,12 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
 
         if sort:
             if sort[0] == '-':
-                return sort[1:], True
+                reverse = True
+                sort = sort[1:]
             else:
-                return sort, False
+                reverse = False
+
+            return snake_case(sort), reverse
         else:
             return None, False
 
