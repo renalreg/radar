@@ -1,4 +1,17 @@
-from radar.utils import snake_case_keys, camel_case_keys
+from radar.utils import (
+    snake_case,
+    camel_case,
+    snake_case_keys,
+    camel_case_keys
+)
+
+
+def test_snake_case():
+    return snake_case('fooBar') == 'foo_bar'
+
+
+def test_camel_case():
+    return snake_case('foo_bar') == 'fooBar'
 
 
 def test_snake_case_keys():
