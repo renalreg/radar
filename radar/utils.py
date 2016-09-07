@@ -84,4 +84,3 @@ camel_case = partial(inflection.camelize, uppercase_first_letter=False)
 snake_case = partial(inflection.underscore)
 camel_case_keys = partial(transform_keys, fn=camel_case)
 snake_case_keys = partial(transform_keys, fn=snake_case)
-

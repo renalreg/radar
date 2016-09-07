@@ -44,4 +44,3 @@ def test_camel_case_keys():
             }
         ]
     }
-

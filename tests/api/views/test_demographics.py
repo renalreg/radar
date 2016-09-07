@@ -124,9 +124,9 @@ def test_read_demographics_list(api, username, group_type, group_code, source_ty
         assert len(data['data']) == 1
 
         if expected_demographics:
-            assert data['data'][0]['first_name'] == 'JOHN'
+            assert data['data'][0]['firstName'] == 'JOHN'
         else:
-            assert 'first_name' not in data['data'][0]
+            assert 'firstName' not in data['data'][0]
     else:
         assert len(data['data']) == 0
 
@@ -151,9 +151,9 @@ def test_read_demographics(api, username, group_type, group_code, source_type, e
         assert data['id'] == demographics.id
 
         if expected_demographics:
-            assert data['first_name'] == 'JOHN'
+            assert data['firstName'] == 'JOHN'
         else:
-            assert 'first_name' not in data
+            assert 'firstName' not in data
     else:
         assert response.status_code == 404
 
@@ -192,12 +192,12 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
 
     data = {
         'patient': patient.id,
-        'source_group': group.id,
-        'source_type': source_type,
-        'first_name': 'BRUCE',
-        'last_name': 'WAYNE',
+        'sourceGroup': group.id,
+        'sourceType': source_type,
+        'firstName': 'BRUCE',
+        'lastName': 'WAYNE',
         'gender': 1,
-        'date_of_birth': '2016-01-01',
+        'dateOfBirth': '2016-01-01',
     }
 
     client = api.test_client()
@@ -231,8 +231,8 @@ def test_update_demographics(api, username, group_type, group_code, source_type,
 
     data = {
         'id': demographics.id,
-        'first_name': 'BRUCE',
-        'last_name': 'WAYNE',
+        'firstName': 'BRUCE',
+        'lastName': 'WAYNE',
     }
 
     client = api.test_client()

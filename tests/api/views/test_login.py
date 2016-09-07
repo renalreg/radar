@@ -26,7 +26,7 @@ def test_good_login(api):
 
     data = json.loads(response.data)
 
-    assert data['user_id'] == user.id
+    assert data['userId'] == user.id
     assert 'token' in data
 
 
