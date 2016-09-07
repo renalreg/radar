@@ -80,6 +80,7 @@ def transform_keys(value, fn):
 
     return value
 
-
-camel_case = partial(transform_keys, fn=partial(inflection.camelize, uppercase_first_letter=False))
-snake_case = partial(transform_keys, fn=inflection.underscore)
+camel_case = partial(inflection.camelize, uppercase_first_letter=False)
+snake_case = partial(inflection.underscore)
+camel_case_keys = partial(transform_keys, fn=camel_case)
+snake_case_keys = partial(transform_keys, fn=snake_case)

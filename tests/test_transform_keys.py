@@ -1,8 +1,8 @@
-from radar.utils import snake_case, camel_case
+from radar.utils import snake_case_keys, camel_case_keys
 
 
-def test_snake_case():
-    assert snake_case({
+def test_snake_case_keys():
+    assert snake_case_keys({
         'fooBar': [
             {
                 'fooBar': 'helloWorld'
@@ -17,8 +17,8 @@ def test_snake_case():
     }
 
 
-def test_camel_case():
-    assert camel_case({
+def test_camel_case_keys():
+    assert camel_case_keys({
         'foo_bar': [
             {
                 'foo_bar': 'hello_world'
