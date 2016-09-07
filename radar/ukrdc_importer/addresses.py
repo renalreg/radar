@@ -143,10 +143,10 @@ def convert_addresses(patient, sda_addresses):
 
         address.from_date = sda_address.from_date
         address.to_date = sda_address.to_date
-        address.address_1 = sda_address.street
-        address.address_2 = sda_address.city
-        address.address_3 = sda_address.state
-        address.address_4 = sda_address.country
+        address.address1 = sda_address.street
+        address.address2 = sda_address.city
+        address.address3 = sda_address.state
+        address.address4 = sda_address.country
         address.postcode = sda_address.zip
 
         db.session.add(address)
