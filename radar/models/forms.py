@@ -11,7 +11,7 @@ class Form(db.Model):
     __tablename__ = 'forms'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     data = Column(postgresql.JSONB, nullable=False)
 
 
