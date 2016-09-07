@@ -73,6 +73,14 @@ COHORTS = [
             PAGE.LIVER_TRANSPLANTS,
             PAGE.NEPHRECTOMIES,
         ]
+    },
+    {
+        'code': 'NURTURE',
+        'name': 'NURTuRE',
+        'short_name': 'NURTuRE',
+        'pages': [
+            PAGE.QUESTIONNAIRES,
+        ]
     }
 ]
 
