@@ -132,8 +132,8 @@ def export_addresses(sda_patient, patient):
 
     for address in addresses:
         lines = [
-            address.address_1, address.address_2,
-            address.address_3, address.address_4
+            address.address1, address.address2,
+            address.address3, address.address4
         ]
 
         street = '; '.join(line for line in lines if line)

@@ -22,10 +22,10 @@ class PatientAddress(db.Model, MetaModelMixin):
 
     from_date = Column(Date)
     to_date = Column(Date)
-    address_1 = Column(String)
-    address_2 = Column(String)
-    address_3 = Column(String)
-    address_4 = Column(String)
+    address1 = Column(String)
+    address2 = Column(String)
+    address3 = Column(String)
+    address4 = Column(String)
     postcode = Column(String)
 
     @property
@@ -33,10 +33,10 @@ class PatientAddress(db.Model, MetaModelMixin):
         parts = []
 
         parts.extend([
-            self.address_1,
-            self.address_2,
-            self.address_3,
-            self.address_4,
+            self.address1,
+            self.address2,
+            self.address3,
+            self.address4,
             self.postcode,
         ])
 

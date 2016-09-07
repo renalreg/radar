@@ -42,9 +42,9 @@ from radar_fixtures.utils import (
     generate_chi_no,
     generate_ukrr_no,
     generate_nhsbt_no,
-    generate_address_1,
-    generate_address_2,
-    generate_address_3,
+    generate_address1,
+    generate_address2,
+    generate_address3,
     generate_postcode,
     random_date,
     random_datetime,
@@ -175,9 +175,9 @@ def create_patient_addresses_f():
 
         if old_a is None:
             new_a.from_date = patient.earliest_date_of_birth
-            new_a.address_1 = generate_address_1()
-            new_a.address_2 = generate_address_2()
-            new_a.address_3 = generate_address_3()
+            new_a.address1 = generate_address1()
+            new_a.address2 = generate_address2()
+            new_a.address3 = generate_address3()
             new_a.postcode = generate_postcode()
         else:
             to_date = random_date(old_a.from_date, date.today())
@@ -185,15 +185,15 @@ def create_patient_addresses_f():
             if random.random() > 0.5 and to_date != old_a.from_date:
                 old_a.to_date = to_date
                 new_a.from_date = to_date
-                new_a.address_1 = generate_address_1()
-                new_a.address_2 = generate_address_2()
-                new_a.address_3 = generate_address_3()
+                new_a.address1 = generate_address1()
+                new_a.address2 = generate_address2()
+                new_a.address3 = generate_address3()
                 new_a.postcode = generate_postcode()
             else:
                 new_a.from_date = old_a.from_date
-                new_a.address_1 = old_a.address_1
-                new_a.address_2 = old_a.address_2
-                new_a.address_3 = old_a.address_3
+                new_a.address1 = old_a.address1
+                new_a.address2 = old_a.address2
+                new_a.address3 = old_a.address3
                 new_a.postcode = old_a.postcode
 
         add(new_a)

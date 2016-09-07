@@ -21,14 +21,14 @@ from radar.roles import PERMISSION
 class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
     from_date = fields.DateField(required=False)
     to_date = fields.DateField(required=False)
-    address_1 = fields.StringField(validators=[
+    address1 = fields.StringField(validators=[
         not_empty(),
         remove_trailing_comma(),
         not_empty(),
         normalise_whitespace(),
         max_length(100)
     ])
-    address_2 = fields.StringField(required=False, validators=[
+    address2 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -37,7 +37,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_3 = fields.StringField(required=False, validators=[
+    address3 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -46,7 +46,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         normalise_whitespace(),
         max_length(100)
     ])
-    address_4 = fields.StringField(required=False, validators=[
+    address4 = fields.StringField(required=False, validators=[
         none_if_blank(),
         optional(),
         remove_trailing_comma(),
@@ -90,30 +90,30 @@ class PatientAddressProxy(object):
         self.demographics_permission = has_permission_for_patient(user, address.patient, PERMISSION.VIEW_DEMOGRAPHICS)
 
     @property
-    def address_1(self):
+    def address1(self):
         if self.demographics_permission:
-            return self.address.address_1
+            return self.address.address1
         else:
             raise SkipField
 
     @property
-    def address_2(self):
+    def address2(self):
         if self.demographics_permission:
-            return self.address.address_2
+            return self.address.address2
         else:
             raise SkipField
 
     @property
-    def address_3(self):
+    def address3(self):
         if self.demographics_permission:
-            return self.address.address_3
+            return self.address.address3
         else:
             raise SkipField
 
     @property
-    def address_4(self):
+    def address4(self):
         if self.demographics_permission:
-            return self.address.address_4
+            return self.address.address4
         else:
             raise SkipField
 

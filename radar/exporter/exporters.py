@@ -209,10 +209,10 @@ class PatientAddressExporter(Exporter):
             column('source_type'),
             column('from_date'),
             column('to_date'),
-            d('address_1'),
-            d('address_2'),
-            d('address_3'),
-            d('address_4'),
+            d('address1'),
+            d('address2'),
+            d('address3'),
+            d('address4'),
             d('postcode', anonymised_getter='anonymised_postcode'),
         ]
         columns.extend(get_meta_columns())
