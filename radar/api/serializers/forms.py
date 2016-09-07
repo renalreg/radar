@@ -9,6 +9,7 @@ from radar.api.serializers.common import MetaMixin, PatientMixin
 from radar.marmoset.schema import Schema
 from radar.marmoset.registry import Registry
 from radar.models import Entry, Form
+from radar.utils import camel_case_keys
 
 
 class FormSerializer(ModelSerializer):
@@ -34,6 +35,7 @@ class DataField(fields.Field):
         return self.__class__(self.schema, **kwargs)
 
     def to_internal_value(self, data):
+        data = camel_case_keys(data)
         data = self.schema.validate(data)
         data = self.schema.format(data)
         return data
