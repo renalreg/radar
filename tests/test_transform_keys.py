@@ -11,7 +11,7 @@ def test_snake_case():
 
 
 def test_camel_case():
-    return snake_case('foo_bar') == 'fooBar'
+    return camel_case('foo_bar') == 'fooBar'
 
 
 def test_snake_case_keys():
@@ -44,3 +44,4 @@ def test_camel_case_keys():
             }
         ]
     }
+
