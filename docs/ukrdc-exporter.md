@@ -28,12 +28,12 @@ The UKRDC exporter exports patients to the UKRDC.
 
 ### Addresses
 
-| Name      | RaDaR                                                                                                                      | SDA                          |
-|-----------|----------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| From date | `patient_address.to_date`                                                                                                  | `Patient.Addresses.FromTime` |
-| To date   | `patient_address.from_date`                                                                                                | `Patient.Addresses.ToTime`   |
-| Address   | `patient_addresses.address_1`, `patient_addresses.address_2`, `patient_addresses.address_3`, `patient_addresses.address_4` | `Patient.Addresses.Street`   |
-| Postcode  | `patient_addresses.postcode`                                                                                               | `Patient.Addresses.Zip.Code` |
+| Name      | RaDaR                                                                                                                  | SDA                          |
+|-----------|------------------------------------------------------------------------------------------------------------------------|------------------------------|
+| From date | `patient_address.to_date`                                                                                              | `Patient.Addresses.FromTime` |
+| To date   | `patient_address.from_date`                                                                                            | `Patient.Addresses.ToTime`   |
+| Address   | `patient_addresses.address1`, `patient_addresses.address2`, `patient_addresses.address3`, `patient_addresses.address4` | `Patient.Addresses.Street`   |
+| Postcode  | `patient_addresses.postcode`                                                                                           | `Patient.Addresses.Zip.Code` |
 
 ### Patient Numbers
 

@@ -150,15 +150,15 @@ def generate_nhsbt_no():
     return str(random.randint(1, 200000))
 
 
-def generate_address_1():
+def generate_address1():
     return random.choice(ADDRESS1)
 
 
-def generate_address_2():
+def generate_address2():
     return random.choice(ADDRESS2)
 
 
-def generate_address_3():
+def generate_address3():
     return random.choice(ADDRESS3)
 
 
