@@ -26,7 +26,7 @@ def test_change_password(api):
     assert get_session_count(user) == 2
 
     assert client1.patch('/users/%s' % user.id, data={
-        'current_password': old_password,
+        'currentPassword': old_password,
         'password': new_password
     }).status_code == 200
 
@@ -59,7 +59,7 @@ def test_incorrect_password(api):
     assert get_session_count(user) == 2
 
     response = client1.patch('/users/%s' % user.id, data={
-        'current_password': 'foobarbaz',
+        'currentPassword': 'foobarbaz',
         'password': 'qzm5zuLVgL1t'
     })
 
@@ -69,7 +69,7 @@ def test_incorrect_password(api):
 
     assert data == {
         'errors': {
-            'current_password': ['Incorrect password!']
+            'currentPassword': ['Incorrect password!']
         }
     }
 
@@ -90,7 +90,7 @@ def test_weak_password(api):
     client2.login(user)
 
     response = client1.patch('/users/%s' % user.id, data={
-        'current_password': 'password',
+        'currentPassword': 'password',
         'password': 'password123'
     })
 

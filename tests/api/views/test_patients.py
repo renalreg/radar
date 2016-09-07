@@ -31,9 +31,9 @@ def test_patient_read_list(api, username, expected, expected_demographics):
         assert len(data['data']) == 1
 
         if expected_demographics:
-            assert data['data'][0]['first_name'] == 'JOHN'
+            assert data['data'][0]['firstName'] == 'JOHN'
         else:
-            assert 'first_name' not in data['data'][0]
+            assert 'firstName' not in data['data'][0]
     else:
         assert len(data['data']) == 0
 
@@ -53,8 +53,8 @@ def test_patient_read(api, username, expected, expected_demographics):
         data = json.loads(response.data)
 
         if expected_demographics:
-            assert data['first_name'] == 'JOHN'
+            assert data['firstName'] == 'JOHN'
         else:
-            assert 'first_name' not in data
+            assert 'firstName' not in data
     else:
         assert response.status_code == 404

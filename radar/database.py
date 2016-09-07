@@ -62,7 +62,9 @@ def ping_connection(connection, branch):
 
 
 def no_autoflush(f):
-    """Decorator to disable autoflush for the duration of the function."""
+    """
+    Decorator to disable autoflush for the duration of the function.
+    """
 
     def wrapper(*args, **kwargs):
         with db.session.no_autoflush:
