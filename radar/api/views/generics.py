@@ -12,13 +12,18 @@ from cornflake.exceptions import ValidationError
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.exceptions import PermissionDenied, NotFound, BadRequest
+from radar.utils import snake_case, camel_case
 
 
 def parse_args(serializer_class, args=None):
     if args is None:
         args = request.args
 
+    # Remove empty arguments
     args = {k: v for k, v in args.items() if len(v.strip()) > 0}
+
+    # Camel case to snake case
+    args = snake_case(args)
 
     context = {'user': current_user._get_current_object()}
 
@@ -41,7 +46,8 @@ class ApiView(MethodView):
             abort(404)
         except ValidationError as e:
             print e.errors
-            return jsonify(errors=e.errors), 422
+            errors = camel_case(e.errors)
+            return jsonify(errors=errors), 422
 
 
 class PermissionViewMixin(object):
@@ -81,6 +87,9 @@ class SerializerViewMixin(object):
         return self.serializer_class
 
     def get_serializer(self, instance=None, data=None, partial=False):
+        if data is not None:
+            data = snake_case(data)
+
         context = self.get_context()
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance=instance, data=data, context=context, partial=partial)
@@ -243,6 +252,7 @@ class CreateModelViewMixin(object):
         db.session.commit()
 
         data = serializer.data
+        data = camel_case(data)
 
         return jsonify(data), 200
 
@@ -258,6 +268,8 @@ class ListViewMixin(object):
         data = {
             'data': list_serializer.data
         }
+
+        data = camel_case(data)
 
         return jsonify(data)
 
@@ -278,6 +290,8 @@ class ListModelViewMixin(object):
             pagination_serializer = PaginationResponseSerializer(pagination)
             data['pagination'] = pagination_serializer.data
 
+        data = camel_case(data)
+
         return jsonify(data)
 
 
@@ -286,6 +300,7 @@ class RetrieveModelViewMixin(object):
         obj = self.get_object()
         serializer = self.get_serializer(obj)
         data = serializer.data
+        data = camel_case(data)
         return jsonify(data)
 
 
@@ -306,6 +321,7 @@ class UpdateModelViewMixin(object):
         db.session.commit()
 
         data = serializer.data
+        data = camel_case(data)
 
         return jsonify(data)
 
@@ -402,6 +418,8 @@ def request_json(serializer_class):
             if json is None:
                 raise BadRequest()
 
+            json = snake_case(json)
+
             context = {}
 
             if current_user.is_authenticated():
@@ -434,6 +452,7 @@ def response_json(serializer_class):
 
             serializer = serializer_class(response, context=context)
             data = serializer.data
+            data = camel_case(data)
 
             return jsonify(data), 200
 
