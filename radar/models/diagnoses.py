@@ -39,6 +39,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
 
+    prenatal = Column(Boolean)
     gene_test = Column(Boolean)
     biochemistry = Column(Boolean)
     clinical_picture = Column(Boolean)

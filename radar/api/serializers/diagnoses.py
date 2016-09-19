@@ -97,6 +97,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     from_age = fields.IntegerField(read_only=True)
     to_date = fields.DateField(required=False)
     to_age = fields.IntegerField(read_only=True)
+    prenatal = fields.BooleanField(required=False)
     gene_test = fields.BooleanField(required=False)
     biochemistry = fields.BooleanField(required=False)
     clinical_picture = fields.BooleanField(required=False)
