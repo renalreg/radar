@@ -167,9 +167,10 @@ class PatientListCSVView(ApiView):
             return ', '.join(groups)
 
         patients = list_patients()
+        serializer = TinyPatientSerializer(context={'user': current_user})
 
         for patient in patients:
-            data = TinyPatientSerializer(instance=patient, context={'user': current_user}).data
+            data = serializer.to_representation(patient)
 
             output = []
             output.append(get_path(data, 'id'))
