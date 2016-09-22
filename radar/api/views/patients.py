@@ -1,17 +1,16 @@
-import csv
 import re
 import io
 
 from backports import csv
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
-from flask import Response, session
+from flask import Response
 
 from radar.auth.sessions import current_user
 from radar.api.logs import log_view_patient
 from radar.api.permissions import PatientPermission, AdminPermission
 from radar.api.serializers.common import GroupField
-from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
+from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer, PatientProxy
 from radar.api.views.generics import (
     ApiView,
     ListModelView,
@@ -23,7 +22,7 @@ from radar.api.views.generics import (
 from radar.models.patients import Patient
 from radar.models.groups import Group, GROUP_TYPE
 from radar.patient_search import PatientQueryBuilder
-from radar.utils import uniq, get_path
+from radar.utils import uniq, get_attrs, SkipProxy
 
 
 class PatientListRequestSerializer(serializers.Serializer):
@@ -159,33 +158,31 @@ class PatientListCSVView(ApiView):
         ]
         writer.writerow(headers)
 
-        def get_groups(data, group_type):
-            group_type = group_type.value
-            groups = [x['group']['name'] for x in data['groups'] if x['group']['type'] == group_type]
+        def get_groups(patient, group_type):
+            groups = [x.name for x in patient.current_groups if x.type == group_type]
             groups = sorted(groups)
             groups = uniq(groups)
             return ', '.join(groups)
 
         patients = list_patients()
-        serializer = TinyPatientSerializer(context={'user': current_user})
 
         for patient in patients:
-            data = serializer.to_representation(patient)
+            patient = SkipProxy(PatientProxy(patient, current_user))
 
             output = []
-            output.append(get_path(data, 'id'))
-            output.append(get_path(data, 'first_name'))
-            output.append(get_path(data, 'last_name'))
-            output.append(get_path(data, 'gender', 'label'))
-            output.append(get_path(data, 'date_of_birth'))
-            output.append(get_path(data, 'year_of_birth'))
-            output.append(get_path(data, 'date_of_death'))
-            output.append(get_path(data, 'year_of_death'))
-            output.append(get_path(data, 'primary_patient_number', 'number'))
-            output.append(get_path(data, 'recruited_date'))
-            output.append(get_path(data, 'recruited_group', 'name'))
-            output.append(get_groups(data, GROUP_TYPE.COHORT))
-            output.append(get_groups(data, GROUP_TYPE.HOSPITAL))
+            output.append(get_attrs(patient, 'id'))
+            output.append(get_attrs(patient, 'first_name'))
+            output.append(get_attrs(patient, 'last_name'))
+            output.append(get_attrs(patient, 'gender', 'label'))
+            output.append(get_attrs(patient, 'date_of_birth'))
+            output.append(get_attrs(patient, 'year_of_birth'))
+            output.append(get_attrs(patient, 'date_of_death'))
+            output.append(get_attrs(patient, 'year_of_death'))
+            output.append(get_attrs(patient, 'primary_patient_number', 'number'))
+            output.append(get_attrs(patient, 'recruited_date'))
+            output.append(get_attrs(patient, 'recruited_group', 'name'))
+            output.append(get_groups(patient, GROUP_TYPE.COHORT))
+            output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
 
             writer.writerow(output)
 

@@ -7,6 +7,7 @@ import inflection
 import pytz
 import six
 from sqlalchemy import and_
+from cornflake.exceptions import SkipField
 
 
 SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -96,3 +97,29 @@ def get_path(data, *path):
             break
 
     return value
+
+
+def get_attrs(data, *attrs):
+    value = data
+
+    for attr in attrs:
+        try:
+            value = getattr(data, attr)
+        except AttributeError:
+            value = None
+
+        if value is None:
+            break
+
+    return value
+
+
+class SkipProxy(object):
+    def __init__(self, instance):
+        self.instance = instance
+
+    def __getattr__(self, item):
+        try:
+            return getattr(self.instance, item)
+        except SkipField:
+            return None
