@@ -8,7 +8,7 @@ Use [radar-ansible](https://github.com/renalreg/radar-ansible) to create a devel
 
 ```
 virtualenv venv
-source venv/bin/activate
+. venv/bin/activate
 pip install -r dev-requirements.txt
 pip install -e .
 ```
