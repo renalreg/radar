@@ -1,4 +1,6 @@
 from cornflake import fields, serializers
+from cornflake.validators import in_
+from flask import Blueprint
 
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
@@ -7,8 +9,9 @@ from radar.models.groups import Group, GROUP_TYPE
 from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group
 
 
-class RecruitmentByMonthRequestSerializer(serializers.Serializer):
+class RecruitmentRequestSerializer(serializers.Serializer):
     group = GroupField(required=False)
+    interval = fields.StringField(default='month', validators=[in_(['month'])])
 
 
 class PatientsByGroupRequestSerializer(serializers.Serializer):
@@ -20,10 +23,10 @@ class PatientsByRecruitedGroupRequestSerializer(serializers.Serializer):
     group = GroupField(required=False)
 
 
-class RecruitmentByMonthView(ApiView):
+class RecruitmentView(ApiView):
     @response_json(DataPointListSerializer)
     def get(self):
-        args = parse_args(RecruitmentByMonthRequestSerializer)
+        args = parse_args(RecruitmentRequestSerializer)
 
         if args['group'] is not None:
             group = args['group']
@@ -63,6 +66,8 @@ class PatientsByRecruitedGroupView(ApiView):
 
 
 def register_views(app):
-    app.add_url_rule('/recruitment-by-month', view_func=RecruitmentByMonthView.as_view('recruitment_by_month'))
-    app.add_url_rule('/patients-by-group', view_func=PatientsByGroupView.as_view('patients_by_group'))
-    app.add_url_rule('/patients-by-recruited-group', view_func=PatientsByRecruitedGroupView.as_view('patients_by_recruited_group'))
+    stats = Blueprint('stats', __name__)
+    stats.add_url_rule('/recruitment', view_func=RecruitmentView.as_view('recruitment'))
+    stats.add_url_rule('/patients-by-group', view_func=PatientsByGroupView.as_view('patients_by_group'))
+    stats.add_url_rule('/patients-by-recruited-group', view_func=PatientsByRecruitedGroupView.as_view('patients_by_recruited_group'))
+    app.register_blueprint(stats, url_prefix='/stats')
