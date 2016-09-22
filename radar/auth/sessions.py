@@ -124,6 +124,7 @@ def refresh_token(response):
     if current_user_session.is_authenticated():
         token = generate_token_for_user_session(current_user_session)
         response.headers['X-Auth-Token'] = token
+        session['id'] = current_user_session.id
 
     return response
 
