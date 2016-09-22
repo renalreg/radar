@@ -38,7 +38,7 @@ Install [platter](https://github.com/mitsuhiko/platter):
 
 ```
 virtualenv venv
-source venv/bin/activate
+. venv/bin/activate
 pip install git+https://github.com/mitsuhiko/platter
 ```
 
