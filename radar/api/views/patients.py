@@ -20,8 +20,9 @@ from radar.api.views.generics import (
     get_sort_args
 )
 from radar.models.patients import Patient
-from radar.models.groups import Group
+from radar.models.groups import Group, GROUP_TYPE
 from radar.patient_search import PatientQueryBuilder
+from radar.utils import uniq, get_path
 
 
 class PatientListRequestSerializer(serializers.Serializer):
@@ -144,13 +145,44 @@ class PatientDestroyView(DestroyModelView):
 
 class PatientListCSVView(ApiView):
     def get(self):
-        query = list_patients()
+        patients = list_patients().all()
+        log_view_patients(patients)
 
         f = StringIO.StringIO()
         writer = csv.writer(f)
 
-        for patient in query:
-            writer.writerow([patient.id, patient.first_name, patient.last_name])
+        headers = [
+            'id', 'first_name', 'last_name',
+            'gender', 'date_of_birth', 'year_of_birth',
+            'date_of_death', 'year_of_death', 'primary_patient_number',
+            'recruited_date', 'cohorts', 'hospitals'
+        ]
+
+        def get_groups(data, group_type):
+            group_type = group_type.value
+            groups = [x['group']['name'] for x in data['groups'] if x['group']['type'] == group_type]
+            groups = sorted(groups)
+            groups = uniq(groups)
+            return ', '.join(groups)
+
+        for patient in patients:
+            data = PatientSerializer(instance=patient, context={'user': current_user}).data
+
+            output = []
+            output.append(get_path(data, 'id'))
+            output.append(get_path(data, 'first_name'))
+            output.append(get_path(data, 'last_name'))
+            output.append(get_path(data, 'gender', 'label'))
+            output.append(get_path(data, 'date_of_birth'))
+            output.append(get_path(data, 'year_of_birth'))
+            output.append(get_path(data, 'date_of_death'))
+            output.append(get_path(data, 'year_of_death'))
+            output.append(get_path(data, 'primary_patient_number', 'number'))
+            output.append(get_path(data, 'recruited_date'))
+            output.append(get_groups(data, GROUP_TYPE.COHORT))
+            output.append(get_groups(data, GROUP_TYPE.HOSPITAL))
+
+            writer.writerow(output)
 
         return Response(f.getvalue(), content_type='text/csv')
 

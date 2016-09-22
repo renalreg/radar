@@ -84,3 +84,15 @@ camel_case = partial(inflection.camelize, uppercase_first_letter=False)
 snake_case = partial(inflection.underscore)
 camel_case_keys = partial(transform_keys, fn=camel_case)
 snake_case_keys = partial(transform_keys, fn=snake_case)
+
+
+def get_path(data, *path):
+    value = data
+
+    for key in path:
+        value = value.get(key)
+
+        if value is None:
+            break
+
+    return value
