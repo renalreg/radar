@@ -152,10 +152,13 @@ class PatientListCSVView(ApiView):
         writer = csv.writer(f)
 
         headers = [
-            'ID', 'First Name', 'Last Name',
-            'Gender', 'Date of Birth', 'Year of Birth',
-            'Date of Death', 'Year of Death', 'Patient Number',
-            'Recruited On', 'Cohorts', 'Hospitals'
+            'Patient ID',
+            'First Name', 'Last Name',
+            'Gender',
+            'Date of Birth', 'Year of Birth', 'Date of Death', 'Year of Death',
+            'Patient Number',
+            'Recruited On', 'Recruited Group',
+            'Cohorts', 'Hospitals',
         ]
         writer.writerow(headers)
 
@@ -180,6 +183,7 @@ class PatientListCSVView(ApiView):
             output.append(get_path(data, 'year_of_death'))
             output.append(get_path(data, 'primary_patient_number', 'number'))
             output.append(get_path(data, 'recruited_date'))
+            output.append(get_path(data, 'recruited_group', 'name'))
             output.append(get_groups(data, GROUP_TYPE.COHORT))
             output.append(get_groups(data, GROUP_TYPE.HOSPITAL))
 
