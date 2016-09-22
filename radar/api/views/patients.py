@@ -1,7 +1,8 @@
 import csv
 import re
-import StringIO
+import io
 
+from backports import csv
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 from flask import Response, session
@@ -148,7 +149,7 @@ class PatientListCSVView(ApiView):
         patients = list_patients().all()
         log_view_patients(patients)
 
-        f = StringIO.StringIO()
+        f = io.StringIO()
         writer = csv.writer(f)
 
         headers = [
