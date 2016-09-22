@@ -152,11 +152,12 @@ class PatientListCSVView(ApiView):
         writer = csv.writer(f)
 
         headers = [
-            'id', 'first_name', 'last_name',
-            'gender', 'date_of_birth', 'year_of_birth',
-            'date_of_death', 'year_of_death', 'primary_patient_number',
-            'recruited_date', 'cohorts', 'hospitals'
+            'ID', 'First Name', 'Last Name',
+            'Gender', 'Date of Birth', 'Year of Birth',
+            'Date of Death', 'Year of Death', 'Patient Number',
+            'Recruited On', 'Cohorts', 'Hospitals'
         ]
+        writer.writerow(headers)
 
         def get_groups(data, group_type):
             group_type = group_type.value
