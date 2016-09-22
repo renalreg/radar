@@ -116,3 +116,9 @@ git checkout tags/v1.0.0
 platter build -r requirements.txt .
 fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
 ```
+
+## License
+
+Copyright (c) 2016 UK Renal Registry.
+
+Licensed under the [AGPL](LICENSE.md) license.
