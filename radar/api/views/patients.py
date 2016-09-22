@@ -173,7 +173,7 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient, 'id'))
             output.append(get_attrs(patient, 'first_name'))
             output.append(get_attrs(patient, 'last_name'))
-            output.append(get_attrs(patient, 'gender', 'label'))
+            output.append(get_attrs(patient, 'gender'))
             output.append(get_attrs(patient, 'date_of_birth'))
             output.append(get_attrs(patient, 'year_of_birth'))
             output.append(get_attrs(patient, 'date_of_death'))
