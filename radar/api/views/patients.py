@@ -4,7 +4,7 @@ import StringIO
 
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
-from flask import make_response
+from flask import Response, session
 
 from radar.auth.sessions import current_user
 from radar.api.logs import log_view_patients, log_view_patient
@@ -153,7 +153,7 @@ class PatientListCSVView(ApiView):
         for patient in query:
             writer.writerow([patient.id, patient.first_name, patient.last_name])
 
-        return make_response(f.getvalue(), content_type='text/csv')
+        return Response(f.getvalue(), content_type='text/csv')
 
 
 def register_views(app):
