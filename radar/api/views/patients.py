@@ -1,4 +1,6 @@
+import csv
 import re
+import StringIO
 
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
@@ -9,6 +11,7 @@ from radar.api.permissions import PatientPermission, AdminPermission
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
 from radar.api.views.generics import (
+    ApiView,
     ListModelView,
     RetrieveUpdateModelView,
     DestroyModelView,
@@ -34,78 +37,84 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
 
 
+def list_patients():
+    args = parse_args(PatientListRequestSerializer)
+
+    builder = PatientQueryBuilder(current_user)
+
+    patient_id = args['id']
+    first_name = args['first_name']
+    last_name = args['last_name']
+    patient_number = args['patient_number']
+    gender = args['gender']
+    date_of_birth = args['date_of_birth']
+    year_of_birth = args['year_of_birth']
+    date_of_death = args['date_of_death']
+    year_of_death = args['year_of_death']
+    groups = args['group']
+    current = args['current']
+    ukrdc = args['ukrdc']
+
+    if patient_id is not None:
+        builder.patient_id(patient_id)
+
+    if first_name is not None:
+        builder.first_name(first_name)
+
+    if last_name is not None:
+        builder.last_name(last_name)
+
+    if patient_number is not None:
+        builder.patient_number(patient_number)
+
+    if gender is not None:
+        builder.gender(gender)
+
+    if date_of_birth is not None:
+        builder.date_of_birth(date_of_birth)
+
+    if year_of_birth is not None:
+        builder.year_of_birth(year_of_birth)
+
+    if date_of_death is not None:
+        builder.date_of_death(date_of_death)
+
+    if year_of_death is not None:
+        builder.year_of_death(year_of_death)
+
+    if ukrdc is not None:
+        builder.ukrdc(ukrdc)
+
+    for group in groups:
+        builder.group(group, current=current)
+
+    """
+    sort, reverse = self.get_sort_args()
+
+    if sort is not None:
+        m = re.match('^group_([0-9]+)', sort)
+
+        if m:
+            group = Group.query.get(int(m.group(1)))
+
+            if group is not None:
+                builder.sort_by_group(group, reverse)
+        else:
+            builder.sort(sort, reverse)
+    """
+
+    query = builder.build(current=current)
+
+    return query
+
+
 class PatientListView(ListModelView):
     serializer_class = TinyPatientSerializer
     model_class = Patient
     permission_classes = [PatientPermission]
 
     def get_query(self):
-        args = parse_args(PatientListRequestSerializer)
-
-        builder = PatientQueryBuilder(current_user)
-
-        patient_id = args['id']
-        first_name = args['first_name']
-        last_name = args['last_name']
-        patient_number = args['patient_number']
-        gender = args['gender']
-        date_of_birth = args['date_of_birth']
-        year_of_birth = args['year_of_birth']
-        date_of_death = args['date_of_death']
-        year_of_death = args['year_of_death']
-        groups = args['group']
-        current = args['current']
-        ukrdc = args['ukrdc']
-
-        if patient_id is not None:
-            builder.patient_id(patient_id)
-
-        if first_name is not None:
-            builder.first_name(first_name)
-
-        if last_name is not None:
-            builder.last_name(last_name)
-
-        if patient_number is not None:
-            builder.patient_number(patient_number)
-
-        if gender is not None:
-            builder.gender(gender)
-
-        if date_of_birth is not None:
-            builder.date_of_birth(date_of_birth)
-
-        if year_of_birth is not None:
-            builder.year_of_birth(year_of_birth)
-
-        if date_of_death is not None:
-            builder.date_of_death(date_of_death)
-
-        if year_of_death is not None:
-            builder.year_of_death(year_of_death)
-
-        if ukrdc is not None:
-            builder.ukrdc(ukrdc)
-
-        for group in groups:
-            builder.group(group, current=current)
-
-        sort, reverse = self.get_sort_args()
-
-        if sort is not None:
-            m = re.match('^group_([0-9]+)', sort)
-
-            if m:
-                group = Group.query.get(int(m.group(1)))
-
-                if group is not None:
-                    builder.sort_by_group(group, reverse)
-            else:
-                builder.sort(sort, reverse)
-
-        query = builder.build(current=current)
-
-        return query
+        return list_patients()
 
     def get_object_list(self):
         patients, pagination = super(PatientListView, self).get_object_list()
@@ -133,7 +142,21 @@ class PatientDestroyView(DestroyModelView):
     permission_classes = [AdminPermission]
 
 
+class PatientListCSVView(ApiView):
+    def get(self):
+        query = list_patients()
+
+        f = StringIO.StringIO()
+        writer = csv.writer(f)
+
+        for patient in query:
+            writer.writerow([patient.id, patient.first_name, patient.last_name])
+
+        return f.getvalue()
+
+
 def register_views(app):
     app.add_url_rule('/patients', view_func=PatientListView.as_view('patient_list'))
     app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
     app.add_url_rule('/patients/<int:id>', view_func=PatientDestroyView.as_view('patient_destroy'))
+    app.add_url_rule('/patients.csv', view_func=PatientListCSVView.as_view('patient_list_csv'))
