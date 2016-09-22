@@ -16,7 +16,8 @@ from radar.api.views.generics import (
     ListModelView,
     RetrieveUpdateModelView,
     DestroyModelView,
-    parse_args
+    parse_args,
+    get_sort_args
 )
 from radar.models.patients import Patient
 from radar.models.groups import Group
@@ -89,8 +90,7 @@ def list_patients():
     for group in groups:
         builder.group(group, current=current)
 
-    """
-    sort, reverse = self.get_sort_args()
+    sort, reverse = get_sort_args()
 
     if sort is not None:
         m = re.match('^group_([0-9]+)', sort)
@@ -102,7 +102,6 @@ def list_patients():
                 builder.sort_by_group(group, reverse)
         else:
             builder.sort(sort, reverse)
-    """
 
     query = builder.build(current=current)
 
