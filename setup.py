@@ -11,7 +11,7 @@ setup(
     author='Rupert Bedford',
     author_email='rupert.bedford@renalregistry.nhs.uk',
     url='https://www.radar.nhs.uk/',
-    license='AGPL',
+    license='AGPL-3.0',
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     zip_safe=False,
