@@ -8,7 +8,7 @@ from cornflake.validators import none_if_blank
 from flask import Response, session
 
 from radar.auth.sessions import current_user
-from radar.api.logs import log_view_patients, log_view_patient
+from radar.api.logs import log_view_patient
 from radar.api.permissions import PatientPermission, AdminPermission
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer
@@ -120,7 +120,6 @@ class PatientListView(ListModelView):
 
     def get_object_list(self):
         patients, pagination = super(PatientListView, self).get_object_list()
-        log_view_patients(patients)
         return patients, pagination
 
 
@@ -146,9 +145,6 @@ class PatientDestroyView(DestroyModelView):
 
 class PatientListCSVView(ApiView):
     def get(self):
-        patients = list_patients().all()
-        log_view_patients(patients)
-
         f = io.StringIO()
         writer = csv.writer(f)
 
@@ -169,6 +165,8 @@ class PatientListCSVView(ApiView):
             groups = sorted(groups)
             groups = uniq(groups)
             return ', '.join(groups)
+
+        patients = list_patients()
 
         for patient in patients:
             data = PatientSerializer(instance=patient, context={'user': current_user}).data
