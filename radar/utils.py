@@ -104,7 +104,7 @@ def get_attrs(data, *attrs):
 
     for attr in attrs:
         try:
-            value = getattr(data, attr)
+            value = getattr(value, attr)
         except AttributeError:
             value = None
 
