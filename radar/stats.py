@@ -184,7 +184,7 @@ def get_months(group_type):
     return q
 
 
-def get_groups(group_type):
+def get_groups(group_type=None):
     q = db.session.query(Group.id.label('group_id'))
 
     if group_type is not None:
