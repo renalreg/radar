@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import cast, extract, Integer, func
+from sqlalchemy import cast, extract, Integer, func, text, and_
 from sqlalchemy.sql.expression import distinct
 from sqlalchemy.orm import aliased
 
@@ -164,3 +164,99 @@ def patients_by_recruited_group(group):
         .order_by(Group.id)
 
     return q3.all()
+
+
+def to_month(column):
+    return func.make_date(cast(extract('year', column), Integer), cast(extract('month', column), Integer), 1)
+
+
+def get_months(group_type):
+    min_ = to_month(func.min(GroupPatient.from_date))
+    max_ = to_month(func.max(GroupPatient.from_date))
+    age = func.age(max_, min_)
+    n = cast(extract('year', age) * 12 + extract('month', age), Integer)
+    q = db.session.query((min_ + text("interval '1' month") * func.generate_series(0, n)).label('date'))
+
+    if group_type is not None:
+        q = q.join(GroupPatient.group)
+        q = q.filter(Group.type == group_type)
+
+    return q
+
+
+def get_groups(group_type):
+    q = db.session.query(Group.id.label('group_id'))
+
+    if group_type is not None:
+        q = q.filter(Group.type == group_type)
+
+    return q
+
+
+def get_buckets(group_type=None, interval='month'):
+    q1 = get_groups(group_type).cte()
+    q2 = get_months(group_type).cte()
+    q3 = db.session.query(q1.c.group_id, q2.c.date).cte()
+    return q3
+
+
+def get_counts(group_type=None, interval='month'):
+    q1 = db.session.query(
+        GroupPatient.group_id,
+        GroupPatient.patient_id,
+        func.min(GroupPatient.from_date).label('from_date')
+    )
+
+    if group_type is not None:
+        q1 = q1.join(GroupPatient.group)
+        q1 = q1.filter(Group.type == group_type)
+
+    q1 = q1.group_by(GroupPatient.group_id, GroupPatient.patient_id)
+    q1 = q1.cte()
+
+    q2 = db.session.query(
+        q1.c.group_id,
+        to_month(q1.c.from_date).label('date'),
+        func.count(q1.c.patient_id).label('count')
+    )
+    q2 = q2.group_by(q1.c.group_id, to_month(q1.c.from_date))
+    q2 = q2.cte()
+
+    return q2
+
+
+def patients_by_group_date(group_type=None, type='total', interval='month'):
+    q1 = get_buckets(group_type, interval)
+    q2 = get_counts(group_type, interval)
+
+    if type == 'total':
+        count_column = func.coalesce(func.sum(q2.c.count).over(partition_by=q1.c.group_id, order_by=q1.c.date), 0)
+    else:
+        count_column = func.coalesce(q2.c.count, 0)
+
+    count_column = count_column.label('count')
+
+    q3 = db.session.query(q1.c.group_id, q1.c.date, count_column)
+    q3 = q3.outerjoin(q2, and_(q2.c.group_id == q1.c.group_id, q2.c.date == q1.c.date))
+    q3 = q3.cte()
+
+    q4 = db.session.query(Group, q3.c.date, q3.c.count).join(q3, Group.id == q3.c.group_id)
+    q4 = q4.order_by(Group.id, q3.c.date)
+
+    results = []
+    groups = {}
+
+    for group, date, count in q4.all():
+        result = groups.get(group)
+
+        if result is None:
+            result = {'group': group, 'counts': []}
+            results.append(result)
+            groups[group] = result
+
+        result['counts'].append({
+            'date': date.date(),
+            'count': count
+        })
+
+    return results

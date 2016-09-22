@@ -3,10 +3,10 @@ from cornflake.validators import in_
 from flask import Blueprint
 
 from radar.api.serializers.common import GroupField
-from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
+from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer, PatientsByGroupDateListSerializer
 from radar.api.views.generics import response_json, ApiView, parse_args
 from radar.models.groups import Group, GROUP_TYPE
-from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group
+from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group, patients_by_group_date
 
 
 class RecruitmentRequestSerializer(serializers.Serializer):
@@ -17,6 +17,12 @@ class RecruitmentRequestSerializer(serializers.Serializer):
 class PatientsByGroupRequestSerializer(serializers.Serializer):
     group = GroupField(required=False)
     group_type = fields.EnumField(GROUP_TYPE, required=False)
+
+
+class PatientsByGroupDateRequestSerializer(serializers.Serializer):
+    group_type = fields.EnumField(GROUP_TYPE, required=False)
+    type = fields.StringField(default='total', validators=[in_(['new', 'total'])])
+    interval = fields.StringField(default='month', validators=[in_('month')])
 
 
 class PatientsByRecruitedGroupRequestSerializer(serializers.Serializer):
@@ -49,6 +55,16 @@ class PatientsByGroupView(ApiView):
         return {'counts': counts}
 
 
+class PatientsByGroupDateView(ApiView):
+    @response_json(PatientsByGroupDateListSerializer)
+    def get(self):
+        args = parse_args(PatientsByGroupDateRequestSerializer)
+
+        results = patients_by_group_date(args['group_type'], args['type'], args['interval'])
+
+        return results
+
+
 class PatientsByRecruitedGroupView(ApiView):
     @response_json(PatientsByGroupListSerializer)
     def get(self):
@@ -69,5 +85,6 @@ def register_views(app):
     stats = Blueprint('stats', __name__)
     stats.add_url_rule('/recruitment', view_func=RecruitmentView.as_view('recruitment'))
     stats.add_url_rule('/patients-by-group', view_func=PatientsByGroupView.as_view('patients_by_group'))
+    stats.add_url_rule('/patients-by-group-date', view_func=PatientsByGroupDateView.as_view('patients_by_group_date'))
     stats.add_url_rule('/patients-by-recruited-group', view_func=PatientsByRecruitedGroupView.as_view('patients_by_recruited_group'))
     app.register_blueprint(stats, url_prefix='/stats')
