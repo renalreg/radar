@@ -29,7 +29,8 @@ py.test tests
 
 ## Build
 
-Before releasing a new build increment the version number in `radar/__init__.py`. Only change the version number and deploy to production from the `master` branch.
+Before releasing a new build increment the version number in `radar/__init__.py` and `git tag` the commit.
+Only change the version number and deploy to production from the `master` branch.
 
 ### Local
 
