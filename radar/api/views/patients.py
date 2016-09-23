@@ -150,8 +150,9 @@ class PatientListCSVView(ApiView):
         headers = [
             'Patient ID',
             'First Name', 'Last Name',
-            'Gender',
             'Date of Birth', 'Year of Birth', 'Date of Death', 'Year of Death',
+            'Gender', 'Gender Label',
+            'Ethnicity', 'Ethnicity Label',
             'Patient Number',
             'Recruited On', 'Recruited Group',
             'Cohorts', 'Hospitals',
@@ -173,11 +174,14 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient, 'id'))
             output.append(get_attrs(patient, 'first_name'))
             output.append(get_attrs(patient, 'last_name'))
-            output.append(get_attrs(patient, 'gender'))
             output.append(get_attrs(patient, 'date_of_birth'))
             output.append(get_attrs(patient, 'year_of_birth'))
             output.append(get_attrs(patient, 'date_of_death'))
             output.append(get_attrs(patient, 'year_of_death'))
+            output.append(get_attrs(patient, 'gender'))
+            output.append(get_attrs(patient, 'gender_label'))
+            output.append(get_attrs(patient, 'ethnicity'))
+            output.append(get_attrs(patient, 'ethnicity_label'))
             output.append(get_attrs(patient, 'primary_patient_number', 'number'))
             output.append(get_attrs(patient, 'recruited_date'))
             output.append(get_attrs(patient, 'recruited_group', 'name'))
