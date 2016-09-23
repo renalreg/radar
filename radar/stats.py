@@ -9,7 +9,7 @@ from radar.models.groups import GroupPatient, Group
 from radar.models.patients import Patient
 
 
-def recruitment_by_month(group):
+def patients_by_recruitment_date(group, interval='month'):
     """
     Calculate the number of patients recruited each month to the
     specified group.
@@ -127,7 +127,7 @@ def patients_by_group(group=None, group_type=None):
     return query.all()
 
 
-def patients_by_recruited_group(group):
+def patients_by_recruitment_group(group):
     """
     Calculate the number of patients each group has recruited to
     the specified group.
@@ -166,75 +166,102 @@ def patients_by_recruited_group(group):
     return q3.all()
 
 
-def to_month(column):
+def patients_by_group_date(group_type=None, interval='month'):
+    """
+    Number of patients in each group over time.
+    """
+
+    query = db.session.query(
+        GroupPatient.group_id,
+        GroupPatient.patient_id,
+        func.min(GroupPatient.from_date).label('date')
+    )
+
+    if group_type is not None:
+        query = query.join(GroupPatient.group)
+        query = query.filter(Group.type == group_type)
+
+    query = query.group_by(GroupPatient.group_id, GroupPatient.patient_id)
+    query = query.cte()
+
+    results = _get_results(query, interval)
+
+    return results
+
+
+def patients_by_recruitment_group_date(group, interval='month'):
+    """
+    Number of patients recruited by each group over time.
+    """
+
+    group_id_c = func.first_value(GroupPatient.created_group_id)\
+        .over(partition_by=GroupPatient.patient_id, order_by=GroupPatient.from_date)\
+        .label('group_id')
+    date_c = func.min(GroupPatient.from_date)\
+        .over(partition_by=GroupPatient.patient_id)\
+        .label('date')
+
+    query = db.session.query(GroupPatient.patient_id, group_id_c, date_c)
+    query = query.distinct()
+    query = query.filter(GroupPatient.group_id == group.id)
+    query = query.cte()
+
+    results = _get_results(query, interval)
+
+    return results
+
+
+def _to_month(column):
     return func.make_date(cast(extract('year', column), Integer), cast(extract('month', column), Integer), 1)
 
 
-def get_months(query):
-    min_ = to_month(func.min(query.c.date))
-    max_ = to_month(func.max(query.c.date))
+def _get_months(query):
+    min_ = _to_month(func.min(query.c.date))
+    max_ = _to_month(func.max(query.c.date))
     age = func.age(max_, min_)
     n = cast(extract('year', age) * 12 + extract('month', age), Integer)
     q = db.session.query((min_ + text("interval '1' month") * func.generate_series(0, n)).label('date'))
     return q
 
 
-def get_groups(query):
+def _get_groups(query):
     return db.session.query(distinct(query.c.group_id).label('group_id'))
 
 
-def get_buckets(query, interval='month'):
-    q1 = get_groups(query).cte()
-    q2 = get_months(query).cte()
+def _get_buckets(query, interval='month'):
+    q1 = _get_groups(query).cte()
+    q2 = _get_months(query).cte()
     q3 = db.session.query(q1.c.group_id, q2.c.date).cte()
     return q3
 
 
-def get_counts(group_type=None, interval='month'):
-    q1 = db.session.query(
-        GroupPatient.group_id,
-        GroupPatient.patient_id,
-        func.min(GroupPatient.from_date).label('from_date')
+def _get_results(query, interval='month'):
+    buckets_q = _get_buckets(query, interval)
+
+    counts_q = db.session.query(
+        query.c.group_id,
+        _to_month(query.c.date).label('date'),
+        func.count(query.c.patient_id).label('count')
     )
+    counts_q = counts_q.group_by(query.c.group_id, _to_month(query.c.date))
+    counts_q = counts_q.cte()
 
-    if group_type is not None:
-        q1 = q1.join(GroupPatient.group)
-        q1 = q1.filter(Group.type == group_type)
+    new_c = func.coalesce(counts_q.c.count, 0).label('new')
+    total_c = func.coalesce(func.sum(counts_q.c.count).over(partition_by=buckets_q.c.group_id, order_by=buckets_q.c.date), 0).label('total')
 
-    q1 = q1.group_by(GroupPatient.group_id, GroupPatient.patient_id)
-    q1 = q1.cte()
+    timeline_q = db.session.query(buckets_q.c.group_id, buckets_q.c.date, new_c, total_c)
+    timeline_q = timeline_q.select_from(buckets_q)
+    timeline_q = timeline_q.outerjoin(counts_q, and_(buckets_q.c.group_id == counts_q.c.group_id, buckets_q.c.date == counts_q.c.date))
+    timeline_q = timeline_q.cte()
 
-    q2 = db.session.query(
-        q1.c.group_id,
-        to_month(q1.c.from_date).label('date'),
-        func.count(q1.c.patient_id).label('count')
-    )
-    q2 = q2.group_by(q1.c.group_id, to_month(q1.c.from_date))
-    q2 = q2.cte()
-
-    return q2
-
-
-def patients_by_group_date(group_type=None, interval='month'):
-    q1 = get_counts(group_type, interval)
-    q2 = get_buckets(q1, interval)
-
-    new_column = func.coalesce(q1.c.count, 0).label('new')
-    total_column = func.coalesce(func.sum(q1.c.count).over(partition_by=q2.c.group_id, order_by=q2.c.date), 0).label('total')
-
-    q3 = db.session.query(q2.c.group_id, q2.c.date, new_column, total_column)
-    q3 = q3.select_from(q2)
-    q3 = q3.outerjoin(q1, and_(q2.c.group_id == q1.c.group_id, q2.c.date == q1.c.date))
-    q3 = q3.cte()
-
-    q4 = db.session.query(Group, q3.c.date, q3.c.new, q3.c.total)
-    q4 = q4.join(q3, Group.id == q3.c.group_id)
-    q4 = q4.order_by(Group.id, q3.c.date)
+    results_q = db.session.query(Group, timeline_q.c.date, timeline_q.c.new, timeline_q.c.total)
+    results_q = results_q.join(timeline_q, Group.id == timeline_q.c.group_id)
+    results_q = results_q.order_by(Group.id, timeline_q.c.date)
 
     results = []
     groups = {}
 
-    for group, date, new_patients, total_patients in q4.all():
+    for group, date, new_patients, total_patients in results_q.all():
         result = groups.get(group)
 
         if result is None:
