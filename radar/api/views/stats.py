@@ -21,7 +21,6 @@ class PatientsByGroupRequestSerializer(serializers.Serializer):
 
 class PatientsByGroupDateRequestSerializer(serializers.Serializer):
     group_type = fields.EnumField(GROUP_TYPE, required=False)
-    type = fields.StringField(default='total', validators=[in_(['new', 'total'])])
     interval = fields.StringField(default='month', validators=[in_('month')])
 
 
@@ -60,7 +59,7 @@ class PatientsByGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
-        results = patients_by_group_date(args['group_type'], args['type'], args['interval'])
+        results = patients_by_group_date(args['group_type'], args['interval'])
 
         return results
 
