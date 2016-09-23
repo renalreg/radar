@@ -73,4 +73,8 @@ class FamilyHistoryRelative(db.Model):
     patient_id = Column(Integer, ForeignKey('patients.id', onupdate='CASCADE', ondelete='SET NULL'))
     patient = orm.relationship('Patient')
 
+    @property
+    def relationship_label(self):
+        return RELATIONSHIPS.get(self.relationship)
+
 Index('family_history_relatives_family_history_id_idx', FamilyHistoryRelative.family_history_id)

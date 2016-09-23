@@ -39,4 +39,12 @@ class Pathology(db.Model, MetaModelMixin):
     histological_summary = Column(String)
     em_findings = Column(String)
 
+    @property
+    def kidney_type_label(self):
+        return PATHOLOGY_KIDNEY_TYPES.get(self.kidney_type)
+
+    @property
+    def kidney_side_label(self):
+        return PATHOLOGY_KIDNEY_SIDES.get(self.kidney_side)
+
 Index('pathology_patient_idx', Pathology.patient_id)

@@ -396,3 +396,11 @@ class Patient(db.Model, MetaModelMixin):
     @ukrdc.expression
     def ukrdc(cls):
         return cls.ukrdc_patient.has()
+
+    @property
+    def gender_label(self):
+        return GENDERS.get(self.gender)
+
+    @property
+    def ethnicity_label(self):
+        return ETHNICITIES.get(self.ethnicity)

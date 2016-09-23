@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
+from radar.models.patients import GENDERS, ETHNICITIES
 
 
 @log_changes
@@ -51,6 +52,15 @@ class PatientDemographics(db.Model, MetaModelMixin):
             year_of_death = date_of_death.year
 
         return year_of_death
+
+    @property
+    def gender_label(self):
+        return GENDERS.get(self.gender)
+
+    @property
+    def ethnicity_label(self):
+        return ETHNICITIES.get(self.ethnicity)
+
 
 Index('patient_demographics_patient_idx', PatientDemographics.patient_id)
 Index(

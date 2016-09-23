@@ -161,7 +161,9 @@ class PatientExporter(Exporter):
             d('date_of_death'),
             column('year_of_death'),
             column('gender'),
+            column('gender_label'),
             column('ethnicity'),
+            column('ethnicity_label'),
             column('recruited_date'),
             column('recruited_group_id', 'recruited_group.id'),
             column('recruited_group', 'recruited_group.name'),
@@ -261,7 +263,9 @@ class PatientDemographicsExporter(Exporter):
             d('date_of_death'),
             column('year_of_death'),
             column('gender'),
+            column('gender_label'),
             column('ethnicity'),
+            column('ethnicity_label'),
             d('home_number'),
             d('work_number'),
             d('mobile_number'),
@@ -291,9 +295,11 @@ class MedicationExporter(Exporter):
             column('drug_text'),
             column('dose_quantity'),
             column('dose_unit'),
+            column('dose_unit_label'),
             column('dose_text'),
             column('frequency'),
             column('route'),
+            column('route_label'),
         ]
         columns.extend(get_meta_columns())
 
@@ -322,6 +328,7 @@ class PatientDiagnosisExporter(Exporter):
             column('clinical_picture'),
             column('biopsy'),
             column('biopsy_diagnosis'),
+            column('biopsy_diagnosis_label'),
             column('comments'),
         ]
         columns.extend(get_meta_columns())
@@ -343,6 +350,7 @@ class GeneticsExporter(Exporter):
             column('laboratory'),
             column('reference_number'),
             column('karyotype'),
+            column('karyotype_label'),
             column('results'),
             column('summary'),
         ]
@@ -363,7 +371,9 @@ class PathologyExporter(Exporter):
             column('source_group', 'source_group.name'),
             column('date'),
             column('kidney_type'),
+            column('kidney_type_label'),
             column('kidney_side'),
+            column('kidney_side_label'),
             column('reference_number'),
             column('image_url'),
             column('histological_summary'),
@@ -401,6 +411,7 @@ class FamilyHistoryRelativeExporter(Exporter):
             column('id'),
             column('family_history_id'),
             column('relationship'),
+            column('relationship_label'),
             column('patient_id'),
         ]
 
@@ -450,6 +461,7 @@ class DialysisExporter(Exporter):
             column('from_date'),
             column('to_date'),
             column('modality'),
+            column('modality_label'),
         ]
         columns.extend(get_meta_columns())
 
@@ -470,7 +482,9 @@ class PlasmapheresisExporter(Exporter):
             column('from_date'),
             column('to_date'),
             column('no_of_exchanges'),
+            column('no_of_exchanges_label'),
             column('response'),
+            column('response_label'),
         ]
         columns.extend(get_meta_columns())
 
@@ -491,8 +505,8 @@ class TransplantExporter(Exporter):
             column('transplant_group_id'),
             column('transplant_group', 'transplant_group.name'),
             column('date'),
-            column('type_code', 'modality'),
-            column('type_description', 'modality_description'),
+            column('modality'),
+            column('modality_label'),
             column('date_of_recurrence'),
             column('date_of_failure'),
         ]
@@ -561,6 +575,7 @@ class InsRelapseExporter(Exporter):
             column('patient_id'),
             column('date_of_relapse'),
             column('kidney_type'),
+            column('kidney_type_label'),
             column('viral_trigger'),
             column('immunisation_trigger'),
             column('other_trigger'),
@@ -568,6 +583,7 @@ class InsRelapseExporter(Exporter):
             column('iv_methyl_prednisolone'),
             column('date_of_remission'),
             column('remission_type'),
+            column('remission_type_label'),
         ]
         columns.extend(get_meta_columns())
 
@@ -647,8 +663,8 @@ class ResultExporter(Exporter):
             column('source_type'),
             column('date'),
             column('observation_name', 'observation.name'),
-            column('value_code', 'value'),
-            column('value_description')
+            column('value'),
+            column('value_label')
         ]
         columns.extend(get_meta_columns())
 
@@ -662,35 +678,6 @@ def previous_month():
     previous_end = now.replace(day=1) - timedelta(days=1)
     previous_start = previous_end.replace(day=1)
     return previous_start
-
-
-class NIHRConfigSerializer(serializers.Serializer):
-    from_date = fields.DateField(default=previous_month)
-
-
-@register('nihr')
-class NIHRExporter(Exporter):
-    @classmethod
-    def parse_config(cls, data):
-        serializer = NIHRConfigSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        return serializer.validated_data
-
-    def run(self):
-        columns = [
-            column('id'),
-            column('recruited_date'),
-            column('recruited_group_id', 'recruited_group.id'),
-            column('recruited_group', 'recruited_group.name'),
-        ]
-
-        from_date = self.config['from_date']
-
-        q = Patient.query
-        q = q.filter(Patient.recruited_date >= from_date)
-        q = q.order_by(Patient.recruited_date)
-
-        return query_to_dataset(q, columns)
 
 
 @register('observations')

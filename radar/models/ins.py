@@ -66,4 +66,12 @@ class InsRelapse(db.Model, MetaModelMixin):
     date_of_remission = Column(Date)
     remission_type = Column(String)
 
+    @property
+    def kidney_type_label(self):
+        return KIDNEY_TYPES.get(self.kidney_type)
+
+    @property
+    def remission_type_label(self):
+        return REMISSION_TYPES.get(self.remission_type)
+
 Index('ins_relapses_patient_idx', InsRelapse.patient_id)

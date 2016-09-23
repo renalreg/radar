@@ -47,7 +47,7 @@ class Transplant(db.Model, MetaModelMixin):
     date_of_failure = Column(Date)
 
     @property
-    def modality_description(self):
+    def modality_label(self):
         return TRANSPLANT_MODALITIES.get(self.modality)
 
 Index('transplants_patient_idx', Transplant.patient_id)

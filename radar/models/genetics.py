@@ -35,5 +35,9 @@ class Genetics(db.Model, MetaModelMixin):
     results = Column(Text)
     summary = Column(Text)
 
+    @property
+    def karyotype_label(self):
+        return GENETICS_KARYOTYPES.get(self.karyotype)
+
 Index('genetics_patient_idx', Genetics.patient_id)
 Index('genetics_group_idx', Genetics.group_id)

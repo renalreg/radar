@@ -135,7 +135,7 @@ class Result(db.Model, MetaModelMixin):
         self._value = x
 
     @property
-    def value_description(self):
+    def value_label(self):
         if self.observation.value_type == OBSERVATION_VALUE_TYPE.ENUM:
             return self.observation.options_map.get(self.value)
         else:

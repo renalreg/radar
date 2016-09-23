@@ -58,6 +58,14 @@ class Medication(db.Model, MetaModelMixin):
     drug_text = Column(String)
     dose_text = Column(String)
 
+    @property
+    def dose_unit_label(self):
+        return MEDICATION_DOSE_UNITS.get(self.dose_unit)
+
+    @property
+    def route_label(self):
+        return MEDICATION_ROUTES.get(self.route)
+
 Index('medications_patient_idx', Medication.patient_id)
 
 
