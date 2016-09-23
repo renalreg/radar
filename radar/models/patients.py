@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
@@ -11,40 +10,8 @@ from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADA
 from radar.models.logs import log_changes
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
+from radar.models.patient_codes import GENDERS, ETHNICITIES, GENDER_MALE, GENDER_FEMALE
 from radar.utils import seconds_to_age, uniq
-
-
-GENDER_NOT_KNOWN = 0
-GENDER_MALE = 1
-GENDER_FEMALE = 2
-GENDER_NOT_SPECIFIED = 9
-
-GENDERS = OrderedDict([
-    (GENDER_NOT_KNOWN, 'Not Known'),
-    (GENDER_MALE, 'Male'),
-    (GENDER_FEMALE, 'Female'),
-    (GENDER_NOT_SPECIFIED, 'Not Specified'),
-])
-
-ETHNICITIES = OrderedDict([
-    ('A', 'White - British'),
-    ('B', 'White - Irish'),
-    ('C', 'Other White Background'),
-    ('D', 'Mixed - White and Black Caribbean'),
-    ('E', 'Mixed - White and Black African'),
-    ('F', 'Mixed - White and Asian'),
-    ('G', 'Other Mixed Background'),
-    ('H', 'Asian or Asian British - Indian'),
-    ('J', 'Asian or Asian British - Pakistani'),
-    ('K', 'Asian or Asian British - Bangladeshi'),
-    ('L', 'Other Asian Background'),
-    ('M', 'Black Carribean'),
-    ('N', 'Black African'),
-    ('P', 'Other Black Background'),
-    ('R', 'Chinese'),
-    ('S', 'Other Ethnic Background'),
-    ('Z', 'Refused / Not Stated'),
-])
 
 
 def clean(items):

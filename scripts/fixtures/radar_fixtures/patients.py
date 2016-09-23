@@ -9,7 +9,8 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
-from radar.models.patients import Patient, ETHNICITIES
+from radar.models.patients import Patient
+from radar.models.patient_codes import ETHNICITIES
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.groups import (
     Group,

@@ -21,7 +21,7 @@ from radar.api.serializers.common import (
     IntegerLookupField
 )
 from radar.api.serializers.validators import after_day_zero
-from radar.models.patients import ETHNICITIES, GENDERS
+from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION

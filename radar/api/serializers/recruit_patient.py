@@ -5,7 +5,7 @@ from cornflake.exceptions import ValidationError
 from radar.api.serializers.common import GroupField, StringLookupField, IntegerLookupField
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
-from radar.models.patients import GENDERS, ETHNICITIES
+from radar.models.patient_codes import GENDERS, ETHNICITIES
 from radar.models.groups import GROUP_TYPE, check_dependencies, DependencyError
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION

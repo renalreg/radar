@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
-from radar.models.patients import GENDERS, ETHNICITIES
+from radar.models.patient_codes import GENDERS, ETHNICITIES
 
 
 @log_changes

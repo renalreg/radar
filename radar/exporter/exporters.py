@@ -1,10 +1,8 @@
 from datetime import date, timedelta
 
 import tablib
-from cornflake import fields, serializers
 
 from radar.exporter import queries
-from radar.models.patients import Patient
 from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
