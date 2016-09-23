@@ -220,7 +220,7 @@ def patients_by_group_date(group_type=None, interval='month'):
     q2 = get_buckets(q1, interval)
 
     new_column = func.coalesce(q1.c.count, 0).label('new')
-    total_column = func.coalesce(func.sum(q1.c.count).over(partition_by=q1.c.group_id, order_by=q1.c.date), 0).label('total')
+    total_column = func.coalesce(func.sum(q1.c.count).over(partition_by=q2.c.group_id, order_by=q2.c.date), 0).label('total')
 
     q3 = db.session.query(q2.c.group_id, q2.c.date, new_column, total_column)
     q3 = q3.select_from(q2)
