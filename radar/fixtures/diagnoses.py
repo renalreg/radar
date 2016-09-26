@@ -1,7 +1,6 @@
 from radar.models.diagnoses import GroupDiagnosis, GROUP_DIAGNOSIS_TYPE, Diagnosis
+from radar.fixtures.utils import add
 from radar.models.groups import Group, GROUP_TYPE
-
-from radar_fixtures.utils import add
 
 DIAGNOSES = [
     'ADPKD',

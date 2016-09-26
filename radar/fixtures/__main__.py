@@ -1,9 +1,10 @@
+#!/usr/bin/env python
+
 import click
 
 from radar.app import Radar
 from radar.database import db, do_create, do_drop
-
-from radar_fixtures import create_data, create_patients, create_users, create_bot_user
+from radar.fixtures import create_data, create_patients, create_users, create_bot_user
 
 
 @click.group()
@@ -37,8 +38,12 @@ def users(password):
     db.session.commit()
 
 
-if __name__ == '__main__':
+def main():
     app = Radar()
 
     with app.app_context():
         cli()
+
+
+if __name__ == '__main__':
+    main()

@@ -2,8 +2,7 @@ import random
 from datetime import date
 
 from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
-
-from radar_fixtures.utils import random_date, add
+from radar.fixtures.utils import random_date, add
 
 
 def create_dialysis_f():

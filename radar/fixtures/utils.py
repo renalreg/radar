@@ -3,10 +3,7 @@ import random
 from datetime import date, timedelta
 
 from radar.database import db
-from radar.models.users import User
-from radar.utils import is_date, date_to_datetime
-
-from radar_fixtures.constants import (
+from radar.fixtures.constants import (
     FIRST_NAMES,
     GENDER_FEMALE,
     GENDER_MALE,
@@ -17,6 +14,8 @@ from radar_fixtures.constants import (
     POSTCODES,
     TITLES
 )
+from radar.models.users import User
+from radar.utils import is_date, date_to_datetime
 
 
 def add(obj):

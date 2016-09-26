@@ -1,7 +1,6 @@
+from radar.fixtures.utils import add
 from radar.models.groups import Group, GROUP_TYPE
 from radar.pages import PAGE
-
-from radar_fixtures.utils import add
 
 
 COHORTS = [

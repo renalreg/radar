@@ -1,3 +1,6 @@
+from radar.fixtures.cohorts import create_cohorts
+from radar.fixtures.hospitals import create_hospitals
+from radar.fixtures.utils import add
 from radar.models.groups import (
     GROUP_CODE_RADAR,
     GROUP_CODE_NHS,
@@ -10,10 +13,6 @@ from radar.models.groups import (
     GROUP_TYPE,
     Group
 )
-
-from radar_fixtures.cohorts import create_cohorts
-from radar_fixtures.hospitals import create_hospitals
-from radar_fixtures.utils import add
 
 OTHER_GROUPS = [
     (GROUP_CODE_RADAR, 'RaDaR', False),

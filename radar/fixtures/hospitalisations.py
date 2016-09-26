@@ -1,8 +1,7 @@
 from datetime import date
 
+from radar.fixtures.utils import random_date, add
 from radar.models.hospitalisations import Hospitalisation
-
-from radar_fixtures.utils import random_date, add
 
 
 def create_hospitalisations_f():

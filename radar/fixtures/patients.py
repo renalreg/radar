@@ -5,32 +5,15 @@ from sqlalchemy import desc
 import pytz
 
 from radar.database import no_autoflush
-from radar.models.patient_demographics import PatientDemographics
-from radar.models.patient_numbers import PatientNumber
-from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_addresses import PatientAddress
-from radar.models.patients import Patient
-from radar.models.patient_codes import ETHNICITIES
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
-from radar.models.groups import (
-    Group,
-    GroupPatient,
-    GROUP_TYPE,
-    GROUP_CODE_NHS,
-    GROUP_CODE_CHI,
-    GROUP_CODE_UKRR,
-    GROUP_CODE_NHSBT
-)
-
-from radar_fixtures.constants import GENDER_FEMALE
-from radar_fixtures.dialysis import create_dialysis_f
-from radar_fixtures.hospitalisations import create_hospitalisations_f
-from radar_fixtures.medications import create_medications_f
-from radar_fixtures.plasmapheresis import create_plasmapheresis_f
-from radar_fixtures.renal_imaging import create_renal_imaging_f
-from radar_fixtures.results import create_results_f
-from radar_fixtures.transplants import create_transplants_f
-from radar_fixtures.utils import (
+from radar.fixtures.constants import GENDER_FEMALE
+from radar.fixtures.dialysis import create_dialysis_f
+from radar.fixtures.hospitalisations import create_hospitalisations_f
+from radar.fixtures.medications import create_medications_f
+from radar.fixtures.plasmapheresis import create_plasmapheresis_f
+from radar.fixtures.renal_imaging import create_renal_imaging_f
+from radar.fixtures.results import create_results_f
+from radar.fixtures.transplants import create_transplants_f
+from radar.fixtures.utils import (
     generate_first_name,
     generate_last_name,
     generate_first_name_alias,
@@ -52,7 +35,22 @@ from radar_fixtures.utils import (
     generate_gender,
     add
 )
-
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_addresses import PatientAddress
+from radar.models.patients import Patient
+from radar.models.patient_codes import ETHNICITIES
+from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.groups import (
+    Group,
+    GroupPatient,
+    GROUP_TYPE,
+    GROUP_CODE_NHS,
+    GROUP_CODE_CHI,
+    GROUP_CODE_UKRR,
+    GROUP_CODE_NHSBT
+)
 
 def create_demographics_f():
     def create_demographics(patient, source_group, source_type, gender):

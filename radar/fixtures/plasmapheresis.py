@@ -1,9 +1,8 @@
 import random
 from datetime import date
 
+from radar.fixtures.utils import random_date, add
 from radar.models.plasmapheresis import Plasmapheresis, PLASMAPHERESIS_NO_OF_EXCHANGES, PLASMAPHERESIS_RESPONSES
-
-from radar_fixtures.utils import random_date, add
 
 
 def create_plasmapheresis_f():

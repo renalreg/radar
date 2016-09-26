@@ -1,16 +1,15 @@
 from sqlalchemy import or_, func
 
 from radar.database import db, no_autoflush
-from radar.models.groups import Group, GroupUser, GROUP_TYPE
-from radar.models.users import User
-from radar.roles import ROLE
-
-from radar_fixtures.utils import (
+from radar.fixtures.utils import (
     generate_gender,
     generate_first_name,
     generate_last_name,
     add
 )
+from radar.models.groups import Group, GroupUser, GROUP_TYPE
+from radar.models.users import User
+from radar.roles import ROLE
 
 DEFAULT_PASSWORD = 'password'
 

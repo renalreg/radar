@@ -1,6 +1,5 @@
+from radar.fixtures.utils import add
 from radar.models.groups import Group, GROUP_TYPE
-
-from radar_fixtures.utils import add
 
 HOSPITALS = [
     ('SPRINGFIELD', 'Springfield General Hospital'),
