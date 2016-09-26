@@ -49,7 +49,7 @@ cp example_settings.py settings.py
 Create some test data:
 
 ```sh
-RADAR_SETTINGS=/path/to/settings.py python scripts/fixtures/fixtures.py all
+RADAR_SETTINGS=/path/to/settings.py radar-fixtures all
 ```
 
 Start the API:
