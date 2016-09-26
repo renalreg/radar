@@ -26,7 +26,7 @@ git clone https://github.com/renalreg/radar.git
 cd radar
 ```
 
-Install `radar` and its dependencies:
+Install the `radar` package and its dependencies:
 
 ```sh
 virtualenv venv
@@ -57,13 +57,13 @@ RADAR_SETTINGS=/path/to/settings.py python scripts/api.py start
 
 With tox:
 
-```
+```sh
 tox
 ```
 
 Or using `py.test` directly:
 
-```
+```sh
 py.test tests
 ```
 
@@ -76,7 +76,7 @@ Only change the version number and deploy to production from the `master` branch
 
 Install [platter](https://github.com/mitsuhiko/platter):
 
-```
+```sh
 virtualenv venv
 . venv/bin/activate
 pip install git+https://github.com/mitsuhiko/platter
@@ -84,7 +84,7 @@ pip install git+https://github.com/mitsuhiko/platter
 
 Build:
 
-```
+```sh
 platter build -r requirements.txt .
 ```
 
@@ -97,7 +97,7 @@ A remote build is useful when you are developing on a different operating system
 
 Install dependencies on the remote machine:
 
-```
+```sh
 yum install https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-2.noarch.rpm
 yum install postgresql94 postgresql94-libs postgresql94-devel
 
@@ -109,7 +109,7 @@ pip install git+https://github.com/mitsuhiko/platter
 
 Build:
 
-```
+```sh
 fab -H $HOSTNAME -u $USER build
 ```
 
@@ -119,7 +119,7 @@ The built `.tar.gz` will be downloaded into the `dist` folder on the local machi
 
 You'll need to create the `/srv/radar` folder if it doesn't exist:
 
-```
+```sh
 ssh nww.radar.nhs.uk mkdir -p /srv/radar
 ```
 
@@ -127,7 +127,7 @@ Each deployed version is kept in its own folder in `/srv/radar`, for example `/s
 
 Deploy the latest build (`.tar.gz` in `dist`) and reload/restart the services:
 
-```
+```sh
 fab -H nww.radar.nhs.uk -u root deploy
 ```
 
@@ -139,20 +139,20 @@ For example if you have deployed version `2.0.0` but need to downgrade to versio
 
 If `/srv/radar/1.0.0` exists you can simply:
 
-```
+```sh
 ln -sfn /srv/radar/1.0.0 /srv/radar/current
 systemctl reload radar-api
 ```
 
 If you still have the `.tar.gz` file locally:
 
-```
+```sh
 fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
 ```
 
 Otherwise you'll need to rebuild the `.tar.gz`:
 
-```
+```sh
 git checkout tags/v1.0.0
 platter build -r requirements.txt .
 fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
