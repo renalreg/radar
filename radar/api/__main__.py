@@ -8,7 +8,7 @@ from flask import current_app
 from radar.api.app import RadarAPI
 
 
-@click.command('start')
+@click.command()
 @click.option('--host', default='0.0.0.0')
 @click.option('--port', default=5000)
 def start(host, port):

@@ -71,3 +71,13 @@ def no_autoflush(f):
             return f(*args, **kwargs)
 
     return update_wrapper(wrapper, f)
+
+
+def do_drop():
+    # Reflect will discover tables that aren't mapped - useful when switching branches
+    db.reflect()
+    db.drop_all()
+
+
+def do_create():
+    db.create_all()

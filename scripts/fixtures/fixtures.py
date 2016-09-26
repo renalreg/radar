@@ -1,37 +1,14 @@
 import click
 
 from radar.app import Radar
-from radar.database import db
+from radar.database import db, do_create, do_drop
 
 from radar_fixtures import create_data, create_patients, create_users, create_bot_user
-
-
-def do_drop():
-    # Reflect will discover tables that aren't mapped - useful when switching branches
-    db.reflect()
-    db.drop_all()
-
-
-def do_create():
-    db.create_all()
 
 
 @click.group()
 def cli():
     pass
-
-
-@cli.command()
-@click.pass_context
-def drop():
-    do_drop()
-    db.session.commit()
-
-
-@cli.command()
-def create():
-    do_create()
-    db.session.commit()
 
 
 @cli.command()

@@ -18,6 +18,7 @@ setup(
     entry_points={
         'console_scripts': [
             'radar-api = radar.api.__main__:main',
+            'radar-db = radar.database.__main__:main',
             'radar-exporter = radar.exporter.__main__:main',
             'radar-ukrdc-exporter = radar.ukrdc_exporter.__main__:main',
         ]
