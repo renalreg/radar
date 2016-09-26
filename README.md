@@ -1,6 +1,7 @@
 # RADAR
 
-This repostitory is the home of the RADAR (Rare Disease Registry) backend. The services include: the REST API (used by the [web interface](https://github.com/renalreg/radar-client)), the [UKRDC](https://github.com/renalreg/ukrdc) importer (receives data from the UKRDC), and the UKRDC exporter (sends data to the UKRDC).
+This repostitory is the home of the RADAR (Rare Disease Registry) backend.
+The services include: the REST API (used by the [web interface](https://github.com/renalreg/radar-client)), the [UKRDC](https://github.com/renalreg/ukrdc) importer (receives data from the UKRDC), and the UKRDC exporter (sends data to the UKRDC).
 
 ## Build Status
 
@@ -54,7 +55,7 @@ RADAR_SETTINGS=/path/to/settings.py python scripts/fixtures/fixtures.py all
 Start the API:
 
 ```sh
-RADAR_SETTINGS=/path/to/settings.py python scripts/api.py start
+RADAR_SETTINGS=/path/to/settings.py radar-api
 ```
 
 ## Test
