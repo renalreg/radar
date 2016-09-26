@@ -12,10 +12,10 @@ def cli():
     pass
 
 
-@cli.command('runserver')
+@cli.command('start')
 @click.option('--host', default='0.0.0.0')
 @click.option('--port', default=5000)
-def runserver(host, port):
+def start(host, port):
     app.run(host=host, port=port)
 
 

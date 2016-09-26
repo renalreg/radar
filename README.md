@@ -2,15 +2,55 @@
 
 [![Build Status](https://img.shields.io/travis/renalreg/radar/master.svg)](https://travis-ci.org/renalreg/radar) [![Code Climate](https://img.shields.io/codeclimate/github/renalreg/radar.svg)](https://codeclimate.com/github/renalreg/radar) [![Coveralls](https://img.shields.io/coveralls/renalreg/radar.svg)](https://coveralls.io/github/renalreg/radar)
 
-## Develop
+## Getting Started
 
-Use [radar-ansible](https://github.com/renalreg/radar-ansible) to create a development VM.
+Optional: use [radar-ansible](https://github.com/renalreg/radar-ansible) to create a development VM.
 
+Prerequisites:
+
+* [Python 2.7](https://www.python.org/download/releases/2.7/), [pip](https://pypi.python.org/pypi/pip) and [virtualenv](https://pypi.python.org/pypi/virtualenv).
+* [PostgreSQL 9.4+](https://www.postgresql.org/download/).
+
+Create a user and database for RADAR to use:
+
+```sql
+CREATE USER radar WITH PASSWORD 'password';
+CREATE DATABASE radar;
+GRANT ALL PRIVILEGES ON DATABASE radar TO radar;
 ```
+
+Clone the repository:
+
+```sh
+git clone https://github.com/renalreg/radar.git
+cd radar
+```
+
+Install `radar` and its dependencies:
+
+```sh
 virtualenv venv
 . venv/bin/activate
 pip install -r dev-requirements.txt
 pip install -e .
+```
+
+Create a settings file:
+
+```sh
+cp example_settings.py settings.py
+```
+
+Create some test data:
+
+```sh
+RADAR_SETTINGS=/path/to/settings.py python scripts/fixtures/fixtures.py all
+```
+
+Start the API:
+
+```sh
+RADAR_SETTINGS=/path/to/settings.py python scripts/api.py start
 ```
 
 ## Test
