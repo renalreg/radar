@@ -168,7 +168,7 @@ def _stress():
     import_sda.delay(sda_container, sequence_number)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('n', type=int)
     args = parser.parse_args()
@@ -177,3 +177,7 @@ if __name__ == '__main__':
 
     with app.app_context():
         stress(args.n)
+
+
+if __name__ == '__main__':
+    main()

@@ -52,6 +52,7 @@ from radar.models.groups import (
     GROUP_CODE_NHSBT
 )
 
+
 def create_demographics_f():
     def create_demographics(patient, source_group, source_type, gender):
         old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
