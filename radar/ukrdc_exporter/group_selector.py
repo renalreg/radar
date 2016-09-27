@@ -10,7 +10,7 @@ class GroupSelector(object):
 
     def __init__(self, now=None):
         if now is None:
-            now = datetime.now(tzinfo=pytz.UTC)
+            now = datetime.now(tz=pytz.UTC)
 
         self.now = now
 
