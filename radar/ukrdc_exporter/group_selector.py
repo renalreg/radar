@@ -100,8 +100,6 @@ class GroupSelector(object):
         status_a = self._get_status(membership_a)
         status_b = self._get_status(membership_b)
 
-        print status_a, status_b
-
         if status_a > status_b:
             return membership_a
         elif status_b > status_a:
