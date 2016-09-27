@@ -94,7 +94,7 @@ class GroupSelector(object):
 
     def select_group(self, membership_a, membership_b):
         """
-        Return the CURRENT membership, the FUTURE membership, or the PAST membership.
+        Return the PRESENT membership, the FUTURE membership, or the PAST membership.
         """
 
         status_a = self._get_status(membership_a)
@@ -116,7 +116,7 @@ class GroupSelector(object):
         """
         Return a single memberships for each group.
 
-        The precedence is CURRENT, FUTURE, and PAST.
+        The precedence is PRESENT, FUTURE, and PAST.
         """
 
         selector = cls()
