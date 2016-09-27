@@ -39,7 +39,7 @@ def run(a_x, a_y, b_x, b_y):
 
 
 def test_past_current():
-    assert run(-1, -1, 0, 0) == B
+    assert run(-1, -1, 0, 1) == B
 
 
 def test_past_future():
