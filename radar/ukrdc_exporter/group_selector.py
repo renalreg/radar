@@ -15,7 +15,7 @@ class GroupSelector(object):
         self.now = now
 
     def _get_status(self, membership):
-        if membership.from_date <= self.now and (membership.to_date is None or membership.to_date >= self.now):
+        if membership.from_date <= self.now and (membership.to_date is None or membership.to_date > self.now):
             status = self.PRESENT
         elif membership.from_date > self.now:
             status = self.FUTURE

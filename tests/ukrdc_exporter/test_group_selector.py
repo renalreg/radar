@@ -47,7 +47,7 @@ def test_past_future():
 
 
 def test_current_future():
-    assert run(0, 0, 1, 1) == A
+    assert run(0, 1, 1, 1) == A
 
 
 def test_past_past():
@@ -63,15 +63,15 @@ def test_past_past():
 
 def test_current_current():
     # Equal
-    assert run(0, 0, 0, 0) == B
+    assert run(0, 1, 0, 1) == B
 
     # From date
     assert run(-1, None, 0, None) == A
 
     # To date
     assert run(0, None, 0, None) == B
-    assert run(0, 0, 0, 1) == B
-    assert run(0, 0, 0, None) == B
+    assert run(0, 1, 0, 2) == B
+    assert run(0, 1, 0, None) == B
 
 
 def test_future_future():
