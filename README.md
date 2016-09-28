@@ -62,7 +62,13 @@ RADAR_SETTINGS=/path/to/settings.py radar-api
 
 ## Overview
 
-![Data Flow Diagram](docs/data-flows.png)
+### Basic Configuration
+
+![Basic Data Flow Diagram](docs/basic-data-flows.png)
+
+### UKRR Configuration
+
+![UKRR Data Flow Diagram](docs/ukrr-data-flows.png)
 
 ## Test
 
