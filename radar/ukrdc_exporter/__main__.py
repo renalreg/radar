@@ -85,10 +85,8 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--all', action='store_true')
     group.add_argument('--changed', action='store_true')
-    group.add_argument('--id', dest='patient_ids', action='append', default=[])
+    group.add_argument('--id', type=int, dest='patient_ids', action='append', default=[])
     args = parser.parse_args()
-
-    print args
 
     app = RadarUKRDCExporter()
 
