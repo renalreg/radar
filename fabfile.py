@@ -10,7 +10,7 @@ def build(rev='HEAD'):
     archive = tempfile.mktemp(suffix='.tar.gz')
     local('git archive "{rev}" | gzip > "{archive}"'.format(rev=rev, archive=archive))
 
-    tmp = '/tmp/build-{0}'.format(os.urandom(20).encode('hex'))
+    tmp = '/tmp/radar-{0}'.format(os.urandom(20).encode('hex'))
     run('mkdir {0}'.format(tmp))
     put(archive, '{0}/src.tar.gz'.format(tmp))
 
@@ -28,7 +28,7 @@ def deploy(archive=None, name='radar'):
     if archive is None:
         archive = os.path.join('dist', sorted(os.listdir('dist'), key=parse_version)[-1])
 
-    tmp = '/tmp/deploy-{0}'.format(os.urandom(20).encode('hex'))
+    tmp = '/tmp/radar-{0}'.format(os.urandom(20).encode('hex'))
     run('mkdir {0}'.format(tmp))
 
     with cd(tmp):

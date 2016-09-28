@@ -1,14 +1,23 @@
 from cornflake import fields, serializers
+from cornflake.validators import in_
+from flask import Blueprint
 
 from radar.api.serializers.common import GroupField
-from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer
+from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer, PatientsByGroupDateListSerializer
 from radar.api.views.generics import response_json, ApiView, parse_args
 from radar.models.groups import Group, GROUP_TYPE
-from radar.stats import patients_by_group, recruitment_by_month, patients_by_recruited_group
+from radar.stats import (
+    patients_by_recruitment_date,
+    patients_by_group,
+    patients_by_group_date,
+    patients_by_recruitment_group,
+    patients_by_recruitment_group_date,
+)
 
 
-class RecruitmentByMonthRequestSerializer(serializers.Serializer):
+class PatientsByRecruitmentDateRequestSerializer(serializers.Serializer):
     group = GroupField(required=False)
+    interval = fields.StringField(default='month', validators=[in_(['month'])])
 
 
 class PatientsByGroupRequestSerializer(serializers.Serializer):
@@ -16,26 +25,44 @@ class PatientsByGroupRequestSerializer(serializers.Serializer):
     group_type = fields.EnumField(GROUP_TYPE, required=False)
 
 
-class PatientsByRecruitedGroupRequestSerializer(serializers.Serializer):
+class PatientsByGroupDateRequestSerializer(serializers.Serializer):
+    group_type = fields.EnumField(GROUP_TYPE, required=False)
+    interval = fields.StringField(default='month', validators=[in_('month')])
+
+
+class PatientsByRecruitmentGroupRequestSerializer(serializers.Serializer):
     group = GroupField(required=False)
 
 
-class RecruitmentByMonthView(ApiView):
+class PatientsByRecruitmentGroupDateRequestSerializer(serializers.Serializer):
+    group = GroupField(required=False)
+    interval = fields.StringField(default='month', validators=[in_('month')])
+
+
+class PatientsByRecruitmentDateView(ApiView):
+    """
+    Number of patients recruited over time.
+    """
+
     @response_json(DataPointListSerializer)
     def get(self):
-        args = parse_args(RecruitmentByMonthRequestSerializer)
+        args = parse_args(PatientsByRecruitmentDateRequestSerializer)
 
         if args['group'] is not None:
             group = args['group']
         else:
             group = Group.get_radar()
 
-        points = recruitment_by_month(group)
+        points = patients_by_recruitment_date(group, args['interval'])
 
         return {'points': points}
 
 
 class PatientsByGroupView(ApiView):
+    """
+    Number of patients in each group.
+    """
+
     @response_json(PatientsByGroupListSerializer)
     def get(self):
         args = parse_args(PatientsByGroupRequestSerializer)
@@ -46,23 +73,64 @@ class PatientsByGroupView(ApiView):
         return {'counts': counts}
 
 
-class PatientsByRecruitedGroupView(ApiView):
+class PatientsByGroupDateView(ApiView):
+    """
+    Number of patients in each group over time.
+    """
+
+    @response_json(PatientsByGroupDateListSerializer)
+    def get(self):
+        args = parse_args(PatientsByGroupDateRequestSerializer)
+
+        results = patients_by_group_date(args['group_type'], args['interval'])
+
+        return results
+
+
+class PatientsByRecruitmentGroupView(ApiView):
+    """
+    Number of patients recruited by each group.
+    """
+
     @response_json(PatientsByGroupListSerializer)
     def get(self):
-        args = parse_args(PatientsByRecruitedGroupRequestSerializer)
+        args = parse_args(PatientsByRecruitmentGroupRequestSerializer)
 
         if args['group'] is not None:
             group = args['group']
         else:
             group = Group.get_radar()
 
-        counts = patients_by_recruited_group(group)
+        counts = patients_by_recruitment_group(group)
         counts = [{'group': x, 'count': y} for x, y in counts]
 
         return {'counts': counts}
 
 
+class PatientsByRecruitmentGroupDateView(ApiView):
+    """
+    Number of patients recruited by each group over time.
+    """
+
+    @response_json(PatientsByGroupDateListSerializer)
+    def get(self):
+        args = parse_args(PatientsByRecruitmentGroupDateRequestSerializer)
+
+        if args['group'] is not None:
+            group = args['group']
+        else:
+            group = Group.get_radar()
+
+        results = patients_by_recruitment_group_date(group, args['interval'])
+
+        return results
+
+
 def register_views(app):
-    app.add_url_rule('/recruitment-by-month', view_func=RecruitmentByMonthView.as_view('recruitment_by_month'))
-    app.add_url_rule('/patients-by-group', view_func=PatientsByGroupView.as_view('patients_by_group'))
-    app.add_url_rule('/patients-by-recruited-group', view_func=PatientsByRecruitedGroupView.as_view('patients_by_recruited_group'))
+    stats = Blueprint('stats', __name__)
+    stats.add_url_rule('/patients-by-recruitment-date', view_func=PatientsByRecruitmentDateView.as_view('patients_by_recruitment_date'))
+    stats.add_url_rule('/patients-by-group', view_func=PatientsByGroupView.as_view('patients_by_group'))
+    stats.add_url_rule('/patients-by-group-date', view_func=PatientsByGroupDateView.as_view('patients_by_group_date'))
+    stats.add_url_rule('/patients-by-recruitment-group', view_func=PatientsByRecruitmentGroupView.as_view('patients_by_recruitment_group'))
+    stats.add_url_rule('/patients-by-recruitment-group-date', view_func=PatientsByRecruitmentGroupDateView.as_view('patients_by_recruitment_group_date'))
+    app.register_blueprint(stats, url_prefix='/stats')

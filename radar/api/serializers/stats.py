@@ -21,3 +21,12 @@ class PatientsByGroupSerializer(serializers.Serializer):
 
 class PatientsByGroupListSerializer(serializers.Serializer):
     counts = fields.ListField(child=PatientsByGroupSerializer())
+
+
+class PatientsByGroupDateSerializer(serializers.Serializer):
+    group = GroupField()
+    counts = fields.ListField(child=DataPointSerializer())
+
+
+class PatientsByGroupDateListSerializer(serializers.ListSerializer):
+    child = PatientsByGroupDateSerializer()

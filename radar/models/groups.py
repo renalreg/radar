@@ -11,9 +11,9 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.types import EnumType, EnumToStringType
 from radar.models.logs import log_changes
-from radar.models.settings import get_setting
 from radar.pages import PAGE
 from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
+from radar.config import config
 
 
 class GROUP_TYPE(Enum):
@@ -82,7 +82,7 @@ class Group(db.Model):
         if self._instructions is not None:
             return self._instructions
         elif self.type == GROUP_TYPE.COHORT:
-            return get_setting("DEFAULT_INSTRUCTIONS")
+            return config.get('DEFAULT_INSTRUCTIONS')
         else:
             return None
 

@@ -45,14 +45,7 @@ def log_request(response):
     return response
 
 
-def log_view_patients(patients):
-    for patient in patients:
-        log_view_patient(patient)
-
-
-def log_view_patient(patient):
-    session = db.session.session_factory()
-
+def _log_view_patient(session, patient):
     log = Log()
     log.type = 'VIEW_PATIENT'
     log.user = get_user(session)
@@ -61,4 +54,17 @@ def log_view_patient(patient):
     )
     session.add(log)
 
+
+def log_view_patients(patients):
+    session = db.session.session_factory()
+
+    for patient in patients:
+        _log_view_patient(session, patient)
+
+    session.commit()
+
+
+def log_view_patient(patient):
+    session = db.session.session_factory()
+    _log_view_patient(session, patient)
     session.commit()

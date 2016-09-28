@@ -18,10 +18,23 @@ class PatientQueryBuilder(object):
         # True if the query is filtering on demographics
         self.filtering_by_demographics = False
 
+        # Pre-load group_patients
+        group_patients = subqueryload('group_patients')
+        group_patients.joinedload('group')
+        group_patients.joinedload('created_group')
+        group_patients.joinedload('created_user')
+
+        # Pre-load patient_numbers
+        patient_numbers = subqueryload('patient_numbers')
+        patient_numbers.joinedload('number_group')
+        patient_numbers.joinedload('source_group')
+        patient_numbers.joinedload('created_user')
+        patient_numbers.joinedload('modified_user')
+
         self.query = Patient.query\
             .options(subqueryload('patient_demographics'))\
-            .options(subqueryload('patient_numbers'))\
-            .options(subqueryload('group_patients').joinedload('group'))\
+            .options(patient_numbers)\
+            .options(group_patients)\
             .options(subqueryload('ukrdc_patient'))
 
     def first_name(self, first_name):

@@ -7,6 +7,7 @@ import inflection
 import pytz
 import six
 from sqlalchemy import and_
+from cornflake.exceptions import SkipField
 
 
 SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -84,3 +85,41 @@ camel_case = partial(inflection.camelize, uppercase_first_letter=False)
 snake_case = partial(inflection.underscore)
 camel_case_keys = partial(transform_keys, fn=camel_case)
 snake_case_keys = partial(transform_keys, fn=snake_case)
+
+
+def get_path(data, *path):
+    value = data
+
+    for key in path:
+        value = value.get(key)
+
+        if value is None:
+            break
+
+    return value
+
+
+def get_attrs(data, *attrs):
+    value = data
+
+    for attr in attrs:
+        try:
+            value = getattr(value, attr)
+        except AttributeError:
+            value = None
+
+        if value is None:
+            break
+
+    return value
+
+
+class SkipProxy(object):
+    def __init__(self, instance):
+        self.instance = instance
+
+    def __getattr__(self, item):
+        try:
+            return getattr(self.instance, item)
+        except SkipField:
+            return None

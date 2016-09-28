@@ -13,7 +13,8 @@ from radar.database import db
 from radar.models.groups import Group, GroupPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
-from radar.models.patients import Patient, GENDERS
+from radar.models.patients import Patient
+from radar.models.patient_codes import GENDERS
 from radar.models.source_types import SOURCE_TYPE_RADAR
 from radar.ukrdc_importer.tasks import import_sda
 

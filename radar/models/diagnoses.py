@@ -70,6 +70,10 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 
         return r
 
+    @property
+    def biopsy_diagnosis_label(self):
+        return BIOPSY_DIAGNOSES.get(self.biopsy_diagnosis)
+
 Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
 
 

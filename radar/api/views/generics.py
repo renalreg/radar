@@ -34,6 +34,23 @@ def parse_args(serializer_class, args=None):
     return data
 
 
+def get_sort_args():
+    args = parse_args(SortRequestSerializer)
+
+    sort = args['sort']
+
+    if sort:
+        if sort[0] == '-':
+            reverse = True
+            sort = sort[1:]
+        else:
+            reverse = False
+
+        return snake_case(sort), reverse
+    else:
+        return None, False
+
+
 class ApiView(MethodView):
     def dispatch_request(self, *args, **kwargs):
         try:
@@ -126,20 +143,7 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
         return query
 
     def get_sort_args(self):
-        args = parse_args(SortRequestSerializer)
-
-        sort = args['sort']
-
-        if sort:
-            if sort[0] == '-':
-                reverse = True
-                sort = sort[1:]
-            else:
-                reverse = False
-
-            return snake_case(sort), reverse
-        else:
-            return None, False
+        return get_sort_args()
 
     def sort_query(self, query):
         sort, reverse = self.get_sort_args()

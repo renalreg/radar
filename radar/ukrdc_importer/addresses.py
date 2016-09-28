@@ -8,10 +8,10 @@ from radar.ukrdc_importer.utils import (
     unique_list,
     delete_list,
     build_id,
-    get_path,
     get_import_group,
     get_import_user
 )
+from radar.utils import get_path
 
 
 logger = logging.getLogger(__name__)
