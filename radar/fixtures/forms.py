@@ -25,7 +25,7 @@ filenames = [
 
 questionnaires = {
     'NURTURE': set([
-        '6CIT', 'EQ5D', 'HADS', 'IPOS', 'PAM',
+        '6CIT', 'CHU9D', 'EQ-5D-5L', 'EQ-5D-Y', 'HADS', 'IPOS', 'PAM',
     ])
 }
 
