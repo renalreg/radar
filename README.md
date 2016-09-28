@@ -22,6 +22,8 @@ Create a user and database for RADAR to use:
 CREATE USER radar WITH PASSWORD 'password';
 CREATE DATABASE radar;
 GRANT ALL PRIVILEGES ON DATABASE radar TO radar;
+\c radar
+CREATE EXTENSION "uuid-ossp";
 ```
 
 Clone the repository:
