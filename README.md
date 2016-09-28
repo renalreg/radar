@@ -60,6 +60,10 @@ Start the API:
 RADAR_SETTINGS=/path/to/settings.py radar-api
 ```
 
+## Overview
+
+![Data Flow Diagram](docs/data-flows.png)
+
 ## Test
 
 With tox:
