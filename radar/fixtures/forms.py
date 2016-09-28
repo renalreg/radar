@@ -14,11 +14,13 @@ filenames = [
     ('anthropometric.json', 'Anthropometric'),
     ('diabetes.json', 'Diabetes'),
     ('diabetic-complications.json', 'Diabetic Complications'),
-    ('eq-5d-5l.json', 'EQ5D'),
+    ('eq-5d-5l.json', 'EQ-5D-5L'),
     ('hads.json', 'HADS'),
     ('ipos.json', 'IPOS'),
     ('pam.json', 'PAM'),
     ('socio-economic.json', 'Socio-Economic'),
+    ('eq-5d-y.json', 'EQ-5D-Y'),
+    ('chu9d.json', 'CHU9D'),
 ]
 
 questionnaires = {
