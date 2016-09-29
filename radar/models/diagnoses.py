@@ -83,6 +83,7 @@ class Diagnosis(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    edta = Column(Integer, unique=True)
     retired = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
