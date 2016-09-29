@@ -91,7 +91,7 @@ class Observation(db.Model):
 
     @property
     def options_map(self):
-        return dict((x['code'], x['description']) for x in self.options)
+        return OrderedDict((x['code'], x['description']) for x in self.options)
 
 
 @log_changes

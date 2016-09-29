@@ -10,8 +10,15 @@ def create_results_f():
 
     def create_results(patient, source_group, source_type, x, y):
         for observation in random.sample(observations, min(x, len(observations))):
-            min_value = observation.properties.get('min_value', 0)
-            max_value = observation.properties.get('max_value', 100)
+            min_value = observation.min_value
+
+            if min_value is None:
+                min_value = 0
+
+            max_value = observation.max_value
+
+            if max_value is None:
+                max_value = 100
 
             for _ in range(y):
                 result = Result()
