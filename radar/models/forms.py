@@ -43,6 +43,26 @@ class GroupForm(db.Model):
     form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
     form = relationship('Form')
 
+    weight = Column(Integer)
+
 Index('group_forms_group_idx', GroupForm.group_id)
 Index('group_forms_form_idx', GroupForm.form_id)
 Index('group_forms_form_group_idx', GroupForm.form_id, GroupForm.group_id, unique=True)
+
+
+class GroupQuestionnaire(db.Model):
+    __tablename__ = 'group_questionnaires'
+
+    id = Column(Integer, primary_key=True)
+
+    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    group = relationship('Group')
+
+    form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
+    form = relationship('Form')
+
+    weight = Column(Integer)
+
+Index('group_questionnaires_group_idx', GroupQuestionnaire.group_id)
+Index('group_questionnaires_form_idx', GroupQuestionnaire.form_id)
+Index('group_questionnaires_form_group_idx', GroupQuestionnaire.form_id, GroupQuestionnaire.group_id, unique=True)
