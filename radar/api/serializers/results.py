@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from cornflake import serializers, fields
 from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
 from cornflake.validators import min_, max_, in_, min_length, max_length
@@ -32,7 +30,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.REAL:
         field = fields.FloatField()
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-        field = StringLookupField(observation.options, key_name='code', value_name='description')
+        field = StringLookupField(observation.options_map, key_name='code', value_name='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
@@ -141,7 +139,7 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             if max_value is not None:
                 validators.append(max_(max_value))
         elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-            codes = observation.options.keys()
+            codes = observation.options_map.keys()
             validators.append(in_(codes))
         elif value_type == OBSERVATION_VALUE_TYPE.STRING:
             min_length_value = observation.min_length
