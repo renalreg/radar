@@ -151,6 +151,7 @@ class Observation(db.Model):
 
         return value
 
+
 @log_changes
 class Result(db.Model, MetaModelMixin):
     __tablename__ = 'results'
