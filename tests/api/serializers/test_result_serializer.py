@@ -44,7 +44,6 @@ def test_min_value(value_type):
 def test_max_value(value_type):
     observation = Observation()
     observation.value_type = value_type
-    observation.properties = {}
     observation.max_value = 2
 
     assert valid(make(observation, 1))
@@ -55,7 +54,6 @@ def test_max_value(value_type):
 def test_min_length():
     observation = Observation()
     observation.value_type = OBSERVATION_VALUE_TYPE.STRING
-    observation.properties = {}
     observation.min_length = 2
 
     assert invalid(make(observation, 'a'))
@@ -66,7 +64,6 @@ def test_min_length():
 def test_max_length():
     observation = Observation()
     observation.value_type = OBSERVATION_VALUE_TYPE.STRING
-    observation.properties = {}
     observation.max_length = 2
 
     assert valid(make(observation, 'a'))
@@ -77,7 +74,6 @@ def test_max_length():
 def test_options():
     observation = Observation()
     observation.value_type = OBSERVATION_VALUE_TYPE.ENUM
-    observation.properties = {}
     observation.options_dict = {
         '1': 'A',
         '2': 'B',
