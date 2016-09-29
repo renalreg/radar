@@ -693,7 +693,7 @@ class ObservationExporter(Exporter):
             column('min_length'),
             column('max_length'),
             column('units'),
-            column('options_map'),
+            column('options'),
         ]
 
         q = Observation.query.order_by(Observation.id)

@@ -30,7 +30,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.REAL:
         field = fields.FloatField()
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-        field = StringLookupField(observation.options_map, key_name='code', value_name='description')
+        field = StringLookupField(observation.options_dict, key_name='code', value_name='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
@@ -56,7 +56,7 @@ _custom_fields = {
         'units': fields.StringField(required=False),
     },
     OBSERVATION_VALUE_TYPE.ENUM: {
-        'options': fields.ListField(child=OptionSerializer()),
+        'options': fields.ListField(child=OptionSerializer(), source='code_description_pairs'),
     },
     OBSERVATION_VALUE_TYPE.STRING: {
         'min_length': fields.IntegerField(required=False),
@@ -139,7 +139,7 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             if max_value is not None:
                 validators.append(max_(max_value))
         elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-            codes = observation.options_map.keys()
+            codes = observation.option_codes
             validators.append(in_(codes))
         elif value_type == OBSERVATION_VALUE_TYPE.STRING:
             min_length_value = observation.min_length

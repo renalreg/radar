@@ -123,3 +123,8 @@ class SkipProxy(object):
             return getattr(self.instance, item)
         except SkipField:
             return None
+
+
+def pairwise(values):
+    iterator = iter(values)
+    return zip(iterator, iterator)
