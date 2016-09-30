@@ -19,7 +19,6 @@ class Radar(Flask):
 
         self.check_config()
 
-        # noinspection PyUnresolvedReferences
         from radar import models  # noqa
 
         db.init_app(self)
