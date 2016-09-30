@@ -34,6 +34,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'))
     diagnosis = relationship('Diagnosis')
     diagnosis_text = Column(String)
+    status = Column(Boolean, nullable=False, default=True, server_default=text('true'))
 
     symptoms_date = Column(Date)
     from_date = Column(Date, nullable=False)
@@ -83,6 +84,7 @@ class Diagnosis(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    edta = Column(Integer, unique=True)
     retired = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property

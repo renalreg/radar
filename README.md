@@ -1,11 +1,17 @@
+<p align="center">
+  <img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="300" alt="Logo" /></p>
+</p>
+
+<p align="center">
+  <a href="https://travis-ci.org/renalreg/radar"><img src="https://img.shields.io/travis/renalreg/radar/master.svg" alt="Build Status" /></a>
+  <a href="https://codeclimate.com/github/renalreg/radar"><img src="https://img.shields.io/codeclimate/github/renalreg/radar.svg" alt="Code Climate" /></a>
+  <a href="https://coveralls.io/github/renalreg/radar"><img src="https://img.shields.io/coveralls/renalreg/radar.svg" alt="Coveralls" /></a>
+</p>
+
 # RADAR
 
 This repostitory is the home of the RADAR (Rare Disease Registry) backend.
 The services include: the REST API (used by the [web interface](https://github.com/renalreg/radar-client)), the [UKRDC](https://github.com/renalreg/ukrdc) importer (receives data from the UKRDC), and the UKRDC exporter (sends data to the UKRDC).
-
-## Build Status
-
-[![Build Status](https://img.shields.io/travis/renalreg/radar/master.svg)](https://travis-ci.org/renalreg/radar) [![Code Climate](https://img.shields.io/codeclimate/github/renalreg/radar.svg)](https://codeclimate.com/github/renalreg/radar) [![Coveralls](https://img.shields.io/coveralls/renalreg/radar.svg)](https://coveralls.io/github/renalreg/radar)
 
 ## Getting Started
 
@@ -59,6 +65,16 @@ Start the API:
 ```sh
 RADAR_SETTINGS=/path/to/settings.py radar-api
 ```
+
+## Overview
+
+### Basic Configuration
+
+![Basic Data Flow Diagram](docs/basic-data-flows.png)
+
+### UKRR Configuration
+
+![UKRR Data Flow Diagram](docs/ukrr-data-flows.png)
 
 ## Test
 

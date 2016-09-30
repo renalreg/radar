@@ -53,13 +53,27 @@ class GroupDiagnosisListSerializer(serializers.ListSerializer):
 class DiagnosisSerializer(ModelSerializer):
     name = fields.StringField(validators=[min_length(1), max_length(1000)])
     groups = GroupDiagnosisListSerializer(source='group_diagnoses')
+    edta = fields.IntegerField(required=False)
     retired = fields.BooleanField(default=False)
 
     class Meta(object):
         model_class = Diagnosis
 
+    def validate(self, data):
+        if data['edta'] is not None:
+            q = Diagnosis.query.filter(Diagnosis.edta == data['edta'])
+
+            if self.instance is not None:
+                q = q.filter(Diagnosis.id != self.instance.id)
+
+            if q.count() > 0:
+                raise ValidationError({'edta': 'Duplicate EDTA code.'})
+
+        return data
+
     def _save(self, instance, data):
         instance.name = data['name']
+        instance.edta = data['edta']
         instance.retired = data['retired']
         instance.group_diagnoses = self.fields['groups'].create(data['group_diagnoses'])
 
@@ -91,6 +105,7 @@ class DiagnosisField(ReferenceField):
 class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
+    status = fields.BooleanField(default=True)
     symptoms_date = fields.DateField(required=False)
     symptoms_age = fields.IntegerField(read_only=True)
     from_date = fields.DateField()
@@ -115,11 +130,17 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         ]
 
     def pre_validate(self, data):
+        # Ignore the text diagnosis if there is a coded diagnosis
         if data['diagnosis']:
             data['diagnosis_text'] = None
 
+        # Ignore the biopsy diagnosis if a biopsy wasn't peformed
         if not data['biopsy']:
             data['biopsy_diagnosis'] = None
+
+        # Ignore the symptoms date for negative diagnoses
+        if data['status'] is False:
+            data['symptoms_date'] = None
 
         return data
 

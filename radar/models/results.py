@@ -1,6 +1,7 @@
 from collections import OrderedDict
+from itertools import chain
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index, Numeric, CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
 from enum import Enum
@@ -9,6 +10,7 @@ from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
 from radar.models.types import EnumType
 from radar.models.logs import log_changes
+from radar.utils import pairwise
 
 
 class OBSERVATION_VALUE_TYPE(Enum):
@@ -57,7 +59,37 @@ class Observation(db.Model):
     value_type = Column(EnumType(OBSERVATION_VALUE_TYPE, name='observation_value_type'), nullable=False)
     sample_type = Column(EnumType(OBSERVATION_SAMPLE_TYPE, name='observation_sample_type'), nullable=False)
     pv_code = Column(String)
-    properties = Column(postgresql.JSONB, nullable=False)
+
+    min_value = Column(
+        Numeric,
+        CheckConstraint("min_value is null or value_type in ('REAL', 'INTEGER')"),
+    )
+    max_value = Column(
+        Numeric,
+        CheckConstraint("min_value is null or max_value is null or max_value >= min_value"),
+        CheckConstraint("max_value is null or value_type in ('REAL', 'INTEGER')"),
+    )
+    min_length = Column(
+        Integer,
+        CheckConstraint("min_length is null or min_length > 0"),
+        CheckConstraint("min_length is null or value_type = 'STRING'"),
+    )
+    max_length = Column(
+        Integer,
+        CheckConstraint("max_length is null or max_length > 0"),
+        CheckConstraint("min_length is null or max_length is null or max_length >= min_length"),
+        CheckConstraint("max_length is null or value_type = 'STRING'"),
+    )
+    units = Column(
+        String,
+        CheckConstraint("units is null or units != ''"),
+        CheckConstraint("units is null or value_type in ('REAL', 'INTEGER')")
+    )
+    options = Column(
+        postgresql.ARRAY(String),
+        CheckConstraint("(value_type = 'ENUM' and options is not null) or (value_type != 'ENUM' and options is null)"),
+        CheckConstraint("options is null or (coalesce(array_length(options, 1), 0) > 0 and array_length(options, 1) %% 2 = 0)"),
+    )
 
     group_observations = relationship('GroupObservation')
 
@@ -66,32 +98,58 @@ class Observation(db.Model):
         return [x.group for x in self.group_observations]
 
     @property
-    def min_value(self):
-        return self.properties.get('min_value')
+    def options_list(self):
+        value = self.options
+
+        if value is not None:
+            value = pairwise(value)
+
+        return value
+
+    @options_list.setter
+    def options_list(self, value):
+        if value is not None:
+            value = list(chain(*value))
+
+        self.options = value
 
     @property
-    def max_value(self):
-        return self.properties.get('max_value')
+    def options_dict(self):
+        value = self.options_list
+
+        if value is not None:
+            value = OrderedDict(value)
+
+        return value
+
+    @options_dict.setter
+    def options_dict(self, value):
+        if value is not None:
+            value = value.items()
+
+        self.options_list = value
 
     @property
-    def min_length(self):
-        return self.properties.get('min_length')
+    def option_codes(self):
+        value = self.options_dict
+
+        if value is None:
+            value = []
+        else:
+            value = value.keys()
+
+        return value
 
     @property
-    def max_length(self):
-        return self.properties.get('max_length')
+    def code_description_pairs(self):
+        value = self.options_dict
 
-    @property
-    def units(self):
-        return self.properties.get('units')
+        if value is None:
+            value = []
+        else:
+            value = [{'code': k, 'description': v} for k, v in value.items()]
 
-    @property
-    def options(self):
-        return self.properties.get('options', [])
-
-    @property
-    def options_map(self):
-        return dict((x['code'], x['description']) for x in self.options)
+        return value
 
 
 @log_changes
@@ -137,7 +195,7 @@ class Result(db.Model, MetaModelMixin):
     @property
     def value_label(self):
         if self.observation.value_type == OBSERVATION_VALUE_TYPE.ENUM:
-            return self.observation.options_map.get(self.value)
+            return self.observation.options_dict.get(self.value)
         else:
             return None
 

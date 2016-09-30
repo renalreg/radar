@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from cornflake import serializers, fields
 from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
 from cornflake.validators import min_, max_, in_, min_length, max_length
@@ -32,9 +30,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.REAL:
         field = fields.FloatField()
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-        options = [(x['code'], x['description']) for x in observation.properties['options']]
-        options = OrderedDict(options)
-        field = StringLookupField(options, key_name='code', value_name='description')
+        field = StringLookupField(observation.options_dict, key_name='code', value_name='description')
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField()
     else:
@@ -48,7 +44,7 @@ class OptionSerializer(serializers.Serializer):
     description = fields.StringField()
 
 
-_property_fields = {
+_custom_fields = {
     OBSERVATION_VALUE_TYPE.INTEGER: {
         'min_value': fields.IntegerField(required=False),
         'max_value': fields.IntegerField(required=False),
@@ -60,7 +56,7 @@ _property_fields = {
         'units': fields.StringField(required=False),
     },
     OBSERVATION_VALUE_TYPE.ENUM: {
-        'options': fields.ListField(child=OptionSerializer()),
+        'options': fields.ListField(child=OptionSerializer(), source='code_description_pairs'),
     },
     OBSERVATION_VALUE_TYPE.STRING: {
         'min_length': fields.IntegerField(required=False),
@@ -69,8 +65,8 @@ _property_fields = {
 }
 
 
-def get_property_fields(value_type):
-    return _property_fields.get(value_type, {})
+def get_custom_fields(value_type):
+    return _custom_fields.get(value_type, {})
 
 
 class BaseObservationSerializer(serializers.Serializer):
@@ -90,8 +86,8 @@ class ObservationSerializer(serializers.ProxySerializer):
         self.value_type_field = value_type_field
 
     def create_serializer(self, value_type):
-        property_fields = get_property_fields(value_type)
-        serializer = type('CustomObservationSerializer', (BaseObservationSerializer,), property_fields)()
+        custom_fields = get_custom_fields(value_type)
+        serializer = type('CustomObservationSerializer', (BaseObservationSerializer,), custom_fields)()
         return serializer
 
     def get_serializer(self, data):
@@ -130,13 +126,12 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
         observation = data['observation']
         value_type = observation.value_type
-        properties = observation.properties
 
         validators = []
 
         if value_type == OBSERVATION_VALUE_TYPE.INTEGER or value_type == OBSERVATION_VALUE_TYPE.REAL:
-            min_value = properties.get('min_value')
-            max_value = properties.get('max_value')
+            min_value = observation.min_value
+            max_value = observation.max_value
 
             if min_value is not None:
                 validators.append(min_(min_value))
@@ -144,11 +139,11 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             if max_value is not None:
                 validators.append(max_(max_value))
         elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-            codes = [x['code'] for x in properties['options']]
+            codes = observation.option_codes
             validators.append(in_(codes))
         elif value_type == OBSERVATION_VALUE_TYPE.STRING:
-            min_length_value = properties.get('min_length')
-            max_length_value = properties.get('max_length')
+            min_length_value = observation.min_length
+            max_length_value = observation.max_length
 
             if min_length_value is not None:
                 validators.append(min_length(min_length_value))

@@ -38,6 +38,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     group = fields.CommaSeparatedField(required=False, child=GroupField())
     current = fields.BooleanField(required=False)
     ukrdc = fields.BooleanField(required=False)
+    test = fields.BooleanField(required=False)
 
 
 def list_patients():
@@ -57,6 +58,7 @@ def list_patients():
     groups = args['group']
     current = args['current']
     ukrdc = args['ukrdc']
+    test = args['test']
 
     if patient_id is not None:
         builder.patient_id(patient_id)
@@ -87,6 +89,9 @@ def list_patients():
 
     if ukrdc is not None:
         builder.ukrdc(ukrdc)
+
+    if test is not None:
+        builder.test(test)
 
     for group in groups:
         builder.group(group, current=current)
