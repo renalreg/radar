@@ -114,6 +114,10 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(Patient.ukrdc == value)
         return self
 
+    def test(self, value):
+        self.query = self.query.filter(Patient.test == value)
+        return self
+
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
         return self
