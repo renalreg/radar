@@ -105,6 +105,7 @@ class DiagnosisField(ReferenceField):
 class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
+    status = fields.BooleanField()
     symptoms_date = fields.DateField(required=False)
     symptoms_age = fields.IntegerField(read_only=True)
     from_date = fields.DateField()
@@ -129,11 +130,17 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         ]
 
     def pre_validate(self, data):
+        # Ignore the text diagnosis if there is a coded diagnosis
         if data['diagnosis']:
             data['diagnosis_text'] = None
 
+        # Ignore the biopsy diagnosis if a biopsy wasn't peformed
         if not data['biopsy']:
             data['biopsy_diagnosis'] = None
+
+        # Ignore the symptoms date for negative diagnoses
+        if not data['status']:
+            data['symptoms_date'] = None
 
         return data
 
