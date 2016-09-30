@@ -1,13 +1,11 @@
 import json
 import os
+import pkg_resources
 
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.forms import Form, GroupForm
 
 from radar.fixtures.utils import add
-
-here = os.path.dirname(os.path.abspath(__file__))
-form_dir = os.path.abspath(os.path.join(here, '../../extra/forms'))
 
 filenames = [
     ('6cit.json', '6CIT'),
@@ -32,8 +30,9 @@ questionnaires = {
 
 def create_forms():
     for filename, name in filenames:
-        filename = os.path.join(form_dir, filename)
-        data = json.load(open(filename))
+        filename = os.path.join('forms', filename)
+        f = pkg_resources.resource_stream(__name__, filename)
+        data = json.load(f)
 
         form = Form()
         form.name = name
