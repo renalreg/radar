@@ -1,6 +1,6 @@
-# RADAR
+<p align="center"><img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="200" alt="Logo" /></p>
 
-<center><img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="200" alt="Logo" /></center>
+# RADAR
 
 This repostitory is the home of the RADAR (Rare Disease Registry) backend.
 The services include: the REST API (used by the [web interface](https://github.com/renalreg/radar-client)), the [UKRDC](https://github.com/renalreg/ukrdc) importer (receives data from the UKRDC), and the UKRDC exporter (sends data to the UKRDC).
