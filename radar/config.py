@@ -29,7 +29,7 @@ def check_config(config):
 
     config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
-    base_url = config.setdefault('BASE_URL', 'http://localhost/#')
+    base_url = config.setdefault('BASE_URL', 'http://localhost:8080/#')
 
     if base_url.endswith('/'):
         raise ConfigError('BASE_URL should not have a trailing slash')
