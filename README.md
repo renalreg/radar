@@ -181,12 +181,6 @@ platter build -r requirements.txt .
 fab -H nww.radar.nhs.uk -u root deploy:archive=dist/radar-1.0.0-linux-x86_64.tar.gz
 ```
 
-## Screenshots
-
-<p align="center">
-  <img src="extra/screenshots/stats.png" width="400" alt="Stats" />
-</p>
-
 ## License
 
 Copyright (c) 2016 UK Renal Registry.
