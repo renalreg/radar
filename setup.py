@@ -17,6 +17,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
+            'radar-admin = radar.admin.__main__:main',
             'radar-api = radar.api.__main__:main',
             'radar-db = radar.database.__main__:main',
             'radar-exporter = radar.exporter.__main__:main',
