@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import cast, extract, Integer, func, text, and_
-from sqlalchemy.sql.expression import distinct
+from sqlalchemy.sql.expression import distinct, false
 from sqlalchemy.orm import aliased
 
 from radar.database import db
@@ -20,6 +20,8 @@ def patients_by_recruitment_date(group, interval='month'):
     # For example a patient may withdraw their consent and then later re-consent.
     q1 = db.session.query(func.min(GroupPatient.from_date).label('from_date'))\
         .filter(GroupPatient.group_id == group.id)\
+        .join(GroupPatient.patient)\
+        .filter(Patient.test == false())\
         .group_by(GroupPatient.patient_id)\
         .subquery()
 
@@ -91,6 +93,7 @@ def patients_by_group(group=None, group_type=None):
     )
     count_query = count_query.select_from(Patient)
     count_query = count_query.join(Patient.group_patients)
+    count_query = count_query.filter(Patient.test == false())
     count_query = count_query.group_by(GroupPatient.group_id)
 
     # Filter the results to only include patients belonging to the
@@ -147,7 +150,9 @@ def patients_by_recruitment_group(group):
         .label('created_group_id')
     q1 = db.session.query(first_created_group_id_column)\
         .distinct(GroupPatient.patient_id)\
+        .join(GroupPatient.patient)\
         .filter(GroupPatient.group_id == group.id)\
+        .filter(Patient.test == false())\
         .subquery()
 
     # Aggregate the results by recruiting group to get the number of
@@ -176,6 +181,8 @@ def patients_by_group_date(group_type=None, interval='month'):
         GroupPatient.patient_id,
         func.min(GroupPatient.from_date).label('date')
     )
+    query = query.join(GroupPatient.patient)
+    query = query.filter(Patient.test == false())
 
     if group_type is not None:
         query = query.join(GroupPatient.group)
@@ -203,7 +210,9 @@ def patients_by_recruitment_group_date(group, interval='month'):
 
     query = db.session.query(GroupPatient.patient_id, group_id_c, date_c)
     query = query.distinct()
+    query = query.join(GroupPatient.patient)
     query = query.filter(GroupPatient.group_id == group.id)
+    query = query.filter(Patient.test == false())
     query = query.cte()
 
     results = _get_results(query, interval)
