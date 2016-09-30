@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="200" alt="Logo" /></p>
+  <img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="300" alt="Logo" /></p>
 </p>
 
 <p align="center">
