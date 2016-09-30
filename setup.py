@@ -26,12 +26,16 @@ setup(
         ]
     },
     install_requires=[
+        'backports.csv',
         'celery',
         'click',
         'cornflake',
         'enum34',
         'flask',
+        'flask-admin',
         'flask-sqlalchemy',
+        'inflection',
+        'iso8601',
         'itsdangerous',
         'jinja2',
         'librabbitmq',
