@@ -13,6 +13,9 @@
         "reverse": {
             "type": "boolean"
         },
+        "multiple": {
+            "type": "boolean"
+        },
         "fields": {
             "type": "array",
             "items": {
@@ -164,5 +167,5 @@
         }
     },
     "additionalProperties": false,
-    "required": ["fields"]
+    "required": ["fields", "multiple"]
 }

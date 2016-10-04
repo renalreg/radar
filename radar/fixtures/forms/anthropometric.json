@@ -1,4 +1,8 @@
 {
+  "columns": ["date", "score"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
   "fields": [
     {
       "name": "date",
