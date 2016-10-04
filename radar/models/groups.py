@@ -167,8 +167,8 @@ class GroupPage(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    group = relationship('Group', backref=backref('group_pages', cascade='all, delete-orphan', passive_deletes=True))
 
     page = Column(EnumToStringType(PAGE), nullable=False)
 

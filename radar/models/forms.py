@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Index, CheckConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
@@ -38,11 +38,11 @@ class GroupForm(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    group = relationship('Group', backref=backref('group_forms', cascade='all, delete-orphan', passive_deletes=True))
 
-    form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
-    form = relationship('Form')
+    form_id = Column(Integer, ForeignKey('forms.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    form = relationship('Form', backref=backref('group_forms', cascade='all, delete-orphan', passive_deletes=True))
 
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
 
@@ -56,11 +56,11 @@ class GroupQuestionnaire(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    group = relationship('Group', backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
 
-    form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
-    form = relationship('Form')
+    form_id = Column(Integer, ForeignKey('forms.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    form = relationship('Form', backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
 
 Index('group_questionnaires_group_idx', GroupQuestionnaire.group_id)
 Index('group_questionnaires_form_idx', GroupQuestionnaire.form_id)
