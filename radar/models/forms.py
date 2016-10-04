@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Index
+from sqlalchemy import Column, Integer, ForeignKey, String, Index, CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
 
@@ -11,7 +11,8 @@ class Form(db.Model):
     __tablename__ = 'forms'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False)
+    slug = Column(String, CheckConstraint("slug similar to '([a-z0-9]+-)*[a-z0-9]+'"), nullable=False, unique=True)
     data = Column(postgresql.JSONB, nullable=False)
 
 
@@ -43,7 +44,7 @@ class GroupForm(db.Model):
     form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
     form = relationship('Form')
 
-    weight = Column(Integer)
+    weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
 
 Index('group_forms_group_idx', GroupForm.group_id)
 Index('group_forms_form_idx', GroupForm.form_id)
@@ -60,8 +61,6 @@ class GroupQuestionnaire(db.Model):
 
     form_id = Column(Integer, ForeignKey('forms.id'), nullable=False)
     form = relationship('Form')
-
-    weight = Column(Integer)
 
 Index('group_questionnaires_group_idx', GroupQuestionnaire.group_id)
 Index('group_questionnaires_form_idx', GroupQuestionnaire.form_id)

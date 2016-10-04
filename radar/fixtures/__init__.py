@@ -17,9 +17,9 @@ def create_data(patients=5, password=DEFAULT_PASSWORD):
     random.seed(0)
 
     create_bot_user(password)
-    create_groups()
     create_diagnoses()
     create_forms()
+    create_groups()
     create_consultants()
     create_posts(10)
     create_users(password)
