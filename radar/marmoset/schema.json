@@ -32,6 +32,9 @@
                             "help": {
                                 "type": "string"
                             },
+                            "unit": {
+                                "type": "string"
+                            },
                             "default": {
                                 "oneOf": [
                                     {
@@ -72,7 +75,7 @@
                                     "properties": {
                                         "value": {},
                                         "label": {
-                                        "type": "string"
+                                            "type": "string"
                                         }
                                     },
                                     "required": ["value", "label"],
@@ -117,6 +120,9 @@
                                 "type": "string"
                             },
                             "help": {
+                                "type": "string"
+                            },
+                            "unit": {
                                 "type": "string"
                             },
                             "visible": {
