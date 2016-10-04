@@ -66,7 +66,7 @@ def filter_by_patient(patient, type=None):
 
 def filter_by_type(type):
     if type == 'form':
-        return GroupFrom.query.filter(GroupForm.form_id == Form.id).exists()
+        return GroupForm.query.filter(GroupForm.form_id == Form.id).exists()
     else:
         return GroupQuestionnaire.query.filter(GroupQuestionnaire.form_id == Form.id).exists()
 
