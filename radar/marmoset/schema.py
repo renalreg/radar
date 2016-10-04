@@ -116,6 +116,10 @@ class Schema(object):
         for field in self.writable_fields:
             name = field.name
             value = data[name]
+
+            if value is None:
+                continue
+
             validators = field.validators
 
             for validator in validators:
