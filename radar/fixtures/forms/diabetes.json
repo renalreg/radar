@@ -9,7 +9,11 @@
       "name": "relative1",
       "type": "int",
       "label": "Relative 1",
-      "visible": "return data.diabetes",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.diabetes"
+      },
       "options": [
         {"value": 1, "label": "Mother"},
         {"value": 2, "label": "Father"},
@@ -37,7 +41,11 @@
       "name": "relative2",
       "type": "int",
       "label": "Relative 2",
-      "visible": "return data.diabetes && data.relative1",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.diabetes && form.relative1"
+      },
       "options": [
         {"value": 1, "label": "Mother"},
         {"value": 2, "label": "Father"},
@@ -65,7 +73,11 @@
       "name": "relative3",
       "type": "int",
       "label": "Relative 3",
-      "visible": "return data.diabetes && data.relative2",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.diabetes && form.relative2"
+      },
       "options": [
         {"value": 1, "label": "Mother"},
         {"value": 2, "label": "Father"},

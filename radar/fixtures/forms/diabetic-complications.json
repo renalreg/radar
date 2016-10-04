@@ -12,12 +12,12 @@
     },
     {
       "name": "peripheralNeuropathy",
-      "type": "bool",
+      "type": "boolean",
       "label": "Peripheral Neuropathy"
     },
     {
       "name": "footUlcers",
-      "type": "bool",
+      "type": "boolean",
       "label": "Foot Ulcers"
     }
   ]

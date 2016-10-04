@@ -16,6 +16,7 @@
       "label": "Height",
       "unit": "cm",
       "help": "0-250",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -33,6 +34,7 @@
       "label": "Weight",
       "unit": "kg",
       "help": "0-500",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -50,6 +52,7 @@
       "label": "Hip",
       "unit": "cm",
       "help": "50-170",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -67,6 +70,7 @@
       "label": "Waist",
       "unit": "cm",
       "help": "50-150",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -84,6 +88,7 @@
       "label": "Mid Upper Arm Muscle Circumference",
       "unit": "cm",
       "help": "15-90",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -101,6 +106,7 @@
       "label": "Time to Up & Go",
       "unit": "seconds",
       "help": "1-250",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -118,6 +124,7 @@
       "label": "Time to Up & Go",
       "unit": "seconds",
       "help": "5-85",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -135,6 +142,7 @@
       "label": "Karnofsky Score",
       "unit": "%",
       "help": "0-100",
+      "required": false,
       "validators": [
         {
           "name": "min",
@@ -149,12 +157,14 @@
     {
       "name": "systolic",
       "type": "int",
-      "label": "BP Systolic"
+      "label": "BP Systolic",
+      "required": false
     },
     {
       "name": "diastolic",
       "type": "int",
-      "label": "BP Diastolic"
+      "label": "BP Diastolic",
+      "required": false
     }
   ]
 }
