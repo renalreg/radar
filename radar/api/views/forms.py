@@ -1,5 +1,6 @@
 from cornflake import serializers, fields
-from sqlalchemy import func
+from sqlalchemy import func, or_
+from cornflake.validators import in_
 
 from radar.database import db
 from radar.api.serializers.common import QueryPatientField
@@ -18,28 +19,56 @@ from radar.api.views.generics import (
     RetrieveModelView,
     parse_args
 )
-from radar.models.forms import Entry, Form, GroupForm
+from radar.models.forms import Entry, Form, GroupForm, GroupQuestionnaire
 
 
 class FormListRequestSerializer(serializers.Serializer):
     patient = QueryPatientField(required=False)
+    type = fields.StringField(required=False, validators=[in_(['form', 'questionnaire'])])
+    slug = fields.StringField(required=False)
 
 
 class FormCountListRequestSerializer(serializers.Serializer):
     patient = QueryPatientField(required=False)
+    type = fields.StringField(required=False, validators=[in_(['form', 'questionnaire'])])
 
 
 class EntryRequestSerializer(serializers.Serializer):
     form = fields.IntegerField(required=False)
 
 
-def filter_by_patient(patient):
+def filter_by_patient_form(patient):
     group_ids = [x.id for x in patient.groups]
 
     return GroupForm.query\
         .filter(GroupForm.group_id.in_(group_ids))\
         .filter(GroupForm.form_id == Form.id)\
         .exists()
+
+
+def filter_by_patient_questionnaire(patient):
+    group_ids = [x.id for x in patient.groups]
+
+    return GroupQuestionnaire.query\
+        .filter(GroupQuestionnaire.group_id.in_(group_ids))\
+        .filter(GroupQuestionnaire.form_id == Form.id)\
+        .exists()
+
+
+def filter_by_patient(patient, type=None):
+    if type is None:
+        return or_(filter_by_patient_form(patient), filter_by_patient_questionnaire(patient))
+    elif type == 'form':
+        return filter_by_patient_form(patient)
+    else:
+        return filter_by_patient_questionnaire(patient)
+
+
+def filter_by_type(type):
+    if type == 'form':
+        return GroupFrom.query.filter(GroupForm.form_id == Form.id).exists()
+    else:
+        return GroupQuestionnaire.query.filter(GroupQuestionnaire.form_id == Form.id).exists()
 
 
 class FormListView(ListModelView):
@@ -52,10 +81,18 @@ class FormListView(ListModelView):
         args = parse_args(FormListRequestSerializer)
 
         patient = args['patient']
+        type = args['type']
+        slug = args['slug']
 
-        if patient is not None:
+        if slug is not None:
+            # Filter by form slug
+            query = query.filter(Form.slug == slug)
+        elif patient is not None:
             # Filter by forms relevant to patient
-            query = query.filter(filter_by_patient(patient))
+            query = query.filter(filter_by_patient(patient, type))
+        elif type is not None:
+            # Filter by form type
+            query = query.filter(filter_by_type(type))
 
         return query
 
@@ -67,6 +104,7 @@ class FormCountListView(ListView):
         args = parse_args(FormCountListRequestSerializer)
 
         patient = args['patient']
+        type = args['type']
 
         count_query = db.session.query(
             Entry.form_id.label('form_id'),
@@ -86,7 +124,10 @@ class FormCountListView(ListView):
 
         if patient is not None:
             # Filter by forms relevant to patient
-            q = q.filter(filter_by_patient(patient))
+            q = q.filter(filter_by_patient(patient, type))
+        elif type is not None:
+            # Filter by form type
+            q = q.filter(filter_by_type(type))
 
         q = q.order_by(Form.id)
 
