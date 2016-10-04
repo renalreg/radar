@@ -87,7 +87,7 @@ class BaseRegistry(object):
             schema = f.get_schema()
 
             for index in (0, 1):
-                p = self._get_property('visible', index=0)
+                p = self._get_property('visible', index=index)
                 schemas = p['oneOf']
                 schemas.append(schema)
 
