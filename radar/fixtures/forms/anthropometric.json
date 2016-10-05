@@ -159,16 +159,118 @@
       ]
     },
     {
+      "name": "systolic1",
+      "type": "int",
+      "label": "BP Systolic (1)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic1",
+      "type": "int",
+      "label": "BP Diastolic (1)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic2",
+      "type": "int",
+      "label": "BP Systolic (2)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic2",
+      "type": "int",
+      "label": "BP Diastolic (2)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic3",
+      "type": "int",
+      "label": "BP Systolic (3)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic3",
+      "type": "int",
+      "label": "BP Diastolic (3)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
       "name": "systolic",
       "type": "int",
-      "label": "BP Systolic",
-      "required": false
+      "label": "BP Systolic (Mean)",
+      "formula": {
+        "name": "js",
+        "value": "return (form.systolic1 == null && form.systolic2 == null && form.systolic3 == null) ? null : Math.round(((form.systolic1 || 0) + (form.systolic2 || 0) + (form.systolic3 || 0)) / ((form.systolic1 != null) + (form.systolic2 != null) + (form.systolic3 != null)))"
+      }
     },
     {
       "name": "diastolic",
       "type": "int",
-      "label": "BP Diastolic",
-      "required": false
+      "label": "BP Diastolic (Mean)",
+      "formula": {
+        "name": "js",
+        "value": "return (form.diastolic1 == null && form.diastolic2 == null && form.diastolic3 == null) ? null : Math.round(((form.diastolic1 || 0) + (form.diastolic2 || 0) + (form.diastolic3 || 0)) / ((form.diastolic1 != null) + (form.diastolic2 != null) + (form.diastolic3 != null)))"
+      }
     }
   ]
 }
