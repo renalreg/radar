@@ -14,6 +14,7 @@ from radar.utils import camel_case_keys
 
 class FormSerializer(ModelSerializer):
     name = fields.StringField()
+    slug = fields.StringField()
     data_ = fields.Field(field_name='data', source='data')
 
     class Meta(object):

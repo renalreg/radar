@@ -7,132 +7,49 @@ from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 
 COHORTS = [
     {
-        'code': 'BONEITIS',
-        'name': 'Bone-itis',
-        'short_name': 'Bone-itis',
+        'code': 'NURTURECKD',
+        'name': 'NURTuRE - CKD',
+        'short_name': 'NURTuRE - CKD',
         'pages': [
             (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.DIAGNOSES, 200),
-        ],
-    },
-    {
-        'code': 'CIRCUSITIS',
-        'name': 'Circusitis',
-        'short_name': 'Circusitis',
-        'pages': [
-            (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.DIAGNOSES, 200),
-        ],
-    },
-    {
-        'code': 'ADTKD',
-        'name': 'Autosomal Dominant Tubulointerstitial Kidney Disease (FUAN)',
-        'short_name': 'ADTKD (FUAN)',
-        'pages': [
-            (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.DIAGNOSES, 200),
-            (PAGE.GENETICS, 300),
-            (PAGE.FAMILY_HISTORY, 400),
-            (PAGE.FUAN_CLINICAL_PICTURES, 500),
-            (PAGE.RESULTS, 600),
-            (PAGE.DIALYSIS, 700),
-            (PAGE.TRANSPLANTS, 800),
-        ]
-    },
-    {
-        'code': 'ADPKD',
-        'name': 'Autosomal Dominant Polycystic Kidney Disease',
-        'short_name': 'ADPKD',
-        'pages': [
-            (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.DIAGNOSES, 200),
-            (PAGE.GENETICS, 300),
-            (PAGE.FAMILY_HISTORY, 400),
-            (PAGE.RENAL_IMAGING, 500),
-            (PAGE.LIVER_IMAGING, 600),
-            (PAGE.LIVER_DISEASES, 700),
-            (PAGE.RESULTS, 800),
-            (PAGE.TRANSPLANTS, 900),
-            (PAGE.LIVER_TRANSPLANTS, 1000),
-        ],
-        'diagnoses': [
-            ('ADPKD', GROUP_DIAGNOSIS_TYPE.PRIMARY),
-            ('Abdominal Enlargement', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Anxiety', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Arachnoid Cysts', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Cardiomyopathy', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Cerebral Haemorrhage - Mitral Valve Prolapse', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Depression', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Haematuria', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Hypertension', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Inguinal Hernia', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Intracranial Aneurysm', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Left Ventricular Hypertrophy', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Liver Cyst Infection', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Pancreatic Cysts', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Polycystic Liver Disease', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Renal Cyst - Infection', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Renal Cyst Haemorrhage', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Renal Stones', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Seminal Vesicle Cysts', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('UTI - Urinary Tract Infection', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-        ]
-    },
-    {
-        'code': 'ARPKD',
-        'name': 'Autosomal Recessive Polycystic Kidney Disease',
-        'short_name': 'ARPKD',
-        'pages': [
-            (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.DIAGNOSES, 200),
-            (PAGE.GENETICS, 300),
-            (PAGE.FAMILY_HISTORY, 400),
-            (PAGE.FETAL_ULTRASOUNDS, 500),
-            (PAGE.RENAL_IMAGING, 600),
-            (PAGE.LIVER_IMAGING, 700),
-            (PAGE.LIVER_DISEASES, 800),
+            (PAGE.FAMILY_HISTORY, 300),
+            (PAGE.DIAGNOSES, 400),
+            (PAGE.MEDICATIONS, 800),
             (PAGE.RESULTS, 900),
-            (PAGE.NUTRITION, 1000),
-            (PAGE.LIVER_TRANSPLANTS, 1100),
-            (PAGE.NEPHRECTOMIES, 1200),
+            (PAGE.RENAL_PROGRESSION, 1000),
+            (PAGE.DIALYSIS, 1100),
+            (PAGE.TRANSPLANTS, 1200),
+            (PAGE.QUESTIONNAIRES, 1300),
         ],
-        'diagnoses': [
-            ('ARPKD', GROUP_DIAGNOSIS_TYPE.PRIMARY),
-            ('Anorectal Varices', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Ascites', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Bile Duct Cysts', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Cholangitis - Acute', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Cholangitis - Recurrent', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Gastric Varices', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Hepatic Fibrosis', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Lung Disease - Chronic', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Oesophageal Variceal Haemorrhage', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Oesophageal Varices', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Portal Hypertension', GROUP_DIAGNOSIS_TYPE.SECONDARY),
-            ('Spleen - Palpable - Splenomegaly', GROUP_DIAGNOSIS_TYPE.SECONDARY),
+        'forms': [
+            ('socio-economic', 200),
+            ('diabetes', 500),
+            ('diabetic-complications', 600),
+            ('anthropometric', 700),
+        ],
+        'questionnaires': [
+            ('eq-5d-5l', 100),
+            ('hads', 200),
+            ('ipos', 300),
+            ('6cit', 400),
+            ('chu9d', 500),
+            ('eq-5d-y', 600),
         ]
     },
     {
-        'code': 'NURTURE',
-        'name': 'NURTuRE',
-        'short_name': 'NURTuRE',
+        'code': 'NURTUREINS',
+        'name': 'NURTuRE - INS',
+        'short_name': 'NURTuRE - INS',
         'pages': [
             (PAGE.QUESTIONNAIRES, 100),
         ],
-        'forms': [
-            ('anthropometric', 200),
-            ('diabetes', 300),
-            ('diabetic-complications', 400),
-            ('socio-economic', 500),
-        ],
         'questionnaires': [
-            '6cit',
-            'chu9d',
-            'eq-5d-5l',
-            'eq-5d-y',
-            'hads',
-            'ipos',
-            'pam',
+            ('eq-5d-5l', 100),
+            ('hads', 200),
+            ('ipos', 300),
+            ('6cit', 400),
+            ('chu9d', 500),
+            ('eq-5d-y', 600),
         ]
     }
 ]
@@ -173,10 +90,11 @@ def create_cohorts():
             group_form.weight = weight
             add(group_form)
 
-        for form_slug in x.get('questionnaires', []):
+        for form_slug, weight in x.get('questionnaires', []):
             form = Form.query.filter(Form.slug == form_slug).one()
 
             group_questionnaire = GroupQuestionnaire()
             group_questionnaire.group = group
             group_questionnaire.form = form
+            group_questionnaire.weight = weight
             add(group_questionnaire)

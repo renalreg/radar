@@ -45,27 +45,59 @@ def filter_by_group_form(group):
         .exists()
 
 
+def order_by_group_form_weight(group):
+    return db.session.query(GroupForm.weight)\
+        .filter(GroupForm.form_id == Form.id)\
+        .filter(GroupForm.group_id == group.id)
+
+
+def query_by_group_form(query, group):
+    query = query.filter(filter_by_group_form(group))
+    query = query.order_by(order_by_group_form_weight(group), Form.id)
+    return query
+
+
 def filter_by_group_questionnaire(group):
     return GroupQuestionnaire.query\
         .filter(GroupQuestionnaire.form_id == Form.id)\
-        .filter(GroupQuestionnaire.group_id == Group.id)\
+        .filter(GroupQuestionnaire.group_id == group.id)\
         .exists()
 
 
-def filter_by_group(group, type=None):
-    if type is None:
-        return or_(filter_by_group_form(group), filter_by_group_questionnaire(group))
-    elif type == 'form':
-        return filter_by_group_form(group)
-    else:
-        return filter_by_group_questionnaire(group)
+def order_by_group_questionnaire_weight(group):
+    return db.session.query(GroupQuestionnaire.weight)\
+        .filter(GroupQuestionnaire.form_id == Form.id)\
+        .filter(GroupQuestionnaire.group_id == group.id)
 
 
-def filter_by_type(type):
+def query_by_group_questionnaire(query, group):
+    query = query.filter(filter_by_group_questionnaire(group))
+    query = query.order_by(order_by_group_questionnaire_weight(group), Form.id)
+    return query
+
+
+def query_by_group(query, group, type=None):
     if type == 'form':
-        return GroupForm.query.filter(GroupForm.form_id == Form.id).exists()
+        query = query_by_group_form(query, group)
+    elif type == 'questionnaire':
+        query = query_by_group_questionnaire(query, group)
     else:
-        return GroupQuestionnaire.query.filter(GroupQuestionnaire.form_id == Form.id).exists()
+        query = query.filter(or_(
+            filter_by_group_form(group),
+            filter_by_group_questionnaire(group),
+        ))
+        query = query.order_by(Form.id)
+
+    return query
+
+
+def query_by_type(query, type):
+    if type == 'form':
+        f = GroupForm.query.filter(GroupForm.form_id == Form.id).exists()
+    else:
+        f = GroupQuestionnaire.query.filter(GroupQuestionnaire.form_id == Form.id).exists()
+
+    return query.filter(f)
 
 
 class FormListView(ListModelView):
@@ -86,10 +118,12 @@ class FormListView(ListModelView):
             query = query.filter(Form.slug == slug)
         elif group is not None:
             # Filter by forms for group
-            query = query.filter(filter_by_group(group, type))
+            query = query_by_group(query, group, type)
         elif type is not None:
             # Filter by form type
-            query = query.filter(filter_by_type(type))
+            query = query_by_type(query, type)
+        else:
+            query = query.order_by(Form.id)
 
         return query
 
@@ -122,12 +156,12 @@ class FormCountListView(ListView):
 
         if group is not None:
             # Filter by forms for group
-            q2 = q2.filter(filter_by_group(group, type))
+            q2 = query_by_group(q2, group, type)
         elif type is not None:
             # Filter by form type
-            q2 = q2.filter(filter_by_type(type))
-
-        q2 = q2.order_by(Form.id)
+            q2 = query_by_type(q2, type)
+        else:
+            q2 = q2.order_by(Form.id)
 
         results = [dict(form=form, count=count) for form, count in q2]
 
