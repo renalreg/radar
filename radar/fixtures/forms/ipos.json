@@ -129,7 +129,7 @@
     {
       "name": "score8",
       "type": "int",
-      "label": "Sore or dry mouth",
+      "label": "Mouth problems",
       "options": [
         {"value": 0, "label": "Not at all"},
         {"value": 1, "label": "Slightly"},
@@ -225,7 +225,7 @@
     {
       "name": "score14",
       "type": "int",
-      "label": "Changes in skin",
+      "label": "Feeling anxious",
       "options": [
         {"value": 0, "label": "Not at all"},
         {"value": 1, "label": "Slightly"},
@@ -241,7 +241,7 @@
     {
       "name": "score15",
       "type": "int",
-      "label": "Diarrhoea",
+      "label": "Feeling depressed",
       "options": [
         {"value": 0, "label": "Not at all"},
         {"value": 1, "label": "Slightly"},
@@ -257,7 +257,7 @@
     {
       "name": "score16",
       "type": "int",
-      "label": "Feeling anxious or worried about your illness or treatment",
+      "label": "Changes in skin",
       "options": [
         {"value": 0, "label": "Not at all"},
         {"value": 1, "label": "Slightly"},
@@ -273,7 +273,7 @@
     {
       "name": "score17",
       "type": "int",
-      "label": "Feeling depressed",
+      "label": "Diarrhoea",
       "options": [
         {"value": 0, "label": "Not at all"},
         {"value": 1, "label": "Slightly"},
@@ -289,7 +289,8 @@
     {
       "name": "question1",
       "type": "string",
-      "label": "Symptom 1"
+      "label": "Symptom 1 - AAA",
+      "required": false
     },
     {
       "name": "score18",
@@ -305,12 +306,25 @@
       "widget": {
         "name": "checkboxes",
         "inline": true
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question1;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question1;"
       }
     },
     {
       "name": "question2",
       "type": "string",
-      "label": "Symptom 2"
+      "label": "Symptom 2",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.question1;"
+      }
     },
     {
       "name": "score19",
@@ -326,12 +340,25 @@
       "widget": {
         "name": "checkboxes",
         "inline": true
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question2;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question2;"
       }
     },
     {
       "name": "question3",
       "type": "string",
-      "label": "Symptom 3"
+      "label": "Symptom 3",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.question2;"
+      }
     },
     {
       "name": "score20",
@@ -347,144 +374,71 @@
       "widget": {
         "name": "checkboxes",
         "inline": true
-      }
-    },
-    {
-      "name": "score21",
-      "type": "int",
-      "label": "Have you been feeling anxious or worried about your illness or treatment?",
-      "options": [
-        {"value": 0, "label": "Not at all"},
-        {"value": 1, "label": "Occasionally"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Most of the time"},
-        {"value": 4, "label": "Always"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score22",
-      "type": "int",
-      "label": "Have any of your family or friends been anxious or worried about you?",
-      "options": [
-        {"value": 0, "label": "Not at all"},
-        {"value": 1, "label": "Occasionally"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Most of the time"},
-        {"value": 4, "label": "Always"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score23",
-      "type": "int",
-      "label": "Have you been feeling depressed?",
-      "options": [
-        {"value": 0, "label": "Not at all"},
-        {"value": 1, "label": "Occasionally"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Most of the time"},
-        {"value": 4, "label": "Always"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score24",
-      "type": "int",
-      "label": "Have you felt at peace?",
-      "options": [
-        {"value": 0, "label": "Always"},
-        {"value": 1, "label": "Most of the time"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Occasionally"},
-        {"value": 4, "label": "Not at all"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score25",
-      "type": "int",
-      "label": "Have you been able to share how you are feeling with your family or friends as much as you wanted?",
-      "options": [
-        {"value": 0, "label": "Always"},
-        {"value": 1, "label": "Most of the time"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Occasionally"},
-        {"value": 4, "label": "Not at all"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score26",
-      "type": "int",
-      "label": "Have you had as much information as you wanted?",
-      "options": [
-        {"value": 0, "label": "Always"},
-        {"value": 1, "label": "Most of the time"},
-        {"value": 2, "label": "Sometimes"},
-        {"value": 3, "label": "Occasionally"},
-        {"value": 4, "label": "Not at all"}
-      ],
-      "widget": {
-        "name": "checkboxes",
-        "inline": true
-      }
-    },
-    {
-      "name": "score27",
-      "type": "int",
-      "label": "Have any practical problems resulting from your illness been addressed? (such as financial or personal)",
-      "options": [
-        {"value": 0, "label": "Problems addressed / No problems"},
-        {"value": 1, "label": "Problems mostly addressed"},
-        {"value": 2, "label": "Problems partly addressed"},
-        {"value": 3, "label": "Problems hardly addressed"},
-        {"value": 4, "label": "Problems not addressed"}
-      ],
-      "widget": {
-        "name": "checkboxes"
-      }
-    },
-    {
-      "name": "score28",
-      "type": "int",
-      "label": "How much time do you feel has been wasted on appointments relating to your healthcare, e.g. waiting around for transport or repeating tests",
-      "options": [
-        {"value": 0, "label": "None at all"},
-        {"value": 1, "label": "Up to half a day wasted"},
-        {"value": 2, "label": "More than half a day wasted"}
-      ],
-      "widget": {
-        "name": "checkboxes"
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question3;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question3;"
       }
     },
     {
       "name": "question4",
       "type": "int",
-      "label": "How did you complete this questionnaire?",
+      "label": "Which symptom has affected you the most?",
       "options": [
-        {"value": 0, "label": "On my own"},
-        {"value": 1, "label": "With help from a friend or relative"},
-        {"value": 2, "label": "With help from a member of staff"}
+        {"value": 1, "label": "Pain"},
+        {"value": 2, "label": "Shortness of breath"},
+        {"value": 3, "label": "Weakness or lack of energy"},
+        {"value": 4, "label": "Nausea"},
+        {"value": 5, "label": "Vomiting"},
+        {"value": 6, "label": "Poor appetite"},
+        {"value": 7, "label": "Constipation"},
+        {"value": 8, "label": "Mouth problems"},
+        {"value": 9, "label": "Drowsiness"},
+        {"value": 10, "label": "Poor mobility"},
+        {"value": 11, "label": "Itching"},
+        {"value": 12, "label": "Difficulty sleeping"},
+        {"value": 13, "label": "Restless legs or difficulty keeping legs still"},
+        {"value": 14, "label": "Feeling anxious"},
+        {"value": 15, "label": "Feeling depressed"},
+        {"value": 16, "label": "Changes in skin"},
+        {"value": 17, "label": "Diarrhoea"},
+        {"value": 18, "label": "Symptom 1"},
+        {"value": 19, "label": "Symptom 2"},
+        {"value": 20, "label": "Symptom 3"}
       ],
-      "widget": {
-        "name": "checkboxes"
-      }
+      "required": false
+    },
+    {
+      "name": "question5",
+      "type": "int",
+      "label": "Which symptom has improved the most?",
+      "options": [
+        {"value": 1, "label": "Pain"},
+        {"value": 2, "label": "Shortness of breath"},
+        {"value": 3, "label": "Weakness or lack of energy"},
+        {"value": 4, "label": "Nausea"},
+        {"value": 5, "label": "Vomiting"},
+        {"value": 6, "label": "Poor appetite"},
+        {"value": 7, "label": "Constipation"},
+        {"value": 8, "label": "Mouth problems"},
+        {"value": 9, "label": "Drowsiness"},
+        {"value": 10, "label": "Poor mobility"},
+        {"value": 11, "label": "Itching"},
+        {"value": 12, "label": "Difficulty sleeping"},
+        {"value": 13, "label": "Restless legs or difficulty keeping legs still"},
+        {"value": 14, "label": "Feeling anxious"},
+        {"value": 15, "label": "Feeling depressed"},
+        {"value": 16, "label": "Changes in skin"},
+        {"value": 17, "label": "Diarrhoea"},
+        {"value": 18, "label": "Symptom 1"},
+        {"value": 19, "label": "Symptom 2"},
+        {"value": 20, "label": "Symptom 3"}
+      ],
+      "required": false
     },
     {
       "name": "score",
@@ -492,7 +446,7 @@
       "label": "Score",
       "formula": {
         "name": "js",
-        "value": "var total = 0; for (var i = 1; i <= 28; i++) total += data['score' + i] || 0; return total;"
+        "value": "var total = 0; for (var i = 1; i <= 20; i++) total += form['score' + i] || 0; return total;"
       }
     }
   ]
