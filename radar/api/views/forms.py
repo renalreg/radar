@@ -3,7 +3,7 @@ from sqlalchemy import func, or_
 from cornflake.validators import in_
 
 from radar.database import db
-from radar.api.serializers.common import QueryPatientField
+from radar.api.serializers.common import QueryPatientField, GroupField
 from radar.api.serializers.forms import (
     FormSerializer,
     EntrySerializer,
@@ -23,12 +23,13 @@ from radar.models.forms import Entry, Form, GroupForm, GroupQuestionnaire
 
 
 class FormListRequestSerializer(serializers.Serializer):
-    patient = QueryPatientField(required=False)
+    group = GroupField(required=False)
     type = fields.StringField(required=False, validators=[in_(['form', 'questionnaire'])])
     slug = fields.StringField(required=False)
 
 
 class FormCountListRequestSerializer(serializers.Serializer):
+    group = GroupField(required=False)
     patient = QueryPatientField(required=False)
     type = fields.StringField(required=False, validators=[in_(['form', 'questionnaire'])])
 
@@ -37,31 +38,27 @@ class EntryRequestSerializer(serializers.Serializer):
     form = fields.IntegerField(required=False)
 
 
-def filter_by_patient_form(patient):
-    group_ids = [x.id for x in patient.groups]
-
+def filter_by_group_form(group):
     return GroupForm.query\
-        .filter(GroupForm.group_id.in_(group_ids))\
         .filter(GroupForm.form_id == Form.id)\
+        .filter(GroupForm.group_id == group.id)\
         .exists()
 
 
-def filter_by_patient_questionnaire(patient):
-    group_ids = [x.id for x in patient.groups]
-
+def filter_by_group_questionnaire(group):
     return GroupQuestionnaire.query\
-        .filter(GroupQuestionnaire.group_id.in_(group_ids))\
         .filter(GroupQuestionnaire.form_id == Form.id)\
+        .filter(GroupQuestionnaire.group_id == Group.id)\
         .exists()
 
 
-def filter_by_patient(patient, type=None):
+def filter_by_group(group, type=None):
     if type is None:
-        return or_(filter_by_patient_form(patient), filter_by_patient_questionnaire(patient))
+        return or_(filter_by_group_form(group), filter_by_group_questionnaire(group))
     elif type == 'form':
-        return filter_by_patient_form(patient)
+        return filter_by_group_form(group)
     else:
-        return filter_by_patient_questionnaire(patient)
+        return filter_by_group_questionnaire(group)
 
 
 def filter_by_type(type):
@@ -80,16 +77,16 @@ class FormListView(ListModelView):
 
         args = parse_args(FormListRequestSerializer)
 
-        patient = args['patient']
+        group = args['group']
         type = args['type']
         slug = args['slug']
 
         if slug is not None:
             # Filter by form slug
             query = query.filter(Form.slug == slug)
-        elif patient is not None:
-            # Filter by forms relevant to patient
-            query = query.filter(filter_by_patient(patient, type))
+        elif group is not None:
+            # Filter by forms for group
+            query = query.filter(filter_by_group(group, type))
         elif type is not None:
             # Filter by form type
             query = query.filter(filter_by_type(type))
@@ -103,35 +100,36 @@ class FormCountListView(ListView):
     def get_object_list(self):
         args = parse_args(FormCountListRequestSerializer)
 
+        group = args['group']
         patient = args['patient']
         type = args['type']
 
-        count_query = db.session.query(
+        q1 = db.session.query(
             Entry.form_id.label('form_id'),
             func.count().label('entry_count')
         )
-        count_query = count_query.select_from(Entry)
+        q1 = q1.select_from(Entry)
 
         if patient is not None:
             # Only include entries that belong to this patient
-            count_query = count_query.filter(Entry.patient == patient)
+            q1 = q1.filter(Entry.patient == patient)
 
-        count_query = count_query.group_by(Entry.form_id)
-        count_subquery = count_query.subquery()
+        q1 = q1.group_by(Entry.form_id)
+        q1 = q1.subquery()
 
-        q = db.session.query(Form, func.coalesce(count_subquery.c.entry_count, 0))
-        q = q.outerjoin(count_subquery, Form.id == count_subquery.c.form_id)
+        q2 = db.session.query(Form, func.coalesce(q1.c.entry_count, 0))
+        q2 = q2.outerjoin(q1, Form.id == q1.c.form_id)
 
-        if patient is not None:
-            # Filter by forms relevant to patient
-            q = q.filter(filter_by_patient(patient, type))
+        if group is not None:
+            # Filter by forms for group
+            q2 = q2.filter(filter_by_group(group, type))
         elif type is not None:
             # Filter by form type
-            q = q.filter(filter_by_type(type))
+            q2 = q2.filter(filter_by_type(type))
 
-        q = q.order_by(Form.id)
+        q2 = q2.order_by(Form.id)
 
-        results = [dict(form=form, count=count) for form, count in q]
+        results = [dict(form=form, count=count) for form, count in q2]
 
         return results
 
