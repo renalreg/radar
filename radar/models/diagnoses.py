@@ -118,7 +118,7 @@ class GroupDiagnosis(db.Model):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'), nullable=False)
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     diagnosis = relationship('Diagnosis', backref=backref('group_diagnoses', cascade='all, delete-orphan', passive_deletes=True))
 
     type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
@@ -134,10 +134,10 @@ class DiagnosisCode(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'), nullable=False)
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     diagnosis = relationship('Diagnosis', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
 
-    code_id = Column(Integer, ForeignKey('codes.id'), nullable=False)
+    code_id = Column(Integer, ForeignKey('codes.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     code = relationship('Code', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)
