@@ -15,7 +15,10 @@
       "name": "laser",
       "type": "boolean",
       "label": "Treated by Laser",
-      "required": false,
+      "required": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      },
       "visible": {
         "name": "js",
         "value": "return form.retinopathy > 0"
