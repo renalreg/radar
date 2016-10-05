@@ -55,16 +55,16 @@
       "type": "int",
       "label": "Hip",
       "unit": "cm",
-      "help": "50-170",
+      "help": "40-180",
       "required": false,
       "validators": [
         {
           "name": "min",
-          "value": 50
+          "value": 40
         },
         {
           "name": "max",
-          "value": 170
+          "value": 180
         }
       ]
     },
@@ -73,16 +73,16 @@
       "type": "int",
       "label": "Waist",
       "unit": "cm",
-      "help": "50-150",
+      "help": "40-180",
       "required": false,
       "validators": [
         {
           "name": "min",
-          "value": 50
+          "value": 40
         },
         {
           "name": "max",
-          "value": 150
+          "value": 180
         }
       ]
     },
