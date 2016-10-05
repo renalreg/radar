@@ -145,7 +145,7 @@
       "type": "int",
       "label": "Karnofsky Score",
       "unit": "%",
-      "help": "0-100",
+      "help": "<a href=\"https://en.wikipedia.org/wiki/Performance_status#Karnofsky_scoring\" target=\"_blank\">Karnofsky scoring</a>.",
       "required": false,
       "validators": [
         {
