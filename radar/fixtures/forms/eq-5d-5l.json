@@ -1,0 +1,132 @@
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "label": "Age",
+      "validators": [
+        {
+          "name": "min",
+          "value": 18
+        },
+        {
+          "name": "max",
+          "value": 110
+        }
+      ]
+    },
+    {
+      "name": "gender",
+      "type": "int",
+      "label": "Gender",
+      "options": [
+        {"value": 1, "label": "Male"},
+        {"value": 2, "label": "Female"}
+      ]
+    },
+    {
+      "name": "mobility",
+      "type": "int",
+      "label": "Mobility",
+      "options": [
+        {"value": 1, "label": "I have no problems in walking about"},
+        {"value": 2, "label": "I have slight problems in walking about"},
+        {"value": 3, "label": "I have moderate problems in walking about"},
+        {"value": 4, "label": "I have severe problems in walking about"},
+        {"value": 5, "label": "I am unable to walk about"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "selfCare",
+      "type": "int",
+      "label": "Self-Care",
+      "options": [
+        {"value": 1, "label": "I have no problems washing or dressing myself"},
+        {"value": 2, "label": "I have slight problems washing or dressing myself"},
+        {"value": 3, "label": "I have moderate problems washing or dressing myself"},
+        {"value": 4, "label": "I have severe problems washing or dressing myself"},
+        {"value": 5, "label": "I am unable to wash or dress myself"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "usualActivities",
+      "type": "int",
+      "label": "Usual Activities",
+      "help": "e.g. work, study, housework, leisure, activities",
+      "options": [
+        {"value": 1, "label": "I have no problems doing my usual activities"},
+        {"value": 2, "label": "I have slight problems doing my usual activities"},
+        {"value": 3, "label": "I have moderate problems doing my usual activities"},
+        {"value": 4, "label": "I have severe problems doing my usual activities"},
+        {"value": 5, "label": "I am unable to do my usual activities"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "painDiscomfort",
+      "type": "int",
+      "label": "Pain / Discomfort",
+      "options": [
+        {"value": 1, "label": "I have no pain or discomfort"},
+        {"value": 2, "label": "I have slight pain or discomfort"},
+        {"value": 3, "label": "I have moderate pain or discomfort"},
+        {"value": 4, "label": "I have severe pain or discomfort"},
+        {"value": 5, "label": "I have extreme pain or discomfort"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "anxietyDepression",
+      "type": "int",
+      "label": "Anxiety / Depression",
+      "options": [
+        {"value": 1, "label": "I am not anxious or depressed"},
+        {"value": 2, "label": "I am moderately anxious or depressed"},
+        {"value": 3, "label": "I am slightly anxious or depressed"},
+        {"value": 4, "label": "I am extremely anxious or depressed"},
+        {"value": 5, "label": "I am severely anxious or depressed"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "health",
+      "type": "int",
+      "label": "Health",
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    }
+  ]
+}

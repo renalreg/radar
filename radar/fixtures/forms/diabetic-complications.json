@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "name": "retinopathy",
+      "type": "int",
+      "label": "Retinopathy",
+      "options": [
+          {"value": 0, "label": "No"},
+          {"value": 1, "label": "Background Retinopathy"},
+          {"value": 2, "label": "Proliferative Retinopathy"}
+      ]
+    },
+    {
+      "name": "peripheralNeuropathy",
+      "type": "bool",
+      "label": "Peripheral Neuropathy"
+    },
+    {
+      "name": "footUlcers",
+      "type": "bool",
+      "label": "Foot Ulcers"
+    }
+  ]
+}

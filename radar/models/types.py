@@ -1,5 +1,4 @@
-from sqlalchemy import String
-from sqlalchemy.types import Enum
+from sqlalchemy.types import Enum, String
 from sqlalchemy.types import TypeDecorator, SchemaType
 
 
@@ -31,7 +30,7 @@ class EnumType(TypeDecorator, SchemaType):
         return self.enum_class
 
 
-class EnumToStringType(TypeDecorator, SchemaType):
+class EnumToStringType(TypeDecorator):
     impl = String
 
     def __init__(self, enum_class, **options):
@@ -49,9 +48,6 @@ class EnumToStringType(TypeDecorator, SchemaType):
             value = self.enum_class(value)
 
         return value
-
-    def _set_parent(self, column):
-        self.impl._set_parent(column)
 
     @property
     def python_type(self):

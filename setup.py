@@ -34,6 +34,7 @@ setup(
         'flask-sqlalchemy',
         'itsdangerous',
         'jinja2',
+        'jsonschema',
         'librabbitmq',
         'psycopg2',
         'python-dateutil',

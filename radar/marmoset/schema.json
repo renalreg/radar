@@ -1,0 +1,162 @@
+{
+    "type": "object",
+    "properties": {
+        "columns": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "sortBy": {
+            "type": "string"
+        },
+        "reverse": {
+            "type": "boolean"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "label": {
+                                "type": "string"
+                            },
+                            "help": {
+                                "type": "string"
+                            },
+                            "default": {
+                                "oneOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "boolean"
+                                    },
+                                    {
+                                        "type": "number"
+                                    }
+                                ]
+                            },
+                            "required": {
+                                "oneOf": [
+                                    {
+                                        "type": "boolean"
+                                    }
+                                ]
+                            },
+                            "visible": {
+                                "oneOf": [
+                                    {
+                                        "type": "boolean"
+                                    }
+                                ]
+                            },
+                            "validators": {
+                                "type": "array",
+                                "items": {
+                                    "oneOf": []
+                                }
+                            },
+                            "options": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value": {},
+                                        "label": {
+                                        "type": "string"
+                                        }
+                                    },
+                                    "required": ["value", "label"],
+                                    "additionalProperties": false
+                                },
+                                "minItems": 1
+                            },
+                            "widget": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["name"],
+                                "additionalProperties": true
+                            },
+                            "view": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["name"],
+                                "additionalProperties": true
+                            }
+                        },
+                        "required": ["name", "type", "label"],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "label": {
+                                "type": "string"
+                            },
+                            "help": {
+                                "type": "string"
+                            },
+                            "visible": {
+                                "oneOf": [
+                                    {
+                                        "type": "boolean"
+                                    }
+                                ]
+                            },
+                            "widget": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["name"],
+                                "additionalProperties": true
+                            },
+                            "view": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["name"],
+                                "additionalProperties": true
+                            },
+                            "formula": {
+                                "oneOf": []
+                            }
+                        },
+                        "required": ["name", "type", "label", "formula"],
+                        "additionalProperties": false
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": ["fields"]
+}

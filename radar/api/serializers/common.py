@@ -7,10 +7,12 @@ from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import in_
 
 from radar.exceptions import PermissionDenied
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.forms import Form, GroupForm
+from radar.models.groups import Group, GROUP_TYPE, GroupPage
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
 from radar.models.users import User
+from radar.pages import PAGE
 from radar.permissions import has_permission_for_patient, has_permission_for_group
 from radar.roles import PERMISSION
 
@@ -160,9 +162,34 @@ class TinyGroupSerializer(ModelSerializer):
         fields = ['id', 'type', 'code', 'name', 'short_name']
 
 
+class GroupPageSerializer(ModelSerializer):
+    page = fields.EnumField(PAGE)
+    weight = fields.IntegerField()
+
+    class Meta(object):
+        model_class = GroupPage
+        exclude = ['group_id']
+
+
+class TinyFormSerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Form
+        fields = ['id', 'name', 'slug']
+
+
+class GroupFormSerializer(ModelSerializer):
+    form = TinyFormSerializer()
+    weight = fields.IntegerField()
+
+    class Meta(object):
+        model_class = GroupForm
+        exclude = ['group_id', 'form_id']
+
+
 class GroupSerializer(ModelSerializer):
     type = fields.EnumField(GROUP_TYPE)
-    pages = fields.ListField(child=fields.StringField())
+    pages = fields.ListField(child=GroupPageSerializer(), source='group_pages')
+    forms = fields.ListField(child=GroupFormSerializer(), source='group_forms')
     has_dependencies = fields.BooleanField(read_only=True)
     instructions = fields.StringField()
 
