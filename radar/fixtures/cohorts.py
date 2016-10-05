@@ -24,7 +24,7 @@ COHORTS = [
             ('socio-economic', 200),
             ('family-history', 500),
             ('diabetic-complications', 600),
-            ('anthropometric', 700),
+            ('anthropometrics', 700),
         ],
         'questionnaires': [
             ('eq-5d-5l', 100),
