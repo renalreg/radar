@@ -2,14 +2,218 @@
   "multiple": false,
   "fields": [
     {
+      "name": "eskd",
+      "type": "boolean",
+      "label": "Family History of ESKD",
+      "help": "A close relative who currently receives or previously received dialysis or a kidney transplant."
+    },
+    {
+      "name": "eskdRelative1",
+      "type": "int",
+      "label": "ESKD - Relative 1",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.eskd"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
+      "name": "eskdRelative2",
+      "type": "int",
+      "label": "ESKD - Relative 2",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.eskd && form.eskdRelative1"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
+      "name": "eskdRelative3",
+      "type": "int",
+      "label": "ESKD - Relative 3",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.eskd && form.eskdRelative2"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
+      "name": "chd",
+      "type": "boolean",
+      "label": "Family History of Ischaemic Heart Disease (Angina or MI)",
+      "help": "Must have started before the relative was 60 years old."
+    },
+    {
+      "name": "chdRelative1",
+      "type": "int",
+      "label": "CHD - Relative 1",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.chd"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
+      "name": "chdRelative2",
+      "type": "int",
+      "label": "CHD - Relative 2",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.chd && form.chdRelative1"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
+      "name": "chdRelative3",
+      "type": "int",
+      "label": "CHD - Relative 3",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.chd && form.chdRelative2"
+      },
+      "options": [
+        {"value": 1, "label": "Mother"},
+        {"value": 2, "label": "Father"},
+        {"value": 3, "label": "Sister"},
+        {"value": 4, "label": "Brother"},
+        {"value": 5, "label": "Grandmother - Maternal"},
+        {"value": 6, "label": "Grandmother - Paternal"},
+        {"value": 15, "label": "Grandfather - Maternal"},
+        {"value": 16, "label": "Grandfather - Paternal"},
+        {"value": 7, "label": "Aunt - Maternal"},
+        {"value": 8, "label": "Aunt - Paternal"},
+        {"value": 9, "label": "Uncle - Maternal"},
+        {"value": 10, "label": "Uncle - Paternal"},
+        {"value": 11, "label": "Cousin - Maternal"},
+        {"value": 12, "label": "Cousin - Paternal"},
+        {"value": 13, "label": "Half Sister"},
+        {"value": 14, "label": "Half Brother"},
+        {"value": 17, "label": "Daughter"},
+        {"value": 18, "label": "Son"},
+        {"value": 19, "label": "Granddaughter"},
+        {"value": 20, "label": "Grandson"}
+      ]
+    },
+    {
       "name": "diabetes",
       "type": "boolean",
       "label": "Family History of Diabetes"
     },
     {
-      "name": "relative1",
+      "name": "diabetesRelative1",
       "type": "int",
-      "label": "Relative 1",
+      "label": "Diabetes - Relative 1",
       "required": false,
       "visible": {
         "name": "js",
@@ -39,13 +243,13 @@
       ]
     },
     {
-      "name": "relative2",
+      "name": "diabetesRelative2",
       "type": "int",
-      "label": "Relative 2",
+      "label": "Diabetes - Relative 2",
       "required": false,
       "visible": {
         "name": "js",
-        "value": "return form.diabetes && form.relative1"
+        "value": "return form.diabetes && form.diabetesRelative1"
       },
       "options": [
         {"value": 1, "label": "Mother"},
@@ -71,13 +275,13 @@
       ]
     },
     {
-      "name": "relative3",
+      "name": "diabetesRelative3",
       "type": "int",
-      "label": "Relative 3",
+      "label": "Diabetes - Relative 3",
       "required": false,
       "visible": {
         "name": "js",
-        "value": "return form.diabetes && form.relative2"
+        "value": "return form.diabetes && form.diabetesRelative2"
       },
       "options": [
         {"value": 1, "label": "Mother"},
