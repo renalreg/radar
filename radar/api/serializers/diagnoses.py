@@ -51,7 +51,6 @@ class GroupDiagnosisListSerializer(serializers.ListSerializer):
         return group_diagnoses
 
 
-
 class DiagnosisSerializer(ModelSerializer):
     name = fields.StringField(validators=[min_length(1), max_length(1000)])
     retired = fields.BooleanField(default=False)
