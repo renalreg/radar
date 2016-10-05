@@ -12,7 +12,6 @@ COHORTS = [
         'short_name': 'NURTuRE - CKD',
         'pages': [
             (PAGE.PRIMARY_DIAGNOSIS, 100),
-            (PAGE.FAMILY_HISTORY, 300),
             (PAGE.DIAGNOSES, 400),
             (PAGE.MEDICATIONS, 800),
             (PAGE.RESULTS, 900),
@@ -23,7 +22,7 @@ COHORTS = [
         ],
         'forms': [
             ('socio-economic', 200),
-            ('diabetes', 500),
+            ('family-history', 500),
             ('diabetic-complications', 600),
             ('anthropometric', 700),
         ],
