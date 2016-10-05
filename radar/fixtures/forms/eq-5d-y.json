@@ -107,7 +107,8 @@
     {
       "name": "health",
       "type": "int",
-      "label": "Health",
+      "label": "Your Health Today",
+      "unit": "%",
       "validators": [
         {
           "name": "min",
