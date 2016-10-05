@@ -78,7 +78,7 @@ class BaseRegistry(object):
 
     def get_required(self, name):
         try:
-            return self.defaults[name]
+            return self.required[name]
         except KeyError:
             raise SchemaError()
 
