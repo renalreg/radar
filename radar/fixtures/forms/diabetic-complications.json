@@ -12,6 +12,16 @@
       ]
     },
     {
+      "name": "laser",
+      "type": "boolean",
+      "label": "Treated by Laser",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      }
+    },
+    {
       "name": "peripheralNeuropathy",
       "type": "boolean",
       "label": "Peripheral Neuropathy"
