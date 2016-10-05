@@ -30,6 +30,12 @@ CREATE DATABASE radar;
 GRANT ALL PRIVILEGES ON DATABASE radar TO radar;
 \c radar
 CREATE EXTENSION "uuid-ossp";
+
+-- tests' database
+CREATE DATABASE radar_test;
+GRANT ALL PRIVILEGES ON DATABASE radar_test TO radar;
+\c radar_test
+CREATE EXTENSION "uuid-ossp";
 ```
 
 Clone the repository:
