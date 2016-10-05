@@ -106,6 +106,18 @@
         "name": "js",
         "value": "return form.alcohol;"
       }
+    },
+    {
+      "name": "literacy",
+      "type": "int",
+      "label": "Literacy",
+      "required": false,
+      "options": [
+        {"value": 0, "label": "Unable to speak or read"},
+        {"value": 1, "label": "Very weak fluency"},
+        {"value": 2, "label": "Moderate fluency"},
+        {"value": 3, "label": "Good fluency"}
+      ]
     }
   ]
 }
