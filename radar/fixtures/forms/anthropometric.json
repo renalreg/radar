@@ -125,7 +125,7 @@
     {
       "name": "grip",
       "type": "int",
-      "label": "Time to Up & Go",
+      "label": "Hand Grip Strength",
       "unit": "seconds",
       "help": "5-85",
       "required": false,
