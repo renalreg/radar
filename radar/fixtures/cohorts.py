@@ -1,7 +1,7 @@
 from radar.fixtures.utils import add
 from radar.models.groups import Group, GROUP_TYPE, GroupPage
 from radar.pages import PAGE
-from radar.models.diagnoses import Diagnosis, GROUP_DIAGNOSIS_TYPE, GroupDiagnosis
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 
 
