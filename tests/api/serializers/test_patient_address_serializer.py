@@ -31,7 +31,8 @@ def address(patient):
         'address1': 'Learning and Research Building',
         'address2': 'Southmead Hospital',
         'address3': 'Bristol',
-        'postcode': 'BS10 5NB'
+        'postcode': 'BS10 5NB',
+        'country': 'UK',
     }
 
 
@@ -43,6 +44,7 @@ def test_valid(address):
     assert obj.address2 == 'Southmead Hospital'
     assert obj.address3 == 'Bristol'
     assert obj.postcode == 'BS10 5NB'
+    assert obj.country == 'UK'
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
