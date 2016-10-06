@@ -25,6 +25,7 @@ COHORTS = [
             ('family-history', 500),
             ('diabetic-complications', 600),
             ('anthropometrics', 700),
+            ('samples', 1250),
         ],
         'questionnaires': [
             ('eq-5d-5l', 100),
@@ -41,6 +42,9 @@ COHORTS = [
         'short_name': 'NURTuRE - INS',
         'pages': [
             (PAGE.QUESTIONNAIRES, 100),
+        ],
+        'forms': [
+            ('samples', 50),
         ],
         'questionnaires': [
             ('eq-5d-5l', 100),
