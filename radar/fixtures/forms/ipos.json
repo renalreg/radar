@@ -289,7 +289,7 @@
     {
       "name": "question1",
       "type": "string",
-      "label": "Symptom 1 - AAA",
+      "label": "Symptom 1",
       "required": false
     },
     {
