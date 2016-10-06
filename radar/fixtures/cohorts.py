@@ -15,6 +15,7 @@ COHORTS = [
             (PAGE.DIAGNOSES, 400),
             (PAGE.MEDICATIONS, 800),
             (PAGE.RESULTS, 900),
+            (PAGE.PATHOLOGY, 950),
             (PAGE.RENAL_PROGRESSION, 1000),
             (PAGE.DIALYSIS, 1100),
             (PAGE.TRANSPLANTS, 1200),
