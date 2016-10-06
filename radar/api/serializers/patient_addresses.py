@@ -70,6 +70,12 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
             after_date_of_birth('to_date'),
         ]
 
+    def pre_validate(self, data):
+        if data['country'] != 'GB':
+            data['postcode'] = None
+
+        return data
+
     def validate(self, data):
         data = super(PatientAddressSerializer, self).validate(data)
 
