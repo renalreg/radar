@@ -1,3 +1,5 @@
+from __future__ import division
+
 from datetime import date, timedelta
 
 import tablib
@@ -65,6 +67,28 @@ def column(name, getter=None):
         getter = path_getter(getter)
 
     return name, getter
+
+
+def get_years(months):
+    """Get whole number of years."""
+
+    if months is None:
+        years = 0
+    else:
+        years = months // 12
+
+    return years
+
+
+def get_months(months):
+    """Get remaining months."""
+
+    if months is not None:
+        months = 0
+    else:
+        months = months % 12
+
+    return 0
 
 
 def demographics_column_factory(config):
@@ -319,8 +343,14 @@ class PatientDiagnosisExporter(Exporter):
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
             column('symptoms_date'),
+            column('symptoms_age_years', lambda x: get_years(x.symptoms_age)),
+            column('symptoms_age_months', lambda x: get_months(x.symptoms_age)),
             column('from_date'),
+            column('from_age_years', lambda x: get_years(x.from_age)),
+            column('from_age_months', lambda x: get_months(x.from_age)),
             column('to_date'),
+            column('to_age_years', lambda x: get_years(x.to_age)),
+            column('to_age_months', lambda x: get_months(x.to_age)),
             column('gene_test'),
             column('biochemistry'),
             column('clinical_picture'),
