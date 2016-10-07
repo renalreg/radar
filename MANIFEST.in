@@ -1,1 +1,2 @@
 recursive-include radar/templates *
+recursive-include radar/admin/templates *

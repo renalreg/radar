@@ -9,8 +9,8 @@ from radar.template_filters import register_template_filters
 
 
 class Radar(Flask):
-    def __init__(self, config=None):
-        super(Radar, self).__init__(__name__)
+    def __init__(self, config=None, **kwargs):
+        super(Radar, self).__init__(__name__, **kwargs)
 
         self.setup_config()
 
