@@ -351,7 +351,6 @@ class Patient(db.Model, MetaModelMixin):
 
         return months
 
-
     @property
     def frozen(self):
         """True if the patient is frozen."""
