@@ -83,7 +83,7 @@ def get_years(months):
 def get_months(months):
     """Get remaining months."""
 
-    if months is not None:
+    if months is None:
         months = 0
     else:
         months = months % 12
