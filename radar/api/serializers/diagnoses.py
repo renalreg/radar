@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     SourceMixin,
     MetaMixin,
     IntegerLookupField,
-    GroupField,
+    TinyGroupField,
     EnumLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
@@ -26,7 +26,7 @@ from radar.api.serializers.codes import CodeSerializer
 
 
 class GroupDiagnosisSerializer(ModelSerializer):
-    group = GroupField()
+    group = TinyGroupField()
     type = EnumLookupField(GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES)
 
     class Meta(object):
