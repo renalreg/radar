@@ -45,7 +45,6 @@ def test_path_getter():
     assert f(a) is None
 
 
-
 def test_identity_getter():
     c = C()
     assert identity_getter(c) is c
