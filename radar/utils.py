@@ -45,7 +45,8 @@ def sql_year_filter(column, year):
 
 
 def months_between(a, b):
-    return relativedelta(a, b).months
+    delta = relativedelta(a, b)
+    return delta.years * 12 + delta.months
 
 
 def round_age(months):
