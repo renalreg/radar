@@ -8,6 +8,7 @@ import pytz
 import six
 from sqlalchemy import and_
 from cornflake.exceptions import SkipField
+from dateutil.relativedelta import relativedelta
 
 
 SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -43,18 +44,18 @@ def sql_year_filter(column, year):
     )
 
 
-# TODO this should just return number of months
-def seconds_to_age(seconds):
-    years = float(seconds) / SECONDS_IN_YEAR
+def months_between(a, b):
+    return relativedelta(a, b).months
 
-    if years >= 5:
-        years = int(years)
-    else:
-        # Round down to nearest month
-        months = int((years - int(years)) * 12) / 12.0
-        years = int(years) + months
 
-    return years * SECONDS_IN_YEAR
+def round_age(months):
+    """Remove partial years for ages > 5."""
+
+    # 60 months = 5 years
+    if months > 60:
+        months = months - (months % 12)
+
+    return months
 
 
 def random_string(alphabet, length):
