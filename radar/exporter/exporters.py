@@ -8,6 +8,7 @@ from radar.exporter import queries
 from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
 
 
 exporter_map = {}
@@ -19,29 +20,6 @@ def register(name):
         return cls
 
     return decorator
-
-
-def path_getter(path):
-    keys = path.split('.')
-
-    def f(value):
-        for key in keys:
-            if value is None:
-                break
-
-            value = getattr(value, key)
-
-        return value
-
-    return f
-
-
-def none_getter(value):
-    return None
-
-
-def identity_getter(value):
-    return value
 
 
 def query_to_dataset(query, columns):
@@ -67,28 +45,6 @@ def column(name, getter=None):
         getter = path_getter(getter)
 
     return name, getter
-
-
-def get_years(months):
-    """Get whole number of years."""
-
-    if months is None:
-        years = 0
-    else:
-        years = months // 12
-
-    return years
-
-
-def get_months(months):
-    """Get remaining months."""
-
-    if months is None:
-        months = 0
-    else:
-        months = months % 12
-
-    return 0
 
 
 def demographics_column_factory(config):
