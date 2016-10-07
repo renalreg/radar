@@ -2,6 +2,7 @@
   "columns": ["date", "anxietyScore", "depressionScore"],
   "sortBy": "date",
   "reverse": true,
+  "multiple": true,
   "fields": [
     {
       "name": "date",

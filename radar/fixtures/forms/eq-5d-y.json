@@ -2,6 +2,7 @@
   "columns": ["date"],
   "sortBy": "date",
   "reverse": true,
+  "multiple": true,
   "fields": [
     {
       "name": "date",
@@ -106,7 +107,8 @@
     {
       "name": "health",
       "type": "int",
-      "label": "Health",
+      "label": "Your Health Today",
+      "unit": "%",
       "validators": [
         {
           "name": "min",

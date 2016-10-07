@@ -78,7 +78,7 @@ class BaseRegistry(object):
 
     def get_required(self, name):
         try:
-            return self.defaults[name]
+            return self.required[name]
         except KeyError:
             raise SchemaError()
 
@@ -87,7 +87,7 @@ class BaseRegistry(object):
             schema = f.get_schema()
 
             for index in (0, 1):
-                p = self._get_property('visible', index=0)
+                p = self._get_property('visible', index=index)
                 schemas = p['oneOf']
                 schemas.append(schema)
 

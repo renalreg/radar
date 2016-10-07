@@ -1,0 +1,23 @@
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "barcode",
+      "type": "string",
+      "label": "Barcode"
+    }
+  ]
+}
