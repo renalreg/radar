@@ -1,7 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import none_if_blank, optional, max_length, min_length
+from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
@@ -28,6 +28,7 @@ from radar.api.serializers.codes import CodeSerializer
 class GroupDiagnosisSerializer(ModelSerializer):
     group = TinyGroupField()
     type = EnumLookupField(GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES)
+    weight = fields.IntegerField(default=9999, validators=[min_(0), max_(9999)])
 
     class Meta(object):
         model_class = GroupDiagnosis
