@@ -118,6 +118,19 @@
         {"value": 2, "label": "Moderate fluency"},
         {"value": 3, "label": "Good fluency"}
       ]
+    },
+    {
+      "name": "literacyHelp",
+      "type": "int",
+      "label": "How often do you need to have someone help you when you read instructions, pamphlets, or other written material from your doctor or pharmacy?",
+      "required": false,
+      "options": [
+        {"value": 1, "label": "Never"},
+        {"value": 2, "label": "Rarely"},
+        {"value": 3, "label": "Sometimes"},
+        {"value": 4, "label": "Often"},
+        {"value": 5, "label": "Always"}
+      ]
     }
   ]
 }
