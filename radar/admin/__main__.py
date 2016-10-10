@@ -3,7 +3,7 @@
 import click
 from flask import current_app
 
-from radar.admin.app import create_app
+from radar.admin.app import RadarAdmin
 
 
 @click.command()
@@ -14,7 +14,7 @@ def start(host, port):
 
 
 def main():
-    app = create_app()
+    app = RadarAdmin()
 
     with app.app_context():
         start()
