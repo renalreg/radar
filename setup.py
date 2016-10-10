@@ -39,6 +39,7 @@ setup(
         'iso8601',
         'itsdangerous',
         'jinja2',
+        'jsonschema',
         'librabbitmq',
         'psycopg2',
         'python-dateutil',

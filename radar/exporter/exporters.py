@@ -1,3 +1,5 @@
+from __future__ import division
+
 from datetime import date, timedelta
 
 import tablib
@@ -6,6 +8,7 @@ from radar.exporter import queries
 from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
 
 
 exporter_map = {}
@@ -17,29 +20,6 @@ def register(name):
         return cls
 
     return decorator
-
-
-def path_getter(path):
-    keys = path.split('.')
-
-    def f(value):
-        for key in keys:
-            if value is None:
-                break
-
-            value = getattr(value, key)
-
-        return value
-
-    return f
-
-
-def none_getter(value):
-    return None
-
-
-def identity_getter(value):
-    return value
 
 
 def query_to_dataset(query, columns):
@@ -319,8 +299,14 @@ class PatientDiagnosisExporter(Exporter):
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
             column('symptoms_date'),
+            column('symptoms_age_years', lambda x: get_years(x.symptoms_age)),
+            column('symptoms_age_months', lambda x: get_months(x.symptoms_age)),
             column('from_date'),
+            column('from_age_years', lambda x: get_years(x.from_age)),
+            column('from_age_months', lambda x: get_months(x.from_age)),
             column('to_date'),
+            column('to_age_years', lambda x: get_years(x.to_age)),
+            column('to_age_months', lambda x: get_months(x.to_age)),
             column('gene_test'),
             column('biochemistry'),
             column('clinical_picture'),

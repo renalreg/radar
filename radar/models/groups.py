@@ -1,9 +1,8 @@
 from datetime import datetime
 
 from enum import Enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
 import pytz
 
@@ -45,11 +44,8 @@ class Group(db.Model):
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
 
-    # https://bitbucket.org/zzzeek/sqlalchemy/issues/3467/array-of-enums-does-not-allow-assigning
-    pages = Column(postgresql.ARRAY(EnumToStringType(PAGE)))
     _instructions = Column('instructions', String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
-
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
@@ -163,6 +159,24 @@ class GroupUser(db.Model, MetaModelMixin):
 Index('group_users_group_idx', GroupUser.group_id)
 Index('group_users_user_idx', GroupUser.user_id)
 Index('group_patients_group_user_role_idx', GroupUser.group_id, GroupUser.user_id, GroupUser.role, unique=True)
+
+
+@log_changes
+class GroupPage(db.Model):
+    __tablename__ = 'group_pages'
+
+    id = Column(Integer, primary_key=True)
+
+    group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    group = relationship('Group', backref=backref('group_pages', cascade='all, delete-orphan', passive_deletes=True))
+
+    page = Column(EnumToStringType(PAGE), nullable=False)
+
+    weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
+
+Index('group_pages_group_idx', GroupPage.group_id)
+Index('group_pages_page_idx', GroupPage.page)
+Index('group_pages_page_group_idx', GroupPage.page, GroupPage.group_id, unique=True)
 
 
 dependencies = [

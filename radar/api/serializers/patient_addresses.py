@@ -1,19 +1,24 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.validators import (
-    not_empty,
-    normalise_whitespace,
     max_length,
     none_if_blank,
+    normalise_whitespace,
+    not_empty,
     optional,
+    postcode,
     required,
-    postcode
 )
 from cornflake.exceptions import ValidationError, SkipField
 
-from radar.api.serializers.common import PatientMixin, RadarSourceMixin, MetaMixin
+from radar.api.serializers.common import (
+    PatientMixin,
+    RadarSourceMixin,
+    MetaMixin,
+    StringLookupField,
+)
 from radar.api.serializers.validators import remove_trailing_comma, after_date_of_birth
-from radar.models.patient_addresses import PatientAddress
+from radar.models.patient_addresses import COUNTRIES, PatientAddress
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -56,6 +61,7 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
         max_length(100)
     ])
     postcode = fields.StringField(validators=[required(), postcode()])
+    country = StringLookupField(COUNTRIES)
 
     class Meta(object):
         model_class = PatientAddress
@@ -63,6 +69,12 @@ class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelS
             after_date_of_birth('from_date'),
             after_date_of_birth('to_date'),
         ]
+
+    def pre_validate(self, data):
+        if data['country'] != 'GB':
+            data['postcode'] = None
+
+        return data
 
     def validate(self, data):
         data = super(PatientAddressSerializer, self).validate(data)

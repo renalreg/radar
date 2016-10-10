@@ -1,7 +1,7 @@
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import none_if_blank, optional, max_length, min_length
+from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     SourceMixin,
     MetaMixin,
     IntegerLookupField,
-    GroupField,
+    TinyGroupField,
     EnumLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
@@ -22,11 +22,13 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis
 )
+from radar.api.serializers.codes import CodeSerializer
 
 
 class GroupDiagnosisSerializer(ModelSerializer):
-    group = GroupField()
+    group = TinyGroupField()
     type = EnumLookupField(GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES)
+    weight = fields.IntegerField(default=9999, validators=[min_(0), max_(9999)])
 
     class Meta(object):
         model_class = GroupDiagnosis
@@ -52,28 +54,15 @@ class GroupDiagnosisListSerializer(serializers.ListSerializer):
 
 class DiagnosisSerializer(ModelSerializer):
     name = fields.StringField(validators=[min_length(1), max_length(1000)])
-    groups = GroupDiagnosisListSerializer(source='group_diagnoses')
-    edta = fields.IntegerField(required=False)
     retired = fields.BooleanField(default=False)
+    groups = GroupDiagnosisListSerializer(source='group_diagnoses')
+    codes = fields.ListField(child=CodeSerializer(), read_only=True)
 
     class Meta(object):
         model_class = Diagnosis
 
-    def validate(self, data):
-        if data['edta'] is not None:
-            q = Diagnosis.query.filter(Diagnosis.edta == data['edta'])
-
-            if self.instance is not None:
-                q = q.filter(Diagnosis.id != self.instance.id)
-
-            if q.count() > 0:
-                raise ValidationError({'edta': 'Duplicate EDTA code.'})
-
-        return data
-
     def _save(self, instance, data):
         instance.name = data['name']
-        instance.edta = data['edta']
         instance.retired = data['retired']
         instance.group_diagnoses = self.fields['groups'].create(data['group_diagnoses'])
 

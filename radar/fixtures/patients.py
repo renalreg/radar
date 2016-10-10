@@ -179,6 +179,7 @@ def create_patient_addresses_f():
             new_a.address2 = generate_address2()
             new_a.address3 = generate_address3()
             new_a.postcode = generate_postcode()
+            new_a.country = 'GB'
         else:
             to_date = random_date(old_a.from_date, date.today())
 
@@ -189,12 +190,14 @@ def create_patient_addresses_f():
                 new_a.address2 = generate_address2()
                 new_a.address3 = generate_address3()
                 new_a.postcode = generate_postcode()
+                new_a.country = 'GB'
             else:
                 new_a.from_date = old_a.from_date
                 new_a.address1 = old_a.address1
                 new_a.address2 = old_a.address2
                 new_a.address3 = old_a.address3
                 new_a.postcode = old_a.postcode
+                new_a.country = old_a.country
 
         add(new_a)
 

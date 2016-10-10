@@ -1,0 +1,124 @@
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "label": "Age",
+      "validators": [
+        {
+          "name": "min",
+          "value": 7
+        },
+        {
+          "name": "max",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "name": "gender",
+      "type": "int",
+      "label": "Gender",
+      "options": [
+        {"value": 1, "label": "Male"},
+        {"value": 2, "label": "Female"}
+      ]
+    },
+    {
+      "name": "mobility",
+      "type": "int",
+      "label": "Mobility",
+      "options": [
+        {"value": 1, "label": "I have no problems in walking about"},
+        {"value": 2, "label": "I have some problems in walking about"},
+        {"value": 3, "label": "I have a lot of problems in walking about"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "selfCare",
+      "type": "int",
+      "label": "Looking after myself",
+      "options": [
+        {"value": 1, "label": "I have no problems washing or dressing myself"},
+        {"value": 2, "label": "I have some problems washing or dressing myself"},
+        {"value": 3, "label": "I have a lot of problems washing or dressing myself"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "usualActivities",
+      "type": "int",
+      "label": "Doing usual activities",
+      "help": "e.g. going to school, hobbies, sports, playing, doing things with family or friends",
+      "options": [
+        {"value": 1, "label": "I have no problems doing my usual activities"},
+        {"value": 2, "label": "I have some problems doing my usual activities"},
+        {"value": 3, "label": "I have a lot of problems doing my usual activities"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "painDiscomfort",
+      "type": "int",
+      "label": "Having pain or discomfort",
+      "options": [
+        {"value": 1, "label": "I have no pain or discomfort"},
+        {"value": 2, "label": "I have some pain or discomfort"},
+        {"value": 3, "label": "I have a lot of pain or discomfort"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "anxietyDepression",
+      "type": "int",
+      "label": "Feeling worried, sad or unhappy",
+      "options": [
+        {"value": 1, "label": "I am not worried, sad or unhappy"},
+        {"value": 2, "label": "I am a bit worried, sad or unhappy"},
+        {"value": 3, "label": "I am very worried, sad or unhappy"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "health",
+      "type": "int",
+      "label": "Your Health Today",
+      "unit": "%",
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    }
+  ]
+}

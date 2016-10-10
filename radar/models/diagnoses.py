@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text, CheckConstraint
 from sqlalchemy.orm import relationship, backref
 from enum import Enum
 
@@ -84,12 +84,15 @@ class Diagnosis(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    edta = Column(Integer, unique=True)
     retired = Column(Boolean, nullable=False, default=False, server_default=text('false'))
 
     @property
     def groups(self):
         return [x.group for x in self.group_diagnoses]
+
+    @property
+    def codes(self):
+        return [x.code for x in self.diagnosis_codes]
 
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
@@ -115,11 +118,28 @@ class GroupDiagnosis(db.Model):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = relationship('Group')
 
-    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id'), nullable=False)
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     diagnosis = relationship('Diagnosis', backref=backref('group_diagnoses', cascade='all, delete-orphan', passive_deletes=True))
 
     type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
 
+    weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False, default=9999, server_default=text('9999'))
+
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
 Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)
 Index('group_diagnoses_diagnosis_group_idx', GroupDiagnosis.diagnosis_id, GroupDiagnosis.group_id, unique=True)
+
+
+@log_changes
+class DiagnosisCode(db.Model):
+    __tablename__ = 'diagnosis_codes'
+
+    id = Column(Integer, primary_key=True)
+
+    diagnosis_id = Column(Integer, ForeignKey('diagnoses.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    diagnosis = relationship('Diagnosis', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
+
+    code_id = Column(Integer, ForeignKey('codes.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+    code = relationship('Code', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
+
+Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)

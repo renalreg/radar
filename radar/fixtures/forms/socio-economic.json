@@ -1,0 +1,123 @@
+{
+  "multiple": false,
+  "fields": [
+    {
+      "name": "education",
+      "type": "int",
+      "label": "Highest Educational Qualification",
+      "required": false,
+      "options": [
+        {"value": 5, "label": "Higher Degree"},
+        {"value": 4, "label": "First Degree"},
+        {"value": 3, "label": "A Level"},
+        {"value": 2, "label": "GCSE"},
+        {"value": 1, "label": "NVQ"},
+        {"value": 8, "label": "Other"},
+        {"value": 0, "label": "None"}
+      ]
+    },
+    {
+      "name": "employmentStatus",
+      "type": "int",
+      "label": "Employment Status",
+      "required": false,
+      "options": [
+        {"value": 1, "label": "Long term sick / disabled"},
+        {"value": 2, "label": "Looking after family home"},
+        {"value": 3, "label": "Not in work for some other reason"},
+        {"value": 4, "label": "Retired from paid work"},
+        {"value": 5, "label": "Student (includes those in training)"},
+        {"value": 6, "label": "Unemployed"},
+        {"value": 7, "label": "Working full time"},
+        {"value": 8, "label": "Working part time"}
+      ]
+    },
+    {
+      "name": "firstLanguage",
+      "type": "string",
+      "label": "First Language",
+      "required": false,
+      "options": [
+        {"value": "en", "label": "English"},
+        {"value": "pl", "label": "Polish"},
+        {"value": "pa", "label": "Punjabi"},
+        {"value": "ur", "label": "Urdu"},
+        {"value": "bn", "label": "Bengali"},
+        {"value": "gu", "label": "Gujarati"},
+        {"value": "ar", "label": "Arabic"},
+        {"value": "fr", "label": "French"},
+        {"value": "zh", "label": "Chinese"},
+        {"value": "pt", "label": "Portuguese"},
+        {"value": "es", "label": "Spanish"},
+        {"value": "ta", "label": "Tamil"},
+        {"value": "tr", "label": "Turkish"},
+        {"value": "it", "label": "Italian"},
+        {"value": "so", "label": "Somali"},
+        {"value": "lt", "label": "Lithuanian"},
+        {"value": "de", "label": "German"}
+      ]
+    },
+    {
+      "name": "maritalStatus",
+      "type": "string",
+      "label": "Marital Status",
+      "required": false,
+      "options": [
+        {"value": "S", "label": "Single"},
+        {"value": "M", "label": "Married / Civil Partner"},
+        {"value": "D", "label": "Divorced / Dissolved Civil Partnership"},
+        {"value": "W", "label": "Widowed / Surviving Civil Partner"},
+        {"value": "P", "label": "Separated"},
+        {"value": "N", "label": "Not Disclosed"}
+      ]
+    },
+    {
+      "name": "smoking",
+      "type": "int",
+      "label": "Smoking",
+      "required": false,
+      "options": [
+        {"value": 1, "label": "Smoker"},
+        {"value": 2, "label": "Ex-Smoker"},
+        {"value": 0, "label": "Never Smoked"}
+      ]
+    },
+    {
+      "name": "cigarettesPerDay",
+      "type": "int",
+      "label": "Number of Cigarettes per Day",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.smoking === 1;"
+      }
+    },
+    {
+      "name": "alcohol",
+      "type": "boolean",
+      "label": "Alcohol"
+    },
+    {
+      "name": "unitsPerWeek",
+      "type": "int",
+      "label": "Number of Units per Day",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.alcohol;"
+      }
+    },
+    {
+      "name": "literacy",
+      "type": "int",
+      "label": "Literacy",
+      "required": false,
+      "options": [
+        {"value": 0, "label": "Unable to speak or read"},
+        {"value": 1, "label": "Very weak fluency"},
+        {"value": 2, "label": "Moderate fluency"},
+        {"value": 3, "label": "Good fluency"}
+      ]
+    }
+  ]
+}

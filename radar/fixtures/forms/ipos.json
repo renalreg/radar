@@ -1,0 +1,453 @@
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "score1",
+      "type": "int",
+      "label": "Pain",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score2",
+      "type": "int",
+      "label": "Shortness of breath",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score3",
+      "type": "int",
+      "label": "Weakness or lack of energy",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score4",
+      "type": "int",
+      "label": "Nausea (feeling like you are going to be sick)",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score5",
+      "type": "int",
+      "label": "Vomiting (being sick)",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score6",
+      "type": "int",
+      "label": "Poor appetite",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score7",
+      "type": "int",
+      "label": "Constipation",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score8",
+      "type": "int",
+      "label": "Mouth problems",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score9",
+      "type": "int",
+      "label": "Drowsiness",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+          "name": "checkboxes",
+          "inline": true
+        }
+      },
+    {
+      "name": "score10",
+      "type": "int",
+      "label": "Poor mobility",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score11",
+      "type": "int",
+      "label": "Itching",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score12",
+      "type": "int",
+      "label": "Difficulty sleeping",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score13",
+      "type": "int",
+      "label": "Restless legs or difficulty keeping legs still",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score14",
+      "type": "int",
+      "label": "Feeling anxious",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score15",
+      "type": "int",
+      "label": "Feeling depressed",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score16",
+      "type": "int",
+      "label": "Changes in skin",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "score17",
+      "type": "int",
+      "label": "Diarrhoea",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      }
+    },
+    {
+      "name": "question1",
+      "type": "string",
+      "label": "Symptom 1",
+      "required": false
+    },
+    {
+      "name": "score18",
+      "type": "int",
+      "label": "Symptom 1",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question1;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question1;"
+      }
+    },
+    {
+      "name": "question2",
+      "type": "string",
+      "label": "Symptom 2",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.question1;"
+      }
+    },
+    {
+      "name": "score19",
+      "type": "int",
+      "label": "Symptom 2",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question2;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question2;"
+      }
+    },
+    {
+      "name": "question3",
+      "type": "string",
+      "label": "Symptom 3",
+      "required": false,
+      "visible": {
+        "name": "js",
+        "value": "return form.question2;"
+      }
+    },
+    {
+      "name": "score20",
+      "type": "int",
+      "label": "Symptom 3",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Slightly"},
+        {"value": 2, "label": "Moderately"},
+        {"value": 3, "label": "Severely"},
+        {"value": 4, "label": "Overwhelmingly"}
+      ],
+      "widget": {
+        "name": "checkboxes",
+        "inline": true
+      },
+      "required": {
+        "name": "js",
+        "value": "return form.question3;"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.question3;"
+      }
+    },
+    {
+      "name": "question4",
+      "type": "int",
+      "label": "Which symptom has affected you the most?",
+      "options": [
+        {"value": 1, "label": "Pain"},
+        {"value": 2, "label": "Shortness of breath"},
+        {"value": 3, "label": "Weakness or lack of energy"},
+        {"value": 4, "label": "Nausea"},
+        {"value": 5, "label": "Vomiting"},
+        {"value": 6, "label": "Poor appetite"},
+        {"value": 7, "label": "Constipation"},
+        {"value": 8, "label": "Mouth problems"},
+        {"value": 9, "label": "Drowsiness"},
+        {"value": 10, "label": "Poor mobility"},
+        {"value": 11, "label": "Itching"},
+        {"value": 12, "label": "Difficulty sleeping"},
+        {"value": 13, "label": "Restless legs or difficulty keeping legs still"},
+        {"value": 14, "label": "Feeling anxious"},
+        {"value": 15, "label": "Feeling depressed"},
+        {"value": 16, "label": "Changes in skin"},
+        {"value": 17, "label": "Diarrhoea"},
+        {"value": 18, "label": "Symptom 1"},
+        {"value": 19, "label": "Symptom 2"},
+        {"value": 20, "label": "Symptom 3"}
+      ],
+      "required": false
+    },
+    {
+      "name": "question5",
+      "type": "int",
+      "label": "Which symptom has improved the most?",
+      "options": [
+        {"value": 1, "label": "Pain"},
+        {"value": 2, "label": "Shortness of breath"},
+        {"value": 3, "label": "Weakness or lack of energy"},
+        {"value": 4, "label": "Nausea"},
+        {"value": 5, "label": "Vomiting"},
+        {"value": 6, "label": "Poor appetite"},
+        {"value": 7, "label": "Constipation"},
+        {"value": 8, "label": "Mouth problems"},
+        {"value": 9, "label": "Drowsiness"},
+        {"value": 10, "label": "Poor mobility"},
+        {"value": 11, "label": "Itching"},
+        {"value": 12, "label": "Difficulty sleeping"},
+        {"value": 13, "label": "Restless legs or difficulty keeping legs still"},
+        {"value": 14, "label": "Feeling anxious"},
+        {"value": 15, "label": "Feeling depressed"},
+        {"value": 16, "label": "Changes in skin"},
+        {"value": 17, "label": "Diarrhoea"},
+        {"value": 18, "label": "Symptom 1"},
+        {"value": 19, "label": "Symptom 2"},
+        {"value": 20, "label": "Symptom 3"}
+      ],
+      "required": false
+    },
+    {
+      "name": "score",
+      "type": "int",
+      "label": "Score",
+      "formula": {
+        "name": "js",
+        "value": "var total = 0; for (var i = 1; i <= 20; i++) total += form['score' + i] || 0; return total;"
+      }
+    }
+  ]
+}

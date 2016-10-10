@@ -1,0 +1,233 @@
+{
+  "columns": ["date", "anxietyScore", "depressionScore"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "help": "Date the questionnaire was completed by the patient.",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "a1",
+      "type": "int",
+      "label": "I feel tense or ‘wound up’",
+      "options": [
+        {"value": 3, "label": "Most of the time"},
+        {"value": 2, "label": "A lot of the time"},
+        {"value": 1, "label": "Time to time, occasionally"},
+        {"value": 0, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d1",
+      "type": "int",
+      "label": "I still enjoy the things I used to enjoy",
+      "options": [
+        {"value": 0, "label": "Definitely as much"},
+        {"value": 1, "label": "Not quite as much"},
+        {"value": 2, "label": "Only a little"},
+        {"value": 3, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a2",
+      "type": "int",
+      "label": "I get a sort of frightened feeling like something awful is about to happen",
+      "options": [
+        {"value": 3, "label": "Very definitely and quite badly"},
+        {"value": 2, "label": "Yes, but not too badly"},
+        {"value": 1, "label": "A little, but it doesn't worry me"},
+        {"value": 0, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d2",
+      "type": "int",
+      "label": "I can laugh and see the funny side of things",
+      "options": [
+        {"value": 0, "label": "As much as I always could"},
+        {"value": 1, "label": "Not quite so much now"},
+        {"value": 2, "label": "Definitely not so much now"},
+        {"value": 3, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a3",
+      "type": "int",
+      "label": "Worrying thoughts go through my mind",
+      "options": [
+        {"value": 3, "label": "A great deal of the time"},
+        {"value": 2, "label": "A lot of the time"},
+        {"value": 1, "label": "From time to time but not too often"},
+        {"value": 0, "label": "Only occasionally"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d3",
+      "type": "int",
+      "label": "I feel cheerful",
+      "options": [
+        {"value": 3, "label": "Not at all"},
+        {"value": 2, "label": "Not often"},
+        {"value": 1, "label": "Sometimes"},
+        {"value": 0, "label": "Most of the time"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a4",
+      "type": "int",
+      "label": "I can sit at ease and feel relaxed",
+      "options": [
+        {"value": 0, "label": "Definitely"},
+        {"value": 1, "label": "Usually"},
+        {"value": 2, "label": "Not often"},
+        {"value": 3, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d4",
+      "type": "int",
+      "label": "I feel as if I am slowed down",
+      "options": [
+        {"value": 3, "label": "Nearly all of the time"},
+        {"value": 2, "label": "Very often"},
+        {"value": 1, "label": "Sometimes"},
+        {"value": 0, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a5",
+      "type": "int",
+      "label": "I get a sort of frightened feeling like ‘butterflies in the stomach’",
+      "options": [
+        {"value": 0, "label": "Not at all"},
+        {"value": 1, "label": "Occasionally"},
+        {"value": 2, "label": "Quite often"},
+        {"value": 3, "label": "Very often"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d5",
+      "type": "int",
+      "label": "I have lost interest in my appearance",
+      "options": [
+        {"value": 3, "label": "Definitely"},
+        {"value": 2, "label": "I don't take as much care as I should"},
+        {"value": 1, "label": "I may not take quite as much care"},
+        {"value": 0, "label": "I take just as much care as ever"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a6",
+      "type": "int",
+      "label": "I feel restless as if I have to be on the move",
+      "options": [
+        {"value": 3, "label": "Very much indeed"},
+        {"value": 2, "label": "Quite a lot"},
+        {"value": 1, "label": "Not very much"},
+        {"value": 0, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d6",
+      "type": "int",
+      "label": "I look forward with enjoyment to things",
+      "options": [
+        {"value": 0, "label": "As much as I ever did"},
+        {"value": 1, "label": "Rather less than I used to"},
+        {"value": 2, "label": "Definitely less than I used to"},
+        {"value": 3, "label": "Hardly at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "a7",
+      "type": "int",
+      "label": "I get sudden feelings of panic",
+      "options": [
+        {"value": 3, "label": "Very often indeed"},
+        {"value": 2, "label": "Quite often"},
+        {"value": 1, "label": "Not very often"},
+        {"value": 0, "label": "Not at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "d7",
+      "type": "int",
+      "label": "I can enjoy a good book or radio or TV programme",
+      "options": [
+        {"value": 0, "label": "Often"},
+        {"value": 1, "label": "Sometimes"},
+        {"value": 2, "label": "Not often"},
+        {"value": 3, "label": "Very seldom"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "anxietyScore",
+      "type": "int",
+      "label": "Anxiety Score",
+      "formula": {
+        "name": "js",
+        "value": "return (form.a1 || 0) + (form.a2 || 0) + (form.a3 || 0) + (form.a4 || 0) + (form.a5 || 0) + (form.a6 || 0) + (form.a7 || 0);"
+      }
+    },
+    {
+      "name": "depressionScore",
+      "type": "int",
+      "label": "Depression Score",
+      "formula": {
+        "name": "js",
+        "value": "return (form.d1 || 0) + (form.d2 || 0) + (form.d3 || 0) + (form.d4 || 0) + (form.d5 || 0) + (form.d6 || 0) + (form.d7 || 0);"
+      }
+    }
+  ]
+}

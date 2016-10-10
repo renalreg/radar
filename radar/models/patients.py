@@ -11,7 +11,7 @@ from radar.models.logs import log_changes
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patient_codes import GENDERS, ETHNICITIES, GENDER_MALE, GENDER_FEMALE
-from radar.utils import seconds_to_age, uniq
+from radar.utils import uniq, months_between, round_age
 
 
 def clean(items):
@@ -340,15 +340,16 @@ class Patient(db.Model, MetaModelMixin):
         return values
 
     def to_age(self, date):
+        """Months between date of birth and supplied date."""
+
         date_of_birth = self.date_of_birth
 
         if date_of_birth is None:
-            seconds = None
+            months = None
         else:
-            seconds = (date - date_of_birth).total_seconds()
-            seconds = seconds_to_age(seconds)
+            months = round_age(months_between(date, date_of_birth))
 
-        return seconds
+        return months
 
     @property
     def frozen(self):

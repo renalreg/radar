@@ -1,0 +1,155 @@
+{
+  "columns": ["date"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "worried",
+      "type": "int",
+      "label": "Worried",
+      "options": [
+        {"value": 1, "label": "I don't feel worried today"},
+        {"value": 2, "label": "I feel a little bit worried today"},
+        {"value": 3, "label": "I feel a bit worried today"},
+        {"value": 4, "label": "I feel quite worried today"},
+        {"value": 5, "label": "I feel very worried today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "sad",
+      "type": "int",
+      "label": "Sad",
+      "options": [
+        {"value": 1, "label": "I don't feel sad today"},
+        {"value": 2, "label": "I feel a little bit sad today"},
+        {"value": 3, "label": "I feel a bit sad today"},
+        {"value": 4, "label": "I feel quite sad today"},
+        {"value": 5, "label": "I feel very sad today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "pain",
+      "type": "int",
+      "label": "Pain",
+      "options": [
+        {"value": 1, "label": "I don't have any pain today"},
+        {"value": 2, "label": "I have a little bit of pain today"},
+        {"value": 3, "label": "I have a bit of pain today"},
+        {"value": 4, "label": "I have quite a lot of pain today"},
+        {"value": 5, "label": "I have a lot of pain today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "tired",
+      "type": "int",
+      "label": "Tired",
+      "options": [
+        {"value": 1, "label": "I don't feel tired today"},
+        {"value": 2, "label": "I feel a little bit tired today"},
+        {"value": 3, "label": "I feel a bit tired today"},
+        {"value": 4, "label": "I feel quite tired today"},
+        {"value": 5, "label": "I feel very tired today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "annoyed",
+      "type": "int",
+      "label": "Annoyed",
+      "options": [
+        {"value": 1, "label": "I don't feel annoyed today"},
+        {"value": 2, "label": "I feel a little bit annoyed today"},
+        {"value": 3, "label": "I feel a bit annoyed today"},
+        {"value": 4, "label": "I feel quite annoyed today"},
+        {"value": 5, "label": "I feel very annoyed today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "work",
+      "type": "int",
+      "label": "School Work / Homework",
+      "help": "e.g. reading, writing, doing lessons",
+      "options": [
+        {"value": 1, "label": "I have no problems with my schoolwork/homework today"},
+        {"value": 2, "label": "I have a few problems with my schoolwork/homework today"},
+        {"value": 3, "label": "I have some problems with my schoolwork/homework today"},
+        {"value": 4, "label": "I have many problems with my schoolwork/homework today"},
+        {"value": 5, "label": "I can't do my schoolwork/homework today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "sleep",
+      "type": "int",
+      "label": "Sleep",
+      "options": [
+        {"value": 1, "label": "Last night I had no problems sleeping"},
+        {"value": 2, "label": "Last night I had few problems sleeping"},
+        {"value": 3, "label": "Last night I had some problems sleeping"},
+        {"value": 4, "label": "Last night I had many problems sleeping"},
+        {"value": 5, "label": "Last night I couldn't sleep at all"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "routine",
+      "type": "int",
+      "label": "Daily Routine",
+      "options": [
+        {"value": 1, "label": "I have no problems with my daily routine today"},
+        {"value": 2, "label": "I have a few problems with my daily routine today"},
+        {"value": 3, "label": "I have some problems with my daily routine today"},
+        {"value": 4, "label": "I have many problems with my daily routine today"},
+        {"value": 5, "label": "I can't do my daily routine today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    },
+    {
+      "name": "activities",
+      "type": "int",
+      "label": "Activities",
+      "help": "e.g. playing out with your friends, doing sports, joining in things",
+      "options": [
+        {"value": 1, "label": "I can join in with any activities today"},
+        {"value": 2, "label": "I can join in with most activities today"},
+        {"value": 3, "label": "I can join in with some activities today"},
+        {"value": 4, "label": "I can join in with a few activities today"},
+        {"value": 5, "label": "I can join in with no activities today"}
+      ],
+      "widget": {
+        "name": "checkboxes"
+      }
+    }
+  ]
+}

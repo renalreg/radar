@@ -1,0 +1,276 @@
+{
+  "columns": ["date", "score"],
+  "sortBy": "date",
+  "reverse": true,
+  "multiple": true,
+  "fields": [
+    {
+      "name": "date",
+      "type": "date",
+      "label": "Date",
+      "validators": [
+        {
+          "name": "notInFuture"
+        }
+      ]
+    },
+    {
+      "name": "height",
+      "type": "int",
+      "label": "Height",
+      "unit": "cm",
+      "help": "0-250",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 250
+        }
+      ]
+    },
+    {
+      "name": "weight",
+      "type": "int",
+      "label": "Weight",
+      "unit": "kg",
+      "help": "0-500",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "hip",
+      "type": "int",
+      "label": "Hip",
+      "unit": "cm",
+      "help": "40-180",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 40
+        },
+        {
+          "name": "max",
+          "value": 180
+        }
+      ]
+    },
+    {
+      "name": "waist",
+      "type": "int",
+      "label": "Waist",
+      "unit": "cm",
+      "help": "40-180",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 40
+        },
+        {
+          "name": "max",
+          "value": 180
+        }
+      ]
+    },
+    {
+      "name": "arm",
+      "type": "int",
+      "label": "Mid Upper Arm Muscle Circumference",
+      "unit": "cm",
+      "help": "15-90",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 15
+        },
+        {
+          "name": "max",
+          "value": 90
+        }
+      ]
+    },
+    {
+      "name": "up",
+      "type": "int",
+      "label": "Time to Up & Go",
+      "unit": "seconds",
+      "help": "1-250",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 1
+        },
+        {
+          "name": "max",
+          "value": 250
+        }
+      ]
+    },
+    {
+      "name": "grip",
+      "type": "int",
+      "label": "Hand Grip Strength",
+      "unit": "seconds",
+      "help": "5-85",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 5
+        },
+        {
+          "name": "max",
+          "value": 85
+        }
+      ]
+    },
+    {
+      "name": "karnofsky",
+      "type": "int",
+      "label": "Karnofsky Score",
+      "unit": "%",
+      "help": "<a href=\"https://en.wikipedia.org/wiki/Performance_status#Karnofsky_scoring\" target=\"_blank\">Karnofsky scoring</a>.",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic1",
+      "type": "int",
+      "label": "BP Systolic (1)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic1",
+      "type": "int",
+      "label": "BP Diastolic (1)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic2",
+      "type": "int",
+      "label": "BP Systolic (2)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic2",
+      "type": "int",
+      "label": "BP Diastolic (2)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic3",
+      "type": "int",
+      "label": "BP Systolic (3)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "diastolic3",
+      "type": "int",
+      "label": "BP Diastolic (3)",
+      "required": false,
+      "validators": [
+        {
+          "name": "min",
+          "value": 0
+        },
+        {
+          "name": "max",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "name": "systolic",
+      "type": "int",
+      "label": "BP Systolic (Mean)",
+      "formula": {
+        "name": "js",
+        "value": "return (form.systolic1 == null && form.systolic2 == null && form.systolic3 == null) ? null : Math.round(((form.systolic1 || 0) + (form.systolic2 || 0) + (form.systolic3 || 0)) / ((form.systolic1 != null) + (form.systolic2 != null) + (form.systolic3 != null)))"
+      }
+    },
+    {
+      "name": "diastolic",
+      "type": "int",
+      "label": "BP Diastolic (Mean)",
+      "formula": {
+        "name": "js",
+        "value": "return (form.diastolic1 == null && form.diastolic2 == null && form.diastolic3 == null) ? null : Math.round(((form.diastolic1 || 0) + (form.diastolic2 || 0) + (form.diastolic3 || 0)) / ((form.diastolic1 != null) + (form.diastolic2 != null) + (form.diastolic3 != null)))"
+      }
+    }
+  ]
+}

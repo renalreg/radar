@@ -3,6 +3,7 @@
 from radar.models.users import *
 
 from radar.models.alport import *
+from radar.models.codes import *
 from radar.models.common import *
 from radar.models.consultants import *
 from radar.models.diagnoses import *
@@ -10,6 +11,7 @@ from radar.models.dialysis import *
 from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
+from radar.models.forms import *
 from radar.models.fuan import *
 from radar.models.genetics import *
 from radar.models.groups import *

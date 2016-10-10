@@ -1,0 +1,38 @@
+{
+  "multiple": false,
+  "fields": [
+    {
+      "name": "retinopathy",
+      "type": "int",
+      "label": "Retinopathy",
+      "options": [
+          {"value": 0, "label": "No"},
+          {"value": 1, "label": "Background Retinopathy"},
+          {"value": 2, "label": "Proliferative Retinopathy"}
+      ]
+    },
+    {
+      "name": "laser",
+      "type": "boolean",
+      "label": "Treated by Laser",
+      "required": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      }
+    },
+    {
+      "name": "peripheralNeuropathy",
+      "type": "boolean",
+      "label": "Peripheral Neuropathy"
+    },
+    {
+      "name": "footUlcers",
+      "type": "boolean",
+      "label": "Foot Ulcers"
+    }
+  ]
+}
