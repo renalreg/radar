@@ -46,6 +46,7 @@ def deploy(archive=None, name='radar'):
     run('rm -rf {0}'.format(tmp))
 
     services = [
+        'radar-admin',
         'radar-api',
         'radar-ukrdc-exporter-celery',
         'radar-ukrdc-importer-api',
