@@ -2,8 +2,8 @@ from radar.fixtures.utils import add
 from radar.models.groups import Group, GROUP_TYPE
 
 HOSPITALS = [
-    ('SPRINGFIELD', 'Springfield General Hospital'),
-    ('CALMWOOD', 'Calmwood Mental Hospital'),
+    ('EAST', 'East Hampton Hospital'),
+    ('HOLBY', 'Holby City Hospital'),
 ]
 
 
