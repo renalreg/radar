@@ -87,8 +87,10 @@ class Observation(db.Model):
     )
     options = Column(
         postgresql.ARRAY(String),
-        CheckConstraint("(value_type = 'ENUM' and options is not null) or (value_type != 'ENUM' and options is null)"),
-        CheckConstraint("options is null or (coalesce(array_length(options, 1), 0) > 0 and array_length(options, 1) %% 2 = 0)"),
+        CheckConstraint("""
+            (value_type = 'ENUM' and coalesce(array_length(options, 1), 0) > 0 and array_length(options, 1) %% 2 = 0) or
+            (value_type != 'ENUM' and (options is null or coalesce(array_length(options, 1), 0) = 0))
+        """)
     )
 
     group_observations = relationship('GroupObservation')
@@ -150,6 +152,9 @@ class Observation(db.Model):
             value = [{'code': k, 'description': v} for k, v in value.items()]
 
         return value
+
+    def __unicode__(self):
+        return self.name
 
 
 @log_changes

@@ -1,88 +1,34 @@
-from flask import request, redirect, url_for
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import AdminIndexView as BaseAdminIndexView
-from flask_admin import expose, helpers
-from wtforms import form, fields, validators
 
+from radar.admin.views import (
+    AdminIndexView,
+    CodeView,
+    ConsultantView,
+    DiagnosisView,
+    DiagnosisCodeView,
+    DrugGroupView,
+    DrugView,
+    FormView,
+    GroupView,
+    GroupConsultantView,
+    GroupDiagnosisView,
+    GroupFormView,
+    GroupObservationView,
+    GroupQuestionnaireView,
+    GroupPageView,
+    ObservationView,
+    SpecialtyView
+)
 from radar.app import Radar
-from radar.auth.sessions import login, logout, current_user, UsernameLoginError, PasswordLoginError, DisabledLoginError
+from radar.auth.sessions import current_user
 from radar.database import db
-from radar.models.diagnoses import Diagnosis
-from radar.models.groups import Group
+from radar.models.codes import Code
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis, DiagnosisCode
+from radar.models.forms import Form, GroupForm, GroupQuestionnaire
+from radar.models.groups import Group, GroupPage
 from radar.models.medications import Drug, DrugGroup
-from radar.models.results import Observation
-from radar.models.consultants import Consultant, Specialty
-
-
-class ConsultantView(ModelView):
-    pass
-
-
-class DiagnosisView(ModelView):
-    column_default_sort = 'name'
-    column_searchable_list = ['name', 'edta']
-
-
-class DrugView(ModelView):
-    pass
-
-
-class DrugGroupView(ModelView):
-    pass
-
-
-class GroupView(ModelView):
-    pass
-
-
-class ObservationView(ModelView):
-    pass
-
-
-class SpecialtyView(ModelView):
-    pass
-
-
-class LoginForm(form.Form):
-    username = fields.StringField(validators=[validators.required()])
-    password = fields.PasswordField(validators=[validators.required()])
-
-
-class AdminIndexView(BaseAdminIndexView):
-    @expose('/')
-    def index(self):
-        if not current_user.is_authenticated():
-            return redirect(url_for('.login'))
-
-        return super(AdminIndexView, self).index()
-
-    @expose('/login/', methods=['GET', 'POST'])
-    def login(self):
-        form = LoginForm(request.form)
-
-        if helpers.validate_form_on_submit(form):
-            username = form.username.data
-            password = form.password.data
-
-            try:
-                user, _ = login(username, password)
-            except (UsernameLoginError, PasswordLoginError):
-                form.username.errors.append('Incorrect username or password.')
-            except DisabledLoginError:
-                form.username.errors.append('Account disabled, please contact support.')
-
-            if current_user.is_authenticated():
-                return redirect(url_for('.index'))
-
-        self._template_args['form'] = form
-
-        return super(AdminIndexView, self).index()
-
-    @expose('/logout/')
-    def logout(self):
-        logout()
-        return redirect(url_for('.index'))
+from radar.models.results import Observation, GroupObservation
+from radar.models.consultants import Consultant, Specialty, GroupConsultant
 
 
 def inject_current_user():
@@ -93,13 +39,29 @@ def create_app():
     app = Radar(template_folder='admin/templates')
     app.context_processor(inject_current_user)
 
-    admin = Admin(app, 'RADAR Admin', index_view=AdminIndexView(url=''), template_mode='bootstrap3', base_template='master.html')
-    admin.add_view(ConsultantView(Consultant, db.session))
-    admin.add_view(DiagnosisView(Diagnosis, db.session))
-    admin.add_view(DrugView(Drug, db.session))
-    admin.add_view(DrugGroupView(DrugGroup, db.session))
-    admin.add_view(GroupView(Group, db.session))
-    admin.add_view(ObservationView(Observation, db.session))
-    admin.add_view(SpecialtyView(Specialty, db.session))
+    admin = Admin(app, 'RADAR Admin', index_view=AdminIndexView(), template_mode='bootstrap3', base_template='master.html', url='/admin')
+
+    admin.add_view(GroupView(Group, db.session, name='Groups', category='Groups'))
+    admin.add_view(GroupConsultantView(GroupConsultant, db.session, name='Consultants', category='Groups'))
+    admin.add_view(GroupDiagnosisView(GroupDiagnosis, db.session, name='Diagnoses', category='Groups'))
+    admin.add_view(GroupFormView(GroupForm, db.session, name='Forms', category='Groups'))
+    admin.add_view(GroupObservationView(GroupObservation, db.session, name='Observations', category='Groups'))
+    admin.add_view(GroupPageView(GroupPage, db.session, name='Pages', category='Groups'))
+    admin.add_view(GroupQuestionnaireView(GroupQuestionnaire, db.session, name='Questionnaires', category='Groups'))
+
+    admin.add_view(CodeView(Code, db.session, name='Codes'))
+
+    admin.add_view(ConsultantView(Consultant, db.session, name='Consultants', category='Consultants'))
+    admin.add_view(SpecialtyView(Specialty, db.session, 'Specialties', category='Consultants'))
+
+    admin.add_view(DiagnosisView(Diagnosis, db.session, name='Diagnoses', category='Diagnoses'))
+    admin.add_view(DiagnosisCodeView(DiagnosisCode, db.session, name='Codes', category='Diagnoses'))
+
+    admin.add_view(DrugView(Drug, db.session, 'Drugs', category='Drugs'))
+    admin.add_view(DrugGroupView(DrugGroup, db.session, 'Groups', category='Drugs'))
+
+    admin.add_view(FormView(Form, db.session, 'Forms'))
+
+    admin.add_view(ObservationView(Observation, db.session, 'Observations'))
 
     return app

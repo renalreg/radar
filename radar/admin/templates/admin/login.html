@@ -1,0 +1,29 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  {{ super() }}
+
+  <form method="POST" action="">
+    {{ form.hidden_tag() if form.hidden_tag }}
+
+    <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+      {{ form.username.label(class_="control-label") }}
+      {{ form.username(class_="form-control", placeholder="Username") }}
+
+      {% for error in form.username.errors %}
+        <div class="help-block">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+      {{ form.password.label(class_="control-label") }}
+      {{ form.password(class_="form-control", placeholder="Password") }}
+
+      {% for error in form.password.errors %}
+        <div class="help-block">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+{% endblock %}

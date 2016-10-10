@@ -94,6 +94,9 @@ class Diagnosis(db.Model):
     def codes(self):
         return [x.code for x in self.diagnosis_codes]
 
+    def __unicode__(self):
+        return self.name
+
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
     PRIMARY = 'PRIMARY'

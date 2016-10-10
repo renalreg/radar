@@ -2,7 +2,7 @@ from datetime import datetime
 
 from enum import Enum
 from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
 import pytz
 
@@ -85,6 +85,11 @@ class Group(db.Model):
     @instructions.setter
     def instructions(self, value):
         self._instructions = value
+
+    instructions = synonym('_instructions', descriptor=instructions)
+
+    def __unicode__(self):
+        return self.name
 
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 

@@ -15,6 +15,9 @@ class Form(db.Model):
     slug = Column(String, CheckConstraint("slug similar to '([a-z0-9]+-)*[a-z0-9]+'"), nullable=False, unique=True)
     data = Column(postgresql.JSONB, nullable=False)
 
+    def __unicode__(self):
+        return self.name
+
 
 @log_changes
 class Entry(db.Model, MetaModelMixin):
