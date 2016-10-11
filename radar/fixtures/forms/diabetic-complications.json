@@ -1,4 +1,5 @@
 {
+  "multiple": false,
   "fields": [
     {
       "name": "retinopathy",
@@ -11,13 +12,26 @@
       ]
     },
     {
+      "name": "laser",
+      "type": "boolean",
+      "label": "Treated by Laser",
+      "required": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      },
+      "visible": {
+        "name": "js",
+        "value": "return form.retinopathy > 0"
+      }
+    },
+    {
       "name": "peripheralNeuropathy",
-      "type": "bool",
+      "type": "boolean",
       "label": "Peripheral Neuropathy"
     },
     {
       "name": "footUlcers",
-      "type": "bool",
+      "type": "boolean",
       "label": "Foot Ulcers"
     }
   ]

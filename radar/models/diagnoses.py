@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text
+from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text, CheckConstraint
 from sqlalchemy.orm import relationship, backref
 from enum import Enum
 
@@ -94,6 +94,9 @@ class Diagnosis(db.Model):
     def codes(self):
         return [x.code for x in self.diagnosis_codes]
 
+    def __unicode__(self):
+        return self.name
+
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
     PRIMARY = 'PRIMARY'
@@ -122,6 +125,8 @@ class GroupDiagnosis(db.Model):
     diagnosis = relationship('Diagnosis', backref=backref('group_diagnoses', cascade='all, delete-orphan', passive_deletes=True))
 
     type = Column(EnumType(GROUP_DIAGNOSIS_TYPE, name='group_diagnosis_type'), nullable=False)
+
+    weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False, default=9999, server_default=text('9999'))
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
 Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)

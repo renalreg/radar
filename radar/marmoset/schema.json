@@ -13,6 +13,9 @@
         "reverse": {
             "type": "boolean"
         },
+        "multiple": {
+            "type": "boolean"
+        },
         "fields": {
             "type": "array",
             "items": {
@@ -30,6 +33,9 @@
                                 "type": "string"
                             },
                             "help": {
+                                "type": "string"
+                            },
+                            "unit": {
                                 "type": "string"
                             },
                             "default": {
@@ -72,7 +78,7 @@
                                     "properties": {
                                         "value": {},
                                         "label": {
-                                        "type": "string"
+                                            "type": "string"
                                         }
                                     },
                                     "required": ["value", "label"],
@@ -119,6 +125,9 @@
                             "help": {
                                 "type": "string"
                             },
+                            "unit": {
+                                "type": "string"
+                            },
                             "visible": {
                                 "oneOf": [
                                     {
@@ -158,5 +167,5 @@
         }
     },
     "additionalProperties": false,
-    "required": ["fields"]
+    "required": ["fields", "multiple"]
 }

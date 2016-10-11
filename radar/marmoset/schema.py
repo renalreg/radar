@@ -15,7 +15,7 @@ class Schema(object):
         try:
             jsonschema.validate(schema_data, registry.schema)
         except jsonschema.SchemaError as e:
-            print e  # TODO
+            print e
             raise SchemaError()
 
         self.registry = registry
@@ -116,6 +116,10 @@ class Schema(object):
         for field in self.writable_fields:
             name = field.name
             value = data[name]
+
+            if value is None:
+                continue
+
             validators = field.validators
 
             for validator in validators:

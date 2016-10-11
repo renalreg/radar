@@ -17,6 +17,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
+            'radar-admin = radar.admin.__main__:main',
             'radar-api = radar.api.__main__:main',
             'radar-db = radar.database.__main__:main',
             'radar-exporter = radar.exporter.__main__:main',
@@ -26,12 +27,16 @@ setup(
         ]
     },
     install_requires=[
+        'backports.csv',
         'celery',
         'click',
         'cornflake',
         'enum34',
         'flask',
+        'flask-admin',
         'flask-sqlalchemy',
+        'inflection',
+        'iso8601',
         'itsdangerous',
         'jinja2',
         'jsonschema',

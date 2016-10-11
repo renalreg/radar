@@ -89,3 +89,6 @@ class DrugGroup(db.Model):
 
     parent_drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
     parent_drug_group = relationship('DrugGroup', remote_side=[id])
+
+    def __unicode__(self):
+        return self.name

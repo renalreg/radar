@@ -22,7 +22,7 @@ class SpeciailtyField(ReferenceField):
     serializer_class = SpecialtySerializer
 
 
-class ChildGroupConsultantSerializer(MetaMixin, ModelSerializer):
+class ChildGroupConsultantSerializer(ModelSerializer):
     group = GroupField()
 
     class Meta(object):
@@ -54,7 +54,7 @@ class GroupConsultantListSerializer(serializers.ListSerializer):
 
 
 # TODO check GMC number not duplicated
-class ConsultantSerializer(MetaMixin, ModelSerializer):
+class ConsultantSerializer(ModelSerializer):
     first_name = fields.StringField(validators=[not_empty(), upper(), max_length(100)])
     last_name = fields.StringField(validators=[not_empty(), upper(), max_length(100)])
     email = fields.StringField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
@@ -96,7 +96,7 @@ class ConsultantSerializer(MetaMixin, ModelSerializer):
         return instance
 
 
-class ChildConsultantSerializer(MetaMixin, ModelSerializer):
+class ChildConsultantSerializer(ModelSerializer):
     specialty = SpeciailtyField()
 
     class Meta(object):
@@ -109,7 +109,7 @@ class ConsultantField(ReferenceField):
     serializer_class = ChildConsultantSerializer
 
 
-class GroupConsultantSerializer(MetaMixin, ModelSerializer):
+class GroupConsultantSerializer(ModelSerializer):
     group = GroupField()
     consultant = ConsultantField()
 

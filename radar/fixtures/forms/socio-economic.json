@@ -1,9 +1,11 @@
 {
+  "multiple": false,
   "fields": [
     {
       "name": "education",
       "type": "int",
       "label": "Highest Educational Qualification",
+      "required": false,
       "options": [
         {"value": 5, "label": "Higher Degree"},
         {"value": 4, "label": "First Degree"},
@@ -18,6 +20,7 @@
       "name": "employmentStatus",
       "type": "int",
       "label": "Employment Status",
+      "required": false,
       "options": [
         {"value": 1, "label": "Long term sick / disabled"},
         {"value": 2, "label": "Looking after family home"},
@@ -33,6 +36,7 @@
       "name": "firstLanguage",
       "type": "string",
       "label": "First Language",
+      "required": false,
       "options": [
         {"value": "en", "label": "English"},
         {"value": "pl", "label": "Polish"},
@@ -57,6 +61,7 @@
       "name": "maritalStatus",
       "type": "string",
       "label": "Marital Status",
+      "required": false,
       "options": [
         {"value": "S", "label": "Single"},
         {"value": "M", "label": "Married / Civil Partner"},
@@ -70,6 +75,7 @@
       "name": "smoking",
       "type": "int",
       "label": "Smoking",
+      "required": false,
       "options": [
         {"value": 1, "label": "Smoker"},
         {"value": 2, "label": "Ex-Smoker"},
@@ -80,24 +86,38 @@
       "name": "cigarettesPerDay",
       "type": "int",
       "label": "Number of Cigarettes per Day",
+      "required": false,
       "visible": {
         "name": "js",
-        "value": "return data.smoking === 1;"
+        "value": "return form.smoking === 1;"
       }
     },
     {
-      "name": "alochol",
-      "type": "bool",
+      "name": "alcohol",
+      "type": "boolean",
       "label": "Alcohol"
     },
     {
       "name": "unitsPerWeek",
       "type": "int",
       "label": "Number of Units per Day",
+      "required": false,
       "visible": {
         "name": "js",
-        "value": "return data.alcohol;"
+        "value": "return form.alcohol;"
       }
+    },
+    {
+      "name": "literacy",
+      "type": "int",
+      "label": "Literacy",
+      "required": false,
+      "options": [
+        {"value": 0, "label": "Unable to speak or read"},
+        {"value": 1, "label": "Very weak fluency"},
+        {"value": 2, "label": "Moderate fluency"},
+        {"value": 3, "label": "Good fluency"}
+      ]
     }
   ]
 }

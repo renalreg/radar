@@ -15,6 +15,9 @@ class Form(db.Model):
     slug = Column(String, CheckConstraint("slug similar to '([a-z0-9]+-)*[a-z0-9]+'"), nullable=False, unique=True)
     data = Column(postgresql.JSONB, nullable=False)
 
+    def __unicode__(self):
+        return self.name
+
 
 @log_changes
 class Entry(db.Model, MetaModelMixin):
@@ -61,6 +64,8 @@ class GroupQuestionnaire(db.Model):
 
     form_id = Column(Integer, ForeignKey('forms.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     form = relationship('Form', backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
+
+    weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
 
 Index('group_questionnaires_group_idx', GroupQuestionnaire.group_id)
 Index('group_questionnaires_form_idx', GroupQuestionnaire.form_id)

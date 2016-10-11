@@ -1,4 +1,5 @@
 recursive-include radar/templates *
+recursive-include radar/admin/templates *
 include radar/marmoset/schema.json
 include radar/marmoset/helpers.js
 recursive-include radar/fixtures/forms *

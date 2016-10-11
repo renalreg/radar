@@ -203,6 +203,11 @@ class GroupField(ReferenceField):
     serializer_class = GroupSerializer
 
 
+class TinyGroupField(ReferenceField):
+    model_class = Group
+    serializer_class = TinyGroupSerializer
+
+
 class SourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
