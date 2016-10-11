@@ -123,7 +123,7 @@
     {
       "name": "literacyHelp",
       "type": "int",
-      "label": "How often do you need to have someone help you when you read instructions, pamphlets, or other written material from your doctor or pharmacy?",
+      "label": "How often do you need to have someone help you when you read?",
       "required": false,
       "options": [
         {"value": 1, "label": "Never"},
