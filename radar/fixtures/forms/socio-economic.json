@@ -95,7 +95,8 @@
     {
       "name": "alcohol",
       "type": "boolean",
-      "label": "Alcohol"
+      "label": "Alcohol",
+      "required": false
     },
     {
       "name": "unitsPerWeek",
