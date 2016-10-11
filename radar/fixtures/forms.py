@@ -7,7 +7,7 @@ from radar.fixtures.utils import add
 
 filenames = [
     ('6cit.json', '6CIT'),
-    ('anthropometrics.json', 'Anthropometric'),
+    ('anthropometrics.json', 'Anthropometrics'),
     ('family-history.json', 'Family History'),
     ('diabetic-complications.json', 'Diabetic Complications'),
     ('eq-5d-5l.json', 'EQ-5D-5L'),
