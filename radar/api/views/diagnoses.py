@@ -1,3 +1,4 @@
+from sqlalchemy.orm import subqueryload
 from cornflake import fields, serializers
 
 from radar.api.permissions import AdminPermission
@@ -105,6 +106,10 @@ class DiagnosisListView(ListModelView):
 
     def filter_query(self, query):
         query = super(DiagnosisListView, self).filter_query(query)
+
+        # Load codes and groups in subqueries rather than lazy-loading (to avoid O(n) queries)
+        query = query.options(subqueryload('diagnosis_codes').joinedload('code'))
+        query = query.options(subqueryload('group_diagnoses').joinedload('group'))
 
         args = parse_args(DiagnosisRequestSerializer)
 
