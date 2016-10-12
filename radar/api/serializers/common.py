@@ -251,7 +251,7 @@ class SourceTypeField(fields.StringField):
     def validate(self, source_type):
         user = self.context['user']
 
-        # Only admins can enter data for a non-RaDaR source type
+        # Only admins can enter data for non-manual source types
         if not user.is_admin and source_type != SOURCE_TYPE_MANUAL:
             raise PermissionDenied()
 

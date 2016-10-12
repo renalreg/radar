@@ -96,7 +96,7 @@ class SourceObjectPermission(Permission):
     Permission is granted if:
     * The user is only viewing the object. Permissions for this are handled in
       PatientObjectPermission.
-    * The user is modifiying the object and the object was entered on RaDaR and
+    * The user is modifiying the object and the object was manually entered and
       the user has permission to edit objects belonging to this group.
     """
 
@@ -110,7 +110,7 @@ class SourceObjectPermission(Permission):
             source_type = obj.source_type
             source_group = obj.source_group
 
-            # Can only modify data entered on RaDaR
+            # Can only modify manually entered data
             if not user.is_admin and source_type != SOURCE_TYPE_MANUAL:
                 return False
 

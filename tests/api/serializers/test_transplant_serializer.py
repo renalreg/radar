@@ -56,7 +56,7 @@ def test_source_group_none(transplant):
 def test_source_type_none(transplant):
     transplant['source_type'] = None
     obj = valid(transplant)
-    assert obj.source_type == SOURCE_TYPE_RADAR
+    assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(transplant):

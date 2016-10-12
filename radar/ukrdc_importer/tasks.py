@@ -5,6 +5,7 @@ from celery import shared_task
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
+from radar.models.groups import GROUP_TYPE, Group
 from radar.models.patient_locks import PatientLock
 from radar.models.patients import Patient
 from radar.models.logs import Log
@@ -24,17 +25,19 @@ QUEUE = 'ukrdc_importer'
 
 
 def find_patient_id(sda_patient_numbers):
-    """Find RaDaR number in patient numbers."""
+    """Find the patient id in the list of patient numbers."""
+
+    system_codes = [x.code for x in Group.query.filter(Group.type == GROUP_TYPE.SYSTEM)]
 
     for sda_patient_number in sda_patient_numbers:
-        if sda_patient_number['organization']['code'] == 'RADAR':
+        if sda_patient_number['organization']['code'] in system_codes:
             return sda_patient_number['number']
 
     return None
 
 
 def parse_patient_id(value):
-    """Check the RaDaR number is an integer."""
+    """Check the patient id is an integer."""
 
     if isinstance(value, basestring):
         value = int(value)
@@ -43,7 +46,7 @@ def parse_patient_id(value):
 
 
 def get_patient(patient_id):
-    """Get a patient by RaDaR number."""
+    """Get a patient by id."""
 
     return Patient.query.get(patient_id)
 
