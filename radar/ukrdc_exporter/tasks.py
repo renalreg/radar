@@ -31,14 +31,18 @@ def get_group(group_id):
     return Group.query.get(group_id)
 
 
-def log_data_export(patient, system_group, group):
+def log_data_export(patient, system_group, group=None):
+    data = {
+        'patient_id': patient.id,
+        'system_group_id': system_group.id,
+    }
+
+    if group is not None:
+        data['group_id'] = group.id
+
     log = Log()
     log.type = 'UKRDC_EXPORTER'
-    log.data = dict(
-        patient_id=patient.id,
-        system_group_id=system_group.id,
-        group_id=group.id,
-    )
+    log.data = data
     db.session.add(log)
 
 
