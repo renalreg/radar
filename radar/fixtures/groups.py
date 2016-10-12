@@ -24,11 +24,23 @@ batches = [
             'type': GROUP_TYPE.SYSTEM,
             'code': GROUP_CODE_RADAR,
             'name': 'RaDaR',
+            'pages': [
+                (PAGE.DEMOGRAPHICS, 100),
+                (PAGE.CONSULTANTS, 200),
+                (PAGE.COHORTS, 300),
+                (PAGE.HOSPITALS, 400),
+            ],
         },
         {
             'type': GROUP_TYPE.SYSTEM,
             'code': GROUP_CODE_NURTURE,
             'name': 'NURTuRE',
+            'pages': [
+                (PAGE.DEMOGRAPHICS, 100),
+                (PAGE.CONSULTANTS, 200),
+                (PAGE.COHORTS, 300),
+                (PAGE.HOSPITALS, 400),
+            ],
         }
     ],
     [
