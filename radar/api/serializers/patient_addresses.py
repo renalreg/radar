@@ -7,7 +7,6 @@ from cornflake.validators import (
     not_empty,
     optional,
     postcode,
-    required,
 )
 from cornflake.exceptions import ValidationError, SkipField
 
@@ -60,7 +59,7 @@ class PatientAddressSerializer(PatientMixin, SystemSourceMixin, MetaMixin, Model
         normalise_whitespace(),
         max_length(100)
     ])
-    postcode = fields.StringField(validators=[required(), postcode()])
+    postcode = fields.StringField(required=False, validators=[postcode()])
     country = StringLookupField(COUNTRIES)
 
     class Meta(object):
@@ -85,6 +84,10 @@ class PatientAddressSerializer(PatientMixin, SystemSourceMixin, MetaMixin, Model
             data['to_date'] < data['from_date']
         ):
             raise ValidationError({'to_date': 'Must be on or after from date.'})
+
+        # Postcode is required for UK addresses
+        if data['country'] == 'GB' and data['postcode'] is None:
+            raise ValidationError({'postcode': 'Postcode is required for UK addresses.'})
 
         return data
 
