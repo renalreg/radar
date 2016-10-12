@@ -149,7 +149,29 @@ batches = [
                 ('chu9d', 500),
                 ('eq-5d-y', 600),
             ]
-        }
+        },
+        {
+            'type': GROUP_TYPE.COHORT,
+            'code': 'INS',
+            'name': 'Idiopathic Nephrotic Syndrome',
+            'short_name': 'INS',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR),
+            'pages': [
+                (PAGE.PRIMARY_DIAGNOSIS, 100),
+                (PAGE.GENETICS, 200),
+                (PAGE.FAMILY_HISTORY, 300),
+                (PAGE.DIAGNOSES, 400),
+                (PAGE.PATHOLOGY, 500),
+                (PAGE.INS_CLINICAL_PICTURES, 600),
+                (PAGE.RESULTS, 700),
+                (PAGE.MEDICATIONS, 800),
+                (PAGE.INS_RELAPSES, 900),
+                (PAGE.DIALYSIS, 1000),
+                (PAGE.PLASMAPHERESIS, 1100),
+                (PAGE.TRANSPLANTS, 1200),
+                (PAGE.HOSPITALISATIONS, 1300),
+            ],
+        },
     ]
 ]
 
