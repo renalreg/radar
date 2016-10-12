@@ -62,6 +62,8 @@ class Patient(db.Model, MetaModelMixin):
 
         q = q.as_scalar()
 
+        return q
+
     @hybrid_method
     def current(self, group=None):
         if group is not None:

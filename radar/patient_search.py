@@ -323,7 +323,7 @@ def sort_by_date_of_birth(current_user, reverse=False):
 
 
 def sort_by_recruited_date(reverse=False):
-    return sort_by_field(Patient.recruited_date, reverse)
+    return sort_by_field(Patient.recruited_date(), reverse)
 
 
 def sort_by_primary_patient_number(reverse=False):

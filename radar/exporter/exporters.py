@@ -9,6 +9,7 @@ from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
+from radar.utils import get_attrs
 
 
 exporter_map = {}
@@ -32,7 +33,9 @@ def query_to_dataset(query, columns):
 
 
 def format_user(user):
-    if user.first_name and user.last_name:
+    if user is None:
+        return None
+    elif user.first_name and user.last_name:
         return '%s %s' % (user.first_name, user.last_name)
     else:
         return user.username
@@ -142,11 +145,11 @@ class PatientExporter(Exporter):
             column('gender_label'),
             column('ethnicity'),
             column('ethnicity_label'),
-            column('recruited_date'),
-            column('recruited_group_id', 'recruited_group.id'),
-            column('recruited_group', 'recruited_group.name'),
-            column('recruited_user_id', 'recruited_user.id'),
-            column('recruited_user', lambda x: format_user(x.recruited_user)),
+            column('recruited_date', lambda x: x.recruited_date()),
+            column('recruited_group_id', lambda x: get_attrs(x.recruited_group(), 'id')),
+            column('recruited_group', lambda x: get_attrs(x.recruited_group(), 'name')),
+            column('recruited_user_id', lambda x: get_attrs(x.recruited_user(), 'id')),
+            column('recruited_user', lambda x: format_user(x.recruited_user())),
         ]
 
         q = queries.get_patients(self.config)
