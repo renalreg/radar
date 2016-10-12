@@ -278,4 +278,3 @@ def create_patients(n, data=True):
                     create_plasmapheresis(patient, hospital_group, source_type, 3)
                     create_renal_imaging(patient, hospital_group, source_type, 3)
                     create_results(patient, hospital_group, source_type, 10, 25)
-
