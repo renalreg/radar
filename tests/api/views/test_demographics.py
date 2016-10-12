@@ -17,7 +17,7 @@ def get_read_list_args():
         'hospital1_it', 'cohort1_senior_researcher'
     ]
     groups = [
-        (GROUP_TYPE.OTHER, GROUP_CODE_RADAR),
+        (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR),
         (GROUP_TYPE.HOSPITAL, 'HOSPITAL1'),
         (GROUP_TYPE.HOSPITAL, 'HOSPITAL2'),
     ]
@@ -48,7 +48,7 @@ def get_read_args():
 
 
 def get_create_args():
-    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
     cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
 
@@ -76,7 +76,7 @@ def get_delete_args():
 
 
 def get_update_args():
-    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
 
     usernames = [

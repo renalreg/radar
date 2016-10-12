@@ -61,7 +61,7 @@ def set_default_users(options):
 
 
 def set_default_source(options):
-    options['source_group'] = options.get('source_group') or get_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    options['source_group'] = options.get('source_group') or get_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     options.setdefault('source_type', SOURCE_TYPE_RADAR)
 
 
@@ -161,7 +161,7 @@ def create_fixtures():
     create_user('admin', is_admin=True)
     create_user('null')
 
-    radar_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    radar_group = create_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, is_recruitment_number_group=True)
     cohort1_group = create_cohort('COHORT1')
     cohort2_group = create_cohort('COHORT2')

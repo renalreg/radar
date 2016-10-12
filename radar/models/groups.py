@@ -18,6 +18,7 @@ from radar.config import config
 class GROUP_TYPE(Enum):
     HOSPITAL = 'HOSPITAL'
     COHORT = 'COHORT'
+    SYSTEM = 'SYSTEM'
     OTHER = 'OTHER'
 
     def __str__(self):
@@ -58,11 +59,11 @@ class Group(db.Model):
 
     @classmethod
     def get_radar(cls):
-        return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.OTHER).one()
+        return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.SYSTEM).one()
 
     # TODO @property
     def is_radar(self):
-        return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.OTHER
+        return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.SYSTEM
 
     @property
     def has_dependencies(self):

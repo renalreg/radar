@@ -66,7 +66,7 @@ def test_number_group_none(number):
 
 
 def test_number_group_radar(number):
-    number['number_group'] = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.OTHER)
+    number['number_group'] = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
     invalid(number)
 
 

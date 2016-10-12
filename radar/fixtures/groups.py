@@ -14,15 +14,15 @@ from radar.models.groups import (
     Group
 )
 
-OTHER_GROUPS = [
-    (GROUP_CODE_RADAR, 'RaDaR', False),
-    (GROUP_CODE_NHS, 'NHS', True),
-    (GROUP_CODE_CHI, 'CHI', True),
-    (GROUP_CODE_HSC, 'HSC', True),
-    (GROUP_CODE_UKRR, 'UK Renal Registry', False),
-    (GROUP_CODE_UKRDC, 'UKRDC', False),
-    (GROUP_CODE_NHSBT, 'NHS Blood and Transplant', False),
-    (GROUP_CODE_BAPN, 'BAPN', False),
+GROUPS = [
+    (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, 'RaDaR', False),
+    (GROUP_TYPE.OTHER, GROUP_CODE_NHS, 'NHS', True),
+    (GROUP_TYPE.OTHER, GROUP_CODE_CHI, 'CHI', True),
+    (GROUP_TYPE.OTHER, GROUP_CODE_HSC, 'HSC', True),
+    (GROUP_TYPE.OTHER, GROUP_CODE_UKRR, 'UK Renal Registry', False),
+    (GROUP_TYPE.OTHER, GROUP_CODE_UKRDC, 'UKRDC', False),
+    (GROUP_TYPE.OTHER, GROUP_CODE_NHSBT, 'NHS Blood and Transplant', False),
+    (GROUP_TYPE.OTHER, GROUP_CODE_BAPN, 'BAPN', False),
 ]
 
 
@@ -30,9 +30,9 @@ def create_groups():
     create_cohorts()
     create_hospitals()
 
-    for code, name, is_recruitment_number_group in OTHER_GROUPS:
+    for type_, code, name, is_recruitment_number_group in GROUPS:
         group = Group()
-        group.type = GROUP_TYPE.OTHER
+        group.type = type_
         group.code = code
         group.name = name
         group.short_name = name

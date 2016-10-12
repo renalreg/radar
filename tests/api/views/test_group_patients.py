@@ -56,13 +56,13 @@ def test_create_group_patient(api, username, group_type, group_code, created_gro
 
 
 @pytest.mark.parametrize(['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [
-    ('admin', GROUP_TYPE.OTHER, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
+    ('admin', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
 
     ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
     ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
     ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', True),
     ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
-    ('hospital1_clinician', GROUP_TYPE.OTHER, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
+    ('hospital1_clinician', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
 
     ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
     ('null', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
@@ -70,7 +70,7 @@ def test_create_group_patient(api, username, group_type, group_code, created_gro
 def test_delete_group_patient(api, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
 
-    radar_group = get_group(GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    radar_group = get_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     cohort1_group = get_group(GROUP_TYPE.COHORT, 'COHORT1')
     hospital1_group = get_group(GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
 

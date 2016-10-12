@@ -30,7 +30,7 @@ def make_request(action):
 
 def make_obj(source_type):
     if source_type == SOURCE_TYPE_RADAR:
-        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.OTHER)
+        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
     else:
         source_group = Group(code='REE01', type=GROUP_TYPE.HOSPITAL)
 

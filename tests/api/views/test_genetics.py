@@ -53,7 +53,7 @@ def get_read_args():
 
 
 def get_create_args():
-    radar_group = (GROUP_TYPE.OTHER, GROUP_CODE_RADAR)
+    radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
     cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
     cohort2_group = (GROUP_TYPE.COHORT, 'COHORT2')

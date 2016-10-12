@@ -53,7 +53,7 @@ class Patient(db.Model, MetaModelMixin):
             .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
             .where(GroupPatient.patient_id == cls.id)\
             .where(Group.code == GROUP_CODE_RADAR)\
-            .where(Group.type == GROUP_TYPE.OTHER)\
+            .where(Group.type == GROUP_TYPE.SYSTEM)\
             .as_scalar()
 
     @hybrid_property
@@ -67,7 +67,7 @@ class Patient(db.Model, MetaModelMixin):
         q = q.where(GroupPatient.patient_id == cls.id)
         q = q.where(GroupPatient.current == True)  # noqa
         q = q.where(Group.code == GROUP_CODE_RADAR)
-        q = q.where(Group.type == GROUP_TYPE.OTHER)
+        q = q.where(Group.type == GROUP_TYPE.SYSTEM)
         return q
 
     @property
