@@ -46,7 +46,8 @@ class Group(db.Model):
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
 
-    parent_group_id = Column(Integer, ForeignKey('groups.id'))
+    # Parent group is compulsory for cohorts (should be a system)
+    parent_group_id = Column(Integer, ForeignKey('groups.id'), CheckConstraint("type != 'COHORT' or parent_group_id is not null"))
     parent_group = relationship('Group', remote_side=[id])
 
     _instructions = Column('instructions', String)
