@@ -6,7 +6,7 @@ import random
 import uuid
 from datetime import datetime, timedelta
 
-from radar.models.groups import Group
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import Patient
 from radar.ukrdc_importer.app import RadarUKRDCImporter
 from radar.ukrdc_importer.tasks import import_sda
@@ -26,7 +26,7 @@ def random_datetime():
 
 
 def generate_patient_numbers(patient, n):
-    groups = Group.query.filter(Group.code != 'RADAR').all()
+    groups = Group.query.filter(Group.type != GROUP_TYPE.SYSTEM).all()
     groups = random.sample(groups, min(len(groups), n))
 
     patient_numbers = [{

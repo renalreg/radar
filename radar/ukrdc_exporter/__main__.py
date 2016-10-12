@@ -8,6 +8,7 @@ import fcntl
 from radar.database import db
 from radar.ukrdc_exporter.app import RadarUKRDCExporter
 from radar.ukrdc_exporter.tasks import export_to_ukrdc
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 
 
 logger = logging.getLogger()
@@ -21,7 +22,7 @@ select id, patient_id from (
     where
         (type = 'INSERT' or type = 'UPDATE') and
         (data->'new_data'->>'patient_id')::integer is not null and
-        ((data->'new_data'->>'source_type')::text is null or (data->'new_data'->>'source_type')::text = 'RADAR') and
+        ((data->'new_data'->>'source_type')::text is null or (data->'new_data'->>'source_type')::text = :source_type) and
         id > :last_log_id
 
     union
@@ -32,7 +33,7 @@ select id, patient_id from (
     where
         (type = 'UPDATE' or type = 'DELETE') and
         (data->'original_data'->>'patient_id')::integer is not null and
-        ((data->'original_data'->>'source_type')::text is null or (data->'original_data'->>'source_type')::text = 'RADAR') and
+        ((data->'original_data'->>'source_type')::text is null or (data->'original_data'->>'source_type')::text = :source_type) and
         id > :last_log_id
 ) as x order by id
 """
@@ -53,7 +54,10 @@ def export_changed(last_log_id):
 
 
 def export_query(sql, last_log_id):
-    rows = db.session.execute(sql, {'last_log_id': last_log_id})
+    rows = db.session.execute(sql, {
+        'last_log_id': last_log_id,
+        'source_type': SOURCE_TYPE_MANUAL,
+    })
 
     patient_ids = []
 

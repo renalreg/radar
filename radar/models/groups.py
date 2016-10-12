@@ -62,10 +62,6 @@ class Group(db.Model):
     def get_radar(cls):
         return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.SYSTEM).one()
 
-    # TODO @property
-    def is_radar(self):
-        return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.SYSTEM
-
     @property
     def has_dependencies(self):
         try:

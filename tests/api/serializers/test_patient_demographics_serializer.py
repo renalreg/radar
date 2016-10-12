@@ -8,7 +8,7 @@ from radar.api.serializers.validators import DAY_ZERO
 from radar.models.groups import Group
 from radar.models.patients import Patient
 from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -22,7 +22,7 @@ def patient():
 def demographics(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'first_name': 'JOHN',
         'last_name': 'SMITH',
@@ -68,7 +68,7 @@ def test_source_group_none(demographics):
 def test_source_type_none(demographics):
     demographics['source_type'] = None
     demographics = valid(demographics)
-    assert demographics.source_type == 'RADAR'
+    assert demographics.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_first_name_blank(demographics):

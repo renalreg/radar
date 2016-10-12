@@ -12,7 +12,7 @@ from radar.models.groups import (
     GROUP_CODE_UKRR
 )
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -26,7 +26,7 @@ def patient():
 def number(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'number_group': Group(code='FOO', type=GROUP_TYPE.OTHER),
         'number': '123'
@@ -57,7 +57,7 @@ def test_source_group_none(number):
 def test_source_type_none(number):
     number['source_type'] = None
     number = valid(number)
-    assert number.source_type == 'RADAR'
+    assert number.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_number_group_none(number):

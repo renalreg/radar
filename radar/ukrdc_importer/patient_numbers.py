@@ -1,6 +1,7 @@
 import logging
 
 from radar.database import db
+from radar.models.groups import GROUP_TYPE
 from radar.models.patient_numbers import PatientNumber
 from radar.ukrdc_importer.serializers import PatientNumberSerializer
 from radar.ukrdc_importer.utils import (
@@ -95,8 +96,8 @@ def convert_patient_numbers(patient, sda_patient_numbers):
             logger.error('Ignoring patient number due to unknown organization code={code}'.format(code=code))
             continue
 
-        # Ignore RaDaR patient numbers
-        if number_group.is_radar():
+        # Ignore patient numbers for system groups
+        if number_group.type == GROUP_TYPE.SYSTEM:
             continue
 
         patient_number_id = build_patient_number_id(patient, sda_patient_number)

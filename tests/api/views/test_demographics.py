@@ -6,7 +6,7 @@ import pytest
 from radar.database import db
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.patient_demographics import PatientDemographics
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from tests.api.views.fixtures import get_user, get_patient, get_group, create_demographics
 
 
@@ -21,7 +21,7 @@ def get_read_list_args():
         (GROUP_TYPE.HOSPITAL, 'HOSPITAL1'),
         (GROUP_TYPE.HOSPITAL, 'HOSPITAL2'),
     ]
-    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
+    source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
@@ -58,13 +58,13 @@ def get_create_args():
         'hospital1_it', 'cohort1_senior_researcher'
     ]
     groups = [radar_group, hospital1_group, cohort1_group]
-    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
+    source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = True
         elif username == 'hospital1_clinician':
-            expected = source_type == SOURCE_TYPE_RADAR and group == radar_group
+            expected = source_type == SOURCE_TYPE_MANUAL and group == radar_group
         else:
             expected = False
 
@@ -85,13 +85,13 @@ def get_update_args():
         'hospital1_it', 'cohort1_senior_researcher'
     ]
     groups = [radar_group, hospital1_group]
-    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
+    source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
     for username, group, source_type in itertools.product(usernames, groups, source_types):
         if username == 'admin':
             expected = 200
         elif username == 'hospital1_clinician':
-            if source_type == SOURCE_TYPE_RADAR and group == radar_group:
+            if source_type == SOURCE_TYPE_MANUAL and group == radar_group:
                 expected = 200
             else:
                 expected = 403

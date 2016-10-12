@@ -5,7 +5,7 @@ from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE, GROU
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 from radar.roles import ROLE
 
@@ -60,7 +60,7 @@ def set_default_users(options):
 
 def set_default_source(options):
     options['source_group'] = options.get('source_group') or get_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
-    options.setdefault('source_type', SOURCE_TYPE_RADAR)
+    options.setdefault('source_type', SOURCE_TYPE_MANUAL)
 
 
 def add_user_to_group(user, group, role, **kwargs):

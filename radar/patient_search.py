@@ -143,10 +143,10 @@ class PatientQueryBuilder(object):
         # Admins can choose to show/hide historic patients
         if self.current_user.is_admin:
             if current is not None:
-                query = query.filter(Patient.current == current)
+                query = query.filter(Patient.current() == current)
         else:
             # Regular users can only see current RaDaR users
-            query = query.filter(Patient.current == True)  # noqa
+            query = query.filter(Patient.current() == True)  # noqa
 
         return query
 

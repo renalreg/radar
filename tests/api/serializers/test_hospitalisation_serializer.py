@@ -7,7 +7,7 @@ from radar.api.serializers.hospitalisations import HospitalisationSerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -24,7 +24,7 @@ def patient():
 def hospitalisation(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'date_of_admission': date(2015, 1, 1),
         'date_of_discharge': date(2015, 1, 2),
@@ -58,7 +58,7 @@ def test_source_group_none(hospitalisation):
 def test_source_type_none(hospitalisation):
     hospitalisation['source_type'] = None
     hospitalisation = valid(hospitalisation)
-    assert hospitalisation.source_type == 'RADAR'
+    assert hospitalisation.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_of_admission_none(hospitalisation):

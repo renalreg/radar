@@ -1,5 +1,5 @@
-from radar.models.source_types import SOURCE_TYPE_RADAR
-from radar.models.groups import check_dependencies, DependencyError
+from radar.models.source_types import SOURCE_TYPE_MANUAL
+from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
 from radar.permissions import (
     has_permission_for_patient,
     has_permission_for_group,
@@ -111,7 +111,7 @@ class SourceObjectPermission(Permission):
             source_group = obj.source_group
 
             # Can only modify data entered on RaDaR
-            if not user.is_admin and source_type != SOURCE_TYPE_RADAR:
+            if not user.is_admin and source_type != SOURCE_TYPE_MANUAL:
                 return False
 
             # Check permissions
@@ -121,17 +121,17 @@ class SourceObjectPermission(Permission):
             return True
 
 
-class RadarSourceObjectPermission(Permission):
-    """Ensures that only objects from RaDaR can be modified.
+class SystemSourceObjectPermission(Permission):
+    """Ensures that only objects from a system group can be modified.
 
     Permission is granted:
     * The user is only viewing the object. Permissions for this are handled in
       PatientObjectPermission.
-    * The user is modifying an object entered on RaDaR.
+    * The user is modifying an object from a system group.
     """
 
     def has_object_permission(self, request, user, obj):
-        if not super(RadarSourceObjectPermission, self).has_object_permission(request, user, obj):
+        if not super(SystemSourceObjectPermission, self).has_object_permission(request, user, obj):
             return False
 
         if is_safe_method(request):
@@ -141,12 +141,12 @@ class RadarSourceObjectPermission(Permission):
             source_group = obj.source_group
 
             if not user.is_admin:
-                # Can only modify data entered on RaDaR
-                if source_type != SOURCE_TYPE_RADAR:
+                # Can only modify manually entered data
+                if source_type != SOURCE_TYPE_MANUAL:
                     return False
 
-                # Can only modify data from the RaDaR group
-                if not source_group.is_radar():
+                # Can only modify data from a system group
+                if source_group.type != GROUP_TYPE.SYSTEM:
                     return False
 
             # Check permissions
@@ -193,7 +193,7 @@ class PatientSourceObjectPermission(PatientObjectPermission, SourceObjectPermiss
     pass
 
 
-class PatientRadarSourceObjectPermission(PatientObjectPermission, RadarSourceObjectPermission):
+class PatientSystemSourceObjectPermission(PatientObjectPermission, SystemSourceObjectPermission):
     pass
 
 

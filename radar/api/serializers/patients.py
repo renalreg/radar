@@ -20,6 +20,26 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
 
+class RecruitedDateField(fields.DateField):
+    def get_attribute(self, patient):
+        return patient.recruited_date()
+
+
+class RecruitedGroupField(TinyGroupSerializer):
+    def get_attribute(self, patient):
+        return patient.recruited_group()
+
+
+class RecruitedUserField(TinyUserSerializer):
+    def get_attribute(self, patient):
+        return patient.recruited_user()
+
+
+class CurrentField(fields.BooleanField):
+    def get_attribute(self, patient):
+        return patient.current()
+
+
 class PatientSerializer(MetaMixin, ModelSerializer):
     first_name = fields.StringField(read_only=True)
     last_name = fields.StringField(read_only=True)
@@ -30,11 +50,11 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     gender = IntegerLookupField(GENDERS, read_only=True)
     ethnicity = StringLookupField(ETHNICITIES, read_only=True)
     groups = fields.ListField(child=GroupPatientSerializer(), source='group_patients', read_only=True)
-    recruited_date = fields.DateTimeField(read_only=True)
-    recruited_group = TinyGroupSerializer(read_only=True)
-    recruited_user = TinyUserSerializer(read_only=True)
+    recruited_date = RecruitedDateField(read_only=True)
+    recruited_group = RecruitedGroupField(read_only=True)
+    recruited_user = RecruitedUserField(read_only=True)
     comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
-    current = fields.BooleanField(read_only=True)
+    current = CurrentField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
@@ -76,9 +96,9 @@ class TinyPatientSerializer(serializers.Serializer):
     gender = IntegerLookupField(GENDERS, read_only=True)
     ethnicity = StringLookupField(ETHNICITIES, read_only=True)
     groups = fields.ListField(child=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
-    recruited_date = fields.DateTimeField(read_only=True)
-    recruited_group = TinyGroupSerializer(read_only=True)
-    recruited_user = TinyUserSerializer(read_only=True)
+    recruited_date = RecruitedDateField(read_only=True)
+    recruited_group = RecruitedGroupField(read_only=True)
+    recruited_user = RecruitedUserField(read_only=True)
     comments = fields.StringField(read_only=True)
     current = fields.BooleanField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)

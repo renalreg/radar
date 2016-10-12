@@ -10,7 +10,7 @@ from radar.exceptions import PermissionDenied
 from radar.models.forms import Form, GroupForm
 from radar.models.groups import Group, GROUP_TYPE, GroupPage
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.models.users import User
 from radar.pages import PAGE
 from radar.permissions import has_permission_for_patient, has_permission_for_group
@@ -212,7 +212,7 @@ class SourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
-        if not user.is_admin and not group.is_radar() and group.type != GROUP_TYPE.HOSPITAL:
+        if not user.is_admin and group.type not in (GROUP_TYPE.SYSTEM, GROUP_TYPE.HOSPITAL):
             raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
@@ -221,11 +221,11 @@ class SourceGroupField(GroupField):
         return group
 
 
-class RadarSourceGroupField(GroupField):
+class SystemSourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
-        if not user.is_admin and not group.is_radar():
+        if not user.is_admin and group.type != GROUP_TYPE.SYSTEM:
             raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
@@ -244,15 +244,15 @@ class CohortGroupField(GroupField):
 
 class SourceTypeField(fields.StringField):
     def __init__(self, **kwargs):
-        kwargs.setdefault('default', SOURCE_TYPE_RADAR)
-        kwargs.setdefault('validators', [in_([SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC])])
+        kwargs.setdefault('default', SOURCE_TYPE_MANUAL)
+        kwargs.setdefault('validators', [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC])])
         super(SourceTypeField, self).__init__(**kwargs)
 
     def validate(self, source_type):
         user = self.context['user']
 
         # Only admins can enter data for a non-RaDaR source type
-        if not user.is_admin and source_type != SOURCE_TYPE_RADAR:
+        if not user.is_admin and source_type != SOURCE_TYPE_MANUAL:
             raise PermissionDenied()
 
         return source_type
@@ -268,12 +268,12 @@ class SourceMixin(object):
         return model_exclude
 
 
-class RadarSourceMixin(object):
-    source_group = RadarSourceGroupField()
+class SystemSourceMixin(object):
+    source_group = SystemSourceGroupField()
     source_type = SourceTypeField()
 
     def get_model_exclude(self):
-        model_exclude = super(RadarSourceMixin, self).get_model_exclude()
+        model_exclude = super(SystemSourceMixin, self).get_model_exclude()
         model_exclude.add('source_group_id')
         return model_exclude
 

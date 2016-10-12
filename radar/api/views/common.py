@@ -6,7 +6,7 @@ from radar.auth.sessions import current_user
 from radar.api.permissions import (
     GroupObjectPermission,
     PatientObjectPermission,
-    RadarSourceObjectPermission,
+    SystemSourceObjectPermission,
     SourceObjectPermission
 )
 from radar.api.serializers.common import StringLookupField, IntegerLookupField
@@ -197,10 +197,10 @@ class SourceObjectViewMixin(SourceFilterMixin):
         return permission_classes
 
 
-class RadarObjectViewMixin(SourceFilterMixin):
+class SystemObjectViewMixin(SourceFilterMixin):
     def get_permission_classes(self):
-        permission_classes = super(RadarObjectViewMixin, self).get_permission_classes()
-        permission_classes.append(RadarSourceObjectPermission)
+        permission_classes = super(SystemObjectViewMixin, self).get_permission_classes()
+        permission_classes.append(SystemSourceObjectPermission)
         return permission_classes
 
 

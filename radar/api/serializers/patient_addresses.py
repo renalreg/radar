@@ -13,7 +13,7 @@ from cornflake.exceptions import ValidationError, SkipField
 
 from radar.api.serializers.common import (
     PatientMixin,
-    RadarSourceMixin,
+    SystemSourceMixin,
     MetaMixin,
     StringLookupField,
 )
@@ -23,7 +23,7 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
 
-class PatientAddressSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
+class PatientAddressSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
     from_date = fields.DateField(required=False)
     to_date = fields.DateField(required=False)
     address1 = fields.StringField(validators=[

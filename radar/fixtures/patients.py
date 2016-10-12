@@ -41,7 +41,7 @@ from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patients import Patient
 from radar.models.patient_codes import ETHNICITIES
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.models.groups import (
     Group,
     GroupPatient,
@@ -211,7 +211,7 @@ def create_patients(n, data=True):
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
     cohort_groups = Group.query.filter(Group.type == GROUP_TYPE.COHORT).all()
 
-    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
+    source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -233,10 +233,10 @@ def create_patients(n, data=True):
 
         gender = generate_gender()
 
-        create_demographics(patient, radar_group, SOURCE_TYPE_RADAR, gender)
-        create_patient_aliases(patient, radar_group, SOURCE_TYPE_RADAR)
-        create_patient_numbers(patient, radar_group, SOURCE_TYPE_RADAR)
-        create_patient_addresses(patient, radar_group, SOURCE_TYPE_RADAR)
+        create_demographics(patient, radar_group, SOURCE_TYPE_MANUAL, gender)
+        create_patient_aliases(patient, radar_group, SOURCE_TYPE_MANUAL)
+        create_patient_numbers(patient, radar_group, SOURCE_TYPE_MANUAL)
+        create_patient_addresses(patient, radar_group, SOURCE_TYPE_MANUAL)
 
         recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
 
@@ -257,7 +257,7 @@ def create_patients(n, data=True):
 
             if data:
                 for source_type in source_types:
-                    if source_type != SOURCE_TYPE_RADAR:
+                    if source_type != SOURCE_TYPE_MANUAL:
                         create_demographics(patient, hospital_group, source_type, gender)
                         create_patient_aliases(patient, hospital_group, source_type)
                         create_patient_numbers(patient, hospital_group, source_type)

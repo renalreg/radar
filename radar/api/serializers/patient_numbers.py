@@ -6,16 +6,17 @@ from sqlalchemy import and_
 
 from radar.api.serializers.common import (
     PatientMixin,
-    RadarSourceMixin,
+    SystemSourceMixin,
     MetaMixin,
     GroupField
 )
 from radar.api.serializers.validators import get_number_validators
 from radar.database import db
 from radar.models.patient_numbers import PatientNumber
+from radar.models.groups import GROUP_TYPE
 
 
-class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
+class PatientNumberSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
     number = fields.StringField(validators=[not_empty(), normalise_whitespace(), max_length(50)])
     number_group = GroupField()
 
@@ -24,8 +25,10 @@ class PatientNumberSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSe
         exclude = ['number_group_id']
 
     def validate_number_group(self, number_group):
-        if number_group.is_radar():
-            raise ValidationError("Can't add RaDaR numbers.")
+        # Don't allow patient numbers to be added for a system group (e.g. RADAR) as this
+        # would cause confusion with the patient ID (from the patients.id column).
+        if number_group.type == GROUP_TYPE.SYSTEM:
+            raise ValidationError("Can't add system numbers.")
 
         return number_group
 
