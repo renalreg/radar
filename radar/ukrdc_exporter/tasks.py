@@ -31,12 +31,13 @@ def get_group(group_id):
     return Group.query.get(group_id)
 
 
-def log_data_export(patient, group):
+def log_data_export(patient, system_group, group):
     log = Log()
     log.type = 'UKRDC_EXPORTER'
     log.data = dict(
         patient_id=patient.id,
-        group_id=group.id
+        system_group_id=system_group.id,
+        group_id=group.id,
     )
     db.session.add(log)
 
@@ -58,6 +59,7 @@ def export_sda(patient_id):
 
     for group1 in groups:
         if group1.type == GROUP_TYPE.HOSPITAL:
+            # Export a hospital for each system
             for group2 in groups:
                 if group2.type == GROUP_TYPE.SYSTEM:
                     jobs.append((group2, group1))
@@ -83,7 +85,7 @@ def _export_sda(patient, system_group, group=None):
         'sending_facility': facility
     }
 
-    export_patient(sda_container, patient, system_group, group)
+    export_patient(sda_container, patient, system_group)
     export_medications(sda_container, patient, group)
     export_lab_orders(sda_container, patient, group)
 
