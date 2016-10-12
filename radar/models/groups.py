@@ -46,6 +46,9 @@ class Group(db.Model):
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
 
+    parent_group_id = Column(Integer, ForeignKey('groups.id'))
+    parent_group = relationship('Group', remote_side=[id])
+
     _instructions = Column('instructions', String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))

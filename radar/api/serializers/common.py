@@ -195,7 +195,7 @@ class GroupSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Group
-        exclude = ['_instructions']
+        exclude = ['_instructions', 'parent_group_id']
 
 
 class GroupField(ReferenceField):

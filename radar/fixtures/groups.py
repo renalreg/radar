@@ -101,6 +101,7 @@ batches = [
             'code': 'NURTURECKD',
             'name': 'NURTuRE - CKD',
             'short_name': 'NURTuRE - CKD',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_NURTURE),
             'pages': [
                 (PAGE.PRIMARY_DIAGNOSIS, 100),
                 (PAGE.DIAGNOSES, 400),
@@ -133,6 +134,7 @@ batches = [
             'code': 'NURTUREINS',
             'name': 'NURTuRE - INS',
             'short_name': 'NURTuRE - INS',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_NURTURE),
             'pages': [
                 (PAGE.QUESTIONNAIRES, 100),
             ],
@@ -161,6 +163,12 @@ def create_groups():
             group.name = x['name']
             group.short_name = x.get('short_name', group.name)
             group.is_recruitment_number_group = x.get('is_recruitment_number_group', False)
+
+            if 'parent_group' in x:
+                parent_type, parent_code = x['parent_group']
+                parent_group = Group.query.filter(Group.type == parent_type, Group.code == parent_code).one()
+                group.parent_group = parent_group
+
             add(group)
 
             for diagnosis_name, diagnosis_type in x.get('diagnoses', []):
