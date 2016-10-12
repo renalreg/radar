@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import distinct, false, true
 from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.models.groups import GroupPatient, Group
+from radar.models.groups import GroupPatient, Group, GROUP_TYPE
 from radar.models.patients import Patient
 
 
@@ -18,13 +18,18 @@ def patients_by_recruitment_date(group, interval='month'):
     # Earliest from date for each patient for this group.
     # It's possible for a patient to have multiple membership records.
     # For example a patient may withdraw their consent and then later re-consent.
-    q1 = db.session.query(func.min(GroupPatient.from_date).label('from_date'))\
-        .filter(GroupPatient.group_id == group.id)\
-        .join(GroupPatient.patient)\
-        .filter(Patient.test == false())\
-        .filter(Patient.current() == true())\
-        .group_by(GroupPatient.patient_id)\
-        .subquery()
+    q1 = db.session.query(func.min(GroupPatient.from_date).label('from_date'))
+    q1 = q1.filter(GroupPatient.group_id == group.id)
+    q1 = q1.join(GroupPatient.patient)
+    q1 = q1.filter(Patient.test == false())
+
+    if group.type == GROUP_TYPE.SYSTEM:
+        q1 = q1.filter(Patient.current(group) == true())
+    else:
+        q1 = q1.filter(Patient.current() == true())
+
+    q1 = q1.group_by(GroupPatient.patient_id)
+    q1 = q1.subquery()
 
     # Extract the year and month from the from date.
     year_column = cast(extract('year', q1.c.from_date), Integer)
@@ -95,7 +100,12 @@ def patients_by_group(group=None, group_type=None):
     count_query = count_query.select_from(Patient)
     count_query = count_query.join(Patient.group_patients)
     count_query = count_query.filter(Patient.test == false())
-    count_query = count_query.filter(Patient.current() == true())
+
+    if group is not None and group.type == GROUP_TYPE.SYSTEM:
+        count_query = count_query.filter(Patient.current(group) == true())
+    else:
+        count_query = count_query.filter(Patient.current() == true())
+
     count_query = count_query.group_by(GroupPatient.group_id)
 
     # Filter the results to only include patients belonging to the
@@ -150,13 +160,18 @@ def patients_by_recruitment_group(group):
     first_created_group_id_column = func.first_value(GroupPatient.created_group_id)\
         .over(partition_by=GroupPatient.patient_id, order_by=GroupPatient.from_date)\
         .label('created_group_id')
-    q1 = db.session.query(first_created_group_id_column)\
-        .distinct(GroupPatient.patient_id)\
-        .join(GroupPatient.patient)\
-        .filter(GroupPatient.group_id == group.id)\
-        .filter(Patient.test == false())\
-        .filter(Patient.current() == true())\
-        .subquery()
+    q1 = db.session.query(first_created_group_id_column)
+    q1 = q1.distinct(GroupPatient.patient_id)
+    q1 = q1.join(GroupPatient.patient)
+    q1 = q1.filter(GroupPatient.group_id == group.id)
+    q1 = q1.filter(Patient.test == false())
+
+    if group.type == GROUP_TYPE.SYSTEM:
+        q1 = q1.filter(Patient.current(group) == true())
+    else:
+        q1 = q1.filter(Patient.current() == true())
+
+    q1 = q1.subquery()
 
     # Aggregate the results by recruiting group to get the number of
     # patients recruited by each group.
@@ -174,7 +189,8 @@ def patients_by_recruitment_group(group):
     return q3.all()
 
 
-def patients_by_group_date(group_type=None, interval='month'):
+# TODO
+def patients_by_group_date(group=None, group_type=None, interval='month'):
     """
     Number of patients in each group over time.
     """
@@ -217,7 +233,12 @@ def patients_by_recruitment_group_date(group, interval='month'):
     query = query.join(GroupPatient.patient)
     query = query.filter(GroupPatient.group_id == group.id)
     query = query.filter(Patient.test == false())
-    query = query.filter(Patient.current() == true())
+
+    if group.type == GROUP_TYPE.SYSTEM:
+        query = query.filter(Patient.current(group) == true())
+    else:
+        query = query.filter(Patient.current() == true())
+
     query = query.cte()
 
     results = _get_results(query, interval)
