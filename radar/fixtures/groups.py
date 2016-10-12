@@ -101,6 +101,7 @@ batches = [
             'code': 'NURTURECKD',
             'name': 'NURTuRE - CKD',
             'short_name': 'NURTuRE - CKD',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_NURTURE),
             'pages': [
                 (PAGE.PRIMARY_DIAGNOSIS, 100),
                 (PAGE.DIAGNOSES, 400),
@@ -133,6 +134,7 @@ batches = [
             'code': 'NURTUREINS',
             'name': 'NURTuRE - INS',
             'short_name': 'NURTuRE - INS',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_NURTURE),
             'pages': [
                 (PAGE.QUESTIONNAIRES, 100),
             ],
@@ -147,7 +149,29 @@ batches = [
                 ('chu9d', 500),
                 ('eq-5d-y', 600),
             ]
-        }
+        },
+        {
+            'type': GROUP_TYPE.COHORT,
+            'code': 'INS',
+            'name': 'Idiopathic Nephrotic Syndrome',
+            'short_name': 'INS',
+            'parent_group': (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR),
+            'pages': [
+                (PAGE.PRIMARY_DIAGNOSIS, 100),
+                (PAGE.GENETICS, 200),
+                (PAGE.FAMILY_HISTORY, 300),
+                (PAGE.DIAGNOSES, 400),
+                (PAGE.PATHOLOGY, 500),
+                (PAGE.INS_CLINICAL_PICTURES, 600),
+                (PAGE.RESULTS, 700),
+                (PAGE.MEDICATIONS, 800),
+                (PAGE.INS_RELAPSES, 900),
+                (PAGE.DIALYSIS, 1000),
+                (PAGE.PLASMAPHERESIS, 1100),
+                (PAGE.TRANSPLANTS, 1200),
+                (PAGE.HOSPITALISATIONS, 1300),
+            ],
+        },
     ]
 ]
 
@@ -161,6 +185,12 @@ def create_groups():
             group.name = x['name']
             group.short_name = x.get('short_name', group.name)
             group.is_recruitment_number_group = x.get('is_recruitment_number_group', False)
+
+            if 'parent_group' in x:
+                parent_type, parent_code = x['parent_group']
+                parent_group = Group.query.filter(Group.type == parent_type, Group.code == parent_code).one()
+                group.parent_group = parent_group
+
             add(group)
 
             for diagnosis_name, diagnosis_type in x.get('diagnoses', []):
