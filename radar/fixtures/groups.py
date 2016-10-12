@@ -3,6 +3,7 @@ from radar.fixtures.hospitals import create_hospitals
 from radar.fixtures.utils import add
 from radar.models.groups import (
     GROUP_CODE_RADAR,
+    GROUP_CODE_NURTURE,
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
     GROUP_CODE_UKRR,
@@ -16,6 +17,7 @@ from radar.models.groups import (
 
 GROUPS = [
     (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, 'RaDaR', False),
+    (GROUP_TYPE.SYSTEM, GROUP_CODE_NURTURE, 'NURTuRE', False),
     (GROUP_TYPE.OTHER, GROUP_CODE_NHS, 'NHS', True),
     (GROUP_TYPE.OTHER, GROUP_CODE_CHI, 'CHI', True),
     (GROUP_TYPE.OTHER, GROUP_CODE_HSC, 'HSC', True),
