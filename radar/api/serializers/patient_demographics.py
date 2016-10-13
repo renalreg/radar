@@ -15,7 +15,7 @@ from cornflake.validators import (
 
 from radar.api.serializers.common import (
     PatientMixin,
-    RadarSourceMixin,
+    SystemSourceMixin,
     MetaMixin,
     StringLookupField,
     IntegerLookupField
@@ -27,7 +27,7 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
 
-class PatientDemographicsSerializer(PatientMixin, RadarSourceMixin, MetaMixin, ModelSerializer):
+class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
     first_name = fields.StringField(validators=[not_empty(), upper(), normalise_whitespace(), max_length(100)])
     last_name = fields.StringField(validators=[not_empty(), upper(), normalise_whitespace(), max_length(100)])
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])

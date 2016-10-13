@@ -56,8 +56,8 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(filter_by_patient_number(patient_number))
         return self
 
-    def patient_id(self, radar_id):
-        self.query = self.query.filter(filter_by_patient_id(radar_id))
+    def patient_id(self, patient_id):
+        self.query = self.query.filter(filter_by_patient_id(patient_id))
         return self
 
     def date_of_birth(self, value):
@@ -143,10 +143,10 @@ class PatientQueryBuilder(object):
         # Admins can choose to show/hide historic patients
         if self.current_user.is_admin:
             if current is not None:
-                query = query.filter(Patient.current == current)
+                query = query.filter(Patient.current() == current)
         else:
-            # Regular users can only see current RaDaR users
-            query = query.filter(Patient.current == True)  # noqa
+            # Regular users can only see current patients
+            query = query.filter(Patient.current() == True)  # noqa
 
         return query
 
@@ -212,10 +212,10 @@ def filter_by_patient_number(number, exact=False):
         query = patient_number_sub_query(PatientNumber.number == number)
 
     try:
-        # Also search RaDaR IDs
+        # Also search patient ids
         query = or_(query, filter_by_patient_id(int(number)))
     except ValueError:
-        # Not a valid RaDaR ID
+        # Not a valid patient id
         pass
 
     return query
@@ -291,7 +291,7 @@ def sort_by_field(field, reverse=False):
     return field
 
 
-def sort_by_radar_id(reverse=False):
+def sort_by_patient_id(reverse=False):
     return sort_by_field(Patient.id, reverse)
 
 
@@ -323,7 +323,7 @@ def sort_by_date_of_birth(current_user, reverse=False):
 
 
 def sort_by_recruited_date(reverse=False):
-    return sort_by_field(Patient.recruited_date, reverse)
+    return sort_by_field(Patient.recruited_date(), reverse)
 
 
 def sort_by_primary_patient_number(reverse=False):
@@ -344,10 +344,10 @@ def sort_patients(user, sort_by, reverse=False):
     elif sort_by == 'primary_patient_number':
         clauses = [sort_by_primary_patient_number(reverse)]
     else:
-        return [sort_by_radar_id(reverse)]
+        return [sort_by_patient_id(reverse)]
 
-    # Decide ties using RaDaR ID
-    clauses.append(sort_by_radar_id())
+    # Decide ties using patient id
+    clauses.append(sort_by_patient_id())
 
     return clauses
 

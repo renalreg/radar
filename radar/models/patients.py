@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.groups import Group, GroupPatient, GROUP_TYPE
 from radar.models.logs import log_changes
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
@@ -38,46 +38,63 @@ class Patient(db.Model, MetaModelMixin):
     def current_group_patients(self):
         return [x for x in self.group_patients if x.current]
 
-    @hybrid_property
-    def recruited_date(self):
-        from_dates = [x.from_date for x in self.group_patients if x.group.is_radar()]
+    @hybrid_method
+    def recruited_date(self, group=None):
+        group_patient = self._recruited_group_patient(group)
 
-        if from_dates:
-            return max(from_dates)
+        if group_patient is None:
+            from_date = None
         else:
-            return None
+            from_date = group_patient.from_date
+
+        return from_date
 
     @recruited_date.expression
-    def recruited_date(cls):
-        return select([func.min(GroupPatient.from_date)])\
-            .select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))\
-            .where(GroupPatient.patient_id == cls.id)\
-            .where(Group.code == GROUP_CODE_RADAR)\
-            .where(Group.type == GROUP_TYPE.OTHER)\
-            .as_scalar()
+    def recruited_date(cls, group=None):
+        q = select([func.min(GroupPatient.from_date)])
+        q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
+        q = q.where(GroupPatient.patient_id == cls.id)
 
-    @hybrid_property
-    def current(self):
-        return any(x.is_radar() for x in self.current_groups)
+        if group is not None:
+            q = q.where(Group.id == group.id)
+        else:
+            q = q.where(Group.type == GROUP_TYPE.SYSTEM)
+
+        q = q.as_scalar()
+
+        return q
+
+    @hybrid_method
+    def current(self, group=None):
+        if group is not None:
+            return group in self.current_groups
+        else:
+            return any(group.type == GROUP_TYPE.SYSTEM for group in self.current_groups)
 
     @current.expression
-    def current(cls):
+    def current(cls, group=None):
         q = exists()
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
         q = q.where(GroupPatient.patient_id == cls.id)
         q = q.where(GroupPatient.current == True)  # noqa
-        q = q.where(Group.code == GROUP_CODE_RADAR)
-        q = q.where(Group.type == GROUP_TYPE.OTHER)
+
+        if group is not None:
+            q = q.where(Group.id == group.id)
+        else:
+            q = q.where(Group.type == GROUP_TYPE.SYSTEM)
+
         return q
 
-    @property
-    def _recruited_group_patient(self):
+    def _recruited_group_patient(self, group=None):
         from_date = None
         recruited_group_patient = None
 
         for group_patient in self.group_patients:
             if (
-                group_patient.group.is_radar() and
+                (
+                    (group is not None and group_patient.group == group) or
+                    (group is None and group_patient.group.type == GROUP_TYPE.SYSTEM)
+                ) and
                 (
                     from_date is None or
                     group_patient.from_date < from_date
@@ -88,9 +105,8 @@ class Patient(db.Model, MetaModelMixin):
 
         return recruited_group_patient
 
-    @property
-    def recruited_user(self):
-        group_patient = self._recruited_group_patient
+    def recruited_user(self, group=None):
+        group_patient = self._recruited_group_patient(group)
 
         if group_patient is None:
             user = None
@@ -99,9 +115,8 @@ class Patient(db.Model, MetaModelMixin):
 
         return user
 
-    @property
-    def recruited_group(self):
-        group_patient = self._recruited_group_patient
+    def recruited_group(self, group=None):
+        group_patient = self._recruited_group_patient(group)
 
         if group_patient is None:
             group = None

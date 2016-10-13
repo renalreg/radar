@@ -10,12 +10,12 @@ import pytz
 from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
-from radar.models.groups import Group, GroupPatient
+from radar.models.groups import GroupPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.patient_codes import GENDERS
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_importer.tasks import import_sda
 
 
@@ -229,7 +229,7 @@ class RecruitmentPatient(object):
     def _create_patient(self):
         logger.info('Creating patient number={}'.format(self.number))
 
-        radar_group = Group.get_radar()
+        system_group = self.cohort_group.parent_group
 
         patient = Patient()
         patient.created_user = current_user
@@ -238,8 +238,8 @@ class RecruitmentPatient(object):
 
         patient_demographics = PatientDemographics()
         patient_demographics.patient = patient
-        patient_demographics.source_group = radar_group
-        patient_demographics.source_type = SOURCE_TYPE_RADAR
+        patient_demographics.source_group = system_group
+        patient_demographics.source_type = SOURCE_TYPE_MANUAL
         patient_demographics.first_name = self.first_name
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
@@ -251,8 +251,8 @@ class RecruitmentPatient(object):
 
         patient_number = PatientNumber()
         patient_number.patient = patient
-        patient_number.source_group = radar_group
-        patient_number.source_type = SOURCE_TYPE_RADAR
+        patient_number.source_group = system_group
+        patient_number.source_type = SOURCE_TYPE_MANUAL
         patient_number.number_group = self.number_group
         patient_number.number = self.number
         patient_number.created_user = current_user
@@ -275,10 +275,10 @@ class RecruitmentPatient(object):
             db.session.add(group_patient)
 
     def _update_patient(self, patient):
-        # Add to radar, hospital and cohort
-        self._add_to_group(patient, Group.get_radar())
-        self._add_to_group(patient, self.hospital_group)
+        # Add to system, cohort, and hospital
+        self._add_to_group(patient, self.cohort_group.parent_group)
         self._add_to_group(patient, self.cohort_group)
+        self._add_to_group(patient, self.hospital_group)
 
     def save(self):
         patient = self.search_radar()

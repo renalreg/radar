@@ -1,19 +1,23 @@
+from datetime import datetime
+
+import pytz
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.validators import not_in_future
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
+from radar.database import db
 from radar.exceptions import PermissionDenied
-from radar.models.groups import GroupPatient, check_dependencies, DependencyError
+from radar.models.groups import GroupPatient, check_dependencies, DependencyError, GROUP_TYPE
 from radar.permissions import has_permission_for_patient, has_permission_for_group
 from radar.roles import PERMISSION
 
 
 class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
     group = GroupField()
-    from_date = fields.DateField(validators=[not_in_future()])
-    to_date = fields.DateField(required=False, validators=[not_in_future()])
+    from_date = fields.DateTimeField(validators=[not_in_future()])
+    to_date = fields.DateTimeField(required=False, validators=[not_in_future()])
     created_group = GroupField()
     current = fields.BooleanField(read_only=True)
 
@@ -101,11 +105,32 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         if self.is_duplicate(data):
             raise ValidationError({'group': 'Patient already belongs to this group.'})
 
-        # Check the from date isn't before the date the patient was added to RaDaR
-        if not data['group'].is_radar():
-            recruited_date = data['patient'].recruited_date
+        # Check the from date isn't before the date the patient was added to the system
+        if not data['group'].type != GROUP_TYPE.SYSTEM:
+            recruited_date = data['patient'].recruited_date()
 
             if recruited_date is not None and data['from_date'] < recruited_date.date():
                 raise ValidationError({'from_date': "Must be on or after the recruitment date."})
 
         return data
+
+    def save(self):
+        group_patient = super(GroupPatientSerializer, self).save()
+
+        patient = group_patient.patient
+        parent_group = group_patient.group.parent_group
+
+        # Add the patient to the parent group
+        if parent_group is not None and not patient.in_group(parent_group, current=True):
+            parent_group_patient = GroupPatient()
+            parent_group_patient.patient = patient
+            parent_group_patient.group = parent_group
+            parent_group_patient.created_group = group_patient.created_group
+            parent_group_patient.from_date = datetime.now(pytz.UTC)
+            parent_group_patient.created_user = group_patient.created_user
+            parent_group_patient.modified_user = group_patient.modified_user
+            parent_group_patient.created_date = group_patient.created_date
+            parent_group_patient.modified_date = group_patient.modified_date
+            db.session.add(parent_group_patient)
+
+        return group_patient

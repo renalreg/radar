@@ -7,7 +7,7 @@ from radar.api.serializers.transplants import TransplantSerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -24,7 +24,7 @@ def patient():
 def transplant(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'date': date(2015, 1, 1),
         'modality': 29,
@@ -56,7 +56,7 @@ def test_source_group_none(transplant):
 def test_source_type_none(transplant):
     transplant['source_type'] = None
     obj = valid(transplant)
-    assert obj.source_type == 'RADAR'
+    assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(transplant):

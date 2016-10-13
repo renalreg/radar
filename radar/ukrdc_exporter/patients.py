@@ -1,5 +1,6 @@
 import logging
 
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.groups import (
     GROUP_CODE_NHS,
     GROUP_CODE_CHI,
@@ -96,7 +97,7 @@ def export_contact_info(sda_patient, patient):
 def export_aliases(sda_patient, patient):
     q = PatientAlias.query
     q = q.filter(PatientAlias.patient == patient)
-    q = q.filter(PatientAlias.source_type == 'RADAR')
+    q = q.filter(PatientAlias.source_type == SOURCE_TYPE_MANUAL)
     aliases = q.all()
 
     if not aliases:
@@ -122,7 +123,7 @@ def export_aliases(sda_patient, patient):
 def export_addresses(sda_patient, patient):
     q = PatientAddress.query
     q = q.filter(PatientAddress.patient == patient)
-    q = q.filter(PatientAddress.source_type == 'RADAR')
+    q = q.filter(PatientAddress.source_type == SOURCE_TYPE_MANUAL)
     addresses = q.all()
 
     if not addresses:
@@ -155,10 +156,10 @@ def export_addresses(sda_patient, patient):
         sda_addresses.append(sda_address)
 
 
-def export_patient_numbers(sda_patient, patient, group):
+def export_patient_numbers(sda_patient, patient, system_group):
     q = PatientNumber.query
     q = q.filter(PatientNumber.patient == patient)
-    q = q.filter(PatientNumber.source_type == 'RADAR')
+    q = q.filter(PatientNumber.source_type == SOURCE_TYPE_MANUAL)
     patient_numbers = q.all()
 
     sda_patient_numbers = sda_patient.setdefault('patient_numbers', list())
@@ -169,8 +170,8 @@ def export_patient_numbers(sda_patient, patient, group):
         'number': str(patient.id),
         'number_type': 'MRN',
         'organization': {
-            'code': 'RADAR',
-            'description': 'RaDaR'
+            'code': system_group.code,
+            'description': system_group.name,
         }
     }
     sda_patient_numbers.append(sda_patient_number)
@@ -200,7 +201,7 @@ def export_patient_numbers(sda_patient, patient, group):
         sda_patient_numbers.append(sda_patient_number)
 
 
-def export_patient(sda_container, patient, group):
+def export_patient(sda_container, patient, system_group):
     sda_patient = sda_container.setdefault('patient', dict())
     export_name(sda_patient, patient)
     export_birth_time(sda_patient, patient)
@@ -210,4 +211,4 @@ def export_patient(sda_container, patient, group):
     export_contact_info(sda_patient, patient)
     export_aliases(sda_patient, patient)
     export_addresses(sda_patient, patient)
-    export_patient_numbers(sda_patient, patient, group)
+    export_patient_numbers(sda_patient, patient, system_group)

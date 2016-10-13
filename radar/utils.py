@@ -93,10 +93,10 @@ def get_path(data, *path):
     value = data
 
     for key in path:
-        value = value.get(key)
-
         if value is None:
             break
+
+        value = value.get(key)
 
     return value
 
@@ -105,13 +105,13 @@ def get_attrs(data, *attrs):
     value = data
 
     for attr in attrs:
+        if value is None:
+            break
+
         try:
             value = getattr(value, attr)
         except AttributeError:
             value = None
-
-        if value is None:
-            break
 
     return value
 

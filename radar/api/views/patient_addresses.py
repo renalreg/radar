@@ -1,6 +1,6 @@
 from radar.api.serializers.patient_addresses import PatientAddressSerializer
 from radar.api.views.common import (
-    RadarObjectViewMixin,
+    SystemObjectViewMixin,
     PatientObjectListView,
     PatientObjectDetailView,
     StringLookupListView,
@@ -8,12 +8,12 @@ from radar.api.views.common import (
 from radar.models.patient_addresses import PatientAddress, COUNTRIES
 
 
-class PatientAddressListView(RadarObjectViewMixin, PatientObjectListView):
+class PatientAddressListView(SystemObjectViewMixin, PatientObjectListView):
     serializer_class = PatientAddressSerializer
     model_class = PatientAddress
 
 
-class PatientAddressDetailView(RadarObjectViewMixin, PatientObjectDetailView):
+class PatientAddressDetailView(SystemObjectViewMixin, PatientObjectDetailView):
     serializer_class = PatientAddressSerializer
     model_class = PatientAddress
 

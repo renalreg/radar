@@ -41,7 +41,7 @@ from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patients import Patient
 from radar.models.patient_codes import ETHNICITIES
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.models.groups import (
     Group,
     GroupPatient,
@@ -206,12 +206,10 @@ def create_patient_addresses_f():
 
 @no_autoflush
 def create_patients(n, data=True):
-    radar_group = Group.get_radar()
-
     hospital_groups = Group.query.filter(Group.type == GROUP_TYPE.HOSPITAL).all()
     cohort_groups = Group.query.filter(Group.type == GROUP_TYPE.COHORT).all()
 
-    source_types = [SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC]
+    source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
     create_demographics = create_demographics_f()
     create_dialysis = create_dialysis_f()
@@ -231,33 +229,43 @@ def create_patients(n, data=True):
         patient = Patient()
         add(patient)
 
-        gender = generate_gender()
-
-        create_demographics(patient, radar_group, SOURCE_TYPE_RADAR, gender)
-        create_patient_aliases(patient, radar_group, SOURCE_TYPE_RADAR)
-        create_patient_numbers(patient, radar_group, SOURCE_TYPE_RADAR)
-        create_patient_addresses(patient, radar_group, SOURCE_TYPE_RADAR)
-
         recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
 
-        radar_group_patient = GroupPatient()
-        radar_group_patient.patient = patient
-        radar_group_patient.group = radar_group
-        radar_group_patient.from_date = recruited_date
-        radar_group_patient.created_group = radar_group
-        add(radar_group_patient)
+        cohort_group = random.choice(cohort_groups)
+        system_group = cohort_group.parent_group
+
+        cohort_group_patient = GroupPatient()
+        cohort_group_patient.group = cohort_group
+        cohort_group_patient.patient = patient
+        cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+        cohort_group_patient.created_group = system_group
+        add(cohort_group_patient)
+
+        system_group_patient = GroupPatient()
+        system_group_patient.patient = patient
+        system_group_patient.group = system_group
+        system_group_patient.from_date = recruited_date
+        system_group_patient.created_group = system_group
+        add(system_group_patient)
+
+        gender = generate_gender()
+
+        create_demographics(patient, system_group, SOURCE_TYPE_MANUAL, gender)
+        create_patient_aliases(patient, system_group, SOURCE_TYPE_MANUAL)
+        create_patient_numbers(patient, system_group, SOURCE_TYPE_MANUAL)
+        create_patient_addresses(patient, system_group, SOURCE_TYPE_MANUAL)
 
         for hospital_group in random.sample(hospital_groups, random.randint(1, min(3, len(hospital_groups)))):
             hospital_group_patient = GroupPatient()
             hospital_group_patient.group = hospital_group
             hospital_group_patient.patient = patient
             hospital_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
-            hospital_group_patient.created_group = radar_group
+            hospital_group_patient.created_group = system_group
             add(hospital_group_patient)
 
             if data:
                 for source_type in source_types:
-                    if source_type != SOURCE_TYPE_RADAR:
+                    if source_type != SOURCE_TYPE_MANUAL:
                         create_demographics(patient, hospital_group, source_type, gender)
                         create_patient_aliases(patient, hospital_group, source_type)
                         create_patient_numbers(patient, hospital_group, source_type)
@@ -270,10 +278,3 @@ def create_patients(n, data=True):
                     create_plasmapheresis(patient, hospital_group, source_type, 3)
                     create_renal_imaging(patient, hospital_group, source_type, 3)
                     create_results(patient, hospital_group, source_type, 10, 25)
-
-        cohort_group_patient = GroupPatient()
-        cohort_group_patient.group = random.choice(cohort_groups)
-        cohort_group_patient.patient = patient
-        cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
-        cohort_group_patient.created_group = radar_group
-        add(cohort_group_patient)

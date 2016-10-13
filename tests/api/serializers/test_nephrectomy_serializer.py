@@ -7,7 +7,7 @@ from radar.api.serializers.nephrectomies import NephrectomySerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -24,7 +24,7 @@ def patient():
 def nephrectomy(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'date': date(2015, 1, 1),
         'kidney_side': 'LEFT',
@@ -58,7 +58,7 @@ def test_source_group_none(nephrectomy):
 def test_source_type_none(nephrectomy):
     nephrectomy['source_type'] = None
     nephrectomy = valid(nephrectomy)
-    assert nephrectomy.source_type == 'RADAR'
+    assert nephrectomy.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(nephrectomy):

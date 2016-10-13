@@ -1,5 +1,6 @@
 import logging
 
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 from radar.utils import date_to_datetime
 
@@ -11,7 +12,7 @@ def export_medications(sda_container, patient, group):
     q = Medication.query
     q = q.filter(Medication.patient == patient)
     q = q.filter(Medication.source_group == group)
-    q = q.filter(Medication.source_type == 'RADAR')
+    q = q.filter(Medication.source_type == SOURCE_TYPE_MANUAL)
     medications = q.all()
 
     if not medications:

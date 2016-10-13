@@ -2,7 +2,7 @@ from radar.api.serializers.patient_demographics import PatientDemographicsSerial
 from radar.api.views.common import (
     PatientObjectListView,
     PatientObjectDetailView,
-    RadarObjectViewMixin,
+    SystemObjectViewMixin,
     StringLookupListView,
     IntegerLookupListView
 )
@@ -10,12 +10,12 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_codes import GENDERS, ETHNICITIES
 
 
-class PatientDemographicsListView(RadarObjectViewMixin, PatientObjectListView):
+class PatientDemographicsListView(SystemObjectViewMixin, PatientObjectListView):
     serializer_class = PatientDemographicsSerializer
     model_class = PatientDemographics
 
 
-class PatientDemographicsDetailView(RadarObjectViewMixin, PatientObjectDetailView):
+class PatientDemographicsDetailView(SystemObjectViewMixin, PatientObjectDetailView):
     serializer_class = PatientDemographicsSerializer
     model_class = PatientDemographics
 

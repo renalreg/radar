@@ -1,9 +1,9 @@
 import pytest
 
-from radar.api.permissions import RadarSourceObjectPermission
+from radar.api.permissions import SystemSourceObjectPermission
 from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.medications import Medication
-from radar.models.source_types import SOURCE_TYPE_RADAR, SOURCE_TYPE_UKRDC
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from tests.api.permissions.helpers import MockRequest
 from tests.permissions.helpers import make_user
 from radar.roles import ROLE
@@ -29,8 +29,8 @@ def make_request(action):
 
 
 def make_obj(source_type):
-    if source_type == SOURCE_TYPE_RADAR:
-        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.OTHER)
+    if source_type == SOURCE_TYPE_MANUAL:
+        source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
     else:
         source_group = Group(code='REE01', type=GROUP_TYPE.HOSPITAL)
 
@@ -42,17 +42,17 @@ def make_obj(source_type):
 
 
 @pytest.mark.parametrize(['is_admin', 'action', 'source_type', 'expected'], [
-    (NOT_ADMIN, READ, SOURCE_TYPE_RADAR, GRANT),
+    (NOT_ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
     (NOT_ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
-    (NOT_ADMIN, WRITE, SOURCE_TYPE_RADAR, GRANT),
+    (NOT_ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
     (NOT_ADMIN, WRITE, SOURCE_TYPE_UKRDC, DENY),
-    (ADMIN, READ, SOURCE_TYPE_RADAR, GRANT),
+    (ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
     (ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
-    (ADMIN, WRITE, SOURCE_TYPE_RADAR, GRANT),
+    (ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
     (ADMIN, WRITE, SOURCE_TYPE_UKRDC, GRANT),
 ])
 def test_has_object_permission(is_admin, action, source_type, expected):
-    permission = RadarSourceObjectPermission()
+    permission = SystemSourceObjectPermission()
     request = make_request(action)
     user = make_user([(Group(), ROLE.CLINICIAN)])
     user.is_admin = is_admin

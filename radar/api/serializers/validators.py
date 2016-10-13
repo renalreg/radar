@@ -370,7 +370,7 @@ NUMBER_VALIDATORS = {
     (GROUP_TYPE.OTHER, GROUP_CODE_UKRR): [ukrr_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_UKRDC): [ukrdc_no()],
     (GROUP_TYPE.OTHER, GROUP_CODE_BAPN): [bapn_no()],
-    (GROUP_TYPE.OTHER, GROUP_CODE_RADAR): [radar_no()],
+    (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR): [radar_no()],
 }
 
 

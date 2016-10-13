@@ -18,6 +18,7 @@ from radar.config import config
 class GROUP_TYPE(Enum):
     HOSPITAL = 'HOSPITAL'
     COHORT = 'COHORT'
+    SYSTEM = 'SYSTEM'
     OTHER = 'OTHER'
 
     def __str__(self):
@@ -32,6 +33,7 @@ GROUP_CODE_CHI = 'CHI'
 GROUP_CODE_HSC = 'HSC'
 GROUP_CODE_NHSBT = 'NHSBT'
 GROUP_CODE_BAPN = 'BAPN'
+GROUP_CODE_NURTURE = 'NURTURE'
 
 
 @log_changes
@@ -43,6 +45,10 @@ class Group(db.Model):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
+
+    # Parent group is compulsory for cohorts (should be a system)
+    parent_group_id = Column(Integer, ForeignKey('groups.id'), CheckConstraint("type != 'COHORT' or parent_group_id is not null"))
+    parent_group = relationship('Group', remote_side=[id])
 
     _instructions = Column('instructions', String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
@@ -58,11 +64,7 @@ class Group(db.Model):
 
     @classmethod
     def get_radar(cls):
-        return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.OTHER).one()
-
-    # TODO @property
-    def is_radar(self):
-        return self.code == GROUP_CODE_RADAR and self.type == GROUP_TYPE.OTHER
+        return cls.query.filter(cls.code == GROUP_CODE_RADAR, cls.type == GROUP_TYPE.SYSTEM).one()
 
     @property
     def has_dependencies(self):

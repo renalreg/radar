@@ -1,13 +1,14 @@
 from sqlalchemy import null
 
 from radar.models.results import Result, Observation
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 
 
 def export_lab_orders(sda_container, patient, group):
     q = Result.query
     q = q.filter(Result.patient == patient)
     q = q.filter(Result.source_group == group)
-    q = q.filter(Result.source_type == 'RADAR')
+    q = q.filter(Result.source_type == SOURCE_TYPE_MANUAL)
     q = q.join(Result.observation)
     q = q.filter(Observation.pv_code != null())
     results = q.all()

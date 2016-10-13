@@ -7,7 +7,7 @@ from radar.api.serializers.renal_imaging import RenalImagingSerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -24,7 +24,7 @@ def patient():
 def renal_imaging(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'date': date(2015, 1, 1),
         'imaging_type': 'USS',
@@ -94,7 +94,7 @@ def test_source_group_none(renal_imaging):
 def test_source_type_none(renal_imaging):
     renal_imaging['source_type'] = None
     obj = valid(renal_imaging)
-    assert obj.source_type == 'RADAR'
+    assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(renal_imaging):

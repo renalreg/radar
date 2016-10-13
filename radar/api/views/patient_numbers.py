@@ -1,6 +1,6 @@
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.api.views.common import (
-    RadarObjectViewMixin,
+    SystemObjectViewMixin,
     PatientObjectDetailView,
     PatientObjectListView,
     DemographicsViewMixin
@@ -8,12 +8,12 @@ from radar.api.views.common import (
 from radar.models.patient_numbers import PatientNumber
 
 
-class PatientNumberListView(RadarObjectViewMixin, DemographicsViewMixin, PatientObjectListView):
+class PatientNumberListView(SystemObjectViewMixin, DemographicsViewMixin, PatientObjectListView):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
 
 
-class PatientNumberDetailView(RadarObjectViewMixin, DemographicsViewMixin, PatientObjectDetailView):
+class PatientNumberDetailView(SystemObjectViewMixin, DemographicsViewMixin, PatientObjectDetailView):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
 

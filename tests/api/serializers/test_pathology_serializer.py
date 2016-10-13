@@ -7,7 +7,7 @@ from radar.api.serializers.pathology import PathologySerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_RADAR
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 
 
@@ -24,7 +24,7 @@ def patient():
 def pathology(patient):
     return {
         'source_group': Group(),
-        'source_type': SOURCE_TYPE_RADAR,
+        'source_type': SOURCE_TYPE_MANUAL,
         'patient': patient,
         'date': date(2015, 1, 1),
         'kidney_type': 'NATIVE',
@@ -56,7 +56,7 @@ def test_source_group_none(pathology):
 def test_source_type_none(pathology):
     pathology['source_type'] = None
     pathology = valid(pathology)
-    assert pathology.source_type == 'RADAR'
+    assert pathology.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_kidney_type_none(pathology):

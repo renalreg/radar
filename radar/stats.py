@@ -22,7 +22,7 @@ def patients_by_recruitment_date(group, interval='month'):
         .filter(GroupPatient.group_id == group.id)\
         .join(GroupPatient.patient)\
         .filter(Patient.test == false())\
-        .filter(Patient.current == true())\
+        .filter(Patient.current() == true())\
         .group_by(GroupPatient.patient_id)\
         .subquery()
 
@@ -95,7 +95,7 @@ def patients_by_group(group=None, group_type=None):
     count_query = count_query.select_from(Patient)
     count_query = count_query.join(Patient.group_patients)
     count_query = count_query.filter(Patient.test == false())
-    count_query = count_query.filter(Patient.current == true())
+    count_query = count_query.filter(Patient.current() == true())
     count_query = count_query.group_by(GroupPatient.group_id)
 
     # Filter the results to only include patients belonging to the
@@ -155,7 +155,7 @@ def patients_by_recruitment_group(group):
         .join(GroupPatient.patient)\
         .filter(GroupPatient.group_id == group.id)\
         .filter(Patient.test == false())\
-        .filter(Patient.current == true())\
+        .filter(Patient.current() == true())\
         .subquery()
 
     # Aggregate the results by recruiting group to get the number of
@@ -186,7 +186,7 @@ def patients_by_group_date(group_type=None, interval='month'):
     )
     query = query.join(GroupPatient.patient)
     query = query.filter(Patient.test == false())
-    query = query.filter(Patient.current == true())
+    query = query.filter(Patient.current() == true())
 
     if group_type is not None:
         query = query.join(GroupPatient.group)
@@ -217,7 +217,7 @@ def patients_by_recruitment_group_date(group, interval='month'):
     query = query.join(GroupPatient.patient)
     query = query.filter(GroupPatient.group_id == group.id)
     query = query.filter(Patient.test == false())
-    query = query.filter(Patient.current == true())
+    query = query.filter(Patient.current() == true())
     query = query.cte()
 
     results = _get_results(query, interval)
