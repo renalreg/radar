@@ -5,7 +5,7 @@ from flask import Blueprint
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer, PatientsByGroupDateListSerializer
 from radar.api.views.generics import response_json, ApiView, parse_args
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE
 from radar.stats import (
     patients_by_recruitment_date,
     patients_by_group,
