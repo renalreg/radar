@@ -12,6 +12,8 @@ username = 'ukrdc_importer'
 
 
 class UKRDCPatient(db.Model):
+    """View of patients with data from the UKRDC (e.g. medications or results)."""
+
     __table__ = create_view(
         'ukrdc_patients',
         select([Patient.id])

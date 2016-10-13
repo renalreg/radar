@@ -306,6 +306,7 @@ class PatientAddress(db.Model, MetaModelMixin):
         if postcode is None:
             anonymised_postcode = None
         else:
+            # Postcode outbound code
             anonymised_postcode = postcode.split(' ')[0][:4]
 
         return anonymised_postcode

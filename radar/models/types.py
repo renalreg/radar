@@ -3,6 +3,8 @@ from sqlalchemy.types import TypeDecorator, SchemaType
 
 
 class EnumType(TypeDecorator, SchemaType):
+    """Enum stored as an enum."""
+
     impl = Enum
 
     def __init__(self, enum_class, **options):
@@ -31,6 +33,8 @@ class EnumType(TypeDecorator, SchemaType):
 
 
 class EnumToStringType(TypeDecorator):
+    """Enum stored as a string."""
+
     impl = String
 
     def __init__(self, enum_class, **options):

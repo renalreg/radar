@@ -51,6 +51,8 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 
     @property
     def symptoms_age(self):
+        """Patient's age (in months) when the symptoms started."""
+
         if self.symptoms_date is None:
             r = None
         else:
@@ -60,10 +62,14 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 
     @property
     def from_age(self):
+        """Patient's age (in months) when they were diagnosed."""
+
         return self.patient.to_age(self.from_date)
 
     @property
     def to_age(self):
+        """Patient's age (in months) when they recovered."""
+
         if self.to_date is None:
             r = None
         else:

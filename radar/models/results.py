@@ -183,6 +183,8 @@ class Result(db.Model, MetaModelMixin):
         if x is not None and self.observation is not None:
             value_type = self.observation.value_type
 
+            # Values are stored as strings so need to be converted to the correct type
+
             if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
                 x = int(x)
             elif value_type == OBSERVATION_VALUE_TYPE.REAL:
@@ -193,6 +195,7 @@ class Result(db.Model, MetaModelMixin):
     @value.setter
     def value(self, x):
         if x is not None:
+            # Values are stored as strings
             x = str(x)
 
         self._value = x

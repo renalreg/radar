@@ -68,6 +68,8 @@ class Group(db.Model):
 
     @property
     def has_dependencies(self):
+        """Returns true if this group has a dependency on another group."""
+
         try:
             check_dependencies([self])
         except DependencyError:
@@ -116,6 +118,8 @@ class GroupPatient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def current(self):
+        """Returns true if today's date is between the from and to date."""
+
         now = datetime.now(pytz.UTC)
         return (self.from_date <= now and (self.to_date is None or self.to_date >= now))
 
@@ -197,6 +201,8 @@ class DependencyError(Exception):
 
 
 def check_dependencies(groups):
+    """Check group dependencies (e.g. if in x, must be in y)."""
+
     groups = set((group.type, group.code) for group in groups)
 
     for x, y in dependencies:

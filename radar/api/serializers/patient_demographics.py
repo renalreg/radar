@@ -88,25 +88,11 @@ class PatientDemographicsProxy(object):
             raise SkipField
 
     @property
-    def year_of_birth(self):
-        if self.demographics.date_of_birth is not None:
-            return self.demographics.date_of_birth.year
-        else:
-            return None
-
-    @property
     def date_of_death(self):
         if self.demographics_permission:
             return self.demographics.date_of_death
         else:
             raise SkipField
-
-    @property
-    def year_of_death(self):
-        if self.demographics.date_of_death is not None:
-            return self.demographics.date_of_death.year
-        else:
-            return None
 
     @property
     def home_number(self):

@@ -45,6 +45,8 @@ def sql_year_filter(column, year):
 
 
 def months_between(a, b):
+    """Number of months between two dates."""
+
     delta = relativedelta(a, b)
     return delta.years * 12 + delta.months
 
@@ -60,10 +62,14 @@ def round_age(months):
 
 
 def random_string(alphabet, length):
+    """Random string from an alphabet."""
+
     return ''.join(SystemRandom().choice(alphabet) for _ in range(length))
 
 
 def uniq(items):
+    """Unique items in a list."""
+
     seen = set()
     unique_items = []
 
@@ -76,6 +82,8 @@ def uniq(items):
 
 
 def transform_keys(value, fn):
+    """Recursively transform the keys of the supplied value."""
+
     if isinstance(value, collections.Mapping):
         value = {fn(k): transform_keys(v, fn) for k, v in value.items()}
     elif isinstance(value, collections.Iterable) and not isinstance(value, six.string_types):
@@ -90,6 +98,8 @@ snake_case_keys = partial(transform_keys, fn=snake_case)
 
 
 def get_path(data, *path):
+    """Get the dictionary value at the supplied path."""
+
     value = data
 
     for key in path:
@@ -102,6 +112,8 @@ def get_path(data, *path):
 
 
 def get_attrs(data, *attrs):
+    """Get the object value at the supplied path."""
+
     value = data
 
     for attr in attrs:
@@ -117,6 +129,8 @@ def get_attrs(data, *attrs):
 
 
 class SkipProxy(object):
+    """Catch SkipField exceptions and return None instead."""
+
     def __init__(self, instance):
         self.instance = instance
 
@@ -128,5 +142,7 @@ class SkipProxy(object):
 
 
 def pairwise(values):
+    """Group values in a list into pairs."""
+
     iterator = iter(values)
     return zip(iterator, iterator)

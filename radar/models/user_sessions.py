@@ -28,6 +28,8 @@ Index('user_sessions_user_idx', UserSession.user_id)
 
 
 class AnonymousSession(object):
+    """Used when the user isn't logged in."""
+
     user = AnonymousUser()
 
     @classmethod
