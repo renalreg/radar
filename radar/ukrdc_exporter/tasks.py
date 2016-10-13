@@ -1,10 +1,10 @@
-import logging
-import requests
-import json
-from decimal import Decimal
 from datetime import date, datetime
+from decimal import Decimal
+import json
+import logging
 
 from celery import shared_task
+import requests
 
 from radar.config import config
 from radar.database import db

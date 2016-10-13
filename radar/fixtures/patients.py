@@ -1,8 +1,8 @@
-import random
 from datetime import timedelta, date, datetime
+import random
 
-from sqlalchemy import desc
 import pytz
+from sqlalchemy import desc
 
 from radar.database import no_autoflush
 from radar.fixtures.constants import GENDER_FEMALE
@@ -35,13 +35,6 @@ from radar.fixtures.utils import (
     generate_gender,
     add
 )
-from radar.models.patient_demographics import PatientDemographics
-from radar.models.patient_numbers import PatientNumber
-from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_addresses import PatientAddress
-from radar.models.patients import Patient
-from radar.models.patient_codes import ETHNICITIES
-from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.models.groups import (
     Group,
     GroupPatient,
@@ -51,6 +44,13 @@ from radar.models.groups import (
     GROUP_CODE_UKRR,
     GROUP_CODE_NHSBT
 )
+from radar.models.patient_addresses import PatientAddress
+from radar.models.patient_aliases import PatientAlias
+from radar.models.patient_codes import ETHNICITIES
+from radar.models.patient_demographics import PatientDemographics
+from radar.models.patient_numbers import PatientNumber
+from radar.models.patients import Patient
+from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 
 
 def create_demographics_f():

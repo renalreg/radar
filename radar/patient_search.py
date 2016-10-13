@@ -1,4 +1,4 @@
-from sqlalchemy import or_, case, desc, extract, null, func, and_
+from sqlalchemy import and_, case, desc, extract, func, null, or_
 from sqlalchemy.orm import aliased, subqueryload
 
 from radar.database import db
@@ -8,7 +8,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.roles import get_roles_with_permission, PERMISSION
-from radar.utils import sql_year_filter, sql_date_filter
+from radar.utils import sql_date_filter, sql_year_filter
 
 
 class PatientQueryBuilder(object):
@@ -80,11 +80,8 @@ class PatientQueryBuilder(object):
 
     def group(self, group, current=None):
         # Filter by group
-        sub_query = db.session.query(GroupPatient)\
-            .filter(
-                GroupPatient.group == group,
-                GroupPatient.patient_id == Patient.id,
-            )
+        sub_query = db.session.query(GroupPatient)
+        sub_query = sub_query.filter(GroupPatient.group == group, GroupPatient.patient_id == Patient.id)
 
         if current is not None:
             if current:
@@ -248,15 +245,15 @@ def filter_by_year_of_death(year):
 
 def filter_by_group_roles(current_user, roles, current=None):
     patient_alias = aliased(Patient)
-    sub_query = db.session.query(patient_alias)\
-        .join(patient_alias.group_patients)\
-        .join(GroupPatient.group)\
-        .join(Group.group_users)\
-        .filter(
-            patient_alias.id == Patient.id,
-            GroupUser.user_id == current_user.id,
-            GroupUser.role.in_(roles)
-        )
+    sub_query = db.session.query(patient_alias)
+    sub_query = sub_query.join(patient_alias.group_patients)
+    sub_query = sub_query.join(GroupPatient.group)
+    sub_query = sub_query.join(Group.group_users)
+    sub_query = sub_query.filter(
+        patient_alias.id == Patient.id,
+        GroupUser.user_id == current_user.id,
+        GroupUser.role.in_(roles),
+    )
 
     if current:
         sub_query = sub_query.filter(GroupPatient.current == True)  # noqa

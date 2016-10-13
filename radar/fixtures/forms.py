@@ -2,8 +2,8 @@ import json
 import os
 import pkg_resources
 
-from radar.models.forms import Form
 from radar.fixtures.utils import add
+from radar.models.forms import Form
 
 filenames = [
     ('6cit.json', '6CIT'),

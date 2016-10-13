@@ -1,5 +1,5 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
+from cornflake.sqlalchemy_orm import ModelSerializer
 
 from radar.api.serializers.common import PatientMixin, MetaMixin
 from radar.api.serializers.validators import valid_date_for_patient

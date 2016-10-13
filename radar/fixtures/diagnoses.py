@@ -1,5 +1,5 @@
-from radar.models.diagnoses import Diagnosis
 from radar.fixtures.utils import add
+from radar.models.diagnoses import Diagnosis
 
 DIAGNOSES = [
     'ADPKD',

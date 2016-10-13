@@ -1,9 +1,10 @@
-from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 
+from radar.api.serializers.codes import CodeSerializer
 from radar.api.serializers.common import (
     PatientMixin,
     SourceMixin,
@@ -22,7 +23,6 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis
 )
-from radar.api.serializers.codes import CodeSerializer
 
 
 class GroupDiagnosisSerializer(ModelSerializer):

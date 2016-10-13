@@ -1,5 +1,5 @@
-import random
 from datetime import date
+import random
 
 from radar.fixtures.utils import random_date, add
 from radar.models.results import Result, Observation, OBSERVATION_VALUE_TYPE

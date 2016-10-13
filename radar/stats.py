@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from sqlalchemy import cast, extract, Integer, func, text, and_
-from sqlalchemy.sql.expression import distinct, false, true
+from sqlalchemy import and_, cast, extract, func, Integer, text
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql.expression import distinct, false, true
 
 from radar.database import db
-from radar.models.groups import GroupPatient, Group, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.patients import Patient
 
 
@@ -112,13 +112,13 @@ def patients_by_group(group=None, group_type=None):
     # specified group.
     if group is not None:
         patient_alias = aliased(Patient)
-        group_subquery = db.session.query(patient_alias)\
-            .join(patient_alias.group_patients)\
-            .filter(
-                patient_alias.id == Patient.id,
-                GroupPatient.group == group,
-            )\
-            .exists()
+        group_subquery = db.session.query(patient_alias)
+        group_subquery = group_subquery.join(patient_alias.group_patients)
+        group_subquery = group_subquery.filter(
+            patient_alias.id == Patient.id,
+            GroupPatient.group == group,
+        )
+        group_subquery = group_subquery.exists()
 
         count_query = count_query.filter(group_subquery)
 
@@ -210,13 +210,13 @@ def patients_by_group_date(group=None, group_type=None, interval='month'):
     # Filter by patients beloning to the specified group
     if group is not None:
         patient_alias = aliased(Patient)
-        group_subquery = db.session.query(patient_alias)\
-            .join(patient_alias.group_patients)\
-            .filter(
-                patient_alias.id == Patient.id,
-                GroupPatient.group == group,
-            )\
-            .exists()
+        group_subquery = db.session.query(patient_alias)
+        group_subquery = group_subquery.join(patient_alias.group_patients)
+        group_subquery = group_subquery.filter(
+            patient_alias.id == Patient.id,
+            GroupPatient.group == group,
+        )
+        group_subquery = group_subquery.exists()
 
         query = query.filter(group_subquery)
 

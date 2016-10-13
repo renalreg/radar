@@ -1,5 +1,5 @@
-import random
 from datetime import date
+import random
 
 from radar.fixtures.constants import MEDICATION_NAMES
 from radar.fixtures.utils import random_date, add

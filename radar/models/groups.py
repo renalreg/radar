@@ -1,18 +1,18 @@
 from datetime import datetime
-
 from enum import Enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
-from sqlalchemy.orm import relationship, backref, synonym
-from sqlalchemy.ext.hybrid import hybrid_property
-import pytz
 
+import pytz
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship, backref, synonym
+
+from radar.config import config
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
-from radar.models.types import EnumType, EnumToStringType
 from radar.models.logs import log_changes
+from radar.models.types import EnumType, EnumToStringType
 from radar.pages import PAGE
 from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
-from radar.config import config
 
 
 class GROUP_TYPE(Enum):

@@ -1,6 +1,6 @@
-from radar.auth.passwords import generate_password
 from radar.api.serializers.auth import PasswordSerializer
 from radar.api.views.generics import ApiView, response_json
+from radar.auth.passwords import generate_password
 
 
 class RandomPasswordView(ApiView):

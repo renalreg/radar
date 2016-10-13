@@ -1,8 +1,8 @@
-import time
 from collections import defaultdict
+import time
 
-from flask_sqlalchemy import get_debug_queries
 from flask import g, request
+from flask_sqlalchemy import get_debug_queries
 from termcolor import colored
 
 

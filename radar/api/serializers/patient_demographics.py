@@ -1,6 +1,6 @@
 from cornflake import fields
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.exceptions import ValidationError, SkipField
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     not_empty,
     upper,

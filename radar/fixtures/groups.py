@@ -1,4 +1,6 @@
 from radar.fixtures.utils import add
+from radar.models.diagnoses import Diagnosis, GroupDiagnosis
+from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import (
     Group,
     GroupPage,
@@ -14,8 +16,6 @@ from radar.models.groups import (
     GROUP_TYPE,
 )
 from radar.pages import PAGE
-from radar.models.diagnoses import Diagnosis, GroupDiagnosis
-from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 
 
 batches = [

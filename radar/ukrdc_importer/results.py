@@ -1,5 +1,5 @@
-import logging
 from functools import partial
+import logging
 
 from sqlalchemy import and_, or_
 

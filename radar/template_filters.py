@@ -1,5 +1,5 @@
-from jinja2 import escape, Markup, evalcontextfilter
 from cornflake.utils import safe_strftime
+from jinja2 import escape, evalcontextfilter, Markup
 
 
 def safe_strftime_template_filter(value, format):

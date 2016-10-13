@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, event, MetaData
-from sqlalchemy.schema import DDLElement
 from sqlalchemy.ext import compiler
+from sqlalchemy.schema import DDLElement
 
 from radar.database import db
 

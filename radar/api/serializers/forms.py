@@ -1,13 +1,12 @@
 import copy
 
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 
 from radar.api.serializers.common import MetaMixin, PatientMixin
-from radar.marmoset.schema import Schema
 from radar.marmoset.registry import Registry
+from radar.marmoset.schema import Schema
 from radar.models import Entry, Form
 from radar.utils import camel_case_keys
 

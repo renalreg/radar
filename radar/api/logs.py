@@ -1,6 +1,6 @@
 from flask import request
 
-from radar.auth.sessions import current_user, get_user_agent, get_ip_address
+from radar.auth.sessions import current_user, get_ip_address, get_user_agent
 from radar.database import db
 from radar.models.logs import Log
 from radar.models.users import User

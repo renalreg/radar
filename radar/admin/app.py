@@ -23,12 +23,12 @@ from radar.app import Radar
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.codes import Code
+from radar.models.consultants import Consultant, Specialty, GroupConsultant
 from radar.models.diagnoses import Diagnosis, GroupDiagnosis, DiagnosisCode
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import Group, GroupPage
 from radar.models.medications import Drug, DrugGroup
 from radar.models.results import Observation, GroupObservation
-from radar.models.consultants import Consultant, Specialty, GroupConsultant
 
 
 def inject_current_user():

@@ -1,7 +1,7 @@
 import logging
 
-from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.medications import Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime
 
 

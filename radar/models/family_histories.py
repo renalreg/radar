@@ -1,8 +1,7 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, String, Index, orm
 from sqlalchemy.dialects import postgresql
-from sqlalchemy import orm
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship

@@ -3,8 +3,8 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
-from radar.models.users import AnonymousUser
 from radar.models.logs import log_changes
+from radar.models.users import AnonymousUser
 
 
 @log_changes

@@ -1,5 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
+from cornflake.exceptions import ValidationError, SkipField
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     max_length,
     none_if_blank,
@@ -8,7 +9,6 @@ from cornflake.validators import (
     optional,
     postcode,
 )
-from cornflake.exceptions import ValidationError, SkipField
 
 from radar.api.serializers.common import (
     PatientMixin,

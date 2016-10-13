@@ -1,8 +1,7 @@
 from cornflake import serializers, fields
-from sqlalchemy import func, or_
 from cornflake.validators import in_
+from sqlalchemy import func, or_
 
-from radar.database import db
 from radar.api.serializers.common import QueryPatientField, GroupField
 from radar.api.serializers.forms import (
     FormSerializer,
@@ -19,6 +18,7 @@ from radar.api.views.generics import (
     RetrieveModelView,
     parse_args
 )
+from radar.database import db
 from radar.models.forms import Entry, Form, GroupForm, GroupQuestionnaire
 
 

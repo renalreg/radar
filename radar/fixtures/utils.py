@@ -1,6 +1,6 @@
+from datetime import date, timedelta
 import difflib
 import random
-from datetime import date, timedelta
 
 from radar.database import db
 from radar.fixtures.constants import (

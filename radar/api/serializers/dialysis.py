@@ -1,6 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
 
 from radar.api.serializers.common import (
     PatientMixin,

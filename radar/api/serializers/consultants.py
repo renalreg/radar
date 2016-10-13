@@ -1,8 +1,8 @@
-from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import not_empty, upper, max_length, none_if_blank, optional, lower, email_address
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import email_address, lower, max_length, none_if_blank, not_empty, optional, upper
 
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import gmc_number

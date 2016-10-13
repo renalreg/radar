@@ -1,7 +1,7 @@
 from cornflake import serializers, fields
+from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
 from cornflake.validators import min_, max_, in_, min_length, max_length
-from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
     PatientMixin,

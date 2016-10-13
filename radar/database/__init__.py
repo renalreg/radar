@@ -1,9 +1,9 @@
 from functools import update_wrapper
 
 from flask_sqlalchemy import SQLAlchemy as SQLAlchemyBase
+from sqlalchemy import exc, event, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as SessionBase
-from sqlalchemy import exc, event, select
 
 
 # Session and SQLAlchemy classes that allow transactions to be rolled back in pytest

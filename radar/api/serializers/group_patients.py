@@ -1,10 +1,10 @@
 from datetime import datetime
 
-import pytz
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import not_in_future
+import pytz
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
 from radar.database import db

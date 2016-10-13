@@ -2,7 +2,6 @@ from cornflake import fields, serializers
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import aliased
 
-from radar.auth.sessions import current_user
 from radar.api.permissions import (
     GroupObjectPermission,
     PatientObjectPermission,
@@ -16,6 +15,7 @@ from radar.api.views.generics import (
     RetrieveUpdateDestroyModelView,
     parse_args
 )
+from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
 from radar.models.patients import Patient
@@ -60,22 +60,22 @@ def filter_query_by_group_permissions(query, model_class):
 
         # Check if the user has permission through their group membership (requires the VIEW_PATIENT permission)
         # If the user has the VIEW_PATIENT permission on one of the patient's hospitals they can view all cohort data
-        sub_query = db.session.query(Group)\
-            .join(group_b, GroupPatient.group)\
-            .join(Group.group_users)\
-            .filter(
-                GroupPatient.patient_id == model_class.patient_id,
-                GroupUser.user == current_user,
-                GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
-                or_(
-                    GroupPatient.group_id == model_class.group_id,
-                    and_(
-                        group_a.type == GROUP_TYPE.COHORT,
-                        group_b.type == GROUP_TYPE.HOSPITAL
-                    )
+        sub_query = db.session.query(Group)
+        sub_query = sub_query.join(group_b, GroupPatient.group)
+        sub_query = sub_query.join(Group.group_users)
+        sub_query = sub_query.filter(
+            GroupPatient.patient_id == model_class.patient_id,
+            GroupUser.user == current_user,
+            GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
+            or_(
+                GroupPatient.group_id == model_class.group_id,
+                and_(
+                    group_a.type == GROUP_TYPE.COHORT,
+                    group_b.type == GROUP_TYPE.HOSPITAL
                 )
-            )\
-            .exists()
+            )
+        )
+        sub_query = sub_query.exists()
 
         # Filter the query to only include rows the user has permission to see
         query = query.filter(sub_query)

@@ -1,12 +1,11 @@
-import re
 import io
+import re
 
 from backports import csv
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 from flask import Response
 
-from radar.auth.sessions import current_user
 from radar.api.logs import log_view_patient
 from radar.api.permissions import PatientPermission, AdminPermission
 from radar.api.serializers.common import GroupField
@@ -19,8 +18,9 @@ from radar.api.views.generics import (
     parse_args,
     get_sort_args
 )
-from radar.models.patients import Patient
+from radar.auth.sessions import current_user
 from radar.models.groups import Group, GROUP_TYPE
+from radar.models.patients import Patient
 from radar.patient_search import PatientQueryBuilder
 from radar.utils import uniq, get_attrs, SkipProxy
 

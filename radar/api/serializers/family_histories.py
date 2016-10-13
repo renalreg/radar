@@ -1,6 +1,5 @@
+from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
-from cornflake import fields
-from cornflake import serializers
 from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import (

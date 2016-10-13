@@ -6,8 +6,8 @@ from radar.api.views.common import (
     StringLookupListView,
     IntegerLookupListView
 )
-from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_codes import GENDERS, ETHNICITIES
+from radar.models.patient_demographics import PatientDemographics
 
 
 class PatientDemographicsListView(SystemObjectViewMixin, PatientObjectListView):

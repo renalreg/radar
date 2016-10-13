@@ -1,15 +1,15 @@
 from collections import OrderedDict
+from enum import Enum
 from itertools import chain
 
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index, Numeric, CheckConstraint
-from sqlalchemy.orm import relationship
 from sqlalchemy.dialects import postgresql
-from enum import Enum
+from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
-from radar.models.types import EnumType
 from radar.models.logs import log_changes
+from radar.models.types import EnumType
 from radar.utils import pairwise
 
 

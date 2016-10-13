@@ -1,5 +1,5 @@
-from sqlalchemy import func
 from cornflake import serializers, fields
+from sqlalchemy import func
 
 from radar.api.serializers.common import QueryPatientField
 from radar.api.serializers.results import (

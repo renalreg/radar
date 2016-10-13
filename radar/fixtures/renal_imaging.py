@@ -1,5 +1,5 @@
-import random
 from datetime import date
+import random
 
 from radar.fixtures.utils import random_bool, random_date, add
 from radar.models.renal_imaging import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
