@@ -17,7 +17,7 @@ def build(rev='HEAD'):
     with cd(tmp):
         run('tar -xzf src.tar.gz')
         run('PATH=/usr/pgsql-9.4/bin:$PATH platter build -r requirements.txt .')
-        local('mkdir -p dist')
+        local('mkdir -p dist')  # TODO mkdir on windows doesn't have the -p option
         get('dist/*.tar.gz', 'dist')
 
     run('rm -rf {0}'.format(tmp))
