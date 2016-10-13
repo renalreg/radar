@@ -20,10 +20,3 @@ class PatientConsultant(db.Model, MetaModelMixin):
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
-
-Index(
-    'patient_consultants_patient_consultant_idx',
-    PatientConsultant.patient_id,
-    PatientConsultant.consultant_id,
-    unique=True
-)
