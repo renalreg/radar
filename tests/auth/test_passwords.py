@@ -1,7 +1,12 @@
+from radar.auth.passwords import (
+    password_to_nato_str,
+    check_password_hash,
+    generate_password_hash,
+    generate_password,
+    get_password_length,
+    is_strong_password,
+)
 from radar.models.users import User
-from radar.auth.passwords import password_to_nato_str, check_password_hash, \
-    generate_password_hash, generate_password, get_password_length, \
-    is_strong_password
 
 
 def test_password_to_nato_str():

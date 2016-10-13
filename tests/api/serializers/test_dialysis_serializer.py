@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
-import pytest
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.dialysis import DialysisSerializer
 from radar.models.groups import Group

@@ -1,13 +1,13 @@
 from datetime import date, timedelta
 
-import pytest
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer
 from radar.api.serializers.validators import DAY_ZERO
 from radar.models.groups import Group
-from radar.models.patients import Patient
 from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
+from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 

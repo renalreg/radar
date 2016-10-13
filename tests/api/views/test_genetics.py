@@ -1,6 +1,6 @@
-import json
-import itertools
 from datetime import datetime
+import itertools
+import json
 
 import pytest
 import pytz

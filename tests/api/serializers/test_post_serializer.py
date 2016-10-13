@@ -1,9 +1,9 @@
 from datetime import datetime
 
-import pytest
-import pytz
 from cornflake.exceptions import ValidationError
 from freezegun import freeze_time
+import pytest
+import pytz
 
 from radar.api.serializers.posts import PostSerializer
 from radar.models.users import User

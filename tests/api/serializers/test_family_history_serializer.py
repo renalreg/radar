@@ -1,5 +1,5 @@
-import pytest
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.family_histories import FamilyHistorySerializer
 from radar.exceptions import PermissionDenied
