@@ -35,9 +35,12 @@ class DataField(fields.Field):
         return self.__class__(self.schema, **kwargs)
 
     def to_internal_value(self, data):
+        # Incoming data is converted to snake-case but we need to camel-cased.
         data = camel_case_keys(data)
+
         data = self.schema.validate(data)
         data = self.schema.format(data)
+
         return data
 
     def to_representation(self, data):
@@ -88,6 +91,8 @@ class EntrySerializer(serializers.ProxySerializer):
         self.field.bind(self, 'form')
 
     def create_serializer(self, form):
+        """Creates a serializer at runtime based on the type of form."""
+
         registry = Registry()
         schema = Schema(registry, form.data)
 
@@ -107,6 +112,7 @@ class EntrySerializer(serializers.ProxySerializer):
     def get_deserializer(self, data):
         form_data = self.field.get_value(data)
 
+        # Get the type of form from incoming data
         try:
             form = self.field.run_validation(form_data)
         except ValidationError as e:

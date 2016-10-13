@@ -53,6 +53,7 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     def validate(self, data):
         data = super(PatientDemographicsSerializer, self).validate(data)
 
+        # Can't die before you are born
         if data['date_of_death'] is not None and data['date_of_death'] < data['date_of_birth']:
             raise ValidationError({'date_of_death': 'Must be after date of birth.'})
 
@@ -88,7 +89,10 @@ class PatientDemographicsProxy(object):
 
     @property
     def year_of_birth(self):
-        return self.demographics.date_of_birth.year
+        if self.demographics.date_of_birth is not None:
+            return self.demographics.date_of_birth.year
+        else:
+            return None
 
     @property
     def date_of_death(self):

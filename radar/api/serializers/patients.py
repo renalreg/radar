@@ -66,6 +66,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
         instance = self.root.instance
         user = self.context['user']
 
+        # Must be an admin to change the test flag
         if (
             (
                 (instance is None and value) or

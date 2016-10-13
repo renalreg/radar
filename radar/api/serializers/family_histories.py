@@ -41,6 +41,7 @@ class FamilyHistorySerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSe
         model_class = FamilyHistory
 
     def pre_validate(self, data):
+        # No family history, no relatives
         if not data['family_history']:
             data['relatives'] = []
 

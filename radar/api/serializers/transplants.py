@@ -21,6 +21,8 @@ from radar.models.transplants import (
 
 class ListSerializer(serializers.ListSerializer):
     def validate_patient(self, data, patient):
+        # Validate child fields against the patient
+
         for i in range(len(data)):
             try:
                 data[i] = self.child.validate_patient(data[i], patient)
@@ -91,9 +93,11 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         except ValidationError as e:
             raise ValidationError({'biopsies': e.errors})
 
+        # Date of recurrence must be after transplant date
         if data['date_of_recurrence'] is not None and data['date_of_recurrence'] < data['date']:
             raise ValidationError({'date_of_recurrence': 'Must be on or after transplant date.'})
 
+        # Date of failure must be after transplant date
         if data['date_of_failure'] is not None and data['date_of_failure'] < data['date']:
             raise ValidationError({'date_of_failure': 'Must be on or after transplant date.'})
 

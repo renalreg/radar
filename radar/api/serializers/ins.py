@@ -73,6 +73,7 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     def validate(self, data):
         data = super(InsRelapseSerializer, self).validate(data)
 
+        # Remission must be after relapse
         if data['date_of_remission'] is not None and data['date_of_remission'] < data['date_of_relapse']:
             raise ValidationError({'date_of_remission': 'Must be on or after date of relapse.'})
 

@@ -27,6 +27,8 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         model_class = FetalAnomalyScan
 
     def pre_validate(self, data):
+        # Clear details if abnormality not present.
+
         if not data['hepatic_abnormalities']:
             data['hepatic_abnormalitiy_details'] = None
 

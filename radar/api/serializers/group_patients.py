@@ -42,15 +42,19 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         group = data['group']
         patient = data['patient']
 
+        # Get the patient's groups
         groups = patient.groups
 
         instance = self.root.instance
 
+        # Remove the old group
         if instance is not None:
             groups.remove(instance.group)
 
+        # Add the new group
         groups.append(group)
 
+        # Check dependencies are met
         try:
             check_dependencies(groups)
         except DependencyError as e:
@@ -68,11 +72,13 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         if not has_permission_for_group(current_user, data['group'], PERMISSION.EDIT_PATIENT_MEMBERSHIP):
             raise PermissionDenied()
 
+        # True if permissions on the old created group need to be checked
         check_old_created_group = (
             instance is not None and
             instance.created_group != data['created_group']
         )
 
+        # True if permissions on the new created group need to be checked
         check_new_created_group = (
             instance is None or
             instance.group != data['group'] or
@@ -106,9 +112,10 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             raise ValidationError({'group': 'Patient already belongs to this group.'})
 
         # Check the from date isn't before the date the patient was added to the system
-        if not data['group'].type != GROUP_TYPE.SYSTEM:
+        if data['group'].type != GROUP_TYPE.SYSTEM:
             recruited_date = data['patient'].recruited_date()
 
+            # Can't be added to a group before they are added to the system
             if recruited_date is not None and data['from_date'] < recruited_date.date():
                 raise ValidationError({'from_date': "Must be on or after the recruitment date."})
 

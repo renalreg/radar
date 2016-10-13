@@ -27,6 +27,7 @@ class DialysisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     def validate(self, data):
         data = super(DialysisSerializer, self).validate(data)
 
+        # Check to date is after from date
         if data['to_date'] is not None and data['to_date'] < data['from_date']:
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 
