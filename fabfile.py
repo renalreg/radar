@@ -96,7 +96,7 @@ def run_fixtures(args):
 
 
 @task
-def test():
+def staging():
     answer = prompt('Are you sure you want to DELETE ALL DATA on "{0}" and replace it with test data? (type "I am sure" to continue):'.format(env.host_string))
 
     if answer != 'I am sure':

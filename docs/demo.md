@@ -1,6 +1,6 @@
 # Demo
 
-These instructions show how to deploy to a demo server and populate it with data.
+These instructions show how to deploy to a demo server and populate it with demo data.
 
 Dump data from a live system (creates a `radar.sql.gz` file):
 
