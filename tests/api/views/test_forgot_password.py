@@ -1,7 +1,7 @@
 import json
 
 from radar.database import db
-from tests.api.views.fixtures import get_user
+from tests.api.fixtures import get_user
 
 
 def test_forgot_password(api):
