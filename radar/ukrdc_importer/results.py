@@ -90,7 +90,7 @@ def unique_results(sda_lab_orders):
 
 
 def preload_results(patient):
-    """Preload results so get(id) can use the identity map rather than querying the database"""
+    """Preload results so get(id) can use the identity map rather than querying the database."""
     get_results(patient)
 
 
@@ -124,7 +124,7 @@ def find_earliest_observations(results):
 
 
 def sync_results(patient, results_to_keep):
-    """Deletes results on or after the earliest date in the input data"""
+    """Deletes results on or after the earliest date in the input data."""
 
     # No results in the file, nothing to do
     # This prevents all of the patient's previously imported results being deleted

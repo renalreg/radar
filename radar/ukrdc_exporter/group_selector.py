@@ -25,8 +25,7 @@ class GroupSelector(object):
         return status
 
     def _select_past(self, a, b):
-        """
-        Return the membership with the latest to date.
+        """Return the membership with the latest to date.
 
         Settle ties using the newest membership (by ID).
         """
@@ -45,8 +44,7 @@ class GroupSelector(object):
             return b
 
     def _select_present(self, a, b):
-        """
-        Return the membership with the latest to date.
+        """Return the membership with the latest to date.
 
         Settle ties using the earliest from date and then the newest membership (by ID).
         """
@@ -69,8 +67,7 @@ class GroupSelector(object):
             return b
 
     def _select_future(self, a, b):
-        """
-        Return the membership with the earliest from date.
+        """Return the membership with the earliest from date.
 
         Settle ties using the latest to date and then the newest membership (by ID).
         """
@@ -93,9 +90,7 @@ class GroupSelector(object):
             return b
 
     def select_group(self, membership_a, membership_b):
-        """
-        Return the PRESENT membership, the FUTURE membership, or the PAST membership.
-        """
+        """Return the PRESENT membership, the FUTURE membership, or the PAST membership."""
 
         status_a = self._get_status(membership_a)
         status_b = self._get_status(membership_b)
@@ -113,8 +108,7 @@ class GroupSelector(object):
 
     @classmethod
     def select_groups(cls, memberships):
-        """
-        Return a single memberships for each group.
+        """Return a single memberships for each group.
 
         The precedence is PRESENT, FUTURE, and PAST.
         """
