@@ -189,7 +189,6 @@ def patients_by_recruitment_group(group):
     return q3.all()
 
 
-# TODO
 def patients_by_group_date(group=None, group_type=None, interval='month'):
     """
     Number of patients in each group over time.
@@ -202,8 +201,26 @@ def patients_by_group_date(group=None, group_type=None, interval='month'):
     )
     query = query.join(GroupPatient.patient)
     query = query.filter(Patient.test == false())
-    query = query.filter(Patient.current() == true())
 
+    if group is not None and group.type == 'SYSTEM':
+        query = query.filter(Patient.current(group) == true())
+    else:
+        query = query.filter(Patient.current() == true())
+
+    # Filter by patients beloning to the specified group
+    if group is not None:
+        patient_alias = aliased(Patient)
+        group_subquery = db.session.query(patient_alias)\
+            .join(patient_alias.group_patients)\
+            .filter(
+                patient_alias.id == Patient.id,
+                GroupPatient.group == group,
+            )\
+            .exists()
+
+        query = query.filter(group_subquery)
+
+    # Filter by group type
     if group_type is not None:
         query = query.join(GroupPatient.group)
         query = query.filter(Group.type == group_type)

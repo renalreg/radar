@@ -78,7 +78,7 @@ class PatientsByGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
-        results = patients_by_group_date(args['group_type'], args['interval'])
+        results = patients_by_group_date(args['group'], args['group_type'], args['interval'])
 
         return results
 
