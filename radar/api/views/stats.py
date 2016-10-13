@@ -5,7 +5,7 @@ from flask import Blueprint
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.stats import DataPointListSerializer, PatientsByGroupListSerializer, PatientsByGroupDateListSerializer
 from radar.api.views.generics import response_json, ApiView, parse_args
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE
 from radar.stats import (
     patients_by_recruitment_date,
     patients_by_group,
@@ -16,7 +16,7 @@ from radar.stats import (
 
 
 class PatientsByRecruitmentDateRequestSerializer(serializers.Serializer):
-    group = GroupField(required=False)
+    group = GroupField()
     interval = fields.StringField(default='month', validators=[in_(['month'])])
 
 
@@ -26,16 +26,17 @@ class PatientsByGroupRequestSerializer(serializers.Serializer):
 
 
 class PatientsByGroupDateRequestSerializer(serializers.Serializer):
+    group = GroupField(required=False)
     group_type = fields.EnumField(GROUP_TYPE, required=False)
     interval = fields.StringField(default='month', validators=[in_('month')])
 
 
 class PatientsByRecruitmentGroupRequestSerializer(serializers.Serializer):
-    group = GroupField(required=False)
+    group = GroupField()
 
 
 class PatientsByRecruitmentGroupDateRequestSerializer(serializers.Serializer):
-    group = GroupField(required=False)
+    group = GroupField()
     interval = fields.StringField(default='month', validators=[in_('month')])
 
 
@@ -48,12 +49,7 @@ class PatientsByRecruitmentDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByRecruitmentDateRequestSerializer)
 
-        if args['group'] is not None:
-            group = args['group']
-        else:
-            group = Group.get_radar()
-
-        points = patients_by_recruitment_date(group, args['interval'])
+        points = patients_by_recruitment_date(args['group'], args['interval'])
 
         return {'points': points}
 
@@ -82,7 +78,7 @@ class PatientsByGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
-        results = patients_by_group_date(args['group_type'], args['interval'])
+        results = patients_by_group_date(args['group'], args['group_type'], args['interval'])
 
         return results
 
@@ -96,12 +92,7 @@ class PatientsByRecruitmentGroupView(ApiView):
     def get(self):
         args = parse_args(PatientsByRecruitmentGroupRequestSerializer)
 
-        if args['group'] is not None:
-            group = args['group']
-        else:
-            group = Group.get_radar()
-
-        counts = patients_by_recruitment_group(group)
+        counts = patients_by_recruitment_group(args['group'])
         counts = [{'group': x, 'count': y} for x, y in counts]
 
         return {'counts': counts}
@@ -116,12 +107,7 @@ class PatientsByRecruitmentGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByRecruitmentGroupDateRequestSerializer)
 
-        if args['group'] is not None:
-            group = args['group']
-        else:
-            group = Group.get_radar()
-
-        results = patients_by_recruitment_group_date(group, args['interval'])
+        results = patients_by_recruitment_group_date(args['group'], args['interval'])
 
         return results
 

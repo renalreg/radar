@@ -108,11 +108,11 @@ class DrugGroupView(ModelView):
 
 
 class GroupView(ModelView):
-    column_list = ['name', 'type', 'code']
+    column_list = ['name', 'type', 'code', 'parent_group']
     column_default_sort = 'name'
-    form_columns = ['name', 'short_name', 'type', 'code', 'instructions']
+    form_columns = ['name', 'short_name', 'type', 'code', 'parent_group', 'instructions']
     column_searchable_list = ['name', 'short_name', 'type', 'code']
-    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'instructions']
+    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
 

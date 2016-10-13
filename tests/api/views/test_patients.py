@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tests.api.views.fixtures import get_user
+from tests.api.fixtures import get_user
 
 matrix = [
     ('admin', True, True),

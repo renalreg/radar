@@ -3,7 +3,7 @@ import json
 import pytest
 
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
-from tests.api.views.fixtures import (
+from tests.api.fixtures import (
     get_user,
     get_patient,
     get_group,

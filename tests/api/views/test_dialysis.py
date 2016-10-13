@@ -8,7 +8,7 @@ from radar.database import db
 from radar.models.dialysis import Dialysis
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
-from tests.api.views.fixtures import (
+from tests.api.fixtures import (
     get_user,
     set_default_source,
     set_default_users,

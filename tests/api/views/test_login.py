@@ -1,6 +1,6 @@
 import json
 
-from tests.api.views.fixtures import get_user
+from tests.api.fixtures import get_user
 
 
 def login(client, username, password):
