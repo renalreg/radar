@@ -116,7 +116,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             recruited_date = data['patient'].recruited_date()
 
             # Can't be added to a group before they are added to the system
-            if recruited_date is not None and data['from_date'] < recruited_date.date():
+            if recruited_date is not None and data['from_date'] < recruited_date:
                 raise ValidationError({'from_date': "Must be on or after the recruitment date."})
 
         return data
