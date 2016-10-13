@@ -156,7 +156,7 @@ class FormView(ModelView):
 
 class ObservationView(ModelView):
     column_default_sort = 'name'
-    column_list = ['name', 'sample_type']
+    column_list = ['name', 'short_name', 'sample_type']
     form_columns = [
         'name', 'short_name', 'value_type',
         'sample_type', 'pv_code', 'min_value',
