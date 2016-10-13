@@ -18,7 +18,7 @@ class DropView(DDLElement):
 
 @compiler.compiles(CreateView)
 def compile_create_view(element, compiler, **kwargs):
-    return 'CREATE VIEW {name} AS {query}'.format(
+    return 'CREATE OR REPLACE VIEW {name} AS {query}'.format(
         name=element.name,
         query=compiler.sql_compiler.process(element.selectable, literal_binds=True)
     )

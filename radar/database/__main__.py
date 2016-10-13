@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
+import sys
+
 import click
 
 from radar.app import Radar
 from radar.database import db, do_drop, do_create
+from radar.database.utils import pg_restore
 
 
 @click.group()
@@ -21,6 +24,14 @@ def drop():
 def create():
     do_create()
     db.session.commit()
+
+
+@cli.command()
+@click.argument('args', nargs=-1)
+def restore(args):
+    args = list(args)
+    r = pg_restore(args)
+    sys.exit(r)
 
 
 def main():
