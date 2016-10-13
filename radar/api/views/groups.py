@@ -26,12 +26,15 @@ class GroupListView(ListCreateModelView):
 
         args = parse_args(GroupListRequestSerializer)
 
+        # Filter by code
         if args['code'] is not None:
             query = query.filter(Group.code == args['code'])
 
+        # Filter by group type
         if args['type'] is not None:
             query = query.filter(Group.type == args['type'])
 
+        # Filter by recruitment number flag
         if args['is_recruitment_number_group'] is not None:
             query = query.filter(Group.is_recruitment_number_group == args['is_recruitment_number_group'])
 

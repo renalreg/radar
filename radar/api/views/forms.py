@@ -82,6 +82,7 @@ def query_by_group(query, group, type=None):
     elif type == 'questionnaire':
         query = query_by_group_questionnaire(query, group)
     else:
+        # Forms and questionnaires for this group
         query = query.filter(or_(
             filter_by_group_form(group),
             filter_by_group_questionnaire(group),
@@ -93,8 +94,10 @@ def query_by_group(query, group, type=None):
 
 def query_by_type(query, type):
     if type == 'form':
+        # Just forms
         f = GroupForm.query.filter(GroupForm.form_id == Form.id).exists()
     else:
+        # Just questionnaires
         f = GroupQuestionnaire.query.filter(GroupQuestionnaire.form_id == Form.id).exists()
 
     return query.filter(f)
@@ -151,6 +154,8 @@ class FormCountListView(ListView):
         q1 = q1.group_by(Entry.form_id)
         q1 = q1.subquery()
 
+        # Get forms with their entry counts (set entry count to zero if their
+        # form hasn't been filled in yet).
         q2 = db.session.query(Form, func.coalesce(q1.c.entry_count, 0))
         q2 = q2.outerjoin(q1, Form.id == q1.c.form_id)
 
@@ -184,7 +189,7 @@ class EntryListView(PatientObjectListView):
 
         form_id = args['form']
 
-        # Filter by entries by form
+        # Filter entries by form
         if form_id is not None:
             query = query.filter(Entry.form_id == form_id)
 

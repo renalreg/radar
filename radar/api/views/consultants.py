@@ -53,7 +53,7 @@ class ConsultantListView(ListModelView):
 
         args = parse_args(ConsultantRequestSerializer)
 
-        # Consultants available to a patient
+        # Only show the consultants available to a patient
         if args['patient'] is not None:
             patient_id = args['patient']
             query = filter_consultants_by_patient_id(query, patient_id)

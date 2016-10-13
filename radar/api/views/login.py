@@ -22,6 +22,7 @@ class LoginView(ApiView):
         except (UsernameLoginError, PasswordLoginError):
             raise ValidationError({'username': 'Incorrect username or password.'})
 
+        # Optionally logout other sessions
         if credentials.get('logout_other_sessions', False):
             logout_other_sessions()
 

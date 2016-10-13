@@ -121,6 +121,7 @@ def filter_query_by_patient_permissions(query, model_class):
 def filter_query_by_patient(query, model_class):
     args = parse_args(PatientRequestSerializer)
 
+    # Filter by patient
     if args['patient'] is not None:
         query = query.filter(model_class.patient_id == args['patient'])
 
@@ -218,6 +219,7 @@ def filter_query_by_user_permissions(query, model_class):
 def filter_query_by_user(query, model_class):
     args = parse_args(UserRequestSerializer)
 
+    # Filter by user
     if args['user'] is not None:
         query = query.filter(model_class.user_id == args['user'])
 

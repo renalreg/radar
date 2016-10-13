@@ -42,16 +42,19 @@ class Schema(object):
         errors = {}
         data = {}
 
+        # Fields that can be written to
         for field in self.writable_fields:
             name = field.name
             parser = field.parser
 
             value = raw_data.get(name)
 
+            # Skip null values
             if value is not None:
                 try:
                     value = parser(value)
                 except ValueError as e:
+                    # Gather errors
                     errors[name] = str(e)
                     continue
 
@@ -69,6 +72,7 @@ class Schema(object):
             name = field.name
 
             if field.formula:
+                # Re-calculate the field's value
                 value = field.formula(data, [name])
             else:
                 value = data.get(name)
@@ -107,6 +111,7 @@ class Schema(object):
             name = field.name
             visible = field.visible
 
+            # Invisible fields shouldn't have values
             if not visible(data, [name]):
                 data[name] = None
 
@@ -126,7 +131,9 @@ class Schema(object):
                 try:
                     validator(value)
                 except ValidationError as e:
+                    # Gather errors
                     errors[name] = e.errors
+                    break
 
         if errors:
             raise ValidationError(errors)
@@ -134,6 +141,8 @@ class Schema(object):
     def check_formula(self, data):
         for field in self.calculated_fields:
             name = field.name
+
+            # Calculate the field's value
             data[name] = field.formula(data, [name])
 
     def validate(self, raw_data):
@@ -193,8 +202,6 @@ class Field(object):
             self.formula = None
         else:
             self.formula = self.parse_formula(formula_data)
-
-        # TODO fields with a formula should be read only
 
     def parse_default(self, default_data):
         """Returns a function to get the default value for a field.

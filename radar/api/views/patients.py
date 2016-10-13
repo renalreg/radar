@@ -99,6 +99,7 @@ def list_patients():
     sort, reverse = get_sort_args()
 
     if sort is not None:
+        # Check if we are sorting by group recruitment date
         m = re.match('^group_([0-9]+)', sort)
 
         if m:
@@ -165,6 +166,8 @@ class PatientListCSVView(ApiView):
         writer.writerow(headers)
 
         def get_groups(patient, group_type):
+            """Comma-separated list of groups."""
+
             groups = [x.name for x in patient.current_groups if x.type == group_type]
             groups = sorted(groups)
             groups = uniq(groups)
@@ -173,6 +176,7 @@ class PatientListCSVView(ApiView):
         patients = list_patients()
 
         for patient in patients:
+            # Wrap the patient so demographics aren't exposed to unprivileged users
             patient = SkipProxy(PatientProxy(patient, current_user))
 
             output = []

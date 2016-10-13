@@ -13,7 +13,7 @@ from radar.recruitment import SearchPatient, RecruitmentPatient, DemographicsMis
 
 def mismatch_error(e):
     message = (
-        "Found an existing patient (RaDaR {}) with this patient number. "
+        "Found an existing patient (ID {}) with this patient number. "
         "The name, date of birth or gender you have supplied don't match the details we hold. "
         "Please contact RaDaR support for help recruiting this patient."
     ).format(e.patient.id)
@@ -22,6 +22,8 @@ def mismatch_error(e):
 
 
 class RecruitPatientSearchView(PermissionViewMixin, ApiView):
+    """Search for an existing patient."""
+
     permission_classes = [RecruitPatientPermission]
 
     @request_json(RecruitPatientSearchSerializer)
@@ -45,6 +47,8 @@ class RecruitPatientSearchView(PermissionViewMixin, ApiView):
 
 
 class RecruitPatientView(PermissionViewMixin, ApiView):
+    """Add a patient to a cohort and hospital."""
+
     permission_classes = [RecruitPatientPermission]
 
     @request_json(RecruitPatientSerializer)

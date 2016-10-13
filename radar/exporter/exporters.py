@@ -16,6 +16,8 @@ exporter_map = {}
 
 
 def register(name):
+    """Add an exporter."""
+
     def decorator(cls):
         exporter_map[name] = cls
         return cls
@@ -51,6 +53,8 @@ def column(name, getter=None):
 
 
 def demographics_column_factory(config):
+    """Returns a column based on the config."""
+
     if config['anonymised']:
         def column(name, getter=None, anonymised_getter=None, patient_getter=None):
             if anonymised_getter is None:

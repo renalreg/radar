@@ -115,6 +115,7 @@ def logout_other_sessions():
 
 
 def logout_user(user):
+    # Delete user sessions
     UserSession.query\
         .filter(UserSession.user == user)\
         .delete()
@@ -207,6 +208,7 @@ def get_user_session():
             if not user.is_enabled:
                 user_session = None
 
+        # Set the user session
         _request_ctx_stack.top.user_session = user_session
 
     user_session = getattr(_request_ctx_stack.top, 'user_session', None)

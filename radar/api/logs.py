@@ -7,6 +7,8 @@ from radar.models.users import User
 
 
 def get_user(session):
+    """Get the current user with the specified session."""
+
     if current_user.is_authenticated():
         user = session.query(User).get(current_user.id)
     else:
@@ -16,6 +18,8 @@ def get_user(session):
 
 
 def get_url():
+    """Get the current URL being served."""
+
     url = request.path
 
     if request.query_string:

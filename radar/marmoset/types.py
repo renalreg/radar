@@ -33,6 +33,7 @@ def parse_float(value):
 
 def parse_string(value):
     if isinstance(value, basestring):
+        # Remove leading/trailing whitespace
         return value.strip()
     else:
         raise ValueError('Not a string.')
@@ -62,7 +63,7 @@ def parse_datetime(value):
         return value
     elif isinstance(value, basestring):
         try:
-            return iso8601.parse_date(value).date()
+            return iso8601.parse_date(value)
         except iso8601.ParseError:
             raise ValueError('Not a datetime.')
     else:

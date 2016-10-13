@@ -24,6 +24,8 @@ def get_months(months):
 
 
 def path_getter(path):
+    """Get attributes at the dot-separated path."""
+
     parts = path.split('.')
 
     def f(value):

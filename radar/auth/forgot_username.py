@@ -6,6 +6,7 @@ from radar.models.users import User
 def forgot_username(email):
     users = User.query.filter(User.email == email).all()
 
+    # No users with that email
     if len(users) == 0:
         raise UserNotFound()
 

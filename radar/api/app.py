@@ -23,15 +23,18 @@ class RadarAPI(Radar):
             if current_user.is_authenticated():
                 user_id = current_user.id
 
+                # Set the user_id for use by the log_changes trigger
                 # SET LOCAL lasts until the end of the current transaction
                 # http://www.postgresql.org/docs/9.4/static/sql-set.html
                 session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user_id))
 
         if self.debug:
+            # Debug mode
             self.before_request(debug_before_request)
             self.after_request(set_cors_headers)
             self.teardown_request(debug_teardown_request)
         else:
+            # Production mode
             stream_handler = logging.StreamHandler()
             stream_handler.setLevel(logging.INFO)
             self.logger.addHandler(stream_handler)
