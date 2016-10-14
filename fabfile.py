@@ -64,27 +64,8 @@ def deploy(archive=None, name='radar'):
 @task
 def dump():
     with temp():
-        tables = ' '.join('--table {0}'.format(table) for table in [
-            'codes',
-            'consultants',
-            'diagnoses',
-            'diagnosis_codes',
-            'drug_groups',
-            'drugs',
-            'forms',
-            'group_consultants',
-            'group_diagnoses',
-            'group_forms',
-            'group_observations',
-            'group_pages',
-            'group_questionnaires',
-            'groups',
-            'observations',
-            'specialties',
-        ])
-        command = 'pg_dump -h localhost -U postgres -Fc {0} radar'.format(tables)
-        run('{0} | gzip > radar.sql.gz'.format(command))
-        get('radar.sql.gz', '.')
+        run_db('dump radar.sql')
+        get('radar.sql', '.')
 
 
 def run_db(args):
@@ -112,12 +93,16 @@ def demo():
     if answer != 'I am sure':
         abort('Aborted!')
 
+    password = None
+
+    while not password:
+        password = prompt('Choose a password:')
+
     with temp():
-        put('radar.sql.gz', 'radar.sql.gz')
-        run('gunzip radar.sql.gz')
+        put('radar.sql', 'radar.sql')
         run_db('drop')
         run_db('create')
-        run_db('restore -- --data-only --disable-triggers radar.sql')
-        run_fixtures('users')
+        run_db('restore radar.sql')  # Note: user must be a PostgreSQL superuser to run this
+        run_fixtures('users --password {0}'.format(password))
         run_fixtures('patients --patients 95 --no-data')
         run_fixtures('patients --patients 5 --data')

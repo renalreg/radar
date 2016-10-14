@@ -1,8 +1,8 @@
 # Demo
 
-These instructions show how to deploy to a demo server and populate it with demo data.
+These instructions show you how to update a demo server with the latest version of the code and populate its database with demo data.
 
-Dump data from a live system (creates a `radar.sql.gz` file):
+Dump data from a live system (creates a `radar.sql` file):
 
 ```sh
 fab -H nww.radar.nhs.uk -u root dump

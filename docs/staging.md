@@ -1,6 +1,6 @@
 # Staging
 
-These instructions show how to deploy to a staging server and populate it with test data.
+These instructions show you how to update a staging server with the latest version of the code and populate its database with test data.
 
 Build the code (see the "Build" section of the [README](../README.md)).
 

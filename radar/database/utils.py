@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 import subprocess
 from urlparse import urlparse
@@ -5,35 +6,63 @@ from urlparse import urlparse
 from radar.config import config
 
 
-def pg_args(connection_string):
+PostgreSQL = namedtuple('PostgreSQL', ['hostname', 'port', 'database', 'username', 'password'])
+
+
+def pg_parse(connection_string):
     u = urlparse(connection_string)
+    return PostgreSQL(u.hostname, u.port, u.path[1:], u.username, u.password)
 
-    args = []
-    args += ['-h', u.hostname]
-    args += ['-d', u.path[1:]]
 
-    if u.port:
-        args += ['-p', str(u.port)]
+def pg_dump(args, dest):
+    connection_string = config['SQLALCHEMY_DATABASE_URI']
+    pg = pg_parse(connection_string)
 
-    if u.username:
-        args += ['-U', u.username]
+    environment = os.environ.copy()
+    command = ['pg_dump']
 
-    return args
+    command += ['-h', pg.hostname]
 
-def pg_password(connection_string):
-    return urlparse(connection_string).password
+    if pg.port:
+        command += ['-p', str(pg.port)]
+
+    if pg.username:
+        command += ['-U', pg.username]
+
+    if pg.password is not None:
+        environment['PGPASSWORD'] = pg.password
+
+    command += args
+
+    command += [pg.database]
+
+    print environment
+    print command
+
+    p = subprocess.Popen(command, env=environment, stdout=dest)
+    return p.wait()
 
 
 def pg_restore(args):
     connection_string = config['SQLALCHEMY_DATABASE_URI']
+    pg = pg_parse(connection_string)
 
     environment = os.environ.copy()
-    command = ['pg_restore'] + pg_args(connection_string) + args
+    command = ['pg_restore']
 
-    password = pg_password(connection_string)
+    command += ['-h', pg.hostname]
+    command += ['-d', pg.database]
 
-    if password is not None:
-        environment['PGPASSWORD'] = password
+    if pg.port:
+        command += ['-p', str(pg.port)]
+
+    if pg.username:
+        command += ['-U', pg.username]
+
+    if pg.password is not None:
+        environment['PGPASSWORD'] = pg.password
+
+    command += args
 
     print environment
     print command
