@@ -14,11 +14,15 @@ def create_results_f():
 
             if min_value is None:
                 min_value = 0
+            else:
+                min_value = float(min_value)
 
             max_value = observation.max_value
 
             if max_value is None:
                 max_value = 100
+            else:
+                max_value = float(max_value)
 
             for _ in range(y):
                 result = Result()
