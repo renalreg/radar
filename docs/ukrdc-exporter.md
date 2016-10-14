@@ -79,7 +79,7 @@ Currently just the RaDaR group.
 
 ## Exporting Patients
 
-The `enqueue_patients.py` script checks the database for updated patients and add thems to a queue to be exported.
+The `radar-ukrdc-exporter` script checks the database for updated patients and add thems to a queue to be exported.
 The script determines which patients have been updated by looking at `INSERT`, `UPDATE` and `DELETE` entries in the `logs` table.
 
 The script can be run with the `--state-file FILENAME` to keep track of the log entries already processed.

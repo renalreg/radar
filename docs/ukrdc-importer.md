@@ -82,20 +82,19 @@ CELERY_RESULT_PERSISTENT = False
 Run the API with:
 
 ```
-RADAR_SETTINGS=/path/to/settings.py python radar_ukrdc/api.py
+RADAR_SETTINGS=/path/to/settings.py python radar-ukrdc-importer-api
 ```
 
 | URL            | HTTP Method | Input                                          | Output                                    |
 |----------------|-------------|------------------------------------------------|-------------------------------------------|
 | `/import`      | `POST`      | Patient record as SDA JSON in the HTTP body.   | Task ID for checking with `/status/<id>`. |
-| `/status/<id>` | `GET`       | Task ID in the URL.                            | `1` if task complete, otherwise `0`.      |
 
 ## Worker
 
 Run the worker with:
 
 ```
-RADAR_SETTINGS=$(pwd)/settings.py celery -A radar.ukrdc_importer.worker worker -Q ukrdc_importer
+RADAR_SETTINGS=/path/to/settings.py celery -A radar.ukrdc_importer.worker worker -Q ukrdc_importer
 ```
 
 The number of worker processes/threads can be controlled with the `--concurrency` option. By default this is the number of CPUs on the machine.
