@@ -1,16 +1,20 @@
-import time
 from collections import defaultdict
+import time
 
-from flask_sqlalchemy import get_debug_queries
 from flask import g, request
+from flask_sqlalchemy import get_debug_queries
 from termcolor import colored
 
 
 def debug_before_request():
+    """Used by debug_teardown_request to time the request."""
+
     g.start = time.time()
 
 
 def debug_teardown_request(exception):
+    """Log slow responses and queries."""
+
     url = request.url
 
     response_time = time.time() - g.start
@@ -23,9 +27,9 @@ def debug_teardown_request(exception):
     queries = defaultdict(lambda: [0, 0])
 
     for q in get_debug_queries():
-        queries[q.statement][0] += 1
-        queries[q.statement][1] += q.duration
-        total_query_time += q.duration
+        queries[q.statement][0] += 1  # number of time query run
+        queries[q.statement][1] += q.duration  # total time for query
+        total_query_time += q.duration  # total time for all queries
 
     # Queries taking longer than 0.1 seconds (slowest first)
     queries = [(k, v[0], v[1]) for k, v in queries.items()]

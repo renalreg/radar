@@ -1,10 +1,10 @@
-from flask import Response
 from cornflake.exceptions import ValidationError
+from flask import Response
 
-from radar.auth.exceptions import UserNotFound
-from radar.auth.forgot_username import forgot_username
 from radar.api.serializers.auth import ForgotUsernameSerializer
 from radar.api.views.generics import ApiView, request_json
+from radar.auth.exceptions import UserNotFound
+from radar.auth.forgot_username import forgot_username
 
 
 class ForgotUsernameView(ApiView):

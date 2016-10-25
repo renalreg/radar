@@ -1,8 +1,8 @@
 import copy
 import json
-import pkg_resources
 
 import js2py
+import pkg_resources
 
 from radar.marmoset.exceptions import SchemaError
 

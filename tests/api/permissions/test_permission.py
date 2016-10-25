@@ -1,6 +1,6 @@
 from radar.api.permissions import Permission
-from tests.permissions.helpers import make_user
 from tests.api.permissions.helpers import MockRequest
+from tests.permissions.helpers import make_user
 
 
 def test_has_permission():

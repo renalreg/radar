@@ -1,6 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import not_empty, normalise_whitespace, max_length
 from sqlalchemy import and_
 
@@ -12,8 +12,8 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import get_number_validators
 from radar.database import db
-from radar.models.patient_numbers import PatientNumber
 from radar.models.groups import GROUP_TYPE
+from radar.models.patient_numbers import PatientNumber
 
 
 class PatientNumberSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
@@ -36,23 +36,12 @@ class PatientNumberSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelS
         q = PatientNumber.query
 
         # Check another patient doesn't already have this number (same source)
-        c1 = and_(
+        q = q.filter(and_(
             PatientNumber.source_group == data['source_group'],
             PatientNumber.source_type == data['source_type'],
             PatientNumber.number_group == data['number_group'],
             PatientNumber.number == data['number']
-        )
-
-        # Check this patient doesn't already have a number of this type (same source)
-        # TODO disabled as it's possible for a patient to two or more numbers at the same hospital (different building / ward)
-        # c2 = and_(
-        #     PatientNumber.patient == data['patient'],
-        #     PatientNumber.source_group == data['source_group'],
-        #     PatientNumber.source_type == data['source_type'],
-        #     PatientNumber.number_group == data['number_group']
-        # )
-
-        q = q.filter(c1)
+        ))
 
         instance = self.instance
 

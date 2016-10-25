@@ -41,9 +41,7 @@ class PatientsByRecruitmentGroupDateRequestSerializer(serializers.Serializer):
 
 
 class PatientsByRecruitmentDateView(ApiView):
-    """
-    Number of patients recruited over time.
-    """
+    """Number of patients recruited over time."""
 
     @response_json(DataPointListSerializer)
     def get(self):
@@ -55,9 +53,7 @@ class PatientsByRecruitmentDateView(ApiView):
 
 
 class PatientsByGroupView(ApiView):
-    """
-    Number of patients in each group.
-    """
+    """Number of patients in each group."""
 
     @response_json(PatientsByGroupListSerializer)
     def get(self):
@@ -70,9 +66,7 @@ class PatientsByGroupView(ApiView):
 
 
 class PatientsByGroupDateView(ApiView):
-    """
-    Number of patients in each group over time.
-    """
+    """Number of patients in each group over time."""
 
     @response_json(PatientsByGroupDateListSerializer)
     def get(self):
@@ -84,9 +78,7 @@ class PatientsByGroupDateView(ApiView):
 
 
 class PatientsByRecruitmentGroupView(ApiView):
-    """
-    Number of patients recruited by each group.
-    """
+    """Number of patients recruited by each group."""
 
     @response_json(PatientsByGroupListSerializer)
     def get(self):
@@ -99,9 +91,7 @@ class PatientsByRecruitmentGroupView(ApiView):
 
 
 class PatientsByRecruitmentGroupDateView(ApiView):
-    """
-    Number of patients recruited by each group over time.
-    """
+    """Number of patients recruited by each group over time."""
 
     @response_json(PatientsByGroupDateListSerializer)
     def get(self):

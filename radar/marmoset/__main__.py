@@ -1,7 +1,7 @@
 import json
 
-from radar.marmoset.schema import Schema
 from radar.marmoset.registry import Registry
+from radar.marmoset.schema import Schema
 
 if __name__ == '__main__':
     import argparse

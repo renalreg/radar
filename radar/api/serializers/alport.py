@@ -1,9 +1,9 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, IntegerLookupField
+from radar.api.serializers.common import IntegerLookupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.alport import AlportClinicalPicture, DEAFNESS_OPTIONS, DEAFNESS_NO
+from radar.models.alport import AlportClinicalPicture, DEAFNESS_NO, DEAFNESS_OPTIONS
 
 
 class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):

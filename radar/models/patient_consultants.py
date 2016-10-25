@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index
+from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -20,10 +20,3 @@ class PatientConsultant(db.Model, MetaModelMixin):
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
-
-Index(
-    'patient_consultants_patient_consultant_idx',
-    PatientConsultant.patient_id,
-    PatientConsultant.consultant_id,
-    unique=True
-)

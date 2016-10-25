@@ -1,7 +1,7 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
-from cornflake.validators import range_
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
+from cornflake.validators import range_
 
 from radar.api.serializers.common import (
     PatientMixin,
@@ -80,6 +80,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
         ]
 
     def pre_validate(self, data):
+        # Symptom and date pairs
         pairs = [
             ('portal_hypertension', 'portal_hypertension_date'),
             ('ascites', 'ascites_date'),
@@ -94,6 +95,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
             ('spleen_palpable', 'spleen_palpable_date'),
         ]
 
+        # Blank date if symptom not present
         for a, b in pairs:
             if not data[a]:
                 data[b] = None
@@ -122,6 +124,7 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
     def validate(self, data):
         data = super(LiverTransplantSerializer, self).validate(data)
 
+        # Transplant date should be after registration date
         if data['registration_date'] is not None and data['transplant_date'] < data['registration_date']:
             raise ValidationError({'transplant_date': 'Must be on or after registration date.'})
 
@@ -143,6 +146,7 @@ class NutritionSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     def validate(self, data):
         data = super(NutritionSerializer, self).validate(data)
 
+        # To date must be after from date
         if data['to_date'] is not None and data['to_date'] < data['from_date']:
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 

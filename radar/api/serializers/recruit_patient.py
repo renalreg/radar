@@ -1,12 +1,12 @@
 from cornflake import fields, serializers
-from cornflake.validators import not_empty, upper, not_in_future
 from cornflake.exceptions import ValidationError
+from cornflake.validators import not_empty, upper, not_in_future
 
 from radar.api.serializers.common import GroupField, StringLookupField, IntegerLookupField
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
-from radar.models.patient_codes import GENDERS, ETHNICITIES
 from radar.models.groups import GROUP_TYPE, check_dependencies, DependencyError
+from radar.models.patient_codes import GENDERS, ETHNICITIES
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
 

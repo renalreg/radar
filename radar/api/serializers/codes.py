@@ -1,4 +1,5 @@
 from cornflake.sqlalchemy_orm import ModelSerializer
+
 from radar.models.codes import Code
 
 

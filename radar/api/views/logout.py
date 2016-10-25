@@ -1,7 +1,7 @@
 from flask import Response
 
-from radar.auth.sessions import logout, logout_other_sessions
 from radar.api.views.generics import ApiView
+from radar.auth.sessions import logout, logout_other_sessions
 
 
 class LogoutView(ApiView):

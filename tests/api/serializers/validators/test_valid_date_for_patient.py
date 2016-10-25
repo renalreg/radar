@@ -1,8 +1,8 @@
 from datetime import date, timedelta
 
-import pytest
 from cornflake import serializers, fields
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.patient_demographics import PatientDemographics

@@ -1,9 +1,9 @@
-from sqlalchemy.orm import aliased
 from sqlalchemy import or_, and_
+from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.models.dialysis import Dialysis
 from radar.models.diagnoses import PatientDiagnosis
+from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.genetics import Genetics
 from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
@@ -33,15 +33,15 @@ def filter_by_patient_permissions(query, user, patient_id, demographics=False):
     if not user.is_admin:
         roles = get_roles_with_permission(permission)
         patient_alias = aliased(Patient)
-        sub_query = db.session.query(patient_alias)\
-            .join(patient_alias.group_patients)\
-            .join(GroupPatient.group)\
-            .join(Group.group_users)\
-            .filter(
-                patient_alias.id == patient_id,
-                GroupUser.user_id == user.id,
-                GroupUser.role.in_(roles)
-            )
+        sub_query = db.session.query(patient_alias)
+        sub_query = sub_query.join(patient_alias.group_patients)
+        sub_query = sub_query.join(GroupPatient.group)
+        sub_query = sub_query.join(Group.group_users)
+        sub_query = sub_query.filter(
+            patient_alias.id == patient_id,
+            GroupUser.user_id == user.id,
+            GroupUser.role.in_(roles),
+        )
 
         query = query.filter(sub_query.exists())
 
@@ -57,22 +57,22 @@ def filter_by_patient_group_permissions(query, user, patient_id, group_id):
 
         # Check if the user has permission through their group membership (requires the VIEW_PATIENT permission)
         # If the user has the VIEW_PATIENT permission on one of the patient's hospitals they can view all cohort data
-        sub_query = db.session.query(Group)\
-            .join(group_b, GroupPatient.group)\
-            .join(Group.group_users)\
-            .filter(
-                GroupPatient.patient_id == patient_id,
-                GroupUser.user == user,
-                GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
-                or_(
-                    GroupPatient.group_id == group_id,
-                    and_(
-                        group_a.type == GROUP_TYPE.COHORT,
-                        group_b.type == GROUP_TYPE.HOSPITAL
-                    )
+        sub_query = db.session.query(Group)
+        sub_query = sub_query.join(group_b, GroupPatient.group)
+        sub_query = sub_query.join(Group.group_users)
+        sub_query = sub_query.filter(
+            GroupPatient.patient_id == patient_id,
+            GroupUser.user == user,
+            GroupUser.role.in_(get_roles_with_permission(PERMISSION.VIEW_PATIENT)),
+            or_(
+                GroupPatient.group_id == group_id,
+                and_(
+                    group_a.type == GROUP_TYPE.COHORT,
+                    group_b.type == GROUP_TYPE.HOSPITAL
                 )
-            )\
-            .exists()
+            )
+        )
+        sub_query = sub_query.exists()
 
         # Filter the query to only include rows the user has permission to see
         query = query.filter(sub_query)
@@ -84,13 +84,13 @@ def filter_by_patient_group(query, group, patient_id):
     patient_alias = aliased(Patient)
     group_patient_alias = aliased(GroupPatient)
 
-    sub_query = db.session.query(patient_alias)\
-        .join(group_patient_alias, patient_alias.group_patients)\
-        .filter(
-            group_patient_alias.patient_id == patient_id,
-            group_patient_alias.group_id == group.id
-        )\
-        .exists()
+    sub_query = db.session.query(patient_alias)
+    sub_query = sub_query.join(group_patient_alias, patient_alias.group_patients)
+    sub_query = sub_query.filter(
+        group_patient_alias.patient_id == patient_id,
+        group_patient_alias.group_id == group.id
+    )
+    sub_query = sub_query.exists()
 
     query = query.filter(sub_query)
 

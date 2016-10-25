@@ -1,4 +1,5 @@
 from cornflake import fields
+from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     none_if_blank,
@@ -9,12 +10,11 @@ from cornflake.validators import (
     not_empty,
     required
 )
-from cornflake.exceptions import ValidationError
 
-from radar.auth.passwords import check_password_strength, WeakPasswordError
-from radar.auth.sessions import logout_other_sessions, logout_user
 from radar.api.serializers.common import MetaMixin
 from radar.api.serializers.group_users import GroupUserSerializer
+from radar.auth.passwords import check_password_strength, WeakPasswordError
+from radar.auth.sessions import logout_other_sessions, logout_user
 from radar.models.users import User
 
 

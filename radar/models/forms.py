@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Index, CheckConstraint
-from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
 from radar.models.common import uuid_pk_column, MetaModelMixin, patient_id_column, patient_relationship

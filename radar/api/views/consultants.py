@@ -1,7 +1,6 @@
-from sqlalchemy.orm import aliased
 from cornflake import serializers, fields
+from sqlalchemy.orm import aliased
 
-from radar.auth.sessions import current_user
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.consultants import ConsultantSerializer, SpecialtySerializer
 from radar.api.views.generics import (
@@ -12,6 +11,7 @@ from radar.api.views.generics import (
     CreateModelView,
     parse_args
 )
+from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.groups import Group, GroupPatient
@@ -26,14 +26,14 @@ class ConsultantRequestSerializer(serializers.Serializer):
 def filter_consultants_by_patient_id(query, patient_id):
     # Only return consultants that belong to one of the groups the patient also belongs to
     consultant_alias = aliased(Consultant)
-    consultants_for_patient_query = db.session.query(consultant_alias)\
-        .join(consultant_alias.group_consultants)\
-        .join(GroupConsultant.group)\
-        .join(Group.group_patients)\
-        .filter(
-            GroupPatient.patient_id == patient_id,
-            Consultant.id == consultant_alias.id
-        )
+    consultants_for_patient_query = db.session.query(consultant_alias)
+    consultants_for_patient_query = consultants_for_patient_query.join(consultant_alias.group_consultants)
+    consultants_for_patient_query = consultants_for_patient_query.join(GroupConsultant.group)
+    consultants_for_patient_query = consultants_for_patient_query.join(Group.group_patients)
+    consultants_for_patient_query = consultants_for_patient_query.filter(
+        GroupPatient.patient_id == patient_id,
+        Consultant.id == consultant_alias.id,
+    )
     query = query.filter(consultants_for_patient_query.exists())
 
     # Check the user has permission to view this patient
@@ -53,7 +53,7 @@ class ConsultantListView(ListModelView):
 
         args = parse_args(ConsultantRequestSerializer)
 
-        # Consultants available to a patient
+        # Only show the consultants available to a patient
         if args['patient'] is not None:
             patient_id = args['patient']
             query = filter_consultants_by_patient_id(query, patient_id)

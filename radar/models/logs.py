@@ -45,6 +45,7 @@ def log_changes(cls):
     return cls
 
 
+# Trigger to log changes (INSERTs, UPDATEs, DELETEs)
 event.listen(db.Model.metadata, 'before_create', DDL("""
     CREATE OR REPLACE FUNCTION log_changes() RETURNS TRIGGER AS $body$
     DECLARE

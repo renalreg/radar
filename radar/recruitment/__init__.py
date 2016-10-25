@@ -1,20 +1,20 @@
-import logging
 import calendar
-import re
-import itertools
 from datetime import datetime
+import itertools
+import logging
+import re
 
-import requests
 import pytz
+import requests
 
 from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
 from radar.models.groups import GroupPatient
+from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.models.patient_codes import GENDERS
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_importer.tasks import import_sda
 

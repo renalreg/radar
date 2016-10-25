@@ -1,5 +1,5 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     range_,
     none_if_blank,
@@ -35,6 +35,8 @@ class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerial
         model_class = SaltWastingClinicalFeatures
 
     def pre_validate(self, data):
+        # Remove conditional data
+
         if data['normal_pregnancy']:
             data['abnormal_pregnancy_text'] = None
 

@@ -1,11 +1,11 @@
-from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.permissions import (
-    has_permission_for_patient,
+    has_permission,
     has_permission_for_group,
-    has_permission_for_user,
     has_permission_for_group_role,
-    has_permission
+    has_permission_for_patient,
+    has_permission_for_user,
 )
 from radar.roles import PERMISSION
 

@@ -1,7 +1,7 @@
-from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
-from cornflake.validators import none_if_blank, optional, max_length, min_, required
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import none_if_blank, optional, max_length, min_, required
 
 from radar.api.serializers.common import (
     PatientMixin,
@@ -66,15 +66,18 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     def validate(self, data):
         data = super(MedicationSerializer, self).validate(data)
 
+        # To date must be after from date
         if data['to_date'] is not None and data['to_date'] < data['from_date']:
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 
+        # Must specify either a coded drug or a free-text drug
         if data['drug'] is None and data['drug_text'] is None:
             raise ValidationError({
                 'drug': 'Must specify a drug.',
                 'drug_text': 'Must specify a drug.',
             })
 
+        # Coded dose quantities must have a unit
         if data['dose_quantity'] is not None:
             self.run_validators_on_field(data, 'dose_unit', [required()])
 

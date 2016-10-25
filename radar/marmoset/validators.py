@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
-import pytz
 from cornflake.exceptions import ValidationError
+import pytz
 
 
 class Validator(object):

@@ -1,6 +1,6 @@
-import uuid
 import calendar
 from datetime import datetime
+import uuid
 
 from cornflake.exceptions import ValidationError
 

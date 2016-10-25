@@ -1,7 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 from cornflake.exceptions import SkipField, ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import (
@@ -14,8 +13,8 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
-from radar.models.patients import Patient
 from radar.models.patient_codes import GENDERS, ETHNICITIES
+from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -67,6 +66,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
         instance = self.root.instance
         user = self.context['user']
 
+        # Must be an admin to change the test flag
         if (
             (
                 (instance is None and value) or
@@ -146,20 +146,6 @@ class PatientProxy(object):
             return self.patient.primary_patient_number
         else:
             raise SkipField
-
-    @property
-    def year_of_birth(self):
-        if self.patient.date_of_birth is not None:
-            return self.patient.date_of_birth.year
-        else:
-            return None
-
-    @property
-    def year_of_death(self):
-        if self.patient.date_of_death is not None:
-            return self.patient.date_of_death.year
-        else:
-            return None
 
     def __getattr__(self, item):
         return getattr(self.patient, item)

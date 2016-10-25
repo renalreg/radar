@@ -1,7 +1,7 @@
 from cornflake import serializers, fields
+from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
 from cornflake.validators import min_, max_, in_, min_length, max_length
-from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.common import (
     PatientMixin,
@@ -23,6 +23,8 @@ from radar.models.results import (
 
 
 def get_value_field(observation):
+    """Get a field for this type of observation."""
+
     value_type = observation.value_type
 
     if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
@@ -44,6 +46,7 @@ class OptionSerializer(serializers.Serializer):
     description = fields.StringField()
 
 
+# Extra fields for each observation type
 _custom_fields = {
     OBSERVATION_VALUE_TYPE.INTEGER: {
         'min_value': fields.IntegerField(required=False),
@@ -66,6 +69,8 @@ _custom_fields = {
 
 
 def get_custom_fields(value_type):
+    """Get the extra fields for the supplied observation value type."""
+
     return _custom_fields.get(value_type, {})
 
 
@@ -134,9 +139,11 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             max_value = observation.max_value
 
             if min_value is not None:
+                # Check min
                 validators.append(min_(min_value))
 
             if max_value is not None:
+                # Check max
                 validators.append(max_(max_value))
         elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
             codes = observation.option_codes
@@ -146,9 +153,11 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             max_length_value = observation.max_length
 
             if min_length_value is not None:
+                # Check min length
                 validators.append(min_length(min_length_value))
 
             if max_length_value is not None:
+                # Check max length
                 validators.append(max_length(max_length_value))
 
         self.run_validators_on_field(data, 'value', validators)
@@ -178,6 +187,7 @@ class ResultSerializer(serializers.ProxySerializer):
     def get_deserializer(self, data):
         observation_data = self.observation_field.get_attribute(data)
 
+        # Attemp to get the observation so we can build the correct serializer in the next step
         try:
             observation = self.observation_field.run_validation(observation_data)
         except ValidationError as e:
@@ -189,6 +199,8 @@ class ResultSerializer(serializers.ProxySerializer):
 
 
 class BaseTinyResultSerializer(PatientMixin, serializers.Serializer):
+    """Result serializer that includes a minimal amount of data so thousands of results can be returned in the response."""
+
     id = fields.UUIDField()
     observation = fields.IntegerField(source='observation_id')
     source_type = fields.StringField()

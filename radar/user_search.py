@@ -2,7 +2,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db
-from radar.models.groups import GroupUser, Group
+from radar.models.groups import Group, GroupUser
 from radar.models.users import User
 from radar.permissions import has_permission
 from radar.roles import get_roles_with_permission, PERMISSION
@@ -34,12 +34,9 @@ class UserQueryBuilder(object):
         return self
 
     def group(self, group):
-        sub_query = db.session.query(GroupUser)\
-            .filter(
-                GroupUser.group == group,
-                GroupUser.user_id == User.id,
-            )\
-            .exists()
+        sub_query = db.session.query(GroupUser)
+        sub_query = sub_query.filter(GroupUser.group == group, GroupUser.user_id == User.id)
+        sub_query = sub_query.exists()
 
         # Include admins even though they don't have explicit group membership
         self.query = self.query.filter(or_(

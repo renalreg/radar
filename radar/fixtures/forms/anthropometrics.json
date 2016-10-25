@@ -166,11 +166,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 40
         },
         {
           "name": "max",
-          "value": 100
+          "value": 300
         }
       ]
     },
@@ -182,11 +182,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 20
         },
         {
           "name": "max",
-          "value": 100
+          "value": 200
         }
       ]
     },
@@ -198,11 +198,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 40
         },
         {
           "name": "max",
-          "value": 100
+          "value": 300
         }
       ]
     },
@@ -214,11 +214,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 20
         },
         {
           "name": "max",
-          "value": 100
+          "value": 200
         }
       ]
     },
@@ -230,11 +230,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 40
         },
         {
           "name": "max",
-          "value": 100
+          "value": 300
         }
       ]
     },
@@ -246,11 +246,11 @@
       "validators": [
         {
           "name": "min",
-          "value": 0
+          "value": 20
         },
         {
           "name": "max",
-          "value": 100
+          "value": 200
         }
       ]
     },

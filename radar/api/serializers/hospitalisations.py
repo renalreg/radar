@@ -1,6 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import PatientMixin, SourceMixin, MetaMixin
@@ -24,6 +24,7 @@ class HospitalisationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
     def validate(self, data):
         data = super(HospitalisationSerializer, self).validate(data)
 
+        # Can't be discharged before being admitted
         if data['date_of_discharge'] is not None and data['date_of_discharge'] < data['date_of_admission']:
             raise ValidationError({'date_of_discharge': 'Must be on or after from date of admission.'})
 

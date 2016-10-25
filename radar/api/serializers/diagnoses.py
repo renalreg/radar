@@ -1,9 +1,10 @@
-from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
 
+from radar.api.serializers.codes import CodeSerializer
 from radar.api.serializers.common import (
     PatientMixin,
     SourceMixin,
@@ -22,7 +23,6 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis
 )
-from radar.api.serializers.codes import CodeSerializer
 
 
 class GroupDiagnosisSerializer(ModelSerializer):
@@ -39,6 +39,8 @@ class GroupDiagnosisListSerializer(serializers.ListSerializer):
     child = GroupDiagnosisSerializer()
 
     def validate(self, group_diagnoses):
+        # Check the diagnosis isn't added to the same group multiple times.
+
         groups = set()
 
         for i, group_diagnosis in enumerate(group_diagnoses):
@@ -62,6 +64,8 @@ class DiagnosisSerializer(ModelSerializer):
         model_class = Diagnosis
 
     def _save(self, instance, data):
+        # Custom save method so we can create the group_diagnoses records too.
+
         instance.name = data['name']
         instance.retired = data['retired']
         instance.group_diagnoses = self.fields['groups'].create(data['group_diagnoses'])
@@ -140,6 +144,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         return diagnosis
 
     def validate(self, data):
+        # Must specify either a coded or free-text diagnosis
         if data['diagnosis'] is None and data['diagnosis_text'] is None:
             raise ValidationError({
                 'diagnosis': 'Must specify a diagnosis.',

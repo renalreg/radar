@@ -1,10 +1,10 @@
-import re
 from datetime import datetime
+import re
 
-import pytz
 from cornflake.fields import ValidationError
-from cornflake.validators import after, not_in_future
 from cornflake.utils import safe_strftime
+from cornflake.validators import after, not_in_future
+import pytz
 
 from radar.models.groups import (
     GROUP_TYPE,
@@ -121,17 +121,22 @@ class valid_date_for_patient(object):
         field = self.parent.fields[self.field_name]
         value = field.get_attribute(data)
 
+        # Exit early if value is none
         if value is None:
             return data
 
         try:
+            # Not a long way in the past
             value = after_day_zero()(value)
+
+            # Not in the future
             value = not_in_future()(value)
         except ValidationError as e:
             raise ValidationError({self.field_name: e.errors})
 
         data[field.source] = value
 
+        # After the patient's date of birth
         data = after_date_of_birth(self.field_name, self.patient, self.parent)(data)
 
         return data
@@ -160,6 +165,7 @@ def username():
 
 def remove_trailing_comma():
     def remove_trailing_comma_f(value):
+        # Remove a trailing comma
         value = TRAILING_COMMA_REGEX.sub('', value)
         return value
 
@@ -181,6 +187,7 @@ def check_range(value, min_value=None, max_value=None):
     if isinstance(value, basestring):
         value = int(value)
 
+    # min_value <= x <= max_value
     return (
         (min_value is None or value >= min_value) and
         (max_value is None or value <= max_value)
@@ -289,6 +296,7 @@ def ukrr_no():
 def nhsbt_no():
     def nhsbt_no_f(value):
         if isinstance(value, basestring):
+            # Remove leading zeros and whitespace
             value = LEADING_ZERO_REGEX.sub('', value)
             value = WHITESPACE_REGEX.sub('', value)
 
@@ -308,6 +316,7 @@ def bapn_no():
         if not BAPN_NO_REGEX.match(value):
             raise ValidationError('Not a valid BAPN number.')
 
+        # Remove leading zeros
         value = BAPN_LEADING_ZEROS.sub('', value)
 
         return value

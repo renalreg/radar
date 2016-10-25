@@ -1,13 +1,13 @@
 from collections import OrderedDict
+from enum import Enum
 
 from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index, Boolean, text, CheckConstraint
 from sqlalchemy.orm import relationship, backref
-from enum import Enum
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
-from radar.models.types import EnumType
 from radar.models.logs import log_changes
+from radar.models.types import EnumType
 
 
 BIOPSY_DIAGNOSES = OrderedDict([
@@ -51,6 +51,8 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 
     @property
     def symptoms_age(self):
+        """Patient's age (in months) when the symptoms started."""
+
         if self.symptoms_date is None:
             r = None
         else:
@@ -60,10 +62,14 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
 
     @property
     def from_age(self):
+        """Patient's age (in months) when they were diagnosed."""
+
         return self.patient.to_age(self.from_date)
 
     @property
     def to_age(self):
+        """Patient's age (in months) when they recovered."""
+
         if self.to_date is None:
             r = None
         else:

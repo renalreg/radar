@@ -1,18 +1,18 @@
 from datetime import datetime
-
 from enum import Enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
-from sqlalchemy.orm import relationship, backref, synonym
-from sqlalchemy.ext.hybrid import hybrid_property
-import pytz
 
+import pytz
+from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship, backref, synonym
+
+from radar.config import config
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
-from radar.models.types import EnumType, EnumToStringType
 from radar.models.logs import log_changes
+from radar.models.types import EnumType, EnumToStringType
 from radar.pages import PAGE
 from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
-from radar.config import config
 
 
 class GROUP_TYPE(Enum):
@@ -68,6 +68,8 @@ class Group(db.Model):
 
     @property
     def has_dependencies(self):
+        """Returns true if this group has a dependency on another group."""
+
         try:
             check_dependencies([self])
         except DependencyError:
@@ -116,6 +118,8 @@ class GroupPatient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def current(self):
+        """Returns true if today's date is between the from and to date."""
+
         now = datetime.now(pytz.UTC)
         return (self.from_date <= now and (self.to_date is None or self.to_date >= now))
 
@@ -197,6 +201,8 @@ class DependencyError(Exception):
 
 
 def check_dependencies(groups):
+    """Check group dependencies (e.g. if in x, must be in y)."""
+
     groups = set((group.type, group.code) for group in groups)
 
     for x, y in dependencies:

@@ -1,8 +1,8 @@
-from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake import fields
 from cornflake import serializers
-from cornflake.validators import not_empty, upper, max_length, none_if_blank, optional, lower, email_address
 from cornflake.exceptions import ValidationError
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import email_address, lower, max_length, none_if_blank, not_empty, optional, upper
 
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import gmc_number
@@ -30,6 +30,7 @@ class ChildGroupConsultantSerializer(ModelSerializer):
         exclude = ['id', 'consultant_id', 'group_id']
 
     def validate_group(self, group):
+        # Consultants can only be added to hospitals
         if group.type != GROUP_TYPE.HOSPITAL:
             raise ValidationError('Must be a hospital.')
 
@@ -40,6 +41,8 @@ class GroupConsultantListSerializer(serializers.ListSerializer):
     child = ChildGroupConsultantSerializer()
 
     def validate(self, group_consultants):
+        # Check the consultant isn't in the same group multiple times.
+
         groups = set()
 
         for i, group_consultant in enumerate(group_consultants):
@@ -68,6 +71,8 @@ class ConsultantSerializer(ModelSerializer):
         exclude = ['specialty_id']
 
     def _save(self, instance, data):
+        # Custom save method so we can create the group_consultant records too.
+
         instance.first_name = data['first_name']
         instance.last_name = data['last_name']
         instance.email = data['email']
@@ -75,11 +80,6 @@ class ConsultantSerializer(ModelSerializer):
         instance.gmc_number = data['gmc_number']
         instance.specialty = data['specialty']
         instance.group_consultants = self.fields['groups'].create(data['group_consultants'])
-
-        instance.created_user = data['created_user']
-        instance.modified_user = data['modified_user']
-        instance.created_date = data['created_date']
-        instance.modified_date = data['modified_date']
 
     def create(self, data):
         instance = Consultant()
@@ -130,6 +130,7 @@ class PatientConsultantSerializer(PatientMixin, MetaMixin, ModelSerializer):
     def validate(self, data):
         data = super(PatientConsultantSerializer, self).validate(data)
 
+        # Check to date is after from date
         if data['to_date'] is not None and data['to_date'] < data['from_date']:
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 

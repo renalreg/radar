@@ -1,15 +1,15 @@
 import argparse
-import os
 import ConfigParser
+import os
 
-import tablib
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
+import tablib
 
 from radar.app import Radar
 from radar.exporter.exporters import exporter_map
-from radar.models.users import User
 from radar.models.groups import Group
+from radar.models.users import User
 
 
 def save(data, format, dest):

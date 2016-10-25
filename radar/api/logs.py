@@ -1,12 +1,14 @@
 from flask import request
 
-from radar.auth.sessions import current_user, get_user_agent, get_ip_address
+from radar.auth.sessions import current_user, get_ip_address, get_user_agent
 from radar.database import db
 from radar.models.logs import Log
 from radar.models.users import User
 
 
 def get_user(session):
+    """Get the current user with the specified session."""
+
     if current_user.is_authenticated():
         user = session.query(User).get(current_user.id)
     else:
@@ -16,6 +18,8 @@ def get_user(session):
 
 
 def get_url():
+    """Get the current URL being served."""
+
     url = request.path
 
     if request.query_string:

@@ -8,9 +8,9 @@ from radar.database import db
 from radar.models.common import MetaModelMixin
 from radar.models.groups import Group, GroupPatient, GROUP_TYPE
 from radar.models.logs import log_changes
+from radar.models.patient_codes import GENDERS, ETHNICITIES, GENDER_MALE, GENDER_FEMALE
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
-from radar.models.patient_codes import GENDERS, ETHNICITIES, GENDER_MALE, GENDER_FEMALE
 from radar.utils import uniq, months_between, round_age
 
 
@@ -175,15 +175,17 @@ class Patient(db.Model, MetaModelMixin):
     def latest_demographics_query(cls, column):
         patient_alias = aliased(Patient)
 
-        return select([column])\
-            .select_from(join(PatientDemographics, patient_alias))\
-            .where(patient_alias.id == cls.id)\
+        return (
+            select([column])
+            .select_from(join(PatientDemographics, patient_alias))
+            .where(patient_alias.id == cls.id)
             .order_by(
                 PatientDemographics.modified_date.desc(),
                 PatientDemographics.id.desc(),
-            )\
-            .limit(1)\
+            )
+            .limit(1)
             .as_scalar()
+        )
 
     @property
     def latest_demographics(self):

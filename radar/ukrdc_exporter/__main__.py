@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
+import fcntl
 import logging
 import os
-import fcntl
 
 from radar.database import db
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_exporter.app import RadarUKRDCExporter
 from radar.ukrdc_exporter.tasks import export_to_ukrdc
-from radar.models.source_types import SOURCE_TYPE_MANUAL
 
 
 logger = logging.getLogger()

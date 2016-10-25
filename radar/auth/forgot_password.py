@@ -1,6 +1,6 @@
 import base64
-import os
 from datetime import datetime
+import os
 
 from radar.auth.exceptions import UserNotFound, InvalidToken
 from radar.auth.passwords import generate_password_hash, check_password_hash
@@ -29,13 +29,14 @@ def generate_reset_password_token():
 def forgot_password(username, email):
     user = User.query.filter(User.username == username, User.email == email).first()
 
+    # User not found
     if user is None:
         raise UserNotFound()
 
     token, token_hash = generate_reset_password_token()
 
     user.reset_password_token = token_hash
-    user.reset_password_date = datetime.now()
+    user.reset_password_date = datetime.now()  # TODO timezone?
 
     db.session.commit()
 
@@ -70,6 +71,7 @@ def reset_password(token, username, password):
     max_age = get_password_reset_max_age()
 
     # Token has expired
+    # TODO timezone?
     if user.reset_password_date is not None and (datetime.now() - user.reset_password_date).total_seconds() > max_age:
         raise InvalidToken()
 

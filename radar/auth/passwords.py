@@ -1,6 +1,7 @@
+import re
+
 import werkzeug.security
 import zxcvbn
-import re
 
 from radar.config import config
 from radar.utils import random_string

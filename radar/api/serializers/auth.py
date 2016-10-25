@@ -32,7 +32,8 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate_password(self, password):
         try:
-            # TODO pass user argument to check_password_strength
+            # TODO pass user argument to check_password_strength (this prevents the
+            # user setting their password to their username etc.).
             check_password_strength(password)
         except WeakPasswordError as e:
             raise ValidationError(e.message)

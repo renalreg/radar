@@ -5,10 +5,10 @@ from datetime import date, timedelta
 import tablib
 
 from radar.exporter import queries
+from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
 from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
-from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
 from radar.utils import get_attrs
 
 
@@ -16,6 +16,8 @@ exporter_map = {}
 
 
 def register(name):
+    """Add an exporter."""
+
     def decorator(cls):
         exporter_map[name] = cls
         return cls
@@ -51,6 +53,8 @@ def column(name, getter=None):
 
 
 def demographics_column_factory(config):
+    """Returns a column based on the config."""
+
     if config['anonymised']:
         def column(name, getter=None, anonymised_getter=None, patient_getter=None):
             if anonymised_getter is None:

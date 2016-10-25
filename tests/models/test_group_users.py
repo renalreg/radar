@@ -1,5 +1,5 @@
-from radar.roles import ROLE, PERMISSION
 from radar.models.groups import GroupUser
+from radar.roles import ROLE, PERMISSION
 
 
 def test_permissions():

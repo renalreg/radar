@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
-import string
-import random
-import uuid
 from datetime import datetime, timedelta
+import random
+import string
+import uuid
 
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import Patient

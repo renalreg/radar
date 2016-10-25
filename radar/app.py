@@ -1,7 +1,7 @@
 import os
 
-from flask import Flask
 from celery import Celery
+from flask import Flask
 
 from radar.config import check_config
 from radar.database import db

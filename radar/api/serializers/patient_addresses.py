@@ -1,5 +1,6 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
+from cornflake.exceptions import ValidationError, SkipField
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     max_length,
     none_if_blank,
@@ -8,7 +9,6 @@ from cornflake.validators import (
     optional,
     postcode,
 )
-from cornflake.exceptions import ValidationError, SkipField
 
 from radar.api.serializers.common import (
     PatientMixin,
@@ -138,10 +138,12 @@ class PatientAddressProxy(object):
 
         if self.demographics_permission:
             return postcode
-        else:
+        elif postcode is not None:
             # Return the first part of the postcode
             # Postcodes from the database should have a space but limit to 4 characters just in case
             return postcode.split(' ')[0][:4]
+        else:
+            return None
 
     def __getattr__(self, item):
         return getattr(self.address, item)

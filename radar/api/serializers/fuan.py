@@ -1,5 +1,5 @@
-from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake import fields
+from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import none_if_blank, optional, max_length
 
 from radar.api.serializers.common import PatientMixin, MetaMixin, StringLookupField, IntegerLookupField

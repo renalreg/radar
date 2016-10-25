@@ -1,5 +1,5 @@
-import pytest
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.validators import username
 

@@ -1,5 +1,5 @@
-import pytest
 from cornflake.exceptions import ValidationError
+import pytest
 
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.models.groups import (

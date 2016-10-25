@@ -1,10 +1,10 @@
 from datetime import datetime
 
-import pytz
 from cornflake import fields
 from cornflake import serializers
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import in_
+import pytz
 
 from radar.exceptions import PermissionDenied
 from radar.models.forms import Form, GroupForm
@@ -13,13 +13,13 @@ from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.models.users import User
 from radar.pages import PAGE
-from radar.permissions import has_permission_for_patient, has_permission_for_group
+from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
 
 
 def lookup_field_defaults(kwargs):
-    kwargs.setdefault('key_name', 'id')
-    kwargs.setdefault('value_name', 'label')
+    kwargs.setdefault('key_name', 'id')  # Value stored in database
+    kwargs.setdefault('value_name', 'label')  # Value displayed to user
 
 
 class StringLookupField(fields.StringLookupField):
@@ -67,7 +67,7 @@ class CreatedUserField(UserField):
     def get_value(self, data):
         instance = self.root.instance
 
-        # New record
+        # Set the created_user to the current_user for new records
         if instance is None:
             return self.context['user']
         else:
@@ -76,6 +76,7 @@ class CreatedUserField(UserField):
 
 class ModifiedUserField(UserField):
     def get_value(self, data):
+        # Set the modified user to the current_user
         return self.context['user']
 
 
@@ -83,7 +84,7 @@ class CreatedDateField(fields.DateTimeField):
     def get_value(self, data):
         instance = self.root.instance
 
-        # New record
+        # Set the created_date to now for new records
         if instance is None:
             return datetime.now(pytz.utc)
         else:
@@ -92,6 +93,7 @@ class CreatedDateField(fields.DateTimeField):
 
 class ModifiedDateField(fields.DateTimeField):
     def get_value(self, data):
+        # Set the modified date to now
         return datetime.now(pytz.utc)
 
 
@@ -212,6 +214,7 @@ class SourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
+        # Group must be a system or hospital (unless the user is an admin)
         if not user.is_admin and group.type not in (GROUP_TYPE.SYSTEM, GROUP_TYPE.HOSPITAL):
             raise PermissionDenied()
 
@@ -225,6 +228,7 @@ class SystemSourceGroupField(GroupField):
     def validate(self, group):
         user = self.context['user']
 
+        # Group must be a system (unless the user is an admin)
         if not user.is_admin and group.type != GROUP_TYPE.SYSTEM:
             raise PermissionDenied()
 
@@ -236,6 +240,7 @@ class SystemSourceGroupField(GroupField):
 
 class CohortGroupField(GroupField):
     def validate(self, group):
+        # Group must be a cohort
         if group.type != GROUP_TYPE.COHORT:
             raise PermissionDenied()
 

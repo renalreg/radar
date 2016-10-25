@@ -147,6 +147,8 @@ class UserListCSVView(ApiView):
         writer.writerow(headers)
 
         def get_groups(user, group_type):
+            """Comma-separated list of groups."""
+
             groups = [x.name for x in user.groups if x.type == group_type]
             groups = sorted(groups)
             groups = uniq(groups)
