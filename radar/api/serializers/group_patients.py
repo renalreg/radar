@@ -109,7 +109,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         if not data['group'].type != GROUP_TYPE.SYSTEM:
             recruited_date = data['patient'].recruited_date()
 
-            if recruited_date is not None and data['from_date'] < recruited_date.date():
+            if recruited_date is not None and data['from_date'] <= recruited_date.date():
                 raise ValidationError({'from_date': "Must be on or after the recruitment date."})
 
         return data
