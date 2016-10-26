@@ -5,6 +5,8 @@ import tempfile
 from fabric.api import task, local, run, cd, get, put, prompt, env, abort
 from pkg_resources import parse_version
 
+DEFAULT_DIST_DIR = 'dist'
+
 
 @contextmanager
 def temp():
@@ -26,8 +28,10 @@ def build(rev='HEAD'):
         put(archive, 'src.tar.gz')
         run('tar -xzf src.tar.gz')
         run('PATH=/usr/pgsql-9.4/bin:$PATH platter build -r requirements.txt .')
-        local('mkdir -p dist')  # TODO mkdir on windows doesn't have the -p option
-        get('dist/*.tar.gz', 'dist')
+        if not os.path.exists(DEFAULT_DIST_DIR):
+            os.makedirs(DEFAULT_DIST_DIR)
+        # local('mkdir -p dist')  # TODO mkdir on windows doesn't have the -p option
+        get('dist/*.tar.gz', DEFAULT_DIST_DIR)
 
 
 @task
