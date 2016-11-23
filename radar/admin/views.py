@@ -91,7 +91,9 @@ class DiagnosisView(ModelView):
 
 
 class DiagnosisCodeView(ModelView):
-    column_default_sort = 'id'
+    column_default_sort = 'diagnosis.name'
+    column_auto_select_related = True
+    column_searchable_list = ['diagnosis.name']
     column_export_list = ['id', 'diagnosis', 'code']
 
 
@@ -127,7 +129,9 @@ class GroupConsultantView(ModelView):
 
 
 class GroupDiagnosisView(ModelView):
-    column_default_sort = 'id'
+    column_default_sort = 'group.name'
+    column_auto_select_related = True
+    column_searchable_list = ['group.name', 'diagnosis.name']
     column_export_list = ['id', 'group', 'diagnosis', 'weight']
 
 
