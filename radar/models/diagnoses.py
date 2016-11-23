@@ -134,6 +134,9 @@ class GroupDiagnosis(db.Model):
 
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False, default=9999, server_default=text('9999'))
 
+    def __unicode__(self):
+        return u"{} - {}".format(unicode(self.group), unicode(self.weight))
+
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
 Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)
 Index('group_diagnoses_diagnosis_group_idx', GroupDiagnosis.diagnosis_id, GroupDiagnosis.group_id, unique=True)
@@ -150,5 +153,8 @@ class DiagnosisCode(db.Model):
 
     code_id = Column(Integer, ForeignKey('codes.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     code = relationship('Code', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
+
+    def __unicode__(self):
+        return unicode(self.code)
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)
