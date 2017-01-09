@@ -1,6 +1,6 @@
 from radar.api.serializers.transplants import TransplantSerializer
 from radar.api.views.common import (
-    StringLookupListView,
+    IntegerLookupListView,
     SourceObjectViewMixin,
     PatientObjectDetailView,
     PatientObjectListView
@@ -18,7 +18,7 @@ class TransplantDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     model_class = Transplant
 
 
-class TransplantModalityListView(StringLookupListView):
+class TransplantModalityListView(IntegerLookupListView):
     items = TRANSPLANT_MODALITIES
 
 
