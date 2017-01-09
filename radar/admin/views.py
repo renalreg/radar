@@ -9,6 +9,7 @@ from wtforms import fields
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
 from radar.auth.sessions import login, logout, current_user, UsernameLoginError, PasswordLoginError, DisabledLoginError
+from radar.models.groups import GROUP_TYPE
 
 
 class AdminModelConverter(BaseAdminModelConverter):
@@ -121,6 +122,23 @@ class GroupView(ModelView):
     column_searchable_list = ['name', 'short_name', 'type', 'code']
     column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
+
+    def get_query(self):
+        return super(ModelView, self).get_query().filter(self.model.type!=GROUP_TYPE.HOSPITAL)
+
+
+class HospitalView(ModelView):
+    column_list = ['name', 'code', 'is_transplant_centre']
+    column_default_sort = 'name'
+    column_searchable_list = ['name', 'short_name', 'code']
+    form_columns = ['name', 'short_name', 'code', 'instructions', 'is_transplant_centre']
+
+    def on_model_change(self, form, model, is_created):
+        model.type = GROUP_TYPE.HOSPITAL
+        super(HospitalView, self).on_model_change(form, model, is_created)
+
+    def get_query(self):
+        return super(ModelView, self).get_query().filter(self.model.type==GROUP_TYPE.HOSPITAL)
 
 
 class GroupConsultantView(ModelView):

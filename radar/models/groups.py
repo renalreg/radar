@@ -57,6 +57,7 @@ class Group(db.Model):
     _instructions = Column('instructions', String)
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
+    is_transplant_centre = Column(Boolean, nullable=True, default=False, server_default=text('false'))
 
     @property
     def patients(self):

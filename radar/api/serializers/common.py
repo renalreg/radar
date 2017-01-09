@@ -194,6 +194,7 @@ class GroupSerializer(ModelSerializer):
     forms = fields.ListField(child=GroupFormSerializer(), source='group_forms')
     has_dependencies = fields.BooleanField(read_only=True)
     instructions = fields.StringField()
+    is_transplant_centre = fields.BooleanField()
 
     class Meta(object):
         model_class = Group

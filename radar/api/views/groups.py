@@ -14,6 +14,7 @@ class GroupListRequestSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     type = fields.EnumField(GROUP_TYPE, required=False)
     is_recruitment_number_group = fields.BooleanField(required=False)
+    is_transplant_centre = fields.BooleanField(required=False)
 
 
 class GroupListView(ListCreateModelView):
@@ -33,6 +34,9 @@ class GroupListView(ListCreateModelView):
         # Filter by group type
         if args['type'] is not None:
             query = query.filter(Group.type == args['type'])
+
+        if args['is_transplant_centre'] is not None:
+            query = query.filter(Group.is_transplant_centre ==args['is_transplant_centre'])
 
         # Filter by recruitment number flag
         if args['is_recruitment_number_group'] is not None:
