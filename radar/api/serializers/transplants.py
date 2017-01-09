@@ -113,6 +113,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         instance.modality = data['modality']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
+        instance.transplant_group = data['transplant_group']
         instance.rejections = self.fields['rejections'].create(data['rejections'])
         instance.biopsies = self.fields['biopsies'].create(data['biopsies'])
 
