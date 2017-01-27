@@ -5,6 +5,7 @@ from radar.database import db
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
+from radar.models.forms import Entry
 from radar.models.genetics import Genetics
 from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
@@ -169,6 +170,13 @@ def get_transplant_rejections(config):
     q = q.join(TransplantRejection.transplant)
     q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
     q = q.order_by(Transplant.patient_id, Transplant.id, TransplantRejection.id)
+    return q
+
+
+def get_form_data(config):
+    q = db.session.query(Entry)
+    q = _patient_filter(q, Entry.patient_id, config['user'], config['patient_group'])
+    q = q.filter(Entry.form.has(slug=config['name']))
     return q
 
 

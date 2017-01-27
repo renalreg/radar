@@ -689,3 +689,311 @@ class ObservationExporter(Exporter):
         q = Observation.query.order_by(Observation.id)
 
         return query_to_dataset(q, columns)
+
+
+@register('6cit')
+class Cit6Exporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('q1', 'data.q1'),
+            column('q2', 'data.q2'),
+            column('q4', 'data.q4'),
+            column('q5', 'data.q5'),
+            column('q6', 'data.q6'),
+            column('q7', 'data.q7'),
+            column('score', 'data.score'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('chu9d')
+class CHU9DExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('worried', 'data.worried'),
+            column('sad', 'data.sad'),
+            column('pain', 'data.pain'),
+            column('tired', 'data.tired'),
+            column('annoyed', 'data.annoyed'),
+            column('work', 'data.work'),
+            column('sleep', 'data.sleep'),
+            column('routine', 'data.routine'),
+            column('activities', 'data.activities'),
+
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('diabetic-complications')
+class DiabeticComplicationExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('laser', 'data.laser'),
+            column('foot ulcers', 'data.footUlcers'),
+            column('retinopathy', 'data.retinopathy'),
+            column('peripheral neuropathy', 'data.peripheralNeuropathy'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('eq-5d-5l')
+class Eq5d5lExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('age', 'data.age'),
+            column('gender', 'data.gender'),
+            column('mobility', 'data.mobility'),
+            column('self care', 'data.selfCare'),
+            column('pain discomfort', 'data.painDiscomfort'),
+            column('usual activities', 'data.usualActivities'),
+            column('anxiety depression', 'data.anxietyDepression'),
+            column('health', 'data.health'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('eq-5d-y')
+class Eq5dyExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('age', 'data.age'),
+            column('gender', 'data.gender'),
+            column('mobility', 'data.mobility'),
+            column('self care', 'data.selfCare'),
+            column('pain discomfort', 'data.painDiscomfort'),
+            column('usual activities', 'data.usualActivities'),
+            column('anxiety depression', 'data.anxietyDepression'),
+            column('health', 'data.health'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('hads')
+class HadsExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('a1', 'data.a1'),
+            column('a2', 'data.a2'),
+            column('a3', 'data.a3'),
+            column('a4', 'data.a4'),
+            column('a5', 'data.a5'),
+            column('a6', 'data.a6'),
+            column('a7', 'data.a7'),
+            column('d1', 'data.d1'),
+            column('d2', 'data.d2'),
+            column('d3', 'data.d3'),
+            column('d4', 'data.d4'),
+            column('d5', 'data.d5'),
+            column('d6', 'data.d6'),
+            column('d7', 'data.d7'),
+            column('anxiety score', 'data.anxietyScore'),
+            column('depression score', 'data.depressionScore'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('family-history')
+class FamilyHistoryExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('chd', 'data.chd'),
+            column('eskd', 'data.eskd'),
+            column('diabetes', 'data.diabetes'),
+            column('chdRelative1', 'data.chdRelative1'),
+            column('chdRelative2', 'data.chdRelative2'),
+            column('chdRelative3', 'data.chdRelative3'),
+            column('eskdRelative1', 'data.eskdRelative1'),
+            column('eskdRelative2', 'data.eskdRelative2'),
+            column('eskdRelative3', 'data.eskdRelative3'),
+            column('diabetesRelative1', 'data.diabetesRelative1'),
+            column('diabetesRelative2', 'data.diabetesRelative2'),
+            column('diabetesRelative3', 'data.diabetesRelative3'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('ipos')
+class IposExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('score1', 'data.score1'),
+            column('score2', 'data.score2'),
+            column('score3', 'data.score3'),
+            column('score4', 'data.score4'),
+            column('score5', 'data.score5'),
+            column('score6', 'data.score6'),
+            column('score7', 'data.score7'),
+            column('score8', 'data.score8'),
+            column('score9', 'data.score9'),
+            column('score10', 'data.score10'),
+            column('score11', 'data.score11'),
+            column('score12', 'data.score12'),
+            column('score13', 'data.score13'),
+            column('score14', 'data.score14'),
+            column('score15', 'data.score15'),
+            column('score16', 'data.score16'),
+            column('score17', 'data.score17'),
+            column('score18', 'data.score18'),
+            column('score19', 'data.score19'),
+            column('score20', 'data.score20'),
+            column('question1', 'data.question1'),
+            column('question2', 'data.question2'),
+            column('question3', 'data.question3'),
+            column('question4', 'data.question4'),
+            column('question5', 'data.question5'),
+            column('score', 'data.score'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('samples')
+class SamplesExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('barcode', 'data.barcode'),
+            column('protocol', 'data.protocol'),
+            column('visit', 'data.visit'),
+            column('edta plasma A', 'data.edtaPlasmaA'),
+            column('edta plasma B', 'data.edtaPlasmaB'),
+            column('lihepPlasmaA', 'data.lihepPlasmaA'),
+            column('lihepPlasmaB', 'data.lihepPlasmaB'),
+            column('urineC', 'data.urineC'),
+            column('urineB', 'data.urineB'),
+            column('urineD', 'data.urineD'),
+            column('cfUrineB', 'data.cfUrineB'),
+            column('serumC', 'data.serumC'),
+            column('serumA', 'data.serumA'),
+            column('serumB', 'data.serumB'),
+            column('rna', 'data.rna'),
+            column('wholeBlood', 'data.wholeBlood'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('anthropometrics')
+class AnthropometricsExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('height', 'data.height'),
+            column('weight', 'data.weight'),
+            column('hip', 'data.hip'),
+            column('waist', 'data.waist'),
+            column('arm', 'data.arm'),
+            column('up', 'data.up'),
+            column('grip', 'data.grip'),
+            column('karnofsky', 'data.karnofsky'),
+            column('systolic1', 'data.systolic1'),
+            column('systolic2', 'data.systolic2'),
+            column('systolic3', 'data.systolic3'),
+            column('systolic', 'data.systolic'),
+            column('diastolic1', 'data.diastolic1'),
+            column('diastolic2', 'data.diastolic2'),
+            column('diastolic3', 'data.diastolic3'),
+            column('diastolic', 'data.diastolic'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('socio-economic')
+class SocioEconomicExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('maritalStatus', 'data.maritalStatus'),
+            column('education', 'data.education'),
+            column('employmentStatus', 'data.employmentStatus'),
+            column('firstLanguage', 'data.firstLanguage'),
+            column('literacy', 'data.literacy'),
+            column('literacyHelp', 'data.literacyHelp'),
+            column('smoking', 'data.smoking'),
+            column('cigarettesPerDay', 'data.cigarettesPerDay'),
+            column('alcohol', 'data.alcohol'),
+            column('unitsPerWeek', 'data.unitsPerWeek'),
+            column('diet', 'data.diet'),
+            column('otherDiet', 'data.otherDiet'),
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('nurtureckd')
+class NurtureCKDExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('visit', 'data.visit'),
+            column('vaccinationFlu', 'data.vaccinationFlu'),
+            column('vaccinationPneumonia', 'data.vaccinationPneumonia'),
+            column('admission', 'data.admission'),
+            column('admissionNumber', 'data.admissionNumber'),
+            column('admissionEmergency', 'data.admissionEmergency'),
+            column('admissionPlanned', 'data.admissionPlanned'),
+            column('admissionDays', 'data.admissionDays'),
+            column('admissionAntibiotics', 'data.admissionAntibiotics'),
+            column('medicine1', 'data.medicine1'),
+            column('tabletsParacetamol', 'data.tabletsParacetamol'),
+            column('yearsParacetamol', 'data.yearsParacetamol'),
+            column('medicine2', 'data.medicine2'),
+            column('tabletsCocodamol', 'data.tabletsCocodamol'),
+            column('yearsCocodamol', 'data.yearsCocodamol'),
+            column('medicine3', 'data.medicine3'),
+            column('tabletsIbuprofen', 'data.tabletsIbuprofen'),
+            column('yearsIbuprofen', 'data.yearsIbuprofen'),
+
+        ]
+        columns.extend(get_meta_columns())
+        q = queries.get_form_data(self.config)
+
+        return query_to_dataset(q, columns)
+

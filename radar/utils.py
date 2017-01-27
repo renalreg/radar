@@ -123,7 +123,10 @@ def get_attrs(data, *attrs):
         try:
             value = getattr(value, attr)
         except AttributeError:
-            value = None
+            if isinstance(value, dict):
+                value = value.get(attr)
+            else:
+                value = None
 
     return value
 

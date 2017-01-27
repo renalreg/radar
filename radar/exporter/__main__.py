@@ -80,6 +80,7 @@ def main():
                 config.items() +
                 exporter_config.items()
             )
+            exporter_config.update({'name': name})
 
             exporter = exporter_class(exporter_config)
 
