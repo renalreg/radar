@@ -634,6 +634,10 @@ class RenalProgressionExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('onset_date'),
+            column('ckd3a_date'),
+            column('ckd3b_date'),
+            column('ckd4_date'),
+            column('ckd5_date'),
             column('esrf_date'),
         ]
         columns.extend(get_meta_columns())
@@ -662,13 +666,6 @@ class ResultExporter(Exporter):
         q = queries.get_results(self.config)
 
         return query_to_dataset(q, columns)
-
-
-def previous_month():
-    now = date.today()
-    previous_end = now.replace(day=1) - timedelta(days=1)
-    previous_start = previous_end.replace(day=1)
-    return previous_start
 
 
 @register('observations')
