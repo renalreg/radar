@@ -36,7 +36,7 @@ class GroupListView(ListCreateModelView):
             query = query.filter(Group.type == args['type'])
 
         if args['is_transplant_centre'] is not None:
-            query = query.filter(Group.is_transplant_centre ==args['is_transplant_centre'])
+            query = query.filter(Group.is_transplant_centre == args['is_transplant_centre'])
 
         # Filter by recruitment number flag
         if args['is_recruitment_number_group'] is not None:

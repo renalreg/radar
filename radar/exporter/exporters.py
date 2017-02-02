@@ -1,7 +1,5 @@
 from __future__ import division
 
-from datetime import date, timedelta
-
 import tablib
 
 from radar.exporter import queries
@@ -821,8 +819,8 @@ class HadsExporter(Exporter):
         return query_to_dataset(q, columns)
 
 
-@register('family-history')
-class FamilyHistoryExporter(Exporter):
+@register('family-diseases-history')
+class FamilyDiseasesHistoryExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
@@ -996,4 +994,3 @@ class NurtureCKDExporter(Exporter):
         q = queries.get_form_data(self.config)
 
         return query_to_dataset(q, columns)
-

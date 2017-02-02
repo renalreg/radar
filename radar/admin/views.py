@@ -124,7 +124,7 @@ class GroupView(ModelView):
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
     def get_query(self):
-        return super(ModelView, self).get_query().filter(self.model.type!=GROUP_TYPE.HOSPITAL)
+        return super(ModelView, self).get_query().filter(self.model.type != GROUP_TYPE.HOSPITAL)
 
 
 class HospitalView(ModelView):
@@ -138,7 +138,7 @@ class HospitalView(ModelView):
         super(HospitalView, self).on_model_change(form, model, is_created)
 
     def get_query(self):
-        return super(ModelView, self).get_query().filter(self.model.type==GROUP_TYPE.HOSPITAL)
+        return super(ModelView, self).get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
 
 
 class GroupConsultantView(ModelView):
