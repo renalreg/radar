@@ -24,16 +24,17 @@ logger = logging.getLogger(__name__)
 QUEUE = 'ukrdc_importer'
 
 
-def find_patient_id(sda_patient_numbers):
-    """Find the patient id in the list of patient numbers."""
+def find_patient_ids(sda_patient_numbers):
+    """Find the patient ids in the list of patient numbers."""
 
     system_codes = [x.code for x in Group.query.filter(Group.type == GROUP_TYPE.SYSTEM)]
+    numbers = []
 
     for sda_patient_number in sda_patient_numbers:
         if sda_patient_number['organization']['code'] in system_codes:
-            return sda_patient_number['number']
+            numbers.append(sda_patient_number['number'])
 
-    return None
+    return numbers or None
 
 
 def parse_patient_id(value):
@@ -107,12 +108,22 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # No patient ID supplied
     if patient_id is None:
-        patient_id = find_patient_id(sda_patient_numbers)
+        patient_ids = find_patient_ids(sda_patient_numbers)
 
         # No patient ID in file
-        if patient_id is None:
+        if patient_ids is None:
             logger.error('Patient ID is missing')
             return False
+
+        if len(set(patient_ids)) > 1:
+            string_ids = [str(pat_id) for pat_id in patient_ids]
+            logger.error('Multiple patient IDs returned - {}'.format('; '.join(string_ids)))
+            return False
+
+        patient_id = patient_ids[0]
+
+        if len(patient_ids) > 1:
+            logger.error('Patient ID returned multiple times, id={}'.format(patient_id))
 
         # Check the format of the patient ID
         try:
