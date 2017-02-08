@@ -1,16 +1,16 @@
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
-from cornflake.validators import none_if_blank, optional, max_length, min_, required
+from cornflake.validators import max_length, min_, none_if_blank, optional, required
 
 from radar.api.serializers.common import (
-    PatientMixin,
     MetaMixin,
+    PatientMixin,
     SourceMixin,
-    StringLookupField
+    StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.medications import Medication, Drug, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES, DrugGroup
+from radar.models.medications import Drug, DrugGroup, Medication, MEDICATION_DOSE_UNITS, MEDICATION_ROUTES
 
 
 class DrugGroupSerializer(ModelSerializer):

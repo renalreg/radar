@@ -220,9 +220,15 @@ def filter_by_patient_number(number, exact=False):
 
 def filter_by_patient_number_at_group(number, number_group, exact=False):
     if exact:
-        query = patient_number_sub_query(PatientNumber.number.like(number + '%'), PatientNumber.number_group == number_group)
+        query = patient_number_sub_query(
+            PatientNumber.number.like(number + '%'),
+            PatientNumber.number_group == number_group
+        )
     else:
-        query = patient_number_sub_query(PatientNumber.number == number, PatientNumber.number_group == number_group)
+        query = patient_number_sub_query(
+            PatientNumber.number == number,
+            PatientNumber.number_group == number_group
+        )
 
     return query
 

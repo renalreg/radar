@@ -1,35 +1,44 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
-    range_,
-    none_if_blank,
-    optional,
     max_length,
+    none_if_blank,
+    not_empty,
+    optional,
+    range_,
     required,
-    not_empty
 )
 
-from radar.api.serializers.common import PatientMixin, MetaMixin
+from radar.api.serializers.common import MetaMixin, PatientMixin
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 
 
 class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     normal_pregnancy = fields.BooleanField(required=False)
-    abnormal_pregnancy_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    abnormal_pregnancy_text = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
     neurological_problems = fields.BooleanField(required=False)
     seizures = fields.BooleanField(required=False)
     abnormal_gait = fields.BooleanField(required=False)
     deafness = fields.BooleanField(required=False)
     other_neurological_problem = fields.BooleanField(required=False)
-    other_neurological_problem_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    other_neurological_problem_text = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
     joint_problems = fields.BooleanField(required=False)
     joint_problems_age = fields.IntegerField(required=False, validators=[range_(0, 120)])
     x_ray_abnormalities = fields.BooleanField(required=False)
     chondrocalcinosis = fields.BooleanField(required=False)
     other_x_ray_abnormality = fields.BooleanField(required=False)
-    other_x_ray_abnormality_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    other_x_ray_abnormality_text = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
     class Meta(object):
         model_class = SaltWastingClinicalFeatures

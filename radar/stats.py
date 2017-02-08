@@ -299,11 +299,16 @@ def _get_results(query, interval='month'):
     counts_q = counts_q.cte()
 
     new_c = func.coalesce(counts_q.c.count, 0).label('new')
-    total_c = func.coalesce(func.sum(counts_q.c.count).over(partition_by=buckets_q.c.group_id, order_by=buckets_q.c.date), 0).label('total')
+    total_c = func.coalesce(
+        func.sum(counts_q.c.count).over(
+            partition_by=buckets_q.c.group_id,
+            order_by=buckets_q.c.date), 0).label('total')
 
     timeline_q = db.session.query(buckets_q.c.group_id, buckets_q.c.date, new_c, total_c)
     timeline_q = timeline_q.select_from(buckets_q)
-    timeline_q = timeline_q.outerjoin(counts_q, and_(buckets_q.c.group_id == counts_q.c.group_id, buckets_q.c.date == counts_q.c.date))
+    timeline_q = timeline_q.outerjoin(
+        counts_q,
+        and_(buckets_q.c.group_id == counts_q.c.group_id, buckets_q.c.date == counts_q.c.date))
     timeline_q = timeline_q.cte()
 
     results_q = db.session.query(Group, timeline_q.c.date, timeline_q.c.new, timeline_q.c.total)

@@ -3,7 +3,7 @@ from __future__ import division
 import tablib
 
 from radar.exporter import queries
-from radar.exporter.utils import get_months, get_years, path_getter, identity_getter, none_getter
+from radar.exporter.utils import get_months, get_years, identity_getter, none_getter, path_getter
 from radar.models.results import Observation
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION

@@ -1,5 +1,5 @@
 import re
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open('radar/__init__.py', 'r') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)

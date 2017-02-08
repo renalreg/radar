@@ -3,9 +3,9 @@ import pkg_resources
 from radar.marmoset.base_registry import BaseRegistry
 from radar.marmoset.handlers import (
     JSDefaultHandler,
+    JSFormulaHandler,
     JSRequiredHandler,
     JSVisibleHandler,
-    JSFormulaHandler,
 )
 from radar.marmoset.types import (
     format_boolean,

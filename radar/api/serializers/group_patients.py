@@ -6,11 +6,11 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import not_in_future
 import pytz
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, GroupField
+from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.database import db
 from radar.exceptions import PermissionDenied
-from radar.models.groups import GroupPatient, check_dependencies, DependencyError, GROUP_TYPE
-from radar.permissions import has_permission_for_patient, has_permission_for_group
+from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE, GroupPatient
+from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
 
 
