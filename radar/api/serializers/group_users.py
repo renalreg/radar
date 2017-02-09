@@ -3,11 +3,11 @@ from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 
 from radar.api.serializers.common import (
-    UserMixin,
-    MetaMixin,
-    GroupField,
     EnumLookupField,
-    StringLookupField
+    GroupField,
+    MetaMixin,
+    StringLookupField,
+    UserMixin,
 )
 from radar.exceptions import PermissionDenied
 from radar.models.groups import GroupUser

@@ -994,3 +994,43 @@ class NurtureCKDExporter(Exporter):
         q = queries.get_form_data(self.config)
 
         return query_to_dataset(q, columns)
+
+
+@register('renal_imaging')
+class RenalImagingExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date'),
+            column('imaging_type'),
+            column('right_present'),
+            column('right_type'),
+            column('right_length'),
+            column('right_volume'),
+            column('right_cysts'),
+            column('right_stones'),
+            column('right_calcification'),
+            column('right_nephrocalcinosis'),
+            column('right_nephrolithiasis'),
+            column('right_other_malformation'),
+            column('left_present'),
+            column('left_type'),
+            column('left_length'),
+            column('left_volume'),
+            column('left_cysts'),
+            column('left_stones'),
+            column('left_calcification'),
+            column('left_nephrocalcinosis'),
+            column('left_nephrolithiasis'),
+            column('left_other_malformation'),
+        ]
+
+        columns.extend(get_meta_columns())
+
+        q = queries.get_renal_progressions(self.config)
+
+        return query_to_dataset(q, columns)
