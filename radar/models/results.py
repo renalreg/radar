@@ -2,12 +2,22 @@ from collections import OrderedDict
 from enum import Enum
 from itertools import chain
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index, Numeric, CheckConstraint
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    event,
+    ForeignKey,
+    Index,
+    Integer,
+    Numeric,
+    String,
+)
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 from radar.models.types import EnumType
 from radar.utils import pairwise
@@ -157,6 +167,20 @@ class Observation(db.Model):
         return self.name
 
 
+@event.listens_for(Observation, 'before_insert')
+@event.listens_for(Observation, 'before_update')
+def observation_update(mapper, connection, target):
+    """Replace empty options value with None.
+
+    There are constraints set on table not to allow empty values,
+    it has to be either NULL or at least one pair of options. However,
+    flask-admin sets that to empty list, if nothing is given and
+    database throws an Integrity Error.
+    """
+    if not target.options:
+        target.options = None
+
+
 @log_changes
 class Result(db.Model, MetaModelMixin):
     __tablename__ = 'results'
@@ -224,4 +248,9 @@ class GroupObservation(db.Model):
 
 Index('group_observations_group_idx', GroupObservation.group_id)
 Index('group_observations_observation_idx', GroupObservation.observation_id)
-Index('group_observations_observation_group_idx', GroupObservation.observation_id, GroupObservation.group_id, unique=True)
+Index(
+    'group_observations_observation_group_idx',
+    GroupObservation.observation_id,
+    GroupObservation.group_id,
+    unique=True
+)
