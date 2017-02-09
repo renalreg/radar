@@ -2,24 +2,24 @@ from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
-    range_,
+    max_length,
     none_if_blank,
     optional,
-    max_length,
+    range_,
     required
 )
 
 from radar.api.serializers.common import (
-    PatientMixin,
     MetaMixin,
+    PatientMixin,
     SourceMixin,
     StringLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.renal_imaging import (
-    RenalImaging,
+    RENAL_IMAGING_KIDNEY_TYPES,
     RENAL_IMAGING_TYPES,
-    RENAL_IMAGING_KIDNEY_TYPES
+    RenalImaging,
 )
 
 
@@ -36,7 +36,10 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     right_calcification = fields.BooleanField(required=False)
     right_nephrocalcinosis = fields.BooleanField(required=False)
     right_nephrolithiasis = fields.BooleanField(required=False)
-    right_other_malformation = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    right_other_malformation = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
     left_present = fields.BooleanField(required=False)
     left_type = StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
@@ -47,7 +50,10 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     left_calcification = fields.BooleanField(required=False)
     left_nephrocalcinosis = fields.BooleanField(required=False)
     left_nephrolithiasis = fields.BooleanField(required=False)
-    left_other_malformation = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    left_other_malformation = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
     class Meta(object):
         model_class = RenalImaging

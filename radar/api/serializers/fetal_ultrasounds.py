@@ -1,11 +1,11 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import max_length, range_, none_if_blank, optional
+from cornflake.validators import max_length, none_if_blank, optional, range_
 
 from radar.api.serializers.common import (
+    MetaMixin,
     PatientMixin,
     SourceMixin,
-    MetaMixin,
     StringLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient

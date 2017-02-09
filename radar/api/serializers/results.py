@@ -1,24 +1,24 @@
-from cornflake import serializers, fields
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from cornflake.sqlalchemy_orm import ReferenceField, ModelSerializer
-from cornflake.validators import min_, max_, in_, min_length, max_length
+from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import in_, max_, max_length, min_, min_length
 
 from radar.api.serializers.common import (
+    EnumLookupField,
+    GroupSerializer,
+    MetaMixin,
     PatientMixin,
     SourceMixin,
-    MetaMixin,
     StringLookupField,
-    EnumLookupField,
-    GroupSerializer
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.results import (
-    Result,
     Observation,
-    OBSERVATION_VALUE_TYPE,
     OBSERVATION_SAMPLE_TYPE,
+    OBSERVATION_SAMPLE_TYPE_NAMES,
+    OBSERVATION_VALUE_TYPE,
     OBSERVATION_VALUE_TYPE_NAMES,
-    OBSERVATION_SAMPLE_TYPE_NAMES
+    Result,
 )
 
 
@@ -199,7 +199,9 @@ class ResultSerializer(serializers.ProxySerializer):
 
 
 class BaseTinyResultSerializer(PatientMixin, serializers.Serializer):
-    """Result serializer that includes a minimal amount of data so thousands of results can be returned in the response."""
+    """Result serializer that includes a minimal amount of data.
+
+    so thousands of results can be returned in the response."""
 
     id = fields.UUIDField()
     observation = fields.IntegerField(source='observation_id')

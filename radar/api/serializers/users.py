@@ -2,13 +2,13 @@ from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
-    none_if_blank,
-    optional,
-    lower,
     email_address,
+    lower,
     max_length,
+    none_if_blank,
     not_empty,
-    required
+    optional,
+    required,
 )
 
 from radar.api.serializers.common import MetaMixin

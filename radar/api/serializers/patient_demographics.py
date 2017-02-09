@@ -1,24 +1,24 @@
 from cornflake import fields
-from cornflake.exceptions import ValidationError, SkipField
+from cornflake.exceptions import SkipField, ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
-    not_empty,
-    upper,
-    normalise_whitespace,
-    max_length,
-    not_in_future,
-    none_if_blank,
-    optional,
+    email_address,
     lower,
-    email_address
+    max_length,
+    none_if_blank,
+    normalise_whitespace,
+    not_empty,
+    not_in_future,
+    optional,
+    upper,
 )
 
 from radar.api.serializers.common import (
-    PatientMixin,
-    SystemSourceMixin,
+    IntegerLookupField,
     MetaMixin,
+    PatientMixin,
     StringLookupField,
-    IntegerLookupField
+    SystemSourceMixin,
 )
 from radar.api.serializers.validators import after_day_zero
 from radar.models.patient_codes import ETHNICITIES, GENDERS
@@ -36,10 +36,22 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
     ethnicity = StringLookupField(ETHNICITIES, required=False)
-    home_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
-    work_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
-    mobile_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)])
-    email_address = fields.StringField(required=False, validators=[none_if_blank(), optional(), lower(), email_address()])
+    home_number = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+    )
+    work_number = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+    )
+    mobile_number = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+    )
+    email_address = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), lower(), email_address()]
+    )
 
     class Meta(object):
         model_class = PatientDemographics
@@ -64,7 +76,11 @@ class PatientDemographicsProxy(object):
     def __init__(self, demographics, user):
         self.demographics = demographics
         self.user = user
-        self.demographics_permission = has_permission_for_patient(user, demographics.patient, PERMISSION.VIEW_DEMOGRAPHICS)
+        self.demographics_permission = has_permission_for_patient(
+            user,
+            demographics.patient,
+            PERMISSION.VIEW_DEMOGRAPHICS
+        )
 
     @property
     def first_name(self):

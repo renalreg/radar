@@ -2,26 +2,27 @@ from cornflake import fields
 from cornflake import serializers
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
-from cornflake.validators import none_if_blank, optional, max_length, min_length, min_, max_
+from cornflake.validators import max_, max_length, min_, min_length, none_if_blank, optional
 
 from radar.api.serializers.codes import CodeSerializer
 from radar.api.serializers.common import (
+    EnumLookupField,
+    IntegerLookupField,
+    MetaMixin,
     PatientMixin,
     SourceMixin,
-    MetaMixin,
-    IntegerLookupField,
     TinyGroupField,
-    EnumLookupField
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.database import db
 from radar.models.diagnoses import (
-    Diagnosis,
-    PatientDiagnosis,
     BIOPSY_DIAGNOSES,
+    Diagnosis,
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
-    GroupDiagnosis
+    GroupDiagnosis,
+    PatientDiagnosis,
+
 )
 
 

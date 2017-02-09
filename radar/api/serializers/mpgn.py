@@ -1,8 +1,8 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import none_if_blank, optional, max_length
+from cornflake.validators import max_length, none_if_blank, optional
 
-from radar.api.serializers.common import PatientMixin, MetaMixin
+from radar.api.serializers.common import MetaMixin, PatientMixin
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.mpgn import MpgnClinicalPicture
 
@@ -16,7 +16,10 @@ class MpgnClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     infection = fields.BooleanField(required=False)
     infection_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     ophthalmoscopy = fields.BooleanField(required=False)
-    ophthalmoscopy_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    ophthalmoscopy_details = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(5000)])
 
     class Meta(object):

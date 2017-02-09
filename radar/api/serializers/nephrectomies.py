@@ -2,13 +2,18 @@ from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
 from radar.api.serializers.common import (
+    MetaMixin,
     PatientMixin,
     SourceMixin,
-    MetaMixin,
-    StringLookupField
+    StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.nephrectomies import Nephrectomy, NEPHRECTOMY_KIDNEY_SIDES, NEPHRECTOMY_KIDNEY_TYPES, NEPHRECTOMY_ENTRY_TYPES
+from radar.models.nephrectomies import (
+    Nephrectomy,
+    NEPHRECTOMY_ENTRY_TYPES,
+    NEPHRECTOMY_KIDNEY_SIDES,
+    NEPHRECTOMY_KIDNEY_TYPES,
+)
 
 
 class NephrectomySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

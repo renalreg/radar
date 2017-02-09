@@ -7,14 +7,14 @@ from cornflake.validators import after, not_in_future
 import pytz
 
 from radar.models.groups import (
-    GROUP_TYPE,
-    GROUP_CODE_NHS,
+    GROUP_CODE_BAPN,
     GROUP_CODE_CHI,
     GROUP_CODE_HSC,
-    GROUP_CODE_UKRR,
+    GROUP_CODE_NHS,
+    GROUP_CODE_RADAR,
     GROUP_CODE_UKRDC,
-    GROUP_CODE_BAPN,
-    GROUP_CODE_RADAR
+    GROUP_CODE_UKRR,
+    GROUP_TYPE,
 )
 from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime

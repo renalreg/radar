@@ -1,5 +1,5 @@
 from cornflake import fields
-from cornflake.exceptions import ValidationError, SkipField
+from cornflake.exceptions import SkipField, ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import (
     max_length,
@@ -11,12 +11,12 @@ from cornflake.validators import (
 )
 
 from radar.api.serializers.common import (
-    PatientMixin,
-    SystemSourceMixin,
     MetaMixin,
+    PatientMixin,
     StringLookupField,
+    SystemSourceMixin,
 )
-from radar.api.serializers.validators import remove_trailing_comma, after_date_of_birth
+from radar.api.serializers.validators import after_date_of_birth, remove_trailing_comma
 from radar.models.patient_addresses import COUNTRIES, PatientAddress
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION

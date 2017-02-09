@@ -1,15 +1,15 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import none_if_blank, optional, max_length, url
+from cornflake.validators import max_length, none_if_blank, optional, url
 
 from radar.api.serializers.common import (
+    MetaMixin,
     PatientMixin,
     SourceMixin,
-    MetaMixin,
-    StringLookupField
+    StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.pathology import Pathology, PATHOLOGY_KIDNEY_TYPES, PATHOLOGY_KIDNEY_SIDES
+from radar.models.pathology import Pathology, PATHOLOGY_KIDNEY_SIDES, PATHOLOGY_KIDNEY_TYPES
 
 
 class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -18,7 +18,10 @@ class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     kidney_side = StringLookupField(PATHOLOGY_KIDNEY_SIDES, required=False)
     reference_number = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(100)])
     image_url = fields.StringField(required=False, validators=[none_if_blank(), optional(), url()])
-    histological_summary = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    histological_summary = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     em_findings = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     class Meta(object):

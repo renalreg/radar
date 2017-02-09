@@ -1,19 +1,19 @@
 from cornflake import fields, serializers
 from cornflake.exceptions import SkipField, ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import none_if_blank, optional, max_length
+from cornflake.validators import max_length, none_if_blank, optional
 
 from radar.api.serializers.common import (
+    IntegerLookupField,
     MetaMixin,
-    TinyGroupSerializer,
-    TinyGroupPatientSerializer,
-    TinyUserSerializer,
     StringLookupField,
-    IntegerLookupField
+    TinyGroupPatientSerializer,
+    TinyGroupSerializer,
+    TinyUserSerializer,
 )
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
-from radar.models.patient_codes import GENDERS, ETHNICITIES
+from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION

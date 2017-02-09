@@ -1,9 +1,9 @@
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import none_if_blank, optional, max_length
+from cornflake.validators import max_length, none_if_blank, optional
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, StringLookupField
+from radar.api.serializers.common import MetaMixin, PatientMixin, StringLookupField
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 
@@ -20,9 +20,15 @@ class InsClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     rash = fields.BooleanField(required=False)
     rash_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     infection = fields.BooleanField(required=False)
-    infection_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    infection_details = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     ophthalmoscopy = fields.BooleanField(required=False)
-    ophthalmoscopy_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    ophthalmoscopy_details = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
 
     class Meta(object):
@@ -49,7 +55,10 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     date_of_relapse = fields.DateField()
     kidney_type = StringLookupField(KIDNEY_TYPES)
     viral_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
-    immunisation_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    immunisation_trigger = fields.StringField(
+        required=False,
+        validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     other_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     high_dose_oral_prednisolone = fields.BooleanField(required=False)
     iv_methyl_prednisolone = fields.BooleanField(required=False)

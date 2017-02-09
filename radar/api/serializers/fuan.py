@@ -1,10 +1,10 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
-from cornflake.validators import none_if_blank, optional, max_length
+from cornflake.validators import max_length, none_if_blank, optional
 
-from radar.api.serializers.common import PatientMixin, MetaMixin, StringLookupField, IntegerLookupField
+from radar.api.serializers.common import IntegerLookupField, MetaMixin, PatientMixin, StringLookupField
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.fuan import FuanClinicalPicture, THP_RESULTS, RELATIVES
+from radar.models.fuan import FuanClinicalPicture, RELATIVES, THP_RESULTS
 
 
 class FuanClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
