@@ -21,7 +21,7 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     left_anomaly_details = fields.StringField(
         required=False,
         validators=[none_if_blank(), optional(), max_length(10000)]
-        )
+    )
     left_ultrasound_details = fields.StringField(
         required=False,
         validators=[none_if_blank(), optional(), max_length(10000)]
