@@ -1,6 +1,6 @@
 import logging
 
-from flask import request, abort, Blueprint, Response
+from flask import abort, Blueprint, request, Response
 
 from radar.app import Radar
 from radar.ukrdc_importer.serializers import ContainerSerializer

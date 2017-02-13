@@ -4,18 +4,18 @@ from radar.admin.views import (
     AdminIndexView,
     CodeView,
     ConsultantView,
-    DiagnosisView,
     DiagnosisCodeView,
+    DiagnosisView,
     DrugGroupView,
     DrugView,
     FormView,
-    GroupView,
     GroupConsultantView,
     GroupDiagnosisView,
     GroupFormView,
     GroupObservationView,
-    GroupQuestionnaireView,
     GroupPageView,
+    GroupQuestionnaireView,
+    GroupView,
     HospitalView,
     ObservationView,
     SpecialtyView
@@ -24,12 +24,12 @@ from radar.app import Radar
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.codes import Code
-from radar.models.consultants import Consultant, Specialty, GroupConsultant
-from radar.models.diagnoses import Diagnosis, GroupDiagnosis, DiagnosisCode
+from radar.models.consultants import Consultant, GroupConsultant, Specialty
+from radar.models.diagnoses import Diagnosis, DiagnosisCode, GroupDiagnosis
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import Group, GroupPage
 from radar.models.medications import Drug, DrugGroup
-from radar.models.results import Observation, GroupObservation
+from radar.models.results import GroupObservation, Observation
 
 
 def inject_current_user():
@@ -44,7 +44,14 @@ class RadarAdmin(Radar):
 
         self.context_processor(inject_current_user)
 
-        admin = Admin(self, 'RADAR Admin', index_view=AdminIndexView(), template_mode='bootstrap3', base_template='master.html', url='/admin')
+        admin = Admin(
+            self,
+            'RADAR Admin',
+            index_view=AdminIndexView(),
+            template_mode='bootstrap3',
+            base_template='master.html',
+            url='/admin'
+        )
 
         admin.add_view(GroupView(Group, db.session, name='Groups', category='Groups'))
         admin.add_view(HospitalView(Group, db.session, name='Hospitals', category='Groups', endpoint='hospital'))

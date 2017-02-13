@@ -5,7 +5,7 @@ import uuid
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
-from radar.models.groups import Group, GROUP_TYPE, GROUP_CODE_UKRDC
+from radar.models.groups import Group, GROUP_CODE_UKRDC, GROUP_TYPE
 from radar.models.users import User
 from radar.utils import get_path
 

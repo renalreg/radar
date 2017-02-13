@@ -1,4 +1,4 @@
-from sqlalchemy import or_, and_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db
@@ -7,7 +7,7 @@ from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.forms import Entry
 from radar.models.genetics import Genetics
-from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
 from radar.models.ins import InsClinicalPicture, InsRelapse
 from radar.models.medications import Medication
@@ -21,8 +21,8 @@ from radar.models.patients import Patient
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
-from radar.models.transplants import Transplant, TransplantRejection, TransplantBiopsy
-from radar.roles import PERMISSION, get_roles_with_permission
+from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
+from radar.roles import get_roles_with_permission, PERMISSION
 
 
 def filter_by_patient_permissions(query, user, patient_id, demographics=False):
@@ -124,7 +124,13 @@ def _patient_filter(query, patient_id, user, patient_group):
 def patient_group_helper(klass):
     def f(config):
         q = db.session.query(klass).order_by(klass.patient_id, klass.id)
-        q = _patient_group_filter(q, klass.patient_id, klass.group_id, config['user'], config['patient_group'], config['data_group'])
+        q = _patient_group_filter(
+            q,
+            klass.patient_id,
+            klass.group_id,
+            config['user'],
+            config['patient_group'],
+            config['data_group'])
         return q
 
     return f
@@ -152,7 +158,13 @@ def get_patients(config):
 def get_family_history_relatives(config):
     q = db.session.query(FamilyHistoryRelative)
     q = q.join(FamilyHistoryRelative.family_history)
-    q = _patient_group_filter(q, FamilyHistory.patient_id, FamilyHistory.group_id, config['user'], config['patient_group'], config['data_group'])
+    q = _patient_group_filter(
+        q,
+        FamilyHistory.patient_id,
+        FamilyHistory.group_id,
+        config['user'],
+        config['patient_group'],
+        config['data_group'])
     q = q.order_by(FamilyHistory.patient_id, FamilyHistory.id, FamilyHistoryRelative.id)
     return q
 

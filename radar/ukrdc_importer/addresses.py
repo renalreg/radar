@@ -4,12 +4,12 @@ from radar.database import db
 from radar.models.patient_addresses import PatientAddress
 from radar.ukrdc_importer.serializers import AddressSerializer
 from radar.ukrdc_importer.utils import (
-    validate_list,
-    unique_list,
-    delete_list,
     build_id,
+    delete_list,
     get_import_group,
-    get_import_user
+    get_import_user,
+    unique_list,
+    validate_list,
 )
 from radar.utils import get_path
 

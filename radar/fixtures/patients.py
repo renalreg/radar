@@ -1,4 +1,4 @@
-from datetime import timedelta, date, datetime
+from datetime import date, datetime, timedelta
 import random
 
 import pytz
@@ -14,35 +14,35 @@ from radar.fixtures.renal_imaging import create_renal_imaging_f
 from radar.fixtures.results import create_results_f
 from radar.fixtures.transplants import create_transplants_f
 from radar.fixtures.utils import (
-    generate_first_name,
-    generate_last_name,
-    generate_first_name_alias,
-    generate_date_of_birth,
-    generate_date_of_death,
-    generate_phone_number,
-    generate_mobile_number,
-    generate_email_address,
-    generate_nhs_no,
-    generate_chi_no,
-    generate_ukrr_no,
-    generate_nhsbt_no,
+    add,
     generate_address1,
     generate_address2,
     generate_address3,
+    generate_chi_no,
+    generate_date_of_birth,
+    generate_date_of_death,
+    generate_email_address,
+    generate_first_name,
+    generate_first_name_alias,
+    generate_gender,
+    generate_last_name,
+    generate_mobile_number,
+    generate_nhs_no,
+    generate_nhsbt_no,
+    generate_phone_number,
     generate_postcode,
+    generate_ukrr_no,
     random_date,
     random_datetime,
-    generate_gender,
-    add
 )
 from radar.models.groups import (
     Group,
-    GroupPatient,
-    GROUP_TYPE,
-    GROUP_CODE_NHS,
     GROUP_CODE_CHI,
+    GROUP_CODE_NHS,
+    GROUP_CODE_NHSBT,
     GROUP_CODE_UKRR,
-    GROUP_CODE_NHSBT
+    GROUP_TYPE,
+    GroupPatient,
 )
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
@@ -144,7 +144,9 @@ def create_patient_numbers_f():
 
     def create_patient_numbers(patient, source_group, source_type):
         for number_group, f in number_groups:
-            old_n = PatientNumber.query.filter(PatientNumber.patient == patient, PatientNumber.number_group == number_group).first()
+            old_n = PatientNumber.query.filter(
+                PatientNumber.patient == patient,
+                PatientNumber.number_group == number_group).first()
             new_n = PatientNumber()
             new_n.patient = patient
             new_n.source_group = source_group
