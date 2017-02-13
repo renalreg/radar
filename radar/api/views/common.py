@@ -1,26 +1,26 @@
 from cornflake import fields, serializers
-from sqlalchemy import or_, and_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
 
 from radar.api.permissions import (
     GroupObjectPermission,
     PatientObjectPermission,
+    SourceObjectPermission,
     SystemSourceObjectPermission,
-    SourceObjectPermission
 )
-from radar.api.serializers.common import StringLookupField, IntegerLookupField
+from radar.api.serializers.common import IntegerLookupField, StringLookupField
 from radar.api.views.generics import (
-    ListView,
     ListCreateModelView,
+    ListView,
+    parse_args,
     RetrieveUpdateDestroyModelView,
-    parse_args
 )
 from radar.auth.sessions import current_user
 from radar.database import db
-from radar.models.groups import Group, GroupPatient, GroupUser, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 from radar.models.patients import Patient
 from radar.models.users import User
-from radar.patient_search import PatientQueryBuilder, filter_by_permissions
+from radar.patient_search import filter_by_permissions, PatientQueryBuilder
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.user_search import UserQueryBuilder
 
