@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, Index, CheckConstraint
+from sqlalchemy import CheckConstraint, Column, Index, Integer, String
 
 from radar.database import db
 from radar.models.logs import log_changes

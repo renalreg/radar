@@ -1,5 +1,5 @@
 from sqlalchemy.types import Enum, String
-from sqlalchemy.types import TypeDecorator, SchemaType
+from sqlalchemy.types import SchemaType, TypeDecorator
 
 
 class EnumType(TypeDecorator, SchemaType):

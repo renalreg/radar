@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text, Index, String
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 
 

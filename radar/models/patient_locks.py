@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Index
+from sqlalchemy import Column, Index, Integer
 
 from radar.database import db
 from radar.models.common import patient_id_column, patient_relationship

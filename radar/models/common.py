@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, Column, ForeignKey, DateTime, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, text
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 
 
 def uuid_pk_column():

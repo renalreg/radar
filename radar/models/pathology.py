@@ -1,9 +1,9 @@
 from collections import OrderedDict
-from sqlalchemy import Column, Integer, ForeignKey, Date, String, Index
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 
 

@@ -1,11 +1,11 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Integer, ForeignKey, Date, Index, Boolean, String
+from sqlalchemy import Boolean, Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 
 
@@ -59,8 +59,13 @@ class TransplantRejection(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    transplant = relationship('Transplant', backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
+    transplant_id = Column(
+        postgresql.UUID,
+        ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'),
+        nullable=False)
+    transplant = relationship(
+        'Transplant',
+        backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_rejection = Column(Date, nullable=False)
 
@@ -73,8 +78,13 @@ class TransplantBiopsy(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    transplant_id = Column(postgresql.UUID, ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    transplant = relationship('Transplant', backref=backref('biopsies', cascade='all, delete-orphan', passive_deletes=True))
+    transplant_id = Column(
+        postgresql.UUID,
+        ForeignKey('transplants.id', onupdate='CASCADE', ondelete='CASCADE'),
+        nullable=False)
+    transplant = relationship(
+        'Transplant',
+        backref=backref('biopsies', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_biopsy = Column(Date, nullable=False)
     recurrence = Column(Boolean)

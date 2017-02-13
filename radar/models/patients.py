@@ -1,17 +1,17 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, select, join, String, func, exists, Sequence, Boolean, text
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy import Boolean, Column, exists, func, Integer, join, select, Sequence, String, text
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.logs import log_changes
-from radar.models.patient_codes import GENDERS, ETHNICITIES, GENDER_MALE, GENDER_FEMALE
+from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
-from radar.utils import uniq, months_between, round_age
+from radar.utils import months_between, round_age, uniq
 
 
 def clean(items):

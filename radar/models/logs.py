@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import event, DDL, Column, Integer, DateTime, String, text, Index
+from sqlalchemy import Column, DateTime, DDL, event, Index, Integer, String, text
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
@@ -27,12 +27,22 @@ Index('logs_user_date_idx', Log.user_id, Log.date)
 Index('logs_user_type_idx', Log.user_id, Log.type)
 
 Index('logs_patient1_idx', Log.data['patient_id'].astext.cast(Integer), postgresql_where=Log.type == 'VIEW_PATIENT')
-Index('logs_patient2_idx', Log.data[('new_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'INSERT')
-Index('logs_patient3_idx', Log.data[('original_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'UPDATE')
-Index('logs_patient4_idx', Log.data[('new_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'UPDATE')
-Index('logs_patient5_idx', Log.data[('original_data', 'patient_id')].astext.cast(Integer), postgresql_where=Log.type == 'DELETE')
+Index('logs_patient2_idx',
+      Log.data[('new_data', 'patient_id')].astext.cast(Integer),
+      postgresql_where=Log.type == 'INSERT')
+Index('logs_patient3_idx',
+      Log.data[('original_data', 'patient_id')].astext.cast(Integer),
+      postgresql_where=Log.type == 'UPDATE')
+Index('logs_patient4_idx',
+      Log.data[('new_data', 'patient_id')].astext.cast(Integer),
+      postgresql_where=Log.type == 'UPDATE')
+Index('logs_patient5_idx',
+      Log.data[('original_data', 'patient_id')].astext.cast(Integer),
+      postgresql_where=Log.type == 'DELETE')
 
-Index('logs_table_name_idx', Log.data['table_name'].astext, postgresql_where=Log.type.in_(['INSERT', 'UPDATE', 'DELETE']))
+Index('logs_table_name_idx',
+      Log.data['table_name'].astext,
+      postgresql_where=Log.type.in_(['INSERT', 'UPDATE', 'DELETE']))
 
 
 def log_changes(cls):

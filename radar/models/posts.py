@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, DateTime
+from sqlalchemy import Column, DateTime, Integer, Text
 
 from radar.database import db
 from radar.models.common import MetaModelMixin

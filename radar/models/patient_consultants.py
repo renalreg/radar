@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date
+from sqlalchemy import Column, Date, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from radar.database import db

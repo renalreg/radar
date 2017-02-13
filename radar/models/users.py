@@ -1,12 +1,12 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Index, text, select
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, func, Index, Integer, select, String, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, column_property
+from sqlalchemy.orm import column_property, relationship
 
 from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
 from radar.database import db
-from radar.models.common import ModifiedDateMixin, CreatedDateMixin
-from radar.models.logs import log_changes, Log
+from radar.models.common import CreatedDateMixin, ModifiedDateMixin
+from radar.models.logs import Log, log_changes
 
 
 class UserCreatedUserMixin(object):
@@ -17,7 +17,10 @@ class UserCreatedUserMixin(object):
 
     @declared_attr
     def created_user(cls):
-        return relationship('User', primaryjoin="User.id == %s.created_user_id" % cls.__name__, remote_side='User.id', post_update=True)
+        return relationship(
+            'User',
+            primaryjoin="User.id == %s.created_user_id" % cls.__name__,
+            remote_side='User.id', post_update=True)
 
 
 class UserModifiedUserMixin(object):
@@ -28,7 +31,10 @@ class UserModifiedUserMixin(object):
 
     @declared_attr
     def modified_user(cls):
-        return relationship('User', primaryjoin="User.id == %s.modified_user_id" % cls.__name__, remote_side='User.id', post_update=True)
+        return relationship(
+            'User',
+            primaryjoin="User.id == %s.modified_user_id" % cls.__name__,
+            remote_side='User.id', post_update=True)
 
 
 @log_changes

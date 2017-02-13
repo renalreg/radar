@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Boolean, String, Date, Index
+from sqlalchemy import Boolean, Column, Date, Index, String
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, uuid_pk_column, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 
 

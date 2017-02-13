@@ -1,4 +1,4 @@
-from sqlalchemy import select, and_, or_, exists, PrimaryKeyConstraint
+from sqlalchemy import and_, exists, or_, PrimaryKeyConstraint, select
 from sqlalchemy.orm import relationship
 
 from radar.database import db

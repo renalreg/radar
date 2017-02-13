@@ -2,17 +2,31 @@ from datetime import datetime
 from enum import Enum
 
 import pytz
-from sqlalchemy import Column, Integer, String, ForeignKey, Index, DateTime, and_, or_, func, null, text, Boolean, CheckConstraint
+from sqlalchemy import (
+    and_,
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    func,
+    Index,
+    Integer,
+    null,
+    or_,
+    String,
+    text,
+)
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, backref, synonym
+from sqlalchemy.orm import backref, relationship, synonym
 
 from radar.config import config
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
-from radar.models.types import EnumType, EnumToStringType
+from radar.models.types import EnumToStringType, EnumType
 from radar.pages import PAGE
-from radar.roles import ROLE, PERMISSION, get_roles_with_permission, get_roles_managed_by_role
+from radar.roles import get_roles_managed_by_role, get_roles_with_permission, PERMISSION, ROLE
 
 
 class GROUP_TYPE(Enum):
@@ -106,7 +120,10 @@ class GroupPatient(db.Model, MetaModelMixin):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group', foreign_keys=[group_id], backref=backref('group_patients', cascade='all, delete-orphan', passive_deletes=True))
+    group = relationship(
+        'Group',
+        foreign_keys=[group_id],
+        backref=backref('group_patients', cascade='all, delete-orphan', passive_deletes=True))
 
     patient_id = patient_id_column()
     patient = patient_relationship('group_patients')
@@ -142,7 +159,10 @@ class GroupUser(db.Model, MetaModelMixin):
     group = relationship('Group', backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
 
     user_id = Column(Integer, ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    user = relationship('User', foreign_keys=[user_id], backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
+    user = relationship(
+        'User',
+        foreign_keys=[user_id],
+        backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
     role = Column(EnumType(ROLE, name='role'), nullable=False)
 
     def has_permission(self, permission):

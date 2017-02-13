@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Index, CheckConstraint
+from sqlalchemy import CheckConstraint, Column, ForeignKey, Index, Integer, String
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
-from radar.models.common import uuid_pk_column, MetaModelMixin, patient_id_column, patient_relationship
+from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
 
 
@@ -60,10 +60,14 @@ class GroupQuestionnaire(db.Model):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    group = relationship('Group', backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
+    group = relationship(
+        'Group',
+        backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
 
     form_id = Column(Integer, ForeignKey('forms.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    form = relationship('Form', backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
+    form = relationship(
+        'Form',
+        backref=backref('group_questionnaires', cascade='all, delete-orphan', passive_deletes=True))
 
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
 
