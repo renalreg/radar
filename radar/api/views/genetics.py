@@ -1,7 +1,7 @@
 from radar.api.serializers.genetics import GeneticsSerializer
 from radar.api.views.common import (
-    IntegerLookupListView,
     GroupObjectViewMixin,
+    IntegerLookupListView,
     PatientObjectDetailView,
     PatientObjectListView
 )

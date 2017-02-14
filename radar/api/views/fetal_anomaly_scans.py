@@ -19,4 +19,7 @@ class FetalAnomalyScanDetailView(SourceObjectViewMixin, PatientObjectDetailView)
 
 def register_views(app):
     app.add_url_rule('/fetal-anomaly-scans', view_func=FetalAnomalyScanListView.as_view('fetal_anomaly_scan_list'))
-    app.add_url_rule('/fetal-anomaly-scans/<id>', view_func=FetalAnomalyScanDetailView.as_view('fetal_anomaly_scan_detail'))
+    app.add_url_rule(
+        '/fetal-anomaly-scans/<id>',
+        view_func=FetalAnomalyScanDetailView.as_view('fetal_anomaly_scan_detail')
+    )

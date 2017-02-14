@@ -1,11 +1,11 @@
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.posts import PostSerializer
 from radar.api.views.generics import (
-    ListModelView,
     CreateModelView,
+    DestroyModelView,
+    ListModelView,
     RetrieveModelView,
     UpdateModelView,
-    DestroyModelView
 )
 from radar.models.posts import Post
 

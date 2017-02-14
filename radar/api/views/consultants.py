@@ -1,15 +1,15 @@
-from cornflake import serializers, fields
+from cornflake import fields, serializers
 from sqlalchemy.orm import aliased
 
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.consultants import ConsultantSerializer, SpecialtySerializer
 from radar.api.views.generics import (
+    CreateModelView,
+    DestroyModelView,
     ListModelView,
+    parse_args,
     RetrieveModelView,
     UpdateModelView,
-    DestroyModelView,
-    CreateModelView,
-    parse_args
 )
 from radar.auth.sessions import current_user
 from radar.database import db

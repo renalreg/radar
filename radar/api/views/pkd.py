@@ -1,25 +1,25 @@
 from radar.api.serializers.pkd import (
-    LiverImagingSerializer,
     LiverDiseasesSerializer,
+    LiverImagingSerializer,
     LiverTransplantSerializer,
     NutritionSerializer
 )
 from radar.api.views.common import (
-    StringLookupListView,
-    SourceObjectViewMixin,
     PatientObjectDetailView,
-    PatientObjectListView
+    PatientObjectListView,
+    SourceObjectViewMixin,
+    StringLookupListView,
 )
 from radar.models.pkd import (
-    LiverImaging,
+    FEEDING_TYPES,
+    FIRST_GRAFT_SOURCES,
+    INDICATIONS,
     LIVER_IMAGING_TYPES,
     LiverDiseases,
+    LiverImaging,
     LiverTransplant,
-    INDICATIONS,
-    FIRST_GRAFT_SOURCES,
     LOSS_REASONS,
     Nutrition,
-    FEEDING_TYPES
 )
 
 
@@ -109,4 +109,7 @@ def register_views(app):
 
     app.add_url_rule('/nutrition', view_func=NutritionListView.as_view('nutrition_list'))
     app.add_url_rule('/nutrition/<id>', view_func=NutritionDetailView.as_view('nutrition_detail'))
-    app.add_url_rule('/nutrition-feeding-types', view_func=NutritionFeedingTypeListView.as_view('nutrition_feeding_type_list'))
+    app.add_url_rule(
+        '/nutrition-feeding-types',
+        view_func=NutritionFeedingTypeListView.as_view('nutrition_feeding_type_list')
+    )
