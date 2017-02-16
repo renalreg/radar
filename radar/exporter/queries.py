@@ -2,6 +2,7 @@ from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
 
 from radar.database import db
+from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
@@ -189,6 +190,13 @@ def get_form_data(config):
     q = db.session.query(Entry)
     q = _patient_filter(q, Entry.patient_id, config['user'], config['patient_group'])
     q = q.filter(Entry.form.has(slug=config['name']))
+    return q
+
+
+def get_consultants(config):
+    q = db.session.query(Consultant)
+    q = q.join(Consultant.group_consultants)
+    q = q.filter(GroupConsultant.group==config['data_group'])
     return q
 
 

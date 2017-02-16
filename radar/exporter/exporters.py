@@ -1034,3 +1034,20 @@ class RenalImagingExporter(Exporter):
         q = queries.get_renal_progressions(self.config)
 
         return query_to_dataset(q, columns)
+
+
+@register('consultants')
+class ConsultantsExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('first_name'),
+            column('last_name'),
+            column('email'),
+            column('telephone_number'),
+            column('gmc_number'),
+            column('specialty', 'specialty.name')
+        ]
+        q = queries.get_consultants(self.config)
+
+        return query_to_dataset(q, columns)
