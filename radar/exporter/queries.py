@@ -196,7 +196,7 @@ def get_form_data(config):
 def get_consultants(config):
     q = db.session.query(Consultant)
     q = q.join(Consultant.group_consultants)
-    q = q.filter(GroupConsultant.group==config['data_group'])
+    q = q.filter(GroupConsultant.group == config['data_group'])
     return q
 
 
