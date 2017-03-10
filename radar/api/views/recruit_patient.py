@@ -3,12 +3,12 @@ from cornflake.exceptions import ValidationError
 from radar.api.permissions import RecruitPatientPermission
 from radar.api.serializers.patients import PatientSerializer
 from radar.api.serializers.recruit_patient import (
-    RecruitPatientSearchSerializer,
     RecruitPatientResultSerializer,
+    RecruitPatientSearchSerializer,
     RecruitPatientSerializer
 )
-from radar.api.views.generics import ApiView, request_json, response_json, PermissionViewMixin
-from radar.recruitment import SearchPatient, RecruitmentPatient, DemographicsMismatch
+from radar.api.views.generics import ApiView, PermissionViewMixin, request_json, response_json
+from radar.recruitment import DemographicsMismatch, RecruitmentPatient, SearchPatient
 
 
 def mismatch_error(e):

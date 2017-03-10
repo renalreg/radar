@@ -1,3 +1,4 @@
+from __future__ import print_function
 from collections import defaultdict
 import time
 
@@ -20,7 +21,8 @@ def debug_teardown_request(exception):
     response_time = time.time() - g.start
 
     if response_time >= 0.1:
-        print colored('{url} - slow response ({response_time:.2f} seconds)'.format(url=url, response_time=response_time), 'yellow')
+        msg = '{url} - slow response ({response_time:.2f} seconds)'
+        print(colored(msg.format(url=url, response_time=response_time), 'yellow'))
 
     total_query_time = 0
 
@@ -42,4 +44,4 @@ def debug_teardown_request(exception):
         else:
             message = '{url} - slow query ({query_time:.2f} seconds) - {query}'
 
-        print colored(message.format(url=url, query=query, times_run=times_run, query_time=query_time), 'yellow')
+        print(colored(message.format(url=url, query=query, times_run=times_run, query_time=query_time), 'yellow'))

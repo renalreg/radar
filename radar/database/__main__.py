@@ -5,8 +5,8 @@ import sys
 import click
 
 from radar.app import Radar
-from radar.database import db, do_drop, do_create
-from radar.database.utils import pg_restore, pg_dump
+from radar.database import db, do_create, do_drop
+from radar.database.utils import pg_dump, pg_restore
 
 
 @click.group()

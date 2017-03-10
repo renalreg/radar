@@ -1,4 +1,4 @@
-from wtforms import form, fields, validators
+from wtforms import fields, form, validators
 
 
 class LoginForm(form.Form):

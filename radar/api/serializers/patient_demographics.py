@@ -20,6 +20,7 @@ from radar.api.serializers.common import (
     StringLookupField,
     SystemSourceMixin,
 )
+from radar.api.serializers.nationalities import NationalityField
 from radar.api.serializers.validators import after_day_zero
 from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -52,9 +53,15 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()]
     )
+    nationality = NationalityField()
 
     class Meta(object):
         model_class = PatientDemographics
+
+    def get_model_exclude(self):
+        model_exclude = super(PatientDemographicsSerializer, self).get_model_exclude()
+        model_exclude.add('nationality_id')
+        return model_exclude
 
     def to_representation(self, value):
         user = self.context['user']

@@ -6,6 +6,7 @@ import pytest
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer
 from radar.api.serializers.validators import DAY_ZERO
 from radar.models.groups import Group
+from radar.models.nationalities import Nationality
 from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
@@ -33,7 +34,8 @@ def demographics(patient):
         'home_number': '111111',
         'work_number': '222222',
         'mobile_number': '333333',
-        'email_address': 'foo@example.org'
+        'email_address': 'foo@example.org',
+        'nationality': Nationality(),
     }
 
 
