@@ -30,7 +30,8 @@ class PatientDemographics(db.Model, MetaModelMixin):
     work_number = Column(String)
     mobile_number = Column(String)
     email_address = Column(String)
-    nationality = Column(Integer, ForeignKey('nationalities.id'))
+    nationality_id = Column(Integer, ForeignKey('nationalities.id'))
+    nationality = relationship('Nationality')
 
     @property
     def year_of_birth(self):

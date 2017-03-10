@@ -1,13 +1,13 @@
-from sqlalchemy import or_, func
+from sqlalchemy import func, or_
 
 from radar.database import db, no_autoflush
 from radar.fixtures.utils import (
-    generate_gender,
+    add,
     generate_first_name,
+    generate_gender,
     generate_last_name,
-    add
 )
-from radar.models.groups import Group, GroupUser, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupUser
 from radar.models.users import User
 from radar.roles import ROLE
 

@@ -1,7 +1,7 @@
 """create nationalities table
 
 Revision ID: 4e8e1936a247
-Revises: 
+Revises:
 Create Date: 2017-03-09 10:44:18.873248
 
 """

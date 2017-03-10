@@ -1,7 +1,10 @@
 from __future__ import with_statement
+from logging.config import fileConfig
+
 from alembic import context
 from sqlalchemy import engine_from_config, pool
-from logging.config import fileConfig
+
+from radar.models import Patient
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -15,10 +18,10 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-#from radar.models import *
-#from radar.database import db
-#target_metadata = db.Model.metadata
-target_metadata = None
+# from radar.models import *
+# from radar.database import db
+# target_metadata = db.Model.metadata
+target_metadata = Patient.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

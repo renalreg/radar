@@ -1,8 +1,8 @@
 from datetime import date
 import random
 
-from radar.fixtures.utils import random_bool, random_date, add
-from radar.models.renal_imaging import RenalImaging, RENAL_IMAGING_TYPES, RENAL_IMAGING_KIDNEY_TYPES
+from radar.fixtures.utils import add, random_bool, random_date
+from radar.models.renal_imaging import RENAL_IMAGING_KIDNEY_TYPES, RENAL_IMAGING_TYPES, RenalImaging
 
 
 def create_renal_imaging_f():

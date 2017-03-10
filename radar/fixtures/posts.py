@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from jinja2.utils import generate_lorem_ipsum
 
-from radar.fixtures.utils import random_date, add
+from radar.fixtures.utils import add, random_date
 from radar.models.posts import Post
 
 

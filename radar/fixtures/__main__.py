@@ -4,7 +4,7 @@ import click
 
 from radar.app import Radar
 from radar.database import db, do_create, do_drop
-from radar.fixtures import create_data, create_patients, create_users, create_bot_user
+from radar.fixtures import create_bot_user, create_data, create_patients, create_users
 
 
 @click.group()

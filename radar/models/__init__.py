@@ -22,6 +22,7 @@ from radar.models.logs import *
 from radar.models.results import *
 from radar.models.medications import *
 from radar.models.mpgn import *
+from radar.models.nationalities import Nationality, GroupNationality
 from radar.models.nephrectomies import *
 from radar.models.posts import *
 from radar.models.pathology import *

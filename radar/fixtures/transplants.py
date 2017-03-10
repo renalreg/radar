@@ -1,7 +1,7 @@
 from datetime import date
 import random
 
-from radar.fixtures.utils import random_date, add
+from radar.fixtures.utils import add, random_date
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.transplants import Transplant, TRANSPLANT_MODALITIES
 

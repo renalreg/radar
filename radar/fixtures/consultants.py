@@ -1,8 +1,8 @@
 from radar.fixtures.utils import (
-    generate_gender,
+    add,
     generate_first_name,
+    generate_gender,
     generate_last_name,
-    add
 )
 from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.groups import Group, GROUP_TYPE

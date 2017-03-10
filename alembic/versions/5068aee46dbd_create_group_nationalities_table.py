@@ -17,6 +17,8 @@ depends_on = None
 
 
 table_name = 'group_nationalities'
+
+
 def upgrade():
     op.create_table(
         table_name,

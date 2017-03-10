@@ -2,8 +2,8 @@ import base64
 from datetime import datetime
 import os
 
-from radar.auth.exceptions import UserNotFound, InvalidToken
-from radar.auth.passwords import generate_password_hash, check_password_hash
+from radar.auth.exceptions import InvalidToken, UserNotFound
+from radar.auth.passwords import check_password_hash, generate_password_hash
 from radar.auth.sessions import logout_user
 from radar.config import config
 from radar.database import db
