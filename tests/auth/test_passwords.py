@@ -1,10 +1,10 @@
 from radar.auth.passwords import (
-    password_to_nato_str,
     check_password_hash,
-    generate_password_hash,
     generate_password,
+    generate_password_hash,
     get_password_length,
     is_strong_password,
+    password_to_nato_str,
 )
 from radar.models.users import User
 

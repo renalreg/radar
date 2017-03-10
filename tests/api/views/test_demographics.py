@@ -205,7 +205,7 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
         'lastName': 'WAYNE',
         'gender': 1,
         'dateOfBirth': '2016-01-01',
-        'nationality': 1
+        'nationality': nationality.id,
     }
 
     client = api.test_client()

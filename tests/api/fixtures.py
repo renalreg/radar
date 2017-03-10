@@ -1,7 +1,14 @@
 from datetime import datetime
 
 from radar.database import db
-from radar.models.groups import Group, GroupUser, GroupPatient, GROUP_TYPE, GROUP_CODE_RADAR, GROUP_CODE_NHS
+from radar.models.groups import (
+    Group,
+    GROUP_CODE_NHS,
+    GROUP_CODE_RADAR,
+    GROUP_TYPE,
+    GroupPatient,
+    GroupUser,
+)
 from radar.models.nationalities import Nationality
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
@@ -210,7 +217,7 @@ def create_fixtures():
     hospital2_clinician = create_user('hospital2_clinician')
     add_user_to_group(hospital2_clinician, hospital2_group, ROLE.CLINICIAN)
 
-    nationality = create_nationality(id=1)
+    create_nationality(id=1)
 
     patient1 = create_patient(id=1)
     add_patient_to_group(patient1, radar_group)
