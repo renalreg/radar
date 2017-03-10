@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for
+from flask import redirect, request, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
@@ -8,7 +8,7 @@ from wtforms import fields
 
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
-from radar.auth.sessions import login, logout, current_user, UsernameLoginError, PasswordLoginError, DisabledLoginError
+from radar.auth.sessions import current_user, DisabledLoginError, login, logout, PasswordLoginError, UsernameLoginError
 from radar.models.groups import GROUP_TYPE
 
 

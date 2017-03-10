@@ -1,8 +1,8 @@
 from datetime import date
 import random
 
-from radar.fixtures.utils import random_date, add
-from radar.models.results import Result, Observation, OBSERVATION_VALUE_TYPE
+from radar.fixtures.utils import add, random_date
+from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result
 
 
 def create_results_f():

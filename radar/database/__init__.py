@@ -1,7 +1,7 @@
 from functools import update_wrapper
 
 from flask_sqlalchemy import SQLAlchemy as SQLAlchemyBase
-from sqlalchemy import exc, event, select
+from sqlalchemy import event, exc, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as SessionBase
 

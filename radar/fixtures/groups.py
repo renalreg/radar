@@ -3,17 +3,17 @@ from radar.models.diagnoses import Diagnosis, GroupDiagnosis
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import (
     Group,
-    GroupPage,
-    GROUP_CODE_RADAR,
-    GROUP_CODE_NURTURE,
-    GROUP_CODE_NHS,
-    GROUP_CODE_CHI,
-    GROUP_CODE_UKRR,
-    GROUP_CODE_HSC,
-    GROUP_CODE_UKRDC,
-    GROUP_CODE_NHSBT,
     GROUP_CODE_BAPN,
+    GROUP_CODE_CHI,
+    GROUP_CODE_HSC,
+    GROUP_CODE_NHS,
+    GROUP_CODE_NHSBT,
+    GROUP_CODE_NURTURE,
+    GROUP_CODE_RADAR,
+    GROUP_CODE_UKRDC,
+    GROUP_CODE_UKRR,
     GROUP_TYPE,
+    GroupPage,
 )
 from radar.pages import PAGE
 

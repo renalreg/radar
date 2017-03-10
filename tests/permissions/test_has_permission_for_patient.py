@@ -1,7 +1,7 @@
 from radar.models.groups import Group
 from radar.permissions import has_permission_for_patient
-from radar.roles import ROLE, PERMISSION
-from tests.permissions.helpers import make_user, make_patient, make_groups
+from radar.roles import PERMISSION, ROLE
+from tests.permissions.helpers import make_groups, make_patient, make_user
 
 
 def should_grant(user, patient, permission):

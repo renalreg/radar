@@ -7,7 +7,7 @@ from radar.fixtures.forms import create_forms
 from radar.fixtures.groups import create_groups
 from radar.fixtures.patients import create_patients
 from radar.fixtures.posts import create_posts
-from radar.fixtures.users import DEFAULT_PASSWORD, create_users, create_bot_user
+from radar.fixtures.users import create_bot_user, create_users, DEFAULT_PASSWORD
 
 
 @no_autoflush

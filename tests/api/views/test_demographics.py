@@ -7,7 +7,13 @@ from radar.database import db
 from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
-from tests.api.fixtures import get_user, get_patient, get_group, create_demographics
+from tests.api.fixtures import (
+    create_demographics,
+    get_group,
+    get_nationality,
+    get_patient,
+    get_user,
+)
 
 
 def get_read_list_args():
@@ -188,6 +194,7 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
+    nationality = get_nationality(1)
     db.session.commit()
 
     data = {
@@ -198,6 +205,7 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
         'lastName': 'WAYNE',
         'gender': 1,
         'dateOfBirth': '2016-01-01',
+        'nationality': nationality.id,
     }
 
     client = api.test_client()

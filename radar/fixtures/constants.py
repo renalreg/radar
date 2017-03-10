@@ -1,4 +1,4 @@
-from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
+from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
 
 FIRST_NAMES = {
     GENDER_MALE: [

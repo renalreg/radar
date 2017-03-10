@@ -1,4 +1,4 @@
-from flask import request, has_request_context, _request_ctx_stack, session
+from flask import _request_ctx_stack, has_request_context, request, session
 from itsdangerous import BadSignature, TimestampSigner
 from sqlalchemy import func
 from werkzeug.local import LocalProxy
