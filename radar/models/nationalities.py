@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, VARCHAR
 
 from radar.database import db
 
@@ -7,8 +7,7 @@ class Nationality(db.Model):
     __tablename__ = 'nationalities'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
-    test = Column(String)
+    label = Column(VARCHAR(100), nullable=False, unique=True)
 
 
 class GroupNationality(db.Model):

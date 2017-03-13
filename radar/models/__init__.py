@@ -8,6 +8,7 @@ from radar.models.common import *
 from radar.models.consultants import *
 from radar.models.diagnoses import *
 from radar.models.dialysis import *
+from radar.models.ethnicities import Ethnicity, GroupEthnicity
 from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *

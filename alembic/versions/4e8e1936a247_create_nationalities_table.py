@@ -20,7 +20,7 @@ def upgrade():
     op.create_table(
         'nationalities',
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.String(100), nullable=False, unique=True)
+        sa.Column('label', sa.String(100), nullable=False, unique=True)
     )
 
 

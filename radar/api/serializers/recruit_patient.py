@@ -3,6 +3,7 @@ from cornflake.exceptions import ValidationError
 from cornflake.validators import not_empty, not_in_future, upper
 
 from radar.api.serializers.common import GroupField, IntegerLookupField, StringLookupField
+from radar.api.serializers.nationalities import NationalityField
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
 from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
@@ -37,6 +38,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
 
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
+    nationality = NationalityField()
     ethnicity = StringLookupField(ETHNICITIES, required=False)
     cohort_group = GroupField()
     hospital_group = GroupField()

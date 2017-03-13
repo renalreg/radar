@@ -12,6 +12,7 @@ from radar.api.serializers.common import (
     TinyUserSerializer,
 )
 from radar.api.serializers.group_patients import GroupPatientSerializer
+from radar.api.serializers.nationalities import NationalityField
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patients import Patient
@@ -47,6 +48,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     date_of_death = fields.DateField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS, read_only=True)
+    nationality = NationalityField()
     ethnicity = StringLookupField(ETHNICITIES, read_only=True)
     groups = fields.ListField(child=GroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = RecruitedDateField(read_only=True)
@@ -94,6 +96,7 @@ class TinyPatientSerializer(serializers.Serializer):
     date_of_death = fields.DateField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS, read_only=True)
+    nationality = NationalityField()
     ethnicity = StringLookupField(ETHNICITIES, read_only=True)
     groups = fields.ListField(child=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
     recruited_date = RecruitedDateField(read_only=True)
