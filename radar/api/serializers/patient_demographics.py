@@ -20,7 +20,7 @@ from radar.api.serializers.common import (
     StringLookupField,
     SystemSourceMixin,
 )
-from radar.api.serializers.nationalities import NationalityField
+from radar.api.serializers.nationalities import EthnicityField, NationalityField
 from radar.api.serializers.validators import after_day_zero
 from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -36,7 +36,6 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
-    ethnicity = StringLookupField(ETHNICITIES, required=False)
     home_number = fields.StringField(
         required=False,
         validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
@@ -54,6 +53,7 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         validators=[none_if_blank(), optional(), lower(), email_address()]
     )
     nationality = NationalityField()
+    #ethnicity = EthnicityField()
 
     class Meta(object):
         model_class = PatientDemographics

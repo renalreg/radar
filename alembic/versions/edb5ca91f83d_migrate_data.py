@@ -48,11 +48,18 @@ def upgrade():
     app = Radar()
     with app.app_context():
         for code, label in ETHNICITIES.items():
-
             db.session.add(Ethnicity(code=code, label=label))
-            db.session.commit()
+        db.session.commit()
 
         db.session.execute('update patient_demographics set ethnicity_id = (select id from ethnicities where code = ethnicity)')
+        db.session.commit()
+        db.session.execute(
+            'update patient_demographics '
+            'set ethnicity_id = ('
+            '   select id from ethnicities where code = \'Z\''
+            ') '
+            'where ethnicity_id is NULL'
+        )
         db.session.commit()
 
     op.drop_column('patient_demographics', 'ethnicity')
@@ -68,11 +75,7 @@ def downgrade():
     session = Session(bind=bind)
     session.execute('update patient_demographics set ethnicity = (select code from ethnicities where id = ethnicity_id)')
     session.commit()
+    op.execute('update patient_demographics set ethnicity_id = NULL')
+    op.execute('delete from ethnicities')
 
-    #app = Radar()
-    #with app.app_context():
-    #    db.session.commit()
-
-    #    db.session.execute('update patient_demographics set ethnicity = (select code from ethnicities where id = ethnicity_id)')
-    #    db.session.commit()
     # ### end Alembic commands ###

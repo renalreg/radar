@@ -1,4 +1,5 @@
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from radar.models.ethnicities import Ethnicity
 from radar.models.nationalities import Nationality
 
 
@@ -10,3 +11,13 @@ class NationalitySerializer(ModelSerializer):
 class NationalityField(ReferenceField):
     model_class = Nationality
     serializer_class = NationalitySerializer
+
+
+class EthnicitySerializer(ModelSerializer):
+    class Meta(object):
+        model_class = Ethnicity
+
+
+class EthnicityField(ReferenceField):
+    model_class = Ethnicity
+    serializer_class = EthnicitySerializer
