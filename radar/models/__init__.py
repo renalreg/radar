@@ -9,7 +9,7 @@ from radar.models.consultants import *
 from radar.models.countries import Country
 from radar.models.diagnoses import *
 from radar.models.dialysis import *
-from radar.models.ethnicities import Ethnicity, GroupEthnicity
+from radar.models.demographics import CountryEthnicities, CountryNationalities, Ethnicity, Nationality
 from radar.models.family_histories import *
 from radar.models.fetal_anomaly_scans import *
 from radar.models.fetal_ultrasounds import *
@@ -24,7 +24,6 @@ from radar.models.logs import *
 from radar.models.results import *
 from radar.models.medications import *
 from radar.models.mpgn import *
-from radar.models.nationalities import Nationality, GroupNationality
 from radar.models.nephrectomies import *
 from radar.models.posts import *
 from radar.models.pathology import *
