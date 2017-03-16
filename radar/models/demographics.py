@@ -15,7 +15,7 @@ class CountryEthnicities(db.Model):
     __tablename__ = 'country_ethnicities'
 
     id = Column(Integer, primary_key=True)
-    ethnicity_id = Column(Integer, ForeignKey('ethnicity.id'))
+    ethnicity_id = Column(Integer, ForeignKey('ethnicities.id'))
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('ethnicities'))
 
@@ -31,6 +31,6 @@ class CountryNationalities(db.Model):
     __tablename__ = 'country_nationalities'
 
     id = Column(Integer, primary_key=True)
-    nationality_id = Column(Integer, ForeignKey('nationality.id'))
+    nationality_id = Column(Integer, ForeignKey('nationalities.id'))
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('nationalities'))

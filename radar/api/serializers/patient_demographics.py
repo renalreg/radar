@@ -20,7 +20,7 @@ from radar.api.serializers.common import (
     StringLookupField,
     SystemSourceMixin,
 )
-from radar.api.serializers.nationalities import EthnicityField, NationalityField
+#from radar.api.serializers.nationalities import EthnicityField, NationalityField
 from radar.api.serializers.validators import after_day_zero
 from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -52,7 +52,7 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()]
     )
-    nationality = NationalityField()
+    #nationality = NationalityField()
     #ethnicity = EthnicityField()
 
     class Meta(object):
