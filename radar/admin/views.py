@@ -120,19 +120,9 @@ class GroupView(ModelView):
     column_list = ['name', 'type', 'code', 'parent_group', 'country']
     column_default_sort = 'name'
     form_columns = ['name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
-    column_searchable_list = ['name', 'short_name', 'type', 'code', 'country']
+    column_searchable_list = ['name', 'short_name', 'type', 'code', 'country_code', 'country.label']
     column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
-    #column_choices = {'country': COUNTRIES.items()}
-
-    #form_overrides = dict(
-    #    country=fields.SelectField
-    #)
-    #form_args = dict(
-    #    country=dict(
-    #        choices=COUNTRIES.items()
-    #    )
-    #)
 
     def get_query(self):
         return super(ModelView, self).get_query().filter(self.model.type != GROUP_TYPE.HOSPITAL)
@@ -141,19 +131,8 @@ class GroupView(ModelView):
 class HospitalView(ModelView):
     column_list = ['name', 'code', 'is_transplant_centre', 'country']
     column_default_sort = 'name'
-    column_searchable_list = ['name', 'short_name', 'code', 'country']
+    column_searchable_list = ['name', 'short_name', 'code', 'country_code', 'country.label']
     form_columns = ['name', 'short_name', 'code', 'country', 'instructions', 'is_transplant_centre']
-
-    #column_choices = {'country': COUNTRIES.items()}
-
-    #form_overrides = dict(
-    #    country=fields.SelectField
-    #)
-    #form_args = dict(
-    #    country=dict(
-    #        choices=COUNTRIES.items()
-    #    )
-    #)
 
     def on_model_change(self, form, model, is_created):
         model.type = GROUP_TYPE.HOSPITAL

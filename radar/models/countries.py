@@ -10,5 +10,5 @@ class Country(db.Model):
     label = Column(String(length=100), nullable=False)
 
     def __unicode__(self):
-        return label
+        return self.label
 
