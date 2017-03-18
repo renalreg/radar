@@ -1,4 +1,7 @@
-from radar.api.views import consultants
+from radar.api.views import (
+    consultants,
+    demographics,
+)
 from radar.api.views import forgot_password
 from radar.api.views import patient_consultants
 from radar.api.views import stats
@@ -52,6 +55,7 @@ from radar.api.views import forms
 def setup(app):
     alport.register_views(app)
     consultants.register_views(app)
+    demographics.register_views(app)
     diagnoses.register_views(app)
     dialysis.register_views(app)
     environment.register_views(app)

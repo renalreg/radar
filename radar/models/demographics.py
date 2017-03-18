@@ -11,11 +11,14 @@ class Ethnicity(db.Model):
     label = Column(String)
 
 
-class CountryEthnicities(db.Model):
+class CountryEthnicity(db.Model):
     __tablename__ = 'country_ethnicities'
 
     id = Column(Integer, primary_key=True)
+
     ethnicity_id = Column(Integer, ForeignKey('ethnicities.id'))
+    ethnicity = relationship('Ethnicity', foreign_keys=[ethnicity_id], backref=backref('countries', lazy='joined'))
+
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('ethnicities'))
 
@@ -27,10 +30,17 @@ class Nationality(db.Model):
     label = Column(String)
 
 
-class CountryNationalities(db.Model):
+class CountryNationality(db.Model):
     __tablename__ = 'country_nationalities'
 
     id = Column(Integer, primary_key=True)
+
     nationality_id = Column(Integer, ForeignKey('nationalities.id'))
+    nationality = relationship(
+        'Nationality',
+        foreign_keys=[nationality_id],
+        backref=backref('countries', lazy='joined')
+    )
+
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('nationalities'))

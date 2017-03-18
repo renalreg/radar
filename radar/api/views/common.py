@@ -97,6 +97,10 @@ class GroupRequestSerializer(serializers.Serializer):
     group = fields.IntegerField(required=False)
 
 
+class CountryRequestSerializer(serializers.Serializer):
+    group_country = fields.StringField(required=False)
+
+
 class GroupObjectViewMixin(object):
     def get_permission_classes(self):
         permission_classes = super(GroupObjectViewMixin, self).get_permission_classes()
