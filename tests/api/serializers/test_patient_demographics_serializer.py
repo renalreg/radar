@@ -6,7 +6,7 @@ import pytest
 from radar.api.serializers.patient_demographics import PatientDemographicsSerializer
 from radar.api.serializers.validators import DAY_ZERO
 from radar.models.groups import Group
-from radar.models.nationalities import Nationality
+from radar.models.demographics import Ethnicity, Nationality
 from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
@@ -30,12 +30,12 @@ def demographics(patient):
         'date_of_birth': date(1900, 1, 1),
         'date_of_death': date(2000, 1, 1),
         'gender': GENDER_MALE,
-        'ethnicity': 'A',
         'home_number': '111111',
         'work_number': '222222',
         'mobile_number': '333333',
         'email_address': 'foo@example.org',
         'nationality': Nationality(),
+        'ethnicity': Ethnicity(),
     }
 
 
@@ -46,7 +46,6 @@ def test_valid(demographics):
     assert obj.date_of_birth == date(1900, 1, 1)
     assert obj.date_of_death == date(2000, 1, 1)
     assert obj.gender == GENDER_MALE
-    assert obj.ethnicity == 'A'
     assert obj.home_number == '111111'
     assert obj.work_number == '222222'
     assert obj.mobile_number == '333333'

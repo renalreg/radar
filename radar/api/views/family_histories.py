@@ -1,7 +1,7 @@
 from radar.api.serializers.family_histories import FamilyHistorySerializer
 from radar.api.views.common import (
-    IntegerLookupListView,
     GroupObjectViewMixin,
+    IntegerLookupListView,
     PatientObjectDetailView,
     PatientObjectListView
 )
@@ -25,4 +25,7 @@ class FamilyHistoryRelationshipListView(IntegerLookupListView):
 def register_views(app):
     app.add_url_rule('/family-histories', view_func=FamilyHistoryListView.as_view('family_history_list'))
     app.add_url_rule('/family-histories/<id>', view_func=FamilyHistoryDetailView.as_view('family_history_detail'))
-    app.add_url_rule('/family-history-relationships', view_func=FamilyHistoryRelationshipListView.as_view('family_history_relationship_list'))
+    app.add_url_rule(
+        '/family-history-relationships',
+        view_func=FamilyHistoryRelationshipListView.as_view('family_history_relationship_list')
+    )

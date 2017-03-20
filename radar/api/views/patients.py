@@ -7,22 +7,22 @@ from cornflake.validators import none_if_blank
 from flask import Response
 
 from radar.api.logs import log_view_patient
-from radar.api.permissions import PatientPermission, AdminPermission
+from radar.api.permissions import AdminPermission, PatientPermission
 from radar.api.serializers.common import GroupField
-from radar.api.serializers.patients import PatientSerializer, TinyPatientSerializer, PatientProxy
+from radar.api.serializers.patients import PatientProxy, PatientSerializer, TinyPatientSerializer
 from radar.api.views.generics import (
     ApiView,
-    ListModelView,
-    RetrieveUpdateModelView,
     DestroyModelView,
+    get_sort_args,
+    ListModelView,
     parse_args,
-    get_sort_args
+    RetrieveUpdateModelView,
 )
 from radar.auth.sessions import current_user
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import Patient
 from radar.patient_search import PatientQueryBuilder
-from radar.utils import uniq, get_attrs, SkipProxy
+from radar.utils import get_attrs, SkipProxy, uniq
 
 
 class PatientListRequestSerializer(serializers.Serializer):

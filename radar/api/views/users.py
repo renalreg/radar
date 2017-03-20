@@ -6,22 +6,22 @@ from cornflake.validators import none_if_blank
 from flask import Response
 
 from radar.api.permissions import (
-    UserRetrievePermission,
     UserCreatePermission,
+    UserDestroyPermission,
+    UserRetrievePermission,
     UserUpdatePermission,
-    UserDestroyPermission
 )
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.users import UserSerializer
 from radar.api.views.generics import (
     ApiView,
-    ListModelView,
     CreateModelView,
+    DestroyModelView,
+    get_sort_args,
+    ListModelView,
+    parse_args,
     RetrieveModelView,
     UpdateModelView,
-    DestroyModelView,
-    parse_args,
-    get_sort_args
 )
 from radar.auth.sessions import current_user
 from radar.models.groups import GROUP_TYPE

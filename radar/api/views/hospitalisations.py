@@ -1,8 +1,8 @@
 from radar.api.serializers.hospitalisations import HospitalisationSerializer
 from radar.api.views.common import (
-    SourceObjectViewMixin,
     PatientObjectDetailView,
-    PatientObjectListView
+    PatientObjectListView,
+    SourceObjectViewMixin,
 )
 from radar.models.hospitalisations import Hospitalisation
 

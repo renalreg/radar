@@ -3,7 +3,7 @@ import uuid
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from flask import request, jsonify, Response, abort
+from flask import abort, jsonify, request, Response
 from flask.views import MethodView
 from sqlalchemy import desc, inspect, Integer
 from sqlalchemy.dialects import postgresql
@@ -11,8 +11,8 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from radar.auth.sessions import current_user
 from radar.database import db
-from radar.exceptions import PermissionDenied, NotFound, BadRequest
-from radar.utils import snake_case_keys, camel_case_keys, snake_case
+from radar.exceptions import BadRequest, NotFound, PermissionDenied
+from radar.utils import camel_case_keys, snake_case, snake_case_keys
 
 
 def parse_args(serializer_class, args=None):
