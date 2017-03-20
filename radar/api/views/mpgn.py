@@ -1,5 +1,5 @@
 from radar.api.serializers.mpgn import MpgnClinicalPictureSerializer
-from radar.api.views.common import PatientObjectListView, PatientObjectDetailView
+from radar.api.views.common import PatientObjectDetailView, PatientObjectListView
 from radar.models.mpgn import MpgnClinicalPicture
 
 
@@ -14,5 +14,11 @@ class MpgnClinicalPictureDetailView(PatientObjectDetailView):
 
 
 def register_views(app):
-    app.add_url_rule('/mpgn-clinical-pictures', view_func=MpgnClinicalPictureListView.as_view('mpgn_clinical_picture_list'))
-    app.add_url_rule('/mpgn-clinical-pictures/<id>', view_func=MpgnClinicalPictureDetailView.as_view('mpgn_clinical_picture_detail'))
+    app.add_url_rule(
+        '/mpgn-clinical-pictures',
+        view_func=MpgnClinicalPictureListView.as_view('mpgn_clinical_picture_list')
+    )
+    app.add_url_rule(
+        '/mpgn-clinical-pictures/<id>',
+        view_func=MpgnClinicalPictureDetailView.as_view('mpgn_clinical_picture_detail')
+    )

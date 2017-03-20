@@ -238,6 +238,10 @@ class Patient(db.Model, MetaModelMixin):
         return year_of_death
 
     @hybrid_property
+    def nationality(self):
+        return self.latest_demographics_attr('nationality')
+
+    @hybrid_property
     def ethnicity(self):
         return self.latest_demographics_attr('ethnicity')
 

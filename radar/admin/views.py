@@ -116,11 +116,11 @@ class DrugGroupView(ModelView):
 
 
 class GroupView(ModelView):
-    column_list = ['name', 'type', 'code', 'parent_group']
+    column_list = ['name', 'type', 'code', 'parent_group', 'country']
     column_default_sort = 'name'
-    form_columns = ['name', 'short_name', 'type', 'code', 'parent_group', 'instructions']
-    column_searchable_list = ['name', 'short_name', 'type', 'code']
-    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'instructions']
+    form_columns = ['name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
+    column_searchable_list = ['name', 'short_name', 'type', 'code', 'country_code', 'country.label']
+    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
     def get_query(self):
@@ -128,10 +128,10 @@ class GroupView(ModelView):
 
 
 class HospitalView(ModelView):
-    column_list = ['name', 'code', 'is_transplant_centre']
+    column_list = ['name', 'code', 'is_transplant_centre', 'country']
     column_default_sort = 'name'
-    column_searchable_list = ['name', 'short_name', 'code']
-    form_columns = ['name', 'short_name', 'code', 'instructions', 'is_transplant_centre']
+    column_searchable_list = ['name', 'short_name', 'code', 'country_code', 'country.label']
+    form_columns = ['name', 'short_name', 'code', 'country', 'instructions', 'is_transplant_centre']
 
     def on_model_change(self, form, model, is_created):
         model.type = GROUP_TYPE.HOSPITAL

@@ -6,14 +6,14 @@ from sqlalchemy import func
 
 from radar.database import db
 from radar.models.dialysis import Dialysis
-from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.groups import GROUP_CODE_RADAR, GROUP_TYPE
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from tests.api.fixtures import (
+    get_group,
+    get_patient,
     get_user,
     set_default_source,
     set_default_users,
-    get_patient,
-    get_group
 )
 
 

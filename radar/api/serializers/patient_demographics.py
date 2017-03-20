@@ -17,12 +17,11 @@ from radar.api.serializers.common import (
     IntegerLookupField,
     MetaMixin,
     PatientMixin,
-    StringLookupField,
     SystemSourceMixin,
 )
-from radar.api.serializers.nationalities import NationalityField
+from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.validators import after_day_zero
-from radar.models.patient_codes import ETHNICITIES, GENDERS
+from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
@@ -36,7 +35,6 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
-    ethnicity = StringLookupField(ETHNICITIES, required=False)
     home_number = fields.StringField(
         required=False,
         validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
@@ -53,7 +51,8 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()]
     )
-    nationality = NationalityField()
+    nationality = NationalityField(required=False)
+    ethnicity = EthnicityField(required=False)
 
     class Meta(object):
         model_class = PatientDemographics
@@ -61,6 +60,7 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     def get_model_exclude(self):
         model_exclude = super(PatientDemographicsSerializer, self).get_model_exclude()
         model_exclude.add('nationality_id')
+        model_exclude.add('ethnicity_id')
         return model_exclude
 
     def to_representation(self, value):

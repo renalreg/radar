@@ -109,7 +109,10 @@ def get_update_args():
         yield username, group[0], group[1], source_type, expected
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_list_args())
+@pytest.mark.parametrize(
+    ['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'],
+    get_read_list_args()
+)
 def test_read_demographics_list(api, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
@@ -137,12 +140,21 @@ def test_read_demographics_list(api, username, group_type, group_code, source_ty
         assert len(data['data']) == 0
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'], get_read_args())
+@pytest.mark.parametrize(
+    ['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'],
+    get_read_args()
+)
 def test_read_demographics(api, username, group_type, group_code, source_type, expected, expected_demographics):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
-    demographics = create_demographics(patient, source_group=group, source_type=source_type, first_name='JOHN', last_name='SMITH')
+    demographics = create_demographics(
+        patient,
+        source_group=group,
+        source_type=source_type,
+        first_name='JOHN',
+        last_name='SMITH'
+    )
     db.session.commit()
 
     client = api.test_client()
@@ -234,7 +246,13 @@ def test_update_demographics(api, username, group_type, group_code, source_type,
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
-    demographics = create_demographics(patient, source_group=group, source_type=source_type, first_name='JOHN', last_name='SMITH')
+    demographics = create_demographics(
+        patient,
+        source_group=group,
+        source_type=source_type,
+        first_name='JOHN',
+        last_name='SMITH'
+    )
     db.session.commit()
 
     data = {

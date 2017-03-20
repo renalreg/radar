@@ -1,8 +1,8 @@
 from radar.api.serializers.alport import AlportClinicalPictureSerializer
 from radar.api.views.common import (
-    PatientObjectListView,
+    IntegerLookupListView,
     PatientObjectDetailView,
-    IntegerLookupListView
+    PatientObjectListView,
 )
 from radar.models.alport import AlportClinicalPicture, DEAFNESS_OPTIONS
 
@@ -22,6 +22,15 @@ class AlportDeafnessOptionListView(IntegerLookupListView):
 
 
 def register_views(app):
-    app.add_url_rule('/alport-clinical-pictures', view_func=AlportClinicalPictureListView.as_view('alport_clinical_picture_list'))
-    app.add_url_rule('/alport-clinical-pictures/<id>', view_func=AlportClinicalPictureDetailView.as_view('alport_clinical_picture_detail'))
-    app.add_url_rule('/alport-deafness-options', view_func=AlportDeafnessOptionListView.as_view('alport_deafness_option_list'))
+    app.add_url_rule(
+        '/alport-clinical-pictures',
+        view_func=AlportClinicalPictureListView.as_view('alport_clinical_picture_list')
+    )
+    app.add_url_rule(
+        '/alport-clinical-pictures/<id>',
+        view_func=AlportClinicalPictureDetailView.as_view('alport_clinical_picture_detail')
+    )
+    app.add_url_rule(
+        '/alport-deafness-options',
+        view_func=AlportDeafnessOptionListView.as_view('alport_deafness_option_list')
+    )

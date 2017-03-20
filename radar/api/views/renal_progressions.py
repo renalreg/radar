@@ -15,4 +15,7 @@ class RenalProgressionDetailView(PatientObjectDetailView):
 
 def register_views(app):
     app.add_url_rule('/renal-progressions', view_func=RenalProgressionListView.as_view('renal_progression_list'))
-    app.add_url_rule('/renal-progressions/<id>', view_func=RenalProgressionDetailView.as_view('renal_progression_detail'))
+    app.add_url_rule(
+        '/renal-progressions/<id>',
+        view_func=RenalProgressionDetailView.as_view('renal_progression_detail')
+    )

@@ -1,9 +1,9 @@
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.api.views.common import (
-    SystemObjectViewMixin,
+    DemographicsViewMixin,
     PatientObjectDetailView,
     PatientObjectListView,
-    DemographicsViewMixin
+    SystemObjectViewMixin,
 )
 from radar.models.patient_numbers import PatientNumber
 

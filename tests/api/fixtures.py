@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from radar.database import db
+from radar.models.demographics import Ethnicity, Nationality
 from radar.models.groups import (
     Group,
     GROUP_CODE_NHS,
@@ -9,7 +10,6 @@ from radar.models.groups import (
     GroupPatient,
     GroupUser,
 )
-from radar.models.nationalities import Nationality
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
@@ -65,6 +65,10 @@ def get_nationality(nationality_id):
     return Nationality.query.get(nationality_id)
 
 
+def get_ethnicity(ethnicity_id):
+    return Ethnicity.query.get(ethnicity_id)
+
+
 def set_default_users(options):
     options['created_user'] = options.get('created_user') or get_admin()
     options['modified_user'] = options.get('modified_user') or get_admin()
@@ -114,9 +118,15 @@ def create_patient(**kwargs):
 
 
 def create_nationality(**kwargs):
-    nationality = Nationality(name='British', **kwargs)
+    nationality = Nationality(label='British', **kwargs)
     db.session.add(nationality)
     return nationality
+
+
+def create_ethnicity(**kwargs):
+    ethnicity = Ethnicity(code='A', label='British')
+    db.session.add(ethnicity)
+    return ethnicity
 
 
 def create_demographics(patient, **kwargs):
@@ -125,6 +135,7 @@ def create_demographics(patient, **kwargs):
     kwargs.setdefault('gender', 1)
     kwargs.setdefault('date_of_birth', datetime(1990, 1, 1))
     kwargs.setdefault('nationality', get_nationality(1))
+    kwargs.setdefault('ethnicity', get_ethnicity(1))
     set_default_users(kwargs)
     set_default_source(kwargs)
 
@@ -218,6 +229,7 @@ def create_fixtures():
     add_user_to_group(hospital2_clinician, hospital2_group, ROLE.CLINICIAN)
 
     create_nationality(id=1)
+    create_ethnicity(id=1)
 
     patient1 = create_patient(id=1)
     add_patient_to_group(patient1, radar_group)

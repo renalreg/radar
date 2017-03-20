@@ -1,5 +1,5 @@
 from radar.api.permissions import AdminPermission
-from tests.api.permissions.helpers import MockRequest, MockPermission
+from tests.api.permissions.helpers import MockPermission, MockRequest
 from tests.permissions.helpers import make_user
 
 

@@ -25,7 +25,10 @@ class PatientDemographics(db.Model, MetaModelMixin):
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
     gender = Column(Integer)
-    ethnicity = Column(String)
+
+    ethnicity_id = Column(Integer, ForeignKey('ethnicities.id'))
+    ethnicity = relationship('Ethnicity')
+
     home_number = Column(String)
     work_number = Column(String)
     mobile_number = Column(String)

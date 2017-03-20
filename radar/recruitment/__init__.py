@@ -190,10 +190,11 @@ class SearchPatient(object):
 
 
 class RecruitmentPatient(object):
-    def __init__(self, search_patient, cohort_group, hospital_group, ethnicity=None):
+    def __init__(self, search_patient, cohort_group, hospital_group, ethnicity=None, nationality=None):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
+        self.nationality = nationality
         self.ethnicity = ethnicity
 
     @property
@@ -244,6 +245,7 @@ class RecruitmentPatient(object):
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
         patient_demographics.gender = self.gender
+        patient_demographics.nationality = self.nationality
         patient_demographics.ethnicity = self.ethnicity
         patient_demographics.created_user = current_user
         patient_demographics.modified_user = current_user

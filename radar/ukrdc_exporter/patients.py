@@ -1,14 +1,14 @@
 import logging
 
 from radar.models.groups import (
-    GROUP_CODE_NHS,
     GROUP_CODE_CHI,
     GROUP_CODE_HSC,
+    GROUP_CODE_NHS,
     GROUP_TYPE
 )
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_codes import GENDERS, ETHNICITIES
+from radar.models.patient_codes import ETHNICITIES, GENDERS
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime

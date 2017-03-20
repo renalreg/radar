@@ -36,7 +36,7 @@ select id, patient_id from (
         ((data->'original_data'->>'source_type')::text is null or (data->'original_data'->>'source_type')::text = :source_type) and
         id > :last_log_id
 ) as x order by id
-"""
+"""  # noqa
 
 all_sql = """
 select x.id, patients.id from patients

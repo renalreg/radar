@@ -12,29 +12,31 @@ from tests.api.fixtures import (
 )
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [
-    ('admin', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
+@pytest.mark.parametrize(
+    ['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [
+        ('admin', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
 
-    ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
-    ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
-    ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.COHORT, 'COHORT2', 403),
-    ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 422),
-    ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
-    ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
-    ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.COHORT, 'COHORT2', 403),
-    ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 422),
+        ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
+        ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
+        ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.COHORT, 'COHORT2', 403),
+        ('hospital_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 422),
+        ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 200),
+        ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
+        ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.COHORT, 'COHORT2', 403),
+        ('hospital_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 422),
 
-    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
-    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 422),
-    ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
-    ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 403),
-    ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 422),
+        ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
+        ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 422),
+        ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 200),
+        ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 403),
+        ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 422),
 
-    ('hospital2_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 403),
+        ('hospital2_clinician', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', 403),
 
-    ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
-    ('null', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
-])
+        ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
+        ('null', GROUP_TYPE.COHORT, 'COHORT2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', 403),
+    ]
+)
 def test_create_group_patient(api, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
     patient = get_patient(1)
@@ -55,18 +57,21 @@ def test_create_group_patient(api, username, group_type, group_code, created_gro
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'], [
-    ('admin', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
+@pytest.mark.parametrize(
+    ['username', 'group_type', 'group_code', 'created_group_type', 'created_group_code', 'expected'],
+    [
+        ('admin', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
 
-    ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
-    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
-    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', True),
-    ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
-    ('hospital1_clinician', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
+        ('hospital1_clinician', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
+        ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', True),
+        ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', True),
+        ('hospital1_clinician', GROUP_TYPE.HOSPITAL, 'HOSPITAL2', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
+        ('hospital1_clinician', GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR, GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
 
-    ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
-    ('null', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
-])
+        ('null', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
+        ('null', GROUP_TYPE.COHORT, 'COHORT1', GROUP_TYPE.HOSPITAL, 'HOSPITAL1', False),
+    ]
+)
 def test_delete_group_patient(api, username, group_type, group_code, created_group_type, created_group_code, expected):
     user = get_user(username)
 

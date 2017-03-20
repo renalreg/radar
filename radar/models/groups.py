@@ -72,6 +72,8 @@ class Group(db.Model):
     multiple_diagnoses = Column(Boolean, nullable=False, default=False, server_default=text('false'))
     is_recruitment_number_group = Column(Boolean, nullable=False, default=False, server_default=text('false'))
     is_transplant_centre = Column(Boolean, nullable=True, default=False, server_default=text('false'))
+    country_code = Column(String, ForeignKey('countries.code'), nullable=True)
+    country = relationship('Country', foreign_keys=[country_code], backref=backref('groups'))
 
     @property
     def patients(self):

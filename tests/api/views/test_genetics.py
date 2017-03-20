@@ -7,8 +7,8 @@ import pytz
 
 from radar.database import db
 from radar.models.genetics import Genetics
-from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
-from tests.api.fixtures import get_user, get_patient, get_group, set_default_users
+from radar.models.groups import GROUP_CODE_RADAR, GROUP_TYPE
+from tests.api.fixtures import get_group, get_patient, get_user, set_default_users
 
 
 def create_genetics(patient, group, **kwargs):
