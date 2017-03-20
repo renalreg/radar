@@ -7,7 +7,7 @@ from radar.api.serializers.patient_demographics import PatientDemographicsSerial
 from radar.api.serializers.validators import DAY_ZERO
 from radar.models.demographics import Ethnicity, Nationality
 from radar.models.groups import Group
-from radar.models.patient_codes import GENDER_MALE, GENDER_FEMALE
+from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User

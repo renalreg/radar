@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from cornflake import serializers, fields
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 import pytest
 

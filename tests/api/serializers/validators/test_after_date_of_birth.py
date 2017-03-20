@@ -1,6 +1,6 @@
-from datetime import datetime, date
+from datetime import date, datetime
 
-from cornflake import serializers, fields
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 import pytest
 import pytz

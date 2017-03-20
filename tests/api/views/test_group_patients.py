@@ -2,13 +2,13 @@ import json
 
 import pytest
 
-from radar.models.groups import GROUP_TYPE, GROUP_CODE_RADAR
+from radar.models.groups import GROUP_CODE_RADAR, GROUP_TYPE
 from tests.api.fixtures import (
-    get_user,
-    get_patient,
-    get_group,
+    add_patient_to_group,
     create_patient,
-    add_patient_to_group
+    get_group,
+    get_patient,
+    get_user,
 )
 
 

@@ -5,7 +5,7 @@ import pytest
 
 from radar.api.serializers.genetics import GeneticsSerializer
 from radar.exceptions import PermissionDenied
-from radar.models.groups import Group, GroupPatient, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
 from radar.models.users import User

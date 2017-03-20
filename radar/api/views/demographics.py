@@ -10,10 +10,22 @@ class EthnicityListView(ListModelView):
 
     def filter_query(self, query):
         query = super(EthnicityListView, self).filter_query(query)
-        args = parse_args(CountryRequestSerializer)
-        country = args.get('group_country', None)
-        query = query.join('countries').filter(CountryEthnicity.country_code == country)
-        return query
+
+        context = self.get_context()
+        user = context.get('user')
+        if user.is_admin:
+            args = parse_args(CountryRequestSerializer)
+            country = args.get('group_country', None)
+            query = query.join('countries').filter(CountryEthnicity.country_code == country)
+            return query
+        else:
+            try:
+                group = user.groups[0]
+                country = group.country.code
+                query = query.join(CountryEthnicity).filter_by(country_code=country)
+            except IndexError:
+                return query
+            return query
 
 
 class NationalityListView(ListModelView):
@@ -22,10 +34,21 @@ class NationalityListView(ListModelView):
 
     def filter_query(self, query):
         query = super(NationalityListView, self).filter_query(query)
-        args = parse_args(CountryRequestSerializer)
-        country = args.get('group_country', None)
-        query = query.join('countries').filter(CountryNationality.country_code == country)
-        return query
+        context = self.get_context()
+        user = context.get('user')
+        if user.is_admin:
+            args = parse_args(CountryRequestSerializer)
+            country = args.get('group_country', None)
+            query = query.join('countries').filter(CountryNationality.country_code == country)
+            return query
+        else:
+            try:
+                group = user.groups[0]
+                country = group.country.code
+                query = query.join(CountryNationality).filter_by(country_code=country)
+            except IndexError:
+                return query
+            return query
 
 
 def register_views(app):

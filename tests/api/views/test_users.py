@@ -7,7 +7,7 @@ from radar.database import db
 from radar.models.groups import GROUP_TYPE
 from radar.models.users import User
 from radar.roles import ROLE
-from tests.api.fixtures import get_user, create_user, add_user_to_group, get_group
+from tests.api.fixtures import add_user_to_group, create_user, get_group, get_user
 
 
 def get_read_list_args():

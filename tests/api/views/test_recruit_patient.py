@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-from radar.models.groups import GROUP_TYPE, GROUP_CODE_NHS
-from tests.api.fixtures import get_user, get_group, get_cohort, get_hospital
+from radar.models.groups import GROUP_CODE_NHS, GROUP_TYPE
+from tests.api.fixtures import get_cohort, get_group, get_hospital, get_user
 
 
 @pytest.mark.parametrize(['username', 'expected'], [
