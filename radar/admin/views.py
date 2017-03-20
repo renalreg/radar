@@ -10,7 +10,6 @@ from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
 from radar.auth.sessions import current_user, DisabledLoginError, login, logout, PasswordLoginError, UsernameLoginError
 from radar.models.groups import GROUP_TYPE
-from radar.models.patient_addresses import COUNTRIES
 
 
 class AdminModelConverter(BaseAdminModelConverter):
