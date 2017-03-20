@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from radar.database import db
+from radar.models.demographics import Ethnicity, Nationality
 from radar.models.groups import (
     Group,
     GROUP_CODE_NHS,
@@ -9,7 +10,6 @@ from radar.models.groups import (
     GroupPatient,
     GroupUser,
 )
-from radar.models.demographics import Ethnicity, Nationality
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
@@ -125,6 +125,8 @@ def create_nationality(**kwargs):
 
 def create_ethnicity(**kwargs):
     ethnicity = Ethnicity(code='A', label='British')
+    db.session.add(ethnicity)
+    return ethnicity
 
 
 def create_demographics(patient, **kwargs):

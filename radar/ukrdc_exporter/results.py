@@ -1,6 +1,6 @@
 from sqlalchemy import null
 
-from radar.models.results import Result, Observation
+from radar.models.results import Observation, Result
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 
 

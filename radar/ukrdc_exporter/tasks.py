@@ -15,7 +15,7 @@ from radar.ukrdc_exporter.groups import export_program_memberships
 from radar.ukrdc_exporter.medications import export_medications
 from radar.ukrdc_exporter.patients import export_patient
 from radar.ukrdc_exporter.results import export_lab_orders
-from radar.ukrdc_exporter.utils import transform_values, to_iso
+from radar.ukrdc_exporter.utils import to_iso, transform_values
 
 
 logger = logging.getLogger(__name__)
