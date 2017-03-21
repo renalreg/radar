@@ -42,6 +42,13 @@ class GroupListView(ListCreateModelView):
         if args['is_recruitment_number_group'] is not None:
             query = query.filter(Group.is_recruitment_number_group == args['is_recruitment_number_group'])
 
+            context = self.get_context()
+            user = context.get('user')
+            if user.is_admin:
+                return query
+            country_code = user.groups[0].country_code
+            query = query.filter(Group.country_code == country_code)
+
         return query
 
 
