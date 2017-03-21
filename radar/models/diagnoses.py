@@ -81,6 +81,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     def biopsy_diagnosis_label(self):
         return BIOPSY_DIAGNOSES.get(self.biopsy_diagnosis)
 
+
 Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
 
 
@@ -139,6 +140,7 @@ class GroupDiagnosis(db.Model):
     def __unicode__(self):
         return u"{} - {}".format(unicode(self.group), unicode(self.weight))
 
+
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
 Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)
 Index('group_diagnoses_diagnosis_group_idx', GroupDiagnosis.diagnosis_id, GroupDiagnosis.group_id, unique=True)
@@ -160,5 +162,6 @@ class DiagnosisCode(db.Model):
 
     def __unicode__(self):
         return unicode(self.code)
+
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)

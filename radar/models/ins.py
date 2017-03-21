@@ -44,6 +44,7 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     ophthalmoscopy_details = Column(String)
     comments = Column(String)
 
+
 Index('ins_clinical_pictures_patient_idx', InsClinicalPicture.patient_id)
 
 
@@ -73,5 +74,6 @@ class InsRelapse(db.Model, MetaModelMixin):
     @property
     def remission_type_label(self):
         return REMISSION_TYPES.get(self.remission_type)
+
 
 Index('ins_relapses_patient_idx', InsRelapse.patient_id)

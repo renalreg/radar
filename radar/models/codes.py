@@ -22,4 +22,5 @@ class Code(db.Model):
     def __unicode__(self):
         return u'{0} - {1} - {2}'.format(self.system, self.code, self.display)
 
+
 Index('codes_system_code_idx', Code.system, Code.code, unique=True)

@@ -50,6 +50,7 @@ class Transplant(db.Model, MetaModelMixin):
     def modality_label(self):
         return TRANSPLANT_MODALITIES.get(self.modality)
 
+
 Index('transplants_patient_idx', Transplant.patient_id)
 
 
@@ -68,6 +69,7 @@ class TransplantRejection(db.Model):
         backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_rejection = Column(Date, nullable=False)
+
 
 Index('transplant_rejections_transplant_idx', TransplantRejection.transplant_id)
 
@@ -88,5 +90,6 @@ class TransplantBiopsy(db.Model):
 
     date_of_biopsy = Column(Date, nullable=False)
     recurrence = Column(Boolean)
+
 
 Index('transplant_biopsies_transplant_idx', TransplantBiopsy.transplant_id)

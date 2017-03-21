@@ -106,6 +106,30 @@ class DrugView(ModelView):
     column_export_list = ['id', 'name', 'drug_group']
 
 
+class CountryView(ModelView):
+    column_list = ['code', 'label']
+    form_columns = ['code', 'label']
+    column_searchable_list = ['code', 'label']
+
+
+class CountryEthnicityView(ModelView):
+    pass
+
+
+class CountryNationalityView(ModelView):
+    pass
+
+
+class EthnicityView(ModelView):
+    column_list = ['code', 'label']
+    form_columns = ['code', 'label']
+
+
+class NationalityView(ModelView):
+    column_list = ['label']
+    form_columns = ['label']
+
+
 class DrugGroupView(ModelView):
     column_default_sort = 'name'
     column_list = ['name', 'parent_drug_group']

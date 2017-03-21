@@ -24,6 +24,7 @@ class UserSession(db.Model):
     def is_authenticated(cls):
         return True
 
+
 Index('user_sessions_user_idx', UserSession.user_id)
 
 

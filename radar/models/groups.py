@@ -112,6 +112,7 @@ class Group(db.Model):
     def __unicode__(self):
         return self.name
 
+
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 
 
@@ -146,6 +147,7 @@ class GroupPatient(db.Model, MetaModelMixin):
     @current.expression
     def current(cls):
         return and_(cls.from_date <= func.now(), or_(cls.to_date == null(), cls.to_date >= func.now()))
+
 
 Index('group_patients_group_idx', GroupPatient.group_id)
 Index('group_patients_patient_idx', GroupPatient.patient_id)
@@ -207,6 +209,7 @@ class GroupPage(db.Model):
     page = Column(EnumToStringType(PAGE), nullable=False)
 
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
+
 
 Index('group_pages_group_idx', GroupPage.group_id)
 Index('group_pages_page_idx', GroupPage.page)

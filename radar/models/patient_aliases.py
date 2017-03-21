@@ -22,4 +22,5 @@ class PatientAlias(db.Model, MetaModelMixin):
     first_name = Column(String)
     last_name = Column(String)
 
+
 Index('patient_aliases_patient_idx', PatientAlias.patient_id)

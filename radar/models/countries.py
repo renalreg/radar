@@ -9,5 +9,5 @@ class Country(db.Model):
     code = Column(String(length=2), primary_key=True)
     label = Column(String(length=100), nullable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.label

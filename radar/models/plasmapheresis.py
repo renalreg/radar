@@ -53,4 +53,5 @@ class Plasmapheresis(db.Model, MetaModelMixin):
     def response_label(self):
         return PLASMAPHERESIS_RESPONSES.get(self.response)
 
+
 Index('plasmapheresis_patient_idx', Plasmapheresis.patient_id)

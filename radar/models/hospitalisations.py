@@ -24,4 +24,5 @@ class Hospitalisation(db.Model, MetaModelMixin):
     reason_for_admission = Column(Text)
     comments = Column(Text)
 
+
 Index('hospitalisations_patient_idx', Hospitalisation.patient_id)

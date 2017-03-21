@@ -66,6 +66,7 @@ class Medication(db.Model, MetaModelMixin):
     def route_label(self):
         return MEDICATION_ROUTES.get(self.route)
 
+
 Index('medications_patient_idx', Medication.patient_id)
 
 

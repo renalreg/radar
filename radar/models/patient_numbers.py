@@ -23,6 +23,7 @@ class PatientNumber(db.Model, MetaModelMixin):
     number_group = relationship('Group', foreign_keys=[number_group_id])
     number = Column(String, nullable=False)
 
+
 # Ensure patient numbers are unique across a source
 Index(
     'patient_numbers_source_number_idx',

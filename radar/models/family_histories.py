@@ -48,6 +48,7 @@ class FamilyHistory(db.Model, MetaModelMixin):
     family_history = Column(Boolean)
     other_family_history = Column(String)
 
+
 Index('family_histories_patient_idx', FamilyHistory.patient_id)
 Index('family_histories_group_idx', FamilyHistory.group_id)
 Index(
@@ -80,5 +81,6 @@ class FamilyHistoryRelative(db.Model):
     @property
     def relationship_label(self):
         return RELATIONSHIPS.get(self.relationship)
+
 
 Index('family_history_relatives_family_history_id_idx', FamilyHistoryRelative.family_history_id)

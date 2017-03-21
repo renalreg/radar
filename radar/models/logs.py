@@ -19,6 +19,7 @@ class Log(db.Model):
 
     data = Column(postgresql.JSONB)
 
+
 Index('logs_date_idx', Log.date)
 Index('logs_type_idx', Log.type)
 Index('logs_user_idx', Log.user_id)

@@ -4,10 +4,14 @@ from radar.admin.views import (
     AdminIndexView,
     CodeView,
     ConsultantView,
+    CountryEthnicityView,
+    CountryNationalityView,
+    CountryView,
     DiagnosisCodeView,
     DiagnosisView,
     DrugGroupView,
     DrugView,
+    EthnicityView,
     FormView,
     GroupConsultantView,
     GroupDiagnosisView,
@@ -17,6 +21,7 @@ from radar.admin.views import (
     GroupQuestionnaireView,
     GroupView,
     HospitalView,
+    NationalityView,
     ObservationView,
     SpecialtyView
 )
@@ -25,6 +30,8 @@ from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.codes import Code
 from radar.models.consultants import Consultant, GroupConsultant, Specialty
+from radar.models.countries import Country
+from radar.models.demographics import CountryEthnicity, CountryNationality, Ethnicity, Nationality
 from radar.models.diagnoses import Diagnosis, DiagnosisCode, GroupDiagnosis
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import Group, GroupPage
@@ -62,7 +69,19 @@ class RadarAdmin(Radar):
         admin.add_view(GroupPageView(GroupPage, db.session, name='Pages', category='Groups'))
         admin.add_view(GroupQuestionnaireView(GroupQuestionnaire, db.session, name='Questionnaires', category='Groups'))
 
-        admin.add_view(CodeView(Code, db.session, name='Codes'))
+        admin.add_view(CodeView(Code, db.session, name='Codes', category='Codes'))
+        admin.add_view(CountryView(Country, db.session, name='Countries', category='Codes'))
+        admin.add_view(EthnicityView(Ethnicity, db.session, name='Ethnicities', category='Codes'))
+        admin.add_view(NationalityView(Nationality, db.session, name='Nationalities', category='Codes'))
+        admin.add_view(CountryEthnicityView(CountryEthnicity, db.session, name='Country ethnicities', category='Codes'))
+        admin.add_view(
+            CountryNationalityView(
+                CountryNationality,
+                db.session,
+                name='Country nationalities',
+                category='Codes'
+            )
+        )
 
         admin.add_view(ConsultantView(Consultant, db.session, name='Consultants', category='Consultants'))
         admin.add_view(SpecialtyView(Specialty, db.session, 'Specialties', category='Consultants'))

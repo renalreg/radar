@@ -21,4 +21,5 @@ class RenalProgression(db.Model, MetaModelMixin):
     ckd5_date = Column(Date)
     esrf_date = Column(Date)
 
+
 Index('renal_progressions_patient_idx', RenalProgression.patient_id)

@@ -44,6 +44,7 @@ class GroupConsultant(db.Model):
         'Consultant',
         backref=backref('group_consultants', cascade='all, delete-orphan', passive_deletes=True))
 
+
 Index(
     'group_consultants_group_consultant_idx',
     GroupConsultant.group_id,

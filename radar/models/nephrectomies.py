@@ -45,4 +45,5 @@ class Nephrectomy(db.Model, MetaModelMixin):
     kidney_type = Column(String, nullable=False)
     entry_type = Column(String, nullable=False)
 
+
 Index('nephrectomies_patient_idx', Nephrectomy.patient_id)

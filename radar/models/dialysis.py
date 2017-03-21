@@ -46,4 +46,5 @@ class Dialysis(db.Model, MetaModelMixin):
     def modality_label(self):
         return DIALYSIS_MODALITIES.get(self.modality)
 
+
 Index('dialysis_patient_idx', Dialysis.patient_id)

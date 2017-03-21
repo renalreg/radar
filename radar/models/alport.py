@@ -32,4 +32,5 @@ class AlportClinicalPicture(db.Model, MetaModelMixin):
     deafness_date = Column(Date)
     hearing_aid_date = Column(Date)
 
+
 Index('alport_clinical_pictures_patient_idx', AlportClinicalPicture.patient_id)

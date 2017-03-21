@@ -25,4 +25,5 @@ class MpgnClinicalPicture(db.Model, MetaModelMixin):
     ophthalmoscopy_details = Column(String)
     comments = Column(String)
 
+
 Index('mpgn_clinical_pictures_patient_idx', MpgnClinicalPicture.patient_id)

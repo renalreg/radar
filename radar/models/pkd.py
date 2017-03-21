@@ -40,6 +40,7 @@ class LiverImaging(db.Model, MetaModelMixin):
     dilated_bile_ducts = Column(Boolean)
     cholangitis = Column(Boolean)
 
+
 Index('liver_imaging_patient_idx', LiverImaging.patient_id)
 
 
@@ -74,6 +75,7 @@ class LiverDiseases(db.Model, MetaModelMixin):
     cholangitis_recurrent_date = Column(Date)
     spleen_palpable = Column(Boolean)
     spleen_palpable_date = Column(Date)
+
 
 Index('liver_diseases_patient_idx', LiverDiseases.patient_id, unique=True)
 
@@ -123,6 +125,7 @@ class LiverTransplant(db.Model, MetaModelMixin):
     loss_reason = Column(String)
     other_loss_reason = Column(String)
 
+
 Index('liver_transplants_patient_idx', LiverTransplant.patient_id)
 
 
@@ -149,5 +152,6 @@ class Nutrition(db.Model, MetaModelMixin):
     feeding_type = Column(String, nullable=False)
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
+
 
 Index('nutrition_patient_idx', Nutrition.patient_id)

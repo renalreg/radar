@@ -47,4 +47,5 @@ class Pathology(db.Model, MetaModelMixin):
     def kidney_side_label(self):
         return PATHOLOGY_KIDNEY_SIDES.get(self.kidney_side)
 
+
 Index('pathology_patient_idx', Pathology.patient_id)

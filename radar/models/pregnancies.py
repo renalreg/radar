@@ -52,4 +52,5 @@ class Pregnancy(db.Model, MetaModelMixin):
     neonatal_intensive_care = Column(Boolean)
     pre_eclampsia = Column(String)
 
+
 Index('pregnancies_patient_idx', Pregnancy.patient_id)

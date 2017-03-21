@@ -35,4 +35,5 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     amnioinfusion = Column(Boolean)
     amnioinfusion_count = Column(Integer)
 
+
 Index('fetal_anomaly_scans_patient_idx', FetalAnomalyScan.patient_id)

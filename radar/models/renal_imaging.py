@@ -59,4 +59,5 @@ class RenalImaging(db.Model, MetaModelMixin):
     left_nephrolithiasis = Column(Boolean)
     left_other_malformation = Column(String)
 
+
 Index('renal_imaging_patient_idx', RenalImaging.patient_id)

@@ -14,4 +14,5 @@ class PatientLock(db.Model):
 
     sequence_number = Column(Integer)
 
+
 Index('patient_locks_patient_idx', PatientLock.patient_id)

@@ -311,4 +311,5 @@ class PatientAddress(db.Model, MetaModelMixin):
 
         return anonymised_postcode
 
+
 Index('patient_addresses_patient_idx', PatientAddress.patient_id)

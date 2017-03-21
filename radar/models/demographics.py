@@ -10,6 +10,9 @@ class Ethnicity(db.Model):
     code = Column(String(length=10))
     label = Column(String)
 
+    def __str__(self):
+        return self.label
+
 
 class CountryEthnicity(db.Model):
     __tablename__ = 'country_ethnicities'
@@ -22,12 +25,18 @@ class CountryEthnicity(db.Model):
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('ethnicities'))
 
+    def __str__(self):
+        return '{}-{}'.format(self.country, self.ethnicity)
+
 
 class Nationality(db.Model):
     __tablename__ = 'nationalities'
 
     id = Column(Integer, primary_key=True)
     label = Column(String)
+
+    def __str__(self):
+        return self.label
 
 
 class CountryNationality(db.Model):
@@ -44,3 +53,6 @@ class CountryNationality(db.Model):
 
     country_code = Column(String(length=2), ForeignKey('countries.code'))
     country = relationship('Country', foreign_keys=[country_code], backref=backref('nationalities'))
+
+    def __str__(self):
+        return '{}-{}'.format(self.country, self.nationality)

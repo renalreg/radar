@@ -22,4 +22,5 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
     familial_cystic_disease = Column(Boolean)
     hypertension = Column(Boolean)
 
+
 Index('hnf1b_clinical_pictures_patient_idx', Hnf1bClinicalPicture.patient_id)
