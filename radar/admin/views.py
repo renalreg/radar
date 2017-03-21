@@ -142,10 +142,24 @@ class DrugGroupView(ModelView):
 class GroupView(ModelView):
     column_list = ['name', 'type', 'code', 'parent_group', 'country']
     column_default_sort = 'name'
-    form_columns = ['name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
+    form_columns = [
+        'name',
+        'short_name',
+        'type',
+        'code',
+        'parent_group',
+        'country',
+        'is_recruitment_number_group',
+        'instructions',
+    ]
     column_searchable_list = ['name', 'short_name', 'type', 'code', 'country_code', 'country.label']
     column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
+
+    def on_model_change(self, form, model, is_created):
+        if model.type != GROUP_TYPE.OTHER and model.is_recruitment_number_group:
+            model.is_recruitment_number_group = False
+        super(GroupView, self).on_model_change(form, model, is_created)
 
     def get_query(self):
         return super(ModelView, self).get_query().filter(self.model.type != GROUP_TYPE.HOSPITAL)
