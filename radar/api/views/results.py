@@ -1,4 +1,5 @@
 from cornflake import fields, serializers
+from flask import jsonify, request
 from sqlalchemy import func
 
 from radar.api.serializers.common import QueryPatientField
@@ -21,7 +22,9 @@ from radar.api.views.generics import (
     RetrieveModelView,
 )
 from radar.database import db
+from radar.exceptions import BadRequest
 from radar.models.results import Observation, Result
+from radar.utils import camel_case_keys
 
 
 class ObservationListRequestSerializer(serializers.Serializer):
@@ -57,6 +60,33 @@ class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelVie
 class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateModelView):
     serializer_class = ResultSerializer
     model_class = Result
+
+    def create(self, *args, **kwargs):
+        json = request.get_json()
+
+        if json is None:
+            raise BadRequest
+
+        if 'observation' in json:
+            return super(ResultCreateView, self).create()
+
+        for observation in json.pop('observations', []):
+            data = dict(json)
+            data['observation'] = observation['observation']
+            for value in observation.pop('values', []):
+                data['value'] = value.get('value', value)
+                data['date'] = value.get('date', observation.get('date'))
+                serializer = self.get_serializer(data=data)
+                serializer.is_valid(raise_exception=True)
+                obj = serializer.save()
+
+                db.session.add(obj)
+                db.session.commit()
+
+                data = serializer.data
+                data = camel_case_keys(data)
+
+        return jsonify({}), 200
 
 
 class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
