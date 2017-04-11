@@ -35,6 +35,7 @@ from radar.fixtures.utils import (
     random_date,
     random_datetime,
 )
+from radar.models.demographics import Ethnicity
 from radar.models.groups import (
     Group,
     GROUP_CODE_CHI,
@@ -53,6 +54,12 @@ from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 
 
+def create_ethnicities():
+    for code, label in ETHNICITIES.items():
+        ethnicity = Ethnicity(code=code, label=label)
+        add(ethnicity)
+
+
 def create_demographics_f():
     def create_demographics(patient, source_group, source_type, gender):
         old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
@@ -66,7 +73,7 @@ def create_demographics_f():
             new_d.last_name = generate_last_name()
             new_d.gender = gender
             new_d.date_of_birth = generate_date_of_birth()
-            new_d.ethnicity = random.choice(ETHNICITIES.keys())
+            new_d.ethnicity = random.choice(Ethnicity.query.all())
 
             # 10% chance of being dead :(
             if random.random() < 0.1:
