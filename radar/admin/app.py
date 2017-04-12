@@ -3,6 +3,7 @@ from flask_admin import Admin
 from radar.admin.views import (
     AdminIndexView,
     CodeView,
+    CohortView,
     ConsultantView,
     CountryEthnicityView,
     CountryNationalityView,
@@ -60,8 +61,9 @@ class RadarAdmin(Radar):
             url='/admin'
         )
 
-        admin.add_view(GroupView(Group, db.session, name='Groups', category='Groups'))
+        admin.add_view(CohortView(Group, db.session, name='Cohorts', category='Groups', endpoint='cohort'))
         admin.add_view(HospitalView(Group, db.session, name='Hospitals', category='Groups', endpoint='hospital'))
+        admin.add_view(GroupView(Group, db.session, name='Groups', category='Groups'))
         admin.add_view(GroupConsultantView(GroupConsultant, db.session, name='Consultants', category='Groups'))
         admin.add_view(GroupDiagnosisView(GroupDiagnosis, db.session, name='Diagnoses', category='Groups'))
         admin.add_view(GroupFormView(GroupForm, db.session, name='Forms', category='Groups'))

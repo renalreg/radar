@@ -9,7 +9,7 @@ from wtforms import fields
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
 from radar.auth.sessions import current_user, DisabledLoginError, login, logout, PasswordLoginError, UsernameLoginError
-from radar.models.groups import GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE
 
 
 class AdminModelConverter(BaseAdminModelConverter):
@@ -140,21 +140,37 @@ class DrugGroupView(ModelView):
 
 
 class GroupView(ModelView):
-    column_list = ['name', 'type', 'code', 'parent_group', 'country']
+    column_list = ['name', 'type', 'code', 'country']
     column_default_sort = 'name'
     form_columns = [
         'name',
         'short_name',
         'type',
         'code',
-        'parent_group',
         'country',
         'is_recruitment_number_group',
         'instructions',
     ]
-    column_searchable_list = ['name', 'short_name', 'type', 'code', 'country_code', 'country.label']
-    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'parent_group', 'country', 'instructions']
+    column_searchable_list = ['name', 'short_name', 'type', 'code', 'country.label']
+    column_export_list = ['id', 'name', 'short_name', 'type', 'code', 'country', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
+
+    def create_form(self):
+        form = super(GroupView, self).create_form()
+        form.type.iter_choices = self._filtered_parent
+        return form
+
+    def edit_form(self, obj):
+        form = super(GroupView, self).edit_form(obj)
+        form.type.iter_choices = self._filtered_parent
+        return form
+
+    def _filtered_parent(self):
+        """Don't show COHORTS and HOSPITALS in select field."""
+        for enum in GROUP_TYPE:
+            if enum.name in ('COHORT', 'HOSPITAL'):
+                continue
+            yield enum.name, enum.value, enum
 
     def on_model_change(self, form, model, is_created):
         if model.type != GROUP_TYPE.OTHER and model.is_recruitment_number_group:
@@ -162,7 +178,10 @@ class GroupView(ModelView):
         super(GroupView, self).on_model_change(form, model, is_created)
 
     def get_query(self):
-        return super(ModelView, self).get_query().filter(self.model.type != GROUP_TYPE.HOSPITAL)
+        query = super(GroupView, self).get_query()
+        query = query.filter(self.model.type != GROUP_TYPE.HOSPITAL)
+        query = query.filter(self.model.type != GROUP_TYPE.COHORT)
+        return query
 
 
 class HospitalView(ModelView):
@@ -177,6 +196,33 @@ class HospitalView(ModelView):
 
     def get_query(self):
         return super(ModelView, self).get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
+
+
+class CohortView(ModelView):
+    column_list = ['name', 'code', 'parent_group']
+    column_default_sort = 'name'
+    column_searchable_list = ['name', 'short_name', 'code']
+    form_columns = ['name', 'short_name', 'code', 'parent_group', 'instructions']
+    form_extra_fields = dict(instructions=fields.TextAreaField())
+
+    def create_form(self):
+        form = super(CohortView, self).create_form()
+        query = form.parent_group.query_factory()
+        form.parent_group.query = query.filter(Group.type == GROUP_TYPE.SYSTEM)
+        return form
+
+    def edit_form(self, obj):
+        form = super(CohortView, self).edit_form(obj)
+        query = form.parent_group.query_factory()
+        form.parent_group.query = query.filter(Group.type == GROUP_TYPE.SYSTEM)
+        return form
+
+    def on_model_change(self, form, model, is_created):
+        model.type = GROUP_TYPE.COHORT
+        super(CohortView, self).on_model_change(form, model, is_created)
+
+    def get_query(self):
+        return super(CohortView, self).get_query().filter(self.model.type == GROUP_TYPE.COHORT)
 
 
 class GroupConsultantView(ModelView):
