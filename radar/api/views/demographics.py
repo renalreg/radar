@@ -23,7 +23,7 @@ class EthnicityListView(ListModelView):
                 group = user.groups[0]
                 country = group.country.code
                 query = query.join(CountryEthnicity).filter_by(country_code=country)
-            except IndexError:
+            except (AttributeError, IndexError):
                 return query
             return query
 
@@ -46,7 +46,7 @@ class NationalityListView(ListModelView):
                 group = user.groups[0]
                 country = group.country.code
                 query = query.join(CountryNationality).filter_by(country_code=country)
-            except IndexError:
+            except (AttributeError, IndexError):
                 return query
             return query
 

@@ -75,11 +75,15 @@ def lock_patient(patient):
                 pass
 
 
-def log_data_import(patient):
+def log_data_import(patient, raw=False):
     log = Log()
     log.type = 'UKRDC_IMPORTER'
     log.user = get_import_user()
-    log.data = dict(patient_id=patient.id)
+    if raw:
+        log.data = patient
+        log.data['container'] = True
+    else:
+        log.data = {'patient_id': patient.id}
     db.session.add(log)
 
 
@@ -155,6 +159,9 @@ def import_sda(data, sequence_number, patient_id=None):
     sda_addresses = sda_patient.get('addresses', list())
     sda_medications = sda_container.get('medications', list())
     sda_lab_orders = sda_container.get('lab_orders', list())
+
+    if patient.id == 8241:
+        log_data_import(sda_container, raw=True)
 
     import_demographics(patient, data['patient'])
     import_patient_numbers(patient, sda_patient_numbers)

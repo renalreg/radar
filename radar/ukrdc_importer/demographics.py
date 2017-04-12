@@ -3,6 +3,7 @@ import logging
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
+from radar.models.demographics import Ethnicity
 from radar.models.patient_demographics import PatientDemographics
 from radar.ukrdc_importer.serializers import PatientSerializer
 from radar.ukrdc_importer.utils import (
@@ -122,6 +123,10 @@ def get_demographics(patient):
     return q.first()
 
 
+def get_ethnicity(code):
+    return Ethnicity.query.filter_by(code=code).first()
+
+
 def convert_demographics(patient, sda_patient):
     source_group = get_import_group()
     user = get_import_user()
@@ -145,7 +150,7 @@ def convert_demographics(patient, sda_patient):
     demographics.date_of_birth = sda_patient.birth_date
     demographics.date_of_death = sda_patient.death_date
     demographics.gender = sda_patient.gender
-    demographics.ethnicity = sda_patient.ethnic_group
+    demographics.ethnicity = get_ethnicity(sda_patient.ethnic_group)
     demographics.home_number = sda_patient.home_phone_number
     demographics.work_number = sda_patient.work_phone_number
     demographics.mobile_number = sda_patient.mobile_phone_number
