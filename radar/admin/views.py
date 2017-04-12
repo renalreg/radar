@@ -4,6 +4,7 @@ from flask_admin import expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
 from flask_admin.contrib.sqla.form import AdminModelConverter as BaseAdminModelConverter
 from flask_admin.model.form import converts
+from sqlalchemy import func
 from wtforms import fields
 
 from radar.admin.fields import EnumSelectField
@@ -179,6 +180,12 @@ class GroupView(ModelView):
 
     def get_query(self):
         query = super(GroupView, self).get_query()
+        query = query.filter(self.model.type != GROUP_TYPE.HOSPITAL)
+        query = query.filter(self.model.type != GROUP_TYPE.COHORT)
+        return query
+
+    def get_count_query(self):
+        query = self.session.query(func.count('*')).select_from(self.model)
         query = query.filter(self.model.type != GROUP_TYPE.HOSPITAL)
         query = query.filter(self.model.type != GROUP_TYPE.COHORT)
         return query

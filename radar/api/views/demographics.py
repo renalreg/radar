@@ -24,6 +24,9 @@ class EthnicityListView(ListModelView):
                 country = group.country.code
                 query = query.join(CountryEthnicity).filter_by(country_code=country)
             except (AttributeError, IndexError):
+                # this needs to be fixed at some point
+                # problem is that if user is in cohort and in hospital
+                # he'll only see data for country where hospital is
                 return query
             return query
 
@@ -47,6 +50,8 @@ class NationalityListView(ListModelView):
                 country = group.country.code
                 query = query.join(CountryNationality).filter_by(country_code=country)
             except (AttributeError, IndexError):
+                # this needs to be fixed at some point
+                # for the same reasons as above
                 return query
             return query
 
