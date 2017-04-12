@@ -204,6 +204,11 @@ class HospitalView(ModelView):
     def get_query(self):
         return super(ModelView, self).get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
 
+    def get_count_query(self):
+        query = self.session.query(func.count('*')).select_from(self.model)
+        query = query.filter(self.model.type == GROUP_TYPE.HOSPITAL)
+        return query
+
 
 class CohortView(ModelView):
     column_list = ['name', 'code', 'parent_group']
@@ -230,6 +235,11 @@ class CohortView(ModelView):
 
     def get_query(self):
         return super(CohortView, self).get_query().filter(self.model.type == GROUP_TYPE.COHORT)
+
+    def get_count_query(self):
+        query = self.session.query(func.count('*')).select_from(self.model)
+        query = query.filter(self.model.type == GROUP_TYPE.COHORT)
+        return query
 
 
 class GroupConsultantView(ModelView):
