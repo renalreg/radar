@@ -70,23 +70,30 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
         if 'observation' in json:
             return super(ResultCreateView, self).create()
 
+        observations = []
+        data = {}
+
         for observation in json.pop('observations', []):
             data = dict(json)
-            data['observation'] = observation['observation']
-            for value in observation.pop('values', []):
-                data['value'] = value.get('value', value)
-                data['date'] = value.get('date', observation.get('date'))
-                serializer = self.get_serializer(data=data)
-                serializer.is_valid(raise_exception=True)
-                obj = serializer.save()
+            data['observation'] = observation.get('observation')
+            data['value'] = observation.get('value')
+            data['date'] = observation.get('date')
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            db.session.add(obj)
+            db.session.commit()
 
-                db.session.add(obj)
-                db.session.commit()
+            data = serializer.data
+            data = camel_case_keys(data)
+            observation = data.pop('observation')
+            observation['id'] = data.pop('id', None)
+            observation['value'] = data.pop('value', None)
+            observations.append(observation)
 
-                data = serializer.data
-                data = camel_case_keys(data)
+        data['observations'] = observations
 
-        return jsonify({}), 200
+        return jsonify(data), 200
 
 
 class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
