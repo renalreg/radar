@@ -12,7 +12,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.exceptions import BadRequest, NotFound, PermissionDenied
-from radar.utils import camel_case, camel_case_keys, snake_case, snake_case_keys
+from radar.utils import camel_case_keys, snake_case, snake_case_keys
 
 
 def parse_args(serializer_class, args=None):
@@ -20,23 +20,16 @@ def parse_args(serializer_class, args=None):
 
     if args is None:
         args = request.args
-    options = {}
+
+    # Remove empty arguments
+    args = {k: v for k, v in args.items() if len(v.strip()) > 0}
+
+    # Camel case to snake case
+    args = snake_case_keys(args)
 
     context = {'user': current_user._get_current_object()}
 
-    serializer = serializer_class(context=context)
-    for name, field in serializer.fields.items():
-        if hasattr(field, 'as_list') and field.as_list:
-            params = args.getlist(camel_case(name))
-            if len(params) > 0:
-                options[name] = [param.strip() for param in params]
-        else:
-            param = args.get(camel_case(name), '')
-            if param.strip():
-                options[name] = param.strip()
-
-    serializer.initial_data = options
-
+    serializer = serializer_class(data=args, context=context)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
 

@@ -10,19 +10,12 @@ from radar.api.views.generics import (
 from radar.models.groups import Group, GROUP_TYPE
 
 
-class MultiListField(fields.ListField):
-
-    def __init__(self, *args, **kwargs):
-        self.as_list = kwargs.pop('as_list', False)
-        super(MultiListField, self).__init__(*args, **kwargs)
-
-
 class GroupListRequestSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     type = fields.EnumField(GROUP_TYPE, required=False)
     is_recruitment_number_group = fields.BooleanField(required=False)
     is_transplant_centre = fields.BooleanField(required=False)
-    filter_out = MultiListField(required=False, as_list=True, child=fields.EnumField(GROUP_TYPE))
+    filter_out = fields.CommaSeparatedField(required=False, child=fields.EnumField(GROUP_TYPE))
 
 
 class GroupListView(ListCreateModelView):
