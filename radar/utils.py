@@ -83,9 +83,8 @@ def uniq(items):
 
 def transform_keys(value, fn):
     """Recursively transform the keys of the supplied value."""
-
     if isinstance(value, collections.Mapping):
-        value = {fn(k): transform_keys(v, fn) for k, v in value.items()}
+        value = {fn(str(k)): transform_keys(v, fn) for k, v in value.items()}
     elif isinstance(value, collections.Iterable) and not isinstance(value, six.string_types):
         value = [transform_keys(v, fn) for v in value]
 

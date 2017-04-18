@@ -44,3 +44,8 @@ def test_camel_case_keys():
             }
         ]
     }
+
+
+def test_camel_case_keys_do_not_fail_with_numbers_as_keys():
+    expected = {'fooBar': {'0': {'helloWorld': 'yes'}}}
+    assert camel_case_keys({'foo_bar': {0: {'hello_world': 'yes'}}}) == expected
