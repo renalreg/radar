@@ -247,6 +247,8 @@ class GroupObservation(db.Model):
     observation_id = Column(Integer, ForeignKey('observations.id'), nullable=False)
     observation = relationship('Observation')
 
+    weight = Column(Integer, CheckConstraint('weight > 0'))
+
 
 Index('group_observations_group_idx', GroupObservation.group_id)
 Index('group_observations_observation_idx', GroupObservation.observation_id)

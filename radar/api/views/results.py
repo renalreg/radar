@@ -23,7 +23,7 @@ from radar.api.views.generics import (
 )
 from radar.database import db
 from radar.exceptions import BadRequest
-from radar.models.results import Observation, Result
+from radar.models.results import GroupObservation, Observation, Result
 from radar.utils import camel_case_keys
 
 
@@ -115,6 +115,9 @@ class ObservationListView(ListModelView):
             query = query.filter(Observation.type.in_(value_types))
 
         return query
+
+    def sort_query(self, query):
+        return query.outerjoin(GroupObservation).order_by('weight')
 
 
 class ObservationDetailView(RetrieveModelView):
