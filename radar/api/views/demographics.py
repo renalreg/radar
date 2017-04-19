@@ -1,7 +1,9 @@
 from radar.api.serializers.demographics import EthnicitySerializer, NationalitySerializer
-from radar.api.views.common import CountryRequestSerializer
+from radar.api.views.common import DemographicsRequestSerializer
 from radar.api.views.generics import ListModelView, parse_args
+
 from radar.models import CountryEthnicity, CountryNationality, Ethnicity, Nationality
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 
 
 class EthnicityListView(ListModelView):
@@ -10,25 +12,33 @@ class EthnicityListView(ListModelView):
 
     def filter_query(self, query):
         query = super(EthnicityListView, self).filter_query(query)
+        args = parse_args(DemographicsRequestSerializer)
+        if args['patient']:
+            subquery = (
+                Group().query
+                       .join((GroupPatient, GroupPatient.group_id == Group.id))
+                       .filter(Group.type == GROUP_TYPE.HOSPITAL, GroupPatient.patient_id == args['patient'])
+                       .subquery()
+            )
 
-        context = self.get_context()
-        user = context.get('user')
-        if user.is_admin:
-            args = parse_args(CountryRequestSerializer)
-            country = args.get('group_country', None)
-            query = query.join('countries').filter(CountryEthnicity.country_code == country)
-            return query
-        else:
-            try:
-                group = user.groups[0]
-                country = group.country.code
-                query = query.join(CountryEthnicity).filter_by(country_code=country)
-            except (AttributeError, IndexError):
-                # this needs to be fixed at some point
-                # problem is that if user is in cohort and in hospital
-                # he'll only see data for country where hospital is
+        if args['user']:
+            context = self.get_context()
+            user = context.get('user')
+            if user.is_admin:
                 return query
-            return query
+            subquery = (
+                Group().query
+                       .join((GroupUser, GroupUser.group_id == Group.id))
+                       .filter(Group.type == GROUP_TYPE.HOSPITAL, GroupUser.user_id == args['user'])
+                       .subquery()
+            )
+
+        if args['user'] or args['patient']:
+            query = (
+                query.join(CountryEthnicity)
+                     .join(subquery, CountryEthnicity.country_code == subquery.c.country_code)
+            )
+        return query
 
 
 class NationalityListView(ListModelView):
@@ -37,23 +47,33 @@ class NationalityListView(ListModelView):
 
     def filter_query(self, query):
         query = super(NationalityListView, self).filter_query(query)
-        context = self.get_context()
-        user = context.get('user')
-        if user.is_admin:
-            args = parse_args(CountryRequestSerializer)
-            country = args.get('group_country', None)
-            query = query.join('countries').filter(CountryNationality.country_code == country)
-            return query
-        else:
-            try:
-                group = user.groups[0]
-                country = group.country.code
-                query = query.join(CountryNationality).filter_by(country_code=country)
-            except (AttributeError, IndexError):
-                # this needs to be fixed at some point
-                # for the same reasons as above
+        args = parse_args(DemographicsRequestSerializer)
+        if args['patient']:
+            subquery = (
+                Group().query
+                       .join((GroupPatient, GroupPatient.group_id == Group.id))
+                       .filter(Group.type == GROUP_TYPE.HOSPITAL, GroupPatient.patient_id == args['patient'])
+                       .subquery()
+            )
+
+        if args['user']:
+            context = self.get_context()
+            user = context.get('user')
+            if user.is_admin:
                 return query
-            return query
+            subquery = (
+                Group().query
+                       .join((GroupUser, GroupUser.group_id == Group.id))
+                       .filter(Group.type == GROUP_TYPE.HOSPITAL, GroupUser.user_id == args['user'])
+                       .subquery()
+            )
+
+        if args['user'] or args['patient']:
+            query = (
+                query.join(CountryNationality)
+                     .join(subquery, CountryNationality.country_code == subquery.c.country_code)
+            )
+        return query
 
 
 def register_views(app):

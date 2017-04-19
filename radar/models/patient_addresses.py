@@ -1,5 +1,6 @@
 #! -*- coding: utf-8 -*-
 from collections import OrderedDict
+
 from sqlalchemy import Column, Date, ForeignKey, Index, String
 from sqlalchemy import Integer
 from sqlalchemy.orm import relationship

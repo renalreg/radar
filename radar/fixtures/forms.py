@@ -1,5 +1,6 @@
 import json
 import os
+
 import pkg_resources
 
 from radar.fixtures.utils import add

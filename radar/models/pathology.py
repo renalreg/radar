@@ -1,4 +1,5 @@
 from collections import OrderedDict
+
 from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
