@@ -6,6 +6,7 @@ from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
+from radar.models.fetal_ultrasounds import FetalUltrasound
 from radar.models.forms import Entry
 from radar.models.genetics import Genetics
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
@@ -20,6 +21,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.plasmapheresis import Plasmapheresis
+from radar.models.pregnancies import Pregnancy
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
@@ -219,3 +221,5 @@ get_group_patients = patient_helper(GroupPatient)
 get_renal_progressions = patient_helper(RenalProgression)
 get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
 get_results = patient_helper(Result)
+get_pregnancies = patient_helper(Pregnancy)
+get_fetal_ultrasounds = patient_helper(FetalUltrasound)

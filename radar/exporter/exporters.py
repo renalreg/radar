@@ -1051,3 +1051,56 @@ class ConsultantsExporter(Exporter):
         q = queries.get_consultants(self.config)
 
         return query_to_dataset(q, columns)
+
+
+@register('pregnancies')
+class PregnanciesExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('pregnancy_number'),
+            column('date_of_lmp'),
+            column('gravidity'),
+            column('parity1'),
+            column('parity2'),
+            column('outcome'),
+            column('weight'),
+            column('weight_centile'),
+            column('gestational_age'),
+            column('delivery_method'),
+            column('neonatal_intensive_care'),
+            column('pre_eclampsia'),
+        ]
+
+        columns.extend(get_meta_columns())
+
+        q = queries.get_pregnancies(self.config)
+
+        return query_to_dataset(q, columns)
+
+
+@register('fetal_ultrasounds')
+class FetalUltrasoundsExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date_of_scan'),
+            column('fetal_identifier'),
+            column('gestational_age'),
+            column('head_centile'),
+            column('abdomen_centile'),
+            column('uterine_artery_notched'),
+            column('liquor_volume'),
+            column('comments'),
+        ]
+
+        columns.extend(get_meta_columns())
+
+        q = queries.get_fetal_ultrasounds(self.config)
+
+        return query_to_dataset(q, columns)
