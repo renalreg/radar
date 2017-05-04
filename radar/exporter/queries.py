@@ -109,21 +109,18 @@ def filter_by_data_group(query, group, group_id):
 def patient_helper(klass):
     def f(config):
         q = db.session.query(klass).order_by(klass.patient_id, klass.id)
-        q = _patient_filter(q, klass.patient_id, config['user'], config['patient_group'], config['data_group'])
+        q = _patient_filter(q, klass.patient_id, config['user'], config['patient_group'])
         return q
 
     return f
 
 
-def _patient_filter(query, patient_id, user, patient_group, data_group=None):
+def _patient_filter(query, patient_id, user, patient_group):
     if user is not None:
         query = filter_by_patient_permissions(query, user, patient_id)
 
     if patient_group is not None:
         query = filter_by_patient_group(query, patient_group, patient_id)
-
-    if data_group is not None:
-        query = query.join(GroupPatient).filter(GroupPatient.group==data_group)
 
     return query
 
@@ -158,7 +155,7 @@ def _patient_group_filter(query, patient_id, group_id, user, patient_group, data
 
 def get_patients(config):
     q = db.session.query(Patient).order_by(Patient.id)
-    q = _patient_filter(q, Patient.id, config['user'], config['patient_group'], config['data_group'])
+    q = _patient_filter(q, Patient.id, config['user'], config['patient_group'])
     return q
 
 
