@@ -1104,3 +1104,30 @@ class FetalUltrasoundsExporter(Exporter):
         q = queries.get_fetal_ultrasounds(self.config)
 
         return query_to_dataset(q, columns)
+
+
+@register('clinical_features')
+class ClinicalFeaturesExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('normal_pregnancy'),
+            column('abnormal_pregnancy_text'),
+            column('neurological_problems'),
+            column('seizures'),
+            column('abnormal_gait'),
+            column('deafness'),
+            column('other_neurological_problem'),
+            column('other_neurological_problem_text'),
+            column('joint_problems'),
+            column('joint_problems_age'),
+            column('x_ray_abnormalities'),
+            column('chondrocalcinosis'),
+            column('other_x_ray_abnormality'),
+            column('other_x_ray_abnormality_text'),
+        ]
+
+        columns.extend(get_meta_columns())
+        q = queries.get_clinical_features(self.config)
+        return query_to_dataset(q, columns)

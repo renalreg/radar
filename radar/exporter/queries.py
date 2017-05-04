@@ -24,6 +24,7 @@ from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
+from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
 from radar.roles import get_roles_with_permission, PERMISSION
 
@@ -223,3 +224,4 @@ get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
 get_results = patient_helper(Result)
 get_pregnancies = patient_helper(Pregnancy)
 get_fetal_ultrasounds = patient_helper(FetalUltrasound)
+get_clinical_features = patient_helper(SaltWastingClinicalFeatures)
