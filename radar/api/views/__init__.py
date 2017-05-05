@@ -20,6 +20,7 @@ from radar.api.views import group_users
 from radar.api.views import groups
 from radar.api.views import hnf1b
 from radar.api.views import hospitalisations
+from radar.api.views import india_ethnicities
 from radar.api.views import ins
 from radar.api.views import login
 from radar.api.views import logout
@@ -73,6 +74,7 @@ def setup(app):
     group_users.register_views(app)
     hnf1b.register_views(app)
     hospitalisations.register_views(app)
+    india_ethnicities.register_views(app)
     ins.register_views(app)
     login.register_views(app)
     logout.register_views(app)
