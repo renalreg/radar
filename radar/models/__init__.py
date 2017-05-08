@@ -19,6 +19,7 @@ from radar.models.genetics import *
 from radar.models.groups import *
 from radar.models.hnf1b import *
 from radar.models.hospitalisations import *
+from radar.models.india_ethnicities import IndiaEthnicity
 from radar.models.ins import *
 from radar.models.logs import *
 from radar.models.results import *
