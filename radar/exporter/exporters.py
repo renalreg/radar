@@ -694,6 +694,7 @@ class Cit6Exporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('q1', 'data.q1'),
             column('q2', 'data.q2'),
@@ -714,6 +715,7 @@ class CHU9DExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('worried', 'data.worried'),
             column('sad', 'data.sad'),
@@ -737,6 +739,7 @@ class DiabeticComplicationExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('laser', 'data.laser'),
             column('foot ulcers', 'data.footUlcers'),
             column('retinopathy', 'data.retinopathy'),
@@ -753,6 +756,7 @@ class Eq5d5lExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('age', 'data.age'),
             column('gender', 'data.gender'),
@@ -774,6 +778,7 @@ class Eq5dyExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('age', 'data.age'),
             column('gender', 'data.gender'),
@@ -795,6 +800,7 @@ class HadsExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('a1', 'data.a1'),
             column('a2', 'data.a2'),
@@ -824,6 +830,7 @@ class FamilyDiseasesHistoryExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('chd', 'data.chd'),
             column('eskd', 'data.eskd'),
             column('diabetes', 'data.diabetes'),
@@ -848,6 +855,7 @@ class IposExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('score1', 'data.score1'),
             column('score2', 'data.score2'),
@@ -887,6 +895,7 @@ class SamplesExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('barcode', 'data.barcode'),
             column('protocol', 'data.protocol'),
@@ -916,6 +925,7 @@ class AnthropometricsExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('height', 'data.height'),
             column('weight', 'data.weight'),
@@ -945,6 +955,7 @@ class SocioEconomicExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('maritalStatus', 'data.maritalStatus'),
             column('education', 'data.education'),
             column('employmentStatus', 'data.employmentStatus'),
@@ -969,6 +980,7 @@ class NurtureCKDExporter(Exporter):
     def run(self):
         columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('visit', 'data.visit'),
             column('vaccinationFlu', 'data.vaccinationFlu'),
