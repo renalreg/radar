@@ -4,7 +4,11 @@ from sqlalchemy.orm import subqueryload
 
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.common import QueryPatientField
-from radar.api.serializers.diagnoses import AbsentDiagnosisListSerializer, DiagnosisSerializer, PatientDiagnosisSerializer
+from radar.api.serializers.diagnoses import (
+    AbsentDiagnosisListSerializer,
+    DiagnosisSerializer,
+    PatientDiagnosisSerializer,
+)
 from radar.api.views.common import (
     IntegerLookupListView,
     PatientObjectDetailView,
@@ -21,6 +25,7 @@ from radar.api.views.generics import (
     UpdateModelView,
 )
 from radar.database import db
+from radar.exceptions import BadRequest
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,
@@ -198,10 +203,6 @@ class AbsentDiagnosesView(CreateModelView):
             db.session.add(patient_diagnosis)
 
         db.session.commit()
-
-
-        #data = serializer.data
-        #data = camel_case_keys(data)
 
         return '', 201
 

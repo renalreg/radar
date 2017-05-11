@@ -166,15 +166,3 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
 class AbsentDiagnosisListSerializer(PatientMixin, SourceMixin, MetaMixin):
     checked = fields.BooleanField(default=False)
     from_date = fields.DateField()
-
-
-#class AbsentDiagnosisListSerializer(serializers.ListSerializer):
-#    child = AbsentDiagnosisSerializer()
-#
-#    def pre_validate(self, data):
-#        print('pre list')
-#        return data
-#
-#    def validate(self, data):
-#        print('val')
-#        return data
