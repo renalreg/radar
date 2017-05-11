@@ -161,3 +161,8 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 
         return data
+
+
+class AbsentDiagnosisListSerializer(PatientMixin, SourceMixin, MetaMixin):
+    checked = fields.BooleanField(default=False)
+    from_date = fields.DateField()
