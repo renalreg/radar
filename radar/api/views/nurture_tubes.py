@@ -1,0 +1,32 @@
+from radar.api.serializers.nurture_tubes import SamplesSerializer
+from radar.api.views.common import (
+    PatientObjectDetailView,
+    PatientObjectListView,
+    StringLookupListView,
+)
+
+from radar.models.nurture_tubes import PROTOCOL_OPTIONS, Samples
+
+
+class SamplesListView(PatientObjectListView):
+    serializer_class = SamplesSerializer
+    model_class = Samples
+
+
+class SamplesDetailView(PatientObjectDetailView):
+    serializer_class = SamplesSerializer
+    model_class = Samples
+
+
+class SamplesProtocolOptions(StringLookupListView):
+    items = PROTOCOL_OPTIONS
+
+def register_views(app):
+    app.add_url_rule('/samples', view_func=SamplesListView.as_view('samples_list'))
+    app.add_url_rule('/samples/<id>', view_func=SamplesDetailView.as_view('samples_detail'))
+    app.add_url_rule(
+        '/samples-protocol-options',
+        view_func=SamplesProtocolOptions.as_view('samples-protocol-options')
+    )
+
+
