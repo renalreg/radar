@@ -1,14 +1,14 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import MetaMixin, PatientMixin, StringLookupField
-from radar.models.nurture_tubes import PROTOCOL_OPTIONS, Samples
+from radar.api.serializers.common import EnumLookupField, MetaMixin, PatientMixin, StringLookupField
+from radar.models.nurture_tubes import PROTOCOL_OPTION_TYPE, PROTOCOL_OPTION_TYPE_NAMES, SampleOption, Samples
 
 
 class SamplesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     taken_on = fields.DateField()
     barcode = fields.IntegerField()
-    protocol = StringLookupField(PROTOCOL_OPTIONS)
+    protocol = fields.StringField()
 
     epa = fields.IntegerField(required=False)
     epb = fields.IntegerField(required=False)
@@ -26,3 +26,9 @@ class SamplesSerializer(PatientMixin, MetaMixin, ModelSerializer):
 
     class Meta(object):
         model_class = Samples
+
+
+class OptionSerializer(ModelSerializer):
+
+    class Meta(object):
+        model_class = SampleOption
