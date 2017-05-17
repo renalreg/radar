@@ -26,6 +26,7 @@ from radar.models.results import *
 from radar.models.medications import *
 from radar.models.mpgn import *
 from radar.models.nephrectomies import *
+from radar.models.nurture_tubes import Samples
 from radar.models.posts import *
 from radar.models.pathology import *
 from radar.models.patient_addresses import *
