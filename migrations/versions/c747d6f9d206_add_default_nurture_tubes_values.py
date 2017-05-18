@@ -66,5 +66,6 @@ def downgrade():
     op.drop_constraint('nurture_samples_protocol_id_fkey', 'nurture_samples', type_='foreignkey')
     op.drop_column(u'nurture_samples', 'protocol_id')
     op.drop_table('nurture_samples_options')
-    sa.Enum(name='protocol_option_type').drop(op.get_bind(), checkfirst=False)
+    enum_type = sa.Enum(name='protocol_option_type')
+    enum_type.drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###
