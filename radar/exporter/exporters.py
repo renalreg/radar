@@ -1143,3 +1143,111 @@ class ClinicalFeaturesExporter(Exporter):
         columns.extend(get_meta_columns())
         q = queries.get_clinical_features(self.config)
         return query_to_dataset(q, columns)
+
+
+@register('liver-imaging')
+class LiverImagingExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date'),
+            column('imaging_type'),
+            column('size'),
+            column('hepatic_fibrosis'),
+            column('hepatic_cysts'),
+            column('bile_duct_cysts'),
+            column('dilated_bile_ducts'),
+            column('cholangitis'),
+        ]
+        q = queries.get_liver_imaging(self.config)
+        return query_to_dataset(q, columns)
+
+
+@register('liver-diseases')
+class LiverDiseasesExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('portal_hypertension'),
+            column('portal_hypertension_date'),
+            column('ascites'),
+            column('ascites_date'),
+            column('oesophageal'),
+            column('oesophageal_date'),
+            column('oesophageal_bleeding'),
+            column('oesophageal_bleeding_date'),
+            column('gastric'),
+            column('gastric_date'),
+            column('gastric_bleeding'),
+            column('gastric_bleeding_date'),
+            column('anorectal'),
+            column('anorectal_date'),
+            column('anorectal_bleeding'),
+            column('anorectal_bleeding_date'),
+            column('cholangitis_acute'),
+            column('cholangitis_acute_date'),
+            column('cholangitis_recurrent'),
+            column('cholangitis_recurrent_date'),
+            column('spleen_palpable'),
+            column('spleen_palpable_date'),
+        ]
+        q = queries.get_liver_diseases(self.config)
+        return query_to_dataset(q, columns)
+
+
+@register('liver-transplants')
+class LiverTransplantsExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('transplant_group', 'transplant_group.name'),
+            column('registration_date'),
+            column('transplant_date'),
+            column('indications'),
+            column('other_indications'),
+            column('first_graft_source'),
+            column('loss_reason'),
+            column('other_loss_reason'),
+        ]
+        q = queries.get_liver_transplants(self.config)
+        return query_to_dataset(q, columns)
+
+
+@register('nephrectomies')
+class NephrectomiesExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date'),
+            column('kidney_side'),
+            column('kidney_type'),
+            column('entry_type'),
+        ]
+        q = queries.get_nephrectomies(self.config)
+        return query_to_dataset(q, columns)
+
+
+@register('nutrition')
+class NutritionExporter(Exporter):
+    def run(self):
+        columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('feeding_type'),
+            column('from_date'),
+            column('to_date'),
+        ]
+        q = queries.get_nutrition(self.config)
+        return query_to_dataset(q, columns)

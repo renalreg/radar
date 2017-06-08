@@ -14,12 +14,14 @@ from radar.models.hospitalisations import Hospitalisation
 from radar.models.ins import InsClinicalPicture, InsRelapse
 from radar.models.medications import Medication
 from radar.models.mpgn import MpgnClinicalPicture
+from radar.models.nephrectomies import Nephrectomy
 from radar.models.pathology import Pathology
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
+from radar.models.pkd import LiverDiseases, LiverImaging, LiverTransplant, Nutrition
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
 from radar.models.renal_progressions import RenalProgression
@@ -225,3 +227,8 @@ get_results = patient_helper(Result)
 get_pregnancies = patient_helper(Pregnancy)
 get_fetal_ultrasounds = patient_helper(FetalUltrasound)
 get_clinical_features = patient_helper(SaltWastingClinicalFeatures)
+get_liver_imaging = patient_helper(LiverImaging)
+get_liver_diseases = patient_helper(LiverDiseases)
+get_liver_transplants = patient_helper(LiverTransplant)
+get_nephrectomies = patient_helper(Nephrectomy)
+get_nutrition = patient_helper(Nutrition)
