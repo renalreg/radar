@@ -13,12 +13,14 @@ from radar.marmoset.types import (
     format_datetime,
     format_float,
     format_int,
+    format_list,
     format_string,
     parse_boolean,
     parse_date,
     parse_datetime,
     parse_float,
     parse_int,
+    parse_list,
     parse_string,
 )
 from radar.marmoset.validators import (
@@ -42,6 +44,7 @@ class Registry(BaseRegistry):
         self.add_type('boolean', parse_boolean, format_boolean)
         self.add_type('date', parse_date, format_date)
         self.add_type('datetime', parse_datetime, format_datetime)
+        self.add_type('array', parse_list, format_list)
 
         # Add default handlers
         self.add_default('js', JSDefaultHandler)

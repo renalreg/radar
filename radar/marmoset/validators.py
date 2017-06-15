@@ -24,7 +24,10 @@ class InValidator(Validator):
             if value is not None:
                 value = field.parser(value)
 
-            self.values.append(value)
+            if isinstance(value, list):
+                self.values.extend(value)
+            else:
+                self.values.append(value)
 
     @classmethod
     def get_schema(cls):
@@ -43,8 +46,12 @@ class InValidator(Validator):
         }
 
     def __call__(self, value):
-        if value not in self.values:
-            raise ValidationError('Not a valid value.')
+        try:
+            if not set(value).issubset(self.values):
+                raise ValidationError('Not a valid value.')
+        except TypeError:
+            if value not in self.values:
+                raise ValidationError('Not a valid value.')
 
 
 class MinValidator(Validator):

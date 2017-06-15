@@ -70,10 +70,17 @@ def parse_datetime(value):
         raise ValueError('Not a datetime.')
 
 
+def parse_list(value):
+    if not isinstance(value, list):
+        return [value]
+    return value
+
+
 format_string = identity
 format_int = identity
 format_float = identity
 format_boolean = identity
+format_list = identity
 
 
 def format_date(value):
