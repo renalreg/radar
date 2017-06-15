@@ -48,7 +48,7 @@
         {"value": 3, "label": "I have a lot of problems in walking about"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -61,7 +61,7 @@
         {"value": 3, "label": "I have a lot of problems washing or dressing myself"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -75,7 +75,7 @@
         {"value": 3, "label": "I have a lot of problems doing my usual activities"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -88,7 +88,7 @@
         {"value": 3, "label": "I have a lot of pain or discomfort"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -101,7 +101,7 @@
         {"value": 3, "label": "I am very worried, sad or unhappy"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {

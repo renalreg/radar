@@ -26,7 +26,7 @@
         {"value": 5, "label": "I feel very worried today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -41,7 +41,7 @@
         {"value": 5, "label": "I feel very sad today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -56,7 +56,7 @@
         {"value": 5, "label": "I have a lot of pain today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -71,7 +71,7 @@
         {"value": 5, "label": "I feel very tired today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -86,7 +86,7 @@
         {"value": 5, "label": "I feel very annoyed today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -102,7 +102,7 @@
         {"value": 5, "label": "I can't do my schoolwork/homework today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -117,7 +117,7 @@
         {"value": 5, "label": "Last night I couldn't sleep at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -132,7 +132,7 @@
         {"value": 5, "label": "I can't do my daily routine today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -148,7 +148,7 @@
         {"value": 5, "label": "I can join in with no activities today"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     }
   ]

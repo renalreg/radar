@@ -50,7 +50,7 @@
         {"value": 5, "label": "I am unable to walk about"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -65,7 +65,7 @@
         {"value": 5, "label": "I am unable to wash or dress myself"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -81,7 +81,7 @@
         {"value": 5, "label": "I am unable to do my usual activities"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -96,7 +96,7 @@
         {"value": 5, "label": "I have extreme pain or discomfort"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -111,7 +111,7 @@
         {"value": 5, "label": "I am severely anxious or depressed"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {

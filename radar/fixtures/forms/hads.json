@@ -26,7 +26,7 @@
         {"value": 0, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -40,7 +40,7 @@
         {"value": 3, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -54,7 +54,7 @@
         {"value": 0, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -68,7 +68,7 @@
         {"value": 3, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -82,7 +82,7 @@
         {"value": 0, "label": "Only occasionally"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -96,7 +96,7 @@
         {"value": 0, "label": "Most of the time"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -110,7 +110,7 @@
         {"value": 3, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -124,7 +124,7 @@
         {"value": 0, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -138,7 +138,7 @@
         {"value": 3, "label": "Very often"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -152,7 +152,7 @@
         {"value": 0, "label": "I take just as much care as ever"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -166,7 +166,7 @@
         {"value": 0, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -180,7 +180,7 @@
         {"value": 3, "label": "Hardly at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -194,7 +194,7 @@
         {"value": 0, "label": "Not at all"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
@@ -208,7 +208,7 @@
         {"value": 3, "label": "Very seldom"}
       ],
       "widget": {
-        "name": "checkboxes"
+        "name": "radio"
       }
     },
     {
