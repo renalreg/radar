@@ -47,7 +47,7 @@ class GroupListView(ListCreateModelView):
             user = context.get('user')
             if user.is_admin:
                 return query
-            country_code = user.groups[0].country_code
+            country_code = self.get_user_country(user)
             query = query.filter(Group.country_code == country_code)
 
         # Filter out unwanted group types
@@ -55,6 +55,13 @@ class GroupListView(ListCreateModelView):
             query = query.filter(~Group.type.in_(args['filter_out']))
 
         return query
+
+    def get_user_country(self, user):
+        """Return the first country for a user."""
+        for group in user.groups:
+            if group.type == GROUP_TYPE.HOSPITAL:
+                return group.country_code
+        return None
 
 
 class GroupDetailView(RetrieveUpdateDestroyModelView):
