@@ -5,14 +5,15 @@ from cornflake.validators import in_, max_, max_length, min_, min_length
 
 from radar.api.serializers.common import (
     EnumLookupField,
-    GroupSerializer,
     MetaMixin,
     PatientMixin,
     SourceMixin,
     StringLookupField,
+    TinyGroupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.results import (
+    GroupObservation,
     Observation,
     OBSERVATION_SAMPLE_TYPE,
     OBSERVATION_SAMPLE_TYPE_NAMES,
@@ -74,13 +75,26 @@ def get_custom_fields(value_type):
     return _custom_fields.get(value_type, {})
 
 
+class GroupObservationSerializer(ModelSerializer):
+    group = TinyGroupField()
+    weight = fields.IntegerField(default=9999, validators=[min_(0), max_(9999)])
+
+    class Meta(object):
+        model_class = GroupObservation
+        exclude = ['id', 'group_id', 'observation_id']
+
+
+class GroupObservationListSerializer(serializers.ListSerializer):
+    child = GroupObservationSerializer()
+
+
 class BaseObservationSerializer(serializers.Serializer):
     id = fields.IntegerField()
     name = fields.StringField()
     short_name = fields.StringField()
     value_type = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
     sample_type = EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
-    groups = fields.ListField(child=GroupSerializer())
+    groups = GroupObservationListSerializer(source='group_observations')
 
 
 class ObservationSerializer(serializers.ProxySerializer):
