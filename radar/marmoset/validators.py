@@ -47,6 +47,8 @@ class InValidator(Validator):
 
     def __call__(self, value):
         try:
+            if isinstance(value, basestring):
+                raise TypeError
             if not set(value).issubset(self.values):
                 raise ValidationError('Not a valid value.')
         except TypeError:
