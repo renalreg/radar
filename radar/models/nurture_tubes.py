@@ -12,7 +12,8 @@ from radar.models.types import EnumType
 
 
 class PROTOCOL_OPTION_TYPE(Enum):
-    ADULT = 'ADULT'
+    ADULT_CKD = 'ADULT_CKD'
+    ADULT_NS = 'ADULT_NS'
     CHILDREN30_B = 'CHILDREN30_B'
     CHILDREN30_2ND = 'CHILDREN30_2ND'
     CHILDREN15_B = 'CHILDREN15_B'
