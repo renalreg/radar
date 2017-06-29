@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from sqlalchemy import and_, cast, extract, func, Integer, text
 from sqlalchemy.orm import aliased
@@ -63,7 +63,7 @@ def patients_by_recruitment_date(group, interval='month'):
         total += count
 
         results.append({
-            'date': datetime(current_year, current_month, 1),
+            'date': datetime.date(current_year, current_month, 1),
             'new_patients': count,
             'total_patients': total
         })
