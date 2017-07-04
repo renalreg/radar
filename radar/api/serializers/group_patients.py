@@ -111,14 +111,6 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         if self.is_duplicate(data):
             raise ValidationError({'group': 'Patient already belongs to this group.'})
 
-        # Check the from date isn't before the date the patient was added to the system
-        if data['group'].type != GROUP_TYPE.SYSTEM:
-            recruited_date = data['patient'].recruited_date()
-
-            # Can't be added to a group before they are added to the system
-            if recruited_date is not None and data['from_date'].date() < recruited_date.date():
-                raise ValidationError({'from_date': "Must be on or after the recruitment date."})
-
         return data
 
     def save(self):
