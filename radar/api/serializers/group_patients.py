@@ -9,7 +9,7 @@ import pytz
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.database import db
 from radar.exceptions import PermissionDenied
-from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE, GroupPatient
+from radar.models.groups import check_dependencies, DependencyError, GroupPatient
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
 
