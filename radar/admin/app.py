@@ -13,6 +13,7 @@ from radar.admin.views import (
     DrugGroupView,
     DrugView,
     EthnicityView,
+    ExportView,
     FormView,
     GroupConsultantView,
     GroupDiagnosisView,
@@ -97,3 +98,5 @@ class RadarAdmin(Radar):
         admin.add_view(FormView(Form, db.session, 'Forms'))
 
         admin.add_view(ObservationView(Observation, db.session, 'Observations'))
+
+        admin.add_view(ExportView(name='Exports', endpoint='exports'))

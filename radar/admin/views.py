@@ -1,6 +1,11 @@
-from flask import redirect, request, url_for
+"""Admin views."""
+import glob
+import io
+import os
+
+from flask import redirect, request, send_file, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
-from flask_admin import expose, helpers
+from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
 from flask_admin.contrib.sqla.form import AdminModelConverter as BaseAdminModelConverter
 from flask_admin.model.form import converts
@@ -9,7 +14,15 @@ from wtforms import fields
 
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
-from radar.auth.sessions import current_user, DisabledLoginError, login, logout, PasswordLoginError, UsernameLoginError
+from radar.auth.sessions import (
+    current_user,
+    DisabledLoginError,
+    login,
+    logout,
+    PasswordLoginError,
+    UsernameLoginError,
+)
+from radar.config import config
 from radar.models.groups import Group, GROUP_TYPE
 
 
@@ -305,3 +318,21 @@ class SpecialtyView(ModelView):
     column_default_sort = 'name'
     column_searchable_list = ['name']
     column_export_list = ['id', 'name']
+
+
+class ExportView(BaseView):
+    """Basic view to expose export functionality."""
+
+    @expose('/', methods=['GET'])
+    def index(self):
+        """Default page listing files in the directory."""
+
+        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.csv'))
+        files = [os.path.split(path)[1] for path in files]
+        return self.render('admin/export.html', files=files)
+
+    @expose('/<string:param>', methods=['GET'])
+    def serve_file(self, param):
+        """Serve back requested file."""
+        requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
+        return send_file(requested_file, as_attachment=True, attachment_filename=param)

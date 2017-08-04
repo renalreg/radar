@@ -1,5 +1,6 @@
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql.expression import false
 
 from radar.database import db
 from radar.models.consultants import Consultant, GroupConsultant
@@ -156,7 +157,7 @@ def _patient_group_filter(query, patient_id, group_id, user, patient_group, data
 
 
 def get_patients(config):
-    q = db.session.query(Patient).order_by(Patient.id)
+    q = db.session.query(Patient).filter(Patient.test != false()).order_by(Patient.id)
     q = _patient_filter(q, Patient.id, config['user'], config['patient_group'])
     return q
 
