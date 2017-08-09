@@ -94,6 +94,8 @@ def get_import_user():
 
 
 def get_group(code):
+    if code:
+        code = code.upper()
     return Group.query.filter(Group.code == code).first()
 
 
