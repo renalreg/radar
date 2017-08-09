@@ -126,9 +126,6 @@ def import_sda(data, sequence_number, patient_id=None):
 
         patient_id = patient_ids[0]
 
-        if len(patient_ids) > 1:
-            logger.error('Patient ID returned multiple times, id={}'.format(patient_id))
-
         # Check the format of the patient ID
         try:
             patient_id = parse_patient_id(patient_id)
