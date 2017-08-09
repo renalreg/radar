@@ -8,7 +8,7 @@ from radar.models.groups import (
 )
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
-from radar.models.patient_codes import ETHNICITIES, GENDERS
+from radar.models.patient_codes import GENDERS
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime
@@ -57,14 +57,12 @@ def export_gender(sda_patient, patient):
 
 def export_ethnic_group(sda_patient, patient):
     if patient.ethnicity is not None:
-        ethnicity = patient.ethnicity
-        description = ETHNICITIES.get(ethnicity)
+        code = patient.ethnicity.code
+        description = patient.ethnicity.label
 
         if description is None:
-            logger.error('Unknown ethnicity code={}'.format(ethnicity))
+            logger.error('Unknown ethnicity code={}'.format(code))
             return
-
-        code = str(ethnicity)
 
         sda_patient['ethnic_group'] = {
             'code': code,
