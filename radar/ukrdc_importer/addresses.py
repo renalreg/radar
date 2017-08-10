@@ -156,7 +156,7 @@ def convert_addresses(patient, sda_addresses):
 
 
 def import_addresses(patient, sda_addresses):
-    logger.info('Importing addresses')
+    logger.info('Importing addresses: %s', patient.id)
 
     sda_addresses = parse_addresses(sda_addresses)
     sda_addresses = unique_addresses(sda_addresses)
