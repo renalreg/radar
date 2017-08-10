@@ -228,7 +228,7 @@ def convert_results(patient, sda_lab_orders):
 
 
 def import_results(patient, sda_lab_orders):
-    logger.info('Importing results')
+    logger.info('Importing results: %s', patient.id)
 
     # Preload results so calls to get() can use the cache rather than querying the database
     preload_results(patient)

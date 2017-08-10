@@ -162,7 +162,7 @@ def convert_demographics(patient, sda_patient):
 
 
 def import_demographics(patient, sda_patient):
-    logger.info('Importing demographics')
+    logger.info('Importing demographics: %s', patient.id)
 
     sda_patient = parse_demographics(sda_patient)
 
