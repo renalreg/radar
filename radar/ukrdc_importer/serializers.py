@@ -30,6 +30,17 @@ class LooseCodeDescriptionSerializer(serializers.Serializer):
     description = fields.StringField(required=False)
 
 
+class CodeOrDescriptionSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    description = fields.StringField(required=False)
+
+    def validate(self, data):
+        if any((data['code'], data['description'])):
+            return data
+
+        raise ValidationError({'code or description': 'At least one is required'})
+
+
 class _OrganizationSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     description = fields.StringField(required=False)
@@ -51,10 +62,10 @@ class AddressSerializer(serializers.Serializer):
     from_time = SDADateTimeField(required=False)
     to_time = SDADateTimeField(required=False)
     street = fields.StringField(required=False)
-    city = CodeDescriptionSerializer(required=False)
+    city = CodeOrDescriptionSerializer(required=False)
     state = CodeDescriptionSerializer(required=False)
     country = CodeDescriptionSerializer(required=False)
-    zip = CodeDescriptionSerializer(required=False)
+    zip = CodeOrDescriptionSerializer(required=False)
 
 
 class ContactInfoSerializer(serializers.Serializer):
