@@ -104,7 +104,8 @@ def import_sda(data, sequence_number, patient_id=None):
     try:
         sda_container = serializer.run_validation(data)
     except ValidationError as e:
-        logger.error('Container is invalid errors={errors}'.format(errors=e.flatten()))
+        msg = 'Container is invalid errors=%s, data=%s'
+        logger.error(msg, e.flatten(), data)
         return False
 
     sda_patient = sda_container['patient']
