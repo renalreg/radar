@@ -20,6 +20,25 @@ class SDAPatient(object):
     MALE = ['1', 'M', 'MALE']
     FEMALE = ['2', 'F', 'FEMALE']
     ETHNICITY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'Z']
+    ETHNICITY_DESCRIPTIONS = {
+        'WHITE - BRITISH': 'A',
+        'WHITE - IRISH': 'B',
+        'OTHER WHITE BACKGROUND': 'C',
+        'MIXED - WHITE AND BLACK CARIBBEAN': 'D',
+        'MIXED - WHITE AND BLACK AFRICAN': 'E',
+        'MIXED - WHITE AND ASIAN': 'F',
+        'OTHER MIXED BACKGROUND': 'G',
+        'ASIAN OR ASIAN BRITISH - INDIAN': 'H',
+        'ASIAN OR ASIAN BRITISH - PAKISTANI': 'J',
+        'ASIAN OR ASIAN BRITISH - BANGLADESHI': 'K',
+        'OTHER ASIAN BACKGROUND': 'L',
+        'BLACK CARRIBEAN': 'M',
+        'BLACK AFRICAN': 'N',
+        'OTHER BLACK BACKGROUND': 'P',
+        'CHINESE': 'R',
+        'OTHER ETHNIC BACKGROUND': 'S',
+        'REFUSED / NOT STATED': 'Z',
+    }
 
     def __init__(self, data):
         self.data = data
@@ -81,6 +100,11 @@ class SDAPatient(object):
 
             if ethnicity in self.ETHNICITY:
                 return ethnicity
+        else:
+            description = get_path(self.data, 'ethnic_group', 'description')
+            if description is not None:
+                description = description.strip().upper()
+                return self.ETHNICITY_DESCRIPTIONS.get(description)
 
         return None
 

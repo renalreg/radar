@@ -85,7 +85,7 @@ class PatientSerializer(serializers.Serializer):
     birth_time = SDADateTimeField(required=False)
     death_time = SDADateTimeField(required=False)
     gender = CodeDescriptionSerializer(required=False)
-    ethnic_group = CodeDescriptionSerializer(required=False)
+    ethnic_group = CodeOrDescriptionSerializer(required=False)
     contact_info = ContactInfoSerializer(required=False)
 
 
