@@ -116,7 +116,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
         # No patient ID in file
         if patient_ids is None:
-            logger.error('Patient ID is missing. Data - %s', sda_container)
+            logger.error('Patient ID is missing. Data - %s', data)
             return False
 
         if len(set(patient_ids)) > 1:

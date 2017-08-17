@@ -53,7 +53,10 @@ class SDAAddress(object):
 
     @property
     def city(self):
-        return get_path(self.data, 'city', 'code')
+        city = get_path(self.data, 'city', 'code')
+        if not city:
+            city = get_path(self.data, 'city', 'description')
+        return city
 
     @property
     def state(self):
@@ -65,7 +68,10 @@ class SDAAddress(object):
 
     @property
     def zip(self):
-        return get_path(self.data, 'zip', 'code')
+        postcode = get_path(self.data, 'zip', 'code')
+        if not postcode:
+            postcode = get_path(self.data, 'zip', 'description')
+        return postcode
 
 
 def parse_addresses(sda_addresses):
