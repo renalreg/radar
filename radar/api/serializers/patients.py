@@ -57,6 +57,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     current = CurrentField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
+    control = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
 
@@ -105,6 +106,7 @@ class TinyPatientSerializer(serializers.Serializer):
     current = fields.BooleanField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
+    control = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
 
