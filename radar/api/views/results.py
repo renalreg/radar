@@ -76,6 +76,7 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
         for observation in json.pop('observations', []):
             data = dict(json)
             data['observation'] = observation.get('observation')
+            data['sent_value'] = observation.get('value')
             data['value'] = observation.get('value')
             data['date'] = observation.get('date')
             serializer = self.get_serializer(data=data)
@@ -89,6 +90,7 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
             observation = data.pop('observation')
             observation['id'] = data.pop('id', None)
             observation['value'] = data.pop('value', None)
+            observation['sent_value'] = data.pop('sent_value', None)
             observations.append(observation)
 
         data['observations'] = observations

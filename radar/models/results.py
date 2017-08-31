@@ -199,6 +199,7 @@ class Result(db.Model, MetaModelMixin):
 
     date = Column(DateTime(timezone=True), nullable=False)
     _value = Column('value', String, nullable=False)
+    sent_value = Column(String, nullable=False)
 
     @property
     def value(self):

@@ -28,6 +28,7 @@ def find_patient_ids(sda_patient_numbers):
     """Find the patient ids in the list of patient numbers."""
 
     system_codes = [x.code for x in Group.query.filter(Group.type == GROUP_TYPE.SYSTEM)]
+    logger.error(system_codes)
     numbers = []
 
     for sda_patient_number in sda_patient_numbers:
@@ -113,7 +114,9 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # No patient ID supplied
     if patient_id is None:
+        logger.error(sda_patient_numbers)
         patient_ids = find_patient_ids(sda_patient_numbers)
+        logger.error(patient_ids)
 
         # No patient ID in file
         if patient_ids is None:

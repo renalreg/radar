@@ -262,7 +262,6 @@ class CreateModelViewMixin(object):
 
         if json is None:
             raise BadRequest()
-
         serializer = self.get_serializer(data=json)
         serializer.is_valid(raise_exception=True)
         obj = serializer.save()

@@ -29,13 +29,13 @@ def get_value_field(observation):
     value_type = observation.value_type
 
     if value_type == OBSERVATION_VALUE_TYPE.INTEGER:
-        field = fields.IntegerField()
+        field = fields.IntegerField(required=False)
     elif value_type == OBSERVATION_VALUE_TYPE.REAL:
-        field = fields.FloatField()
+        field = fields.FloatField(required=False)
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
-        field = StringLookupField(observation.options_dict, key_name='code', value_name='description')
+        field = StringLookupField(observation.options_dict, key_name='code', value_name='description', required=False)
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
-        field = fields.StringField()
+        field = fields.StringField(required=False)
     else:
         raise ValueError('Unknown value type: %s' % value_type)
 
@@ -181,6 +181,7 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
 class ResultSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
+        kwargs['data'].setdefault('sent_value', kwargs['data'].get('value'))
         super(ResultSerializer, self).__init__(*args, **kwargs)
         observation_field = ObservationField()
         observation_field.bind(self, 'observation')
@@ -189,7 +190,8 @@ class ResultSerializer(serializers.ProxySerializer):
     def create_serializer(self, observation):
         field = get_value_field(observation)
         serializer = type('CustomResultSerializer', (BaseResultSerializer,), {
-            'value': field
+            'value': field,
+            'sent_value': fields.StringField()
         })()
         return serializer
 
@@ -206,7 +208,6 @@ class ResultSerializer(serializers.ProxySerializer):
             observation = self.observation_field.run_validation(observation_data)
         except ValidationError as e:
             raise ValidationError({self.observation_field.field_name: e.errors})
-
         serializer = self.create_serializer(observation)
 
         return serializer
