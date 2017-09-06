@@ -49,7 +49,7 @@ setup(
         'sqlalchemy',
         'sqlalchemy-enum34',
         'termcolor',
-	'uwsgi',
+        'uwsgi',
         'werkzeug',
         'zxcvbn',
     ],
