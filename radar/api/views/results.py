@@ -102,6 +102,27 @@ class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
     serializer_class = ResultSerializer
     model_class = Result
 
+    def update(self, *args, **kwargs):
+        json = request.get_json()
+
+        if json is None:
+            raise BadRequest()
+
+        partial = request.method == 'PATCH'
+        obj = self.get_object()
+        serializer = self.get_serializer(obj, data=json, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        obj.sent_value = obj.value
+        obj = serializer.save()
+
+        db.session.add(obj)
+        db.session.commit()
+
+        data = serializer.data
+        data = camel_case_keys(data)
+
+        return jsonify(data)
+
 
 class ObservationListView(ListModelView):
     serializer_class = ObservationSerializer

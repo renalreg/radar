@@ -35,6 +35,13 @@ class SDALabResultItem(object):
 
     @property
     def result_value(self):
+        try:
+            return float(self.data['result_value'])
+        except (TypeError, ValueError):
+            return None
+
+    @property
+    def sent_value(self):
         return self.data['result_value']
 
 
@@ -220,6 +227,7 @@ def convert_results(patient, sda_lab_orders):
             result.date = dt
             result.observation = observation
             result.value = sda_lab_result_item.result_value
+            result.sent_value = sda_lab_result_item.sent_value
 
             db.session.add(result)
             results.append(result)

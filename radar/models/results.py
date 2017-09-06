@@ -198,7 +198,7 @@ class Result(db.Model, MetaModelMixin):
     observation = relationship('Observation')
 
     date = Column(DateTime(timezone=True), nullable=False)
-    _value = Column('value', String, nullable=False)
+    _value = Column('value', String, nullable=True)
     sent_value = Column(String, nullable=False)
 
     @property

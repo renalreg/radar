@@ -108,7 +108,7 @@ class MedicationSerializer(serializers.Serializer):
 class LabResultItemSerializer(serializers.Serializer):
     observation_time = SDADateTimeField(required=False)
     test_item_code = CodeDescriptionSerializer()
-    result_value = fields.FloatField()
+    result_value = fields.StringField()
 
 
 class ResultSerializer(serializers.Serializer):
