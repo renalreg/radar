@@ -24,6 +24,8 @@ REPLACEMENTS = {
     '&gt;': '>',
     'LT': '<',
     'GT': '>',
+    '&amp;lt;': '<',
+    '&amp;gt;': '>',
 }
 
 
