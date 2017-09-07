@@ -19,10 +19,20 @@ from radar.utils import get_path
 
 logger = logging.getLogger(__name__)
 
+REPLACEMENTS = {
+    '&lt;': '<',
+    '&gt;': '>',
+    'LT': '<',
+    'GT': '>',
+}
+
 
 class SDALabResultItem(object):
     def __init__(self, data, parent=None):
         self.data = data
+        self.data['result_value'].replace(',', '')
+        for replacable, replacement in REPLACEMENTS.items():
+            self.data['result_value'] = self.data['result_value'].replace(replacable, replacement)
         self.parent = parent
 
     @property
