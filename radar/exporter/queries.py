@@ -111,7 +111,8 @@ def filter_by_data_group(query, group, group_id):
 
 def patient_helper(klass):
     def f(config):
-        q = db.session.query(klass).order_by(klass.patient_id, klass.id)
+        q = db.session.query(klass).filter(Patient.test != true(), klass.patient_id == Patient.id)
+        q = q.order_by(klass.patient_id, klass.id)
         q = _patient_filter(q, klass.patient_id, config['user'], config['patient_group'])
         return q
 
