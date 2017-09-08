@@ -195,6 +195,8 @@ def get_transplant_rejections(config):
 
 def get_form_data(config):
     q = db.session.query(Entry)
+    q = q.filter(Patient.test != true(), Entry.patient_id == Patient.id)
+    q = q.order_by(Entry.patient_id, Entry.id)
     q = _patient_filter(q, Entry.patient_id, config['user'], config['patient_group'])
     q = q.filter(Entry.form.has(slug=config['name']))
     return q
