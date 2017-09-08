@@ -1,5 +1,7 @@
 from __future__ import division
 
+from collections import OrderedDict
+
 import tablib
 
 from radar.exporter import queries
@@ -648,22 +650,33 @@ class RenalProgressionExporter(Exporter):
 @register('results')
 class ResultExporter(Exporter):
     def run(self):
-        columns = [
-            column('id'),
-            column('patient_id'),
-            column('source_group_id'),
-            column('source_group', 'source_group.name'),
-            column('source_type'),
-            column('date'),
-            column('observation_name', 'observation.name'),
-            column('value'),
-            column('value_label')
-        ]
-        columns.extend(get_meta_columns())
-
         q = queries.get_results(self.config)
 
-        return query_to_dataset(q, columns)
+        columns = ['patient_id', 'source_group', 'source_type', 'date']
+        extra = sorted({row.observation.name for row in q}, key=lambda val: val.lower())
+        columns.extend(extra)
+
+        data = OrderedDict()
+
+        for row in q:
+            key = (row.patient_id, row.source_group.name, row.source_type, row.date)
+            if key not in data:
+                data[key] = {}
+
+            data[key][row.observation.name] = row.value_label_or_value
+
+        dataset = tablib.Dataset(headers=columns)
+
+        for key, results in data.items():
+            row = list(key)
+            for test in extra:
+                if test in results:
+                    row.append(results[test])
+                else:
+                    row.append('')
+            dataset.append(row)
+
+        return dataset
 
 
 @register('observations')
