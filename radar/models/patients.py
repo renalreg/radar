@@ -28,6 +28,16 @@ class Patient(db.Model, MetaModelMixin):
     control = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     @property
+    def cohorts(self):
+        """Return cohorts that patient belongs to."""
+        return [group for group in self.groups if group.type == GROUP_TYPE.COHORT]
+
+    @property
+    def systems(self):
+        """Return groups of type GROUP_TYPE.SYSTEM that patient belongs to."""
+        return [group for group in self.groups if group.type == GROUP_TYPE.SYSTEM]
+
+    @property
     def groups(self):
         return [x.group for x in self.group_patients]
 

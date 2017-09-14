@@ -77,7 +77,7 @@ class Group(db.Model):
 
     @property
     def patients(self):
-        return [x.patient for x in self.group_patient]
+        return [x.patient for x in self.group_patients]
 
     @property
     def users(self):
