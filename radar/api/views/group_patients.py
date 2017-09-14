@@ -1,4 +1,4 @@
-from flask import jsonify, Response, request
+from flask import jsonify, request, Response
 
 from radar.api.permissions import (
     GroupPatientCreatePermission,
@@ -21,6 +21,7 @@ from radar.api.views.generics import (
 
 )
 from radar.database import db
+from radar.exceptions import BadRequest
 from radar.models.groups import GroupPatient
 from radar.utils import camel_case_keys
 
