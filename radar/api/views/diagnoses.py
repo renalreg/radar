@@ -193,13 +193,13 @@ class AbsentDiagnosesView(CreateModelView):
         query = query.outerjoin(Diagnosis.group_diagnoses)
         query = query.filter(
             or_(
-                GroupDiagnosis.type == None,
+                GroupDiagnosis.type.is_(None),
                 GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.SECONDARY
             )
         )
 
         # need to get group id in someway, currently this functionality is disabled
-        query = query.filter(or_(GroupDiagnosis.type == None, GroupDiagnosis.group_id == 14))
+        query = query.filter(or_(GroupDiagnosis.type.is_(None), GroupDiagnosis.group_id == 14))
 
         for diagnosis in query:
             patient_diagnosis = PatientDiagnosis()
