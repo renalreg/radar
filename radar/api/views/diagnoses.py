@@ -1,5 +1,6 @@
 from cornflake import fields, serializers
 from flask import request
+from sqlalchemy import or_
 from sqlalchemy.orm import subqueryload
 
 from radar.api.permissions import AdminPermission
@@ -187,8 +188,20 @@ class AbsentDiagnosesView(CreateModelView):
 
         serializer = self.get_serializer(data=json)
         serializer.is_valid(raise_exception=True)
-        print(serializer.data)
-        for diagnosis in db.session.query(Diagnosis):
+
+        query = db.session.query(Diagnosis)
+        query = query.outerjoin(Diagnosis.group_diagnoses)
+        query = query.filter(
+            or_(
+                GroupDiagnosis.type == None,
+                GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.SECONDARY
+            )
+        )
+
+        # need to get group id in someway, currently this functionality is disabled
+        query = query.filter(or_(GroupDiagnosis.type == None, GroupDiagnosis.group_id == 14))
+
+        for diagnosis in query:
             patient_diagnosis = PatientDiagnosis()
             patient_diagnosis.patient_id = serializer.data['patient']
             patient_diagnosis.source_group_id = serializer.data['source_group']['id']
