@@ -274,7 +274,7 @@ class GroupFormView(ModelView):
 
 class GroupObservationView(ModelView):
     column_default_sort = 'id'
-    column_export_list = ['id', 'group', 'observation']
+    column_export_list = ['id', 'group', 'observation', 'weight']
 
 
 class GroupPageView(ModelView):
