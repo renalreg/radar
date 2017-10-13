@@ -119,6 +119,8 @@ def get_meta_columns():
 class Exporter(object):
     def __init__(self, config):
         self.config = config
+        self._query = None
+        self._columns = None
 
     @classmethod
     def parse_config(self, data):
@@ -126,6 +128,10 @@ class Exporter(object):
 
     def run(self):
         raise NotImplementedError
+
+    @property
+    def dataset(self):
+        return query_to_dataset(self._query, self._columns)
 
 
 @register('patients')
@@ -136,7 +142,7 @@ class PatientExporter(Exporter):
         def d(name, getter=None, anonymised_getter=None):
             return demographics_column(name, getter, anonymised_getter, identity_getter)
 
-        columns = [
+        self._columns = [
             column('id'),
             d('patient_number', 'primary_patient_number.number'),
             d('first_name'),
@@ -157,8 +163,7 @@ class PatientExporter(Exporter):
         ]
 
         q = queries.get_patients(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('patient_numbers')
@@ -166,7 +171,7 @@ class PatientNumberExporter(Exporter):
     def run(self):
         d = demographics_column_factory(self.config)
 
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -176,11 +181,10 @@ class PatientNumberExporter(Exporter):
             column('number_group', 'number_group.name'),
             d('number'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_patient_numbers(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('patient_addresses')
@@ -188,7 +192,7 @@ class PatientAddressExporter(Exporter):
     def run(self):
         d = demographics_column_factory(self.config)
 
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -202,11 +206,10 @@ class PatientAddressExporter(Exporter):
             d('address4'),
             d('postcode', anonymised_getter='anonymised_postcode'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_patient_addresses(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('patient_aliases')
@@ -214,7 +217,7 @@ class PatientAliasExporter(Exporter):
     def run(self):
         d = demographics_column_factory(self.config)
 
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -223,11 +226,10 @@ class PatientAliasExporter(Exporter):
             d('first_name'),
             d('last_name'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_patient_aliases(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('patient_demographics')
@@ -235,7 +237,7 @@ class PatientDemographicsExporter(Exporter):
     def run(self):
         d = demographics_column_factory(self.config)
 
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -257,17 +259,16 @@ class PatientDemographicsExporter(Exporter):
             d('email_address'),
         ]
 
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_patient_demographics(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('medications')
 class MedicationExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -286,17 +287,16 @@ class MedicationExporter(Exporter):
             column('route'),
             column('route_label'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_medications(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('patient_diagnoses')
 class PatientDiagnosisExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -322,17 +322,16 @@ class PatientDiagnosisExporter(Exporter):
             column('biopsy_diagnosis_label'),
             column('comments'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_patient_diagnoses(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('genetics')
 class GeneticsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('group_id'),
@@ -345,17 +344,16 @@ class GeneticsExporter(Exporter):
             column('results'),
             column('summary'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_genetics(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('pathology')
 class PathologyExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -370,17 +368,16 @@ class PathologyExporter(Exporter):
             column('histological_summary'),
             column('em_findings'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_pathology(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('family_histories')
 class FamilyHistoryExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('group_id'),
@@ -388,17 +385,16 @@ class FamilyHistoryExporter(Exporter):
             column('parental_consanguinity'),
             column('family_history'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_family_histories(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('family_history_relatives')
 class FamilyHistoryRelativeExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('family_history_id'),
             column('relationship'),
@@ -407,14 +403,13 @@ class FamilyHistoryRelativeExporter(Exporter):
         ]
 
         q = queries.get_family_history_relatives(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('ins_clinical_pictures')
 class InsClinicalPictureExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date_of_picture'),
@@ -433,17 +428,16 @@ class InsClinicalPictureExporter(Exporter):
             column('ophthalmoscopy_details'),
             column('comments'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_ins_clinical_pictures(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('dialysis')
 class DialysisExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -454,17 +448,16 @@ class DialysisExporter(Exporter):
             column('modality'),
             column('modality_label'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_dialyses(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('plasmapheresis')
 class PlasmapheresisExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -477,17 +470,16 @@ class PlasmapheresisExporter(Exporter):
             column('response'),
             column('response_label'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_plasmapheresis(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('transplants')
 class TransplantExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -501,17 +493,16 @@ class TransplantExporter(Exporter):
             column('date_of_recurrence'),
             column('date_of_failure'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_transplants(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('transplant_biopsies')
 class TransplantBiopsyExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('transplant_id'),
             column('date_of_biopsy'),
@@ -519,28 +510,26 @@ class TransplantBiopsyExporter(Exporter):
         ]
 
         q = queries.get_transplant_biopsies(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('transplant_rejections')
 class TransplantRejectionExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('transplant_id'),
             column('date_of_rejection'),
         ]
 
         q = queries.get_transplant_rejections(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('hospitalisations')
 class HospitalisationExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -551,17 +540,16 @@ class HospitalisationExporter(Exporter):
             column('reason_for_admission'),
             column('comments'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_hospitalisations(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('ins_relapses')
 class InsRelapseExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date_of_relapse'),
@@ -576,17 +564,16 @@ class InsRelapseExporter(Exporter):
             column('remission_type'),
             column('remission_type_label'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_ins_relapses(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('mpgn_clinical_pictures')
 class MpgnClinicalPicturesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date_of_picture'),
@@ -600,17 +587,16 @@ class MpgnClinicalPicturesExporter(Exporter):
             column('ophthalmoscopy_details'),
             column('comments'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_mpgn_clinical_pictures(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('group_patients')
 class GroupPatientExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('group_id'),
@@ -620,17 +606,16 @@ class GroupPatientExporter(Exporter):
             column('created_group_id'),
             column('created_group', 'created_group.name'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_group_patients(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('renal_progressions')
 class RenalProgressionExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('onset_date'),
@@ -640,11 +625,10 @@ class RenalProgressionExporter(Exporter):
             column('ckd5_date'),
             column('esrf_date'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_renal_progressions(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('results')
@@ -652,20 +636,24 @@ class ResultExporter(Exporter):
     def run(self):
         q = queries.get_results(self.config)
 
-        columns = ['patient_id', 'source_group', 'source_type', 'date']
-        extra = sorted({row.observation.name for row in q}, key=lambda val: val.lower())
-        columns.extend(extra)
+        self._columns = ['patient_id', 'source_group', 'source_type', 'date']
+        self._query = q
+
+    @property
+    def dataset(self):
+        extra = sorted({row.observation.name for row in self._query}, key=lambda val: val.lower())
+        self._columns.extend(extra)
 
         data = OrderedDict()
 
-        for row in q:
+        for row in self._query:
             key = (row.patient_id, row.source_group.name, row.source_type, row.date)
             if key not in data:
                 data[key] = {}
 
             data[key][row.observation.name] = row.value_label_or_value
 
-        dataset = tablib.Dataset(headers=columns)
+        dataset = tablib.Dataset(headers=self._columns)
 
         for key, results in data.items():
             row = list(key)
@@ -682,7 +670,7 @@ class ResultExporter(Exporter):
 @register('observations')
 class ObservationExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('name'),
             column('short_name'),
@@ -697,15 +685,13 @@ class ObservationExporter(Exporter):
             column('options'),
         ]
 
-        q = Observation.query.order_by(Observation.id)
-
-        return query_to_dataset(q, columns)
+        self._query = Observation.query.order_by(Observation.id)
 
 
 @register('6cit')
 class Cit6Exporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -717,16 +703,15 @@ class Cit6Exporter(Exporter):
             column('q7', 'data.q7'),
             column('score', 'data.score'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('chu9d')
 class CHU9DExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -741,16 +726,15 @@ class CHU9DExporter(Exporter):
             column('activities', 'data.activities'),
 
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('diabetic-complications')
 class DiabeticComplicationExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('laser', 'data.laser'),
@@ -758,16 +742,15 @@ class DiabeticComplicationExporter(Exporter):
             column('retinopathy', 'data.retinopathy'),
             column('peripheral neuropathy', 'data.peripheralNeuropathy'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('eq-5d-5l')
 class Eq5d5lExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -780,16 +763,15 @@ class Eq5d5lExporter(Exporter):
             column('anxiety depression', 'data.anxietyDepression'),
             column('health', 'data.health'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('eq-5d-y')
 class Eq5dyExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -802,16 +784,15 @@ class Eq5dyExporter(Exporter):
             column('anxiety depression', 'data.anxietyDepression'),
             column('health', 'data.health'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('hads')
 class HadsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -832,16 +813,15 @@ class HadsExporter(Exporter):
             column('anxiety score', 'data.anxietyScore'),
             column('depression score', 'data.depressionScore'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('family-history')
 class FamilyDiseasesHistoryExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('chd', 'data.chd'),
@@ -857,16 +837,15 @@ class FamilyDiseasesHistoryExporter(Exporter):
             column('diabetesRelative2', 'data.diabetesRelative2'),
             column('diabetesRelative3', 'data.diabetesRelative3'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('ipos')
 class IposExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -897,16 +876,15 @@ class IposExporter(Exporter):
             column('question5', 'data.question5'),
             column('score', 'data.score'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('samples')
 class SamplesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -927,16 +905,15 @@ class SamplesExporter(Exporter):
             column('rna', 'data.rna'),
             column('wholeBlood', 'data.wholeBlood'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('anthropometrics')
 class AnthropometricsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -957,16 +934,15 @@ class AnthropometricsExporter(Exporter):
             column('diastolic3', 'data.diastolic3'),
             column('diastolic', 'data.diastolic'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('socio-economic')
 class SocioEconomicExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('maritalStatus', 'data.maritalStatus'),
@@ -982,16 +958,15 @@ class SocioEconomicExporter(Exporter):
             column('diet', 'data.diet'),
             column('otherDiet', 'data.otherDiet'),
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('nurtureckd')
 class NurtureCKDExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
@@ -1015,16 +990,15 @@ class NurtureCKDExporter(Exporter):
             column('yearsIbuprofen', 'data.yearsIbuprofen'),
 
         ]
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_form_data(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('renal_imaging')
 class RenalImagingExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -1054,17 +1028,16 @@ class RenalImagingExporter(Exporter):
             column('left_other_malformation'),
         ]
 
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_renal_progressions(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('consultants')
 class ConsultantsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('first_name'),
             column('last_name'),
@@ -1074,14 +1047,13 @@ class ConsultantsExporter(Exporter):
             column('specialty', 'specialty.name')
         ]
         q = queries.get_consultants(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('pregnancies')
 class PregnanciesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('pregnancy_number'),
@@ -1098,17 +1070,16 @@ class PregnanciesExporter(Exporter):
             column('pre_eclampsia'),
         ]
 
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_pregnancies(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('fetal_ultrasounds')
 class FetalUltrasoundsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group_id'),
@@ -1124,17 +1095,16 @@ class FetalUltrasoundsExporter(Exporter):
             column('comments'),
         ]
 
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
 
         q = queries.get_fetal_ultrasounds(self.config)
-
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('clinical_features')
 class ClinicalFeaturesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('normal_pregnancy'),
@@ -1153,15 +1123,15 @@ class ClinicalFeaturesExporter(Exporter):
             column('other_x_ray_abnormality_text'),
         ]
 
-        columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns())
         q = queries.get_clinical_features(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('liver-imaging')
 class LiverImagingExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
@@ -1176,13 +1146,13 @@ class LiverImagingExporter(Exporter):
             column('cholangitis'),
         ]
         q = queries.get_liver_imaging(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('liver-diseases')
 class LiverDiseasesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('portal_hypertension'),
@@ -1209,13 +1179,13 @@ class LiverDiseasesExporter(Exporter):
             column('spleen_palpable_date'),
         ]
         q = queries.get_liver_diseases(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('liver-transplants')
 class LiverTransplantsExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
@@ -1230,13 +1200,13 @@ class LiverTransplantsExporter(Exporter):
             column('other_loss_reason'),
         ]
         q = queries.get_liver_transplants(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('nephrectomies')
 class NephrectomiesExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
@@ -1247,13 +1217,13 @@ class NephrectomiesExporter(Exporter):
             column('entry_type'),
         ]
         q = queries.get_nephrectomies(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q
 
 
 @register('nutrition')
 class NutritionExporter(Exporter):
     def run(self):
-        columns = [
+        self._columns = [
             column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
@@ -1263,4 +1233,4 @@ class NutritionExporter(Exporter):
             column('to_date'),
         ]
         q = queries.get_nutrition(self.config)
-        return query_to_dataset(q, columns)
+        self._query = q

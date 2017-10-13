@@ -123,6 +123,10 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
         return r
 
+    @property
+    def name(self):
+        return '{} {}'.format(self.first_name, self.last_name)
+
     @classmethod
     def is_authenticated(cls):
         return True

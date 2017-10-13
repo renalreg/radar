@@ -38,6 +38,11 @@ class Patient(db.Model, MetaModelMixin):
         return [group for group in self.groups if group.type == GROUP_TYPE.SYSTEM]
 
     @property
+    def hospitals(self):
+        """Return groups of type GROUP_TYPE.HOSPITAL that patient belongs to."""
+        return [group for group in self.groups if group.type == GROUP_TYPE.HOSPITAL]
+
+    @property
     def groups(self):
         return [x.group for x in self.group_patients]
 
@@ -217,6 +222,16 @@ class Patient(db.Model, MetaModelMixin):
     @hybrid_property
     def last_name(self):
         return self.latest_demographics_attr('last_name')
+
+    @property
+    def full_name(self):
+        first_name = self.first_name
+        last_name = self.last_name
+        if not first_name:
+            return last_name
+        if not last_name:
+            return first_name
+        return '{} {}'.format(first_name, last_name)
 
     @hybrid_property
     def date_of_birth(self):

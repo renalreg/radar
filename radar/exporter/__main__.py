@@ -91,7 +91,8 @@ def main():
         # Export data
         for name, exporter in exporters:
             print 'Exporting {0}...'.format(name)
-            dataset = exporter.run()
+            exporter.run()
+            dataset = exporter.dataset
             dataset.title = name
             datasets.append(dataset)
 
