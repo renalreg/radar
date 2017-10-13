@@ -361,11 +361,11 @@ class SocioEconomic(BaseSheet):
             data = get_form_data(entry, slice(1, -4), self.fields)
             sheet.write_row(row, 0, data)
             for col in (1, 2, 3, 4, 5, 6, 7, 9):
-                if not data[col]:
+                if data[col] is None:
                     sheet.write(row, col, data[col], errorfmt)
-            if data[7] and not data[8]:
+            if data[7] and data[8] is None:
                 sheet.write(row, 8, data[8], warningfmt)
-            if data[9] and not data[10]:
+            if data[9] and data[10] is None:
                 sheet.write(row, 10, data[10], warningfmt)
 
             row = row + 1
@@ -488,6 +488,8 @@ class DiabeticComplications(BaseSheet):
 
 def in_range(values):
     for first, second in itertools.combinations(values, 2):
+        if first is None or second is None:
+            return False
         if abs(first - second) > BLOOD_PRESSURE_DELTA:
             return False
     return True
@@ -581,6 +583,7 @@ class Medications(BaseSheet):
 
             data[3] = format_date(data[3])
             data[4] = format_date(data[4])
+            data[6] = instance.drug.name if (instance.drug) else None
 
             data[-4] = format_date(data[-4], long=True)
             data[-3] = instance.created_user.name

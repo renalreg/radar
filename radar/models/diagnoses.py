@@ -81,6 +81,13 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     def biopsy_diagnosis_label(self):
         return BIOPSY_DIAGNOSES.get(self.biopsy_diagnosis)
 
+    @property
+    def name(self):
+        if self.diagnosis:
+            return self.diagnosis.name
+        else:
+            return None
+
 
 Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
 
