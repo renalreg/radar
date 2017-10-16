@@ -133,7 +133,10 @@ class GroupDiagnosis(db.Model):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group = relationship(
+        'Group',
+        backref=backref('group_diagnoses')
+    )
 
     diagnosis_id = Column(Integer, ForeignKey('diagnoses.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     diagnosis = relationship(
