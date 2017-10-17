@@ -235,7 +235,7 @@ class Result(db.Model, MetaModelMixin):
     @property
     def value_label_or_value(self):
         """Return value label if it is available, else value."""
-        return self.value_label if self.value_label else self.value
+        return self.value_label if self.value_label else self.sent_value
 
 
 Index('results_patient_idx', Result.patient_id)
