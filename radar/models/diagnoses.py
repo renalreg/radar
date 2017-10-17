@@ -86,7 +86,7 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
         if self.diagnosis:
             return self.diagnosis.name
         else:
-            return None
+            return self.diagnosis_text
 
 
 Index('patient_diagnoses_patient_idx', PatientDiagnosis.patient_id)
