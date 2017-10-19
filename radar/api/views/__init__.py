@@ -1,5 +1,6 @@
 from radar.api.views import (
     alport,
+    consents,
     consultants,
     demographics,
     diagnoses,
@@ -56,6 +57,7 @@ from radar.api.views import users
 
 def setup(app):
     alport.register_views(app)
+    consents.register_views(app)
     consultants.register_views(app)
     demographics.register_views(app)
     diagnoses.register_views(app)

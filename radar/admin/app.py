@@ -4,6 +4,7 @@ from radar.admin.views import (
     AdminIndexView,
     CodeView,
     CohortView,
+    ConsentView,
     ConsultantView,
     CountryEthnicityView,
     CountryNationalityView,
@@ -31,6 +32,7 @@ from radar.app import Radar
 from radar.auth.sessions import current_user
 from radar.database import db
 from radar.models.codes import Code
+from radar.models.consents import Consent
 from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.countries import Country
 from radar.models.demographics import CountryEthnicity, CountryNationality, Ethnicity, Nationality
@@ -95,8 +97,10 @@ class RadarAdmin(Radar):
         admin.add_view(DrugView(Drug, db.session, 'Drugs', category='Drugs'))
         admin.add_view(DrugGroupView(DrugGroup, db.session, 'Groups', category='Drugs'))
 
-        admin.add_view(FormView(Form, db.session, 'Forms'))
+        admin.add_view(ConsentView(Consent, db.session, 'Consents', category='Other'))
 
-        admin.add_view(ObservationView(Observation, db.session, 'Observations'))
+        admin.add_view(FormView(Form, db.session, 'Forms', category='Other'))
 
-        admin.add_view(ExportView(name='Exports', endpoint='exports'))
+        admin.add_view(ObservationView(Observation, db.session, 'Observations', category='Other'))
+
+        admin.add_view(ExportView(name='Exports', endpoint='exports', category='Other'))

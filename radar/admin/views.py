@@ -336,3 +336,8 @@ class ExportView(BaseView):
         """Serve back requested file."""
         requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
         return send_file(requested_file, as_attachment=True, attachment_filename=param)
+
+
+class ConsentView(ModelView):
+    column_list = ['code', 'label', 'paediatric', 'from_date', 'retired']
+    form_columns = ['code', 'label', 'paediatric', 'from_date', 'link_url', 'retired']

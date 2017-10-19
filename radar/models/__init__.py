@@ -5,6 +5,7 @@ from radar.models.users import *
 from radar.models.alport import *
 from radar.models.codes import *
 from radar.models.common import *
+from radar.models.consents import Consent, PatientConsent
 from radar.models.consultants import *
 from radar.models.countries import Country
 from radar.models.diagnoses import *
