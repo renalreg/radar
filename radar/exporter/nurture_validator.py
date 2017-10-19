@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import datetime
 import itertools
 
@@ -17,6 +17,7 @@ from radar.models.groups import Group
 DATEFMT = '%d/%m/%Y'
 DATETIMEFMT = '%Y-%m-%d %H:%M:%S'
 BLOOD_PRESSURE_DELTA = 10
+DAYS_RESULTS_SHOULD_BE_WITHIN = 7
 
 
 def get_gender(gender_code):
@@ -44,6 +45,11 @@ def get_form_data(entry, bounds, fields):
     data.append(format_date(entry.modified_date, long=True))
     data.append(entry.modified_user.name)
     return data
+
+
+def in_date_range(visit_date, test_date):
+    margin = datetime.timedelta(days=DAYS_RESULTS_SHOULD_BE_WITHIN)
+    return test_date - margin <= visit_date <= test_date + margin
 
 
 class BaseSheet(object):
@@ -78,6 +84,7 @@ class Basic(BaseSheet):
         self.patient_number = patient.primary_patient_number.number
         self.ethnicity = patient.ethnicity.label if patient.ethnicity else None
         self.ukrdc = True if patient.ukrdc else False
+        self.control = True if patient.control else False
         self.gender = get_gender(patient.gender)
         self.date_of_birth = format_date(patient.date_of_birth)
         self.date_of_death = format_date(patient.date_of_death)
@@ -96,6 +103,7 @@ class Basic(BaseSheet):
             'gender',
             'ethnicity',
             'ukrdc',
+            'control',
             'recruited_date',
             'recruited_group',
             'recruited_user',
@@ -640,23 +648,34 @@ class Medications(BaseSheet):
 class Results(BaseSheet):
     __sheetname__ = 'results'
 
-    def __init__(self, results, observations):
+    def __init__(self, patient, results, observations):
+        self.patient = patient
         self.results = results
         self.observations = observations
         self.fields = ['patient_id', 'source_group', 'source_type', 'date']
         self.fields.extend(self.observations)
 
     def export(self, sheet, row=1, errorfmt=None, warningfmt=None):
-        from collections import OrderedDict
-
         data = OrderedDict()
+        visit_dates = [i.data.get('date') for i in self.patient.entries if i.form.slug == 'nurtureckd']
 
+        within_range = False
         for result in self.results:
             key = (result.patient_id, result.source_group.name, result.source_type, result.date)
             if key not in data:
                 data[key] = {}
 
             data[key][result.observation.name] = result.value_label_or_value
+
+            for visit in visit_dates:
+                visit_date = datetime.datetime.strptime(visit, '%Y-%m-%d')
+                if not within_range and in_date_range(visit_date, result.date.replace(tzinfo=None)):
+                    within_range = True
+
+        if not within_range:
+            sheet.write(row, 0, self.patient.id, errorfmt)
+            sheet.write(row, 1, 'NO RESULTS WITHIN {} DAYS OF VISIT'.format(DAYS_RESULTS_SHOULD_BE_WITHIN), errorfmt)
+            row = row + 1
 
         for key, results in data.items():
             data = list(key)
@@ -944,7 +963,7 @@ class Patient(object):
         entries = [entry for entry in self.original_patient.entries if entry.form.slug == 'anthropometrics']
         self.anthropometrics = Anthropometrics(entries)
         self.medications = Medications(self.original_patient.medications)
-        self.results = Results(self.original_patient.results, self.observations)
+        self.results = Results(self.original_patient, self.original_patient.results, self.observations)
         self.pathology = Pathology(self.original_patient.pathology)
         self.renal_progressions = RenalProgressions(self.original_patient.renal_progressions)
         self.dialysis = Dialysis(self.original_patient.dialysis)

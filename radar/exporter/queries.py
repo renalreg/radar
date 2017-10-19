@@ -16,6 +16,7 @@ from radar.models.ins import InsClinicalPicture, InsRelapse
 from radar.models.medications import Medication
 from radar.models.mpgn import MpgnClinicalPicture
 from radar.models.nephrectomies import Nephrectomy
+from radar.models.nurture_tubes import Samples
 from radar.models.pathology import Pathology
 from radar.models.patient_addresses import PatientAddress
 from radar.models.patient_aliases import PatientAlias
@@ -236,3 +237,4 @@ get_liver_diseases = patient_helper(LiverDiseases)
 get_liver_transplants = patient_helper(LiverTransplant)
 get_nephrectomies = patient_helper(Nephrectomy)
 get_nutrition = patient_helper(Nutrition)
+get_nurture_samples = patient_helper(Samples)

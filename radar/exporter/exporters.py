@@ -887,26 +887,25 @@ class SamplesExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'data.date'),
-            column('barcode', 'data.barcode'),
-            column('protocol', 'data.protocol'),
-            column('visit', 'data.visit'),
-            column('edta plasma A', 'data.edtaPlasmaA'),
-            column('edta plasma B', 'data.edtaPlasmaB'),
-            column('lihepPlasmaA', 'data.lihepPlasmaA'),
-            column('lihepPlasmaB', 'data.lihepPlasmaB'),
-            column('urineC', 'data.urineC'),
-            column('urineB', 'data.urineB'),
-            column('urineD', 'data.urineD'),
-            column('cfUrineB', 'data.cfUrineB'),
-            column('serumC', 'data.serumC'),
-            column('serumA', 'data.serumA'),
-            column('serumB', 'data.serumB'),
-            column('rna', 'data.rna'),
-            column('wholeBlood', 'data.wholeBlood'),
+            column('date', 'taken_on'),
+            column('barcode'),
+            column('epa'),
+            column('epb'),
+            column('lpa'),
+            column('lpb'),
+            column('uc'),
+            column('ub'),
+            column('ud'),
+            column('fub'),
+            column('sc'),
+            column('sa'),
+            column('sb'),
+            column('rna'),
+            column('wb'),
+            column('protocol_id'),
         ]
         self._columns.extend(get_meta_columns())
-        q = queries.get_form_data(self.config)
+        q = queries.get_nurture_samples(self.config)
         self._query = q
 
 
