@@ -853,27 +853,26 @@ class Transplants(BaseSheet):
 class Samples(BaseSheet):
     __sheetname__ = 'samples'
 
-    def __init__(self, samples):
-        self.entries = samples
+    def __init__(self, patient):
+        self.patient = patient
         self.fields = (
             'patient_id',
-            'date',
+            'taken_on',
             'barcode',
-            'protocol',
-            'visit',
-            'edta plasma A',
-            'edta plasma B',
-            'lihepPlasmaA',
-            'lihepPlasmaB',
-            'urineC',
-            'urineB',
-            'urineD',
-            'cfUrineB',
-            'serumC',
-            'serumA',
-            'serumB',
+            'protocol_id',
+            'epa',
+            'epb',
+            'lpa',
+            'lpb',
+            'uc',
+            'ub',
+            'ud',
+            'fub',
+            'sc',
+            'sa',
+            'sb',
             'rna',
-            'wholeBlood',
+            'wb',
             'created_date',
             'created_user',
             'modified_date',
@@ -881,15 +880,17 @@ class Samples(BaseSheet):
         )
 
     def export(self, sheet, row, errorfmt, warningfmt):
-        for entry in self.entries:
+        for entry in self.patient.nurture_samples:
+            data = [getattr(entry, field) for field in self.fields]
 
-            data = get_form_data(entry, slice(1, -4), self.fields)
+            data[1] = format_date(data[1])
+            data[3] = data[3].value
+            data[-4] = format_date(data[-4], long=True)
+            data[-3] = entry.created_user.name
+            data[-2] = format_date(data[-2], long=True)
+            data[-1] = entry.modified_user.name
+
             sheet.write_row(row, 0, data)
-
-            for i in range(1, 18):
-                if not data[i]:
-                    sheet.write(row, i, data[i], errorfmt)
-
             row = row + 1
         return row
 
@@ -968,7 +969,7 @@ class Patient(object):
         self.renal_progressions = RenalProgressions(self.original_patient.renal_progressions)
         self.dialysis = Dialysis(self.original_patient.dialysis)
         self.transplants = Transplants(self.original_patient.transplants)
-        self.samples = Samples([entry for entry in self.original_patient.entries if entry.form.slug == 'samples'])
+        self.samples = Samples(self.original_patient)
 
     def add_observations(self, observations):
         self.observations = observations
