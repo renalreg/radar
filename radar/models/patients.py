@@ -419,3 +419,7 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def ethnicity_label(self):
         return ETHNICITIES.get(self.ethnicity)
+
+    @property
+    def consented(self):
+        return bool(self.consents)
