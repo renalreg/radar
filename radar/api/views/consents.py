@@ -29,23 +29,33 @@ class PatientConsentListView(PatientObjectListView):
 
     def create(self):
         json = request.get_json()
-        print(json)
+
         if json is None:
             raise BadRequest()
-        # consents = [consent_id for consent_id, selected in json.get('consents', {}).items() if selected]
 
-        # json['consents'] = consents
-        serializer = self.get_serializer(data=json)
-        serializer.is_valid(raise_exception=True)
-        obj = serializer.save()
 
-        db.session.add(obj)
-        db.session.commit()
+        if 'consent' in json:
+            return super(PatientConsentListView, self).create()
 
-        data = serializer.data
-        data = camel_case_keys(data)
+        consents = []
 
-        return jsonify(data), 200
+        for consent_id, checked in json.pop('consents', {}).items():
+            if not checked:
+                continue
+
+            data = dict(json)
+            data['consent'] = consent_id
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            obj = serializer.save()
+            db.session.add(obj)
+            db.session.commit()
+
+            data = serializer.data
+            data = camel_case_keys(data)
+            consents.append(data)
+
+        return jsonify({'data': consents}), 200
 
 
 class PatientConsentDetailView(PatientObjectDetailView):

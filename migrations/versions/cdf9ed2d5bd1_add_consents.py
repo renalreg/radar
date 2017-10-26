@@ -33,6 +33,7 @@ def upgrade():
     sa.Column('consent_id', sa.Integer(), nullable=True),
     sa.Column('patient_id', sa.Integer(), nullable=False),
     sa.Column('signed_on_date', sa.Date(), nullable=False),
+    sa.Column('withdrawn_on_date', sa.Date(), nullable=True),
     sa.Column('created_user_id', sa.Integer(), nullable=False),
     sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text(u'now()'), nullable=False),
     sa.Column('modified_user_id', sa.Integer(), nullable=False),

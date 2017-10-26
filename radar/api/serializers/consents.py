@@ -28,6 +28,7 @@ class ConsentField(ReferenceField):
 class PatientConsentSerializer(PatientMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
     signed_on_date = fields.DateField()
+    withdrawn_on_date = fields.DateField(required=False)
 
     class Meta(object):
         model_class = PatientConsent

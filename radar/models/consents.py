@@ -32,3 +32,4 @@ class PatientConsent(db.Model, MetaModelMixin):
     patient = patient_relationship('consents')
 
     signed_on_date = Column(Date, nullable=False)
+    withdrawn_on_date = Column(Date, nullable=True)
