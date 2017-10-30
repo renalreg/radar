@@ -40,6 +40,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
     cohort_group = GroupField()
     hospital_group = GroupField()
+    consents = fields.Field()
     ethnicity = EthnicityField(required=False)
     nationality = NationalityField(required=False)
 

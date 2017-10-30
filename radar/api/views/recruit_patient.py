@@ -67,8 +67,9 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
             search_patient=search_patient,
             hospital_group=data['hospital_group'],
             cohort_group=data['cohort_group'],
+            consents=data['consents'],
             nationality=data['nationality'],
-            ethnicity=data['ethnicity']
+            ethnicity=data['ethnicity'],
         )
 
         try:

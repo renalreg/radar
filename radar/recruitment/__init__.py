@@ -10,6 +10,7 @@ import requests
 from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
+from radar.models.consents import PatientConsent
 from radar.models.groups import GroupPatient
 from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -190,10 +191,11 @@ class SearchPatient(object):
 
 
 class RecruitmentPatient(object):
-    def __init__(self, search_patient, cohort_group, hospital_group, ethnicity=None, nationality=None):
+    def __init__(self, search_patient, cohort_group, hospital_group, consents, ethnicity=None, nationality=None):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
+        self.consents = consents
         self.nationality = nationality
         self.ethnicity = ethnicity
 
@@ -231,11 +233,20 @@ class RecruitmentPatient(object):
         logger.info('Creating patient number={}'.format(self.number))
 
         system_group = self.cohort_group.parent_group
-
         patient = Patient()
         patient.created_user = current_user
         patient.modified_user = current_user
         db.session.add(patient)
+
+        checked_consents = [consent_id for consent_id, checked in self.consents.items() if checked]
+        for consent_id in checked_consents:
+            patient_consent = PatientConsent()
+            patient_consent.patient = patient
+            patient_consent.consent_id = consent_id
+            patient_consent.signed_on_date = datetime.now().date()
+            patient_consent.created_user = current_user
+            patient_consent.modified_user = current_user
+            db.session.add(patient_consent)
 
         patient_demographics = PatientDemographics()
         patient_demographics.patient = patient
