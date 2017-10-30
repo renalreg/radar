@@ -88,6 +88,7 @@ def test_recruit_patient(api, username, cohort_code, hospital_code, expected):
         'last_name': 'Wayne',
         'date_of_birth': '1990-01-01',
         'gender': 1,
+        'consents': {1: True},
         'cohort_group': cohort_group.id,
         'hospital_group': hospital_group.id,
         'number': '9434765919',

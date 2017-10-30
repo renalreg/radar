@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from radar.database import db
+from radar.models.consents import Consent
 from radar.models.demographics import Ethnicity, Nationality
 from radar.models.groups import (
     Group,
@@ -163,6 +164,12 @@ def create_patient_number(patient, number_group, number, **kwargs):
     return n
 
 
+def create_consent():
+    consent = Consent(id=1, code='v1', label='old', from_date=datetime.now().date())
+    db.session.add(consent)
+    return consent
+
+
 def create_group(type, code, **kwargs):
     kwargs.setdefault('name', 'Test')
     kwargs.setdefault('short_name', 'Test')
@@ -188,6 +195,7 @@ def create_hospital(code, **kwargs):
 def create_fixtures():
     create_user('admin', is_admin=True)
     create_user('null')
+    create_consent()
 
     radar_group = create_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, is_recruitment_number_group=True)
