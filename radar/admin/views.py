@@ -339,5 +339,5 @@ class ExportView(BaseView):
 
 
 class ConsentView(ModelView):
-    column_list = ['code', 'label', 'paediatric', 'from_date', 'retired']
-    form_columns = ['code', 'label', 'paediatric', 'from_date', 'link_url', 'retired']
+    column_list = ['code', 'label', 'paediatric', 'from_date', 'retired', 'consent_type', 'weight']
+    form_columns = ['code', 'label', 'paediatric', 'from_date', 'link_url', 'retired', 'consent_type', 'weight']

@@ -423,3 +423,8 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def consented(self):
         return bool(self.consents)
+
+    @property
+    def paediatric(self):
+        years_old = self.to_age(datetime.now().date()) // 12
+        return years_old < 16

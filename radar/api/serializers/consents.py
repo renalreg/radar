@@ -7,7 +7,7 @@ from radar.api.serializers.common import (
     PatientMixin,
 )
 
-from radar.models.consents import Consent, PatientConsent
+from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
 
 
 class ConsentSerializer(ModelSerializer):
@@ -15,6 +15,8 @@ class ConsentSerializer(ModelSerializer):
     label = fields.StringField()
     paediatric = fields.BooleanField(default=False)
     from_date = fields.DateField()
+    consent_type = fields.EnumField(CONSENT_TYPE)
+    weight = fields.IntegerField()
 
     class Meta(object):
         model_class = Consent
