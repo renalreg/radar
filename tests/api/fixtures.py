@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from radar.database import db
-from radar.models.consents import Consent
+from radar.models.consents import Consent, CONSENT_TYPE
 from radar.models.demographics import Ethnicity, Nationality
 from radar.models.groups import (
     Group,
@@ -165,7 +165,7 @@ def create_patient_number(patient, number_group, number, **kwargs):
 
 
 def create_consent():
-    consent = Consent(id=1, code='v1', label='old', from_date=datetime.now().date())
+    consent = Consent(id=1, code='v1', label='old', from_date=datetime.now().date(), consent_type=CONSENT_TYPE.FORM)
     db.session.add(consent)
     return consent
 

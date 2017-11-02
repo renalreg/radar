@@ -426,5 +426,8 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def paediatric(self):
-        years_old = self.to_age(datetime.now().date()) // 12
-        return years_old < 16
+        months = self.to_age(datetime.now().date())
+        if months:
+            years_old = months // 12
+            return years_old < 16
+        return None
