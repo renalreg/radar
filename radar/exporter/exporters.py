@@ -302,8 +302,11 @@ class PatientDiagnosisExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('system'),
-            column('code'),
+
+            column('era-edta prd'),  # 5
+            column('icd-10'),        # 6
+            column('snomed ct'),     # 7
+
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
             column('symptoms_date'),
@@ -334,8 +337,13 @@ class PatientDiagnosisExporter(Exporter):
 
             if result.diagnosis and result.diagnosis.codes:
                 for code in result.diagnosis.codes:
-                    values[5] = code.system
-                    values[6] = code.code
+                    if code.system == 'ERA-EDTA PRD':
+                        values[5] = code.code
+                    elif code.system == 'ICD-10':
+                        values[6] = code.code
+                    elif code.system == 'SNOMED CT':
+                        values[7] = code.code
+
                     data.append(values)
             else:
                 data.append(values)
