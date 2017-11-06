@@ -3,8 +3,9 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import true
 
 from radar.database import db
+from radar.models.codes import Code
 from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.diagnoses import PatientDiagnosis
+from radar.models.diagnoses import Diagnosis, DiagnosisCode, PatientDiagnosis
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
@@ -210,12 +211,20 @@ def get_consultants(config):
     return q
 
 
+def get_patient_diagnoses(config):
+    """Join to get EDTA and other system codes in a more efficient way."""
+    q = patient_helper(PatientDiagnosis)(config)
+    q = q.join(Diagnosis, PatientDiagnosis.diagnosis_id == Diagnosis.id, isouter=True)
+    q = q.join(DiagnosisCode, Diagnosis.id == DiagnosisCode.diagnosis_id, isouter=True)
+    q = q.join(Code, Code.id == DiagnosisCode.code_id, isouter=True)
+    return q
+
+
 get_patient_demographics = patient_helper(PatientDemographics)
 get_patient_aliases = patient_helper(PatientAlias)
 get_patient_addresses = patient_helper(PatientAddress)
 get_patient_numbers = patient_helper(PatientNumber)
 get_medications = patient_helper(Medication)
-get_patient_diagnoses = patient_helper(PatientDiagnosis)
 get_family_histories = patient_group_helper(FamilyHistory)
 get_genetics = patient_group_helper(Genetics)
 get_pathology = patient_helper(Pathology)

@@ -302,7 +302,8 @@ class PatientDiagnosisExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('diagnosis_id'),
+            column('system'),
+            column('code'),
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
             column('symptoms_date'),
@@ -321,11 +322,29 @@ class PatientDiagnosisExporter(Exporter):
             column('biopsy_diagnosis'),
             column('biopsy_diagnosis_label'),
             column('comments'),
+
         ]
         self._columns.extend(get_meta_columns())
-
         q = queries.get_patient_diagnoses(self.config)
-        self._query = q
+
+        data = tablib.Dataset(headers=[c[0] for c in self._columns])
+
+        for result in q:
+            values = [c[1](result) for c in self._columns]
+
+            if result.diagnosis and result.diagnosis.codes:
+                for code in result.diagnosis.codes:
+                    values[5] = code.system
+                    values[6] = code.code
+                    data.append(values)
+            else:
+                data.append(values)
+
+        self._query = data
+
+    @property
+    def dataset(self):
+        return self._query
 
 
 @register('genetics')
