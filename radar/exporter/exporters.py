@@ -344,9 +344,7 @@ class PatientDiagnosisExporter(Exporter):
                     elif code.system == 'SNOMED CT':
                         values[7] = code.code
 
-                    data.append(values)
-            else:
-                data.append(values)
+            data.append(values)
 
         self._query = data
 
