@@ -92,9 +92,15 @@ class Basic(BaseSheet):
         self.recruited_group = patient.recruited_group().code
         self.recruited_user = patient.recruited_user().name
 
+        groups = [group.code for group in patient.cohorts]
+        self.nurture_ins = 'NURTUREINS' in groups
+        self.nurture_ckd = 'NURTURECKD' in groups
+
         self.current_field = 0
         self.fields = (
             'patient_id',
+            'nurture_ins',
+            'nurture_ckd',
             'patient_number',
             'first_name',
             'last_name',
