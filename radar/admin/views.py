@@ -215,7 +215,7 @@ class HospitalView(ModelView):
         super(HospitalView, self).on_model_change(form, model, is_created)
 
     def get_query(self):
-        return super(ModelView, self).get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
+        return super(HospitalView, self).get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
 
     def get_count_query(self):
         query = self.session.query(func.count('*')).select_from(self.model)
