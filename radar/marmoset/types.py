@@ -4,6 +4,11 @@ import iso8601
 
 from radar.marmoset.utils import identity
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 def parse_int(value):
     if isinstance(value, int):

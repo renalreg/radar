@@ -233,7 +233,7 @@ def create_patients(n, data=True):
     create_results = create_results_f()
 
     for i in range(n):
-        print 'patient #%d' % (i + 1)
+        print('patient #%d' % (i + 1))
 
         patient = Patient()
         add(patient)

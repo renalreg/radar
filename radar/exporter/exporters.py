@@ -11,6 +11,10 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 exporter_map = {}
 

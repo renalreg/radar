@@ -18,6 +18,10 @@ from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +125,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
         if len(set(patient_ids)) > 1:
             string_ids = [str(pat_id) for pat_id in patient_ids]
-            logger.error('Multiple patient IDs returned - {}'.format('; '.join(string_ids)))
+            logger.error('Multiple patient IDs returned - %s', '; '.join(string_ids))
             return False
 
         patient_id = patient_ids[0]
@@ -130,7 +134,7 @@ def import_sda(data, sequence_number, patient_id=None):
         try:
             patient_id = parse_patient_id(patient_id)
         except ValueError:
-            logger.error('Patient ID is invalid id={id}'.format(id=patient_id))
+            logger.error('Patient ID is invalid id=%s', patient_id)
             return False
 
     # Get the patient by their ID
@@ -138,7 +142,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Patient not found (possibly the patient was deleted)
     if patient is None:
-        logger.error('Patient not found id={id}'.format(id=patient_id))
+        logger.error('Patient not found id=%s', patient_id)
         return False
 
     # Lock the patient while we import the data
@@ -147,7 +151,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Check we haven't already imported a newer sequence number
     if patient_lock.sequence_number is not None and sequence_number < patient_lock.sequence_number:
-        logger.info('Skipping old sequence number {0} < {1}'.format(sequence_number, patient_lock.sequence_number))
+        logger.info('Skipping old sequence number %s < %s', sequence_number, patient_lock.sequence_number)
         return False
 
     patient_lock.sequence_number = sequence_number

@@ -21,9 +21,9 @@ def get_url():
     """Get the current URL being served."""
 
     url = request.path
-
-    if request.query_string:
-        url = url + '?' + request.query_string
+    query_string = request.query_string.decode('utf-8')
+    if query_string:
+        url = url + '?' + query_string
 
     return url
 

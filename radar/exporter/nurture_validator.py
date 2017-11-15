@@ -14,6 +14,11 @@ from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group
 
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 DATEFMT = '%d/%m/%Y'
 DATETIMEFMT = '%Y-%m-%d %H:%M:%S'
 BLOOD_PRESSURE_DELTA = 10

@@ -3,6 +3,10 @@ from datetime import date, datetime
 from cornflake.exceptions import ValidationError
 import pytz
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 class Validator(object):
     def __init__(self, field, validator_data):

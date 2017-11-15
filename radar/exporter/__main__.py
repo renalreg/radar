@@ -90,7 +90,7 @@ def main():
 
         # Export data
         for name, exporter in exporters:
-            print 'Exporting {0}...'.format(name)
+            print('Exporting {0}...'.format(name))
             exporter.run()
             dataset = exporter.dataset
             dataset.title = name

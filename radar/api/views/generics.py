@@ -66,7 +66,7 @@ class ApiView(MethodView):
         except NotFound:
             abort(404)
         except ValidationError as e:
-            print e.errors
+            print(e.errors)
 
             # Convert the errors to camel-case
             errors = camel_case_keys(e.errors)
@@ -80,13 +80,13 @@ class PermissionViewMixin(object):
     def check_permissions(self):
         for permission in self.get_permissions():
             if not permission.has_permission(request, current_user):
-                print 'Denied by', permission
+                print('Denied by', permission)
                 raise PermissionDenied()
 
     def check_object_permissions(self, obj):
         for permission in self.get_permissions():
             if not permission.has_object_permission(request, current_user, obj):
-                print 'Denied by', permission
+                print('Denied by', permission)
                 raise PermissionDenied()
 
     def get_permission_classes(self):

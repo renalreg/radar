@@ -20,9 +20,9 @@ def validate_list(items, serializer, invalid_f=None):
     for i, item in enumerate(items):
         try:
             validated_data = serializer.run_validation(item)
-        except ValidationError as e:
+        except ValidationError as exc:
             if invalid_f is not None:
-                invalid_f(i, item, e)
+                invalid_f(i, item, exc)
         else:
             valid_items.append(validated_data)
 
@@ -33,7 +33,7 @@ def unique_list(items, key_f, duplicate_f):
     unique_items = list()
     seen = set()
 
-    for i, item in enumerate(items):
+    for item in items:
         if key_f is None:
             key = item
         else:

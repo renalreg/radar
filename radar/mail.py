@@ -66,7 +66,7 @@ def send_email(to_addresses, subject, message_plain, message_html=None, from_add
         s.sendmail(from_address, to_addresses, m.as_string())
         s.quit()
     else:
-        print m.as_string()
+        print(m.as_string())
 
 
 def send_email_from_template(to_addresses, subject, template_name, context, from_address=None):

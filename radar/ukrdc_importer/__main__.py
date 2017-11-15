@@ -14,7 +14,7 @@ from radar.ukrdc_importer.utils import utc
 
 
 def random_string(alphabet, n):
-    return ''.join(random.choice(alphabet) for _ in xrange(n))
+    return ''.join(random.choice(alphabet) for _ in range(n))
 
 
 def random_datetime():
@@ -54,7 +54,7 @@ def generate_patient_numbers(patient, n):
 def generate_aliases(n):
     aliases = []
 
-    for _ in xrange(n):
+    for _ in range(n):
         aliases.append({
             'given_name': random_string(string.ascii_letters, 10),
             'family_name': random_string(string.ascii_letters, 10)
@@ -66,12 +66,12 @@ def generate_aliases(n):
 def generate_addresses(n):
     addresses = []
 
-    for _ in xrange(n):
+    for _ in range(n):
         street = random_string(string.ascii_letters, 10)
         city = random_string(string.ascii_letters, 10)
         state = random_string(string.ascii_letters, 10)
         country = random_string(string.ascii_letters, 10)
-        zip = random_string(string.ascii_letters, 10)
+        post_code = random_string(string.ascii_letters, 10)
 
         addresses.append({
             'street': street,
@@ -88,8 +88,8 @@ def generate_addresses(n):
                 'description': country
             },
             'zip': {
-                'code': zip,
-                'description': zip
+                'code': post_code,
+                'description': post_code
             }
         })
 
@@ -100,7 +100,7 @@ def generate_medications(n):
     group = random.choice(Group.query.all())
     medications = []
 
-    for i in xrange(n):
+    for i in range(n):
         name = random_string(string.ascii_letters, 10)
         dose = random_string(string.ascii_letters, 10)
         from_time = random_datetime()
@@ -127,7 +127,7 @@ def generate_medications(n):
 
 
 def stress(n):
-    for _ in xrange(n):
+    for _ in range(n):
         _stress()
 
 

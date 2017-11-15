@@ -36,8 +36,8 @@ def pg_dump(args, dest):
 
     command += [pg.database]
 
-    print environment
-    print command
+    print(environment)
+    print(command)
 
     p = subprocess.Popen(command, env=environment, stdout=dest)
     return p.wait()
@@ -64,8 +64,8 @@ def pg_restore(args):
 
     command += args
 
-    print environment
-    print command
+    print(environment)
+    print(command)
 
     p = subprocess.Popen(command, env=environment)
     return p.wait()

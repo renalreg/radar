@@ -15,7 +15,7 @@ class Schema(object):
         try:
             jsonschema.validate(schema_data, registry.schema)
         except jsonschema.SchemaError as e:
-            print e
+            print(e)
             raise SchemaError()
 
         self.registry = registry

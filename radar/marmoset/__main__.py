@@ -17,4 +17,4 @@ if __name__ == '__main__':
     schema = Schema(registry, schema)
     data = schema.validate(raw_data)
 
-    print data
+    print(data)

@@ -19,6 +19,11 @@ from radar.models.groups import (
 from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 HUMAN_DATE_FORMAT = '%d/%m/%Y'
 
