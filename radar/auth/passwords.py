@@ -110,7 +110,7 @@ def password_to_nato_str(password):
 
 
 def password_score(password, user_inputs=None):
-    return zxcvbn.password_strength(password, user_inputs)['score']
+    return zxcvbn.zxcvbn(password, user_inputs)['score']
 
 
 def is_strong_password(password, user=None):
