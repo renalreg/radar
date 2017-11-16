@@ -51,6 +51,6 @@ setup(
         'termcolor',
         'uwsgi',
         'werkzeug',
-        'zxcvbn',
+        'zxcvbn-python',
     ],
 )

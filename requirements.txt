@@ -6,7 +6,7 @@ billiard==3.3.0.23
 bleach==1.4.3
 celery==3.1.23
 click==6.6
-cornflake==0.2.2
+cornflake==0.2.3
 enum34==1.1.6
 Flask==0.11.1
 flask-admin==1.4.2
@@ -31,7 +31,7 @@ termcolor==1.1.0
 uwsgi==2.0.15
 Werkzeug==0.11.11
 wtforms==2.1
-zxcvbn==1.0
+zxcvbn-python==4.4.18
 Js2Py==0.39
 tzlocal==1.2.2
 functools32==3.2.3-2

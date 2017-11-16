@@ -9,7 +9,7 @@ from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.patients import Patient
 
 
-def patients_by_recruitment_date(group):
+def patients_by_recruitment_date(group, interval='month'):
     """
     Calculate the number of patients recruited each month to the
     specified group.
@@ -280,7 +280,7 @@ def _get_groups(query):
     return db.session.query(distinct(query.c.group_id).label('group_id'))
 
 
-def _get_buckets(query):
+def _get_buckets(query, interval='month'):
     q1 = _get_groups(query).cte()
     q2 = _get_months(query).cte()
     q3 = db.session.query(q1.c.group_id, q2.c.date).cte()
