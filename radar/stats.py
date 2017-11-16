@@ -9,7 +9,7 @@ from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.patients import Patient
 
 
-def patients_by_recruitment_date(group, interval='month'):
+def patients_by_recruitment_date(group):
     """
     Calculate the number of patients recruited each month to the
     specified group.

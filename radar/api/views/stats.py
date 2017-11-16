@@ -51,7 +51,7 @@ class PatientsByRecruitmentDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByRecruitmentDateRequestSerializer)
 
-        points = patients_by_recruitment_date(args['group'], args['interval'])
+        points = patients_by_recruitment_date(args['group'])
 
         return {'points': points}
 
