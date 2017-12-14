@@ -19,7 +19,7 @@ Jinja2==2.8
 kombu==3.0.35
 librabbitmq==1.6.1
 MarkupSafe==0.23
-psycopg2==2.6.1
+psycopg2==2.7.3.2
 python-dateutil==2.5.3
 pytz==2016.6.1
 requests==2.10.0
