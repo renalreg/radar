@@ -1,5 +1,8 @@
 import argparse
-import ConfigParser
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
 import os
 
 from cornflake import fields, serializers
@@ -59,7 +62,7 @@ def main():
 
     app = Radar()
 
-    config_parser = ConfigParser.ConfigParser()
+    config_parser = ConfigParser()
     config_parser.readfp(open(args.config))
 
     with app.app_context():

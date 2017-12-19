@@ -1,5 +1,6 @@
 from __future__ import division
 
+import re
 from collections import OrderedDict
 
 import tablib
@@ -16,7 +17,21 @@ try:
 except NameError:
     basestring = str
 
+
+ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
+
 exporter_map = {}
+
+
+def none_to_empty(value):
+    return '' if value is None else value
+
+
+def make_dataset(columns):
+    data = tablib.Dataset(headers=[c[0] for c in columns])
+    for i in range(data.width):
+        data.add_formatter(i, none_to_empty)
+    return data
 
 
 def register(name):
@@ -30,7 +45,7 @@ def register(name):
 
 
 def query_to_dataset(query, columns):
-    data = tablib.Dataset(headers=[c[0] for c in columns])
+    data = make_dataset(columns)
 
     for row in query:
         data.append([c[1](row) for c in columns])
@@ -329,7 +344,7 @@ class PatientDiagnosisExporter(Exporter):
         self._columns.extend(get_meta_columns())
         q = queries.get_patient_diagnoses(self.config)
 
-        data = tablib.Dataset(headers=[c[0] for c in self._columns])
+        data = make_dataset(self._columns)
 
         for result in q:
             values = [c[1](result) for c in self._columns]
@@ -394,6 +409,16 @@ class PathologyExporter(Exporter):
 
         q = queries.get_pathology(self.config)
         self._query = q
+
+    @property
+    def dataset(self):
+        data = make_dataset(self._columns)
+        for row in self._query:
+            record = [c[1](row) for c in self._columns]
+            if record[10]:
+                record[10] = re.sub(ILLEGAL_CHARACTERS_RE, '', record[10])
+            data.append(record)
+        return data
 
 
 @register('family_histories')
@@ -662,7 +687,7 @@ class ResultExporter(Exporter):
 
             data[key][row.observation.name] = row.value_label_or_value
 
-        dataset = tablib.Dataset(headers=self._columns)
+        dataset = make_dataset(self._columns)
 
         for key, results in data.items():
             row = list(key)
