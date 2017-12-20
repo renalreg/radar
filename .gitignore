@@ -4,7 +4,7 @@
 build/
 coverage/
 dist/
-venv/
+venv*/
 .coverage
 *.egg-info
 *.pyc
