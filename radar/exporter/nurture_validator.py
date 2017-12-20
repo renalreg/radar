@@ -1,3 +1,7 @@
+"""
+Script to do simple validations on nurture export.
+"""
+
 from collections import defaultdict, OrderedDict
 import datetime
 import itertools
@@ -72,9 +76,11 @@ class BaseSheet(object):
         if self.current_field < len(self.fields):
             self.current_field += 1
             try:
-                return str(getattr(self, self.fields[self.current_field - 1]))
+                value = getattr(self, self.fields[self.current_field - 1])
             except AttributeError:
-                return getattr(self.original_obj, self.fields[self.current_field - 1])
+                value = getattr(self.original_obj, self.fields[self.current_field - 1])
+            return value if value is not None else ''
+
         raise StopIteration
 
     next = __next__
@@ -123,9 +129,9 @@ class Basic(BaseSheet):
     def export(self, sheet, row=1, errorfmt=None, warningfmt=None):
         sheet.write_row(row, 0, self)
         if not self.ethnicity:
-            sheet.write(row, 7, (self.ethnicity), errorfmt)
+            sheet.write(row, 9, '', errorfmt)
         if not self.ukrdc:
-            sheet.write(row, 8, str(self.ukrdc), errorfmt)
+            sheet.write(row, 10, '', errorfmt)
 
         return row + 1
 
@@ -170,10 +176,10 @@ class Demographics(BaseSheet):
             data[16] = demog.modified_user.name
             sheet.write_row(row, 0, data)
             if not data[8]:
-                sheet.write(row, 8, data[8], errorfmt)
+                sheet.write(row, 8, '', errorfmt)
 
             if not data[12]:
-                sheet.write(row, 12, data[12], errorfmt)
+                sheet.write(row, 12, '', errorfmt)
 
             row = row + 1
         return row
@@ -213,7 +219,7 @@ class Addresses(BaseSheet):
             data[13] = address.modified_user.name
             sheet.write_row(row, 0, data)
             if not data[9]:
-                sheet.write(row, 9, data[9], errorfmt)
+                sheet.write(row, 9, '', errorfmt)
             row = row + 1
 
         return row
@@ -360,8 +366,8 @@ class Diagnoses(BaseSheet):
             sheet.write_row(row, 0, data)
 
             if not data[3] and not data[4]:
-                sheet.write(row, 3, data[3], errorfmt)
-                sheet.write(row, 4, data[4], errorfmt)
+                sheet.write(row, 3, data[3] if data[3] is not None else '', errorfmt)
+                sheet.write(row, 4, data[4] if data[4] is not None else '', errorfmt)
 
             row = row + 1
 
@@ -415,18 +421,18 @@ class SocioEconomic(BaseSheet):
             sheet.write_row(row, 0, data)
             for col in (1, 2, 3, 4, 5, 6, 7, 9):
                 if data[col] is None:
-                    sheet.write(row, col, data[col], errorfmt)
+                    sheet.write(row, col, '', errorfmt)
             if data[7] and data[8] is None:
-                sheet.write(row, 8, data[8], warningfmt)
+                sheet.write(row, 8, '', warningfmt)
             if data[9] and data[10] is None:
-                sheet.write(row, 10, data[10], warningfmt)
+                sheet.write(row, 10, '', warningfmt)
 
             row = row + 1
         return row
 
 
 class NurtureCKD(BaseSheet):
-    __sheetname__ = 'nurtureckd'
+    __sheetname__ = 'visits'
 
     def __init__(self, entries):
         self.entries = entries
@@ -647,10 +653,10 @@ class Medications(BaseSheet):
 
             for i in (3, 5, 6, 8, 9, 12):
                 if not data[i]:
-                    sheet.write(row, i, data[i], errorfmt)
+                    sheet.write(row, i, '', errorfmt)
 
             if not data[6] and not data[7]:
-                sheet.write(row, 7, data[7], errorfmt)
+                sheet.write(row, 7, '', errorfmt)
 
             row = row + 1
         return row
@@ -777,11 +783,11 @@ class RenalProgressions(BaseSheet):
             sheet.write_row(row, 0, data)
 
             if not data[1]:
-                sheet.write(row, 1, data[1], errorfmt)
+                sheet.write(row, 1, '', errorfmt)
 
             if not any(data[2:6]):
                 for i in range(2, 6):
-                    sheet.write(row, i, data[i], errorfmt)
+                    sheet.write(row, i, '', errorfmt)
 
             row = row + 1
         return row
