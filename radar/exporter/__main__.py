@@ -79,10 +79,8 @@ def main():
 
             data = dict(config_parser.items(name))
             exporter_config = exporter_class.parse_config(data)
-            exporter_config = dict(
-                config.items() +
-                exporter_config.items()
-            )
+
+            exporter_config.update(config)
             exporter_config.update({'name': name})
 
             exporter = exporter_class(exporter_config)
@@ -96,6 +94,8 @@ def main():
             print('Exporting {0}...'.format(name))
             exporter.run()
             dataset = exporter.dataset
+            if name == 'nurtureckd':
+                name = 'visits'
             dataset.title = name
             datasets.append(dataset)
 
