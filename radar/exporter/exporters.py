@@ -192,6 +192,7 @@ class PatientNumberExporter(Exporter):
         d = demographics_column_factory(self.config)
 
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -212,6 +213,7 @@ class PatientAddressExporter(Exporter):
         d = demographics_column_factory(self.config)
 
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -236,6 +238,7 @@ class PatientAliasExporter(Exporter):
         d = demographics_column_factory(self.config)
 
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -255,6 +258,7 @@ class PatientDemographicsExporter(Exporter):
         d = demographics_column_factory(self.config)
 
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -285,6 +289,7 @@ class PatientDemographicsExporter(Exporter):
 class MedicationExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -312,6 +317,7 @@ class MedicationExporter(Exporter):
 class PatientDiagnosisExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -371,6 +377,7 @@ class PatientDiagnosisExporter(Exporter):
 class GeneticsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('group_id'),
             column('group', 'group.name'),
@@ -392,6 +399,7 @@ class GeneticsExporter(Exporter):
 class PathologyExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -425,6 +433,7 @@ class PathologyExporter(Exporter):
 class FamilyHistoryExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('group_id'),
             column('group', 'group.name'),
@@ -441,6 +450,7 @@ class FamilyHistoryExporter(Exporter):
 class FamilyHistoryRelativeExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('family_history_id'),
             column('relationship'),
             column('relationship_label'),
@@ -455,6 +465,7 @@ class FamilyHistoryRelativeExporter(Exporter):
 class InsClinicalPictureExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date_of_picture'),
             column('oedema'),
@@ -482,6 +493,7 @@ class InsClinicalPictureExporter(Exporter):
 class DialysisExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -501,6 +513,7 @@ class DialysisExporter(Exporter):
 class PlasmapheresisExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -522,6 +535,7 @@ class PlasmapheresisExporter(Exporter):
 class TransplantExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -544,6 +558,7 @@ class TransplantExporter(Exporter):
 class TransplantBiopsyExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('transplant_id'),
             column('date_of_biopsy'),
             column('recurrence'),
@@ -557,6 +572,7 @@ class TransplantBiopsyExporter(Exporter):
 class TransplantRejectionExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('transplant_id'),
             column('date_of_rejection'),
         ]
@@ -569,6 +585,7 @@ class TransplantRejectionExporter(Exporter):
 class HospitalisationExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -588,6 +605,7 @@ class HospitalisationExporter(Exporter):
 class InsRelapseExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date_of_relapse'),
             column('kidney_type'),
@@ -611,6 +629,7 @@ class InsRelapseExporter(Exporter):
 class MpgnClinicalPicturesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date_of_picture'),
             column('oedema'),
@@ -633,6 +652,7 @@ class MpgnClinicalPicturesExporter(Exporter):
 class GroupPatientExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('group_id'),
             column('group', 'group.name'),
@@ -651,6 +671,7 @@ class GroupPatientExporter(Exporter):
 class RenalProgressionExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('onset_date'),
             column('ckd3a_date'),
@@ -705,6 +726,7 @@ class ResultExporter(Exporter):
 class ObservationExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('name'),
             column('short_name'),
             column('value_type'),
@@ -725,6 +747,7 @@ class ObservationExporter(Exporter):
 class Cit6Exporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('q1', 'data.q1'),
@@ -744,6 +767,7 @@ class Cit6Exporter(Exporter):
 class CHU9DExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('worried', 'data.worried'),
@@ -766,6 +790,7 @@ class CHU9DExporter(Exporter):
 class DiabeticComplicationExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('laser', 'data.laser'),
             column('foot ulcers', 'data.footUlcers'),
@@ -781,6 +806,7 @@ class DiabeticComplicationExporter(Exporter):
 class Eq5d5lExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('age', 'data.age'),
@@ -801,6 +827,7 @@ class Eq5d5lExporter(Exporter):
 class Eq5dyExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('age', 'data.age'),
@@ -821,6 +848,7 @@ class Eq5dyExporter(Exporter):
 class HadsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('a1', 'data.a1'),
@@ -849,6 +877,7 @@ class HadsExporter(Exporter):
 class FamilyDiseasesHistoryExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('chd', 'data.chd'),
             column('eskd', 'data.eskd'),
@@ -872,6 +901,7 @@ class FamilyDiseasesHistoryExporter(Exporter):
 class IposExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('score1', 'data.score1'),
@@ -910,6 +940,7 @@ class IposExporter(Exporter):
 class SamplesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'taken_on'),
             column('barcode'),
@@ -937,6 +968,7 @@ class SamplesExporter(Exporter):
 class AnthropometricsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('height', 'data.height'),
@@ -966,6 +998,7 @@ class AnthropometricsExporter(Exporter):
 class SocioEconomicExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('maritalStatus', 'data.maritalStatus'),
             column('education', 'data.education'),
@@ -989,6 +1022,7 @@ class SocioEconomicExporter(Exporter):
 class NurtureCKDExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('date', 'data.date'),
             column('visit', 'data.visit'),
@@ -1020,6 +1054,7 @@ class NurtureCKDExporter(Exporter):
 class RenalImagingExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -1058,6 +1093,7 @@ class RenalImagingExporter(Exporter):
 class ConsultantsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('first_name'),
             column('last_name'),
             column('email'),
@@ -1073,6 +1109,7 @@ class ConsultantsExporter(Exporter):
 class PregnanciesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('pregnancy_number'),
             column('date_of_lmp'),
@@ -1098,6 +1135,7 @@ class PregnanciesExporter(Exporter):
 class FetalUltrasoundsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
@@ -1122,6 +1160,7 @@ class FetalUltrasoundsExporter(Exporter):
 class ClinicalFeaturesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('normal_pregnancy'),
             column('abnormal_pregnancy_text'),
@@ -1148,6 +1187,7 @@ class ClinicalFeaturesExporter(Exporter):
 class LiverImagingExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
@@ -1168,6 +1208,7 @@ class LiverImagingExporter(Exporter):
 class LiverDiseasesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('portal_hypertension'),
             column('portal_hypertension_date'),
@@ -1200,6 +1241,7 @@ class LiverDiseasesExporter(Exporter):
 class LiverTransplantsExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
@@ -1220,6 +1262,7 @@ class LiverTransplantsExporter(Exporter):
 class NephrectomiesExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
@@ -1236,6 +1279,7 @@ class NephrectomiesExporter(Exporter):
 class NutritionExporter(Exporter):
     def run(self):
         self._columns = [
+            column('id'),
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
