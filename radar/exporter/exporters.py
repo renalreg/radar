@@ -1,7 +1,7 @@
 from __future__ import division
 
-import re
 from collections import OrderedDict
+import re
 
 import tablib
 
@@ -423,8 +423,8 @@ class PathologyExporter(Exporter):
         data = make_dataset(self._columns)
         for row in self._query:
             record = [c[1](row) for c in self._columns]
-            if record[10]:
-                record[10] = re.sub(ILLEGAL_CHARACTERS_RE, '', record[10])
+            if record[11]:
+                record[11] = re.sub(ILLEGAL_CHARACTERS_RE, '', record[11])
             data.append(record)
         return data
 
