@@ -112,6 +112,8 @@ class Group(db.Model):
     def __unicode__(self):
         return self.name
 
+    __str__ = __unicode__
+
 
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)
 

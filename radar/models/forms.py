@@ -18,6 +18,8 @@ class Form(db.Model):
     def __unicode__(self):
         return self.name
 
+    __str__ = __unicode__
+
 
 @log_changes
 class Entry(db.Model, MetaModelMixin):
