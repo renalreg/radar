@@ -17,8 +17,8 @@ def create_plasmapheresis_f():
             if random.random() > 0.5:
                 plasmapheresis.to_date = random_date(plasmapheresis.from_date, date.today())
 
-            plasmapheresis.no_of_exchanges = random.choice(PLASMAPHERESIS_NO_OF_EXCHANGES.keys())
-            plasmapheresis.response = random.choice(PLASMAPHERESIS_RESPONSES.keys())
+            plasmapheresis.no_of_exchanges = random.choice(list(PLASMAPHERESIS_NO_OF_EXCHANGES.keys()))
+            plasmapheresis.response = random.choice(list(PLASMAPHERESIS_RESPONSES.keys()))
 
             add(plasmapheresis)
 

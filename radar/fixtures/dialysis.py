@@ -17,7 +17,7 @@ def create_dialysis_f():
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())
 
-            dialysis.modality = random.choice(DIALYSIS_MODALITIES.keys())
+            dialysis.modality = random.choice(list(DIALYSIS_MODALITIES.keys()))
 
             add(dialysis)
 
