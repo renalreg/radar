@@ -154,162 +154,6 @@ class Basic(BaseSheet):
             sheet.write(10, '', errorfmt)
 
 
-class Demographics(BaseSheet):
-    __sheetname__ = 'demographics'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'first_name',
-            'last_name',
-            'date_of_birth',
-            'date_of_death',
-            'gender',
-            'ethnicity',
-            'home_number',
-            'work_number',
-            'mobile_number',
-            'email_address',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        demographics = self.patient.patient_demographics
-        if demographics:
-            for demog in demographics:
-                data = [getattr(demog, field) for field in self.fields]
-                data[1] = demog.source_group.code
-                data[5] = format_date(data[5])
-                data[6] = format_date(data[6])
-                data[7] = get_gender(demog.gender)
-                data[8] = demog.ethnicity.label if demog.ethnicity else None
-                data[13] = format_date(data[13], long=True)
-                data[14] = demog.created_user.name
-                data[15] = format_date(data[15], long=True)
-                data[16] = demog.modified_user.name
-                sheet.write_row(data)
-                if not data[8]:
-                    sheet.write(8, '', errorfmt)
-
-                if not data[12]:
-                    sheet.write(12, '', errorfmt)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
-class Addresses(BaseSheet):
-    __sheetname__ = 'addresses'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'from_date',
-            'to_date',
-            'address1',
-            'address2',
-            'address3',
-            'address4',
-            'postcode',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        addresses = self.patient.patient_addresses
-        if addresses:
-            for address in addresses:
-                data = [getattr(address, field) for field in self.fields]
-                data[1] = address.source_group.code
-                data[3] = format_date(data[3])
-                data[4] = format_date(data[4])
-                data[10] = format_date(data[10], long=True)
-                data[11] = address.created_user.name
-                data[12] = format_date(data[12], long=True)
-                data[13] = address.modified_user.name
-                sheet.write_row(data)
-                if not data[9]:
-                    sheet.write(9, '', errorfmt)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
-class Aliases(BaseSheet):
-    __sheetname__ = 'aliases'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'first_name',
-            'last_name',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        aliases = self.patient.patient_aliases
-        if aliases:
-            for alias in aliases:
-                data = [getattr(alias, field) for field in self.fields]
-                data[1] = alias.source_group.code
-                data[5] = format_date(data[5], long=True)
-                data[6] = alias.created_user.name
-                data[7] = format_date(data[7], long=True)
-                data[8] = alias.modified_user.name
-                sheet.write_row(data)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
-class Numbers(BaseSheet):
-    __sheetname__ = 'numbers'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'number_group',
-            'number',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        numbers = self.patient.patient_numbers
-        if numbers:
-            for number in numbers:
-                data = [getattr(number, field) for field in self.fields]
-                data[1] = number.source_group.code
-                data[3] = number.number_group.code
-                data[5] = format_date(data[5], long=True)
-                data[6] = number.created_user.name
-                data[7] = format_date(data[7], long=True)
-                data[8] = number.modified_user.name
-
-                sheet.write_row(data)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
 class Diagnoses(BaseSheet):
     __sheetname__ = 'diagnoses'
 
@@ -694,7 +538,8 @@ class Results(BaseSheet):
 
         within_range = False
         for result in self.results:
-            key = (result.patient_id, result.source_group.name, result.source_type, result.date)
+            datestr = result.date.strftime(DATEFMT)
+            key = (result.patient_id, result.source_group.name, result.source_type, datestr)
             if key not in data:
                 data[key] = {}
 
@@ -808,82 +653,6 @@ class RenalProgressions(BaseSheet):
             sheet.write_row([self.patient.id], errorfmt)
 
 
-class Dialysis(BaseSheet):
-    __sheetname__ = 'dialysis'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'from_date',
-            'to_date',
-            'modality',
-            'modality_label',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        dialyses = self.patient.dialysis
-        if dialyses:
-            for instance in dialyses:
-                data = [getattr(instance, field) for field in self.fields]
-                data[1] = instance.source_group.code
-                data[3] = format_date(data[3])
-                data[4] = format_date(data[4])
-                data[-4] = format_date(data[-4], long=True)
-                data[-3] = instance.created_user.name
-                data[-2] = format_date(data[-2], long=True)
-                data[-1] = instance.modified_user.name
-
-                sheet.write_row(data)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
-class Transplants(BaseSheet):
-    __sheetname__ = 'transplants'
-
-    def __init__(self, patient):
-        self.patient = patient
-        self.fields = (
-            'patient_id',
-            'source_group',
-            'source_type',
-            'transplant_group',
-            'date',
-            'modality',
-            'modality_label',
-            'date_of_recurrence',
-            'date_of_failure',
-            'created_date',
-            'created_user',
-            'modified_date',
-            'modified_user',
-        )
-
-    def export(self, sheet, errorfmt=None, warningfmt=None):
-        transplants = self.patient.transplants
-        if transplants:
-            for instance in transplants:
-                data = [getattr(instance, field) for field in self.fields]
-                data[1] = instance.source_group.code
-                data[3] = instance.source_group.code
-                data[4] = format_date(data[4])
-                data[-4] = format_date(data[-4], long=True)
-                data[-3] = instance.created_user.name
-                data[-2] = format_date(data[-2], long=True)
-                data[-1] = instance.modified_user.name
-
-                sheet.write_row(data)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
-
-
 class Samples(BaseSheet):
     __sheetname__ = 'samples'
 
@@ -920,10 +689,6 @@ class Samples(BaseSheet):
 class Patient(object):
     __sheets__ = (
         'basic',
-        'demographics',
-        'addresses',
-        'aliases',
-        'numbers',
         'diagnoses',
         'socioeconomic',
         'nurtureckd',
@@ -934,8 +699,6 @@ class Patient(object):
         'results',
         'pathology',
         'renal_progressions',
-        'dialysis',
-        'transplants',
         'samples',
     )
 
@@ -945,10 +708,6 @@ class Patient(object):
         self.original_patient = patient
         self.patient_id = patient.id
         self.basic = None
-        self.demographics = None
-        self.addresses = None
-        self.aliases = None
-        self.numbers = None
         self.diagnoses = None
         self.socioeconomic = None
         self.nurtureckd = None
@@ -959,16 +718,10 @@ class Patient(object):
         self.results = None
         self.pathology = None
         self.renal_progressions = None
-        self.dialysis = None
-        self.transplants = None
         self.samples = None
 
     def run(self):
         self.basic = Basic(self.original_patient)
-        self.demographics = Demographics(self.original_patient)
-        self.addresses = Addresses(self.original_patient)
-        self.aliases = Aliases(self.original_patient)
-        self.numbers = Numbers(self.original_patient)
         self.diagnoses = Diagnoses(
             self.original_patient,
             self.original_patient.patient_diagnoses,
@@ -985,8 +738,6 @@ class Patient(object):
         self.results = Results(self.original_patient, self.original_patient.results, self.observations)
         self.pathology = Pathology(self.original_patient)
         self.renal_progressions = RenalProgressions(self.original_patient)
-        self.dialysis = Dialysis(self.original_patient)
-        self.transplants = Transplants(self.original_patient)
         self.samples = Samples(self.original_patient)
 
     def add_observations(self, observations):
@@ -1023,7 +774,7 @@ class PatientList(object):
             print('No patients found in {}'.format(self.hospital_code))
             return
 
-        workbook = xlsxwriter.Workbook('{}_export.xlsx'.format(self.hospital_code), {'remove_timezone': True})
+        workbook = xlsxwriter.Workbook('{}_export.xlsx'.format(self.hospital.name), {'remove_timezone': True})
         errorfmt = workbook.add_format({'bg_color': 'red'})
         warningfmt = workbook.add_format({'bg_color': 'orange'})
 
@@ -1105,7 +856,7 @@ def export_validate():
 
         patient_list = PatientList(hospital, nurtureins_primary_diagnoses, nurtureckd_primary_diagnoses)
         for p in hospital.patients:
-            if (p.in_group(nurtureckd) or p.in_group(nurtureins)) and not p.test:
+            if (p.in_group(nurtureckd) or p.in_group(nurtureins)) and not p.test and not p.control:
                 patient_list.append(p)
         patient_list.export()
 
