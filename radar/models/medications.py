@@ -94,3 +94,5 @@ class DrugGroup(db.Model):
 
     def __unicode__(self):
         return self.name
+
+    __str__ = __unicode__

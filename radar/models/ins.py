@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Boolean, Column, Date, Index, String
+from sqlalchemy import Boolean, Column, Date, Float, Index, String
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
@@ -62,10 +62,14 @@ class InsRelapse(db.Model, MetaModelMixin):
     viral_trigger = Column(String)
     immunisation_trigger = Column(String)
     other_trigger = Column(String)
+    peak_pcr = Column(Float)
+    peak_acr = Column(Float)
     high_dose_oral_prednisolone = Column(Boolean)
     iv_methyl_prednisolone = Column(Boolean)
     date_of_remission = Column(Date)
     remission_type = Column(String)
+    remission_pcr = Column(Float)
+    remission_acr = Column(Float)
 
     @property
     def kidney_type_label(self):

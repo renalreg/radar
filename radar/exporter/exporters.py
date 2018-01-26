@@ -691,13 +691,18 @@ class ResultExporter(Exporter):
     def run(self):
         q = queries.get_results(self.config)
 
-        self._columns = ['patient_id', 'source_group', 'source_type', 'date']
+        self._columns = [
+            column('patient_id'),
+            column('source_group'),
+            column('source_type'),
+            column('date'),
+        ]
         self._query = q
 
     @property
     def dataset(self):
         extra = sorted({row.observation.name for row in self._query}, key=lambda val: val.lower())
-        self._columns.extend(extra)
+        self._columns.extend(column(name) for name in extra)
 
         data = OrderedDict()
 

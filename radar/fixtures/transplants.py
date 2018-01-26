@@ -16,7 +16,7 @@ def create_transplants_f():
             transplant.source_group = source_group
             transplant.source_type = source_type
             transplant.date = random_date(patient.earliest_date_of_birth, date.today())
-            transplant.modality = random.choice(TRANSPLANT_MODALITIES.keys())
+            transplant.modality = random.choice(list(TRANSPLANT_MODALITIES.keys()))
             transplant.transplant_group = random.choice(hospitals)
 
             if random.random() > 0.75:

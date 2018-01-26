@@ -20,9 +20,9 @@ def create_medications_f():
 
             medication.drug_text = random.choice(MEDICATION_NAMES)
             medication.dose_quantity = random.randint(1, 10)
-            medication.dose_unit = random.choice(MEDICATION_DOSE_UNITS.keys())
+            medication.dose_unit = random.choice(list(MEDICATION_DOSE_UNITS.keys()))
             medication.frequency = 'Daily'
-            medication.route = random.choice(MEDICATION_ROUTES.keys())
+            medication.route = random.choice(list(MEDICATION_ROUTES.keys()))
 
             add(medication)
 

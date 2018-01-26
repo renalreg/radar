@@ -111,6 +111,8 @@ class Diagnosis(db.Model):
     def __unicode__(self):
         return self.name
 
+    __str__ = __unicode__
+
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
     PRIMARY = 'PRIMARY'
@@ -150,6 +152,8 @@ class GroupDiagnosis(db.Model):
     def __unicode__(self):
         return u"{} - {}".format(unicode(self.group), unicode(self.weight))
 
+    __str__ = __unicode__
+
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
 Index('group_diagnoses_diagnosis_idx', GroupDiagnosis.diagnosis_id)
@@ -172,6 +176,8 @@ class DiagnosisCode(db.Model):
 
     def __unicode__(self):
         return unicode(self.code)
+
+    __str__ = __unicode__
 
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)

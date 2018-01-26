@@ -26,6 +26,8 @@ class Consultant(db.Model):
     def __unicode__(self):
         return u'{0} {1}'.format(self.first_name, self.last_name)
 
+    __str__ = __unicode__
+
 
 @log_changes
 class GroupConsultant(db.Model):
@@ -62,3 +64,5 @@ class Specialty(db.Model):
 
     def __unicode__(self):
         return self.name
+
+    __str__ = __unicode__

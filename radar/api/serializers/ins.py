@@ -60,10 +60,14 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
         validators=[none_if_blank(), optional(), max_length(10000)]
     )
     other_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    peak_pcr = fields.FloatField(required=False)
+    peak_acr = fields.FloatField(required=False)
     high_dose_oral_prednisolone = fields.BooleanField(required=False)
     iv_methyl_prednisolone = fields.BooleanField(required=False)
     date_of_remission = fields.DateField(required=False)
     remission_type = StringLookupField(REMISSION_TYPES, required=False)
+    remission_pcr = fields.FloatField(required=False)
+    remission_acr = fields.FloatField(required=False)
 
     class Meta(object):
         model_class = InsRelapse
