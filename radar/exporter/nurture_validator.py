@@ -116,7 +116,7 @@ class Basic(BaseSheet):
     def __init__(self, patient):
         self.original_obj = patient
         self.patient_id = patient.id
-        self.patient_number = patient.primary_patient_number.number
+        self.patient_number = patient.primary_patient_number_number
         self.ethnicity = patient.ethnicity.label if patient.ethnicity else None
         self.ukrdc = True if patient.ukrdc else False
         self.control = True if patient.control else False
