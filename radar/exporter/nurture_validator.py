@@ -165,9 +165,6 @@ class Diagnoses(BaseSheet):
         self.patient = patient
         self.diagnoses = diagnoses
         self.primary_diagnoses = primary_diagnoses
-        # self.ins_primary_diagnoses = ins_primary_diagnoses
-        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
-        # self.primary_diagnoses = ins_primary_diagnoses + ckd_primary_diagnoses
         self.fields = (
             'patient_id',
             'source_group',
@@ -706,8 +703,6 @@ class Patient(object):
     )
 
     def __init__(self, patient, primary_diagnoses):
-        # self.ins_primary_diagnoses = ins_primary_diagnoses
-        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
         self.primary_diagnoses = primary_diagnoses
         self.original_patient = patient
         self.patient_id = patient.id
@@ -730,8 +725,6 @@ class Patient(object):
             self.original_patient,
             self.original_patient.patient_diagnoses,
             self.primary_diagnoses,
-            # self.ins_primary_diagnoses,
-            # self.ckd_primary_diagnoses
         )
 
         self.socioeconomic = SocioEconomic(self.original_patient)
@@ -755,8 +748,6 @@ class PatientList(object):
         self.hospital = hospital
         self.observations = set()
         self.stats = defaultdict(int)
-        # self.ins_primary_diagnoses = ins_primary_diagnoses
-        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
         self.primary_diagnoses = primary_diagnoses
         self.kind = kind
 
@@ -805,10 +796,10 @@ class PatientList(object):
                 patient.observations = sorted(self.observations)
                 getattr(patient, attr).export(sheet, errorfmt, warningfmt)
 
-        summary_sheet.write('A5', 'NURTuRE INS')
-        summary_sheet.write('B5', self.stats.get('NURTUREINS', 0))
-        summary_sheet.write('A6', 'NURTuRE CKD')
-        summary_sheet.write('B6', self.stats.get('NURTURECKD', 0))
+        # summary_sheet.write('A5', 'NURTuRE INS')
+        # summary_sheet.write('B5', self.stats.get('NURTUREINS', 0))
+        # summary_sheet.write('A6', 'NURTuRE CKD')
+        # summary_sheet.write('B6', self.stats.get('NURTURECKD', 0))
         summary_sheet.write('A7', 'Total')
         summary_sheet.write('B7', self.stats.get('TOTAL', 0))
 
