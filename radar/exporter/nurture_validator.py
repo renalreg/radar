@@ -63,7 +63,7 @@ def format_date(date, long=False):
         elif date:
             return date.strftime(DATEFMT)
     except ValueError:
-        datestr = date.isoformat(" ").split(" ")[0].split('-')
+        datestr = date.isoformat().split("T")[0].split('-')
         return '/'.join(datestr[::-1])
     return None
 
