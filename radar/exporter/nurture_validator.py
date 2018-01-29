@@ -157,12 +157,13 @@ class Basic(BaseSheet):
 class Diagnoses(BaseSheet):
     __sheetname__ = 'diagnoses'
 
-    def __init__(self, patient, diagnoses, ins_primary_diagnoses, ckd_primary_diagnoses):
+    def __init__(self, patient, diagnoses, primary_diagnoses):
         self.patient = patient
         self.diagnoses = diagnoses
-        self.ins_primary_diagnoses = ins_primary_diagnoses
-        self.ckd_primary_diagnoses = ckd_primary_diagnoses
-        self.primary_diagnoses = ins_primary_diagnoses + ckd_primary_diagnoses
+        self.primary_diagnoses = primary_diagnoses
+        # self.ins_primary_diagnoses = ins_primary_diagnoses
+        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
+        # self.primary_diagnoses = ins_primary_diagnoses + ckd_primary_diagnoses
         self.fields = (
             'patient_id',
             'source_group',
@@ -387,18 +388,16 @@ class DiabeticComplications(BaseSheet):
 
     def export(self, sheet, errorfmt, warningfmt):
         entries = [entry for entry in self.patient.entries if entry.form.slug == 'diabetic-complications']
-        # diagnoses = [diagnosis for diagnosis in self.patient.patient_diagnoses if diagnosis.status]
-        # interested = set(('Diabetes - Type I', 'Diabetes - Type II', 'Diabetes'))
-        # diabetes = [diagnosis for diagnosis in diagnoses if diagnosis.name in interested]
-        # if diabetes and not entries:
-        #     sheet.write(0, self.patient.id, errorfmt)
+        diagnoses = [diagnosis for diagnosis in self.patient.patient_diagnoses if diagnosis.status]
+        interested = set(('Diabetes - Type I', 'Diabetes - Type II', 'Diabetes'))
+        diabetes = [diagnosis for diagnosis in diagnoses if diagnosis.name in interested]
+        if diabetes and not entries:
+            sheet.write_row([self.patient.id], errorfmt)
 
         if entries:
             for entry in entries:
                 data = get_form_data(entry, slice(1, -4), self.fields)
                 sheet.write_row(data)
-        else:
-            sheet.write_row([self.patient.id], errorfmt)
 
 
 def in_range(values):
@@ -702,9 +701,10 @@ class Patient(object):
         'samples',
     )
 
-    def __init__(self, patient, ins_primary_diagnoses, ckd_primary_diagnoses):
-        self.ins_primary_diagnoses = ins_primary_diagnoses
-        self.ckd_primary_diagnoses = ckd_primary_diagnoses
+    def __init__(self, patient, primary_diagnoses):
+        # self.ins_primary_diagnoses = ins_primary_diagnoses
+        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
+        self.primary_diagnoses = primary_diagnoses
         self.original_patient = patient
         self.patient_id = patient.id
         self.basic = None
@@ -725,8 +725,9 @@ class Patient(object):
         self.diagnoses = Diagnoses(
             self.original_patient,
             self.original_patient.patient_diagnoses,
-            self.ins_primary_diagnoses,
-            self.ckd_primary_diagnoses
+            self.primary_diagnoses,
+            # self.ins_primary_diagnoses,
+            # self.ckd_primary_diagnoses
         )
 
         self.socioeconomic = SocioEconomic(self.original_patient)
@@ -745,14 +746,15 @@ class Patient(object):
 
 
 class PatientList(object):
-    def __init__(self, hospital, ins_primary_diagnoses, ckd_primary_diagnoses):
+    def __init__(self, hospital, primary_diagnoses, kind):
         self.data = []
         self.hospital = hospital
-        self.hospital_code = hospital.code
         self.observations = set()
         self.stats = defaultdict(int)
-        self.ins_primary_diagnoses = ins_primary_diagnoses
-        self.ckd_primary_diagnoses = ckd_primary_diagnoses
+        # self.ins_primary_diagnoses = ins_primary_diagnoses
+        # self.ckd_primary_diagnoses = ckd_primary_diagnoses
+        self.primary_diagnoses = primary_diagnoses
+        self.kind = kind
 
     def append(self, patient):
         self.observations |= set([result.observation.name for result in patient.results])
@@ -765,16 +767,17 @@ class PatientList(object):
         self.stats['TOTAL'] += 1
 
         self.stats['UKRDC'] += patient.ukrdc
-        self.data.append(Patient(patient, self.ins_primary_diagnoses, self.ckd_primary_diagnoses))
+        self.data.append(Patient(patient, self.primary_diagnoses))
 
     def export(self):
         try:
             patient = self.data[0]
         except IndexError:
-            print('No patients found in {}'.format(self.hospital_code))
+            print('No patients found in {}'.format(self.hospital.name))
             return
 
-        workbook = xlsxwriter.Workbook('{}_export.xlsx'.format(self.hospital.name), {'remove_timezone': True})
+        workbook = xlsxwriter.Workbook(
+            '{}_{}export.xlsx'.format(self.hospital.name, self.kind), {'remove_timezone': True})
         errorfmt = workbook.add_format({'bg_color': 'red'})
         warningfmt = workbook.add_format({'bg_color': 'orange'})
 
@@ -854,11 +857,17 @@ def export_validate():
 
         print(hospital_id)
 
-        patient_list = PatientList(hospital, nurtureins_primary_diagnoses, nurtureckd_primary_diagnoses)
+        ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins')
+        ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd')
         for p in hospital.patients:
-            if (p.in_group(nurtureckd) or p.in_group(nurtureins)) and not p.test and not p.control:
-                patient_list.append(p)
-        patient_list.export()
+            if p.test or p.control:
+                continue
+            if p.in_group(nurtureckd):
+                ckd_list.append(p)
+            elif p.in_group(nurtureins):
+                ins_list.append(p)
+        ckd_list.export()
+        ins_list.export()
 
 
 def main():
