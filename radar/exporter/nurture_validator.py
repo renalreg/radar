@@ -57,10 +57,14 @@ def get_gender(gender_code):
 def format_date(date, long=False):
     if date and isinstance(date, basestring):
         return date
-    if date and long:
-        return date.strftime(DATETIMEFMT)
-    elif date:
-        return date.strftime(DATEFMT)
+    try:
+        if date and long:
+            return date.strftime(DATETIMEFMT)
+        elif date:
+            return date.strftime(DATEFMT)
+    except ValueError:
+        datestr = date.isoformat(" ").split(" ")[0].split('-')
+        return '/'.join(datestr[::-1])
     return None
 
 
@@ -773,11 +777,11 @@ class PatientList(object):
         try:
             patient = self.data[0]
         except IndexError:
-            print('No patients found in {}'.format(self.hospital.name))
+            print('No {} patients found in {}'.format(self.kind.upper(), self.hospital.name))
             return
 
         workbook = xlsxwriter.Workbook(
-            '{}_{}export.xlsx'.format(self.hospital.name, self.kind), {'remove_timezone': True})
+            '{}_{}_export.xlsx'.format(self.hospital.name, self.kind), {'remove_timezone': True})
         errorfmt = workbook.add_format({'bg_color': 'red'})
         warningfmt = workbook.add_format({'bg_color': 'orange'})
 
