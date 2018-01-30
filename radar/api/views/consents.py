@@ -4,14 +4,11 @@ from radar.api.serializers.consents import (
     ConsentSerializer,
     PatientConsentSerializer,
 )
-
 from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
 )
-
 from radar.api.views.generics import ListModelView
-
 from radar.database import db
 from radar.exceptions import BadRequest
 from radar.models.consents import Consent, PatientConsent

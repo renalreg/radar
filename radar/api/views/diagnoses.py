@@ -35,7 +35,6 @@ from radar.models.diagnoses import (
     GroupDiagnosis,
     PatientDiagnosis,
 )
-
 from radar.models.groups import Group
 
 

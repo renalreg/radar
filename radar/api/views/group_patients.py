@@ -18,7 +18,6 @@ from radar.api.views.generics import (
     ListModelView,
     RetrieveModelView,
     UpdateModelView,
-
 )
 from radar.database import db
 from radar.exceptions import BadRequest

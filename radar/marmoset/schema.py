@@ -1,5 +1,4 @@
 from cornflake.exceptions import ValidationError
-
 import jsonschema
 
 from radar.marmoset.exceptions import SchemaError

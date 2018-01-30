@@ -1,7 +1,6 @@
 from radar.api.serializers.demographics import EthnicitySerializer, NationalitySerializer
 from radar.api.views.common import DemographicsRequestSerializer
 from radar.api.views.generics import ListModelView, parse_args
-
 from radar.models import CountryEthnicity, CountryNationality, Ethnicity, Nationality
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 

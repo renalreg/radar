@@ -1,12 +1,10 @@
 from cornflake import fields
-
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 
 from radar.api.serializers.common import (
     MetaMixin,
     PatientMixin,
 )
-
 from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
 
 
