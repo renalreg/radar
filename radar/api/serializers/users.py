@@ -145,7 +145,7 @@ class UserSerializer(MetaMixin, ModelSerializer):
                 # TODO pass user argument to check_password_strength
                 check_password_strength(password)
             except WeakPasswordError as e:
-                raise ValidationError(e.message)
+                raise ValidationError(e.args[0])
 
         return password
 

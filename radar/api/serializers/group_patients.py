@@ -58,7 +58,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         try:
             check_dependencies(groups)
         except DependencyError as e:
-            raise ValidationError({'group': e.message})
+            raise ValidationError({'group': e.args[0]})
 
     def validate(self, data):
         data = super(GroupPatientSerializer, self).validate(data)

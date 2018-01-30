@@ -59,7 +59,7 @@ class RecruitPatientSerializer(RecruitPatientSearchSerializer):
         try:
             check_dependencies([cohort_group])
         except DependencyError as e:
-            raise ValidationError(e.message)
+            raise ValidationError(e.args[0])
 
         return cohort_group
 
