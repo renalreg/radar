@@ -22,7 +22,7 @@ except NameError:
     basestring = str
 
 DATEFMT = '%d/%m/%Y'
-DATETIMEFMT = '%Y-%m-%d %H:%M:%S'
+DATETIMEFMT = '%d/%m/%Y %H:%M:%S'
 BLOOD_PRESSURE_DELTA = 10
 DAYS_RESULTS_SHOULD_BE_WITHIN = 7
 
@@ -73,15 +73,15 @@ def get_form_data(entry, bounds, fields):
     for field in fields[bounds]:
         data.append(entry.data.get(field, None))
 
-    data.append(format_date(entry.created_date, long=True))
+    data.append(format_date(entry.created_date))
     data.append(entry.created_user.name)
-    data.append(format_date(entry.modified_date, long=True))
+    data.append(format_date(entry.modified_date))
     data.append(entry.modified_user.name)
     return data
 
 
-def in_date_range(visit_date, test_date):
-    margin = datetime.timedelta(days=DAYS_RESULTS_SHOULD_BE_WITHIN)
+def in_date_range(visit_date, test_date, days=DAYS_RESULTS_SHOULD_BE_WITHIN):
+    margin = datetime.timedelta(days=days)
     return test_date - margin <= visit_date <= test_date + margin
 
 
@@ -113,29 +113,25 @@ class BaseSheet(object):
 class Basic(BaseSheet):
     __sheetname__ = 'patients'
 
-    def __init__(self, patient):
+    def __init__(self, patient, group):
         self.original_obj = patient
         self.patient_id = patient.id
         self.patient_number = patient.primary_patient_number_number
         self.ethnicity = patient.ethnicity.label if patient.ethnicity else None
-        self.ukrdc = True if patient.ukrdc else False
+        self.pv_link = True if patient.ukrdc else False
         self.control = True if patient.control else False
         self.gender = get_gender(patient.gender)
         self.date_of_birth = format_date(patient.date_of_birth)
         self.date_of_death = format_date(patient.date_of_death)
-        self.recruited_date = format_date(patient.recruited_date())
-        self.recruited_group = patient.recruited_group().code
-        self.recruited_user = patient.recruited_user().name
-
-        groups = [group.code for group in patient.cohorts]
-        self.nurture_ins = 'NURTUREINS' in groups
-        self.nurture_ckd = 'NURTURECKD' in groups
+        self.recruited_date = format_date(patient.recruited_date(group))
+        self.recruited_group = group.code
+        self.recruited_user = patient.recruited_user(group).name
 
         self.current_field = 0
         self.fields = (
             'patient_id',
-            'nurture_ins',
-            'nurture_ckd',
+            # 'nurture_ins',
+            # 'nurture_ckd',
             'patient_number',
             'first_name',
             'last_name',
@@ -143,7 +139,7 @@ class Basic(BaseSheet):
             'date_of_death',
             'gender',
             'ethnicity',
-            'ukrdc',
+            'pv_link',
             'control',
             'recruited_date',
             'recruited_group',
@@ -154,12 +150,12 @@ class Basic(BaseSheet):
         sheet.write_row(self)
         if not self.ethnicity:
             sheet.write(9, '', errorfmt)
-        if not self.ukrdc:
+        if not self.pv_link:
             sheet.write(10, '', errorfmt)
 
 
-class Diagnoses(BaseSheet):
-    __sheetname__ = 'diagnoses'
+class Comorbidities(BaseSheet):
+    __sheetname__ = 'comorbidities'
 
     def __init__(self, patient, diagnoses, primary_diagnoses):
         self.patient = patient
@@ -169,7 +165,6 @@ class Diagnoses(BaseSheet):
             'patient_id',
             'source_group',
             'source_type',
-            'type',
             'diagnosis',
             'diagnosis_text',
             'symptoms_date',
@@ -192,59 +187,109 @@ class Diagnoses(BaseSheet):
             'created_user',
             'modified_date',
             'modified_user',
-
         )
 
     def export(self, sheet, errorfmt=None, warningfmt=None):
-        primary_recorded = False
-        comorbidity_recorded = False
+        recorded = False
         for diagnosis in self.diagnoses:
-            if not diagnosis.status:
+            if diagnosis.diagnosis in self.primary_diagnoses:
                 continue
-            primary = diagnosis.diagnosis in self.primary_diagnoses
-
-            if primary:
-                primary_recorded = True
-            else:
-                comorbidity_recorded = True
-
+            recorded = True
             data = [getattr(diagnosis, field) for field in self.fields if hasattr(diagnosis, field)]
+
             data[1] = diagnosis.source_group.code
 
-            data.insert(3, 'Primary' if primary else 'Comorbidity')
-            data[4] = data[4].name if data[4] else None
+            data[3] = data[3].name if data[3] else None
 
-            data[6] = format_date(data[6])
-            data.insert(7, get_years(diagnosis.symptoms_age))
-            data.insert(8, get_months(diagnosis.symptoms_age))
+            data[5] = format_date(data[5])
+            data.insert(6, get_years(diagnosis.symptoms_age))
+            data.insert(7, get_months(diagnosis.symptoms_age))
 
-            data[9] = format_date(data[9])
-            data.insert(10, get_years(diagnosis.from_age))
-            data.insert(11, get_months(diagnosis.from_age))
+            data[8] = format_date(data[8])
+            data.insert(9, get_years(diagnosis.from_age))
+            data.insert(10, get_months(diagnosis.from_age))
 
-            data[12] = format_date(data[12])
-            data.insert(13, get_years(diagnosis.to_age))
-            data.insert(14, get_months(diagnosis.to_age))
+            data[11] = format_date(data[11])
+            data.insert(12, get_years(diagnosis.to_age))
+            data.insert(13, get_months(diagnosis.to_age))
 
-            data[22] = format_date(data[22], long=True)
-            data[23] = diagnosis.created_user.name
-            data[24] = format_date(data[24], long=True)
-            data[25] = diagnosis.modified_user.name
+            data[-4] = format_date(data[-4])
+            data[-3] = diagnosis.created_user.name
+            data[-2] = format_date(data[-2])
+            data[-1] = diagnosis.modified_user.name
 
             sheet.write_row(data)
+        if not recorded:
+            sheet.write_row([self.patient.id, '', '', 'NO COMORBIDITIES RECORDED'], errorfmt)
 
-            if not data[3] and not data[4]:
-                sheet.write(3, data[3] if data[3] is not None else '', errorfmt)
-                sheet.write(4, data[4] if data[4] is not None else '', errorfmt)
 
-        if not self.diagnoses:
-            sheet.write_row([self.patient.id, '', '', 'MISSING DIAGNOSES'], errorfmt)
+class Diagnoses(BaseSheet):
+    __sheetname__ = 'primary_diagnoses'
 
-        if self.diagnoses and not primary_recorded:
-            sheet.write_row([self.patient.id, '', '', 'MISSING PRIMARY DIAGNOSIS'], errorfmt)
+    def __init__(self, patient, diagnoses, primary_diagnoses):
+        self.patient = patient
+        self.diagnoses = diagnoses
+        self.primary_diagnoses = primary_diagnoses
+        self.fields = (
+            'patient_id',
+            'source_group',
+            'source_type',
+            'diagnosis',
+            'diagnosis_text',
+            'symptoms_date',
+            'symptoms_age_years',
+            'symptoms_age_months',
+            'from_date',
+            'from_age_years',
+            'from_age_months',
+            'to_date',
+            'to_age_years',
+            'to_age_months',
+            'gene_test',
+            'biochemistry',
+            'clinical_picture',
+            'biopsy',
+            'biopsy_diagnosis',
+            'biopsy_diagnosis_label',
+            'comments',
+            'created_date',
+            'created_user',
+            'modified_date',
+            'modified_user',
+        )
 
-        if self.diagnoses and not comorbidity_recorded:
-            sheet.write_row([self.patient.id, '', '', 'NO COMORBIDITIES RECORDED'], warningfmt)
+    def export(self, sheet, errorfmt=None, warningfmt=None):
+        recorded = False
+        for diagnosis in self.diagnoses:
+            if diagnosis.diagnosis not in self.primary_diagnoses:
+                continue
+            recorded = True
+            data = [getattr(diagnosis, field) for field in self.fields if hasattr(diagnosis, field)]
+
+            data[1] = diagnosis.source_group.code
+
+            data[3] = data[3].name if data[3] else None
+
+            data[5] = format_date(data[5])
+            data.insert(6, get_years(diagnosis.symptoms_age))
+            data.insert(7, get_months(diagnosis.symptoms_age))
+
+            data[8] = format_date(data[8])
+            data.insert(9, get_years(diagnosis.from_age))
+            data.insert(10, get_months(diagnosis.from_age))
+
+            data[11] = format_date(data[11])
+            data.insert(12, get_years(diagnosis.to_age))
+            data.insert(13, get_months(diagnosis.to_age))
+
+            data[-4] = format_date(data[-4])
+            data[-3] = diagnosis.created_user.name
+            data[-2] = format_date(data[-2])
+            data[-1] = diagnosis.modified_user.name
+
+            sheet.write_row(data)
+        if not recorded:
+            sheet.write_row([self.patient.id, '', '', 'MISSING DIAGNOSIS'], errorfmt)
 
 
 class SocioEconomic(BaseSheet):
@@ -504,9 +549,9 @@ class Medications(BaseSheet):
                 data[4] = format_date(data[4])
                 data[6] = instance.drug.name if (instance.drug) else None
 
-                data[-4] = format_date(data[-4], long=True)
+                data[-4] = format_date(data[-4])
                 data[-3] = instance.created_user.name
-                data[-2] = format_date(data[-2], long=True)
+                data[-2] = format_date(data[-2])
                 data[-1] = instance.modified_user.name
 
                 sheet.write_row(data)
@@ -538,7 +583,7 @@ class Results(BaseSheet):
 
         within_range = False
         for result in self.results:
-            datestr = result.date.strftime(DATEFMT)
+            datestr = result.date.strftime(DATETIMEFMT)
             key = (result.patient_id, result.source_group.name, result.source_type, datestr)
             if key not in data:
                 data[key] = {}
@@ -586,20 +631,37 @@ class Pathology(BaseSheet):
         )
 
     def export(self, sheet, errorfmt=None, warningfmt=None):
+        visit_dates = [i.data.get('date') for i in self.patient.entries if i.form.slug == 'nurtureckd']
+        visit_dates = [datetime.datetime.strptime(i, '%Y-%m-%d').date() for i in visit_dates]
+
+        # TODO: clean this stuff up.
+        def within_date_range(pathology_date, test_date, days_before=182, days_after=14):
+            margin_before = datetime.timedelta(days=days_before)
+            margin_after = datetime.timedelta(days=days_after)
+            return pathology_date >= test_date - margin_before and test_date + margin_after >= pathology_date
+
         pathologies = self.patient.pathology
         if pathologies:
             for instance in pathologies:
                 data = [getattr(instance, field) for field in self.fields]
                 data[1] = instance.source_group.code
 
-                data[2] = format_date(data[2])
+                pathology_date = data[2]
+                in_range = False
+                for visit in visit_dates:
+                    if within_date_range(pathology_date, visit):
+                        in_range = True
+                        break
 
-                data[-4] = format_date(data[-4], long=True)
+                data[2] = format_date(pathology_date)
+                data[-4] = format_date(data[-4])
                 data[-3] = instance.created_user.name
-                data[-2] = format_date(data[-2], long=True)
+                data[-2] = format_date(data[-2])
                 data[-1] = instance.modified_user.name
 
                 sheet.write_row(data)
+                if not in_range:
+                    sheet.write(2, format_date(pathology_date), errorfmt)
         else:
             sheet.write_row([self.patient.id], errorfmt)
 
@@ -635,9 +697,9 @@ class RenalProgressions(BaseSheet):
                 data[5] = format_date(data[5])
                 data[6] = format_date(data[6])
 
-                data[-4] = format_date(data[-4], long=True)
+                data[-4] = format_date(data[-4])
                 data[-3] = instance.created_user.name
-                data[-2] = format_date(data[-2], long=True)
+                data[-2] = format_date(data[-2])
                 data[-1] = instance.modified_user.name
 
                 sheet.write_row(data)
@@ -690,6 +752,7 @@ class Patient(object):
     __sheets__ = (
         'basic',
         'diagnoses',
+        'comorbidities',
         'socioeconomic',
         'nurtureckd',
         'family_diseases_history',
@@ -702,12 +765,14 @@ class Patient(object):
         'samples',
     )
 
-    def __init__(self, patient, primary_diagnoses):
+    def __init__(self, patient, primary_diagnoses, group):
         self.primary_diagnoses = primary_diagnoses
+        self.group = group
         self.original_patient = patient
         self.patient_id = patient.id
         self.basic = None
         self.diagnoses = None
+        self.comorbidities = None
         self.socioeconomic = None
         self.nurtureckd = None
         self.family_diseases_history = None
@@ -720,8 +785,13 @@ class Patient(object):
         self.samples = None
 
     def run(self):
-        self.basic = Basic(self.original_patient)
+        self.basic = Basic(self.original_patient, self.group)
         self.diagnoses = Diagnoses(
+            self.original_patient,
+            self.original_patient.patient_diagnoses,
+            self.primary_diagnoses,
+        )
+        self.comorbidities = Comorbidities(
             self.original_patient,
             self.original_patient.patient_diagnoses,
             self.primary_diagnoses,
@@ -743,13 +813,14 @@ class Patient(object):
 
 
 class PatientList(object):
-    def __init__(self, hospital, primary_diagnoses, kind):
+    def __init__(self, hospital, primary_diagnoses, kind, group):
         self.data = []
         self.hospital = hospital
         self.observations = set()
         self.stats = defaultdict(int)
         self.primary_diagnoses = primary_diagnoses
         self.kind = kind
+        self.group = group
 
     def append(self, patient):
         self.observations |= set([result.observation.name for result in patient.results])
@@ -762,7 +833,7 @@ class PatientList(object):
         self.stats['TOTAL'] += 1
 
         self.stats['UKRDC'] += patient.ukrdc
-        self.data.append(Patient(patient, self.primary_diagnoses))
+        self.data.append(Patient(patient, self.primary_diagnoses, self.group))
 
     def export(self):
         try:
@@ -796,21 +867,30 @@ class PatientList(object):
                 patient.observations = sorted(self.observations)
                 getattr(patient, attr).export(sheet, errorfmt, warningfmt)
 
-        # summary_sheet.write('A5', 'NURTuRE INS')
-        # summary_sheet.write('B5', self.stats.get('NURTUREINS', 0))
-        # summary_sheet.write('A6', 'NURTuRE CKD')
-        # summary_sheet.write('B6', self.stats.get('NURTURECKD', 0))
-        summary_sheet.write('A7', 'Total')
-        summary_sheet.write('B7', self.stats.get('TOTAL', 0))
+        summary_sheet.write('A5', 'Total')
+        summary_sheet.write('B5', self.stats.get('TOTAL', 0))
 
-        summary_sheet.write('A9', 'Missing Patient View Link')
-        summary_sheet.write('B9', self.stats.get('TOTAL', 0) - self.stats.get('UKRDC', 0))
+        summary_sheet.write('A7', 'Missing Patient View Link')
+        summary_sheet.write('B7', self.stats.get('TOTAL', 0) - self.stats.get('UKRDC', 0))
 
-        summary_sheet.write('A11', 'Patient list')
-        summary_sheet.write('A12', 'Radar No')
-        summary_sheet.write('B12', 'Patient Name')
-        counter = itertools.count(13)
+        summary_sheet.write('A9', 'Patient list')
+        summary_sheet.write('A10', 'Radar No')
+        summary_sheet.write('B10', 'Patient Name')
+        counter = itertools.count(11)
         for patient in self.data:
+            col = next(counter)
+            summary_sheet.write('A{}'.format(col), patient.patient_id)
+            summary_sheet.write('B{}'.format(col), patient.original_patient.full_name)
+
+        col = next(counter)
+        col = next(counter)
+        summary_sheet.write('A{}'.format(col), 'Missing PV link')
+        col = next(counter)
+        summary_sheet.write('A{}'.format(col), 'Radar No')
+        summary_sheet.write('B{}'.format(col), 'Patient Name')
+        for patient in self.data:
+            if patient.original_patient.ukrdc:
+                continue
             col = next(counter)
             summary_sheet.write('A{}'.format(col), patient.patient_id)
             summary_sheet.write('B{}'.format(col), patient.original_patient.full_name)
@@ -850,10 +930,8 @@ def export_validate():
     for hospital_id in hospital_ids:
         hospital = Group.query.get(hospital_id)
 
-        print(hospital_id)
-
-        ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins')
-        ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd')
+        ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins', nurtureins)
+        ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd', nurtureckd)
         for p in hospital.patients:
             if p.test or p.control:
                 continue
@@ -863,6 +941,7 @@ def export_validate():
                 ins_list.append(p)
         ckd_list.export()
         ins_list.export()
+        print(hospital_id)
 
 
 def main():
