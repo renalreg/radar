@@ -140,7 +140,7 @@ class Basic(BaseSheet):
             'gender',
             'ethnicity',
             'pv_link',
-            'control',
+            # 'control',
             'recruited_date',
             'recruited_group',
             'recruited_user',
@@ -149,9 +149,9 @@ class Basic(BaseSheet):
     def export(self, sheet, errorfmt=None, warningfmt=None):
         sheet.write_row(self)
         if not self.ethnicity:
-            sheet.write(9, '', errorfmt)
+            sheet.write(7, '', errorfmt)
         if not self.pv_link:
-            sheet.write(10, '', errorfmt)
+            sheet.write(8, '', errorfmt)
 
 
 class Comorbidities(BaseSheet):
@@ -234,6 +234,7 @@ class Diagnoses(BaseSheet):
             'patient_id',
             'source_group',
             'source_type',
+            'edta_code',
             'diagnosis',
             'diagnosis_text',
             'symptoms_date',
@@ -268,19 +269,24 @@ class Diagnoses(BaseSheet):
 
             data[1] = diagnosis.source_group.code
 
-            data[3] = data[3].name if data[3] else None
+            if diagnosis.diagnosis and diagnosis.diagnosis.codes:
+                for code in diagnosis.diagnosis.codes:
+                    if code.system == 'ERA-EDTA PRD':
+                        data.insert(3, code.code)
 
-            data[5] = format_date(data[5])
-            data.insert(6, get_years(diagnosis.symptoms_age))
-            data.insert(7, get_months(diagnosis.symptoms_age))
+            data[4] = data[4].name if data[4] else None
 
-            data[8] = format_date(data[8])
-            data.insert(9, get_years(diagnosis.from_age))
-            data.insert(10, get_months(diagnosis.from_age))
+            data[6] = format_date(data[6])
+            data.insert(7, get_years(diagnosis.symptoms_age))
+            data.insert(8, get_months(diagnosis.symptoms_age))
 
-            data[11] = format_date(data[11])
-            data.insert(12, get_years(diagnosis.to_age))
-            data.insert(13, get_months(diagnosis.to_age))
+            data[9] = format_date(data[9])
+            data.insert(10, get_years(diagnosis.from_age))
+            data.insert(11, get_months(diagnosis.from_age))
+
+            data[12] = format_date(data[12])
+            data.insert(13, get_years(diagnosis.to_age))
+            data.insert(14, get_months(diagnosis.to_age))
 
             data[-4] = format_date(data[-4])
             data[-3] = diagnosis.created_user.name
@@ -556,11 +562,12 @@ class Medications(BaseSheet):
 
                 sheet.write_row(data)
 
-                for i in (3, 5, 6, 8, 9, 12):
+                for i in (3, 8, 9, 12):
                     if not data[i]:
                         sheet.write(i, '', errorfmt)
 
                 if not data[6] and not data[7]:
+                    sheet.write(6, '', errorfmt)
                     sheet.write(7, '', errorfmt)
 
         else:
