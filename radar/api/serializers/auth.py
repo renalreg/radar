@@ -36,7 +36,7 @@ class ResetPasswordSerializer(serializers.Serializer):
             # user setting their password to their username etc.).
             check_password_strength(password)
         except WeakPasswordError as e:
-            raise ValidationError(e.message)
+            raise ValidationError(e.args[0])
 
         return password
 
