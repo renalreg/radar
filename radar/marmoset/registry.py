@@ -45,6 +45,7 @@ class Registry(BaseRegistry):
         self.add_type('date', parse_date, format_date)
         self.add_type('datetime', parse_datetime, format_datetime)
         self.add_type('array', parse_list, format_list)
+        self.add_type('text', parse_string, format_string)
 
         # Add default handlers
         self.add_default('js', JSDefaultHandler)
