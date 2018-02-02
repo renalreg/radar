@@ -160,7 +160,7 @@ class PatientExporter(Exporter):
 
         def d(name, getter=None, anonymised_getter=None):
             return demographics_column(name, getter, anonymised_getter, identity_getter)
-
+        group = self.config['patient_group']
         self._columns = [
             column('id'),
             d('patient_number', 'primary_patient_number.number'),
@@ -175,11 +175,11 @@ class PatientExporter(Exporter):
             column('ethnicity'),
             column('ethnicity_label'),
             column('control'),
-            column('recruited_date', lambda x: x.recruited_date()),
-            column('recruited_group_id', lambda x: get_attrs(x.recruited_group(), 'id')),
-            column('recruited_group', lambda x: get_attrs(x.recruited_group(), 'name')),
-            column('recruited_user_id', lambda x: get_attrs(x.recruited_user(), 'id')),
-            column('recruited_user', lambda x: format_user(x.recruited_user())),
+            column('recruited_date', lambda x: x.recruited_date(group)),  # 13
+            column('recruited_group_id', lambda x: get_attrs(x.recruited_group(group), 'id')),
+            column('recruited_group', lambda x: get_attrs(x.recruited_group(group), 'name')),
+            column('recruited_user_id', lambda x: get_attrs(x.recruited_user(group), 'id')),
+            column('recruited_user', lambda x: format_user(x.recruited_user(group))),
         ]
 
         q = queries.get_patients(self.config)
