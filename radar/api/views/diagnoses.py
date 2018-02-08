@@ -59,10 +59,10 @@ def diagnosis_group_type_filter(group_ids, group_diagnosis_type):
     return _diagnosis_group_type_filter(Diagnosis.id, group_ids, group_diagnosis_type)
 
 
-def _diagnosis_group_type_filter(diagnois_column, group_ids, group_diagnosis_type):
+def _diagnosis_group_type_filter(diagnosis_column, group_ids, group_diagnosis_type):
     return GroupDiagnosis.query\
         .filter(GroupDiagnosis.group_id.in_(group_ids))\
-        .filter(GroupDiagnosis.diagnosis_id == diagnois_column)\
+        .filter(GroupDiagnosis.diagnosis_id == diagnosis_column)\
         .filter(GroupDiagnosis.type == group_diagnosis_type)\
         .exists()
 

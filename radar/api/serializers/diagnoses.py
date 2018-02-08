@@ -100,6 +100,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
     status = fields.BooleanField(default=True)
+    swan = fields.BooleanField(default=False, required=False)
     symptoms_date = fields.DateField(required=False)
     symptoms_age = fields.IntegerField(read_only=True)
     from_date = fields.DateField()

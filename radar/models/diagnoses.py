@@ -35,6 +35,8 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     diagnosis = relationship('Diagnosis')
     diagnosis_text = Column(String)
     status = Column(Boolean, nullable=False, default=True, server_default=text('true'))
+    primary = Column(Boolean, nullable=True)
+    swan = Column(Boolean, default=False, server_default=text('false'))
 
     symptoms_date = Column(Date)
     from_date = Column(Date, nullable=False)
