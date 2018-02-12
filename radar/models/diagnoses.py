@@ -175,7 +175,7 @@ class DiagnosisCode(db.Model):
     code = relationship('Code', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
 
     def __str__(self):
-        return str(self.code)
+        return unicode(self.code)
 
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)

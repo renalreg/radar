@@ -126,7 +126,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
 
     def pre_validate(self, data):
         # Ignore the text diagnosis if there is a coded diagnosis
-        if data['diagnosis']:
+        if data['diagnosis'] and data['diagnosis'] != 43534:
             data['diagnosis_text'] = None
 
         # Ignore the biopsy diagnosis if a biopsy wasn't peformed
