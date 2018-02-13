@@ -10,6 +10,12 @@ from radar.models.logs import log_changes
 from radar.models.types import EnumType
 
 
+try:
+    unicode  # noqa
+except NameError:
+    unicode = str
+
+
 BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
     (2, 'FSGS'),
