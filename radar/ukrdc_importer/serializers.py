@@ -122,6 +122,12 @@ class LabOrderSerializer(serializers.Serializer):
     result = ResultSerializer()
     entered_at = CodeDescriptionSerializer(required=False)
 
+    def pre_validate(self, data):
+        """Populate entering_organization if it is empty from entered_at."""
+        if data['entering_organization'] is fields.empty:
+            data['entering_organization'] = data['entered_at']
+        return super(LabOrderSerializer, self).pre_validate(data)
+
 
 class ContainerSerializer(serializers.Serializer):
     class PatientSerializer(serializers.Serializer):
