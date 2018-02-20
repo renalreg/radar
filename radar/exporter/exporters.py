@@ -313,8 +313,7 @@ class MedicationExporter(Exporter):
         self._query = q
 
 
-@register('patient_diagnoses')
-class PatientDiagnosisExporter(Exporter):
+class DiagnosisExporter(Exporter):
     def run(self):
         self._columns = [
             column('id'),
@@ -345,18 +344,21 @@ class PatientDiagnosisExporter(Exporter):
             column('biopsy_diagnosis'),
             column('biopsy_diagnosis_label'),
             column('comments'),
-
         ]
         self._columns.extend(get_meta_columns())
         q = queries.get_patient_diagnoses(self.config)
+        primary_diagnoses = queries.get_primary_diagnoses(self.config)
 
-        data = make_dataset(self._columns)
+        primary = make_dataset(self._columns)
+        comorbidity = make_dataset(self._columns)
 
-        for result in q:
-            values = [c[1](result) for c in self._columns]
+        for patient_diagnosis in q:
+            values = [c[1](patient_diagnosis) for c in self._columns]
 
-            if result.diagnosis and result.diagnosis.codes:
-                for code in result.diagnosis.codes:
+            diagnosis = patient_diagnosis.diagnosis
+
+            if diagnosis and diagnosis.codes:
+                for code in diagnosis.codes:
                     if code.system == 'ERA-EDTA PRD':
                         values[5] = code.code
                     elif code.system == 'ICD-10':
@@ -364,13 +366,29 @@ class PatientDiagnosisExporter(Exporter):
                     elif code.system == 'SNOMED CT':
                         values[7] = code.code
 
-            data.append(values)
+            if diagnosis in primary_diagnoses:
+                primary.append(values)
+            else:
+                comorbidity.append(values)
 
-        self._query = data
+        self._primary = primary
+        self._comorbidity = comorbidity
+
+
+@register('primary-diagnoses')
+class PrimaryDiagnosisExporter(DiagnosisExporter):
 
     @property
     def dataset(self):
-        return self._query
+        return self._primary
+
+
+@register('comorbidities')
+class ComorbiditiesExporter(DiagnosisExporter):
+
+    @property
+    def dataset(self):
+        return self._comorbidity
 
 
 @register('genetics')

@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import true
 from radar.database import db
 from radar.models.codes import Code
 from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.diagnoses import Diagnosis, DiagnosisCode, PatientDiagnosis
+from radar.models.diagnoses import Diagnosis, DiagnosisCode, GroupDiagnosis, PatientDiagnosis
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
@@ -217,6 +217,13 @@ def get_patient_diagnoses(config):
     q = q.join(Diagnosis, PatientDiagnosis.diagnosis_id == Diagnosis.id, isouter=True)
     q = q.join(DiagnosisCode, Diagnosis.id == DiagnosisCode.diagnosis_id, isouter=True)
     q = q.join(Code, Code.id == DiagnosisCode.code_id, isouter=True)
+    return q
+
+
+def get_primary_diagnoses(config):
+    """Return query to get primary diagnoses for data_group."""
+    q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
+    q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
     return q
 
 
