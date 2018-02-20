@@ -71,6 +71,7 @@ def format_user(user):
 
 
 def format_date(dt):
+
     val = dt
     fmt = '%d/%m/%Y'
     if isinstance(dt, (date, datetime)):
@@ -87,7 +88,7 @@ def format_date(dt):
         try:
             val = parsed.strftime(fmt)
         except ValueError:
-            val = '"{:02d}/{:02d}/{}'.format(parsed.day, parsed.month, parsed.year)
+            val = '{:02d}/{:02d}/{}'.format(parsed.day, parsed.month, parsed.year)
 
     return val
 
