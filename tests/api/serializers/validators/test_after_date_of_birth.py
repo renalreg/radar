@@ -49,7 +49,7 @@ def run(date_of_birth, value):
         class Meta:
             validators = [after_date_of_birth('date')]
 
-    print patient.earliest_date_of_birth
+    print(patient.earliest_date_of_birth)
 
     serializer = Serializer(data={
         'patient': patient,

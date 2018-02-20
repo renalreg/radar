@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import pytest
 
 from radar.exporter.exporters import (
+    format_date,
     get_months,
     get_years,
     identity_getter,
@@ -52,3 +55,30 @@ def test_identity_getter():
 
 def test_none_getter():
     assert none_getter(123) is None
+
+
+def test_format_date_correctly_behaves_on_normal_input():
+    dt = datetime(2018, 1, 1, 14, 35, 32)
+    expected = '01/01/2018'
+    assert format_date(dt) == expected
+
+
+def test_format_date_correctly_returns_on_year_before_1900():
+    dt = datetime(1895, 1, 1, 14, 35, 32)
+    expected = '01/01/1895'
+    assert format_date(dt) == expected
+
+
+def test_format_date_correctly_behaves_on_given_string_date():
+    dt = '2018-01-01'
+    assert format_date(dt) == '01/01/2018'
+
+
+def test_format_date_correctly_behaves_on_given_string_date_before_1900():
+    dt = '1895-01-01'
+    assert format_date(dt) == '01/01/1895'
+
+
+def test_format_date_returns_unmodified_on_non_date():
+    inp = 'anything'
+    assert format_date(inp) == inp
