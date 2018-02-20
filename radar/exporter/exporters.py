@@ -17,6 +17,7 @@ try:
     basestring
 except NameError:
     basestring = str
+    unicode = str
 
 
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
@@ -77,7 +78,7 @@ def format_date(dt):
             val = dt.strftime(fmt)
         except ValueError:
             val = '{:02d}/{:02d}/{}'.format(dt.day, dt.month, dt.year)
-    elif re.match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', str(dt)):
+    elif re.match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', unicode(dt)):
         try:
             parsed = datetime.strptime(dt, '%Y-%m-%d')
         except ValueError:
