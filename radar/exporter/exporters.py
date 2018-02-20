@@ -1,6 +1,7 @@
 from __future__ import division
 
 from collections import OrderedDict
+from datetime import date, datetime
 import re
 
 import tablib
@@ -27,10 +28,16 @@ def none_to_empty(value):
     return '' if value is None else value
 
 
+def formatters(value):
+    val = format_date(value)
+    val = none_to_empty(value)
+    return val
+
+
 def make_dataset(columns):
     data = tablib.Dataset(headers=[c[0] for c in columns])
     for i in range(data.width):
-        data.add_formatter(i, none_to_empty)
+        data.add_formatter(i, formatters)
     return data
 
 
@@ -62,9 +69,13 @@ def format_user(user):
         return user.username
 
 
-def format_date(datetime):
-    if datetime:
-        return datetime.strftime('%d/%m/%Y')
+def format_date(dt):
+    val = dt
+    if isinstance(dt, (date, datetime)):
+        val = dt.strftime('%d/%m/%Y')
+    elif re.match('^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', str(dt)):
+        val = datetime.strptime(dt, '%Y-%m-%d').strftime('%d/%m/%Y')
+    return val
 
 
 def column(name, getter=None):
