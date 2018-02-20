@@ -62,6 +62,11 @@ def format_user(user):
         return user.username
 
 
+def format_date(datetime):
+    if datetime:
+        return datetime.strftime('%d/%m/%Y')
+
+
 def column(name, getter=None):
     if getter is None:
         getter = path_getter(name)
@@ -126,10 +131,10 @@ def demographics_column_factory(config):
 
 def get_meta_columns():
     return [
-        column('created_date'),
+        column('created_date', lambda x: format_date(x.created_date)),
         column('created_user_id'),
         column('created_user', lambda x: format_user(x.created_user)),
-        column('modified_date'),
+        column('modified_date', lambda x: format_date(x.modified_date)),
         column('modified_user_id'),
         column('modified_user', lambda x: format_user(x.created_user)),
     ]
@@ -166,16 +171,16 @@ class PatientExporter(Exporter):
             d('patient_number', 'primary_patient_number.number'),
             d('first_name'),
             d('last_name'),
-            d('date_of_birth'),
+            d('date_of_birth', lambda x: format_date(x.date_of_birth)),
             column('year_of_birth'),
-            d('date_of_death'),
+            d('date_of_death', lambda x: format_date(x.date_of_death)),
             column('year_of_death'),
             column('gender'),
             column('gender_label'),
             column('ethnicity'),
             column('ethnicity_label'),
             column('control'),
-            column('recruited_date', lambda x: x.recruited_date(group)),  # 13
+            column('recruited_date', lambda x: format_date(x.recruited_date(group))),  # 13
             column('recruited_group_id', lambda x: get_attrs(x.recruited_group(group), 'id')),
             column('recruited_group', lambda x: get_attrs(x.recruited_group(group), 'name')),
             column('recruited_user_id', lambda x: get_attrs(x.recruited_user(group), 'id')),
@@ -218,8 +223,8 @@ class PatientAddressExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
             d('address1'),
             d('address2'),
             d('address3'),
@@ -265,9 +270,9 @@ class PatientDemographicsExporter(Exporter):
             column('source_type'),
             d('first_name'),
             d('last_name'),
-            d('date_of_birth'),
+            d('date_of_birth', lambda x: format_date(x.date_of_birth)),
             column('year_of_birth'),
-            d('date_of_death'),
+            d('date_of_death', lambda x: format_date(x.date_of_death)),
             column('year_of_death'),
             column('gender'),
             column('gender_label'),
@@ -294,8 +299,8 @@ class MedicationExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
             column('drug_id'),
             column('drug', 'drug.name'),
             column('drug_text'),
@@ -328,13 +333,13 @@ class DiagnosisExporter(Exporter):
 
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
-            column('symptoms_date'),
+            column('symptoms_date', lambda x: format_date(x.symptoms_date)),
             column('symptoms_age_years', lambda x: get_years(x.symptoms_age)),
             column('symptoms_age_months', lambda x: get_months(x.symptoms_age)),
-            column('from_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
             column('from_age_years', lambda x: get_years(x.from_age)),
             column('from_age_months', lambda x: get_months(x.from_age)),
-            column('to_date'),
+            column('to_date', lambda x: format_date(x.to_date)),
             column('to_age_years', lambda x: get_years(x.to_age)),
             column('to_age_months', lambda x: get_months(x.to_age)),
             column('gene_test'),
@@ -399,7 +404,7 @@ class GeneticsExporter(Exporter):
             column('patient_id'),
             column('group_id'),
             column('group', 'group.name'),
-            column('date_sent'),
+            column('date_sent', lambda x: format_date(x.date_sent)),
             column('laboratory'),
             column('reference_number'),
             column('karyotype'),
@@ -421,7 +426,7 @@ class PathologyExporter(Exporter):
             column('patient_id'),
             column('source_group_id'),
             column('source_group', 'source_group.name'),
-            column('date'),
+            column('date', lambda x: format_date(x.date)),
             column('kidney_type'),
             column('kidney_type_label'),
             column('kidney_side'),
@@ -485,7 +490,7 @@ class InsClinicalPictureExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date_of_picture'),
+            column('date_of_picture', lambda x: format_date(x.date_of_picture)),
             column('oedema'),
             column('hypovalaemia'),
             column('fever'),
@@ -516,8 +521,8 @@ class DialysisExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
             column('modality'),
             column('modality_label'),
         ]
@@ -536,8 +541,8 @@ class PlasmapheresisExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
             column('no_of_exchanges'),
             column('no_of_exchanges_label'),
             column('response'),
@@ -560,11 +565,11 @@ class TransplantExporter(Exporter):
             column('source_type'),
             column('transplant_group_id'),
             column('transplant_group', 'transplant_group.name'),
-            column('date'),
+            column('date', lambda x: format_date(x.date)),
             column('modality'),
             column('modality_label'),
-            column('date_of_recurrence'),
-            column('date_of_failure'),
+            column('date_of_recurrence', lambda x: format_date(x.date_of_recurrence)),
+            column('date_of_failure', lambda x: format_date(x.date_of_failure)),
         ]
         self._columns.extend(get_meta_columns())
 
@@ -578,7 +583,7 @@ class TransplantBiopsyExporter(Exporter):
         self._columns = [
             column('id'),
             column('transplant_id'),
-            column('date_of_biopsy'),
+            column('date_of_biopsy', lambda x: format_date(x.date_of_biopsy)),
             column('recurrence'),
         ]
 
@@ -592,7 +597,7 @@ class TransplantRejectionExporter(Exporter):
         self._columns = [
             column('id'),
             column('transplant_id'),
-            column('date_of_rejection'),
+            column('date_of_rejection', lambda x: format_date(x.date_of_rejection)),
         ]
 
         q = queries.get_transplant_rejections(self.config)
@@ -608,8 +613,8 @@ class HospitalisationExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('date_of_admission'),
-            column('date_of_discharge'),
+            column('date_of_admission', lambda x: format_date(x.date_of_admission)),
+            column('date_of_discharge', lambda x: format_date(x.date_of_discharge)),
             column('reason_for_admission'),
             column('comments'),
         ]
@@ -633,7 +638,7 @@ class InsRelapseExporter(Exporter):
             column('other_trigger'),
             column('high_dose_oral_prednisolone'),
             column('iv_methyl_prednisolone'),
-            column('date_of_remission'),
+            column('date_of_remission', lambda x: format_date(x.date_of_remission)),
             column('remission_type'),
             column('remission_type_label'),
         ]
@@ -649,7 +654,7 @@ class MpgnClinicalPicturesExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date_of_picture'),
+            column('date_of_picture', lambda x: format_date(x.date_of_picture)),
             column('oedema'),
             column('hypertension'),
             column('urticaria'),
@@ -674,8 +679,8 @@ class GroupPatientExporter(Exporter):
             column('patient_id'),
             column('group_id'),
             column('group', 'group.name'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
             column('created_group_id'),
             column('created_group', 'created_group.name'),
         ]
@@ -691,12 +696,12 @@ class RenalProgressionExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('onset_date'),
-            column('ckd3a_date'),
-            column('ckd3b_date'),
-            column('ckd4_date'),
-            column('ckd5_date'),
-            column('esrf_date'),
+            column('onset_date', lambda x: format_date(x.onset_date)),
+            column('ckd3a_date', lambda x: format_date(x.ckd3a_date)),
+            column('ckd3b_date', lambda x: format_date(x.ckd3b_date)),
+            column('ckd4_date', lambda x: format_date(x.ckd4_date)),
+            column('ckd5_date', lambda x: format_date(x.ckd5_date)),
+            column('esrf_date', lambda x: format_date(x.esrf_date)),
         ]
         self._columns.extend(get_meta_columns())
 
@@ -1082,7 +1087,7 @@ class RenalImagingExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('date'),
+            column('date', lambda x: format_date(x.date)),
             column('imaging_type'),
             column('right_present'),
             column('right_type'),
@@ -1135,7 +1140,7 @@ class PregnanciesExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('pregnancy_number'),
-            column('date_of_lmp'),
+            column('date_of_lmp', lambda x: format_date(x.date_of_lmp)),
             column('gravidity'),
             column('parity1'),
             column('parity2'),
@@ -1163,7 +1168,7 @@ class FetalUltrasoundsExporter(Exporter):
             column('source_group_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('date_of_scan'),
+            column('date_of_scan', lambda x: format_date(x.date_of_scan)),
             column('fetal_identifier'),
             column('gestational_age'),
             column('head_centile'),
@@ -1214,7 +1219,7 @@ class LiverImagingExporter(Exporter):
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('date'),
+            column('date', lambda x: format_date(x.date)),
             column('imaging_type'),
             column('size'),
             column('hepatic_fibrosis'),
@@ -1236,25 +1241,25 @@ class LiverDiseasesExporter(Exporter):
             column('portal_hypertension'),
             column('portal_hypertension_date'),
             column('ascites'),
-            column('ascites_date'),
+            column('ascites_date', lambda x: format_date(x.ascites_date)),
             column('oesophageal'),
-            column('oesophageal_date'),
+            column('oesophageal_date', lambda x: format_date(x.oesophageal_date)),
             column('oesophageal_bleeding'),
-            column('oesophageal_bleeding_date'),
+            column('oesophageal_bleeding_date', lambda x: format_date(x.oesophageal_bleeding_date)),
             column('gastric'),
-            column('gastric_date'),
+            column('gastric_date', lambda x: format_date(x.gastric_date)),
             column('gastric_bleeding'),
-            column('gastric_bleeding_date'),
+            column('gastric_bleeding_date', lambda x: format_date(x.gastric_bleeding_date)),
             column('anorectal'),
-            column('anorectal_date'),
+            column('anorectal_date', lambda x: format_date(x.anorectal_date)),
             column('anorectal_bleeding'),
-            column('anorectal_bleeding_date'),
+            column('anorectal_bleeding_date', lambda x: format_date(x.anorectal_bleeding_date)),
             column('cholangitis_acute'),
-            column('cholangitis_acute_date'),
+            column('cholangitis_acute_date', lambda x: format_date(x.cholangitis_acute_date)),
             column('cholangitis_recurrent'),
-            column('cholangitis_recurrent_date'),
+            column('cholangitis_recurrent_date', lambda x: format_date(x.cholangitis_recurrent_date)),
             column('spleen_palpable'),
-            column('spleen_palpable_date'),
+            column('spleen_palpable_date', lambda x: format_date(x.spleen_palpable_date)),
         ]
         q = queries.get_liver_diseases(self.config)
         self._query = q
@@ -1269,8 +1274,8 @@ class LiverTransplantsExporter(Exporter):
             column('source_group', 'source_group.name'),
             column('source_type'),
             column('transplant_group', 'transplant_group.name'),
-            column('registration_date'),
-            column('transplant_date'),
+            column('registration_date', lambda x: format_date(x.registration_date)),
+            column('transplant_date', lambda x: format_date(x.transplant_date)),
             column('indications'),
             column('other_indications'),
             column('first_graft_source'),
@@ -1289,7 +1294,7 @@ class NephrectomiesExporter(Exporter):
             column('patient_id'),
             column('source_group', 'source_group.name'),
             column('source_type'),
-            column('date'),
+            column('date', lambda x: format_date(x.date)),
             column('kidney_side'),
             column('kidney_type'),
             column('entry_type'),
@@ -1307,8 +1312,8 @@ class NutritionExporter(Exporter):
             column('source_group', 'source_group.name'),
             column('source_type'),
             column('feeding_type'),
-            column('from_date'),
-            column('to_date'),
+            column('from_date', lambda x: format_date(x.from_date)),
+            column('to_date', lambda x: format_date(x.to_date)),
         ]
         q = queries.get_nutrition(self.config)
         self._query = q
