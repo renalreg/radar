@@ -31,14 +31,21 @@ def none_to_empty(value):
 
 def formatters(value):
     val = format_date(value)
-    val = none_to_empty(value)
+    val = none_to_empty(val)
     return val
 
 
-def make_dataset(columns):
+def make_dataset(columns, results=False):
     data = tablib.Dataset(headers=[c[0] for c in columns])
-    for i in range(data.width):
-        data.add_formatter(i, formatters)
+    if not results:
+        for i, header in enumerate(data.headers):
+            if 'date' in header:
+                data.add_formatter(i, formatters)
+            else:
+                data.add_formatter(i, none_to_empty)
+    else:
+        for i, header in enumerate(data.headers):
+            data.add_formatter(i, none_to_empty)
     return data
 
 
@@ -71,7 +78,6 @@ def format_user(user):
 
 
 def format_date(dt):
-
     val = dt
     fmt = '%d/%m/%Y'
     if isinstance(dt, (date, datetime)):
@@ -762,10 +768,11 @@ class ResultExporter(Exporter):
 
             data[key][row.observation.name] = row.value_label_or_value
 
-        dataset = make_dataset(self._columns)
+        dataset = make_dataset(self._columns, results=True)
 
         for key, results in data.items():
             row = list(key)
+            row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
             for test in extra:
                 if test in results:
                     row.append(results[test])
