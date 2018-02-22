@@ -756,7 +756,11 @@ class ResultExporter(Exporter):
 
     @property
     def dataset(self):
-        extra = sorted({row.observation.name for row in self._query}, key=lambda val: val.lower())
+        egfr_calculated = 'Estimated GFR Calculated'
+        extra = {row.observation.name for row in self._query}
+        extra.add(egfr_calculated)
+        extra = sorted(extra, key=lambda val: val.lower())
+
         self._columns.extend(column(name) for name in extra)
 
         data = OrderedDict()
@@ -764,9 +768,12 @@ class ResultExporter(Exporter):
         for row in self._query:
             key = (row.patient_id, row.source_group.name, row.source_type, row.date)
             if key not in data:
-                data[key] = {}
+                data[key] = {egfr_calculated: ''}
 
             data[key][row.observation.name] = row.value_label_or_value
+
+            if data[key][egfr_calculated] == '':
+                data[key][egfr_calculated] = row.egfr_calculated
 
         dataset = make_dataset(self._columns, results=True)
 
@@ -774,6 +781,7 @@ class ResultExporter(Exporter):
             row = list(key)
             row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
             for test in extra:
+
                 if test in results:
                     row.append(results[test])
                 else:

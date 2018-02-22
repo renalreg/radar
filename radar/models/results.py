@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import date
 from enum import Enum
 from itertools import chain
 
@@ -236,6 +237,37 @@ class Result(db.Model, MetaModelMixin):
     def value_label_or_value(self):
         """Return value label if it is available, else value."""
         return self.value_label if self.value_label else self.sent_value
+
+    @property
+    def egfr_calculated(self):
+
+        if self.observation.short_name.lower() != 'creatinine' or not self.value:
+            return ''
+
+        creat88 = self.value / 88.4
+        egfr = 0
+        black_adj = 1
+
+        if self.patient.ethnicity and self.patient.ethnicity.code in ('M', 'N', 'P'):
+            black_adj = 1.159
+
+        months = self.patient.to_age(date(self.date.year, self.date.month, self.date.day))
+        if not months:
+            return ''
+
+        years_old = months // 12
+        age_adj = 0.993**years_old
+
+        if self.patient.is_female and creat88 > 0.7:
+            egfr = age_adj * black_adj * 144 * ((creat88/0.7)**(-1.209))
+        elif self.patient.is_female and creat88 <= 0.7:
+            egfr = age_adj * black_adj * 144 * ((creat88/0.7)**(-0.329))
+        elif self.patient.is_male and creat88 > 0.7:
+            egfr = age_adj * black_adj * 141 * ((creat88/0.9)**(-1.209))
+        elif self.patient.is_male and creat88 <= 0.7:
+            egfr = age_adj * black_adj * 141 * ((creat88/0.9)**(-0.411))
+
+        return egfr
 
 
 Index('results_patient_idx', Result.patient_id)
