@@ -211,6 +211,7 @@ class PatientExporter(Exporter):
             column('gender_label'),
             column('ethnicity'),
             column('ethnicity_label'),
+            column('ukrdc'),
             column('control'),
             column('recruited_date', lambda x: format_date(x.recruited_date(group))),  # 13
             column('recruited_group_id', lambda x: get_attrs(x.recruited_group(group), 'id')),
