@@ -215,6 +215,13 @@ class Patient(db.Model, MetaModelMixin):
 
         return max(patient_demographics, key=by_modified_date)
 
+    @property
+    def available_ethnicity(self):
+        patient_demographics = self.patient_demographics
+        ethnicities = [demog.ethnicity for demog in self.patient_demographics]
+        first_available = next((ethn for ethn in ethnicities if ethn is not None), None)
+        return first_available
+
     @hybrid_property
     def first_name(self):
         return self.latest_demographics_attr('first_name')

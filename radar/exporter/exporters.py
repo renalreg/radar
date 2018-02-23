@@ -209,8 +209,8 @@ class PatientExporter(Exporter):
             column('year_of_death'),
             column('gender'),
             column('gender_label'),
-            column('ethnicity'),
-            column('ethnicity_label'),
+            column('available_ethnicity'),
+            # column('available_ethnicity', 'label'),
             column('ukrdc'),
             column('control'),
             column('recruited_date', lambda x: format_date(x.recruited_date(group))),  # 13
