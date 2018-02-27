@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from sqlalchemy import Boolean, Column, exists, func, Integer, join, select, Sequence, String, text
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
@@ -12,6 +13,31 @@ from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, 
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.utils import months_between, round_age, uniq
+
+
+SIXTEEN_YEARS_IN_MONTHS = 12 * 16
+EIGHTEEN_YEARS_IN_MONTHS = 12 * 18
+
+
+class CONSENT_STATUS(Enum):
+    """Enum for possible patient status in regards to consents.
+
+    OK - means patient is consented, nothing needs to be done.
+    SOON - patient is consented, but consent is coming to an end.
+           Usually that means that patient has been consented as a
+           child and now is coming to adulthood and needs to be
+           reconsented as an adult.
+    EXPIRED - consent is not valid anymore and patient should be
+              frozen.
+    MISSING - patient was not consented.
+    """
+    OK = 'OK'
+    SOON = 'SOON'
+    EXPIRED = 'EXPIRED'
+    MISSING = 'MISSING'
+
+    def __str__(self):
+        return str(self.value)
 
 
 def clean(items):
@@ -217,7 +243,6 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def available_ethnicity(self):
-        patient_demographics = self.patient_demographics
         ethnicities = [demog.ethnicity for demog in self.patient_demographics]
         first_available = next((ethn for ethn in ethnicities if ethn is not None), None)
         return first_available
@@ -438,3 +463,22 @@ class Patient(db.Model, MetaModelMixin):
             years_old = months // 12
             return years_old < 16
         return None
+
+    @property
+    def consent_status(self):
+        """Return what consent status patient is in."""
+        if len(self.consents) == 0:
+            return CONSENT_STATUS.MISSING
+
+        for patient_consent in self.consents:
+            if not patient_consent.consent.paediatric:
+                return CONSENT_STATUS.OK
+        today = datetime.now().date()
+        months = self.to_age(today)
+
+        if SIXTEEN_YEARS_IN_MONTHS < months <= EIGHTEEN_YEARS_IN_MONTHS:
+            return CONSENT_STATUS.SOON
+        elif months > EIGHTEEN_YEARS_IN_MONTHS:
+            return CONSENT_STATUS.EXPIRED
+
+        return CONSENT_STATUS.OK

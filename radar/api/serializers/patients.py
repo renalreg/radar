@@ -14,7 +14,7 @@ from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.models.patient_codes import GENDERS
-from radar.models.patients import Patient
+from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -62,6 +62,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
+    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 
     class Meta(object):
         model_class = Patient
@@ -113,6 +114,7 @@ class TinyPatientSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
+    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 
     def to_representation(self, value):
         user = self.context['user']

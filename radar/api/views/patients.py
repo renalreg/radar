@@ -20,7 +20,7 @@ from radar.api.views.generics import (
 )
 from radar.auth.sessions import current_user
 from radar.models.groups import Group, GROUP_TYPE
-from radar.models.patients import Patient
+from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
 from radar.utils import get_attrs, SkipProxy, uniq
 
@@ -40,6 +40,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
+    consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
 
 
 def list_patients():
