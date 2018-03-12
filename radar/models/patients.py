@@ -458,11 +458,26 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def paediatric(self):
+        """Return true if patient is less than 16 years old."""
         months = self.to_age(datetime.now().date())
         if months:
             years_old = months // 12
             return years_old < 16
-        return None
+        return False
+
+    @property
+    def youth(self):
+        """Return true if patient is [16-18) years old."""
+        months = self.to_age(datetime.now().date())
+        if months:
+            years_old = months // 12
+            return 16 <= years_old < 18
+        return False
+
+    @property
+    def adult(self):
+        """Return true if patient is 18 years or older."""
+        return not self.paediatric and not self.youth
 
     @property
     def consent_status(self):
@@ -470,15 +485,30 @@ class Patient(db.Model, MetaModelMixin):
         if len(self.consents) == 0:
             return CONSENT_STATUS.MISSING
 
-        for patient_consent in self.consents:
-            if not patient_consent.consent.paediatric:
-                return CONSENT_STATUS.OK
-        today = datetime.now().date()
-        months = self.to_age(today)
+        old = False
+        if len(self.consents) == 1 and self.consents[0].consent.code == 'old':
+            old = True
 
-        if SIXTEEN_YEARS_IN_MONTHS < months <= EIGHTEEN_YEARS_IN_MONTHS:
-            return CONSENT_STATUS.SOON
-        elif months > EIGHTEEN_YEARS_IN_MONTHS:
+        if self.paediatric and old:
             return CONSENT_STATUS.EXPIRED
+        elif self.youth and old:
+            return CONSENT_STATUS.SOON
+        elif old:
+            return CONSENT_STATUS.EXPIRED
+
+        paediatric_consent = False
+        new_consent = False
+        for patient_consent in self.consents:
+            consent = patient_consent.consent
+            if consent.paediatric:
+                paediatric_consent = True
+            elif consent.code != 'old':
+                new_consent = True
+
+        if paediatric_consent and self.adult and not new_consent:
+            return CONSENT_STATUS.EXPIRED
+
+        if paediatric_consent and self.youth and not new_consent:
+            return CONSENT_STATUS.SOON
 
         return CONSENT_STATUS.OK
