@@ -34,4 +34,5 @@ def test_number_validator_invalid_nhs_number():
     try:
         serializer.is_valid(raise_exception=True)
     except ValidationError as exc:
-        assert 'Not a valid CHI number' in exc.args[0]['number'][0]
+        assert 'Not a valid CHI number' in exc.errors['number'][0]
+        # assert 'Not a valid CHI number' in exc.args[0]['number'][0]
