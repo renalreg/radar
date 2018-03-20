@@ -433,7 +433,7 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def frozen(self):
         """True if the patient is frozen."""
-        return not self.current or self.consent_status == CONSENT_STATUS.EXPIRED
+        return not self.current
 
     @hybrid_property
     def ukrdc(self):
