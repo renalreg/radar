@@ -1,10 +1,11 @@
 from datetime import datetime
-from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 from cornflake.validators import upper
 import pytz
+
+from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
 
 
 def parse_sda_datetime(value):
