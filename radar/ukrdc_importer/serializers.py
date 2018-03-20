@@ -1,4 +1,5 @@
 from datetime import datetime
+from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
@@ -93,6 +94,16 @@ class PatientNumberSerializer(serializers.Serializer):
     number = fields.StringField()
     number_type = fields.StringField()
     organization = CodeDescriptionSerializer()
+
+    def validate(self, value):
+        super(PatientNumberSerializer, self).validate(value)
+        number_type = value['number_type']
+        if number_type in ('NHS', 'CHI', 'HSC'):
+            number = value['number']
+            try:
+                _nhs_no(number, MIN_CHI_NO)
+            except ValueError:
+                raise ValidationError({'number': 'Not a valid {} number {}'.format(number_type, number)})
 
 
 class MedicationSerializer(serializers.Serializer):
