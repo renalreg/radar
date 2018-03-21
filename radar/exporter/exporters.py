@@ -780,9 +780,12 @@ class ResultExporter(Exporter):
 
         for key, results in data.items():
             row = list(key)
-            row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
-            for test in extra:
+            try:
+                row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
+            except ValueError:
+                row[3] = '{}/{}/{}'.format(*row[3].timetuple()[:3][::-1])
 
+            for test in extra:
                 if test in results:
                     row.append(results[test])
                 else:
