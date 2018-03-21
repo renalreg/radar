@@ -783,7 +783,8 @@ class ResultExporter(Exporter):
             try:
                 row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
             except ValueError:
-                row[3] = '{}/{}/{}'.format(*row[3].timetuple()[:3][::-1])
+                year, month, day, hour, minute, second = row[3].timetuple()[:6]
+                row[3] = '{}/{}/{} {}:{}:{}'.format(day, month, year, hour, minute, second)
 
             for test in extra:
                 if test in results:
