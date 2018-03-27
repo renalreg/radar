@@ -505,17 +505,23 @@ class Patient(db.Model, MetaModelMixin):
 
         paediatric_consent = False
         new_consent = False
+        old_consent = False
         for patient_consent in self.consents:
             consent = patient_consent.consent
             if consent.paediatric:
                 paediatric_consent = True
             elif consent.code != 'old':
                 new_consent = True
+            else:
+                old_consent = True
 
         if paediatric_consent and self.adult and not new_consent:
             return CONSENT_STATUS.EXPIRED
 
         if paediatric_consent and self.youth and not new_consent:
             return CONSENT_STATUS.SOON
+
+        if old_consent and not new_consent and not paediatric_consent:
+            return CONSENT_STATUS.EXPIRED
 
         return CONSENT_STATUS.OK

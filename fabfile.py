@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import binascii
 import os
 import tempfile
 
@@ -10,7 +11,8 @@ DEFAULT_DIST_DIR = 'dist'
 
 @contextmanager
 def temp():
-    tmp = '/tmp/radar-{0}'.format(os.urandom(20).encode('hex'))
+    randomstr = binascii.hexlify(os.urandom(20)).decode('utf-8')
+    tmp = '/tmp/radar-{0}'.format(randomstr)
     run('mkdir {0}'.format(tmp))
 
     with cd(tmp):
