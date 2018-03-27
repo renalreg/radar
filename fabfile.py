@@ -32,7 +32,6 @@ def build(rev='HEAD'):
         run('PATH=/usr/pgsql-9.4/bin:$PATH platter build -r requirements.txt .')
         if not os.path.exists(DEFAULT_DIST_DIR):
             os.makedirs(DEFAULT_DIST_DIR)
-        # local('mkdir -p dist')  # TODO mkdir on windows doesn't have the -p option
         get('dist/*.tar.gz', DEFAULT_DIST_DIR)
 
 

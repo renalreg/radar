@@ -38,7 +38,7 @@ def find_patient_ids(sda_patient_numbers):
         if sda_patient_number['organization']['code'] in system_codes:
             numbers.append(sda_patient_number['number'])
 
-    return numbers or None
+    return numbers or []
 
 
 def parse_patient_id(value):
@@ -119,7 +119,7 @@ def import_sda(data, sequence_number, patient_id=None):
         patient_ids = find_patient_ids(sda_patient_numbers)
 
         # No patient ID in file
-        if patient_ids is None:
+        if not patient_ids:
             logger.error('Patient ID is missing. Data - %s', data)
             return False
 
