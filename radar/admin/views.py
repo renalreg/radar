@@ -337,6 +337,10 @@ class ExportView(BaseView):
         requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
         return send_file(requested_file, as_attachment=True, attachment_filename=param)
 
+    def is_accessible(self):
+        # User needs to be logged in and a super admin to use this view
+        return current_user.is_authenticated() and current_user.is_admin
+
 
 class ConsentView(ModelView):
     column_list = ['code', 'label', 'paediatric', 'from_date', 'retired', 'consent_type', 'weight']
