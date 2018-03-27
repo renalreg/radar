@@ -97,7 +97,7 @@ class PatientNumberSerializer(serializers.Serializer):
     organization = CodeDescriptionSerializer()
 
     def validate(self, value):
-        super(PatientNumberSerializer, self).validate(value)
+        value = super(PatientNumberSerializer, self).validate(value)
         number_type = value['number_type']
         if number_type in ('NHS', 'CHI', 'HSC'):
             number = value['number']
@@ -105,6 +105,7 @@ class PatientNumberSerializer(serializers.Serializer):
                 _nhs_no(number, MIN_CHI_NO)
             except ValueError:
                 raise ValidationError({'number': 'Not a valid {} number {}'.format(number_type, number)})
+        return value
 
 
 class MedicationSerializer(serializers.Serializer):
