@@ -489,6 +489,9 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def consent_status(self):
         """Return what consent status patient is in."""
+        if self.year_of_death:
+            return CONSENT_STATUS.OK
+
         if len(self.consents) == 0:
             return CONSENT_STATUS.MISSING
 
