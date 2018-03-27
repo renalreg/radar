@@ -465,6 +465,13 @@ class Patient(db.Model, MetaModelMixin):
             return years_old < 16
         return False
 
+    def recruited_paediatric(self):
+        """Return whether patient was recruited as paediatric."""
+        months = self.to_age(self.recruited_date())
+        if months and months < SIXTEEN_YEARS_IN_MONTHS:
+            return True
+        return False
+
     @property
     def youth(self):
         """Return true if patient is [16-18) years old."""
