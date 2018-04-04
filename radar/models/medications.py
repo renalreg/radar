@@ -35,6 +35,39 @@ MEDICATION_DOSE_UNITS = OrderedDict([
 
 
 @log_changes
+class CurrentMedication(db.Model, MetaModelMixin):
+    __tablename__ = 'current_medications'
+
+    id = uuid_pk_column()
+
+    patient_id = patient_id_column()
+    patient = patient_relationship('current_medications')
+
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
+
+    date_recorded = Column(Date, nullable=False)
+    drug_id = Column(Integer, ForeignKey('drugs.id'))
+    drug = relationship('Drug')
+    dose_quantity = Column(Numeric)
+    dose_unit = Column(String)
+    frequency = Column(String)
+    route = Column(String)
+
+    drug_text = Column(String)
+    dose_text = Column(String)
+
+    @property
+    def dose_unit_label(self):
+        return MEDICATION_DOSE_UNITS.get(self.dose_unit)
+
+    @property
+    def route_label(self):
+        return MEDICATION_ROUTES.get(self.route)
+
+
+@log_changes
 class Medication(db.Model, MetaModelMixin):
     __tablename__ = 'medications'
 
