@@ -42,7 +42,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['source_group_id'], ['groups.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.drop_column('patient_diagnoses', 'primary')
     # ### end Alembic commands ###
 
 
