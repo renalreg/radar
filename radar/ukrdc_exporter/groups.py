@@ -14,13 +14,11 @@ def export_program_memberships(sda_container, patient, system_group):
         if group == system_group:
             program_name = group.code
             program_description = group.name
-        elif group.parent_group == system_group and group.type == GROUP_TYPE.COHORT:
-            program_name = '{0}.{1}.{2}'.format(system_group.code, group.type, group.code)
-            program_description = group.name
         else:
             continue
 
         program_membership = {
+            'external_id': str(group_patient.id),
             'program_name': program_name,
             'program_description': program_description,
             'from_time': group_patient.from_date.date()
