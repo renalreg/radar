@@ -23,10 +23,10 @@ def export_program_memberships(sda_container, patient, system_group):
         program_membership = {
             'program_name': program_name,
             'program_description': program_description,
-            'from_time': group_patient.from_date
+            'from_time': group_patient.from_date.date()
         }
 
         if group_patient.to_date is not None:
-            program_membership['to_time'] = group_patient.to_date
+            program_membership['to_time'] = group_patient.to_date.date()
 
         program_memberships.append(program_membership)
