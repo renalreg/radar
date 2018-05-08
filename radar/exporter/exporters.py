@@ -1159,7 +1159,7 @@ class RenalImagingExporter(Exporter):
 
         self._columns.extend(get_meta_columns())
 
-        q = queries.get_renal_progressions(self.config)
+        q = queries.get_renal_imaging(self.config)
         self._query = q
 
 

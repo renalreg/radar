@@ -27,6 +27,7 @@ from radar.models.patients import Patient
 from radar.models.pkd import LiverDiseases, LiverImaging, LiverTransplant, Nutrition
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
+from radar.models.renal_imaging import RenalImaging
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
@@ -242,6 +243,7 @@ get_plasmapheresis = patient_helper(Plasmapheresis)
 get_transplants = patient_helper(Transplant)
 get_hospitalisations = patient_helper(Hospitalisation)
 get_group_patients = patient_helper(GroupPatient)
+get_renal_imaging = patient_helper(RenalImaging)
 get_renal_progressions = patient_helper(RenalProgression)
 get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
 get_results = patient_helper(Result)
