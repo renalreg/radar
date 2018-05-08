@@ -110,34 +110,41 @@ def main():
             cursor = connection.cursor()
 
             for name, exporter in exporters:
+
+                # Change so SQLite is happy as a table name
+                name = name.replace("-", "_")
+
                 columns = exporter._columns
-                resultset = exporter._query
+
+                # And so SQLite is happy as a column name
+                column_row = list()
+                for x in [row[0] for row in columns]:
+                    column_row.append(x.replace('-', '_'))
 
                 # Build Table
                 sqlstring = """
                 CREATE TABLE """ + name + """
                 (
-                """ + " TEXT,\n".join([row[0] for row in columns]) + """ TEXT
+                """ + " TEXT,\n".join(column_row) + """ TEXT
                 )
                 """
-
-                print(sqlstring)
                 cursor.execute(sqlstring)
-             
-                # Populate Table
-                for row in resultset:
 
-                    sqlstring = """
-                    INSERT INTO """ + name + """
-                    VALUES (""" + "?,".join(len([c[1](row) for c in columns]) * ['']) + """?  )
-                    """
-                    print(sqlstring)
-                    try:
-                        cursor.execute(sqlstring, [c[1](row) for c in columns])
-                    except:
-                        print [c[1](row) for c in columns]
-                        raise
-        
+                resultset = exporter.plain_rows
+                if resultset is not None:
+                    for insert_row in resultset:
+                        sqlstring = """
+                        INSERT INTO """ + name + """
+                        VALUES (""" + "?,".join(len(column_row) * ['']) + """?  )
+                        """
+                        try:
+                            cursor.execute(sqlstring, insert_row)
+                        except Exception:
+                            print(insert_row)
+                            raise
+
+                connection.commit()
+
         elif args.format in book_formats:
             if is_dir:
                 for dataset in datasets:

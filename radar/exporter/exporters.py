@@ -172,6 +172,24 @@ def get_meta_columns():
     ]
 
 
+def query_to_plain_rows(query, columns):
+    if query is None:
+        return None
+    else:
+        output_list = list()
+        for row in query:
+            insert_row = list()
+            for x in [c[1](row) for c in columns]:
+                if getattr(x, 'code', None):
+                    insert_row.append(x.code)
+                else:
+                    insert_row.append(x)
+
+            output_list.append(insert_row)
+
+        return output_list
+
+
 class Exporter(object):
     def __init__(self, config):
         self.config = config
@@ -188,6 +206,10 @@ class Exporter(object):
     @property
     def dataset(self):
         return query_to_dataset(self._query, self._columns)
+
+    @property
+    def plain_rows(self):
+        return query_to_plain_rows(self._query, self._columns)
 
 
 @register('patients')
@@ -794,6 +816,51 @@ class ResultExporter(Exporter):
             dataset.append(row)
 
         return dataset
+
+
+@register('resultslist')
+class ResultListExporter(Exporter):
+    def run(self):
+        q = queries.get_results(self.config)
+
+        self._columns = [
+            column('patient_id'),
+            column('source_group'),
+            column('source_type'),
+            column('date'),
+            column('pv_code'),
+            column('value')
+        ]
+        self._query = q
+
+    @property
+    def plain_rows(self):
+        output_list = list()
+
+        for result in self._query:
+            output_row = list()
+            output_row.append(result.patient_id)
+            output_row.append(result.source_group.code)
+            output_row.append(result.source_type)
+            output_row.append(result.date)
+            output_row.append(result.observation.pv_code)
+            output_row.append(result.value)
+
+            output_list.append(output_row)
+
+            # Add Row for Calculated eGFR, if present
+            if result.observation.pv_code == 'CREATININE':
+                output_row = list()
+                output_row.append(result.patient_id)
+                output_row.append(result.source_group.code)
+                output_row.append(result.source_type)
+                output_row.append(result.date)
+                output_row.append('EGFR')
+                output_row.append(result.egfr_calculated)
+
+                output_list.append(output_row)
+
+        return output_list
 
 
 @register('observations')
