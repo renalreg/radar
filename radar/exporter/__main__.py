@@ -5,6 +5,8 @@ except ImportError:
     from ConfigParser import ConfigParser
 import os
 
+import sqlite3
+
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
 import tablib
@@ -51,7 +53,7 @@ def parse_config(config_parser):
 
 def main():
     # Note: xls doesn't support timezones
-    formats = ['csv', 'xlsx']
+    formats = ['csv', 'xlsx', 'sqlite']
     book_formats = ['xlsx']
 
     argument_parser = argparse.ArgumentParser()
@@ -101,7 +103,42 @@ def main():
 
         is_dir = os.path.isdir(args.dest)
 
-        if args.format in book_formats:
+        if args.format == 'sqlite':
+
+            # TODO: This will crash if the file already exists
+            connection = sqlite3.connect(args.dest)
+            cursor = connection.cursor()
+
+            for name, exporter in exporters:
+                columns = exporter._columns
+                resultset = exporter._query
+
+                # Build Table
+                sqlstring = """
+                CREATE TABLE """ + name + """
+                (
+                """ + " TEXT,\n".join([row[0] for row in columns]) + """ TEXT
+                )
+                """
+
+                print(sqlstring)
+                cursor.execute(sqlstring)
+             
+                # Populate Table
+                for row in resultset:
+
+                    sqlstring = """
+                    INSERT INTO """ + name + """
+                    VALUES (""" + "?,".join(len([c[1](row) for c in columns]) * ['']) + """?  )
+                    """
+                    print(sqlstring)
+                    try:
+                        cursor.execute(sqlstring, [c[1](row) for c in columns])
+                    except:
+                        print [c[1](row) for c in columns]
+                        raise
+        
+        elif args.format in book_formats:
             if is_dir:
                 for dataset in datasets:
                     dest = os.path.join(args.dest, '%s.%s' % (dataset.title, args.format))
