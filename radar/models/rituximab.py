@@ -30,6 +30,8 @@ TREATMENT_OPTIONS = OrderedDict([
 
 @log_changes
 class BaselineAssessment(db.Model, MetaModelMixin):
+    __tablename__ = 'rituximab_baseline_assessment'
+
     id = uuid_pk_column()
 
     patient_id = patient_id_column()

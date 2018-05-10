@@ -42,3 +42,8 @@ def register_views(app):
     app.add_url_rule(
         '/rituximab-performance-options',
         view_func=RituximabPerformanceOptionListView.as_view('rituximab_performance_option_list'))
+
+    app.add_url_rule(
+        '/rituximab-baseline-assessment/<id>',
+        view_func=RituximabBaselineAssessmentDetailView.as_view('assessment_detail')
+    )
