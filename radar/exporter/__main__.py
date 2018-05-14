@@ -106,6 +106,7 @@ def main():
         if args.format == 'sqlite':
 
             # TODO: This will crash if the file already exists
+            # Annoyingly only after its finished querying
             connection = sqlite3.connect(args.dest)
             cursor = connection.cursor()
 
@@ -114,29 +115,13 @@ def main():
                 # Change so SQLite is happy as a table name
                 name = name.replace("-", "_")
 
-                columns = exporter._columns
-
-                # And so SQLite is happy as a column name
-                column_row = list()
-                for x in [row[0] for row in columns]:
-                    column_row.append(x.replace('-', '_'))
-
-                # Build Table
-                sqlstring = """
-                CREATE TABLE """ + name + """
-                (
-                """ + " TEXT,\n".join(column_row) + """ TEXT
-                )
-                """
+                sqlstring = exporter.get_create_table_string(name)
                 cursor.execute(sqlstring)
 
+                sqlstring = exporter.get_insert_string(name)
                 resultset = exporter.plain_rows
                 if resultset is not None:
                     for insert_row in resultset:
-                        sqlstring = """
-                        INSERT INTO """ + name + """
-                        VALUES (""" + "?,".join(len(column_row) * ['']) + """?  )
-                        """
                         try:
                             cursor.execute(sqlstring, insert_row)
                         except Exception:
