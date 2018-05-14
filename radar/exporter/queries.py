@@ -5,7 +5,13 @@ from sqlalchemy.sql.expression import true
 from radar.database import db
 from radar.models.codes import Code
 from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.diagnoses import Diagnosis, DiagnosisCode, GroupDiagnosis, PatientDiagnosis
+from radar.models.diagnoses import (
+    Diagnosis,
+    DiagnosisCode,
+    GroupDiagnosis,
+    GROUP_DIAGNOSIS_TYPE,
+    PatientDiagnosis,
+)
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
@@ -225,6 +231,7 @@ def get_primary_diagnoses(config):
     """Return query to get primary diagnoses for data_group."""
     q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
     q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
+    q = q.filter(GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY)
     return q
 
 
