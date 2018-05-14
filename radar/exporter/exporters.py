@@ -913,7 +913,8 @@ class ResultListExporter(Exporter):
                 output_row.append(result.source_group.code)
                 output_row.append(result.source_type)
                 output_row.append(result.date)
-                output_row.append('EGFR')
+                # Keep distinct from unit supplied eGFRs
+                output_row.append('EGFR_RDR')
                 output_row.append(result.egfr_calculated)
 
                 output_list.append(output_row)
