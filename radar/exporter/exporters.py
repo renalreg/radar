@@ -211,6 +211,32 @@ class Exporter(object):
     def plain_rows(self):
         return query_to_plain_rows(self._query, self._columns)
 
+    def get_create_table_string(self, name):
+        columns = self._columns
+
+        # Make Column Names SQL Compatible
+        column_row = list()
+        for x in [row[0] for row in columns]:
+            column_row.append(x.replace('-', '_'))
+
+        # Build Query
+        sqlstring = """
+        CREATE TABLE """ + name + """
+        (
+        """ + " TEXT,\n".join(column_row) + """ TEXT
+        )
+        """
+
+        return sqlstring
+
+    def get_insert_string(self, name):
+        sqlstring = """
+        INSERT INTO """ + name + """
+        VALUES (""" + "?,".join(len(self._columns) * ['']) + """?  )
+        """
+
+        return sqlstring
+
 
 @register('patients')
 class PatientExporter(Exporter):
@@ -407,7 +433,9 @@ class DiagnosisExporter(Exporter):
         ]
         self._columns.extend(get_meta_columns())
         q = queries.get_patient_diagnoses(self.config)
+        self._patient_diagnoses_query = q
         primary_diagnoses = queries.get_primary_diagnoses(self.config)
+        self._primary_diagnoses_query = primary_diagnoses
 
         primary = make_dataset(self._columns)
         comorbidity = make_dataset(self._columns)
@@ -441,6 +469,36 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
     @property
     def dataset(self):
         return self._primary
+
+    @property
+    def plain_rows(self):
+        if self._patient_diagnoses_query is None:
+            return None
+        else:
+            output_list = list()
+            for patient_diagnosis in self._patient_diagnoses_query:
+                insert_row = list()
+                for x in [c[1](patient_diagnosis) for c in self._columns]:
+                    if getattr(x, 'code', None):
+                        insert_row.append(x.code)
+                    else:
+                        insert_row.append(x)
+
+                diagnosis = patient_diagnosis.diagnosis
+
+                if diagnosis and diagnosis.codes:
+                    for code in diagnosis.codes:
+                        if code.system == 'ERA-EDTA PRD':
+                            insert_row[5] = code.code
+                        elif code.system == 'ICD-10':
+                            insert_row[6] = code.code
+                        elif code.system == 'SNOMED CT':
+                            insert_row[7] = code.code
+
+                if diagnosis in self._primary_diagnoses_query:
+                    output_list.append(insert_row)
+
+            return output_list
 
 
 @register('comorbidities')
