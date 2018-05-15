@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Boolean, Column, Date, Integer, Index, String
+from sqlalchemy import Column, Date, Integer
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
@@ -11,7 +11,7 @@ from radar.models.logs import log_changes
 PERFORMANCE_STATUS_OPTIONS = OrderedDict([
     (0, '0: able to carry out all normal activity without restriction'),
     (1, '1: restricted in strenuous activity but ambulatory and able to carry out light work'),
-    (2, '2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours'),
+    (2, '2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours'),  # noqa
     (3, '3: symptomatic and in a chair or in bed for greater than 50% of the day but not bedridden'),
     (4, '4: completely disabled; cannot carry out any self-care; totally confined to bed or chair'),
 ])
@@ -25,7 +25,6 @@ TREATMENT_OPTIONS = OrderedDict([
     ('cyclosporine', 'Cyclosporine'),
     ('steroids', 'Steroids'),
 ])
-
 
 
 @log_changes
