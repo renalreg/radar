@@ -161,14 +161,24 @@ def demographics_column_factory(config):
     return column
 
 
-def get_meta_columns():
+def get_meta_columns(config):
+    def created_user(x):
+        if config['anonymised']:
+            return ""
+        return format_user(x.created_user)
+
+    def modified_user(x):
+        if config['anonymised']:
+            return ""
+        return format_user(x.modified_user)
+
     return [
         column('created_date', lambda x: format_date(x.created_date)),
         column('created_user_id'),
-        column('created_user', lambda x: format_user(x.created_user)),
+        column('created_user', created_user),
         column('modified_date', lambda x: format_date(x.modified_date)),
         column('modified_user_id'),
-        column('modified_user', lambda x: format_user(x.created_user)),
+        column('modified_user', modified_user),
     ]
 
 
@@ -246,6 +256,12 @@ class PatientExporter(Exporter):
         def d(name, getter=None, anonymised_getter=None):
             return demographics_column(name, getter, anonymised_getter, identity_getter)
         group = self.config['patient_group']
+
+        def recruited_user(x):
+            if self.config['anonymised']:
+                return ""
+            return format_user(x.recruited_user(group))
+
         self._columns = [
             column('id'),
             d('patient_number', 'primary_patient_number.number'),
@@ -265,7 +281,7 @@ class PatientExporter(Exporter):
             column('recruited_group_id', lambda x: get_attrs(x.recruited_group(group), 'id')),
             column('recruited_group', lambda x: get_attrs(x.recruited_group(group), 'name')),
             column('recruited_user_id', lambda x: get_attrs(x.recruited_user(group), 'id')),
-            column('recruited_user', lambda x: format_user(x.recruited_user(group))),
+            column('recruited_user', recruited_user),
         ]
 
         q = queries.get_patients(self.config)
@@ -287,7 +303,7 @@ class PatientNumberExporter(Exporter):
             column('number_group', 'number_group.name'),
             d('number'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_patient_numbers(self.config)
         self._query = q
@@ -312,7 +328,7 @@ class PatientAddressExporter(Exporter):
             d('address4'),
             d('postcode', anonymised_getter='anonymised_postcode'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_patient_addresses(self.config)
         self._query = q
@@ -332,7 +348,7 @@ class PatientAliasExporter(Exporter):
             d('first_name'),
             d('last_name'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_patient_aliases(self.config)
         self._query = q
@@ -365,7 +381,7 @@ class PatientDemographicsExporter(Exporter):
             d('email_address'),
         ]
 
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_patient_demographics(self.config)
         self._query = q
@@ -393,7 +409,7 @@ class MedicationExporter(Exporter):
             column('route'),
             column('route_label'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_medications(self.config)
         self._query = q
@@ -431,7 +447,7 @@ class DiagnosisExporter(Exporter):
             column('biopsy_diagnosis_label'),
             column('comments'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_patient_diagnoses(self.config)
         self._patient_diagnoses_query = q
         primary_diagnoses = queries.get_primary_diagnoses(self.config)
@@ -525,7 +541,7 @@ class GeneticsExporter(Exporter):
             column('results'),
             column('summary'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_genetics(self.config)
         self._query = q
@@ -549,7 +565,7 @@ class PathologyExporter(Exporter):
             column('histological_summary'),
             column('em_findings'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_pathology(self.config)
         self._query = q
@@ -576,7 +592,7 @@ class FamilyHistoryExporter(Exporter):
             column('parental_consanguinity'),
             column('family_history'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_family_histories(self.config)
         self._query = q
@@ -619,7 +635,7 @@ class InsClinicalPictureExporter(Exporter):
             column('ophthalmoscopy_details'),
             column('comments'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_ins_clinical_pictures(self.config)
         self._query = q
@@ -639,7 +655,7 @@ class DialysisExporter(Exporter):
             column('modality'),
             column('modality_label'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_dialyses(self.config)
         self._query = q
@@ -661,7 +677,7 @@ class PlasmapheresisExporter(Exporter):
             column('response'),
             column('response_label'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_plasmapheresis(self.config)
         self._query = q
@@ -684,7 +700,7 @@ class TransplantExporter(Exporter):
             column('date_of_recurrence', lambda x: format_date(x.date_of_recurrence)),
             column('date_of_failure', lambda x: format_date(x.date_of_failure)),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_transplants(self.config)
         self._query = q
@@ -731,7 +747,7 @@ class HospitalisationExporter(Exporter):
             column('reason_for_admission'),
             column('comments'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_hospitalisations(self.config)
         self._query = q
@@ -755,7 +771,7 @@ class InsRelapseExporter(Exporter):
             column('remission_type'),
             column('remission_type_label'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_ins_relapses(self.config)
         self._query = q
@@ -778,7 +794,7 @@ class MpgnClinicalPicturesExporter(Exporter):
             column('ophthalmoscopy_details'),
             column('comments'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_mpgn_clinical_pictures(self.config)
         self._query = q
@@ -797,7 +813,7 @@ class GroupPatientExporter(Exporter):
             column('created_group_id'),
             column('created_group', 'created_group.name'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_group_patients(self.config)
         self._query = q
@@ -816,7 +832,7 @@ class RenalProgressionExporter(Exporter):
             column('ckd5_date', lambda x: format_date(x.ckd5_date)),
             column('esrf_date', lambda x: format_date(x.esrf_date)),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_renal_progressions(self.config)
         self._query = q
@@ -958,7 +974,7 @@ class Cit6Exporter(Exporter):
             column('q7', 'data.q7'),
             column('score', 'data.score'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -981,7 +997,7 @@ class CHU9DExporter(Exporter):
             column('activities', 'data.activities'),
 
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -997,7 +1013,7 @@ class DiabeticComplicationExporter(Exporter):
             column('retinopathy', 'data.retinopathy'),
             column('peripheral neuropathy', 'data.peripheralNeuropathy'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1018,7 +1034,7 @@ class Eq5d5lExporter(Exporter):
             column('anxiety depression', 'data.anxietyDepression'),
             column('health', 'data.health'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1039,7 +1055,7 @@ class Eq5dyExporter(Exporter):
             column('anxiety depression', 'data.anxietyDepression'),
             column('health', 'data.health'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1068,7 +1084,7 @@ class HadsExporter(Exporter):
             column('anxiety score', 'data.anxietyScore'),
             column('depression score', 'data.depressionScore'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1092,7 +1108,7 @@ class FamilyDiseasesHistoryExporter(Exporter):
             column('diabetesRelative2', 'data.diabetesRelative2'),
             column('diabetesRelative3', 'data.diabetesRelative3'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1131,7 +1147,7 @@ class IposExporter(Exporter):
             column('question5', 'data.question5'),
             column('score', 'data.score'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1159,7 +1175,7 @@ class SamplesExporter(Exporter):
             column('wb'),
             column('protocol_id'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_nurture_samples(self.config)
         self._query = q
 
@@ -1189,7 +1205,7 @@ class AnthropometricsExporter(Exporter):
             column('diastolic3', 'data.diastolic3'),
             column('diastolic', 'data.diastolic'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1213,7 +1229,7 @@ class SocioEconomicExporter(Exporter):
             column('diet', 'data.diet'),
             column('otherDiet', 'data.otherDiet'),
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1245,7 +1261,7 @@ class NurtureCKDExporter(Exporter):
             column('yearsIbuprofen', 'data.yearsIbuprofen'),
 
         ]
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
@@ -1283,9 +1299,9 @@ class RenalImagingExporter(Exporter):
             column('left_other_malformation'),
         ]
 
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
-        q = queries.get_renal_progressions(self.config)
+        q = queries.get_renal_imaging(self.config)
         self._query = q
 
 
@@ -1325,7 +1341,7 @@ class PregnanciesExporter(Exporter):
             column('pre_eclampsia'),
         ]
 
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_pregnancies(self.config)
         self._query = q
@@ -1350,7 +1366,7 @@ class FetalUltrasoundsExporter(Exporter):
             column('comments'),
         ]
 
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_fetal_ultrasounds(self.config)
         self._query = q
@@ -1378,7 +1394,7 @@ class ClinicalFeaturesExporter(Exporter):
             column('other_x_ray_abnormality_text'),
         ]
 
-        self._columns.extend(get_meta_columns())
+        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_clinical_features(self.config)
         self._query = q
 
