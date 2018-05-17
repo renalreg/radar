@@ -4,7 +4,6 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 import os
-
 import sqlite3
 
 from cornflake import fields, serializers

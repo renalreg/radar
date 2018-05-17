@@ -8,8 +8,8 @@ from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.diagnoses import (
     Diagnosis,
     DiagnosisCode,
-    GroupDiagnosis,
     GROUP_DIAGNOSIS_TYPE,
+    GroupDiagnosis,
     PatientDiagnosis,
 )
 from radar.models.dialysis import Dialysis
