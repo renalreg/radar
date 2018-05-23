@@ -5,8 +5,8 @@ except ImportError:
     from ConfigParser import ConfigParser
 
 import os
-import sqlite3
 import socket
+import sqlite3
 
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
@@ -170,7 +170,7 @@ def main():
 
                 connection.commit()
 
-        elif args.format in book_formats:        
+        elif args.format in book_formats:
 
             if is_dir:
                 for dataset in datasets:
