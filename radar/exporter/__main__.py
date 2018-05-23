@@ -118,16 +118,25 @@ def main():
                 name = name.replace(":", "_")
                 name = name.replace(">", "_")
 
+                resultset = exporter.plain_rows
+
                 sqlstring = exporter.get_create_table_string(name)
-                cursor.execute(sqlstring)
+                try:
+                    cursor.execute(sqlstring)
+                except:
+                    print(exporter._columns)
+                    print(sqlstring)
+                    raise
 
                 sqlstring = exporter.get_insert_string(name)
-                resultset = exporter.plain_rows
+
                 if resultset is not None:
                     for insert_row in resultset:
                         try:
                             cursor.execute(sqlstring, insert_row)
                         except Exception:
+                            print(exporter._columns)
+                            print(sqlstring)
                             print(insert_row)
                             raise
 
