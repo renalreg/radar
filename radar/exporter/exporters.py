@@ -226,8 +226,10 @@ class Exporter(object):
 
         # Make Column Names SQL Compatible
         column_row = list()
-        for x in [row[0] for row in columns]:
-            column_row.append(x.replace('-', '_'))
+        for column_name in [row[0] for row in columns]:
+            for character in ("-", " ", ":", ">", "/", "<", "(", ")"):
+                column_name = column_name.replace(character, "_")
+            column_row.append(column_name)
 
         # Build Query
         sqlstring = """
@@ -890,6 +892,10 @@ class ResultExporter(Exporter):
             dataset.append(row)
 
         return dataset
+
+    @property
+    def plain_rows(self):
+        raise NotImplementedError
 
 
 @register('resultslist')

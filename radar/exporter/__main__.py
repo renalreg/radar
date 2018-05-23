@@ -105,7 +105,7 @@ def main():
 
         if args.format == 'sqlite':
 
-            # TODO: This will crash if the file already exists
+            # NOTE: This will crash if the file already exists
             # Annoyingly only after its finished querying
             connection = sqlite3.connect(args.dest)
             cursor = connection.cursor()
@@ -114,6 +114,9 @@ def main():
 
                 # Change so SQLite is happy as a table name
                 name = name.replace("-", "_")
+                name = name.replace(" ", "_")
+                name = name.replace(":", "_")
+                name = name.replace(">", "_")
 
                 sqlstring = exporter.get_create_table_string(name)
                 cursor.execute(sqlstring)
