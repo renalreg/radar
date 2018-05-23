@@ -3,9 +3,8 @@ try:
     from configparser import ConfigParser
 except ImportError:
     from ConfigParser import ConfigParser
-import os
-import sqlite3
 
+import os
 import sqlite3
 
 from cornflake import fields, serializers
