@@ -12,6 +12,7 @@ from radar.models.logs import log_changes
 PLASMAPHERESIS_RESPONSES = OrderedDict([
     ('COMPLETE', 'Complete'),
     ('PARTIAL', 'Partial'),
+    ('PREEMTIVE', 'Preemptive'),
     ('NONE', 'None'),
 ])
 
