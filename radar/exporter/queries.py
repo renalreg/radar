@@ -3,7 +3,9 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import true
 
 from radar.database import db
+from radar.models.alport import AlportClinicalPicture
 from radar.models.codes import Code
+from radar.models.consents import PatientConsent
 from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.diagnoses import (
     Diagnosis,
@@ -263,3 +265,5 @@ get_liver_transplants = patient_helper(LiverTransplant)
 get_nephrectomies = patient_helper(Nephrectomy)
 get_nutrition = patient_helper(Nutrition)
 get_nurture_samples = patient_helper(Samples)
+get_consents = patient_helper(PatientConsent)
+get_alport_clinical_pictures = patient_helper(AlportClinicalPicture)

@@ -1379,3 +1379,33 @@ class NutritionExporter(Exporter):
         ]
         q = queries.get_nutrition(self.config)
         self._query = q
+
+
+@register('consents')
+class ConsentsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('consent', 'consent.label'),
+            column('signed_on_date', lambda x: format_date(x.signed_on_date)),
+        ]
+        q = queries.get_consents(self.config)
+        self._query = q
+
+
+@register('alport-clinical-pictures')
+class AlportPicturesExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date_of_picture', lambda x: format_date(x.date_of_picture)),
+            column('deafness'),
+            column('deafness_date', lambda x: format_date(x.deafness_date)),
+            column('hearing_aid_date', lambda x: format_date(x.hearing_aid_date)),
+
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_alport_clinical_pictures(self.config)
+        self._query = q
