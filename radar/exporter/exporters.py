@@ -215,7 +215,7 @@ class PatientExporter(Exporter):
             return format_user(x.recruited_user(group))
 
         self._columns = [
-            column('id'),
+            column('patient_id', 'id'),
             d('patient_number', 'primary_patient_number.number'),
             d('first_name'),
             d('last_name'),
@@ -227,7 +227,7 @@ class PatientExporter(Exporter):
             column('gender_label'),
             column('available_ethnicity'),
             # column('available_ethnicity', 'label'),
-            column('ukrdc'),
+            column('patient_view', 'ukrdc'),
             column('control'),
             column('recruited_date', lambda x: format_date(x.recruited_date(group))),  # 13
             column('recruited_group_id', lambda x: get_attrs(x.recruited_group(group), 'id')),
