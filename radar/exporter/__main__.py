@@ -130,7 +130,6 @@ def main():
 
         is_dir = os.path.isdir(args.dest)
 
-
         if args.format == 'sqlite':
 
             # NOTE: This will crash if the file already exists
