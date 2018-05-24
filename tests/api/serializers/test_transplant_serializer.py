@@ -32,6 +32,20 @@ def transplant(patient):
     }
 
 
+@pytest.fixture
+def transplant1(patient):
+    return {
+        'source_group': Group(),
+        'source_type': SOURCE_TYPE_MANUAL,
+        'patient': patient,
+        'date': date(2015, 1, 1),
+        'modality': 29,
+        'date_of_failure': date(2015, 1, 2),
+        'recurrence': True,
+    }
+
+
+
 def test_valid(transplant):
     obj = valid(transplant)
     assert obj.date == date(2015, 1, 1)
@@ -41,6 +55,11 @@ def test_valid(transplant):
     assert obj.modified_date is not None
     assert obj.created_user is not None
     assert obj.modified_user is not None
+
+
+def test_recurrence_is_set(transplant1):
+    obj = valid(transplant1)
+    assert obj.recurrence
 
 
 def test_patient_none(transplant):
