@@ -18,6 +18,15 @@ REMISSION_TYPES = OrderedDict([
     ('NONE', 'None'),
 ])
 
+DIPSTICK_TYPES = OrderedDict([
+    ('NEGATIVE', 'Negative'),
+    ('ONEPLUS', '+'),
+    ('TWOPLUS', '++'),
+    ('THREEPLUS', '+++'),
+    ('FOURPLUS', '++++'),
+    ('TRACE', 'Trace'),
+])
+
 
 @log_changes
 class InsClinicalPicture(db.Model, MetaModelMixin):
@@ -64,6 +73,8 @@ class InsRelapse(db.Model, MetaModelMixin):
     other_trigger = Column(String)
     peak_pcr = Column(Float)
     peak_acr = Column(Float)
+    peak_protein_dipstick = Column(String)
+    remission_protein_dipstick = Column(String)
     high_dose_oral_prednisolone = Column(Boolean)
     iv_methyl_prednisolone = Column(Boolean)
     date_of_remission = Column(Date)
