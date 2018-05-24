@@ -45,7 +45,6 @@ def transplant1(patient):
     }
 
 
-
 def test_valid(transplant):
     obj = valid(transplant)
     assert obj.date == date(2015, 1, 1)
