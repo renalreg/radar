@@ -66,6 +66,7 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     remission_protein_dipstick = StringLookupField(DIPSTICK_TYPES)
     high_dose_oral_prednisolone = fields.BooleanField(required=False)
     iv_methyl_prednisolone = fields.BooleanField(required=False)
+    relapse_sample_taken = fields.BooleanField(required=False)
     date_of_remission = fields.DateField(required=False)
     remission_type = StringLookupField(REMISSION_TYPES, required=False)
     remission_pcr = fields.FloatField(required=False)

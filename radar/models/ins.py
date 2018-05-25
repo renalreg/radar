@@ -77,6 +77,7 @@ class InsRelapse(db.Model, MetaModelMixin):
     remission_protein_dipstick = Column(String)
     high_dose_oral_prednisolone = Column(Boolean)
     iv_methyl_prednisolone = Column(Boolean)
+    relapse_sample_taken = Column(Boolean)
     date_of_remission = Column(Date)
     remission_type = Column(String)
     remission_pcr = Column(Float)
