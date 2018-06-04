@@ -38,6 +38,7 @@ from radar.models.pregnancies import Pregnancy
 from radar.models.renal_imaging import RenalImaging
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
+from radar.models.rituximab import BaselineAssessment
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
 from radar.roles import get_roles_with_permission, PERMISSION
@@ -267,3 +268,4 @@ get_nutrition = patient_helper(Nutrition)
 get_nurture_samples = patient_helper(Samples)
 get_consents = patient_helper(PatientConsent)
 get_alport_clinical_pictures = patient_helper(AlportClinicalPicture)
+get_rituximab_baseline_assessment_data = patient_helper(BaselineAssessment)

@@ -64,7 +64,6 @@ def query_to_dataset(query, columns):
 
     for row in query:
         data.append([c[1](row) for c in columns])
-
     return data
 
 
@@ -1407,4 +1406,91 @@ class AlportPicturesExporter(Exporter):
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_alport_clinical_pictures(self.config)
+        self._query = q
+
+
+@register('rituximab-consents')
+class RituximabConsentsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('opt1', 'data.opt1'),
+            column('opt2', 'data.opt2'),
+            column('opt3', 'data.opt3'),
+            column('opt4', 'data.opt4'),
+            column('opt5', 'data.opt5'),
+            column('opt6', 'data.opt6'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-visits')
+class RituximabVisitsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('label', 'data.visit'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-baseline-assessment')
+class RituximabBaselineAssessmentExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date'),
+            column('supportive_medication'),
+            column('previous_treatment'),
+            column('performance_status'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_rituximab_baseline_assessment_data(self.config)
+        self._query = q
+
+
+@register('rituximab-administration')
+class RituximabAdministrationExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('drug_name', 'data.drugName'),
+            column('other_drug', 'data.otherDrug'),
+            column('dose', 'data.dose'),
+            column('retreatment', 'data.retreatment'),
+            column('toxicity', 'data.toxicity'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-assessment')
+class RituximabFollowupAssessmentExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('performance', 'data.performance'),
+            column('response', 'data.response'),
+            column('disease', 'data.disease'),
+            column('esrd', 'data.esrd'),
+            column('transplant', 'data.transplant'),
+            column('haemodialysis', 'data.haemodialysis'),
+            column('peritoneal_dialysis', 'data.peritonealDialysis'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
         self._query = q
