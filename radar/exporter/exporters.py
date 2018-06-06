@@ -25,6 +25,15 @@ ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 exporter_map = {}
 
 
+def stringify_list(name):
+
+    def stringify(entry):
+        items = entry.data.get(name)
+        return '; '.join(items)
+
+    return stringify
+
+
 def none_to_empty(value):
     return '' if value is None else value
 
@@ -1415,13 +1424,7 @@ class RituximabConsentsExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'data.date'),
-            column('opt1', 'data.opt1'),
-            column('opt2', 'data.opt2'),
-            column('opt3', 'data.opt3'),
-            column('opt4', 'data.opt4'),
-            column('opt5', 'data.opt5'),
-            column('opt6', 'data.opt6'),
+            column('date', 'data.date')
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
@@ -1449,13 +1452,50 @@ class RituximabBaselineAssessmentExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('date'),
-            column('supportive_medication'),
-            column('previous_treatment'),
-            column('performance_status'),
         ]
-        self._columns.extend(get_meta_columns(self.config))
         q = queries.get_rituximab_baseline_assessment_data(self.config)
         self._query = q
+
+    @property
+    def dataset(self):
+        supportive = ('raasblockade', 'anticoaguliant', 'statins', 'diuretics')
+        self._columns.extend(column(item) for item in supportive)
+        previous = (
+            'chlorambucil',
+            'cyclophosphamide',
+            'rituximab',
+            'tacrolimus',
+            'cyclosporine',
+            'steroids'
+        )
+        for item in previous:
+            items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
+            self._columns.extend(column(item) for item in items)
+
+        self._columns.append(column('performance_status'))
+        self._columns.extend(get_meta_columns(self.config))
+        dataset = make_dataset(self._columns)
+
+        for entry in self._query:
+            row = [entry.id, entry.patient_id, entry.date]
+            for item in supportive:
+                row.append(entry.supportive_medication.get(item, 'False'))
+            for item in previous:
+                present = entry.previous_treatment.get(item, {})
+                if present.get(item, False):
+                    row.append(present.get(item))
+                    row.append(present.get('start_date'.format(item), ''))
+                    row.append(present.get('end_date'.format(item), ''))
+                else:
+                    row.append(False)
+                    row.append('')
+                    row.append('')
+            row.append(entry.performance_status)
+            for col in self._columns[-6:]:
+                row.append(col[1](entry))
+
+            dataset.append(row)
+        return dataset
 
 
 @register('rituximab-administration')
@@ -1469,8 +1509,9 @@ class RituximabAdministrationExporter(Exporter):
             column('other_drug', 'data.otherDrug'),
             column('dose', 'data.dose'),
             column('retreatment', 'data.retreatment'),
-            column('toxicity', 'data.toxicity'),
+            column('toxicity', stringify_list('toxicity')),
         ]
+
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
