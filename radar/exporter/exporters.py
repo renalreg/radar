@@ -28,7 +28,7 @@ exporter_map = {}
 def stringify_list(name):
 
     def stringify(entry):
-        items = entry.data.get(name)
+        items = entry.data.get(name, [])
         return '; '.join(items)
 
     return stringify
