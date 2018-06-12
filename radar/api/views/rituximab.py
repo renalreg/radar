@@ -7,7 +7,9 @@ from radar.api.views.common import (
 )
 from radar.models.rituximab import (
     BaselineAssessment,
+    NEPHROPATHIES,
     PERFORMANCE_STATUS_OPTIONS,
+    SUPPORTIVE_MEDICATIONS,
     TREATMENT_OPTIONS,
 )
 
@@ -30,6 +32,14 @@ class RituximabPerformanceOptionListView(IntegerLookupListView):
     items = PERFORMANCE_STATUS_OPTIONS
 
 
+class RituximabNephropathiesListView(StringLookupListView):
+    items = NEPHROPATHIES
+
+
+class SupportiveMedicationListView(StringLookupListView):
+    items = SUPPORTIVE_MEDICATIONS
+
+
 def register_views(app):
     app.add_url_rule(
         '/rituximab-baseline-assessment',
@@ -46,4 +56,14 @@ def register_views(app):
     app.add_url_rule(
         '/rituximab-baseline-assessment/<id>',
         view_func=RituximabBaselineAssessmentDetailView.as_view('assessment_detail')
+    )
+
+    app.add_url_rule(
+        '/rituximab-nephropathies-list',
+        view_func=RituximabNephropathiesListView.as_view('rituximab-nephropathies-list')
+    )
+
+    app.add_url_rule(
+        '/rituximab-supportive-medication-list',
+        view_func=SupportiveMedicationListView.as_view('rituximab-supportive-medication-list')
     )

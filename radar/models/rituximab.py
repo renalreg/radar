@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Date, Integer
+from sqlalchemy import Boolean, Column, Date, Integer, String
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
@@ -27,6 +27,20 @@ TREATMENT_OPTIONS = OrderedDict([
 ])
 
 
+SUPPORTIVE_MEDICATIONS = OrderedDict([
+    ('RAAS_BLOCKADE', 'RAAS Blockade'),
+    ('ANTICOAGULIANT', 'Anticoaguliant'),
+    ('STATINS', 'Statins'),
+    ('DIURETICS', 'Diuretics'),
+])
+
+
+NEPHROPATHIES = OrderedDict([
+    ('NATIVE_MEMBRANOUS_NEPHROPATHY', 'Native membranous nephropathy'),
+    ('TRANSPLANT_MEMBRANOUS_NEPHROPATHY', 'Transplant membranous nephropathy'),
+])
+
+
 @log_changes
 class BaselineAssessment(db.Model, MetaModelMixin):
     __tablename__ = 'rituximab_baseline_assessment'
@@ -37,13 +51,10 @@ class BaselineAssessment(db.Model, MetaModelMixin):
     patient = patient_relationship('rituximab_baseline_assessment')
 
     date = Column(Date, nullable=False)
+    nephropathies = Column(postgresql.ARRAY(String))
+    relapsed = Column(Boolean)
 
-    supportive_medication = Column(postgresql.JSONB)  # [{}, ]
+    supportive_medication = Column(postgresql.ARRAY(String))
     previous_treatment = Column(postgresql.JSONB)  # [{'name': '', 'start': '', 'end': ''}, ]
+    past_remission = Column(Boolean)
     performance_status = Column(Integer)
-
-    # @property
-    # def performance_status_label(self):
-    #     status = self.performance_status
-    #     label = PERFORMANCE_STATUS_LABELS.get(status)
-    #     return '{}: {}'.format(status, label)

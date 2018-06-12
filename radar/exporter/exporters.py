@@ -29,7 +29,7 @@ def stringify_list(name):
 
     def stringify(entry):
         items = entry.data.get(name) or []
-        return '; '.join(items)
+        return '; '.join(sorted(items))
 
     return stringify
 
