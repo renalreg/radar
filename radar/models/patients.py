@@ -457,6 +457,10 @@ class Patient(db.Model, MetaModelMixin):
         return bool(self.consents)
 
     @property
+    def reconsented(self):
+        return self.consent_status == CONSENT_STATUS.OK
+
+    @property
     def paediatric(self):
         """Return true if patient is less than 16 years old."""
         months = self.to_age(datetime.now().date())

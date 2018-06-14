@@ -113,6 +113,7 @@ class TinyPatientSerializer(serializers.Serializer):
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
+    reconsented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 

@@ -38,6 +38,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     group = fields.CommaSeparatedField(required=False, child=GroupField())
     current = fields.BooleanField(required=False)
     ukrdc = fields.BooleanField(required=False)
+    reconsented = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
     consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
@@ -59,6 +60,7 @@ def list_patients():
     year_of_death = args['year_of_death']
     groups = args['group']
     current = args['current']
+    reconsented = args['reconsented']
     ukrdc = args['ukrdc']
     test = args['test']
     control = args['control']
@@ -92,6 +94,9 @@ def list_patients():
 
     if ukrdc is not None:
         builder.ukrdc(ukrdc)
+
+    if reconsented is not None:
+        builder.reconsented(reconsented)
 
     if test is not None:
         builder.test(test)

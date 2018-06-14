@@ -111,6 +111,9 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(Patient.ukrdc == value)
         return self
 
+    def reconsented(self, value):
+        self.query = self.query.filter(Patient.reconsented == value)
+
     def test(self, value):
         self.query = self.query.filter(Patient.test == value)
         return self
