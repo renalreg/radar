@@ -4,6 +4,7 @@ from radar.api.views import (
     consultants,
     demographics,
     diagnoses,
+    rituximab,
 )
 from radar.api.views import dialysis
 from radar.api.views import environment
@@ -103,6 +104,7 @@ def setup(app):
     renal_imaging.register_views(app)
     reset_password.register_views(app)
     results.register_views(app)
+    rituximab.register_views(app)
     roles.register_views(app)
     salt_wasting.register_views(app)
     stats.register_views(app)

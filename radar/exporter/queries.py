@@ -3,9 +3,17 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import true
 
 from radar.database import db
+from radar.models.alport import AlportClinicalPicture
 from radar.models.codes import Code
+from radar.models.consents import PatientConsent
 from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.diagnoses import Diagnosis, DiagnosisCode, GroupDiagnosis, PatientDiagnosis
+from radar.models.diagnoses import (
+    Diagnosis,
+    DiagnosisCode,
+    GROUP_DIAGNOSIS_TYPE,
+    GroupDiagnosis,
+    PatientDiagnosis,
+)
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
@@ -27,8 +35,10 @@ from radar.models.patients import Patient
 from radar.models.pkd import LiverDiseases, LiverImaging, LiverTransplant, Nutrition
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
+from radar.models.renal_imaging import RenalImaging
 from radar.models.renal_progressions import RenalProgression
 from radar.models.results import Result
+from radar.models.rituximab import BaselineAssessment
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
 from radar.roles import get_roles_with_permission, PERMISSION
@@ -224,6 +234,7 @@ def get_primary_diagnoses(config):
     """Return query to get primary diagnoses for data_group."""
     q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
     q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
+    q = q.filter(GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY)
     return q
 
 
@@ -242,6 +253,7 @@ get_plasmapheresis = patient_helper(Plasmapheresis)
 get_transplants = patient_helper(Transplant)
 get_hospitalisations = patient_helper(Hospitalisation)
 get_group_patients = patient_helper(GroupPatient)
+get_renal_imaging = patient_helper(RenalImaging)
 get_renal_progressions = patient_helper(RenalProgression)
 get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
 get_results = patient_helper(Result)
@@ -254,3 +266,6 @@ get_liver_transplants = patient_helper(LiverTransplant)
 get_nephrectomies = patient_helper(Nephrectomy)
 get_nutrition = patient_helper(Nutrition)
 get_nurture_samples = patient_helper(Samples)
+get_consents = patient_helper(PatientConsent)
+get_alport_clinical_pictures = patient_helper(AlportClinicalPicture)
+get_rituximab_baseline_assessment_data = patient_helper(BaselineAssessment)

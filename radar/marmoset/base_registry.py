@@ -140,6 +140,6 @@ class BaseRegistry(object):
         context = js2py.EvalJs()
 
         for helper in self.helpers:
-            context.eval(helper)
+            context.eval(helper.decode('utf-8'))
 
         return context

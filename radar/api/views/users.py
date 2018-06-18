@@ -143,6 +143,7 @@ class UserListCSVView(ApiView):
             'Last Active',
             'Cohorts',
             'Hospitals',
+            'Roles',
         ]
         writer.writerow(headers)
 
@@ -154,8 +155,12 @@ class UserListCSVView(ApiView):
             groups = uniq(groups)
             return ', '.join(groups)
 
-        users = list_users()
+        def get_roles(user):
+            """Comma-separated list of roles."""
+            roles = [gu.role.name for gu in user.group_users]
+            return ', '.join(sorted(set(roles)))
 
+        users = list_users()
         for user in users:
             output = []
             output.append(user.id)
@@ -170,6 +175,7 @@ class UserListCSVView(ApiView):
             output.append(user.last_active_date)
             output.append(get_groups(user, GROUP_TYPE.COHORT))
             output.append(get_groups(user, GROUP_TYPE.HOSPITAL))
+            output.append(get_roles(user))
 
             writer.writerow(output)
 

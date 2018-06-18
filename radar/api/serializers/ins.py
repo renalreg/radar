@@ -5,7 +5,7 @@ from cornflake.validators import max_length, none_if_blank, optional
 
 from radar.api.serializers.common import MetaMixin, PatientMixin, StringLookupField
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
+from radar.models.ins import DIPSTICK_TYPES, InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 
 
 class InsClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
@@ -62,8 +62,11 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     other_trigger = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
     peak_pcr = fields.FloatField(required=False)
     peak_acr = fields.FloatField(required=False)
+    peak_protein_dipstick = StringLookupField(DIPSTICK_TYPES, required=False)
+    remission_protein_dipstick = StringLookupField(DIPSTICK_TYPES, required=False)
     high_dose_oral_prednisolone = fields.BooleanField(required=False)
     iv_methyl_prednisolone = fields.BooleanField(required=False)
+    relapse_sample_taken = fields.BooleanField(required=False)
     date_of_remission = fields.DateField(required=False)
     remission_type = StringLookupField(REMISSION_TYPES, required=False)
     remission_pcr = fields.FloatField(required=False)

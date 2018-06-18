@@ -4,14 +4,17 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 import os
+import socket
 
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
 import tablib
 
 from radar.app import Radar
+from radar.database import db
 from radar.exporter.exporters import exporter_map
 from radar.models.groups import Group
+from radar.models.logs import Log
 from radar.models.users import User
 
 
@@ -47,6 +50,29 @@ def parse_config(config_parser):
     validated_data = serializer.validated_data
 
     return validated_data
+
+
+def log_data_export(config, sections):
+    if 'global' in sections:
+        sections.remove('global')
+
+    data = {'hostname': socket.getfqdn()}
+    if config.get('patient_group'):
+        data['patient_group'] = config['patient_group'].id
+    if config.get('data_group'):
+        data['data_group'] = config['data_group'].id
+    if config.get('anonymised'):
+        data['anonymised'] = config.get('anonymised')
+    if config.get('user'):
+        data['user'] = config.get('user')
+
+    data['exporters'] = sections
+
+    log = Log()
+    log.type = 'DATA_EXPORTER'
+    log.data = data
+    db.session.add(log)
+    db.session.commit()
 
 
 def main():
@@ -101,6 +127,7 @@ def main():
 
         is_dir = os.path.isdir(args.dest)
 
+        error = False
         if args.format in book_formats:
             if is_dir:
                 for dataset in datasets:
@@ -123,6 +150,10 @@ def main():
             elif len(datasets):
                 # TODO raise this error earlier
                 argument_parser.error('dest is not a directory')
+                error = True
+
+        if not error:
+            log_data_export(config, config_parser.sections())
 
 
 if __name__ == '__main__':
