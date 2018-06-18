@@ -80,8 +80,8 @@ def export_sda(patient_id):
 
 def _export_sda(patient, system_group, group=None):
     if group is None:
-        facility = system_group.code
-        group = system_group
+        facility = patient.recruited_group().code
+        group = patient.recruited_group()
     else:
         facility = '{0}.{1}.{2}'.format(system_group.code, group.type, group.code)
 

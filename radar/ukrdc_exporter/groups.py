@@ -1,4 +1,3 @@
-from radar.models.groups import GROUP_TYPE
 from radar.ukrdc_exporter.group_selector import GroupSelector
 
 
