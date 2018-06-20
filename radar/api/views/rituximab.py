@@ -7,7 +7,7 @@ from radar.api.views.common import (
 )
 from radar.models.rituximab import (
     BaselineAssessment,
-    NEPHROPATHIES,
+    NEPHROPATHY_TYPES,
     PERFORMANCE_STATUS_OPTIONS,
     SUPPORTIVE_MEDICATIONS,
     TREATMENT_OPTIONS,
@@ -33,7 +33,7 @@ class RituximabPerformanceOptionListView(IntegerLookupListView):
 
 
 class RituximabNephropathiesListView(StringLookupListView):
-    items = NEPHROPATHIES
+    items = NEPHROPATHY_TYPES
 
 
 class SupportiveMedicationListView(StringLookupListView):

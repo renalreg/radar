@@ -4,16 +4,31 @@ from cornflake.sqlalchemy_orm import ModelSerializer
 from radar.api.serializers.common import (
     MetaMixin,
     PatientMixin,
-    StringLookupField
+    SourceMixin,
+    StringLookupField,
 )
-from radar.models.rituximab import BaselineAssessment, NEPHROPATHIES, SUPPORTIVE_MEDICATIONS
+from radar.models.rituximab import BaselineAssessment, NEPHROPATHY_TYPES, SUPPORTIVE_MEDICATIONS
 
 
-class RituximabBaselineAssessmentSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+    date = fields.DateField()
     past_remission = fields.BooleanField(required=False)
-    nephropathies = fields.ListField(required=False, child=StringLookupField(NEPHROPATHIES))
-    supportive_medication = fields.ListField(required=False, child=StringLookupField(SUPPORTIVE_MEDICATIONS))
+    nephropathy = StringLookupField(NEPHROPATHY_TYPES, required=False)
+    supportive_medication = fields.ListField(
+        required=False,
+        child=StringLookupField(SUPPORTIVE_MEDICATIONS)
+    )
+    previous_treatment = fields.Field(required=False)
+    performance_status = fields.IntegerField(required=False)
 
     class Meta(object):
         model_class = BaselineAssessment
-        exclude = ['user_id']
+
+    def pre_validate(self, data):
+        previous_treatment = data.get('previous_treatment')
+        if previous_treatment:
+            for key in list(previous_treatment.keys()):
+                if not previous_treatment.get(key, {}).get(key, False):
+                    data['previous_treatment'].pop(key, None)
+
+        return data

@@ -1,7 +1,7 @@
 """add recurrence flag to transplant
 
 Revision ID: c98e6f64037f
-Revises: 2a9e926a2c55
+Revises: a5b4d47313ee
 Create Date: 2018-05-24 08:11:08.112555
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'c98e6f64037f'
-down_revision = '2a9e926a2c55'
+down_revision = 'a5b4d47313ee'
 branch_labels = None
 depends_on = None
 
