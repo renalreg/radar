@@ -19,6 +19,8 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
         child=StringLookupField(SUPPORTIVE_MEDICATIONS)
     )
     previous_treatment = fields.Field(required=False)
+    steroids = fields.BooleanField(required=False)
+    other_previous_treatment = fields.StringField(required=False)
     performance_status = fields.IntegerField(required=False)
 
     class Meta(object):

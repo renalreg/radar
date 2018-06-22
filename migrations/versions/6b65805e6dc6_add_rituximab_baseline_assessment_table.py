@@ -27,6 +27,8 @@ def upgrade():
     sa.Column('nephropathy', sa.String(), nullable=True),
     sa.Column('supportive_medication', postgresql.ARRAY(sa.String()), nullable=True),
     sa.Column('previous_treatment', postgresql.JSONB(), nullable=True),
+    sa.Column('steroids', sa.Boolean(), nullable=True),
+    sa.Column('other_previous_treatment', sa.String(), nullable=True),
     sa.Column('past_remission', sa.Boolean(), nullable=True),
     sa.Column('performance_status', sa.Integer(), nullable=True),
     sa.Column('created_user_id', sa.Integer(), nullable=False),

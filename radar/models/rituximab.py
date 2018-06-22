@@ -24,7 +24,6 @@ TREATMENT_OPTIONS = OrderedDict([
     ('rituximab', 'Rituximab'),
     ('tacrolimus', 'Tacrolimus'),
     ('cyclosporine', 'Cyclosporine'),
-    ('steroids', 'Steroids'),
 ])
 
 
@@ -61,5 +60,7 @@ class BaselineAssessment(db.Model, MetaModelMixin):
 
     supportive_medication = Column(postgresql.ARRAY(String))
     previous_treatment = Column(postgresql.JSONB)  # [{'name': '', 'start': '', 'end': ''}, ]
+    steroids = Column(Boolean)
+    other_previous_treatment = Column(String)
     past_remission = Column(Boolean)
     performance_status = Column(Integer)
