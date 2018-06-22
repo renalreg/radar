@@ -187,29 +187,17 @@ class PatientListCSVView(ApiView):
 
             output = []
             output.append(patient.id)
-            if current_user.is_admin:
-                output.append(patient.first_name)
-                output.append(patient.last_name)
-                output.append(patient.date_of_birth)
-            else:
-                output.append('hidden')
-                output.append('hidden')
-                output.append('hidden')
-
+            output.append(patient.first_name)
+            output.append(patient.last_name)
+            output.append(patient.date_of_birth)
             output.append(patient.year_of_birth)
-            if current_user.is_admin:
-                output.append(patient.date_of_death)
-            else:
-                output.append('hidden')
+            output.append(patient.date_of_death)
             output.append(patient.year_of_death)
             output.append(patient.gender)
             output.append(patient.gender_label)
             output.append(patient.ethnicity)
             output.append(patient.ethnicity_label)
-            if current_user.is_admin:
-                output.append(get_attrs(patient, 'primary_patient_number', 'number'))
-            else:
-                output.append('hidden')
+            output.append(get_attrs(patient, 'primary_patient_number', 'number'))
             output.append(patient.recruited_date())
             output.append(get_attrs(patient.recruited_group(), 'name'))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
