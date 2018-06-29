@@ -1459,7 +1459,6 @@ class RituximabBaselineAssessmentExporter(Exporter):
 
     @property
     def dataset(self):
-
         self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
         previous = (
             'chlorambucil',
@@ -1491,12 +1490,14 @@ class RituximabBaselineAssessmentExporter(Exporter):
                     row.append(present.get(item))
                     row.append(present.get('start_date'.format(item), ''))
                     row.append(present.get('end_date'.format(item), ''))
-                    if item in ('chlorambucil', 'cyclophosphamide'):
-                        row.append(present.get('total_dose'))
                 else:
                     row.append(False)
                     row.append('')
                     row.append('')
+
+                if item in ('chlorambucil', 'cyclophosphamide'):
+                    row.append(present.get('total_dose', 'False'))
+
             row.append(entry.steroids)
             row.append(entry.other_previous_treatment)
             row.append(entry.past_remission)
