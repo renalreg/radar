@@ -9,6 +9,7 @@ import tablib
 from radar.exporter import queries
 from radar.exporter.utils import get_months, get_years, identity_getter, none_getter, path_getter
 from radar.models.results import Observation
+from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
@@ -1458,39 +1459,49 @@ class RituximabBaselineAssessmentExporter(Exporter):
 
     @property
     def dataset(self):
-        supportive = ('raasblockade', 'anticoaguliant', 'statins', 'diuretics')
-        self._columns.extend(column(item) for item in supportive)
+
+        self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
         previous = (
             'chlorambucil',
             'cyclophosphamide',
             'rituximab',
             'tacrolimus',
             'cyclosporine',
-            'steroids'
         )
         for item in previous:
             items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
             self._columns.extend(column(item) for item in items)
+            if item in ('chlorambucil', 'cyclophosphamide'):
+                self._columns.append(column('{}_dose'.format(item)))
 
+        self._columns.append(column('steroids'))
+        self._columns.append(column('other_previous_treatment'))
+        self._columns.append(column('past_remission'))
         self._columns.append(column('performance_status'))
         self._columns.extend(get_meta_columns(self.config))
         dataset = make_dataset(self._columns)
 
         for entry in self._query:
             row = [entry.id, entry.patient_id, entry.date]
-            for item in supportive:
-                row.append(entry.supportive_medication.get(item, 'False'))
+            for item in SUPPORTIVE_MEDICATIONS.keys():
+                row.append(entry.supportive_medication.count(item) != 0)
             for item in previous:
                 present = entry.previous_treatment.get(item, {})
                 if present.get(item, False):
                     row.append(present.get(item))
                     row.append(present.get('start_date'.format(item), ''))
                     row.append(present.get('end_date'.format(item), ''))
+                    if item in ('chlorambucil', 'cyclophosphamide'):
+                        row.append(present.get('total_dose'))
                 else:
                     row.append(False)
                     row.append('')
                     row.append('')
+            row.append(entry.steroids)
+            row.append(entry.other_previous_treatment)
+            row.append(entry.past_remission)
             row.append(entry.performance_status)
+
             for col in self._columns[-6:]:
                 row.append(col[1](entry))
 
