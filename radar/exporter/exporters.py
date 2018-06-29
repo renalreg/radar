@@ -1485,7 +1485,10 @@ class RituximabBaselineAssessmentExporter(Exporter):
             for item in SUPPORTIVE_MEDICATIONS.keys():
                 row.append(entry.supportive_medication.count(item) != 0)
             for item in previous:
-                present = entry.previous_treatment.get(item, {})
+                if not entry.previous_treatment:
+                    present = {}
+                else:
+                    present = entry.previous_treatment.get(item, {})
                 if present.get(item, False):
                     row.append(present.get(item))
                     row.append(present.get('start_date'.format(item), ''))
