@@ -38,7 +38,6 @@ SUPPORTIVE_MEDICATIONS = OrderedDict([
 NEPHROPATHY_TYPES = OrderedDict([
     ('NATIVE_MEMBRANOUS_NEPHROPATHY', 'Native membranous nephropathy'),
     ('TRANSPLANT_MEMBRANOUS_NEPHROPATHY', 'Transplant membranous nephropathy'),
-    ('UNKNOWN', 'Unknown'),
 ])
 
 
