@@ -158,6 +158,9 @@ class PatientListCSVView(ApiView):
     def get(self):
         f = io.StringIO()
         writer = csv.writer(f)
+        args = parse_args(PatientListRequestSerializer)
+
+        cohorts = [i for i in args['group'] if i.type == GROUP_TYPE.COHORT]
 
         headers = [
             'Patient ID',
@@ -166,9 +169,14 @@ class PatientListCSVView(ApiView):
             'Gender', 'Gender Label',
             'Ethnicity', 'Ethnicity Label',
             'Patient Number',
-            'Recruited On', 'Recruited Group',
-            'Cohorts', 'Hospitals',
+            'Recruited On',
+            'Recruited Group',
+            'Cohorts',
+            'Hospitals',
         ]
+        for cohort in cohorts:
+            headers.append(cohort.short_name)
+
         writer.writerow(headers)
 
         def get_groups(patient, group_type):
@@ -202,6 +210,9 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient.recruited_group(), 'name'))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
+
+            for cohort in cohorts:
+                output.append(patient.recruited_date(cohort))
 
             writer.writerow(output)
 
