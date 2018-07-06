@@ -29,7 +29,8 @@ TREATMENT_OPTIONS = OrderedDict([
 
 SUPPORTIVE_MEDICATIONS = OrderedDict([
     ('RAAS_BLOCKADE', 'RAAS Blockade'),
-    ('ANTICOAGULIANT', 'Anticoaguliant'),
+    ('ANTICOAGULANT', 'Anticoagulant'),
+    ('ANTIPLATELET', 'Antiplatelet'),
     ('STATINS', 'Statins'),
     ('DIURETICS', 'Diuretics'),
 ])
