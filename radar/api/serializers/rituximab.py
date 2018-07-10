@@ -7,7 +7,12 @@ from radar.api.serializers.common import (
     SourceMixin,
     StringLookupField,
 )
-from radar.models.rituximab import BaselineAssessment, NEPHROPATHY_TYPES, SUPPORTIVE_MEDICATIONS
+from radar.models.rituximab import (
+    BaselineAssessment,
+    NEPHROPATHY_TYPES,
+    RituximabConsent,
+    SUPPORTIVE_MEDICATIONS,
+)
 
 
 class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -34,3 +39,10 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
                     data['previous_treatment'].pop(key, None)
 
         return data
+
+
+class RituximabConsentSerializer(PatientMixin, MetaMixin, ModelSerializer):
+    date = fields.DateField()
+
+    class Meta(object):
+        model_class = RituximabConsent

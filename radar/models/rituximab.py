@@ -64,3 +64,22 @@ class BaselineAssessment(db.Model, MetaModelMixin):
     other_previous_treatment = Column(String)
     past_remission = Column(Boolean)
     performance_status = Column(Integer)
+
+
+@log_changes
+class RituximabConsent(db.Model, MetaModelMixin):
+    __tablename__ = 'rituximab_consents'
+
+    id = uuid_pk_column()
+
+    patient_id = patient_id_column()
+    patient = patient_relationship('rituximab_consents')
+
+    date = Column(Date, nullable=False)
+    criteria1 = Column(Boolean)
+    criteria2 = Column(Boolean)
+    criteria3 = Column(Boolean)
+    criteria4 = Column(Boolean)
+    criteria5 = Column(Boolean)
+    criteria6 = Column(Boolean)
+    criteria7 = Column(Boolean)
