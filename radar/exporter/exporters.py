@@ -1425,10 +1425,10 @@ class RituximabConsentsExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'data.date')
+            column('date', lambda x: format_date(x.date))
         ]
         self._columns.extend(get_meta_columns(self.config))
-        q = queries.get_form_data(self.config)
+        q = queries.get_rituximab_consents(self.config)
         self._query = q
 
 
