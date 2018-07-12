@@ -1470,7 +1470,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
         for item in previous:
             items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
             self._columns.extend(column(item) for item in items)
-            if item in ('chlorambucil', 'cyclophosphamide'):
+            if item in ('chlorambucil', 'cyclophosphamide', 'rituximab'):
                 self._columns.append(column('{}_dose'.format(item)))
 
         self._columns.append(column('steroids'))
@@ -1525,6 +1525,7 @@ class RituximabAdministrationExporter(Exporter):
             column('dose', 'data.dose'),
             column('retreatment', 'data.retreatment'),
             column('toxicity', stringify_list('toxicity')),
+            column('other_toxicity', 'data.otherToxicity'),
         ]
 
         self._columns.extend(get_meta_columns(self.config))
@@ -1539,14 +1540,56 @@ class RituximabFollowupAssessmentExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('date', 'data.date'),
+            column('visit', 'data.visit'),
             column('performance', 'data.performance'),
-            column('response', 'data.response'),
-            column('disease', 'data.disease'),
-            column('esrd', 'data.esrd'),
             column('transplant', 'data.transplant'),
             column('haemodialysis', 'data.haemodialysis'),
             column('peritoneal_dialysis', 'data.peritonealDialysis'),
+            column('supportive_medication', stringify_list('medication'))
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-adverse-events')
+class RituximabAdverseEventsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('date', 'data.date'),
+            column('hospitalisation', 'data.hospitalisation'),
+            column('adverse_events', 'data.adverseEvents'),
+            column('onset_cancer', 'data.newOnsetCancer'),
+            column('thromboembolism', 'data.thromboembolism'),
+            column('myocardial_infarction', 'data.myocardialInfarction'),
+            column('stroke', 'data.stroke'),
+            column('ischaemic_attack', 'data.ischaemicAttack'),
+            column('other_adverse_event', 'data.otherAdverseEvent'),
+            column('other_toxicity', 'data.otherTox'),
+            column('date_of_death', 'data.dod'),
+            column('cause_of_death', 'data.dodCause')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('adtkd-clinical-pictures')
+class ADTKDClinicalPicturesExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('picture_date'),
+            column('gout'),
+            column('gout_date'),
+            column('family_gout'),
+            column('family_gout_relatives'),
+            column('thp'),
+            column('uti'),
+            column('comments')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_adtkd_clinical_pictures(self.config)
         self._query = q

@@ -18,6 +18,7 @@ from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
 from radar.models.forms import Entry
+from radar.models.fuan import FuanClinicalPicture
 from radar.models.genetics import Genetics
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
@@ -270,3 +271,4 @@ get_consents = patient_helper(PatientConsent)
 get_alport_clinical_pictures = patient_helper(AlportClinicalPicture)
 get_rituximab_consents = patient_helper(RituximabConsent)
 get_rituximab_baseline_assessment_data = patient_helper(BaselineAssessment)
+get_adtkd_clinical_pictures = patient_helper(FuanClinicalPicture)
