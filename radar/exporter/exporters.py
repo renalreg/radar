@@ -1453,6 +1453,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('date'),
+            column('nephropathy'),
         ]
         q = queries.get_rituximab_baseline_assessment_data(self.config)
         self._query = q
