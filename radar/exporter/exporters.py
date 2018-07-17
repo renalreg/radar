@@ -1452,6 +1452,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
+            column('source_group', 'source_group.name'),
             column('date'),
             column('nephropathy'),
         ]
@@ -1468,10 +1469,12 @@ class RituximabBaselineAssessmentExporter(Exporter):
             'tacrolimus',
             'cyclosporine',
         )
+
+        with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
         for item in previous:
             items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
             self._columns.extend(column(item) for item in items)
-            if item in ('chlorambucil', 'cyclophosphamide', 'rituximab'):
+            if item in with_dose:
                 self._columns.append(column('{}_dose'.format(item)))
 
         self._columns.append(column('steroids'))
@@ -1482,7 +1485,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
         dataset = make_dataset(self._columns)
 
         for entry in self._query:
-            row = [entry.id, entry.patient_id, entry.date]
+            row = [entry.id, entry.patient_id, entry.source_group.name, entry.date, entry.nephropathy]
             for item in SUPPORTIVE_MEDICATIONS.keys():
                 row.append(entry.supportive_medication.count(item) != 0)
             for item in previous:
@@ -1490,16 +1493,17 @@ class RituximabBaselineAssessmentExporter(Exporter):
                     present = {}
                 else:
                     present = entry.previous_treatment.get(item, {})
+
                 if present.get(item, False):
                     row.append(present.get(item))
-                    row.append(present.get('start_date'.format(item), ''))
-                    row.append(present.get('end_date'.format(item), ''))
+                    row.append(present.get('start_date', ''))
+                    row.append(present.get('end_date', ''))
                 else:
                     row.append(False)
                     row.append('')
                     row.append('')
 
-                if item in ('chlorambucil', 'cyclophosphamide'):
+                if item in with_dose:
                     row.append(present.get('total_dose', 'False'))
 
             row.append(entry.steroids)
