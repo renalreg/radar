@@ -1,7 +1,8 @@
 from collections import OrderedDict
 
-from sqlalchemy import Boolean, Column, Date, Integer, String
+from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
@@ -23,19 +24,19 @@ TREATMENT_OPTIONS = OrderedDict([
     ('rituximab', 'Rituximab'),
     ('tacrolimus', 'Tacrolimus'),
     ('cyclosporine', 'Cyclosporine'),
-    ('steroids', 'Steroids'),
 ])
 
 
 SUPPORTIVE_MEDICATIONS = OrderedDict([
     ('RAAS_BLOCKADE', 'RAAS Blockade'),
-    ('ANTICOAGULIANT', 'Anticoaguliant'),
+    ('ANTICOAGULANT', 'Anticoagulant'),
+    ('ANTIPLATELET', 'Antiplatelet'),
     ('STATINS', 'Statins'),
     ('DIURETICS', 'Diuretics'),
 ])
 
 
-NEPHROPATHIES = OrderedDict([
+NEPHROPATHY_TYPES = OrderedDict([
     ('NATIVE_MEMBRANOUS_NEPHROPATHY', 'Native membranous nephropathy'),
     ('TRANSPLANT_MEMBRANOUS_NEPHROPATHY', 'Transplant membranous nephropathy'),
 ])
@@ -50,11 +51,35 @@ class BaselineAssessment(db.Model, MetaModelMixin):
     patient_id = patient_id_column()
     patient = patient_relationship('rituximab_baseline_assessment')
 
+    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
+    source_group = relationship('Group')
+    source_type = Column(String, nullable=False)
+
     date = Column(Date, nullable=False)
-    nephropathies = Column(postgresql.ARRAY(String))
-    relapsed = Column(Boolean)
+    nephropathy = Column(String)
 
     supportive_medication = Column(postgresql.ARRAY(String))
     previous_treatment = Column(postgresql.JSONB)  # [{'name': '', 'start': '', 'end': ''}, ]
+    steroids = Column(Boolean)
+    other_previous_treatment = Column(String)
     past_remission = Column(Boolean)
     performance_status = Column(Integer)
+
+
+@log_changes
+class RituximabConsent(db.Model, MetaModelMixin):
+    __tablename__ = 'rituximab_consents'
+
+    id = uuid_pk_column()
+
+    patient_id = patient_id_column()
+    patient = patient_relationship('rituximab_consents')
+
+    date = Column(Date, nullable=False)
+    criteria1 = Column(Boolean)
+    criteria2 = Column(Boolean)
+    criteria3 = Column(Boolean)
+    criteria4 = Column(Boolean)
+    criteria5 = Column(Boolean)
+    criteria6 = Column(Boolean)
+    criteria7 = Column(Boolean)
