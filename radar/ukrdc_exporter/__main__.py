@@ -123,7 +123,8 @@ def main():
             state_f.truncate()
             state_f.close()
     elif args.patient_ids:
-        export_patients(args.patient_ids)
+        with app.app_context():
+            export_patients(args.patient_ids)
 
 
 if __name__ == '__main__':

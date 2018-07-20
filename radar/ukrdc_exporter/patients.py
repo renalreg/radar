@@ -39,8 +39,8 @@ def export_death_time(sda_patient, patient):
 
 
 def export_gender(sda_patient, patient):
-    if patient.gender is not None:
-        gender = patient.gender
+    if patient.radar_gender is not None:
+        gender = patient.radar_gender
         description = GENDERS.get(gender)
 
         if description is None:
@@ -186,16 +186,6 @@ def export_patient_numbers(sda_patient, patient, system_group):
 
         if key not in national_identifiers:
             continue
-
-        if patient_number.number_group.code == GROUP_CODE_HSC:
-            sda_patient_numbers.append({
-                'number': patient_number.number,
-                'number_type': 'NI',
-                'organization': {
-                    'code': 'H&SC',
-                    'description': patient_number.number_group.name
-                }
-            })
 
         sda_patient_number = {
             'number': patient_number.number,
