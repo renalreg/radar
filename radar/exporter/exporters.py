@@ -769,6 +769,27 @@ class RenalProgressionExporter(Exporter):
 @register('results')
 class ResultExporter(Exporter):
     def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date'),
+            column('observation_name', 'observation.name'),
+            column('value'),
+            column('value_label'),
+            column('sent_value')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+
+        q = queries.get_results(self.config)
+        self._query = q
+
+
+@register('results-pivot')
+class PivotedResultExporter(Exporter):
+    def run(self):
         q = queries.get_results(self.config)
 
         self._columns = [
@@ -1019,12 +1040,12 @@ class IposExporter(Exporter):
             column('score15', 'data.score15'),
             column('score16', 'data.score16'),
             column('score17', 'data.score17'),
-            column('score18', 'data.score18'),
-            column('score19', 'data.score19'),
-            column('score20', 'data.score20'),
             column('question1', 'data.question1'),
+            column('score18', 'data.score18'),
             column('question2', 'data.question2'),
+            column('score19', 'data.score19'),
             column('question3', 'data.question3'),
+            column('score20', 'data.score20'),
             column('question4', 'data.question4'),
             column('question5', 'data.question5'),
             column('score', 'data.score'),
