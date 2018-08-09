@@ -1583,6 +1583,7 @@ class RituximabAdverseEventsExporter(Exporter):
     def run(self):
         self._columns = [
             column('id'),
+            column('patient_id'),
             column('date', 'data.date'),
             column('hospitalisation', 'data.hospitalisation'),
             column('adverse_events', 'data.adverseEvents'),
