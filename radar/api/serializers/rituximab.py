@@ -44,5 +44,18 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
 class RituximabCriteriaSerializer(PatientMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
 
+    therapy_failure = fields.BooleanField(required=False)
+    hypersensitivity = fields.BooleanField(required=False)
+    drug_associated_toxicity = fields.BooleanField(required=False)
+    alkylating_complication = fields.BooleanField(required=False)
+    alkylating_failure_monitoring_requirements = fields.BooleanField(required=False)
+    cancer = fields.BooleanField(required=False)
+    threatened_fertility = fields.BooleanField(required=False)
+    fall_in_egfr = fields.BooleanField(required=False)
+    cni_therapy_complication = fields.BooleanField(required=False)
+    cni_failure_monitoring_requirements = fields.BooleanField(required=False)
+    diabetes = fields.BooleanField(required=False)
+    risk_factors = fields.BooleanField(required=False)
+
     class Meta(object):
         model_class = RituximabCriteria
