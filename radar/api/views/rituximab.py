@@ -1,6 +1,6 @@
 from radar.api.serializers.rituximab import (
     RituximabBaselineAssessmentSerializer,
-    RituximabConsentSerializer,
+    RituximabCriteriaSerializer,
 )
 from radar.api.views.common import (
     IntegerLookupListView,
@@ -12,7 +12,7 @@ from radar.models.rituximab import (
     BaselineAssessment,
     NEPHROPATHY_TYPES,
     PERFORMANCE_STATUS_OPTIONS,
-    RituximabConsent,
+    RituximabCriteria,
     SUPPORTIVE_MEDICATIONS,
     TREATMENT_OPTIONS,
 )
@@ -44,14 +44,14 @@ class SupportiveMedicationListView(StringLookupListView):
     items = SUPPORTIVE_MEDICATIONS
 
 
-class RituximabConsentListView(PatientObjectListView):
-    serializer_class = RituximabConsentSerializer
-    model_class = RituximabConsent
+class RituximabCriteriaListView(PatientObjectListView):
+    serializer_class = RituximabCriteriaSerializer
+    model_class = RituximabCriteria
 
 
-class RituximabConsentDetailView(PatientObjectDetailView):
-    serializer_class = RituximabConsentSerializer
-    model_class = RituximabConsent
+class RituximabCriteriaDetailView(PatientObjectDetailView):
+    serializer_class = RituximabCriteriaSerializer
+    model_class = RituximabCriteria
 
 
 def register_views(app):
@@ -83,11 +83,11 @@ def register_views(app):
     )
 
     app.add_url_rule(
-        '/rituximab-consent',
-        view_func=RituximabConsentListView.as_view('rituximab-consent-list')
+        '/rituximab-criteria',
+        view_func=RituximabCriteriaListView.as_view('rituximab-criteria-list')
     )
 
     app.add_url_rule(
-        '/rituximab-consent/<id>',
-        view_func=RituximabConsentDetailView.as_view('rituximab-consent-detail')
+        '/rituximab-criteria/<id>',
+        view_func=RituximabCriteriaDetailView.as_view('rituximab-criteria-detail')
     )

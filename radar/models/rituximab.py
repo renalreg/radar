@@ -67,13 +67,13 @@ class BaselineAssessment(db.Model, MetaModelMixin):
 
 
 @log_changes
-class RituximabConsent(db.Model, MetaModelMixin):
-    __tablename__ = 'rituximab_consents'
+class RituximabCriteria(db.Model, MetaModelMixin):
+    __tablename__ = 'rituximab_criteria'
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('rituximab_consents')
+    patient = patient_relationship('rituximab_criteria')
 
     date = Column(Date, nullable=False)
     criteria1 = Column(Boolean)
@@ -83,3 +83,16 @@ class RituximabConsent(db.Model, MetaModelMixin):
     criteria5 = Column(Boolean)
     criteria6 = Column(Boolean)
     criteria7 = Column(Boolean)
+
+    therapy_failure = Column(Boolean)
+    hypersensitivity = Column(Boolean)
+    drug_associated_toxicity = Column(Boolean)
+    alkylating_complication = Column(Boolean)
+    alkylating_failure_monitoring_requirements = Column(Boolean)
+    cancer = Column(Boolean)
+    threatened_fertility = Column(Boolean)
+    fall_in_egfr = Column(Boolean)
+    cni_therapy_complication = Column(Boolean)
+    cni_failure_monitoring_requirements = Column(Boolean)
+    diabetes = Column(Boolean)
+    risk_factors = Column(Boolean)
