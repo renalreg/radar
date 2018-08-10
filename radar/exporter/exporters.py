@@ -1440,13 +1440,25 @@ class AlportPicturesExporter(Exporter):
         self._query = q
 
 
-@register('rituximab-consents')
+@register('rituximab-criteria')
 class RituximabConsentsExporter(Exporter):
     def run(self):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', lambda x: format_date(x.date))
+            column('date', lambda x: format_date(x.date)),
+            column('therapy_failure'),
+            column('hypersensitivity'),
+            column('drug_associated_toxicity'),
+            column('alkylating_complication'),
+            column('alkylating_failure_monitoring_requirements'),
+            column('cancer'),
+            column('threatened_fertility'),
+            column('fall_in_egfr'),
+            column('cni_therapy_complication'),
+            column('cni_failure_monitoring_requirements'),
+            column('diabetes'),
+            column('risk_factors'),
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_rituximab_consents(self.config)
