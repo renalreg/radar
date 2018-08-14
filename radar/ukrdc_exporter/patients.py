@@ -17,30 +17,30 @@ from radar.utils import date_to_datetime
 logger = logging.getLogger(__name__)
 
 
-def export_name(sda_patient, patient):
-    if patient.first_name or patient.last_name:
-        sda_name = sda_patient['name'] = dict()
+def export_name(rda_patient, patient):
+    if patient.radar_first_name or patient.radar_last_name:
+        rda_name = rda_patient['name'] = {}
 
-        if patient.first_name:
-            sda_name['given_name'] = patient.first_name
+        if patient.radar_first_name:
+            rda_name['given_name'] = patient.radar_first_name
 
-        if patient.last_name:
-            sda_name['family_name'] = patient.last_name
+        if patient.radar_last_name:
+            rda_name['family_name'] = patient.radar_last_name
 
 
 def export_birth_time(sda_patient, patient):
-    if patient.date_of_birth:
-        sda_patient['birth_time'] = date_to_datetime(patient.date_of_birth)
+    if patient.radar_date_of_birth:
+        sda_patient['birth_time'] = date_to_datetime(patient.radar_date_of_birth)
 
 
 def export_death_time(sda_patient, patient):
-    if patient.date_of_death:
-        sda_patient['death_time'] = date_to_datetime(patient.date_of_death)
+    if patient.radar_date_of_death:
+        sda_patient['death_time'] = date_to_datetime(patient.radar_date_of_death)
 
 
 def export_gender(sda_patient, patient):
-    if patient.gender is not None:
-        gender = patient.gender
+    if patient.radar_gender is not None:
+        gender = patient.radar_gender
         description = GENDERS.get(gender)
 
         if description is None:
@@ -56,9 +56,9 @@ def export_gender(sda_patient, patient):
 
 
 def export_ethnic_group(sda_patient, patient):
-    if patient.ethnicity is not None:
-        code = patient.ethnicity.code
-        description = patient.ethnicity.label
+    if patient.radar_ethnicity is not None:
+        code = patient.radar_ethnicity.code
+        description = patient.radar_ethnicity.label
 
         if description is None:
             logger.error('Unknown ethnicity code={}'.format(code))
@@ -154,31 +154,29 @@ def export_addresses(sda_patient, patient):
         sda_addresses.append(sda_address)
 
 
-def export_patient_numbers(sda_patient, patient, system_group):
+def export_patient_numbers(rda_patient, patient, groups):
     q = PatientNumber.query
     q = q.filter(PatientNumber.patient == patient)
     q = q.filter(PatientNumber.source_type == SOURCE_TYPE_MANUAL)
     patient_numbers = q.all()
 
-    sda_patient_numbers = sda_patient.setdefault('patient_numbers', list())
-
-    # The SDA must include a MRN otherwise all patients will be grouped under a NULL MRN
-    # The MRN must appear first in the list of numbers as the organization code is used as the facility
-    sda_patient_number = {
-        'number': str(patient.id),
-        'number_type': 'MRN',
-        'organization': {
-            'code': system_group.code,
-            'description': system_group.name,
-        }
-    }
-    sda_patient_numbers.append(sda_patient_number)
+    rda_patient_numbers = rda_patient.setdefault('patient_numbers', [])
 
     national_identifiers = {
         (GROUP_TYPE.OTHER, GROUP_CODE_NHS),
         (GROUP_TYPE.OTHER, GROUP_CODE_CHI),
         (GROUP_TYPE.OTHER, GROUP_CODE_HSC),
     }
+
+    rda_patient_number = {
+        'number': patient.id,
+        'number_type': 'MRN',
+        'organization': {
+            'code': 'RADAR',
+            'description': 'RaDaR'
+        }
+    }
+    rda_patient_numbers.append(rda_patient_number)
 
     # Export national identifiers
     for patient_number in patient_numbers:
@@ -187,17 +185,7 @@ def export_patient_numbers(sda_patient, patient, system_group):
         if key not in national_identifiers:
             continue
 
-        if patient_number.number_group.code == GROUP_CODE_HSC:
-            sda_patient_numbers.append({
-                'number': patient_number.number,
-                'number_type': 'NI',
-                'organization': {
-                    'code': 'H&SC',
-                    'description': patient_number.number_group.name
-                }
-            })
-
-        sda_patient_number = {
+        rda_patient_number = {
             'number': patient_number.number,
             'number_type': 'NI',
             'organization': {
@@ -206,17 +194,26 @@ def export_patient_numbers(sda_patient, patient, system_group):
             }
         }
 
-        sda_patient_numbers.append(sda_patient_number)
+        rda_patient_numbers.append(rda_patient_number)
 
 
-def export_patient(sda_container, patient, system_group):
-    sda_patient = sda_container.setdefault('patient', dict())
-    export_name(sda_patient, patient)
-    export_birth_time(sda_patient, patient)
-    export_death_time(sda_patient, patient)
-    export_gender(sda_patient, patient)
-    export_ethnic_group(sda_patient, patient)
-    export_contact_info(sda_patient, patient)
-    export_aliases(sda_patient, patient)
-    export_addresses(sda_patient, patient)
-    export_patient_numbers(sda_patient, patient, system_group)
+def export_patient(rda_container, patient, groups):
+    rda_patient = rda_container.setdefault('patient', {})
+    export_name(rda_patient, patient)
+    export_birth_time(rda_patient, patient)
+    export_death_time(rda_patient, patient)
+    export_gender(rda_patient, patient)
+    export_patient_numbers(rda_patient, patient, groups)
+
+
+# def export_patient(sda_container, patient, system_group):
+#     sda_patient = sda_container.setdefault('patient', dict())
+#     export_name(sda_patient, patient)
+#     export_birth_time(sda_patient, patient)
+#     export_death_time(sda_patient, patient)
+#     export_gender(sda_patient, patient)
+#     # export_ethnic_group(sda_patient, patient)
+#     # export_contact_info(sda_patient, patient)
+#     # export_aliases(sda_patient, patient)
+#     # export_addresses(sda_patient, patient)
+#     export_patient_numbers(sda_patient, patient, system_group)
