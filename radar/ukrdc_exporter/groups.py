@@ -22,7 +22,7 @@ def export_program_memberships(rda_container, patient, groups):
             continue
 
         program_membership = {
-            'external_id': group_patient.id,
+            'external_id': str(group_patient.id),
             'program_name': program_name,
             'program_description': program_description,
             'from_time': group_patient.from_date

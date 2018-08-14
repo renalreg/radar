@@ -169,7 +169,7 @@ def export_patient_numbers(rda_patient, patient, groups):
     }
 
     rda_patient_number = {
-        'number': patient.id,
+        'number': str(patient.id),
         'number_type': 'MRN',
         'organization': {
             'code': 'RADAR',
