@@ -25,10 +25,10 @@ def export_program_memberships(rda_container, patient, groups):
             'external_id': str(group_patient.id),
             'program_name': program_name,
             'program_description': program_description,
-            'from_time': group_patient.from_date
+            'from_time': group_patient.from_date.date()
         }
 
         if group_patient.to_date is not None:
-            program_membership['to_time'] = group_patient.to_date
+            program_membership['to_time'] = group_patient.to_date.date()
 
         program_memberships.append(program_membership)
