@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import text
 
 from radar.app import Radar
-from radar.models import Group
 from radar.database import db
+from radar.models import Group
 
 
 def get_hospitals():

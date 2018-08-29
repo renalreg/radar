@@ -3,12 +3,16 @@ try:
     from configparser import ConfigParser
 except ImportError:
     from ConfigParser import ConfigParser
+import csv
+from datetime import date
+import io
 import os
+import shutil
 import socket
+import tempfile
 
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
-import tablib
 
 from radar.app import Radar
 from radar.database import db
@@ -86,12 +90,8 @@ def log_data_export(config, sections):
 
 
 def main():
-    # Note: xls doesn't support timezones
-    formats = ['csv', 'xlsx']
-    book_formats = ['xlsx']
 
     argument_parser = argparse.ArgumentParser()
-    argument_parser.add_argument('--format', default='csv', choices=formats)  # TODO guess format from dest extension
     argument_parser.add_argument('config')
     argument_parser.add_argument('dest')
     args = argument_parser.parse_args()
@@ -101,7 +101,7 @@ def main():
     config_parser = ConfigParser()
     config_parser.readfp(open(args.config))
 
-    with app.app_context():
+    with app.app_context(), tempfile.TemporaryDirectory(prefix='rdrexp') as output:
         config = parse_config(config_parser)
 
         exporters = []
@@ -113,57 +113,36 @@ def main():
 
             exporter_class = exporter_map[name]
 
-            data = dict(config_parser.items(name))
-            exporter_config = exporter_class.parse_config(data)
-
-            exporter_config.update(config)
+            exporter_config = config
             exporter_config.update({'name': name})
 
             exporter = exporter_class(exporter_config)
 
             exporters.append((name, exporter))
 
-        datasets = []
-
         # Export data
         for name, exporter in exporters:
             print('Exporting {0}...'.format(name))
-            exporter.run()
-            dataset = exporter.dataset
             if name == 'nurtureckd':
                 name = 'visits'
-            dataset.title = name
-            datasets.append(dataset)
 
-        is_dir = os.path.isdir(args.dest)
+            fname = os.path.join(output, '{}.csv'.format(name))
 
-        error = False
-        if args.format in book_formats:
-            if is_dir:
-                for dataset in datasets:
-                    dest = os.path.join(args.dest, '%s.%s' % (dataset.title, args.format))
-                    save(dataset, args.format, dest, binary=True)
-            else:
-                databook = tablib.Databook()
+            exporter.setup()
+            with io.open(fname, 'w', encoding='utf-8', newline='') as openfd:
+                writer = csv.writer(openfd)
+                for row in exporter.get_rows():
+                    writer.writerow(row)
 
-                for dataset in datasets:
-                    databook.add_sheet(dataset)
+        group_name = config['patient_group'].code.lower()
+        today = date.today().strftime('%Y-%m-%d')
+        anon = ''
+        if config['anonymised']:
+            anon = '-anon'
+        archive_name = '{}-export-{}{}'.format(today, group_name, anon)
+        shutil.make_archive(os.path.join(args.dest, archive_name), 'zip', output)
 
-                save(databook, args.format, args.dest, binary=True)
-        else:
-            if is_dir:
-                for dataset in datasets:
-                    dest = os.path.join(args.dest, '%s.%s' % (dataset.title, args.format))
-                    save(dataset, args.format, dest)
-            elif len(datasets) == 1:
-                save(datasets[0], args.format, args.dest)
-            elif len(datasets):
-                # TODO raise this error earlier
-                argument_parser.error('dest is not a directory')
-                error = True
-
-        if not error:
-            log_data_export(config, config_parser.sections())
+    log_data_export(config, config_parser.sections())
 
 
 if __name__ == '__main__':

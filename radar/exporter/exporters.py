@@ -1,13 +1,21 @@
 from __future__ import division
 
 from collections import OrderedDict
-from datetime import date, datetime
 import re
 
 import tablib
 
 from radar.exporter import queries
-from radar.exporter.utils import get_months, get_years, identity_getter, none_getter, path_getter
+from radar.exporter.utils import (
+    format_date,
+    format_user,
+    get_months,
+    get_years,
+    identity_getter,
+    none_getter,
+    path_getter,
+    stringify_list,
+)
 from radar.models.results import Observation
 from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
@@ -24,15 +32,6 @@ except NameError:
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 
 exporter_map = {}
-
-
-def stringify_list(name):
-
-    def stringify(entry):
-        items = entry.data.get(name) or []
-        return '; '.join(sorted(items))
-
-    return stringify
 
 
 def none_to_empty(value):
@@ -75,37 +74,6 @@ def query_to_dataset(query, columns):
     for row in query:
         data.append([c[1](row) for c in columns])
     return data
-
-
-def format_user(user):
-    if user is None:
-        return None
-    elif user.first_name and user.last_name:
-        return '%s %s' % (user.first_name, user.last_name)
-    else:
-        return user.username
-
-
-def format_date(dt):
-    val = dt
-    fmt = '%d/%m/%Y'
-    if isinstance(dt, (date, datetime)):
-        try:
-            val = dt.strftime(fmt)
-        except ValueError:
-            val = '{:02d}/{:02d}/{}'.format(dt.day, dt.month, dt.year)
-    elif re.match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', unicode(dt)):
-        try:
-            parsed = datetime.strptime(dt, '%Y-%m-%d')
-        except ValueError:
-            year, month, day = dt.split('-')
-            parsed = date(int(year), int(month), int(day))
-        try:
-            val = parsed.strftime(fmt)
-        except ValueError:
-            val = '{:02d}/{:02d}/{}'.format(parsed.day, parsed.month, parsed.year)
-
-    return val
 
 
 def column(name, getter=None):
@@ -194,15 +162,14 @@ def get_meta_columns(config):
 class Exporter(object):
     def __init__(self, config):
         self.config = config
-        self._query = None
-        self._columns = None
+        self._query = []
+        self._columns = []
 
-    @classmethod
-    def parse_config(self, data):
-        return {}
-
-    def run(self):
-        raise NotImplementedError
+    def get_rows(self):
+        headers = [col[0] for col in self._columns]
+        yield headers
+        for result in self._query:
+            yield [col[1](result) for col in self._columns]
 
     @property
     def dataset(self):
@@ -211,7 +178,7 @@ class Exporter(object):
 
 @register('patients')
 class PatientExporter(Exporter):
-    def run(self):
+    def setup(self):
         demographics_column = demographics_column_factory(self.config)
 
         def d(name, getter=None, anonymised_getter=None):
@@ -250,7 +217,7 @@ class PatientExporter(Exporter):
 
 @register('patient_numbers')
 class PatientNumberExporter(Exporter):
-    def run(self):
+    def setup(self):
         d = demographics_column_factory(self.config)
 
         self._columns = [
@@ -271,7 +238,7 @@ class PatientNumberExporter(Exporter):
 
 @register('patient_addresses')
 class PatientAddressExporter(Exporter):
-    def run(self):
+    def setup(self):
         d = demographics_column_factory(self.config)
 
         self._columns = [
@@ -296,7 +263,7 @@ class PatientAddressExporter(Exporter):
 
 @register('patient_aliases')
 class PatientAliasExporter(Exporter):
-    def run(self):
+    def setup(self):
         d = demographics_column_factory(self.config)
 
         self._columns = [
@@ -316,7 +283,7 @@ class PatientAliasExporter(Exporter):
 
 @register('patient_demographics')
 class PatientDemographicsExporter(Exporter):
-    def run(self):
+    def setup(self):
         d = demographics_column_factory(self.config)
 
         self._columns = [
@@ -349,7 +316,7 @@ class PatientDemographicsExporter(Exporter):
 
 @register('medications')
 class MedicationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -376,7 +343,7 @@ class MedicationExporter(Exporter):
 
 
 class DiagnosisExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -408,54 +375,65 @@ class DiagnosisExporter(Exporter):
             column('comments'),
         ]
         self._columns.extend(get_meta_columns(self.config))
-        q = queries.get_patient_diagnoses(self.config)
-        primary_diagnoses = queries.get_primary_diagnoses(self.config)
-
-        primary = make_dataset(self._columns)
-        comorbidity = make_dataset(self._columns)
-
-        for patient_diagnosis in q:
-            values = [c[1](patient_diagnosis) for c in self._columns]
-
-            diagnosis = patient_diagnosis.diagnosis
-
-            if diagnosis and diagnosis.codes:
-                for code in diagnosis.codes:
-                    if code.system == 'ERA-EDTA PRD':
-                        values[5] = code.code
-                    elif code.system == 'ICD-10':
-                        values[6] = code.code
-                    elif code.system == 'SNOMED CT':
-                        values[7] = code.code
-
-            if diagnosis in primary_diagnoses:
-                primary.append(values)
-            else:
-                comorbidity.append(values)
-
-        self._primary = primary
-        self._comorbidity = comorbidity
+        self._query = queries.get_patient_diagnoses(self.config)
+        self._primary = queries.get_primary_diagnoses(self.config)
 
 
 @register('primary-diagnoses')
 class PrimaryDiagnosisExporter(DiagnosisExporter):
 
-    @property
-    def dataset(self):
-        return self._primary
+    def get_rows(self):
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        for result in self._query:
+            diagnosis = result.diagnosis
+            if diagnosis not in self._primary:
+                continue
+
+            row = [col[1](result) for col in self._columns]
+
+            if diagnosis and diagnosis.codes:
+                for code in diagnosis.codes:
+                    if code.system == 'ERA-EDTA PRD':
+                        row[5] = code.code
+                    if code.system == 'ICD-10':
+                        row[6] = code.code
+                    if code.system == 'SNOMED CT':
+                        row[7] = code.code
+
+            yield row
 
 
 @register('comorbidities')
 class ComorbiditiesExporter(DiagnosisExporter):
 
-    @property
-    def dataset(self):
-        return self._comorbidity
+    def get_rows(self):
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        for result in self._query:
+            if result in self._primary:
+                continue
+
+            row = [col[1](result) for col in self._columns]
+            diagnosis = result.diagnosis
+
+            if diagnosis and diagnosis.codes:
+                for code in diagnosis.codes:
+                    if code.system == 'ERA-EDTA PRD':
+                        row[5] = code.code
+                    if code.system == 'ICD-10':
+                        row[6] = code.code
+                    if code.system == 'SNOMED CT':
+                        row[7] = code.code
+
+            yield row
 
 
 @register('genetics')
 class GeneticsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -477,7 +455,7 @@ class GeneticsExporter(Exporter):
 
 @register('pathology')
 class PathologyExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -511,7 +489,7 @@ class PathologyExporter(Exporter):
 
 @register('family_histories')
 class FamilyHistoryExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -528,7 +506,7 @@ class FamilyHistoryExporter(Exporter):
 
 @register('family_history_relatives')
 class FamilyHistoryRelativeExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('family_history_id'),
@@ -543,7 +521,7 @@ class FamilyHistoryRelativeExporter(Exporter):
 
 @register('ins_clinical_pictures')
 class InsClinicalPictureExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -571,7 +549,7 @@ class InsClinicalPictureExporter(Exporter):
 
 @register('dialysis')
 class DialysisExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -591,7 +569,7 @@ class DialysisExporter(Exporter):
 
 @register('plasmapheresis')
 class PlasmapheresisExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -613,7 +591,7 @@ class PlasmapheresisExporter(Exporter):
 
 @register('transplants')
 class TransplantExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -636,7 +614,7 @@ class TransplantExporter(Exporter):
 
 @register('transplant_biopsies')
 class TransplantBiopsyExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('transplant_id'),
@@ -650,7 +628,7 @@ class TransplantBiopsyExporter(Exporter):
 
 @register('transplant_rejections')
 class TransplantRejectionExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('transplant_id'),
@@ -663,7 +641,7 @@ class TransplantRejectionExporter(Exporter):
 
 @register('hospitalisations')
 class HospitalisationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -683,7 +661,7 @@ class HospitalisationExporter(Exporter):
 
 @register('ins_relapses')
 class InsRelapseExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -707,7 +685,7 @@ class InsRelapseExporter(Exporter):
 
 @register('mpgn_clinical_pictures')
 class MpgnClinicalPicturesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -730,7 +708,7 @@ class MpgnClinicalPicturesExporter(Exporter):
 
 @register('group_patients')
 class GroupPatientExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -749,7 +727,7 @@ class GroupPatientExporter(Exporter):
 
 @register('renal_progressions')
 class RenalProgressionExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -768,7 +746,7 @@ class RenalProgressionExporter(Exporter):
 
 @register('results')
 class ResultExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -783,8 +761,13 @@ class ResultExporter(Exporter):
         ]
         self._columns.extend(get_meta_columns(self.config))
 
+    def get_rows(self):
+        headers = [col[0] for col in self._columns]
+        yield headers
+
         q = queries.get_results(self.config)
-        self._query = q
+        for result in q.yield_per(1000):
+            yield [col[1](result) for col in self._columns]
 
 
 @register('results-pivot')
@@ -843,7 +826,7 @@ class PivotedResultExporter(Exporter):
 
 @register('observations')
 class ObservationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('name'),
@@ -864,7 +847,7 @@ class ObservationExporter(Exporter):
 
 @register('6cit')
 class Cit6Exporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -884,7 +867,7 @@ class Cit6Exporter(Exporter):
 
 @register('chu9d')
 class CHU9DExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -907,7 +890,7 @@ class CHU9DExporter(Exporter):
 
 @register('diabetic-complications')
 class DiabeticComplicationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -923,7 +906,7 @@ class DiabeticComplicationExporter(Exporter):
 
 @register('eq-5d-5l')
 class Eq5d5lExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -944,7 +927,7 @@ class Eq5d5lExporter(Exporter):
 
 @register('eq-5d-y')
 class Eq5dyExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -965,7 +948,7 @@ class Eq5dyExporter(Exporter):
 
 @register('hads')
 class HadsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -994,7 +977,7 @@ class HadsExporter(Exporter):
 
 @register('family-history')
 class FamilyDiseasesHistoryExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1018,7 +1001,7 @@ class FamilyDiseasesHistoryExporter(Exporter):
 
 @register('ipos')
 class IposExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1057,7 +1040,7 @@ class IposExporter(Exporter):
 
 @register('samples')
 class SamplesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1085,7 +1068,7 @@ class SamplesExporter(Exporter):
 
 @register('anthropometrics')
 class AnthropometricsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1115,7 +1098,7 @@ class AnthropometricsExporter(Exporter):
 
 @register('socio-economic')
 class SocioEconomicExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1139,7 +1122,7 @@ class SocioEconomicExporter(Exporter):
 
 @register('nurtureckd')
 class NurtureCKDExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1171,7 +1154,7 @@ class NurtureCKDExporter(Exporter):
 
 @register('renal_imaging')
 class RenalImagingExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1210,7 +1193,7 @@ class RenalImagingExporter(Exporter):
 
 @register('consultants')
 class ConsultantsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('first_name'),
@@ -1226,7 +1209,7 @@ class ConsultantsExporter(Exporter):
 
 @register('pregnancies')
 class PregnanciesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1252,7 +1235,7 @@ class PregnanciesExporter(Exporter):
 
 @register('fetal_ultrasounds')
 class FetalUltrasoundsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1277,7 +1260,7 @@ class FetalUltrasoundsExporter(Exporter):
 
 @register('clinical_features')
 class ClinicalFeaturesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1304,7 +1287,7 @@ class ClinicalFeaturesExporter(Exporter):
 
 @register('liver-imaging')
 class LiverImagingExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1325,7 +1308,7 @@ class LiverImagingExporter(Exporter):
 
 @register('liver-diseases')
 class LiverDiseasesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1358,7 +1341,7 @@ class LiverDiseasesExporter(Exporter):
 
 @register('liver-transplants')
 class LiverTransplantsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1379,7 +1362,7 @@ class LiverTransplantsExporter(Exporter):
 
 @register('nephrectomies')
 class NephrectomiesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1396,7 +1379,7 @@ class NephrectomiesExporter(Exporter):
 
 @register('nutrition')
 class NutritionExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1412,7 +1395,7 @@ class NutritionExporter(Exporter):
 
 @register('consents')
 class ConsentsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1425,7 +1408,7 @@ class ConsentsExporter(Exporter):
 
 @register('alport-clinical-pictures')
 class AlportPicturesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1442,7 +1425,7 @@ class AlportPicturesExporter(Exporter):
 
 @register('rituximab-criteria')
 class RituximabConsentsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1467,7 +1450,7 @@ class RituximabConsentsExporter(Exporter):
 
 @register('rituximab-visits')
 class RituximabVisitsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1481,7 +1464,7 @@ class RituximabVisitsExporter(Exporter):
 
 @register('rituximab-baseline-assessment')
 class RituximabBaselineAssessmentExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1553,7 +1536,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
 
 @register('rituximab-administration')
 class RituximabAdministrationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1573,7 +1556,7 @@ class RituximabAdministrationExporter(Exporter):
 
 @register('rituximab-assessment')
 class RituximabFollowupAssessmentExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1592,7 +1575,7 @@ class RituximabFollowupAssessmentExporter(Exporter):
 
 @register('rituximab-adverse-events')
 class RituximabAdverseEventsExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1616,7 +1599,7 @@ class RituximabAdverseEventsExporter(Exporter):
 
 @register('adtkd-clinical-pictures')
 class ADTKDClinicalPicturesExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
