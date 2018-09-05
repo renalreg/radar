@@ -317,7 +317,7 @@ class MedicationExporter(Exporter):
 
 @register('current-medications')
 class CurrentMedicationExporter(Exporter):
-    def run(self):
+    def setup(self):
         self._columns = [
             column('id'),
             column('patient_id'),
