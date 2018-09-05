@@ -315,6 +315,33 @@ class MedicationExporter(Exporter):
         self._query = q
 
 
+@register('current-medications')
+class CurrentMedicationExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date_of_visit', lambda x: format_date(x.date_recorded)),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('drug_id'),
+            column('drug', 'drug.name'),
+            column('drug_text'),
+            column('dose_quantity'),
+            column('dose_unit'),
+            column('dose_unit_label'),
+            column('dose_text'),
+            column('frequency'),
+            column('route'),
+            column('route_label'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+
+        q = queries.get_current_medications(self.config)
+        self._query = q
+
+
 class DiagnosisExporter(Exporter):
     def setup(self):
         self._columns = [

@@ -23,7 +23,7 @@ from radar.models.genetics import Genetics
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
 from radar.models.ins import InsClinicalPicture, InsRelapse
-from radar.models.medications import Medication
+from radar.models.medications import CurrentMedication, Medication
 from radar.models.mpgn import MpgnClinicalPicture
 from radar.models.nephrectomies import Nephrectomy
 from radar.models.nurture_tubes import Samples
@@ -244,6 +244,7 @@ get_patient_aliases = patient_helper(PatientAlias)
 get_patient_addresses = patient_helper(PatientAddress)
 get_patient_numbers = patient_helper(PatientNumber)
 get_medications = patient_helper(Medication)
+get_current_medications = patient_helper(CurrentMedication)
 get_family_histories = patient_group_helper(FamilyHistory)
 get_genetics = patient_group_helper(Genetics)
 get_pathology = patient_helper(Pathology)
