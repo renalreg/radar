@@ -1,9 +1,7 @@
 from __future__ import division
 
-from collections import OrderedDict
+# from collections import OrderedDict
 import re
-
-import tablib
 
 from radar.exporter import queries
 from radar.exporter.utils import (
@@ -17,7 +15,7 @@ from radar.exporter.utils import (
     stringify_list,
 )
 from radar.models.results import Observation
-from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
+# from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
@@ -44,20 +42,6 @@ def formatters(value):
     return val
 
 
-def make_dataset(columns, results=False):
-    data = tablib.Dataset(headers=[c[0] for c in columns])
-    if not results:
-        for i, header in enumerate(data.headers):
-            if 'date' in header:
-                data.add_formatter(i, formatters)
-            else:
-                data.add_formatter(i, none_to_empty)
-    else:
-        for i, header in enumerate(data.headers):
-            data.add_formatter(i, none_to_empty)
-    return data
-
-
 def register(name):
     """Add an exporter."""
 
@@ -66,14 +50,6 @@ def register(name):
         return cls
 
     return decorator
-
-
-def query_to_dataset(query, columns):
-    data = make_dataset(columns)
-
-    for row in query:
-        data.append([c[1](row) for c in columns])
-    return data
 
 
 def column(name, getter=None):
@@ -166,14 +142,11 @@ class Exporter(object):
         self._columns = []
 
     def get_rows(self):
+
         headers = [col[0] for col in self._columns]
         yield headers
         for result in self._query:
             yield [col[1](result) for col in self._columns]
-
-    @property
-    def dataset(self):
-        return query_to_dataset(self._query, self._columns)
 
 
 @register('patients')
@@ -476,16 +449,6 @@ class PathologyExporter(Exporter):
         q = queries.get_pathology(self.config)
         self._query = q
 
-    @property
-    def dataset(self):
-        data = make_dataset(self._columns)
-        for row in self._query:
-            record = [c[1](row) for c in self._columns]
-            if record[11]:
-                record[11] = re.sub(ILLEGAL_CHARACTERS_RE, '', record[11])
-            data.append(record)
-        return data
-
 
 @register('family_histories')
 class FamilyHistoryExporter(Exporter):
@@ -770,58 +733,58 @@ class ResultExporter(Exporter):
             yield [col[1](result) for col in self._columns]
 
 
-@register('results-pivot')
-class PivotedResultExporter(Exporter):
-    def run(self):
-        q = queries.get_results(self.config)
+# @register('results-pivot')
+# class PivotedResultExporter(Exporter):
+#     def run(self):
+#         q = queries.get_results(self.config)
 
-        self._columns = [
-            column('patient_id'),
-            column('source_group'),
-            column('source_type'),
-            column('date'),
-        ]
-        self._query = q
+#         self._columns = [
+#             column('patient_id'),
+#             column('source_group'),
+#             column('source_type'),
+#             column('date'),
+#         ]
+#         self._query = q
 
-    @property
-    def dataset(self):
-        egfr_calculated = 'Estimated GFR Calculated'
-        extra = {row.observation.name for row in self._query}
-        extra.add(egfr_calculated)
-        extra = sorted(extra, key=lambda val: val.lower())
+#     @property
+#     def dataset(self):
+#         egfr_calculated = 'Estimated GFR Calculated'
+#         extra = {row.observation.name for row in self._query}
+#         extra.add(egfr_calculated)
+#         extra = sorted(extra, key=lambda val: val.lower())
 
-        self._columns.extend(column(name) for name in extra)
+#         self._columns.extend(column(name) for name in extra)
 
-        data = OrderedDict()
+#         data = OrderedDict()
 
-        for row in self._query:
-            key = (row.patient_id, row.source_group.name, row.source_type, row.date)
-            if key not in data:
-                data[key] = {egfr_calculated: ''}
+#         for row in self._query:
+#             key = (row.patient_id, row.source_group.name, row.source_type, row.date)
+#             if key not in data:
+#                 data[key] = {egfr_calculated: ''}
 
-            data[key][row.observation.name] = row.value_label_or_value
+#             data[key][row.observation.name] = row.value_label_or_value
 
-            if data[key][egfr_calculated] == '':
-                data[key][egfr_calculated] = row.egfr_calculated
+#             if data[key][egfr_calculated] == '':
+#                 data[key][egfr_calculated] = row.egfr_calculated
 
-        dataset = make_dataset(self._columns, results=True)
+#         dataset = make_dataset(self._columns, results=True)
 
-        for key, results in data.items():
-            row = list(key)
-            try:
-                row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
-            except ValueError:
-                year, month, day, hour, minute, second = row[3].timetuple()[:6]
-                row[3] = '{}/{}/{} {}:{}:{}'.format(day, month, year, hour, minute, second)
+#         for key, results in data.items():
+#             row = list(key)
+#             try:
+#                 row[3] = row[3].strftime('%d/%m/%Y %H:%M:%S')
+#             except ValueError:
+#                 year, month, day, hour, minute, second = row[3].timetuple()[:6]
+#                 row[3] = '{}/{}/{} {}:{}:{}'.format(day, month, year, hour, minute, second)
 
-            for test in extra:
-                if test in results:
-                    row.append(results[test])
-                else:
-                    row.append('')
-            dataset.append(row)
+#             for test in extra:
+#                 if test in results:
+#                     row.append(results[test])
+#                 else:
+#                     row.append('')
+#             dataset.append(row)
 
-        return dataset
+#         return dataset
 
 
 @register('observations')
@@ -1475,63 +1438,63 @@ class RituximabBaselineAssessmentExporter(Exporter):
         q = queries.get_rituximab_baseline_assessment_data(self.config)
         self._query = q
 
-    @property
-    def dataset(self):
-        self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
-        previous = (
-            'chlorambucil',
-            'cyclophosphamide',
-            'rituximab',
-            'tacrolimus',
-            'cyclosporine',
-        )
+    # @property
+    # def dataset(self):
+    #     self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
+    #     previous = (
+    #         'chlorambucil',
+    #         'cyclophosphamide',
+    #         'rituximab',
+    #         'tacrolimus',
+    #         'cyclosporine',
+    #     )
 
-        with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
-        for item in previous:
-            items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
-            self._columns.extend(column(item) for item in items)
-            if item in with_dose:
-                self._columns.append(column('{}_dose'.format(item)))
+    #     with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
+    #     for item in previous:
+    #         items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
+    #         self._columns.extend(column(item) for item in items)
+    #         if item in with_dose:
+    #             self._columns.append(column('{}_dose'.format(item)))
 
-        self._columns.append(column('steroids'))
-        self._columns.append(column('other_previous_treatment'))
-        self._columns.append(column('past_remission'))
-        self._columns.append(column('performance_status'))
-        self._columns.extend(get_meta_columns(self.config))
-        dataset = make_dataset(self._columns)
+    #     self._columns.append(column('steroids'))
+    #     self._columns.append(column('other_previous_treatment'))
+    #     self._columns.append(column('past_remission'))
+    #     self._columns.append(column('performance_status'))
+    #     self._columns.extend(get_meta_columns(self.config))
+    #     dataset = make_dataset(self._columns)
 
-        for entry in self._query:
-            row = [entry.id, entry.patient_id, entry.source_group.name, entry.date, entry.nephropathy]
-            for item in SUPPORTIVE_MEDICATIONS.keys():
-                row.append(entry.supportive_medication.count(item) != 0)
-            for item in previous:
-                if not entry.previous_treatment:
-                    present = {}
-                else:
-                    present = entry.previous_treatment.get(item, {})
+    #     for entry in self._query:
+    #         row = [entry.id, entry.patient_id, entry.source_group.name, entry.date, entry.nephropathy]
+    #         for item in SUPPORTIVE_MEDICATIONS.keys():
+    #             row.append(entry.supportive_medication.count(item) != 0)
+    #         for item in previous:
+    #             if not entry.previous_treatment:
+    #                 present = {}
+    #             else:
+    #                 present = entry.previous_treatment.get(item, {})
 
-                if present.get(item, False):
-                    row.append(present.get(item))
-                    row.append(present.get('start_date', ''))
-                    row.append(present.get('end_date', ''))
-                else:
-                    row.append(False)
-                    row.append('')
-                    row.append('')
+    #             if present.get(item, False):
+    #                 row.append(present.get(item))
+    #                 row.append(present.get('start_date', ''))
+    #                 row.append(present.get('end_date', ''))
+    #             else:
+    #                 row.append(False)
+    #                 row.append('')
+    #                 row.append('')
 
-                if item in with_dose:
-                    row.append(present.get('total_dose', 'False'))
+    #             if item in with_dose:
+    #                 row.append(present.get('total_dose', 'False'))
 
-            row.append(entry.steroids)
-            row.append(entry.other_previous_treatment)
-            row.append(entry.past_remission)
-            row.append(entry.performance_status)
+    #         row.append(entry.steroids)
+    #         row.append(entry.other_previous_treatment)
+    #         row.append(entry.past_remission)
+    #         row.append(entry.performance_status)
 
-            for col in self._columns[-6:]:
-                row.append(col[1](entry))
+    #         for col in self._columns[-6:]:
+    #             row.append(col[1](entry))
 
-            dataset.append(row)
-        return dataset
+    #         dataset.append(row)
+    #     return dataset
 
 
 @register('rituximab-administration')

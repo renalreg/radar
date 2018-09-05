@@ -1,9 +1,10 @@
 import argparse
 try:
     from configparser import ConfigParser
+    import csv
 except ImportError:
     from ConfigParser import ConfigParser
-import csv
+    from backports import csv
 from datetime import date
 import io
 import os
@@ -89,6 +90,22 @@ def log_data_export(config, sections):
     db.session.commit()
 
 
+class TemporaryDirectory(object):
+    """
+    Context manager for mkdtemp, as TemporaryDirectory is not
+    available in python2, only python>3.2
+    """
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.name = tempfile.mkdtemp(self.prefix)
+
+    def __enter__(self):
+        return self.name
+
+    def __exit__(self, exc, value, tb):
+        shutil.rmtree(self.name, ignore_errors=True)
+
+
 def main():
 
     argument_parser = argparse.ArgumentParser()
@@ -101,7 +118,7 @@ def main():
     config_parser = ConfigParser()
     config_parser.readfp(open(args.config))
 
-    with app.app_context(), tempfile.TemporaryDirectory(prefix='rdrexp') as output:
+    with app.app_context(), TemporaryDirectory(prefix='rdrexp') as output:
         config = parse_config(config_parser)
 
         exporters = []
@@ -113,7 +130,8 @@ def main():
 
             exporter_class = exporter_map[name]
 
-            exporter_config = config
+            # make a copy of config
+            exporter_config = dict(**config)
             exporter_config.update({'name': name})
 
             exporter = exporter_class(exporter_config)
@@ -142,7 +160,7 @@ def main():
         archive_name = '{}-export-{}{}'.format(today, group_name, anon)
         shutil.make_archive(os.path.join(args.dest, archive_name), 'zip', output)
 
-    log_data_export(config, config_parser.sections())
+        log_data_export(config, config_parser.sections())
 
 
 if __name__ == '__main__':
