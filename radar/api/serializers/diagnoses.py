@@ -99,7 +99,6 @@ class DiagnosisField(ReferenceField):
 class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(1000)])
-    status = fields.BooleanField(default=True)
     symptoms_date = fields.DateField(required=False)
     symptoms_age = fields.IntegerField(read_only=True)
     from_date = fields.DateField()
@@ -132,10 +131,6 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         if not data['biopsy']:
             data['biopsy_diagnosis'] = None
 
-        # Ignore the symptoms date for negative diagnoses
-        if data['status'] is False:
-            data['symptoms_date'] = None
-
         return data
 
     def validate_diagnosis(self, diagnosis):
@@ -161,8 +156,3 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 
         return data
-
-
-class AbsentDiagnosisListSerializer(PatientMixin, SourceMixin, MetaMixin):
-    checked = fields.BooleanField(default=False)
-    from_date = fields.DateField()
