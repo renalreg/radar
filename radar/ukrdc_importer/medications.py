@@ -91,7 +91,7 @@ def unique_medications(sda_medications):
 
     def log(sda_medication):
         external_id = sda_medication.external_id
-        logger.error('Ignoring duplicate medication external_id={external_id}'.format(external_id))
+        logger.error('Ignoring duplicate medication external_id=%s', external_id)
 
     sda_medications = unique_list(sda_medications, key_f=key, duplicate_f=log)
 
