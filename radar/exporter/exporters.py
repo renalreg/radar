@@ -1464,20 +1464,6 @@ class RituximabConsentsExporter(Exporter):
         self._query = q
 
 
-@register('rituximab-visits')
-class RituximabVisitsExporter(Exporter):
-    def setup(self):
-        self._columns = [
-            column('id'),
-            column('patient_id'),
-            column('date', 'data.date'),
-            column('label', 'data.visit'),
-        ]
-        self._columns.extend(get_meta_columns(self.config))
-        q = queries.get_form_data(self.config)
-        self._query = q
-
-
 @register('rituximab-baseline-assessment')
 class RituximabBaselineAssessmentExporter(Exporter):
     def setup(self):
