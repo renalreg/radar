@@ -760,17 +760,43 @@ class ResultExporter(Exporter):
             yield [col[1](result) for col in self._columns]
 
 
-# @register('results-pivot')
-# class PivotedResultExporter(Exporter):
+@register('results-pivot')
+class PivotedResultExporter(Exporter):
+    def setup(self):
+        self._columns = [
+            column('patient_id'),
+            column('source_group'),
+            column('source_type'),
+            column('date'),
+        ]
+
+    def get_rows(self):
+        observations = queries.get_observations()
+        for observation in observations:
+            self._columns.append(column(observation.short_name))
+
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        for patient in queries.get_patients(self.config):
+            data = {}
+            for result in patient.results:
+                date_str = result.date.strftime('%Y-%m-%dT%H:%M:%S')
+                key = (result.source_group.name, result.source_type, date_str)
+                if key not in data:
+                    data[key] = {}
+                data[key][result.observation.short_name] = result.sent_value
+
+            for key, items in sorted(data.items(), key=lambda x: x[0][2]):
+                row = [patient.id, key[0], key[1], key[2]]
+                for observation in headers[4:]:
+                    row.append(items.get(observation, None))
+
+                yield row
+
+
 #     def run(self):
 #         q = queries.get_results(self.config)
-
-#         self._columns = [
-#             column('patient_id'),
-#             column('source_group'),
-#             column('source_type'),
-#             column('date'),
-#         ]
 #         self._query = q
 
 #     @property

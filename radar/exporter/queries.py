@@ -38,7 +38,7 @@ from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
 from radar.models.renal_imaging import RenalImaging
 from radar.models.renal_progressions import RenalProgression
-from radar.models.results import Result
+from radar.models.results import Observation, Result
 from radar.models.rituximab import BaselineAssessment, RituximabCriteria
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
@@ -236,6 +236,12 @@ def get_primary_diagnoses(config):
     q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
     q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
     q = q.filter(GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY)
+    return q
+
+
+def get_observations():
+    """Return all available observations."""
+    q = db.session.query(Observation).order_by(Observation.short_name)
     return q
 
 
