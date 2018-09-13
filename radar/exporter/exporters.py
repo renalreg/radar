@@ -191,6 +191,24 @@ def get_meta_columns(config):
     ]
 
 
+def query_to_plain_rows(query, columns):
+    if query is None:
+        return None
+    else:
+        output_list = list()
+        for row in query:
+            insert_row = list()
+            for x in [c[1](row) for c in columns]:
+                if getattr(x, 'code', None):
+                    insert_row.append(x.code)
+                else:
+                    insert_row.append(x)
+
+            output_list.append(insert_row)
+
+        return output_list
+
+
 class Exporter(object):
     def __init__(self, config):
         self.config = config
@@ -207,6 +225,38 @@ class Exporter(object):
     @property
     def dataset(self):
         return query_to_dataset(self._query, self._columns)
+
+    @property
+    def plain_rows(self):
+        return query_to_plain_rows(self._query, self._columns)
+
+    def get_create_table_string(self, name):
+        columns = self._columns
+
+        # Make Column Names SQL Compatible
+        column_row = list()
+        for column_name in [row[0] for row in columns]:
+            for character in ("-", " ", ":", ">", "/", "<", "(", ")"):
+                column_name = column_name.replace(character, "_")
+            column_row.append(column_name)
+
+        # Build Query
+        sqlstring = """
+        CREATE TABLE """ + name + """
+        (
+        """ + " TEXT,\n".join(column_row) + """ TEXT
+        )
+        """
+
+        return sqlstring
+
+    def get_insert_string(self, name):
+        sqlstring = """
+        INSERT INTO """ + name + """
+        VALUES (""" + "?,".join(len(self._columns) * ['']) + """?  )
+        """
+
+        return sqlstring
 
 
 @register('patients')
@@ -436,7 +486,9 @@ class DiagnosisExporter(Exporter):
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_patient_diagnoses(self.config)
+        self._patient_diagnoses_query = q
         primary_diagnoses = queries.get_primary_diagnoses(self.config)
+        self._primary_diagnoses_query = primary_diagnoses
 
         primary = make_dataset(self._columns)
         comorbidity = make_dataset(self._columns)
@@ -470,6 +522,36 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
     @property
     def dataset(self):
         return self._primary
+
+    @property
+    def plain_rows(self):
+        if self._patient_diagnoses_query is None:
+            return None
+        else:
+            output_list = list()
+            for patient_diagnosis in self._patient_diagnoses_query:
+                insert_row = list()
+                for x in [c[1](patient_diagnosis) for c in self._columns]:
+                    if getattr(x, 'code', None):
+                        insert_row.append(x.code)
+                    else:
+                        insert_row.append(x)
+
+                diagnosis = patient_diagnosis.diagnosis
+
+                if diagnosis and diagnosis.codes:
+                    for code in diagnosis.codes:
+                        if code.system == 'ERA-EDTA PRD':
+                            insert_row[5] = code.code
+                        elif code.system == 'ICD-10':
+                            insert_row[6] = code.code
+                        elif code.system == 'SNOMED CT':
+                            insert_row[7] = code.code
+
+                if diagnosis in self._primary_diagnoses_query:
+                    output_list.append(insert_row)
+
+            return output_list
 
 
 @register('comorbidities')
@@ -866,6 +948,56 @@ class PivotedResultExporter(Exporter):
             dataset.append(row)
 
         return dataset
+
+    @property
+    def plain_rows(self):
+        raise NotImplementedError
+
+
+@register('resultslist')
+class ResultListExporter(Exporter):
+    def run(self):
+        q = queries.get_results(self.config)
+
+        self._columns = [
+            column('patient_id'),
+            column('source_group'),
+            column('source_type'),
+            column('date'),
+            column('pv_code'),
+            column('value')
+        ]
+        self._query = q
+
+    @property
+    def plain_rows(self):
+        output_list = list()
+
+        for result in self._query:
+            output_row = list()
+            output_row.append(result.patient_id)
+            output_row.append(result.source_group.code)
+            output_row.append(result.source_type)
+            output_row.append(result.date)
+            output_row.append(result.observation.pv_code)
+            output_row.append(result.value)
+
+            output_list.append(output_row)
+
+            # Add Row for Calculated eGFR, if present
+            if result.observation.pv_code == 'CREATININE':
+                output_row = list()
+                output_row.append(result.patient_id)
+                output_row.append(result.source_group.code)
+                output_row.append(result.source_type)
+                output_row.append(result.date)
+                # Keep distinct from unit supplied eGFRs
+                output_row.append('EGFR_RDR')
+                output_row.append(result.egfr_calculated)
+
+                output_list.append(output_row)
+
+        return output_list
 
 
 @register('observations')

@@ -3,8 +3,10 @@ try:
     from configparser import ConfigParser
 except ImportError:
     from ConfigParser import ConfigParser
+
 import os
 import socket
+import sqlite3
 
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
@@ -87,7 +89,7 @@ def log_data_export(config, sections):
 
 def main():
     # Note: xls doesn't support timezones
-    formats = ['csv', 'xlsx']
+    formats = ['csv', 'xlsx', 'sqlite']
     book_formats = ['xlsx']
 
     argument_parser = argparse.ArgumentParser()
@@ -124,6 +126,7 @@ def main():
             exporters.append((name, exporter))
 
         datasets = []
+        error = False
 
         # Export data
         for name, exporter in exporters:
@@ -137,8 +140,47 @@ def main():
 
         is_dir = os.path.isdir(args.dest)
 
-        error = False
-        if args.format in book_formats:
+        if args.format == 'sqlite':
+
+            # NOTE: This will crash if the file already exists
+            # Annoyingly only after its finished querying
+            connection = sqlite3.connect(args.dest)
+            cursor = connection.cursor()
+
+            for name, exporter in exporters:
+
+                # Change so SQLite is happy as a table name
+                name = name.replace("-", "_")
+                name = name.replace(" ", "_")
+                name = name.replace(":", "_")
+                name = name.replace(">", "_")
+
+                resultset = exporter.plain_rows
+
+                sqlstring = exporter.get_create_table_string(name)
+                try:
+                    cursor.execute(sqlstring)
+                except:
+                    print(exporter._columns)
+                    print(sqlstring)
+                    raise
+
+                sqlstring = exporter.get_insert_string(name)
+
+                if resultset is not None:
+                    for insert_row in resultset:
+                        try:
+                            cursor.execute(sqlstring, insert_row)
+                        except Exception:
+                            print(exporter._columns)
+                            print(sqlstring)
+                            print(insert_row)
+                            raise
+
+                connection.commit()
+
+        elif args.format in book_formats:
+
             if is_dir:
                 for dataset in datasets:
                     dest = os.path.join(args.dest, '%s.%s' % (dataset.title, args.format))
