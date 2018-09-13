@@ -15,7 +15,7 @@ from radar.exporter.utils import (
     stringify_list,
 )
 from radar.models.results import Observation
-# from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
+from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
@@ -1477,63 +1477,60 @@ class RituximabBaselineAssessmentExporter(Exporter):
         q = queries.get_rituximab_baseline_assessment_data(self.config)
         self._query = q
 
-    # @property
-    # def dataset(self):
-    #     self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
-    #     previous = (
-    #         'chlorambucil',
-    #         'cyclophosphamide',
-    #         'rituximab',
-    #         'tacrolimus',
-    #         'cyclosporine',
-    #     )
+    def get_rows(self):
+        self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
 
-    #     with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
-    #     for item in previous:
-    #         items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
-    #         self._columns.extend(column(item) for item in items)
-    #         if item in with_dose:
-    #             self._columns.append(column('{}_dose'.format(item)))
+        previous = (
+            'chlorambucil',
+            'cyclophosphamide',
+            'rituximab',
+            'tacrolimus',
+            'cyclosporine',
+        )
+        with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
 
-    #     self._columns.append(column('steroids'))
-    #     self._columns.append(column('other_previous_treatment'))
-    #     self._columns.append(column('past_remission'))
-    #     self._columns.append(column('performance_status'))
-    #     self._columns.extend(get_meta_columns(self.config))
-    #     dataset = make_dataset(self._columns)
+        for item in previous:
+            items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
+            self._columns.extend(column(item) for item in items)
+            if item in with_dose:
+                self._columns.append(column('{}_dose'.format(item)))
+        self._columns.append(column('steroids'))
+        self._columns.append(column('other_previous_treatment'))
+        self._columns.append(column('past_remission'))
+        self._columns.append(column('performance_status'))
+        self._columns.extend(get_meta_columns(self.config))
+        headers = [col[0] for col in self._columns]
 
-    #     for entry in self._query:
-    #         row = [entry.id, entry.patient_id, entry.source_group.name, entry.date, entry.nephropathy]
-    #         for item in SUPPORTIVE_MEDICATIONS.keys():
-    #             row.append(entry.supportive_medication.count(item) != 0)
-    #         for item in previous:
-    #             if not entry.previous_treatment:
-    #                 present = {}
-    #             else:
-    #                 present = entry.previous_treatment.get(item, {})
+        yield headers
 
-    #             if present.get(item, False):
-    #                 row.append(present.get(item))
-    #                 row.append(present.get('start_date', ''))
-    #                 row.append(present.get('end_date', ''))
-    #             else:
-    #                 row.append(False)
-    #                 row.append('')
-    #                 row.append('')
+        for data in self._query:
+            row = [data.id, data.patient.id, data.source_group.name, data.date]
+            row.append(data.nephropathy)
+            for supportive in SUPPORTIVE_MEDICATIONS:
+                row.append(supportive in data.supportive_medication)
 
-    #             if item in with_dose:
-    #                 row.append(present.get('total_dose', 'False'))
+            for item in previous:
+                treatment = data.previous_treatment.get(item, {})
+                if treatment:
+                    row.append(treatment.get(item))
+                    row.append(treatment.get('start_date'))
+                    row.append(treatment.get('end_date'))
+                else:
+                    row.append(False)
+                    row.append('')
+                    row.append('')
 
-    #         row.append(entry.steroids)
-    #         row.append(entry.other_previous_treatment)
-    #         row.append(entry.past_remission)
-    #         row.append(entry.performance_status)
+                if item in with_dose:
+                    row.append(treatment.get('total_dose'))
 
-    #         for col in self._columns[-6:]:
-    #             row.append(col[1](entry))
+            row.append(data.steroids)
+            row.append(data.other_previous_treatment)
+            row.append(data.past_remission)
+            row.append(data.performance_status)
+            for col in self._columns[-6:]:
+                row.append(col[1](data))
 
-    #         dataset.append(row)
-    #     return dataset
+            yield row
 
 
 @register('rituximab-administration')
