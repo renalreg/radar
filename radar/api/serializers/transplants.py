@@ -63,6 +63,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     date = fields.DateField()
     transplant_group = GroupField(required=False)
     modality = IntegerLookupField(TRANSPLANT_MODALITIES)
+    recurrence = fields.BooleanField(required=False)
     date_of_recurrence = fields.DateField(required=False)
     date_of_failure = fields.DateField(required=False)
     rejections = ListSerializer(child=TransplantRejectionSerializer())
@@ -111,6 +112,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
         instance.date = data['date']
         instance.modality = data['modality']
+        instance.recurrence = data['recurrence']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
         instance.transplant_group = data['transplant_group']

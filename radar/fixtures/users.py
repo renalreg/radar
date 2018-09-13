@@ -66,3 +66,14 @@ def create_ukrdc_importer_user(password=DEFAULT_PASSWORD):
     user.is_admin = True
     user.is_bot = True
     add(user)
+
+
+def create_user(username, password=DEFAULT_PASSWORD):
+    user = User()
+    user.username = username
+    user.email = '{0}@example.org'.format(username,)
+    user.first_name = 'Foo'
+    user.last_name = 'Bar'
+    user.is_admin = False
+    user.password = 'password'
+    add(user)

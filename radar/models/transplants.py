@@ -43,6 +43,7 @@ class Transplant(db.Model, MetaModelMixin):
 
     date = Column(Date, nullable=False)
     modality = Column(Integer, nullable=False)
+    recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)
     date_of_failure = Column(Date)
 

@@ -1,12 +1,9 @@
 from cornflake import fields, serializers
-from flask import request
-from sqlalchemy import or_
 from sqlalchemy.orm import subqueryload
 
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.common import QueryPatientField
 from radar.api.serializers.diagnoses import (
-    AbsentDiagnosisListSerializer,
     DiagnosisSerializer,
     PatientDiagnosisSerializer,
 )
@@ -25,8 +22,6 @@ from radar.api.views.generics import (
     RetrieveModelView,
     UpdateModelView,
 )
-from radar.database import db
-from radar.exceptions import BadRequest
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,
@@ -176,49 +171,6 @@ class GroupDiagnosisTypeListView(StringLookupListView):
     items = GROUP_DIAGNOSIS_TYPE_NAMES
 
 
-class AbsentDiagnosesView(CreateModelView):
-    serializer_class = AbsentDiagnosisListSerializer
-
-    def create(self, *args, **kwargs):
-        json = request.get_json()
-
-        if json is None:
-            raise BadRequest()
-
-        serializer = self.get_serializer(data=json)
-        serializer.is_valid(raise_exception=True)
-
-        query = db.session.query(Diagnosis)
-        query = query.outerjoin(Diagnosis.group_diagnoses)
-        query = query.filter(
-            or_(
-                GroupDiagnosis.type.is_(None),
-                GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.SECONDARY
-            )
-        )
-
-        # need to get group id in someway, currently this functionality is disabled
-        query = query.filter(or_(GroupDiagnosis.type.is_(None), GroupDiagnosis.group_id == 14))
-
-        for diagnosis in query:
-            patient_diagnosis = PatientDiagnosis()
-            patient_diagnosis.patient_id = serializer.data['patient']
-            patient_diagnosis.source_group_id = serializer.data['source_group']['id']
-            patient_diagnosis.source_type = serializer.data['source_type']
-            patient_diagnosis.from_date = serializer.data['from_date']
-            patient_diagnosis.created_user_id = serializer.data['created_user']['id']
-            patient_diagnosis.created_date = serializer.data['created_date']
-            patient_diagnosis.modified_user_id = serializer.data['modified_user']['id']
-            patient_diagnosis.modified_date = serializer.data['modified_date']
-            patient_diagnosis.status = False
-            patient_diagnosis.diagnosis = diagnosis
-            db.session.add(patient_diagnosis)
-
-        db.session.commit()
-
-        return '', 201
-
-
 def register_views(app):
     app.add_url_rule('/patient-diagnoses', view_func=PatientDiagnosisListView.as_view('patient_diagnosis_list'))
     app.add_url_rule(
@@ -232,5 +184,5 @@ def register_views(app):
     app.add_url_rule('/biopsy-diagnoses', view_func=BiopsyDiagnosisListView.as_view('biopsy_diagnosis_list'))
     app.add_url_rule(
         '/group-diagnosis-types',
-        view_func=GroupDiagnosisTypeListView.as_view('group_diagnosis_type_list'))
-    app.add_url_rule('/absent-diagnoses', view_func=AbsentDiagnosesView.as_view('absent_diagnoses'))
+        view_func=GroupDiagnosisTypeListView.as_view('group_diagnosis_type_list')
+    )

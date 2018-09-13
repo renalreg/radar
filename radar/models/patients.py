@@ -12,6 +12,7 @@ from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
 
 
@@ -205,8 +206,8 @@ class Patient(db.Model, MetaModelMixin):
             .as_scalar()
         )
 
-    def latest_demographics_attr(self, attr):
-        demographics = self.latest_demographics
+    def latest_demographics_attr(self, attr, radar_only=False):
+        demographics = self.latest_demographics(radar_only)
 
         if demographics is None:
             return None
@@ -229,8 +230,7 @@ class Patient(db.Model, MetaModelMixin):
             .as_scalar()
         )
 
-    @property
-    def latest_demographics(self):
+    def latest_demographics(self, radar_only):
         patient_demographics = self.patient_demographics
 
         if len(patient_demographics) == 0:
@@ -238,6 +238,12 @@ class Patient(db.Model, MetaModelMixin):
 
         def by_modified_date(x):
             return (x.modified_date or datetime.min, x.id)
+
+        def filter_radar_only(x):
+            return x.source_type == SOURCE_TYPE_MANUAL
+
+        if radar_only:
+            patient_demographics = filter(filter_radar_only, patient_demographics)
 
         return max(patient_demographics, key=by_modified_date)
 
@@ -251,9 +257,17 @@ class Patient(db.Model, MetaModelMixin):
     def first_name(self):
         return self.latest_demographics_attr('first_name')
 
+    @property
+    def radar_first_name(self):
+        return self.latest_demographics_attr('first_name', radar_only=True)
+
     @hybrid_property
     def last_name(self):
         return self.latest_demographics_attr('last_name')
+
+    @property
+    def radar_last_name(self):
+        return self.latest_demographics_attr('last_name', radar_only=True)
 
     @property
     def full_name(self):
@@ -270,6 +284,10 @@ class Patient(db.Model, MetaModelMixin):
         return self.latest_demographics_attr('date_of_birth')
 
     @property
+    def radar_date_of_birth(self):
+        return self.latest_demographics_attr('date_of_birth', radar_only=True)
+
+    @property
     def year_of_birth(self):
         date_of_birth = self.date_of_birth
 
@@ -283,6 +301,10 @@ class Patient(db.Model, MetaModelMixin):
     @hybrid_property
     def date_of_death(self):
         return self.latest_demographics_attr('date_of_death')
+
+    @property
+    def radar_date_of_death(self):
+        return self.latest_demographics_attr('date_of_death', radar_only=True)
 
     @property
     def year_of_death(self):
@@ -303,9 +325,17 @@ class Patient(db.Model, MetaModelMixin):
     def ethnicity(self):
         return self.latest_demographics_attr('ethnicity')
 
+    @property
+    def radar_ethnicity(self):
+        return self.latest_demographics_attr('ethnicity', radar_only=True)
+
     @hybrid_property
     def gender(self):
         return self.latest_demographics_attr('gender')
+
+    @property
+    def radar_gender(self):
+        return self.latest_demographics_attr('gender', radar_only=True)
 
     @hybrid_property
     def home_number(self):
