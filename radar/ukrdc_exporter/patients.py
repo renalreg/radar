@@ -30,12 +30,18 @@ def export_name(rda_patient, patient):
 
 def export_birth_time(sda_patient, patient):
     if patient.radar_date_of_birth:
-        sda_patient['birth_time'] = date_to_datetime(patient.radar_date_of_birth)
+        sda_patient['birth_time'] = date_to_datetime(
+            patient.radar_date_of_birth,
+            with_timezone=False
+        )
 
 
 def export_death_time(sda_patient, patient):
     if patient.radar_date_of_death:
-        sda_patient['death_time'] = date_to_datetime(patient.radar_date_of_death)
+        sda_patient['death_time'] = date_to_datetime(
+            patient.radar_date_of_death,
+            with_timezone=False
+        )
 
 
 def export_gender(sda_patient, patient):

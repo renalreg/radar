@@ -14,8 +14,11 @@ from sqlalchemy import and_
 SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 
 
-def date_to_datetime(d):
-    return datetime(year=d.year, month=d.month, day=d.day, tzinfo=pytz.utc)
+def date_to_datetime(d, with_timezone=True):
+    if with_timezone:
+        return datetime(year=d.year, month=d.month, day=d.day, tzinfo=pytz.utc)
+    else:
+        return datetime(year=d.year, month=d.month, day=d.day)
 
 
 def is_date(x):

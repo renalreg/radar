@@ -23,10 +23,16 @@ def export_medications(sda_container, patient, group):
     for medication in medications:
         sda_medication = dict()
         sda_medication['external_id'] = str(medication.id)
-        sda_medication['from_time'] = date_to_datetime(medication.from_date)
+        sda_medication['from_time'] = date_to_datetime(
+            medication.from_date,
+            with_timezone=False
+        )
 
         if medication.to_date:
-            sda_medication['to_time'] = date_to_datetime(medication.to_date)
+            sda_medication['to_time'] = date_to_datetime(
+                medication.to_date,
+                with_timezone=False
+            )
 
         if medication.drug_text:
             sda_medication['drug_product'] = {
