@@ -112,9 +112,9 @@ class TinyPatientSerializer(serializers.Serializer):
     control = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
-    consented = fields.BooleanField(read_only=True)
+    # consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
-    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
+    # consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 
     def to_representation(self, value):
         user = self.context['user']
