@@ -327,7 +327,7 @@ class ExportView(BaseView):
     def index(self):
         """Default page listing files in the directory."""
 
-        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.xlsx'))
+        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.zip'))
         files = [os.path.split(path)[1] for path in files]
         return self.render('admin/export.html', files=files)
 
