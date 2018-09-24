@@ -661,11 +661,18 @@ class InsRelapseExporter(Exporter):
             column('viral_trigger'),
             column('immunisation_trigger'),
             column('other_trigger'),
+            column('peak_pcr'),
+            column('peak_acr'),
+            column('peak_protein_dipstick'),
+            column('remission_protein_dipstick'),
             column('high_dose_oral_prednisolone'),
             column('iv_methyl_prednisolone'),
+            column('relapse_sample_taken'),
             column('date_of_remission', lambda x: format_date(x.date_of_remission)),
             column('remission_type'),
             column('remission_type_label'),
+            column('remission_pcr'),
+            column('remission_acr'),
         ]
         self._columns.extend(get_meta_columns(self.config))
 
