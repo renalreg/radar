@@ -1144,6 +1144,7 @@ class NurtureCKDExporter(Exporter):
             column('patient_id'),
             column('date', 'data.date'),
             column('visit', 'data.visit'),
+            column('comorbidities', 'data.comorbities'),
             column('vaccinationFlu', 'data.vaccinationFlu'),
             column('vaccinationPneumonia', 'data.vaccinationPneumonia'),
             column('admission', 'data.admission'),
