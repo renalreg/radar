@@ -56,7 +56,7 @@ def unique_patient_numbers(sda_patient_numbers):
         return sda_patient_number.organization
 
     def log(sda_patient_number):
-        logger.error('Ignoring duplicate patient number')
+        logger.warning('Ignoring duplicate patient number')
 
     sda_patient_numbers = unique_list(sda_patient_numbers, key_f=key, duplicate_f=None)
 

@@ -90,7 +90,7 @@ def unique_addresses(sda_addresses):
         return (sda_address.street, sda_address.zip)
 
     def log(sda_address):
-        logger.error('Ignoring duplicate address')
+        logger.warning('Ignoring duplicate address')
 
     sda_addresses = unique_list(sda_addresses, key_f=key, duplicate_f=log)
 
