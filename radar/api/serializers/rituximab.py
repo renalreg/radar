@@ -44,7 +44,7 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
 class RituximabCriteriaSerializer(PatientMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
 
-    therapy_failure = fields.BooleanField(required=False)
+    ongoing_severe_disease = fields.BooleanField(required=False)
     hypersensitivity = fields.BooleanField(required=False)
     drug_associated_toxicity = fields.BooleanField(required=False)
     alkylating_complication = fields.BooleanField(required=False)
