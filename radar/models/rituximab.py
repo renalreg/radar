@@ -84,7 +84,7 @@ class RituximabCriteria(db.Model, MetaModelMixin):
     criteria6 = Column(Boolean)
     criteria7 = Column(Boolean)
 
-    therapy_failure = Column(Boolean)
+    ongoing_severe_disease = Column(Boolean)
     hypersensitivity = Column(Boolean)
     drug_associated_toxicity = Column(Boolean)
     alkylating_complication = Column(Boolean)

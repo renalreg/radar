@@ -1454,7 +1454,7 @@ class RituximabConsentsExporter(Exporter):
             column('id'),
             column('patient_id'),
             column('date', lambda x: format_date(x.date)),
-            column('therapy_failure'),
+            column('ongoing_severe_disease'),
             column('hypersensitivity'),
             column('drug_associated_toxicity'),
             column('alkylating_complication'),
