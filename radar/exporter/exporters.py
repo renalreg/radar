@@ -366,6 +366,7 @@ class DiagnosisExporter(Exporter):
             column('to_date', lambda x: format_date(x.to_date)),
             column('to_age_years', lambda x: get_years(x.to_age)),
             column('to_age_months', lambda x: get_months(x.to_age)),
+            column('prenatal'),
             column('gene_test'),
             column('biochemistry'),
             column('clinical_picture'),
@@ -1518,7 +1519,9 @@ class RituximabBaselineAssessmentExporter(Exporter):
                 row.append(supportive in data.supportive_medication)
 
             for item in previous:
-                treatment = data.previous_treatment.get(item, {})
+                treatment = None
+                if data.previous_treatment:
+                    treatment = data.previous_treatment.get(item, {})
                 if treatment:
                     row.append(treatment.get(item))
                     row.append(treatment.get('start_date'))
@@ -1529,7 +1532,10 @@ class RituximabBaselineAssessmentExporter(Exporter):
                     row.append('')
 
                 if item in with_dose:
-                    row.append(treatment.get('total_dose'))
+                    if treatment:
+                        row.append(treatment.get('total_dose'))
+                    else:
+                        row.append('')
 
             row.append(data.steroids)
             row.append(data.other_previous_treatment)
