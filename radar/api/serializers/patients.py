@@ -58,6 +58,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
+    signed_off = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)

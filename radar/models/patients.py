@@ -53,6 +53,7 @@ class Patient(db.Model, MetaModelMixin):
     comments = Column(String)
     test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
     control = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    signed_off = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     @property
     def cohorts(self):
