@@ -20,9 +20,19 @@ from radar.models.logs import Log
 from radar.models.users import User
 
 
-def save(data, format, dest):
+def save(data, format, dest, binary=False):
+
+    data = data.export(format)
+
+    if not binary:
+        try:
+            data = data.decode('utf-8')
+        except Exception:
+            pass
+
+        data = data.encode('utf-8')
+
     with open(dest, 'wb') as f:
-        data = data.export(format)
         f.write(data)
 
 
@@ -173,14 +183,14 @@ def main():
             if is_dir:
                 for dataset in datasets:
                     dest = os.path.join(args.dest, '%s.%s' % (dataset.title, args.format))
-                    save(dataset, args.format, dest)
+                    save(dataset, args.format, dest, binary=True)
             else:
                 databook = tablib.Databook()
 
                 for dataset in datasets:
                     databook.add_sheet(dataset)
 
-                save(databook, args.format, args.dest)
+                save(databook, args.format, args.dest, binary=True)
         else:
             if is_dir:
                 for dataset in datasets:

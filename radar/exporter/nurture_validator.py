@@ -273,6 +273,9 @@ class Diagnoses(BaseSheet):
                 for code in diagnosis.diagnosis.codes:
                     if code.system == 'ERA-EDTA PRD':
                         data.insert(3, code.code)
+                        break
+                else:
+                    data.insert(3, None)
 
             data[4] = data[4].name if data[4] else None
 

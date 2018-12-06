@@ -4,7 +4,7 @@ from radar.api.views.common import (
     PatientObjectListView,
     StringLookupListView,
 )
-from radar.models.ins import InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
+from radar.models.ins import DIPSTICK_TYPES, InsClinicalPicture, InsRelapse, KIDNEY_TYPES, REMISSION_TYPES
 
 
 class InsClinicalPictureListView(PatientObjectListView):
@@ -35,6 +35,10 @@ class InsRemissionTypeListView(StringLookupListView):
     items = REMISSION_TYPES
 
 
+class InsDipstickListView(StringLookupListView):
+    items = DIPSTICK_TYPES
+
+
 def register_views(app):
     app.add_url_rule(
         '/ins-clinical-pictures',
@@ -48,3 +52,4 @@ def register_views(app):
     app.add_url_rule(
         '/ins-remission-types',
         view_func=InsRemissionTypeListView.as_view('ins_remission_type_list'))
+    app.add_url_rule('/ins-dipstick-options', view_func=InsDipstickListView.as_view('ins_dipstick_options'))

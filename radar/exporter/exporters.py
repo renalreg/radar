@@ -9,6 +9,7 @@ import tablib
 from radar.exporter import queries
 from radar.exporter.utils import get_months, get_years, identity_getter, none_getter, path_getter
 from radar.models.results import Observation
+from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
@@ -23,6 +24,15 @@ except NameError:
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 
 exporter_map = {}
+
+
+def stringify_list(name):
+
+    def stringify(entry):
+        items = entry.data.get(name) or []
+        return '; '.join(sorted(items))
+
+    return stringify
 
 
 def none_to_empty(value):
@@ -64,7 +74,6 @@ def query_to_dataset(query, columns):
 
     for row in query:
         data.append([c[1](row) for c in columns])
-
     return data
 
 
@@ -276,7 +285,6 @@ class PatientExporter(Exporter):
             column('gender'),
             column('gender_label'),
             column('available_ethnicity'),
-            # column('available_ethnicity', 'label'),
             column('patient_view', 'ukrdc'),
             column('control'),
             column('recruited_date', lambda x: format_date(x.recruited_date(group))),  # 13
@@ -414,6 +422,33 @@ class MedicationExporter(Exporter):
         self._columns.extend(get_meta_columns(self.config))
 
         q = queries.get_medications(self.config)
+        self._query = q
+
+
+@register('current-medications')
+class CurrentMedicationExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date_of_visit', lambda x: format_date(x.date_recorded)),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('drug_id'),
+            column('drug', 'drug.name'),
+            column('drug_text'),
+            column('dose_quantity'),
+            column('dose_unit'),
+            column('dose_unit_label'),
+            column('dose_text'),
+            column('frequency'),
+            column('route'),
+            column('route_label'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+
+        q = queries.get_current_medications(self.config)
         self._query = q
 
 
@@ -843,6 +878,27 @@ class RenalProgressionExporter(Exporter):
 @register('results')
 class ResultExporter(Exporter):
     def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group_id'),
+            column('source_group', 'source_group.name'),
+            column('source_type'),
+            column('date'),
+            column('observation_name', 'observation.name'),
+            column('value'),
+            column('value_label'),
+            column('sent_value')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+
+        q = queries.get_results(self.config)
+        self._query = q
+
+
+@register('results-pivot')
+class PivotedResultExporter(Exporter):
+    def run(self):
         q = queries.get_results(self.config)
 
         self._columns = [
@@ -1140,12 +1196,12 @@ class IposExporter(Exporter):
             column('score15', 'data.score15'),
             column('score16', 'data.score16'),
             column('score17', 'data.score17'),
-            column('score18', 'data.score18'),
-            column('score19', 'data.score19'),
-            column('score20', 'data.score20'),
             column('question1', 'data.question1'),
+            column('score18', 'data.score18'),
             column('question2', 'data.question2'),
+            column('score19', 'data.score19'),
             column('question3', 'data.question3'),
+            column('score20', 'data.score20'),
             column('question4', 'data.question4'),
             column('question5', 'data.question5'),
             column('score', 'data.score'),
@@ -1537,4 +1593,198 @@ class AlportPicturesExporter(Exporter):
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_alport_clinical_pictures(self.config)
+        self._query = q
+
+
+@register('rituximab-criteria')
+class RituximabConsentsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', lambda x: format_date(x.date)),
+            column('therapy_failure'),
+            column('hypersensitivity'),
+            column('drug_associated_toxicity'),
+            column('alkylating_complication'),
+            column('alkylating_failure_monitoring_requirements'),
+            column('cancer'),
+            column('threatened_fertility'),
+            column('fall_in_egfr'),
+            column('cni_therapy_complication'),
+            column('cni_failure_monitoring_requirements'),
+            column('diabetes'),
+            column('risk_factors'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_rituximab_consents(self.config)
+        self._query = q
+
+
+@register('rituximab-visits')
+class RituximabVisitsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('label', 'data.visit'),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-baseline-assessment')
+class RituximabBaselineAssessmentExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('source_group', 'source_group.name'),
+            column('date'),
+            column('nephropathy'),
+        ]
+        q = queries.get_rituximab_baseline_assessment_data(self.config)
+        self._query = q
+
+    @property
+    def dataset(self):
+        self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys())
+        previous = (
+            'chlorambucil',
+            'cyclophosphamide',
+            'rituximab',
+            'tacrolimus',
+            'cyclosporine',
+        )
+
+        with_dose = ('chlorambucil', 'cyclophosphamide', 'rituximab')
+        for item in previous:
+            items = (item, '{}_start_date'.format(item), '{}_end_date'.format(item))
+            self._columns.extend(column(item) for item in items)
+            if item in with_dose:
+                self._columns.append(column('{}_dose'.format(item)))
+
+        self._columns.append(column('steroids'))
+        self._columns.append(column('other_previous_treatment'))
+        self._columns.append(column('past_remission'))
+        self._columns.append(column('performance_status'))
+        self._columns.extend(get_meta_columns(self.config))
+        dataset = make_dataset(self._columns)
+
+        for entry in self._query:
+            row = [entry.id, entry.patient_id, entry.source_group.name, entry.date, entry.nephropathy]
+            for item in SUPPORTIVE_MEDICATIONS.keys():
+                row.append(entry.supportive_medication.count(item) != 0)
+            for item in previous:
+                if not entry.previous_treatment:
+                    present = {}
+                else:
+                    present = entry.previous_treatment.get(item, {})
+
+                if present.get(item, False):
+                    row.append(present.get(item))
+                    row.append(present.get('start_date', ''))
+                    row.append(present.get('end_date', ''))
+                else:
+                    row.append(False)
+                    row.append('')
+                    row.append('')
+
+                if item in with_dose:
+                    row.append(present.get('total_dose', 'False'))
+
+            row.append(entry.steroids)
+            row.append(entry.other_previous_treatment)
+            row.append(entry.past_remission)
+            row.append(entry.performance_status)
+
+            for col in self._columns[-6:]:
+                row.append(col[1](entry))
+
+            dataset.append(row)
+        return dataset
+
+
+@register('rituximab-administration')
+class RituximabAdministrationExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('drug_name', 'data.drugName'),
+            column('other_drug', 'data.otherDrug'),
+            column('dose', 'data.dose'),
+            column('retreatment', 'data.retreatment'),
+            column('toxicity', stringify_list('toxicity')),
+            column('other_toxicity', 'data.otherToxicity'),
+        ]
+
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-assessment')
+class RituximabFollowupAssessmentExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('visit', 'data.visit'),
+            column('performance', 'data.performance'),
+            column('transplant', 'data.transplant'),
+            column('haemodialysis', 'data.haemodialysis'),
+            column('peritoneal_dialysis', 'data.peritonealDialysis'),
+            column('supportive_medication', stringify_list('medication'))
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('rituximab-adverse-events')
+class RituximabAdverseEventsExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('hospitalisation', 'data.hospitalisation'),
+            column('adverse_events', 'data.adverseEvents'),
+            column('onset_cancer', 'data.newOnsetCancer'),
+            column('thromboembolism', 'data.thromboembolism'),
+            column('myocardial_infarction', 'data.myocardialInfarction'),
+            column('stroke', 'data.stroke'),
+            column('ischaemic_attack', 'data.ischaemicAttack'),
+            column('other_adverse_event', 'data.otherAdverseEvent'),
+            column('other_toxicity', 'data.otherTox'),
+            column('date_of_death', 'data.dod'),
+            column('cause_of_death', 'data.dodCause')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register('adtkd-clinical-pictures')
+class ADTKDClinicalPicturesExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column('id'),
+            column('patient_id'),
+            column('picture_date'),
+            column('gout'),
+            column('gout_date'),
+            column('family_gout'),
+            column('family_gout_relatives'),
+            column('thp'),
+            column('uti'),
+            column('comments')
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_adtkd_clinical_pictures(self.config)
         self._query = q
