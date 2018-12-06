@@ -140,11 +140,6 @@ def main():
         for name, exporter in exporters:
             print('Exporting {0}...'.format(name))
             exporter.run()
-            dataset = exporter.dataset
-            if name == 'nurtureckd':
-                name = 'visits'
-            dataset.title = name
-            datasets.append(dataset)
 
             if args.format == 'sqlite':
 
@@ -178,6 +173,12 @@ def main():
                         raise
 
                     connection.commit()
+            else:
+                dataset = exporter.dataset
+                if name == 'nurtureckd':
+                    name = 'visits'
+                dataset.title = name
+                datasets.append(dataset)
 
         if args.format in book_formats:
 
