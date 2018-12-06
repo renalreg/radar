@@ -128,6 +128,14 @@ def main():
         datasets = []
         error = False
 
+        is_dir = os.path.isdir(args.dest)
+
+        if args.format == 'sqlite':
+            # NOTE: This will crash if the file already exists
+            # Annoyingly only after its finished querying
+            connection = sqlite3.connect(args.dest)
+            cursor = connection.cursor()
+
         # Export data
         for name, exporter in exporters:
             print('Exporting {0}...'.format(name))
@@ -138,16 +146,9 @@ def main():
             dataset.title = name
             datasets.append(dataset)
 
-        is_dir = os.path.isdir(args.dest)
+            if args.format == 'sqlite':
 
-        if args.format == 'sqlite':
-
-            # NOTE: This will crash if the file already exists
-            # Annoyingly only after its finished querying
-            connection = sqlite3.connect(args.dest)
-            cursor = connection.cursor()
-
-            for name, exporter in exporters:
+                print('Saving to SQLite {0}...'.format(name))
 
                 # Change so SQLite is happy as a table name
                 name = name.replace("-", "_")
@@ -178,7 +179,7 @@ def main():
 
                     connection.commit()
 
-        elif args.format in book_formats:
+        if args.format in book_formats:
 
             if is_dir:
                 for dataset in datasets:
