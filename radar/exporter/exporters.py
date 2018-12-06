@@ -915,7 +915,6 @@ class ResultListExporter(Exporter):
 
     @property
     def plain_rows(self):
-        output_list = list()
 
         for result in self._query:
             output_row = list()
@@ -926,7 +925,7 @@ class ResultListExporter(Exporter):
             output_row.append(result.observation.pv_code)
             output_row.append(result.value)
 
-            output_list.append(output_row)
+            yield output_row
 
             # Add Row for Calculated eGFR, if present
             if result.observation.pv_code == 'CREATININE':
@@ -939,9 +938,7 @@ class ResultListExporter(Exporter):
                 output_row.append('EGFR_RDR')
                 output_row.append(result.egfr_calculated)
 
-                output_list.append(output_row)
-
-        return output_list
+                yield output_row
 
 
 @register('observations')

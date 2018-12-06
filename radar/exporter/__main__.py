@@ -157,15 +157,14 @@ def main():
 
                 sqlstring = exporter.get_insert_string(name)
 
-                if resultset is not None:
-                    for insert_row in resultset:
-                        try:
-                            cursor.execute(sqlstring, insert_row)
-                        except Exception:
-                            print(exporter._columns)
-                            print(sqlstring)
-                            print(insert_row)
-                            raise
+                for insert_row in resultset:
+                    try:
+                        cursor.execute(sqlstring, insert_row)
+                    except Exception:
+                        print(exporter._columns)
+                        print(sqlstring)
+                        print(insert_row)
+                        raise
 
                 connection.commit()
 
