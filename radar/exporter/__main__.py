@@ -176,7 +176,7 @@ def main():
                         print(insert_row)
                         raise
 
-                connection.commit()
+                    connection.commit()
 
         elif args.format in book_formats:
 
