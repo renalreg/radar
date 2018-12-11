@@ -151,8 +151,6 @@ def main():
                 name = name.replace(":", "_")
                 name = name.replace(">", "_")
 
-                resultset = exporter.plain_rows
-
                 sqlstring = exporter.get_create_table_string(name)
                 try:
                     cursor.execute(sqlstring)
@@ -163,7 +161,7 @@ def main():
 
                 sqlstring = exporter.get_insert_string(name)
 
-                for insert_row in resultset:
+                for insert_row in exporter.plain_rows:
                     try:
                         cursor.execute(sqlstring, insert_row)
                     except Exception:
