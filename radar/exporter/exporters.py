@@ -972,7 +972,7 @@ class ResultListExporter(Exporter):
     @property
     def plain_rows(self):
 
-        for result in self._query:
+        for result in self._query.yield_per(1000):
             output_row = list()
             output_row.append(result.patient_id)
             output_row.append(result.source_group.code)
