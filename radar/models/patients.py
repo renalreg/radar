@@ -7,6 +7,7 @@ from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
+from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
@@ -559,3 +560,20 @@ class Patient(db.Model, MetaModelMixin):
             return CONSENT_STATUS.EXPIRED
 
         return CONSENT_STATUS.OK
+
+    def primary_diagnosis(self, cohort):
+        """
+        Return primary diagnosis in a cohort, or None if it is not
+        yet added.
+        """
+        primary_diagnoses = [
+            group_diagnosis.diagnosis
+            for group_diagnosis in cohort.group_diagnoses
+            if group_diagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY
+        ]
+
+        for patient_diagnosis in self.patient_diagnoses:
+            if patient_diagnosis.diagnosis in primary_diagnoses:
+                return patient_diagnosis
+
+        return None
