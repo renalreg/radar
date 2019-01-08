@@ -3,6 +3,7 @@ from datetime import datetime
 from radar.database import db
 from radar.models.consents import Consent, CONSENT_TYPE
 from radar.models.demographics import Ethnicity, Nationality
+from radar.models.diagnoses import Diagnosis
 from radar.models.groups import (
     Group,
     GROUP_CODE_NHS,
@@ -192,10 +193,17 @@ def create_hospital(code, **kwargs):
     return create_group(GROUP_TYPE.HOSPITAL, code, **kwargs)
 
 
+def create_diagnosis():
+    diagnosis = Diagnosis(id=1, name='Anxiety', retired=False)
+    db.session.add(diagnosis)
+    return diagnosis
+
+
 def create_fixtures():
     create_user('admin', is_admin=True)
     create_user('null')
     create_consent()
+    create_diagnosis()
 
     radar_group = create_group(GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
     nhs_group = create_group(GROUP_TYPE.OTHER, GROUP_CODE_NHS, is_recruitment_number_group=True)
