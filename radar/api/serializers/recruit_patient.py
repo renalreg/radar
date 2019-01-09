@@ -6,6 +6,7 @@ from radar.api.serializers.common import GroupField, IntegerLookupField
 from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
+from radar.models.diagnoses import BIOPSY_DIAGNOSES
 from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
 from radar.models.patient_codes import GENDERS
 from radar.permissions import has_permission_for_group
@@ -37,12 +38,27 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
         return data
 
 
+class RecruitPatientDiagnosisSerializer(serializers.Serializer):
+    diagnosis_id = fields.IntegerField()
+    symptoms_date = fields.DateField(required=False)
+    from_date = fields.DateField()
+    to_date = fields.DateField(required=False)
+    prenatal = fields.BooleanField(required=False)
+    gene_test = fields.BooleanField(required=False)
+    biochemistry = fields.BooleanField(required=False)
+    clinical_picture = fields.BooleanField(required=False)
+    biopsy = fields.BooleanField(required=False)
+    biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
+    comments = fields.StringField(required=False)
+
+
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
     cohort_group = GroupField()
     hospital_group = GroupField()
     consents = fields.Field()
     ethnicity = EthnicityField(required=False)
     nationality = NationalityField(required=False)
+    diagnosis = RecruitPatientDiagnosisSerializer()
 
     def validate_cohort_group(self, cohort_group):
         current_user = self.context['user']
