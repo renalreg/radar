@@ -57,6 +57,7 @@ class BaselineAssessment(db.Model, MetaModelMixin):
 
     date = Column(Date, nullable=False)
     nephropathy = Column(String)
+    comorbidities = Column(Boolean)
 
     supportive_medication = Column(postgresql.ARRAY(String))
     previous_treatment = Column(postgresql.JSONB)  # [{'name': '', 'start': '', 'end': ''}, ]
