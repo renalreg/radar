@@ -1069,25 +1069,11 @@ class SamplesExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'taken_on'),
-            column('barcode'),
-            column('epa'),
-            column('epb'),
-            column('lpa'),
-            column('lpb'),
-            column('uc'),
-            column('ub'),
-            column('ud'),
-            column('fub'),
-            column('sc'),
-            column('sa'),
-            column('sb'),
-            column('rna'),
-            column('wb'),
-            column('protocol_id'),
+            column('date', 'data.date'),
+            column('barcode', 'data.barcode'),
         ]
         self._columns.extend(get_meta_columns(self.config))
-        q = queries.get_nurture_samples(self.config)
+        q = queries.get_form_data(self.config)
         self._query = q
 
 
