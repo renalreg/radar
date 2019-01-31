@@ -29,7 +29,7 @@ def build(rev='HEAD'):
     with temp():
         put(archive, 'src.tar.gz')
         run('tar -xzf src.tar.gz')
-        run('PATH=/usr/pgsql-9.4/bin:$PATH platter build -r requirements.txt .')
+        run('PATH=/usr/pgsql-9.4/bin:$PATH platter build --virtualenv-version 15.1.0 -r requirements.txt .')
         if not os.path.exists(DEFAULT_DIST_DIR):
             os.makedirs(DEFAULT_DIST_DIR)
         get('dist/*.tar.gz', DEFAULT_DIST_DIR)
