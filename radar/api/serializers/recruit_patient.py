@@ -1,6 +1,6 @@
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from cornflake.validators import not_empty, not_in_future, upper
+from cornflake.validators import min_length, not_empty, not_in_future, upper
 
 from radar.api.serializers.common import GroupField, IntegerLookupField
 from radar.api.serializers.demographics import EthnicityField, NationalityField
@@ -14,8 +14,8 @@ from radar.roles import PERMISSION
 
 
 class RecruitPatientSearchSerializer(serializers.Serializer):
-    first_name = fields.StringField(validators=[not_empty(), upper()])
-    last_name = fields.StringField(validators=[not_empty(), upper()])
+    first_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
+    last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     date_of_birth = fields.DateField(validators=[not_in_future()])
     gender = IntegerLookupField(GENDERS)
     number = fields.StringField(validators=[not_empty()])

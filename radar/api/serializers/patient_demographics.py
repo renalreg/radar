@@ -5,6 +5,7 @@ from cornflake.validators import (
     email_address,
     lower,
     max_length,
+    min_length,
     none_if_blank,
     normalise_whitespace,
     not_empty,
@@ -28,8 +29,12 @@ from radar.roles import PERMISSION
 
 
 class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
-    first_name = fields.StringField(validators=[not_empty(), upper(), normalise_whitespace(), max_length(100)])
-    last_name = fields.StringField(validators=[not_empty(), upper(), normalise_whitespace(), max_length(100)])
+    first_name = fields.StringField(
+        validators=[not_empty(), upper(), normalise_whitespace(), max_length(100), min_length(2)]
+    )
+    last_name = fields.StringField(
+        validators=[not_empty(), upper(), normalise_whitespace(), max_length(100), min_length(2)]
+    )
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
