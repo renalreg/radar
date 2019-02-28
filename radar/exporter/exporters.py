@@ -595,6 +595,9 @@ class TransplantExporter(Exporter):
             column('date', lambda x: format_date(x.date)),
             column('modality'),
             column('modality_label'),
+            column('recipient_hla'),
+            column('donor_hla'),
+            column('date_of_cmv_infection', lambda x: format_date(x.date_of_cmv_infection)),
             column('date_of_recurrence', lambda x: format_date(x.date_of_recurrence)),
             column('date_of_failure', lambda x: format_date(x.date_of_failure)),
         ]
@@ -625,6 +628,7 @@ class TransplantRejectionExporter(Exporter):
             column('id'),
             column('transplant_id'),
             column('date_of_rejection', lambda x: format_date(x.date_of_rejection)),
+            column('graft_loss_cause'),
         ]
 
         q = queries.get_transplant_rejections(self.config)
