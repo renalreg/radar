@@ -36,7 +36,6 @@ class ListSerializer(serializers.ListSerializer):
 
 class TransplantRejectionSerializer(ModelSerializer):
     date_of_rejection = fields.DateField()  # TODO after date
-    graft_loss_cause = StringLookupField(GRAFT_LOSS_CAUSES, required=False)
 
     class Meta(object):
         model_class = TransplantRejection
@@ -72,6 +71,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     recurrence = fields.BooleanField(required=False)
     date_of_recurrence = fields.DateField(required=False)
     date_of_failure = fields.DateField(required=False)
+    graft_loss_cause = StringLookupField(GRAFT_LOSS_CAUSES, required=False)
     rejections = ListSerializer(child=TransplantRejectionSerializer())
     biopsies = ListSerializer(child=TransplantBiopsySerializer())
 
@@ -124,6 +124,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         instance.recurrence = data['recurrence']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
+        instance.graft_loss_cause = data['graft_loss_cause']
         instance.transplant_group = data['transplant_group']
         instance.rejections = self.fields['rejections'].create(data['rejections'])
         instance.biopsies = self.fields['biopsies'].create(data['biopsies'])

@@ -60,6 +60,7 @@ class Transplant(db.Model, MetaModelMixin):
     recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)
     date_of_failure = Column(Date)
+    graft_loss_cause = Column(String)
 
     @property
     def modality_label(self):
@@ -84,7 +85,6 @@ class TransplantRejection(db.Model):
         backref=backref('rejections', cascade='all, delete-orphan', passive_deletes=True))
 
     date_of_rejection = Column(Date, nullable=False)
-    graft_loss_cause = Column(String)
 
 
 Index('transplant_rejections_transplant_idx', TransplantRejection.transplant_id)
