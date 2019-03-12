@@ -20,6 +20,7 @@ from sqlalchemy.orm import relationship
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
+from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
 from radar.models.types import EnumType
 from radar.utils import pairwise
 
@@ -248,7 +249,8 @@ class Result(db.Model, MetaModelMixin):
         egfr = 0
         black_adj = 1
 
-        if self.patient.ethnicity and self.patient.ethnicity.code in ('M', 'N', 'P'):
+        ethnicity = self.patient.available_ethnicity
+        if ethnicity and ethnicity.code in ('M', 'N', 'P'):
             black_adj = 1.159
 
         months = self.patient.to_age(date(self.date.year, self.date.month, self.date.day))
@@ -257,14 +259,15 @@ class Result(db.Model, MetaModelMixin):
 
         years_old = months // 12
         age_adj = 0.993**years_old
-
-        if self.patient.is_female and creat88 > 0.7:
+        is_female = self.patient.radar_gender == GENDER_FEMALE
+        is_male = self.patient.radar_gender == GENDER_MALE
+        if is_female and creat88 > 0.7:
             egfr = age_adj * black_adj * 144 * ((creat88/0.7)**(-1.209))
-        elif self.patient.is_female and creat88 <= 0.7:
+        elif is_female and creat88 <= 0.7:
             egfr = age_adj * black_adj * 144 * ((creat88/0.7)**(-0.329))
-        elif self.patient.is_male and creat88 > 0.7:
+        elif is_male and creat88 > 0.7:
             egfr = age_adj * black_adj * 141 * ((creat88/0.9)**(-1.209))
-        elif self.patient.is_male and creat88 <= 0.7:
+        elif is_male and creat88 <= 0.7:
             egfr = age_adj * black_adj * 141 * ((creat88/0.9)**(-0.411))
 
         return egfr
