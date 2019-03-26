@@ -794,7 +794,10 @@ class PivotedResultExporter(Exporter):
         for patient in queries.get_patients(self.config):
             data = {}
             for result in patient.results:
-                date_str = result.date.strftime('%Y-%m-%dT%H:%M:%S')
+                try:
+                    date_str = result.date.strftime('%Y-%m-%dT%H:%M:%S')
+                except ValueError:
+                    date_str = 'bad_date'
                 key = (result.source_group.name, result.source_type, date_str)
                 if key not in data:
                     data[key] = {}
