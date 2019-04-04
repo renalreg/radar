@@ -345,6 +345,8 @@ class CurrentMedicationExporter(Exporter):
 
 class DiagnosisExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
+
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -374,7 +376,7 @@ class DiagnosisExporter(Exporter):
             column('biopsy'),
             column('biopsy_diagnosis'),
             column('biopsy_diagnosis_label'),
-            column('comments'),
+            d('comments', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
@@ -458,6 +460,7 @@ class GeneticsExporter(Exporter):
 @register('pathology')
 class PathologyExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -470,8 +473,8 @@ class PathologyExporter(Exporter):
             column('kidney_side_label'),
             column('reference_number'),
             column('image_url'),
-            column('histological_summary'),
-            column('em_findings'),
+            d('histological_summary', anonymised_getter=None),
+            d('em_findings', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
 
@@ -514,6 +517,7 @@ class FamilyHistoryRelativeExporter(Exporter):
 @register('ins_clinical_pictures')
 class InsClinicalPictureExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -531,7 +535,7 @@ class InsClinicalPictureExporter(Exporter):
             column('infection_details'),
             column('ophthalmoscopy'),
             column('ophthalmoscopy_details'),
-            column('comments'),
+            d('comments', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
 
@@ -638,6 +642,7 @@ class TransplantRejectionExporter(Exporter):
 @register('hospitalisations')
 class HospitalisationExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -647,7 +652,7 @@ class HospitalisationExporter(Exporter):
             column('date_of_admission', lambda x: format_date(x.date_of_admission)),
             column('date_of_discharge', lambda x: format_date(x.date_of_discharge)),
             column('reason_for_admission'),
-            column('comments'),
+            d('comments', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
 
@@ -689,6 +694,7 @@ class InsRelapseExporter(Exporter):
 @register('mpgn_clinical_pictures')
 class MpgnClinicalPicturesExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -701,7 +707,7 @@ class MpgnClinicalPicturesExporter(Exporter):
             column('infection_details'),
             column('ophthalmoscopy'),
             column('ophthalmoscopy_details'),
-            column('comments'),
+            d('comments', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
 
@@ -1255,6 +1261,7 @@ class PregnanciesExporter(Exporter):
 @register('fetal_ultrasounds')
 class FetalUltrasoundsExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1268,7 +1275,7 @@ class FetalUltrasoundsExporter(Exporter):
             column('abdomen_centile'),
             column('uterine_artery_notched'),
             column('liquor_volume'),
-            column('comments'),
+            d('comments', anonymised_getter=None),
         ]
 
         self._columns.extend(get_meta_columns(self.config))
@@ -1280,23 +1287,24 @@ class FetalUltrasoundsExporter(Exporter):
 @register('clinical_features')
 class ClinicalFeaturesExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
             column('normal_pregnancy'),
-            column('abnormal_pregnancy_text'),
+            d('abnormal_pregnancy_text', anonymised_getter=None),
             column('neurological_problems'),
             column('seizures'),
             column('abnormal_gait'),
             column('deafness'),
             column('other_neurological_problem'),
-            column('other_neurological_problem_text'),
+            d('other_neurological_problem_text', anonymised_getter=None),
             column('joint_problems'),
             column('joint_problems_age'),
             column('x_ray_abnormalities'),
             column('chondrocalcinosis'),
             column('other_x_ray_abnormality'),
-            column('other_x_ray_abnormality_text'),
+            d('other_x_ray_abnormality_text', anonymised_getter=None),
         ]
 
         self._columns.extend(get_meta_columns(self.config))
@@ -1583,6 +1591,7 @@ class RituximabFollowupAssessmentExporter(Exporter):
 @register('rituximab-adverse-events')
 class RituximabAdverseEventsExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1597,7 +1606,7 @@ class RituximabAdverseEventsExporter(Exporter):
             column('other_adverse_event', 'data.otherAdverseEvent'),
             column('other_toxicity', 'data.otherTox'),
             column('date_of_death', 'data.dod'),
-            column('cause_of_death', 'data.dodCause')
+            d('cause_of_death', 'data.dodCause', anonymised_getter=None)
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
@@ -1607,6 +1616,7 @@ class RituximabAdverseEventsExporter(Exporter):
 @register('adtkd-clinical-pictures')
 class ADTKDClinicalPicturesExporter(Exporter):
     def setup(self):
+        d = demographics_column_factory(self.config)
         self._columns = [
             column('id'),
             column('patient_id'),
@@ -1617,7 +1627,7 @@ class ADTKDClinicalPicturesExporter(Exporter):
             column('family_gout_relatives'),
             column('thp'),
             column('uti'),
-            column('comments')
+            d('comments', anonymised_getter=None)
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_adtkd_clinical_pictures(self.config)
