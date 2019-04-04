@@ -35,6 +35,9 @@
                             "help": {
                                 "type": "string"
                             },
+                            "warning": {
+                                "type": "string"
+                            },
                             "titleHelp": {
                                 "type": "string"
                             },
@@ -126,6 +129,9 @@
                                 "type": "string"
                             },
                             "help": {
+                                "type": "string"
+                            },
+                            "warning": {
                                 "type": "string"
                             },
                             "titleHelp": {
