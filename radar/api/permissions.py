@@ -156,6 +156,21 @@ class SystemSourceObjectPermission(Permission):
             return True
 
 
+class GroupPermission(Permission):
+    """Check that user has permission to view a group."""
+    def has_object_permission(self, request, user, obj):
+        if not super(GroupPermission, self).has_object_permission(request, user, obj):
+            return False
+
+        if obj.type == GROUP_TYPE.COHORT:
+            permission = PERMISSION.VIEW_COHORT
+        elif obj.type == GROUP_TYPE.HOSPITAL:
+            permission = PERMISSION.VIEW_HOSPITAL
+        else:
+            return False
+        return has_permission_for_group(user, obj, permission)
+
+
 class GroupObjectPermission(Permission):
     """Checks that the user has permission to view an object belonging to a group.
 
