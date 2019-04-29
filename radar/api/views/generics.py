@@ -27,7 +27,7 @@ def parse_args(serializer_class, args=None):
     # Camel case to snake case
     args = snake_case_keys(args)
 
-    context = {'user': current_user._get_current_object()}
+    context = {"user": current_user._get_current_object()}
 
     serializer = serializer_class(data=args, context=context)
     serializer.is_valid(raise_exception=True)
@@ -39,11 +39,11 @@ def parse_args(serializer_class, args=None):
 def get_sort_args():
     args = parse_args(SortRequestSerializer)
 
-    sort = args['sort']
+    sort = args["sort"]
 
     if sort:
         # Prefix with "-" to sort in reverse
-        if sort[0] == '-':
+        if sort[0] == "-":
             reverse = True
             sort = sort[1:]
         else:
@@ -80,13 +80,13 @@ class PermissionViewMixin(object):
     def check_permissions(self):
         for permission in self.get_permissions():
             if not permission.has_permission(request, current_user):
-                print('Denied by', permission)
+                print("Denied by", permission)
                 raise PermissionDenied()
 
     def check_object_permissions(self, obj):
         for permission in self.get_permissions():
             if not permission.has_object_permission(request, current_user, obj):
-                print('Denied by', permission)
+                print("Denied by", permission)
                 raise PermissionDenied()
 
     def get_permission_classes(self):
@@ -116,11 +116,13 @@ class SerializerViewMixin(object):
 
         context = self.get_context()
         serializer_class = self.get_serializer_class()
-        serializer = serializer_class(instance=instance, data=data, context=context, partial=partial)
+        serializer = serializer_class(
+            instance=instance, data=data, context=context, partial=partial
+        )
         return serializer
 
     def get_context(self):
-        return {'user': current_user._get_current_object()}
+        return {"user": current_user._get_current_object()}
 
 
 class BaseView(SerializerViewMixin, PermissionViewMixin, ApiView):
@@ -178,8 +180,8 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
     def paginate_query(self, query):
         args = parse_args(PaginationRequestSerializer)
 
-        page = args['page']
-        per_page = args['per_page']
+        page = args["page"]
+        per_page = args["per_page"]
 
         if per_page is not None:
             # Pages start at 1
@@ -193,11 +195,7 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
             count = query.count()
             query = query.limit(per_page).offset((page - 1) * per_page)
 
-            pagination = {
-                'page': page,
-                'per_page': per_page,
-                'count': count
-            }
+            pagination = {"page": page, "per_page": per_page, "count": count}
         else:
             pagination = None
 
@@ -218,9 +216,9 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
         query = self.filter_query(query)
 
         model_class = self.get_model_class()
-        id_type = inspect(model_class).columns['id'].type
+        id_type = inspect(model_class).columns["id"].type
 
-        obj_id = request.view_args['id']
+        obj_id = request.view_args["id"]
 
         if isinstance(id_type, Integer):
             try:
@@ -283,9 +281,7 @@ class ListViewMixin(object):
         serializer = self.get_serializer()
         list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
 
-        data = {
-            'data': list_serializer.data
-        }
+        data = {"data": list_serializer.data}
 
         data = camel_case_keys(data)
 
@@ -300,13 +296,11 @@ class ListModelViewMixin(object):
         serializer = self.get_serializer()
         list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
 
-        data = {
-            'data': list_serializer.data
-        }
+        data = {"data": list_serializer.data}
 
         if pagination:
             pagination_serializer = PaginationResponseSerializer(pagination)
-            data['pagination'] = pagination_serializer.data
+            data["pagination"] = pagination_serializer.data
 
         data = camel_case_keys(data)
 
@@ -329,7 +323,7 @@ class UpdateModelViewMixin(object):
         if json is None:
             raise BadRequest()
 
-        partial = request.method == 'PATCH'
+        partial = request.method == "PATCH"
         obj = self.get_object()
         serializer = self.get_serializer(obj, data=json, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -375,7 +369,9 @@ class ListCreateModelView(ListModelViewMixin, CreateModelViewMixin, ModelView):
         return self.create(*args, **kwargs)
 
 
-class RetrieveUpdateDestroyModelView(RetrieveModelViewMixin, UpdateModelViewMixin, DestroyModelViewMixin, ModelView):
+class RetrieveUpdateDestroyModelView(
+    RetrieveModelViewMixin, UpdateModelViewMixin, DestroyModelViewMixin, ModelView
+):
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
 
@@ -443,7 +439,7 @@ def request_json(serializer_class):
 
             if current_user.is_authenticated():
                 # Add the current_user to the context
-                context['user'] = current_user._get_current_object()
+                context["user"] = current_user._get_current_object()
 
             serializer = serializer_class(data=json, context=context)
             serializer.is_valid(raise_exception=True)
@@ -469,7 +465,7 @@ def response_json(serializer_class):
 
             if current_user.is_authenticated():
                 # Add the current_user to the context
-                context['user'] = current_user._get_current_object()
+                context["user"] = current_user._get_current_object()
 
             serializer = serializer_class(response, context=context)
             data = serializer.data
