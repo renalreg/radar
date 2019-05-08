@@ -1,6 +1,6 @@
 from datetime import date
 
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 from radar.models.results import OBSERVATION_VALUE_TYPE, Result
 

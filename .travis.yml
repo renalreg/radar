@@ -9,7 +9,8 @@ install:
   - pip install tox
   - pip install coveralls
 before_script:
-  - psql -U postgres -c 'create database radar_test;'
+  - psql -U postgres -c "CREATE USER radar WITH PASSWORD 'password';"
+  - psql -U postgres -c 'create database radar_test with owner radar;'
   - psql -U postgres -d radar_test -c 'create extension "uuid-ossp";'
 script:
   - tox
