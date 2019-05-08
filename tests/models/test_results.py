@@ -1,5 +1,4 @@
 from datetime import date
-
 from unittest.mock import MagicMock
 
 from radar.models.results import OBSERVATION_VALUE_TYPE, Result
