@@ -4,16 +4,11 @@ import iso8601
 
 from radar.marmoset.utils import identity
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 def parse_int(value):
     if isinstance(value, int):
         return value
-    elif isinstance(value, basestring):
+    elif isinstance(value, str):
         try:
             return int(value)
         except ValueError:
@@ -27,7 +22,7 @@ def parse_float(value):
         return value
     elif isinstance(value, int):
         return float(value)
-    elif isinstance(value, basestring):
+    elif isinstance(value, str):
         try:
             return float(value)
         except ValueError:
@@ -37,7 +32,7 @@ def parse_float(value):
 
 
 def parse_string(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         # Remove leading/trailing whitespace
         return value.strip()
     else:
@@ -54,7 +49,7 @@ def parse_boolean(value):
 def parse_date(value):
     if isinstance(value, date):
         return value
-    elif isinstance(value, basestring):
+    elif isinstance(value, str):
         try:
             return iso8601.parse_date(value).date()
         except iso8601.ParseError:
@@ -66,7 +61,7 @@ def parse_date(value):
 def parse_datetime(value):
     if isinstance(value, datetime):
         return value
-    elif isinstance(value, basestring):
+    elif isinstance(value, str):
         try:
             return iso8601.parse_date(value)
         except iso8601.ParseError:

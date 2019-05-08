@@ -19,33 +19,28 @@ from radar.models.groups import (
 from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 HUMAN_DATE_FORMAT = '%d/%m/%Y'
 
 EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
 
-USERNAME_REGEX = re.compile('^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
+USERNAME_REGEX = re.compile(r'^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
 USERNAME_MIN_LENGTH = 4
 USERNAME_MAX_LENGTH = 32
 
-TRAILING_COMMA_REGEX = re.compile('\s*,$')
+TRAILING_COMMA_REGEX = re.compile(r'\s*,$')
 
 DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
 
-WHITESPACE_REGEX = re.compile('\s')
-LEADING_ZERO_REGEX = re.compile('^0+')
-DIGITS_REGEX = re.compile('^[0-9]+$')
+WHITESPACE_REGEX = re.compile(r'\s')
+LEADING_ZERO_REGEX = re.compile(r'^0+')
+DIGITS_REGEX = re.compile(r'^[0-9]+$')
 
 MIN_UKRR_NO = 199600001
 MAX_UKRR_NO = 999999999
 
-BAPN_NO_REGEX = re.compile('^[ABCDFGHJKLMNPT][0-9]{,3}$')
-BAPN_LEADING_ZEROS = re.compile('^[A-Z](0+)')
+BAPN_NO_REGEX = re.compile(r'^[ABCDFGHJKLMNPT][0-9]{,3}$')
+BAPN_LEADING_ZEROS = re.compile(r'^[A-Z](0+)')
 
 MIN_UKRDC_NO = 100000001
 MAX_UKRDC_NO = 999999999
@@ -178,7 +173,7 @@ def remove_trailing_comma():
 
 
 def clean_int(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         # Remove non-digits
         value = re.sub('[^0-9]', '', value)
 
@@ -189,7 +184,7 @@ def clean_int(value):
 
 
 def check_range(value, min_value=None, max_value=None):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         value = int(value)
 
     # min_value <= x <= max_value
@@ -200,7 +195,7 @@ def check_range(value, min_value=None, max_value=None):
 
 
 def _nhs_no(value, min_value=None, max_value=None):
-    if not isinstance(value, basestring):
+    if not isinstance(value, str):
         value = str(value)
 
     # Remove non-digits
@@ -243,7 +238,7 @@ def nhs_no():
         except ValueError:
             raise ValidationError('Not a valid NHS number.')
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = new_value
 
         return value
@@ -258,7 +253,7 @@ def chi_no():
         except ValueError:
             raise ValidationError('Not a valid CHI number.')
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = new_value
 
         return value
@@ -273,7 +268,7 @@ def hsc_no():
         except ValueError:
             raise ValidationError('Not a valid H&C number.')
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = new_value
 
         return value
@@ -300,7 +295,7 @@ def ukrr_no():
 
 def nhsbt_no():
     def nhsbt_no_f(value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             # Remove leading zeros and whitespace
             value = LEADING_ZERO_REGEX.sub('', value)
             value = WHITESPACE_REGEX.sub('', value)

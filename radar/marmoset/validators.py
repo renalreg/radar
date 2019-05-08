@@ -3,11 +3,6 @@ from datetime import date, datetime
 from cornflake.exceptions import ValidationError
 import pytz
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 class Validator(object):
     def __init__(self, field, validator_data):
@@ -52,7 +47,7 @@ class InValidator(Validator):
 
     def __call__(self, value):
         try:
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 raise TypeError
             if not set(value).issubset(self.values):
                 raise ValidationError('Not a valid value.')

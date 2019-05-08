@@ -1,7 +1,7 @@
 from collections import namedtuple
 import os
 import subprocess
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from radar.config import config
 

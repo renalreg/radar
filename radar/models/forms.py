@@ -15,10 +15,8 @@ class Form(db.Model):
     slug = Column(String, CheckConstraint("slug similar to '([a-z0-9]+-)*[a-z0-9]+'"), nullable=False, unique=True)
     data = Column(postgresql.JSONB, nullable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__
 
 
 @log_changes

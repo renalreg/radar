@@ -10,12 +10,6 @@ from radar.models.logs import log_changes
 from radar.models.types import EnumType
 
 
-try:
-    unicode  # noqa
-except NameError:
-    unicode = str
-
-
 BIOPSY_DIAGNOSES = OrderedDict([
     (1, 'Minimal Change'),
     (2, 'FSGS'),
@@ -113,10 +107,8 @@ class Diagnosis(db.Model):
     def codes(self):
         return [x.code for x in self.diagnosis_codes]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__
 
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
@@ -155,7 +147,7 @@ class GroupDiagnosis(db.Model):
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False, default=9999, server_default=text('9999'))
 
     def __str__(self):
-        return u"{} - {}".format(str(self.group), str(self.weight))
+        return "{} - {}".format(str(self.group), str(self.weight))
 
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)
@@ -178,7 +170,7 @@ class DiagnosisCode(db.Model):
     code = relationship('Code', backref=backref('diagnosis_codes', cascade='all, delete-orphan', passive_deletes=True))
 
     def __str__(self):
-        return unicode(self.code)
+        return str(self.code)
 
 
 Index('diagnosis_codes_diagnosis_code_idx', DiagnosisCode.diagnosis_id, DiagnosisCode.code_id, unique=True)
