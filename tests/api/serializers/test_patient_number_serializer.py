@@ -133,14 +133,14 @@ def test_number_remove_extra_spaces(number):
 
 
 def test_nhs_no_valid(number):
-    group = db.session.query(Group).filter(Group.type==GROUP_TYPE.OTHER, Group.code==GROUP_CODE_NHS).first()
+    group = db.session.query(Group).filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS).first()
     number['number_group'] = group
     number['number'] = '9434765919'
     valid(number)
 
 
 def test_nhs_no_invalid(number):
-    group = db.session.query(Group).filter(Group.type==GROUP_TYPE.OTHER, Group.code==GROUP_CODE_NHS).first()
+    group = db.session.query(Group).filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS).first()
     number['number_group'] = group
     number['number'] = '9434765918'
     invalid(number)
