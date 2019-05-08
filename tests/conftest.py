@@ -7,7 +7,7 @@ from radar.app import Radar
 def app():
     app = Radar({
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'postgres://radar:password@localhost/radar_test',
+        'SQLALCHEMY_DATABASE_URI': 'postgresql://radar:password@localhost/radar_test',
         'BASE_URL': 'http://localhost',
         'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
     })

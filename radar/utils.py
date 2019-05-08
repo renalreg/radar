@@ -1,4 +1,4 @@
-import collections
+import collections.abc
 from datetime import date, datetime, timedelta
 from functools import partial
 from random import SystemRandom
@@ -7,7 +7,6 @@ from cornflake.exceptions import SkipField
 from dateutil.relativedelta import relativedelta
 import inflection
 import pytz
-import six
 from sqlalchemy import and_
 
 
@@ -86,9 +85,9 @@ def uniq(items):
 
 def transform_keys(value, fn):
     """Recursively transform the keys of the supplied value."""
-    if isinstance(value, collections.Mapping):
+    if isinstance(value, collections.abc.Mapping):
         value = {fn(str(k)): transform_keys(v, fn) for k, v in value.items()}
-    elif isinstance(value, collections.Iterable) and not isinstance(value, six.string_types):
+    elif isinstance(value, collections.abc.Iterable) and not isinstance(value, str):
         value = [transform_keys(v, fn) for v in value]
 
     return value
