@@ -1,7 +1,7 @@
+import csv
 import io
 import re
 
-from backports import csv
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 from flask import Response
