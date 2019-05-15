@@ -18,6 +18,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
     group = GroupField()
     from_date = fields.DateTimeField(validators=[not_in_future()])
     to_date = fields.DateTimeField(required=False, validators=[not_in_future()])
+    discharged_date = fields.DateField(required=False)
     created_group = GroupField()
     current = fields.BooleanField(read_only=True)
 

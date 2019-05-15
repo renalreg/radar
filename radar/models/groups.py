@@ -7,6 +7,7 @@ from sqlalchemy import (
     Boolean,
     CheckConstraint,
     Column,
+    Date,
     DateTime,
     ForeignKey,
     func,
@@ -135,6 +136,8 @@ class GroupPatient(db.Model, MetaModelMixin):
 
     from_date = Column(DateTime(timezone=True), nullable=False)
     to_date = Column(DateTime(timezone=True))
+
+    discharged_date = Column(Date, nullable=True)
 
     created_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     created_group = relationship('Group', foreign_keys=[created_group_id])
