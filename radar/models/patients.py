@@ -255,6 +255,17 @@ class Patient(db.Model, MetaModelMixin):
         first_available = next((ethn for ethn in ethnicities if ethn is not None), None)
         return first_available
 
+    @property
+    def available_gender(self):
+        genders = [demog.gender for demog in self.patient_demographics]
+        first_available = next((gender for gender in genders if gender is not None), None)
+        return first_available
+
+    @property
+    def available_gender_label(self):
+        return GENDERS.get(self.available_gender)
+
+
     @hybrid_property
     def first_name(self):
         return self.latest_demographics_attr('first_name')
