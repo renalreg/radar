@@ -110,10 +110,8 @@ class Group(db.Model):
 
     instructions = synonym('_instructions', descriptor=instructions)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__
 
 
 Index('groups_code_type_idx', Group.code, Group.type, unique=True)

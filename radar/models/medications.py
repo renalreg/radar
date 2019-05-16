@@ -25,7 +25,7 @@ MEDICATION_ROUTES = OrderedDict([
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
     ('NG', 'ng'),
-    ('UG', u'µg'),
+    ('UG', 'µg'),
     ('MG', 'mg'),
     ('G', 'g'),
     ('IU', 'IU'),
@@ -126,7 +126,5 @@ class DrugGroup(db.Model):
     parent_drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
     parent_drug_group = relationship('DrugGroup', remote_side=[id])
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__

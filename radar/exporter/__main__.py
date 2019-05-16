@@ -1,10 +1,6 @@
 import argparse
-try:
-    from configparser import ConfigParser
-    import csv
-except ImportError:
-    from ConfigParser import ConfigParser
-    from backports import csv
+from configparser import ConfigParser
+import csv
 from datetime import date
 import io
 import os

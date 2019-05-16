@@ -28,11 +28,9 @@ setup(
         ]
     },
     install_requires=[
-        'backports.csv',
         'celery',
         'click',
         'cornflake',
-        'enum34',
         'flask',
         'flask-admin',
         'flask-sqlalchemy',
@@ -40,8 +38,8 @@ setup(
         'iso8601',
         'itsdangerous',
         'jinja2',
+        'js2py',
         'jsonschema',
-        'librabbitmq',
         'psycopg2',
         'python-dateutil',
         'pytz',

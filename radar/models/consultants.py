@@ -23,10 +23,8 @@ class Consultant(db.Model):
     def groups(self):
         return [x.group for x in self.group_consultants]
 
-    def __unicode__(self):
-        return u'{0} {1}'.format(self.first_name, self.last_name)
-
-    __str__ = __unicode__
+    def __str__(self):
+        return '{0} {1}'.format(self.first_name, self.last_name)
 
 
 @log_changes
@@ -62,7 +60,5 @@ class Specialty(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__

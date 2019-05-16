@@ -1,6 +1,3 @@
-from __future__ import division
-
-# from collections import OrderedDict
 import re
 
 from radar.exporter import queries
@@ -19,12 +16,6 @@ from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
-
-try:
-    basestring
-except NameError:
-    basestring = str
-    unicode = str
 
 
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
@@ -55,7 +46,7 @@ def register(name):
 def column(name, getter=None):
     if getter is None:
         getter = path_getter(name)
-    elif isinstance(getter, basestring):
+    elif isinstance(getter, str):
         getter = path_getter(getter)
 
     return name, getter
@@ -68,7 +59,7 @@ def demographics_column_factory(config):
         def column(name, getter=None, anonymised_getter=None, patient_getter=None):
             if anonymised_getter is None:
                 anonymised_getter = none_getter
-            elif isinstance(anonymised_getter, basestring):
+            elif isinstance(anonymised_getter, str):
                 anonymised_getter = path_getter(anonymised_getter)
 
             return name, anonymised_getter
@@ -76,17 +67,17 @@ def demographics_column_factory(config):
         def column(name, getter=None, anonymised_getter=None, patient_getter=None):
             if getter is None:
                 getter = path_getter(name)
-            elif isinstance(getter, basestring):
+            elif isinstance(getter, str):
                 getter = path_getter(getter)
 
             if anonymised_getter is None:
                 anonymised_getter = none_getter
-            elif isinstance(anonymised_getter, basestring):
+            elif isinstance(anonymised_getter, str):
                 anonymised_getter = path_getter(anonymised_getter)
 
             if patient_getter is None:
                 patient_getter = path_getter('patient')
-            elif isinstance(anonymised_getter, basestring):
+            elif isinstance(anonymised_getter, str):
                 patient_getter = path_getter(patient_getter)
 
             def f(value):
@@ -106,7 +97,7 @@ def demographics_column_factory(config):
         def column(name, getter=None, anonymised_getter=None, patient_getter=None):
             if getter is None:
                 getter = path_getter(name)
-            elif isinstance(getter, basestring):
+            elif isinstance(getter, str):
                 getter = path_getter(getter)
 
             return name, getter

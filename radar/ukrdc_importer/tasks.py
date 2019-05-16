@@ -18,11 +18,6 @@ from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 logger = logging.getLogger(__name__)
 
 QUEUE = 'ukrdc_importer'
@@ -44,7 +39,7 @@ def find_patient_ids(sda_patient_numbers):
 def parse_patient_id(value):
     """Check the patient id is an integer."""
 
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         value = int(value)
 
     return value

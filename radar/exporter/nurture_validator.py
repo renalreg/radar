@@ -16,11 +16,6 @@ from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group
 
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 DATEFMT = '%d/%m/%Y'
 DATETIMEFMT = '%d/%m/%Y %H:%M:%S'
 BLOOD_PRESSURE_DELTA = 10
@@ -55,7 +50,7 @@ def get_gender(gender_code):
 
 
 def format_date(date, long=False):
-    if date and isinstance(date, basestring):
+    if date and isinstance(date, str):
         return date
     try:
         if date and long:
