@@ -84,6 +84,7 @@ def deploy(c, archive=None, name="radar"):
     # TODO replace with try-reload-or-restart when available in our version of systemd
     cmd = "if systemctl is-active {0} >/dev/null; then systemctl reload-or-restart {0}; fi"
     for service in services:
+        print("Running: ", cmd.format(service))
         c.run(cmd.format(service))
 
 
