@@ -265,7 +265,6 @@ class Patient(db.Model, MetaModelMixin):
     def available_gender_label(self):
         return GENDERS.get(self.available_gender)
 
-
     @hybrid_property
     def first_name(self):
         return self.latest_demographics_attr('first_name')
