@@ -163,8 +163,8 @@ class PatientExporter(Exporter):
             column('year_of_birth'),
             d('date_of_death', lambda x: format_date(x.date_of_death)),
             column('year_of_death'),
-            column('gender'),
-            column('gender_label'),
+            column('available_gender'),
+            column('available_gender_label'),
             column('available_ethnicity'),
             column('patient_view', 'ukrdc'),
             column('control'),
@@ -716,6 +716,7 @@ class GroupPatientExporter(Exporter):
             column('group', 'group.name'),
             column('from_date', lambda x: format_date(x.from_date)),
             column('to_date', lambda x: format_date(x.to_date)),
+            column('discharged_date', lambda x: format_date(x.discharged_date)),
             column('created_group_id'),
             column('created_group', 'created_group.name'),
         ]
