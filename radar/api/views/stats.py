@@ -55,7 +55,9 @@ class PatientsByRecruitmentDateView(ApiView):
         args = parse_args(PatientsByRecruitmentDateRequestSerializer)
 
         permission = GroupPermission()
-        if not permission.has_object_permission(None, current_user, args["group"]):
+        if not current_user.is_admin and not permission.has_object_permission(
+            None, current_user, args["group"]
+        ):
             raise PermissionDenied()
 
         points = patients_by_recruitment_date(args["group"])
@@ -71,7 +73,9 @@ class PatientsByGroupView(ApiView):
         args = parse_args(PatientsByGroupRequestSerializer)
 
         permission = GroupPermission()
-        if not permission.has_object_permission(None, current_user, args["group"]):
+        if not current_user.is_admin and not permission.has_object_permission(
+            None, current_user, args["group"]
+        ):
             raise PermissionDenied()
 
         counts = patients_by_group(args["group"], args["group_type"])
@@ -88,7 +92,9 @@ class PatientsByGroupDateView(ApiView):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
         permission = GroupPermission()
-        if not permission.has_object_permission(None, current_user, args["group"]):
+        if not current_user.is_admin and not permission.has_object_permission(
+            None, current_user, args["group"]
+        ):
             raise PermissionDenied()
 
         results = patients_by_group_date(args["group"], args["group_type"], args["interval"])
@@ -104,7 +110,9 @@ class PatientsByRecruitmentGroupView(ApiView):
         args = parse_args(PatientsByRecruitmentGroupRequestSerializer)
 
         permission = GroupPermission()
-        if not permission.has_object_permission(None, current_user, args["group"]):
+        if not current_user.is_admin and not permission.has_object_permission(
+            None, current_user, args["group"]
+        ):
             raise PermissionDenied()
 
         counts = patients_by_recruitment_group(args["group"])
@@ -121,7 +129,9 @@ class PatientsByRecruitmentGroupDateView(ApiView):
         args = parse_args(PatientsByRecruitmentGroupDateRequestSerializer)
 
         permission = GroupPermission()
-        if not permission.has_object_permission(None, current_user, args["group"]):
+        if not current_user.is_admin and not permission.has_object_permission(
+            None, current_user, args["group"]
+        ):
             raise PermissionDenied()
 
         results = patients_by_recruitment_group_date(args["group"], args["interval"])
