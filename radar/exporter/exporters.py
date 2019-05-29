@@ -1476,6 +1476,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
             column('source_group', 'source_group.name'),
             column('date'),
             column('nephropathy'),
+            column('comorbidities'),
         ]
         q = queries.get_rituximab_baseline_assessment_data(self.config)
         self._query = q
@@ -1509,6 +1510,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
         for data in self._query:
             row = [data.id, data.patient.id, data.source_group.name, data.date]
             row.append(data.nephropathy)
+            row.append(data.comorbidities)
             for supportive in SUPPORTIVE_MEDICATIONS:
                 row.append(supportive in data.supportive_medication)
 
