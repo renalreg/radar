@@ -1,12 +1,7 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import (
-    MetaMixin,
-    PatientMixin,
-    SourceMixin,
-    StringLookupField,
-)
+from radar.api.serializers.common import MetaMixin, PatientMixin, SourceMixin, StringLookupField
 from radar.models.rituximab import (
     BaselineAssessment,
     NEPHROPATHY_TYPES,
@@ -20,8 +15,7 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
     past_remission = fields.BooleanField(required=False)
     nephropathy = StringLookupField(NEPHROPATHY_TYPES, required=False)
     supportive_medication = fields.ListField(
-        required=False,
-        child=StringLookupField(SUPPORTIVE_MEDICATIONS)
+        required=False, child=StringLookupField(SUPPORTIVE_MEDICATIONS)
     )
     previous_treatment = fields.Field(required=False)
     steroids = fields.BooleanField(required=False)
@@ -32,11 +26,11 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
         model_class = BaselineAssessment
 
     def pre_validate(self, data):
-        previous_treatment = data.get('previous_treatment')
+        previous_treatment = data.get("previous_treatment")
         if previous_treatment:
             for key in list(previous_treatment.keys()):
                 if not previous_treatment.get(key, {}).get(key, False):
-                    data['previous_treatment'].pop(key, None)
+                    data["previous_treatment"].pop(key, None)
 
         return data
 
@@ -56,6 +50,9 @@ class RituximabCriteriaSerializer(PatientMixin, MetaMixin, ModelSerializer):
     cni_failure_monitoring_requirements = fields.BooleanField(required=False)
     diabetes = fields.BooleanField(required=False)
     risk_factors = fields.BooleanField(required=False)
+    previous_hospitalization = fields.BooleanField(required=False)
+    osteoporosis_osteopenia = fields.BooleanField(required=False)
+    mood_disturbance = fields.BooleanField(required=False)
 
     class Meta(object):
         model_class = RituximabCriteria
