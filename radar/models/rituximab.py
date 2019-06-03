@@ -20,8 +20,8 @@ PERFORMANCE_STATUS_OPTIONS = OrderedDict(
         (1, "1: restricted in strenuous activity but ambulatory and able to carry out light work"),
         (
             2,
-            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",
-        ),  # noqa
+            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",  # noqa
+        ),
         (
             3,
             "3: symptomatic and in a chair or in bed for greater than 50% of the day but not bedridden",

@@ -19,8 +19,8 @@ Optional: use [radar-ansible](https://github.com/renalreg/radar-ansible) to crea
 
 Prerequisites:
 
-* [Python 2.7](https://www.python.org/download/releases/2.7/), [pip](https://pypi.python.org/pypi/pip) and [virtualenv](https://pypi.python.org/pypi/virtualenv).
-* [PostgreSQL 9.4+](https://www.postgresql.org/download/).
+- [Python 3.6](https://www.python.org/download/releases/3.6/), [pip](https://pypi.python.org/pypi/pip) and [virtualenv](https://pypi.python.org/pypi/virtualenv).
+- [PostgreSQL 9.4+](https://www.postgresql.org/download/).
 
 Create a user and database for RADAR to use:
 
@@ -119,7 +119,6 @@ platter build -r requirements.txt .
 
 This will create a `.tar.gz` file in the `dist` folder.
 
-
 ### Remote
 
 A remote build is useful when you are developing on a different operating system to the one you want to deploy to.
@@ -127,8 +126,8 @@ A remote build is useful when you are developing on a different operating system
 Install dependencies on the remote machine:
 
 ```sh
-yum install https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-2.noarch.rpm
-yum install postgresql94 postgresql94-libs postgresql94-devel
+yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
+yum install postgresql11 postgresql11-libs postgresql11-devel
 
 wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py
@@ -139,7 +138,7 @@ pip install git+https://github.com/mitsuhiko/platter
 Build:
 
 ```sh
-fab -H $HOSTNAME -u $USER build
+fab -H $USER@$HOSTNAME --prompt-for-login-password build
 ```
 
 The built `.tar.gz` will be downloaded into the `dist` folder on the local machine.
@@ -157,7 +156,7 @@ Each deployed version is kept in its own folder in `/srv/radar`, for example `/s
 Deploy the latest build (`.tar.gz` in `dist`) and reload/restart the services:
 
 ```sh
-fab -H nww.radar.nhs.uk -u root deploy
+fab -H $USER@$nww.radar.nhs.uk --prompt-for-login-password deploy
 ```
 
 Deploy to multiple servers by separating their hostnames with commas. The `--gateway` option is useful for tunneling through another server.
@@ -193,6 +192,6 @@ There is more documentation in the [docs](docs) folder.
 
 ## License
 
-Copyright (c) 2016 UK Renal Registry.
+Copyright (c) 2019 UK Renal Registry.
 
 Licensed under the [AGPL](LICENSE.md) license.
