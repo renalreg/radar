@@ -2,7 +2,6 @@ from cornflake import fields, serializers
 from cornflake.validators import in_
 from flask import Blueprint
 
-from radar.api.permissions import GroupPermission
 from radar.api.serializers.common import GroupField
 from radar.api.serializers.stats import (
     DataPointListSerializer,
@@ -10,8 +9,6 @@ from radar.api.serializers.stats import (
     PatientsByGroupListSerializer,
 )
 from radar.api.views.generics import ApiView, parse_args, response_json
-from radar.auth.sessions import current_user
-from radar.exceptions import PermissionDenied
 from radar.models.groups import GROUP_TYPE
 from radar.stats import (
     patients_by_group,
@@ -54,12 +51,6 @@ class PatientsByRecruitmentDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByRecruitmentDateRequestSerializer)
 
-        permission = GroupPermission()
-        if not current_user.is_admin and not permission.has_object_permission(
-            None, current_user, args["group"]
-        ):
-            raise PermissionDenied()
-
         points = patients_by_recruitment_date(args["group"])
 
         return {"points": points}
@@ -71,12 +62,6 @@ class PatientsByGroupView(ApiView):
     @response_json(PatientsByGroupListSerializer)
     def get(self):
         args = parse_args(PatientsByGroupRequestSerializer)
-
-        permission = GroupPermission()
-        if not current_user.is_admin and not permission.has_object_permission(
-            None, current_user, args["group"]
-        ):
-            raise PermissionDenied()
 
         counts = patients_by_group(args["group"], args["group_type"])
         counts = [{"group": group, "count": count} for group, count in counts]
@@ -91,12 +76,6 @@ class PatientsByGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
-        permission = GroupPermission()
-        if not current_user.is_admin and not permission.has_object_permission(
-            None, current_user, args["group"]
-        ):
-            raise PermissionDenied()
-
         results = patients_by_group_date(args["group"], args["group_type"], args["interval"])
 
         return results
@@ -108,12 +87,6 @@ class PatientsByRecruitmentGroupView(ApiView):
     @response_json(PatientsByGroupListSerializer)
     def get(self):
         args = parse_args(PatientsByRecruitmentGroupRequestSerializer)
-
-        permission = GroupPermission()
-        if not current_user.is_admin and not permission.has_object_permission(
-            None, current_user, args["group"]
-        ):
-            raise PermissionDenied()
 
         counts = patients_by_recruitment_group(args["group"])
         counts = [{"group": x, "count": y} for x, y in counts]
@@ -127,12 +100,6 @@ class PatientsByRecruitmentGroupDateView(ApiView):
     @response_json(PatientsByGroupDateListSerializer)
     def get(self):
         args = parse_args(PatientsByRecruitmentGroupDateRequestSerializer)
-
-        permission = GroupPermission()
-        if not current_user.is_admin and not permission.has_object_permission(
-            None, current_user, args["group"]
-        ):
-            raise PermissionDenied()
 
         results = patients_by_recruitment_group_date(args["group"], args["interval"])
 
