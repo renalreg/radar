@@ -245,10 +245,6 @@ class BaseTinyResultSerializer(PatientMixin, MetaMixin, serializers.Serializer):
     source_type = fields.StringField()
     source_group = fields.IntegerField(source="source_group_id")
     date = fields.DateTimeField()
-    created_user = fields.IntegerField(source="created_user_id")
-    modified_user = fields.IntegerField(source="modified_user_id")
-    created_date = fields.DateTimeField()
-    modified_date = fields.DateTimeField()
 
 
 class TinyResultSerializer(serializers.ProxySerializer):
