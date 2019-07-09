@@ -769,6 +769,12 @@ class ResultExporter(Exporter):
         q = queries.get_results(self.config)
         for result in q.yield_per(1000):
             yield [col[1](result) for col in self._columns]
+            value = result.egfr_calculated
+            if value:
+                row = [col[1](result) for col in self._columns]
+                row[6] = 'RADAR Calculated eGFR'
+                row[7] = row[9] = value
+                yield row
 
 
 @register('results-pivot')
