@@ -1124,6 +1124,7 @@ class SocioEconomicExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
+            column('date', 'data.date'),
             column('maritalStatus', 'data.maritalStatus'),
             column('education', 'data.education'),
             column('employmentStatus', 'data.employmentStatus'),
