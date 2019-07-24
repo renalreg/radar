@@ -23,11 +23,11 @@ class SDAMedication(object):
 
     @property
     def external_id(self):
-        return self.data['external_id']
+        return self.data["external_id"]
 
     @property
     def from_time(self):
-        return self.data['from_time']
+        return self.data["from_time"]
 
     @property
     def from_date(self):
@@ -35,7 +35,7 @@ class SDAMedication(object):
 
     @property
     def to_time(self):
-        return self.data.get('to_time')
+        return self.data.get("to_time")
 
     @property
     def to_date(self):
@@ -47,34 +47,35 @@ class SDAMedication(object):
             return to_time.date()
 
     @property
-    def order_item_description(self):
-        return get_path(self.data, 'order_item', 'description')
-
-    @property
-    def dose_uom(self):
-        return (
-            get_path(self.data, 'dose_uom', 'code') or
-            get_path(self.data, 'dose_uom', 'description')
-        )
-
-    @property
     def entering_organization(self):
-        return (
-            get_path(self.data, 'entering_organization', 'organization', 'code') or
-            get_path(self.data, 'entering_organization', 'code')
-        )
+        return get_path(self.data, "entering_organization", "code")
 
     @property
-    def entered_at(self):
-        return get_path(self.data, 'entered_at', 'code')
+    def dose_quantity(self):
+        return self.data.get("dose_quantity", None)
+
+    @property
+    def dose_unit(self):
+        return self.data.get("dose_unit", None)
+
+    @property
+    def frequency(self):
+        return self.data.get("frequency", None)
+
+    @property
+    def drug_text(self):
+        return self.data.get("drug_text", None)
+
+    @property
+    def dose_text(self):
+        return self.data.get("dose_text", None)
 
 
 def parse_medications(sda_medications):
     def log(index, sda_medication, e):
         logger.error(
-            'Ignoring invalid medication index={index}, errors={errors}'.format(
-                index=index,
-                errors=e.flatten()
+            "Ignoring invalid medication index={index}, errors={errors}".format(
+                index=index, errors=e.flatten()
             )
         )
 
@@ -91,7 +92,7 @@ def unique_medications(sda_medications):
 
     def log(sda_medication):
         external_id = sda_medication.external_id
-        logger.warning('Ignoring duplicate medication external_id=%s', external_id)
+        logger.warning("Ignoring duplicate medication external_id=%s", external_id)
 
     sda_medications = unique_list(sda_medications, key_f=key, duplicate_f=log)
 
@@ -108,14 +109,14 @@ def get_medication(medication_id):
 
 def get_medications(patient):
     q = Medication.query
-    q = q.filter(Medication.source_type == 'UKRDC')
+    q = q.filter(Medication.source_type == "UKRDC")
     q = q.filter(Medication.patient == patient)
     return q.all()
 
 
 def sync_medications(patient, medications_to_keep):
     def log(medication):
-        logger.info('Deleting medication id={}'.format(medication.id))
+        logger.info("Deleting medication id={}".format(medication.id))
 
     medications = get_medications(patient)
     delete_list(medications, medications_to_keep, delete_f=log)
@@ -131,36 +132,39 @@ def convert_medications(patient, sda_medications):
     medications = list()
 
     for sda_medication in sda_medications:
-        # Ignore RaDaR data
-        if sda_medication.entered_at == 'RADAR':
-            continue
 
         code = sda_medication.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
-            logger.error('Ignoring medication due to unknown entering organization code={code}'.format(code=code))
+            logger.error("Ignoring medication due to unknown entering organization code=%s", code)
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)
         medication = get_medication(medication_id)
 
         if medication is None:
-            logger.info('Creating medication id={id}'.format(id=medication_id))
+            logger.info("Creating medication id={id}".format(id=medication_id))
             medication = Medication(id=medication_id)
         else:
-            logger.info('Updating medication id={id}'.format(id=medication_id))
+            logger.info("Updating medication id={id}".format(id=medication_id))
 
         medication.patient = patient
         medication.source_group = source_group
-        medication.source_type = 'UKRDC'
+        medication.source_type = "UKRDC"
         medication.created_user = user
         medication.modified_user = user
 
-        medication.from_date = sda_medication.from_date
-        medication.to_date = sda_medication.to_date
-        medication.drug_text = sda_medication.order_item_description
-        medication.dose_text = sda_medication.dose_uom
+        for field in (
+            "from_date",
+            "to_date",
+            "dose_quantity",
+            "dose_unit",
+            "frequency",
+            "drug_text",
+            "dose_text",
+        ):
+            setattr(medication, field, getattr(sda_medication, field))
 
         db.session.add(medication)
         medications.append(medication)
@@ -169,7 +173,7 @@ def convert_medications(patient, sda_medications):
 
 
 def import_medications(patient, sda_medications):
-    logger.info('Importing medications')
+    logger.info("Importing medications")
 
     preload_medications(patient)
 
@@ -178,4 +182,4 @@ def import_medications(patient, sda_medications):
     medications = convert_medications(patient, sda_medications)
     sync_medications(patient, medications)
 
-    logger.info('Imported {n} medication(s)'.format(n=len(medications)))
+    logger.info("Imported {n} medication(s)".format(n=len(medications)))

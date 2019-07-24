@@ -20,7 +20,7 @@ from radar.ukrdc_importer.utils import get_import_user
 
 logger = logging.getLogger(__name__)
 
-QUEUE = 'ukrdc_importer'
+QUEUE = "ukrdc_importer"
 
 
 def find_patient_ids(sda_patient_numbers):
@@ -30,8 +30,8 @@ def find_patient_ids(sda_patient_numbers):
     numbers = []
 
     for sda_patient_number in sda_patient_numbers:
-        if sda_patient_number['organization']['code'] in system_codes:
-            numbers.append(sda_patient_number['number'])
+        if sda_patient_number["organization"]["code"] in system_codes:
+            numbers.append(sda_patient_number["number"])
 
     return numbers or []
 
@@ -57,7 +57,9 @@ def lock_patient(patient):
     while True:
         # Attempt to lock this patient
         # Blocks until we have a lock or returns None on first import
-        patient_lock = PatientLock.query.filter(PatientLock.patient == patient).with_for_update().first()
+        patient_lock = (
+            PatientLock.query.filter(PatientLock.patient == patient).with_for_update().first()
+        )
 
         # Lock acquired
         if patient_lock is not None:
@@ -76,9 +78,9 @@ def lock_patient(patient):
 
 def log_data_import(patient):
     log = Log()
-    log.type = 'UKRDC_IMPORTER'
+    log.type = "UKRDC_IMPORTER"
     log.user = get_import_user()
-    log.data = {'patient_id': patient.id}
+    log.data = {"patient_id": patient.id}
     db.session.add(log)
 
 
@@ -98,12 +100,12 @@ def import_sda(data, sequence_number, patient_id=None):
     try:
         sda_container = serializer.run_validation(data)
     except ValidationError as e:
-        msg = 'Container is invalid errors=%s, data=%s'
+        msg = "Container is invalid errors=%s, data=%s"
         logger.error(msg, e.flatten(), data)
         return False
 
-    sda_patient = sda_container['patient']
-    sda_patient_numbers = sda_patient['patient_numbers']
+    sda_patient = sda_container["patient"]
+    sda_patient_numbers = sda_patient["patient_numbers"]
 
     # No patient ID supplied
     if patient_id is None:
@@ -111,12 +113,12 @@ def import_sda(data, sequence_number, patient_id=None):
 
         # No patient ID in file
         if not patient_ids:
-            logger.error('Patient ID is missing. Data - %s', data)
+            logger.error("Patient ID is missing. Data - %s", data)
             return False
 
         if len(set(patient_ids)) > 1:
             string_ids = [str(pat_id) for pat_id in patient_ids]
-            logger.error('Multiple patient IDs returned - %s', '; '.join(string_ids))
+            logger.error("Multiple patient IDs returned - %s", "; ".join(string_ids))
             return False
 
         patient_id = patient_ids[0]
@@ -125,7 +127,7 @@ def import_sda(data, sequence_number, patient_id=None):
         try:
             patient_id = parse_patient_id(patient_id)
         except ValueError:
-            logger.error('Patient ID is invalid id=%s', patient_id)
+            logger.error("Patient ID is invalid id=%s", patient_id)
             return False
 
     # Get the patient by their ID
@@ -133,7 +135,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Patient not found (possibly the patient was deleted)
     if patient is None:
-        logger.error('Patient not found id=%s', patient_id)
+        logger.error("Patient not found id=%s", patient_id)
         return False
 
     # Lock the patient while we import the data
@@ -142,17 +144,19 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Check we haven't already imported a newer sequence number
     if patient_lock.sequence_number is not None and sequence_number < patient_lock.sequence_number:
-        logger.info('Skipping old sequence number %s < %s', sequence_number, patient_lock.sequence_number)
+        logger.info(
+            "Skipping old sequence number %s < %s", sequence_number, patient_lock.sequence_number
+        )
         return False
 
     patient_lock.sequence_number = sequence_number
 
-    sda_names = sda_patient.get('aliases', list())
-    sda_addresses = sda_patient.get('addresses', list())
-    sda_medications = sda_container.get('medications', list())
-    sda_lab_orders = sda_container.get('lab_orders', list())
+    sda_names = sda_patient.get("aliases", list())
+    sda_addresses = sda_patient.get("addresses", list())
+    sda_medications = sda_container.get("medications", list())
+    sda_lab_orders = sda_container.get("lab_orders", list())
 
-    import_demographics(patient, data['patient'])
+    import_demographics(patient, data["patient"])
     import_patient_numbers(patient, sda_patient_numbers)
     import_aliases(patient, sda_names)
     import_addresses(patient, sda_addresses)

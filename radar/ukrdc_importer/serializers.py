@@ -9,7 +9,7 @@ from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
 
 
 def parse_sda_datetime(value):
-    value = datetime.strptime('%Y-%m-%d %H:%M:%S', value)
+    value = datetime.strptime("%Y-%m-%d %H:%M:%S", value)
     value = value.replace(tzinfo=pytz.UTC)
     return value
 
@@ -27,37 +27,20 @@ class CodeDescriptionSerializer(serializers.Serializer):
     description = fields.StringField()
 
 
-class LooseCodeDescriptionSerializer(serializers.Serializer):
-    code = fields.StringField(required=False)
-    description = fields.StringField(required=False)
-
-
 class CodeOrDescriptionSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     description = fields.StringField(required=False)
 
     def validate(self, data):
-        if any((data['code'], data['description'])):
+        if any((data["code"], data["description"])):
             return data
 
-        raise ValidationError({'code or description': 'At least one is required'})
-
-
-class _OrganizationSerializer(serializers.Serializer):
-    code = fields.StringField(required=False)
-    description = fields.StringField(required=False)
+        raise ValidationError({"code or description": "At least one is required"})
 
 
 class EnteringOrganizationSerializer(serializers.Serializer):
-    code = fields.StringField(required=False)
+    code = fields.StringField()
     description = fields.StringField(required=False)
-    organization = _OrganizationSerializer(required=False)
-
-    def validate(self, data):
-        if data['code'] is None and (data['organization'] is None or data['organization']['code'] is None):
-            raise ValidationError({'code': 'This field is required.'})
-
-        return data
 
 
 class AddressSerializer(serializers.Serializer):
@@ -98,13 +81,15 @@ class PatientNumberSerializer(serializers.Serializer):
 
     def validate(self, value):
         value = super(PatientNumberSerializer, self).validate(value)
-        number_type = value['number_type']
-        if number_type in ('NHS', 'CHI', 'HSC'):
-            number = value['number']
+        number_type = value["number_type"]
+        if number_type in ("NHS", "CHI", "HSC"):
+            number = value["number"]
             try:
                 _nhs_no(number, MIN_CHI_NO)
             except ValueError:
-                raise ValidationError({'number': 'Not a valid {} number {}'.format(number_type, number)})
+                raise ValidationError(
+                    {"number": "Not a valid {} number {}".format(number_type, number)}
+                )
         return value
 
 
@@ -112,10 +97,12 @@ class MedicationSerializer(serializers.Serializer):
     external_id = fields.StringField()
     from_time = SDADateTimeField()
     to_time = SDADateTimeField(required=False)
-    dose_uom = LooseCodeDescriptionSerializer(required=False)
-    order_item = CodeDescriptionSerializer()
+    dose_quantity = fields.FloatField(required=False)
+    dose_unit = fields.StringField(required=False)
+    frequency = fields.StringField(required=False)
+    drug_text = fields.StringField(required=False)
+    dose_text = fields.StringField(required=False)
     entering_organization = EnteringOrganizationSerializer()
-    entered_at = CodeDescriptionSerializer(required=False)
 
 
 class LabResultItemSerializer(serializers.Serializer):
@@ -137,8 +124,8 @@ class LabOrderSerializer(serializers.Serializer):
 
     def pre_validate(self, data):
         """Populate entering_organization if it is empty from entered_at."""
-        if data['entering_organization'] is fields.empty:
-            data['entering_organization'] = data['entered_at']
+        if data["entering_organization"] is fields.empty:
+            data["entering_organization"] = data["entered_at"]
         return super(LabOrderSerializer, self).pre_validate(data)
 
 
