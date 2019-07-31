@@ -40,7 +40,7 @@ setup(
         'jinja2',
         'js2py',
         'jsonschema',
-        'psycopg2',
+        'psycopg2-binary',
         'python-dateutil',
         'pytz',
         'requests',
