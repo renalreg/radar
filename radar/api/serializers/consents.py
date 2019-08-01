@@ -1,4 +1,5 @@
 from cornflake import fields
+from cornflake.validators import not_in_future
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 
 
@@ -48,10 +49,10 @@ class PatientConsentMixin(PatientMixin):
 
 class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
-    signed_on_date = fields.DateField()
+    signed_on_date = fields.DateField(validators=[not_in_future()])
     withdrawn_on_date = fields.DateField(required=False)
     reconsent_letter_sent_date = fields.DateField(required=False)
-    reconsent_letter_returned_date = fields.DateField(required=False)
+    reconsent_letter_returned_date = fields.DateField(required=False, validators=[not_in_future()])
 
     class Meta(object):
         model_class = PatientConsent
