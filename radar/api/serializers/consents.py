@@ -1,6 +1,6 @@
 from cornflake import fields
-from cornflake.validators import not_in_future
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
+from cornflake.validators import not_in_future
 
 
 from radar.api.serializers.common import (
