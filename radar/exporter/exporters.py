@@ -1427,8 +1427,8 @@ class ConsentsExporter(Exporter):
             column('patient_id'),
             column('consent', 'consent.label'),
             column('signed_on_date', lambda x: format_date(x.signed_on_date)),
-            column('reconsent_letter_sent_date', lambda x: format_date(x.signed_on_date)),
-            column('reconsent_letter_returned_date', lambda x: format_date(x.signed_on_date))
+            column('reconsent_letter_sent_date', lambda x: format_date(x.reconsent_letter_sent_date)),
+            column('reconsent_letter_returned_date', lambda x: format_date(x.reconsent_letter_returned_date))
         ]
         q = queries.get_consents(self.config)
         self._query = q
