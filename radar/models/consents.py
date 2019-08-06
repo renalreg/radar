@@ -46,3 +46,6 @@ class PatientConsent(db.Model, MetaModelMixin):
 
     signed_on_date = Column(Date, nullable=False)
     withdrawn_on_date = Column(Date, nullable=True)
+
+    reconsent_letter_sent_date = Column(Date, nullable=True)
+    reconsent_letter_returned_date = Column(Date, nullable=True)
