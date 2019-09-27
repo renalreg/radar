@@ -51,7 +51,7 @@ class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
     signed_on_date = fields.DateField(validators=[not_in_future()])
     withdrawn_on_date = fields.DateField(required=False)
-    reconsent_letter_sent_date = fields.DateField(required=False)
+    reconsent_letter_sent_date = fields.DateField(required=False, validators=[not_in_future()])
     reconsent_letter_returned_date = fields.DateField(required=False, validators=[not_in_future()])
 
     class Meta(object):
