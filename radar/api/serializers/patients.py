@@ -97,6 +97,7 @@ class TinyPatientSerializer(serializers.Serializer):
     last_name = fields.StringField(read_only=True)
     date_of_birth = fields.DateField(read_only=True)
     year_of_birth = fields.IntegerField(read_only=True)
+    radar_date_of_death = fields.DateField(source='radar_date_of_death', read_only=True)
     date_of_death = fields.DateField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS, read_only=True, source='radar_gender')
