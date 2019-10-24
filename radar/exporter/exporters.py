@@ -464,7 +464,7 @@ class PathologyExporter(Exporter):
             column('kidney_side_label'),
             column('reference_number'),
             column('image_url'),
-            d('histological_summary', anonymised_getter=None),
+            d('histological_summary', anonymised_getter=lambda x: 'TEXT' if x.histological_summary else ''),
             d('em_findings', anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
