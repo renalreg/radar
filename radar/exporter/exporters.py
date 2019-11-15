@@ -1600,12 +1600,18 @@ class RituximabAdverseEventsExporter(Exporter):
             column('hospitalisation', 'data.hospitalisation'),
             column('adverse_events', 'data.adverseEvents'),
             column('onset_cancer', 'data.newOnsetCancer'),
+            column('caused_cancer', 'data.causedCancer'),
             column('thromboembolism', 'data.thromboembolism'),
+            column('caused_thromboembolism', 'data.causedVenousThromboEmbolism'),
             column('myocardial_infarction', 'data.myocardialInfarction'),
+            column('caused_infarction', 'data.causedAcuteMyocardialInfarction'),
             column('stroke', 'data.stroke'),
+            column('caused_stroke', 'data.causedStroke'),
             column('ischaemic_attack', 'data.ischaemicAttack'),
+            column('caused_attack', 'data.causedIschaemicAttack'),
             column('other_adverse_event', 'data.otherAdverseEvent'),
             column('other_toxicity', 'data.otherTox'),
+            column('caused_other', 'data.causedOther'),
             column('date_of_death', 'data.dod'),
             d('cause_of_death', 'data.dodCause', anonymised_getter=None)
         ]
