@@ -40,7 +40,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
-    signed_off = fields.BooleanField(required=False)
+    signed_off_state = fields.StringField(required=False)
     consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
 
 
@@ -63,6 +63,7 @@ def list_patients():
     ukrdc = args['ukrdc']
     test = args['test']
     control = args['control']
+    signed_off = args['signed_off_state']
 
     if patient_id is not None:
         builder.patient_id(patient_id)
@@ -99,6 +100,9 @@ def list_patients():
 
     if control is not None:
         builder.control(control)
+
+    if signed_off is not None:
+        builder.signedOff(signed_off)
 
     for group in groups:
         builder.group(group, current=current)
@@ -182,7 +186,7 @@ class PatientListCSVView(ApiView):
             'Recruited Group Code',
             'Cohorts',
             'Hospitals',
-
+            'Signed off State',
         ]
         for cohort in cohorts:
             headers.append(cohort.short_name)
@@ -222,6 +226,7 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient.recruited_group(), 'code'))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
+            output.append(patient.signed_off_state)            
 
             for cohort in cohorts:
                 output.append(patient.recruited_date(cohort))
@@ -236,3 +241,4 @@ def register_views(app):
     app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
     app.add_url_rule('/patients/<int:id>', view_func=PatientDestroyView.as_view('patient_destroy'))
     app.add_url_rule('/patients.csv', view_func=PatientListCSVView.as_view('patient_list_csv'))
+    

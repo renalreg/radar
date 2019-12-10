@@ -172,7 +172,7 @@ class PatientExporter(Exporter):
             column("available_ethnicity"),
             column("patient_view", "ukrdc"),
             column("control"),
-            column("signed_off"),
+            column("signed_off_state"),
             column(
                 "recruited_date", lambda x: format_date(x.recruited_date(group))
             ),  # 13
@@ -530,7 +530,7 @@ class InsClinicalPictureExporter(Exporter):
             column("oedema"),
             column("hypovalaemia"),
             column("fever"),
-            column("thrombosis"),
+            column("thrombosis"),l
             column("peritonitis"),
             column("pulmonary_odemea"),
             column("hypertension"),

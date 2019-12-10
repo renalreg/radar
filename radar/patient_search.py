@@ -115,6 +115,10 @@ class PatientQueryBuilder(object):
         self.query = self.query.filter(Patient.test == value)
         return self
 
+    def signedOff(self, value):
+        self.query = self.query.filter(Patient.signed_off_state == value)
+        return self
+
     def sort(self, column, reverse=False):
         self.query = self.query.order_by(*sort_patients(self.current_user, column, reverse))
         return self
@@ -248,6 +252,8 @@ def filter_by_year_of_birth(year):
 def filter_by_year_of_death(year):
     return patient_demographics_sub_query(sql_year_filter(PatientDemographics.date_of_death, year))
 
+def filter_by_signed_off_state(signed_off_state):
+    return patient_demographics_sub_query(Patient.signed_off_state == signed_off_state)
 
 def filter_by_group_roles(current_user, roles, current=None):
     patient_alias = aliased(Patient)
@@ -332,6 +338,8 @@ def sort_by_recruited_date(reverse=False):
 def sort_by_primary_patient_number(reverse=False):
     return sort_by_field(Patient.primary_patient_number_number, reverse)
 
+def sort_by_completeness(reverse=False):
+    return sort_by_field(Patient.signed_off_state, reverse)
 
 def sort_patients(user, sort_by, reverse=False):
     if sort_by == 'first_name':
@@ -346,6 +354,8 @@ def sort_patients(user, sort_by, reverse=False):
         clauses = [sort_by_recruited_date(reverse)]
     elif sort_by == 'primary_patient_number':
         clauses = [sort_by_primary_patient_number(reverse)]
+    elif sort_by == 'signed_off_state':
+        clauses = [sort_by_completeness(reverse)]
     else:
         return [sort_by_patient_id(reverse)]
 

@@ -10,7 +10,7 @@ from radar.models.common import MetaModelMixin
 from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.logs import log_changes
-from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
+from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS, SIGNED_OFF
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
@@ -53,9 +53,9 @@ class Patient(db.Model, MetaModelMixin):
     id = Column(Integer, Sequence('patients_seq'), primary_key=True)
     comments = Column(String)
     test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    control = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    signed_off = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-
+    control = Column(Boolean, default=False, nullable=False, server_default=text('false'))    
+    signed_off_state = Column(Integer, default=None, nullable=True, server_default=text('NULL'))
+   
     @property
     def cohorts(self):
         """Return cohorts that patient belongs to."""

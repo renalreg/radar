@@ -10,5 +10,6 @@ venv*/
 *.pyc
 .vscode
 .pytest_cache/
+live_settings.py
 
 export_configs

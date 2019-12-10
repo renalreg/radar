@@ -13,7 +13,7 @@ from radar.api.serializers.common import (
 from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
-from radar.models.patient_codes import GENDERS
+from radar.models.patient_codes import GENDERS, SIGNED_OFF
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
@@ -58,7 +58,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
-    signed_off = fields.BooleanField(default=False)
+    signed_off = IntegerLookupField(SIGNED_OFF, read_only=True, source='signed_off_state')
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
@@ -112,6 +112,7 @@ class TinyPatientSerializer(serializers.Serializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
+    signed_off = IntegerLookupField(SIGNED_OFF, read_only=True, source='signed_off_state')
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     # consented = fields.BooleanField(read_only=True)
