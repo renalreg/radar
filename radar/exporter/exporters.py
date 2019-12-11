@@ -1628,25 +1628,31 @@ class RituximabFollowupAssessmentExporter(Exporter):
         self._query = q
 
 
-@register("rituximab-adverse-events")
+@register('rituximab-adverse-events')
 class RituximabAdverseEventsExporter(Exporter):
     def setup(self):
         d = demographics_column_factory(self.config)
         self._columns = [
-            column("id"),
-            column("patient_id"),
-            column("date", "data.date"),
-            column("hospitalisation", "data.hospitalisation"),
-            column("adverse_events", "data.adverseEvents"),
-            column("onset_cancer", "data.newOnsetCancer"),
-            column("thromboembolism", "data.thromboembolism"),
-            column("myocardial_infarction", "data.myocardialInfarction"),
-            column("stroke", "data.stroke"),
-            column("ischaemic_attack", "data.ischaemicAttack"),
-            column("other_adverse_event", "data.otherAdverseEvent"),
-            column("other_toxicity", "data.otherTox"),
-            column("date_of_death", "data.dod"),
-            d("cause_of_death", "data.dodCause", anonymised_getter=None),
+            column('id'),
+            column('patient_id'),
+            column('date', 'data.date'),
+            column('hospitalisation', 'data.hospitalisation'),
+            column('adverse_events', 'data.adverseEvents'),
+            column('onset_cancer', 'data.newOnsetCancer'),
+            column('caused_cancer', 'data.causedCancer'),
+            column('thromboembolism', 'data.thromboembolism'),
+            column('caused_thromboembolism', 'data.causedVenousThromboEmbolism'),
+            column('myocardial_infarction', 'data.myocardialInfarction'),
+            column('caused_infarction', 'data.causedAcuteMyocardialInfarction'),
+            column('stroke', 'data.stroke'),
+            column('caused_stroke', 'data.causedStroke'),
+            column('ischaemic_attack', 'data.ischaemicAttack'),
+            column('caused_attack', 'data.causedIschaemicAttack'),
+            column('other_adverse_event', 'data.otherAdverseEvent'),
+            column('other_toxicity', 'data.otherTox'),
+            column('caused_other', 'data.causedOther'),
+            column('date_of_death', 'data.dod'),
+            d('cause_of_death', 'data.dodCause', anonymised_getter=None)
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
