@@ -78,7 +78,7 @@ def upgrade():
              SET signed_off_state = 0\
              FROM group_patients\
              WHERE patients.id = group_patients.patient_id\
-             AND group_patients.group_id = 2\
+             AND group_patients.group_id = 141\
              AND (signed_off_state != 1 OR signed_off_state IS NULL)'
     
     op.execute(step4)
