@@ -54,7 +54,7 @@ class Patient(db.Model, MetaModelMixin):
     comments = Column(String)
     test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
     control = Column(Boolean, default=False, nullable=False, server_default=text('false'))    
-    signed_off_state = Column(Integer, default=None, nullable=True, server_default=text('NULL'))
+    signed_off_state = Column(Integer, nullable=True)
    
     @property
     def cohorts(self):
