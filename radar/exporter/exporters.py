@@ -530,7 +530,7 @@ class InsClinicalPictureExporter(Exporter):
             column("oedema"),
             column("hypovalaemia"),
             column("fever"),
-            column("thrombosis"),l
+            column("thrombosis"),
             column("peritonitis"),
             column("pulmonary_odemea"),
             column("hypertension"),

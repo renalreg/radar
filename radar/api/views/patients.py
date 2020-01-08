@@ -63,7 +63,7 @@ def list_patients():
     ukrdc = args['ukrdc']
     test = args['test']
     control = args['control']
-    signed_off = args['signed_off_state']
+    signed_off_state = args['signed_off_state']
 
     if patient_id is not None:
         builder.patient_id(patient_id)
@@ -101,8 +101,8 @@ def list_patients():
     if control is not None:
         builder.control(control)
 
-    if signed_off is not None:
-        builder.signedOff(signed_off)
+    if signed_off_state is not None:
+        builder.signedOff(signed_off_state)
 
     for group in groups:
         builder.group(group, current=current)
