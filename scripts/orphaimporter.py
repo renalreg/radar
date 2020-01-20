@@ -37,7 +37,7 @@ def fetch_data(fetcher, *args, **kwargs):
 def insert_data(data):
     """Insert data into database."""
     session = db.session.session_factory()
-    group = session.query(Group).filter(Group.type==GROUP_TYPE.COHORT, Group.code=='bch').first()
+    group = session.query(Group).filter(Group.type == GROUP_TYPE.COHORT, Group.code == 'bch').first()
     for disorder in data:
         number = disorder['OrphaNumber']
         label = disorder['Name'][0]['label']

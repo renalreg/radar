@@ -1,6 +1,6 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
-from cornflake.validators import not_in_future, after
+from cornflake.validators import not_in_future
 
 
 from radar.api.serializers.common import (
@@ -71,13 +71,13 @@ class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
                     errors_dict['reconsent_letter_sent_date'] = "Signed on date after sent date!"
 
         if serial_data['reconsent_letter_returned_date']:
-            
+
             if serial_data['reconsent_letter_returned_date'] < serial_data['signed_on_date']:
                 errors_dict['reconsent_letter_returned_date'] = "Signed on date after return date!"
             if serial_data['reconsent_letter_sent_date']:
                 if serial_data['reconsent_letter_sent_date'] > serial_data['reconsent_letter_returned_date']:
                     errors_dict['reconsent_letter_sent_date'] = "Sent date after return date!"
-        
+
         if errors_dict:
             raise fields.ValidationError(errors_dict)
 

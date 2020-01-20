@@ -226,7 +226,7 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient.recruited_group(), 'code'))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
-            output.append(patient.signed_off_state)            
+            output.append(patient.signed_off_state)
 
             for cohort in cohorts:
                 output.append(patient.recruited_date(cohort))
@@ -241,4 +241,3 @@ def register_views(app):
     app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
     app.add_url_rule('/patients/<int:id>', view_func=PatientDestroyView.as_view('patient_destroy'))
     app.add_url_rule('/patients.csv', view_func=PatientListCSVView.as_view('patient_list_csv'))
-    

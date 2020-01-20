@@ -22,6 +22,7 @@ class PatientDemographicsDetailView(SystemObjectViewMixin, PatientObjectDetailVi
 class GenderListView(IntegerLookupListView):
     items = GENDERS
 
+
 class SignedOffListView(IntegerLookupListView):
     items = SIGNED_OFF
 
