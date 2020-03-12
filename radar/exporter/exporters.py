@@ -359,55 +359,85 @@ class DiagnosisExporter(Exporter):
             column("source_type"),
             column("era-edta prd"),  # 5
             column("icd-10"),  # 6
-            column("snomed ct"),  # 7
-            column("diagnosis", "diagnosis.name"),
-            column("diagnosis_text"),
-            column("symptoms_date", lambda x: format_date(x.symptoms_date)),
-            column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
-            column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
-            column("from_date", lambda x: format_date(x.from_date)),
-            column("from_age_years", lambda x: get_years(x.from_age)),
-            column("from_age_months", lambda x: get_months(x.from_age)),
-            column("to_date", lambda x: format_date(x.to_date)),
-            column("to_age_years", lambda x: get_years(x.to_age)),
-            column("to_age_months", lambda x: get_months(x.to_age)),
-            column("prenatal"),
-            column("gene_test"),
-            column("biochemistry"),
-            column("clinical_picture"),
-            column("biopsy"),
-            column("biopsy_diagnosis"),
-            column("biopsy_diagnosis_label"),
-            d("comments", anonymised_getter=None),
-        ]
+            column("snomed ct")]  # 7
+
+        if self.config['patient_group'].code == 'NURTUREINS':            
+            self._columns.append(column("INS diagnosis"))
+
+        self._columns.extend(
+            [
+                column("diagnosis", "diagnosis.name"),
+                column("diagnosis_text"),
+                column("symptoms_date", lambda x: format_date(x.symptoms_date)),
+                column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
+                column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
+                column("from_date", lambda x: format_date(x.from_date)),
+                column("from_age_years", lambda x: get_years(x.from_age)),
+                column("from_age_months", lambda x: get_months(x.from_age)),
+                column("to_date", lambda x: format_date(x.to_date)),
+                column("to_age_years", lambda x: get_years(x.to_age)),
+                column("to_age_months", lambda x: get_months(x.to_age)),
+                column("prenatal"),
+                column("gene_test"),
+                column("biochemistry"),
+                column("clinical_picture"),
+                column("biopsy"),
+                column("biopsy_diagnosis"),
+                column("biopsy_diagnosis_label"),
+                d("comments", anonymised_getter=None)
+            ]
+        )           
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
-        self._primary = queries.get_primary_diagnoses(self.config)
-
+        self._primary = queries.get_primary_diagnoses(self.config)        
 
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
+    
     def get_rows(self):
         headers = [col[0] for col in self._columns]
         yield headers
 
+        self.ins_data = []
+        self.row = []        
+
         for result in self._query:
-            diagnosis = result.diagnosis
-            if diagnosis not in self._primary:
-                continue
 
-            row = [col[1](result) for col in self._columns]
+            if len(self.row) > 1 and result.patient.id != self.row[1]:
 
-            if diagnosis and diagnosis.codes:
-                for code in diagnosis.codes:
-                    if code.system == "ERA-EDTA PRD":
-                        row[5] = code.code
-                    if code.system == "ICD-10":
-                        row[6] = code.code
-                    if code.system == "SNOMED CT":
-                        row[7] = code.code
+                if 'INS diagnosis' in headers:
+                    self.row[8] = self.ins_data
+                    self.ins_data = ''
+                                
+                yield self.row
+                self.row = []
+                self.makeRow(result)
 
-            yield row
+            else:
+                self.makeRow(result)
+
+
+    def makeRow(self, result):
+        diagnosis = result.diagnosis
+            
+        if diagnosis and diagnosis.groups:
+                for group in diagnosis.group_diagnoses:
+                    if group.group.code == 'INS' and group.type.value == 'PRIMARY':
+                        self.ins_data = diagnosis.name
+        
+        if diagnosis not in self._primary:
+            return
+        
+        self.row = [col[1](result) for col in self._columns]
+        
+        if diagnosis and diagnosis.codes:
+            for code in diagnosis.codes:
+                if code.system == "ERA-EDTA PRD":
+                    self.row[5] = code.code
+                if code.system == "ICD-10":
+                    self.row[6] = code.code
+                if code.system == "SNOMED CT":
+                    self.row[7] = code.code
 
 
 @register("comorbidities")
