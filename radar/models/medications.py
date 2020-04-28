@@ -24,14 +24,24 @@ MEDICATION_ROUTES = OrderedDict([
 
 MEDICATION_DOSE_UNITS = OrderedDict([
     ('ML', 'ml'),
+    ('ml', 'ml'),
     ('NG', 'ng'),
+    ('ng', 'ng'),
     ('UG', 'µg'),
+    ('µg', 'µg'),
     ('MG', 'mg'),
+    ('mg', 'mg'),
+    ('microgram', 'mg'),
     ('G', 'g'),
+    ('g', 'g'),
     ('IU', 'IU'),
+    ('iu', 'IU'),
     ('MMOL', 'mmol'),
+    ('mmol', 'mmol'),
     ('PUFF', 'puff'),
+    ('puff', 'puff'),
     ('UNIT', 'unit'),
+    ('unit', 'unit')
 ])
 
 
