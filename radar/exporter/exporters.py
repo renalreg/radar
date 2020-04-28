@@ -363,6 +363,7 @@ class DiagnosisExporter(Exporter):
 
         if self.config['patient_group'].code == 'NURTUREINS':            
             self._columns.append(column("INS diagnosis"))
+            self._columns.append(column('INS diagnosis date'))
 
         self._columns.extend(
             [
@@ -398,16 +399,22 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         headers = [col[0] for col in self._columns]
         yield headers
 
-        self.ins_data = []
+        self.ins_data = {
+            'dia_name': '',
+            'dia_date': ''
+        }
         self.row = []        
 
         for result in self._query:
-
+            # if not being run for the first time and new patient
             if len(self.row) > 1 and result.patient.id != self.row[1]:
-
+                # if the export is being run for INS
                 if 'INS diagnosis' in headers:
-                    self.row[8] = self.ins_data
-                    self.ins_data = ''
+                    self.row[8] = self.ins_data['dia_name']
+                    self.ins_data['dia_name'] = ''
+                    self.row[9] = self.ins_data['dia_date']
+                    self.ins_data['dia_date'] = ''
+                    
                                 
                 yield self.row
                 self.row = []
@@ -423,7 +430,9 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         if diagnosis and diagnosis.groups:
                 for group in diagnosis.group_diagnoses:
                     if group.group.code == 'INS' and group.type.value == 'PRIMARY':
-                        self.ins_data = diagnosis.name
+                        if not self.ins_data['dia_date'] or self.ins_data['dia_date'] < result.from_date:
+                            self.ins_data['dia_name'] = diagnosis.name 
+                            self.ins_data['dia_date'] = result.from_date
         
         if diagnosis not in self._primary:
             return
