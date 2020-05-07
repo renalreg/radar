@@ -362,8 +362,12 @@ class DiagnosisExporter(Exporter):
             column("snomed ct")]  # 7
 
         if self.config['patient_group'].code == 'NURTUREINS':            
-            self._columns.append(column("INS diagnosis"))
-            self._columns.append(column('INS diagnosis date'))
+            self._columns.extend(
+                [
+                    column("INS diagnosis"),
+                    column('INS diagnosis date'),                    
+                ]
+            )
 
         self._columns.extend(
             [
@@ -394,59 +398,84 @@ class DiagnosisExporter(Exporter):
 
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
-    
+        
     def get_rows(self):
         headers = [col[0] for col in self._columns]
         yield headers
 
-        self.ins_data = {
-            'dia_name': '',
-            'dia_date': ''
-        }
-        self.row = []        
+        if self.config['patient_group'].code == 'NURTUREINS':
+            patient_id = 0            
+            row = []
+            self.ins_data = {
+                'dia_date': '',
+                'dia_name': ''
+            }
 
-        for result in self._query:
-            # if not being run for the first time and new patient
-            if len(self.row) > 1 and result.patient.id != self.row[1]:
-                # if the export is being run for INS
-                if 'INS diagnosis' in headers:
-                    self.row[8] = self.ins_data['dia_name']
-                    self.ins_data['dia_name'] = ''
-                    self.row[9] = self.ins_data['dia_date']
-                    self.ins_data['dia_date'] = ''
-                    
-                                
-                yield self.row
-                self.row = []
-                self.makeRow(result)
+            for result in self._query:
 
-            else:
-                self.makeRow(result)
+                diagnosis = result.diagnosis
+                if not diagnosis:                
+                    continue
 
+                if result.patient_id != patient_id:
+                    patient_id = result.patient_id
 
-    def makeRow(self, result):
-        diagnosis = result.diagnosis
-            
-        if diagnosis and diagnosis.groups:
-                for group in diagnosis.group_diagnoses:
-                    if group.group.code == 'INS' and group.type.value == 'PRIMARY':
-                        if not self.ins_data['dia_date'] or self.ins_data['dia_date'] < result.from_date:
-                            self.ins_data['dia_name'] = diagnosis.name 
-                            self.ins_data['dia_date'] = result.from_date
+                    if row:                        
+                        row[8] = self.ins_data['dia_name']
+                        self.ins_data['dia_name'] = ''
+                        row[9] = self.ins_data['dia_date']
+                        self.ins_data['dia_date'] = ''                   
+                        yield row
+                        row = self.makeRow(result, diagnosis)
+                        ins_data = self.getInsData(result, diagnosis)
+                    else:
+                        self.ins_data['dia_name'] = ''
+                        self.ins_data['dia_date'] = '' 
+                        row = self.makeRow(result, diagnosis)
+                        ins_data = self.getInsData(result, diagnosis)
+
+                else:
+                    if row:
+                        ins_data = self.getInsData(result, diagnosis)
+                    else:
+                        row = self.makeRow(result, diagnosis)
+                        ins_data = self.getInsData(result, diagnosis)
+
+        else:
+            for result in self._query:
+                diagnosis = result.diagnosis
+                if not diagnosis:
+                    continue
+                row = self.makeRow(result, diagnosis)
+                if row:
+                    yield row  
+
+    def makeRow(self, result, diagnosis):        
         
         if diagnosis not in self._primary:
             return
-        
-        self.row = [col[1](result) for col in self._columns]
-        
-        if diagnosis and diagnosis.codes:
-            for code in diagnosis.codes:
-                if code.system == "ERA-EDTA PRD":
-                    self.row[5] = code.code
-                if code.system == "ICD-10":
-                    self.row[6] = code.code
-                if code.system == "SNOMED CT":
-                    self.row[7] = code.code
+        else:
+            row = [col[1](result) for col in self._columns]
+            
+            if diagnosis and diagnosis.codes:
+                for code in diagnosis.codes:
+                    if code.system == "ERA-EDTA PRD":
+                        row[5] = code.code
+                    if code.system == "ICD-10":
+                        row[6] = code.code
+                    if code.system == "SNOMED CT":
+                        row[7] = code.code
+
+            return row
+
+    def getInsData(self, result, diagnosis):
+
+        for group_diagnosis in diagnosis.group_diagnoses:
+            if group_diagnosis.group.code == 'INS' and group_diagnosis.type.value == 'PRIMARY':
+                if not self.ins_data['dia_date'] or self.ins_data['dia_date'] < result.from_date:
+                    self.ins_data['dia_name'] = diagnosis.name 
+                    self.ins_data['dia_date'] = result.from_date
+        return
 
 
 @register("comorbidities")
