@@ -357,9 +357,9 @@ class DiagnosisExporter(Exporter):
             column("source_group_id"),
             column("source_group", "source_group.name"),
             column("source_type"),
-            column("era-edta prd"),  # 5
-            column("icd-10"),  # 6
-            column("snomed ct")]  # 7
+            column("era-edta prd"),  #5
+            column("icd-10"),  #6
+            column("snomed ct")] #7
 
         if self.config['patient_group'].code == 'NURTUREINS':            
             self._columns.extend(
@@ -400,10 +400,12 @@ class DiagnosisExporter(Exporter):
 class PrimaryDiagnosisExporter(DiagnosisExporter):
         
     def get_rows(self):
-        headers = [col[0] for col in self._columns]
-        yield headers
+        headers = [col[0] for col in self._columns]        
 
         if self.config['patient_group'].code == 'NURTUREINS':
+            headers[15] = 'NURTURE_INS Diag Date'
+            yield headers
+
             patient_id = 0            
             row = []
             self.ins_data = {
@@ -442,6 +444,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         ins_data = self.getInsData(result, diagnosis)
 
         else:
+            yield headers
             for result in self._query:
                 diagnosis = result.diagnosis
                 if not diagnosis:
@@ -460,11 +463,12 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
             if diagnosis and diagnosis.codes:
                 for code in diagnosis.codes:
                     if code.system == "ERA-EDTA PRD":
-                        row[5] = code.code
+                        row[5] = code.code                        
                     if code.system == "ICD-10":
-                        row[6] = code.code
+                        row[6] = code.code                        
                     if code.system == "SNOMED CT":
                         row[7] = code.code
+                       
 
             return row
 
