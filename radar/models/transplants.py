@@ -18,6 +18,8 @@ TRANSPLANT_MODALITIES = OrderedDict([
     (24, 'Live - Gentically Unrelated'),
     (26, 'Live - With Transplant of Other Organ'),
     (27, 'Live - Non-UK'),
+    (78, 'Live - Unknown'),
+    (73, 'Live - Parent'),
     (20, 'Cadaver'),
     (25, 'Cadaver - With Transplant of Other Organ'),
     (28, 'Non-Heart-Beating'),
