@@ -359,39 +359,38 @@ class DiagnosisExporter(Exporter):
             column("source_type"),
             column("era-edta prd"),  #5
             column("icd-10"),  #6
-            column("snomed ct")] #7
+            column("snomed ct"), #7
+            column("diagnosis", "diagnosis.name"),
+            column("diagnosis_text"),
+            column("symptoms_date", lambda x: format_date(x.symptoms_date)),
+            column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
+            column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
+            column("from_date", lambda x: format_date(x.from_date)),
+            column("from_age_years", lambda x: get_years(x.from_age)),
+            column("from_age_months", lambda x: get_months(x.from_age)),
+            column("to_date", lambda x: format_date(x.to_date)),
+            column("to_age_years", lambda x: get_years(x.to_age)),
+            column("to_age_months", lambda x: get_months(x.to_age)),
+            column("prenatal"),
+            column("gene_test"),
+            column("biochemistry"),
+            column("clinical_picture"),
+            column("biopsy"),
+            column("biopsy_diagnosis"),
+            column("biopsy_diagnosis_label"),
+            d("comments", anonymised_getter=None)
+            ]
 
         if self.config['patient_group'].code == 'NURTUREINS':            
             self._columns.extend(
                 [
-                    column("INS diagnosis"),
-                    column('INS diagnosis date'),                    
+                    column("INS diagnosis"), #27
+                    column('INS diagnosis date'),
+                    column('INS biopsy diagnosis'),
+                    column('INS biopsy diagnosis label'),
+                    column('INS biopsy diagnosis comments') #31                                  
                 ]
             )
-
-        self._columns.extend(
-            [
-                column("diagnosis", "diagnosis.name"),
-                column("diagnosis_text"),
-                column("symptoms_date", lambda x: format_date(x.symptoms_date)),
-                column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
-                column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
-                column("from_date", lambda x: format_date(x.from_date)),
-                column("from_age_years", lambda x: get_years(x.from_age)),
-                column("from_age_months", lambda x: get_months(x.from_age)),
-                column("to_date", lambda x: format_date(x.to_date)),
-                column("to_age_years", lambda x: get_years(x.to_age)),
-                column("to_age_months", lambda x: get_months(x.to_age)),
-                column("prenatal"),
-                column("gene_test"),
-                column("biochemistry"),
-                column("clinical_picture"),
-                column("biopsy"),
-                column("biopsy_diagnosis"),
-                column("biopsy_diagnosis_label"),
-                d("comments", anonymised_getter=None)
-            ]
-        )           
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
         self._primary = queries.get_primary_diagnoses(self.config)        
@@ -400,17 +399,23 @@ class DiagnosisExporter(Exporter):
 class PrimaryDiagnosisExporter(DiagnosisExporter):
         
     def get_rows(self):
-        headers = [col[0] for col in self._columns]        
+        headers = [col[0] for col in self._columns]
+        yield headers
 
+        # Differnet format for Nurture INS patients
         if self.config['patient_group'].code == 'NURTUREINS':
-            headers[15] = 'NURTURE_INS Diag Date'
-            yield headers
 
             patient_id = 0            
             row = []
+
+            # Dictonary containing INS data to be added to Nurture INS data
             self.ins_data = {
-                'dia_date': '',
-                'dia_name': ''
+                'pat_id': '',
+                'ins_dia_name': '',
+                'ins_dia_date': '',
+                'ins_biopsy_dia': '',
+                'ins_biopsy_dia_label': '',
+                'ins_biopsy_dia_comments': ''                
             }
 
             for result in self._query:
@@ -418,33 +423,60 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                 diagnosis = result.diagnosis
                 if not diagnosis:                
                     continue
-
+                # Check for new patient
                 if result.patient_id != patient_id:
                     patient_id = result.patient_id
-
+                    # Primary diagnosis found for previous patient, write row and add INS data
                     if row:                        
-                        row[8] = self.ins_data['dia_name']
-                        self.ins_data['dia_name'] = ''
-                        row[9] = self.ins_data['dia_date']
-                        self.ins_data['dia_date'] = ''                   
+                        row[27] = self.ins_data['ins_dia_name']
+                        self.ins_data['ins_dia_name'] = ''
+                        row[28] = self.ins_data['ins_dia_date']
+                        self.ins_data['ins_dia_date'] = ''
+                        row[29] = self.ins_data['ins_biopsy_dia']
+                        self.ins_data['ins_biopsy_dia'] = ''
+                        row[30] = self.ins_data['ins_biopsy_dia_label']
+                        self.ins_data['ins_biopsy_dia_label'] = ''
+                        row[31] = self.ins_data['ins_biopsy_dia_comments']
+                        self.ins_data['ins_biopsy_dia_comments'] = ''                        
                         yield row
                         row = self.makeRow(result, diagnosis)
-                        ins_data = self.getInsData(result, diagnosis)
+                        ins_data = self.getInsData(result, diagnosis)                    
+                    # No primary diagnosis found for previous patient but INS data present, write INS data
                     else:
-                        self.ins_data['dia_name'] = ''
-                        self.ins_data['dia_date'] = '' 
-                        row = self.makeRow(result, diagnosis)
-                        ins_data = self.getInsData(result, diagnosis)
-
+                        if self.ins_data['ins_dia_name'] != '':
+                            row = [''] * len(headers)
+                            row[1] = self.ins_data['pat_id']
+                            self.ins_data['pat_id'] = ''
+                            row[27] = self.ins_data['ins_dia_name']
+                            self.ins_data['ins_dia_name'] = ''
+                            row[28] = self.ins_data['ins_dia_date']
+                            self.ins_data['ins_dia_date'] = ''
+                            row[29] = self.ins_data['ins_biopsy_dia']
+                            self.ins_data['ins_biopsy_dia'] = ''
+                            row[30] = self.ins_data['ins_biopsy_dia_label']
+                            self.ins_data['ins_biopsy_dia_label'] = ''
+                            row[31] = self.ins_data['ins_biopsy_dia_comments']
+                            self.ins_data['ins_biopsy_dia_comments'] = ''                   
+                            yield row
+                            row = self.makeRow(result, diagnosis)
+                            ins_data = self.getInsData(result, diagnosis)
+                        # New patient, no data found fopr previous patient
+                        else:
+                            row = self.makeRow(result, diagnosis)
+                            ins_data = self.getInsData(result, diagnosis)
+                
+                # Not new patient
                 else:
+                    # Primary diagnosis has been found, continue to check for INS data
                     if row:
                         ins_data = self.getInsData(result, diagnosis)
+                    # Search for primary diagnosis and INS data
                     else:
                         row = self.makeRow(result, diagnosis)
                         ins_data = self.getInsData(result, diagnosis)
-
-        else:
-            yield headers
+        
+        # Not Nurture-ins export
+        else:            
             for result in self._query:
                 diagnosis = result.diagnosis
                 if not diagnosis:
@@ -468,7 +500,6 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         row[6] = code.code                        
                     if code.system == "SNOMED CT":
                         row[7] = code.code
-                       
 
             return row
 
@@ -476,9 +507,13 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
 
         for group_diagnosis in diagnosis.group_diagnoses:
             if group_diagnosis.group.code == 'INS' and group_diagnosis.type.value == 'PRIMARY':
-                if not self.ins_data['dia_date'] or self.ins_data['dia_date'] < result.from_date:
-                    self.ins_data['dia_name'] = diagnosis.name 
-                    self.ins_data['dia_date'] = result.from_date
+                if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < result.from_date:
+                    self.ins_data['pat_id'] = result.patient_id
+                    self.ins_data['ins_dia_name'] = diagnosis.name 
+                    self.ins_data['ins_dia_date'] = result.from_date
+                    self.ins_data['ins_biopsy_dia'] = result.biopsy_diagnosis
+                    self.ins_data['ins_biopsy_dia_label'] = result.biopsy_diagnosis_label
+                    self.ins_data['ins_biopsy_dia_comments'] = result.comments
         return
 
 
