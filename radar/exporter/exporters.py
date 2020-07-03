@@ -460,7 +460,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             yield row
                             row = self.makeRow(result, diagnosis)
                             ins_data = self.getInsData(result, diagnosis)
-                        # New patient, no data found fopr previous patient
+                        # New patient, no data found for previous patient
                         else:
                             row = self.makeRow(result, diagnosis)
                             ins_data = self.getInsData(result, diagnosis)
