@@ -375,7 +375,7 @@ class DiagnosisExporter(Exporter):
             column("gene_test"),
             column("biochemistry"),
             column("clinical_picture"),
-            column("biopsy"),
+            column("biopsy"), #23
             column("biopsy_diagnosis"),
             column("biopsy_diagnosis_label"),
             d("comments", anonymised_getter=None)
@@ -384,16 +384,16 @@ class DiagnosisExporter(Exporter):
         if self.config['patient_group'].code == 'NURTUREINS':            
             self._columns.extend(
                 [
-                    column("INS diagnosis"), #27
-                    column('INS diagnosis date'),
-                    column('INS biopsy diagnosis'),
-                    column('INS biopsy diagnosis label'),
-                    column('INS biopsy diagnosis comments') #31                                  
+                    column("ins_diagnosis"), #27
+                    column('ins_diagnosis_date'),
+                    column('ins_biopsy_diagnosis'),
+                    column('ins_biopsy_diagnosis_label'),
+                    column('ins_diagnosis_comments') #31                                  
                 ]
             )
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
-        self._primary = queries.get_primary_diagnoses(self.config)        
+        self._primary = queries.get_primary_diagnoses(self.config)
 
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
