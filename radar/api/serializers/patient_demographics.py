@@ -38,6 +38,7 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
+    cause_of_death = fields.StringField(required=False)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
     home_number = fields.StringField(
