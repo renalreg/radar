@@ -357,96 +357,234 @@ class DiagnosisExporter(Exporter):
             column("source_group_id"),
             column("source_group", "source_group.name"),
             column("source_type"),
-            column("era-edta prd"),  # 5
-            column("icd-10"),  # 6
-            column("snomed ct")]  # 7
+            column("era-edta prd"),  #5
+            column("icd-10"),  #6
+            column("snomed ct"), #7
+            column("diagnosis", "diagnosis.name"),
+            column("diagnosis_text"),
+            column("symptoms_date", lambda x: format_date(x.symptoms_date)),
+            column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
+            column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
+            column("from_date", lambda x: format_date(x.from_date)),
+            column("from_age_years", lambda x: get_years(x.from_age)),
+            column("from_age_months", lambda x: get_months(x.from_age)),
+            column("to_date", lambda x: format_date(x.to_date)),
+            column("to_age_years", lambda x: get_years(x.to_age)),
+            column("to_age_months", lambda x: get_months(x.to_age)),
+            column("prenatal"),
+            column("gene_test"),
+            column("biochemistry"),
+            column("clinical_picture"),
+            column("biopsy"), #23
+            column("biopsy_diagnosis"),
+            column("biopsy_diagnosis_label"),
+            d("comments", anonymised_getter=None)
+            ]
 
         if self.config['patient_group'].code == 'NURTUREINS':            
-            self._columns.append(column("INS diagnosis"))
-            self._columns.append(column('INS diagnosis date'))
-
-        self._columns.extend(
-            [
-                column("diagnosis", "diagnosis.name"),
-                column("diagnosis_text"),
-                column("symptoms_date", lambda x: format_date(x.symptoms_date)),
-                column("symptoms_age_years", lambda x: get_years(x.symptoms_age)),
-                column("symptoms_age_months", lambda x: get_months(x.symptoms_age)),
-                column("from_date", lambda x: format_date(x.from_date)),
-                column("from_age_years", lambda x: get_years(x.from_age)),
-                column("from_age_months", lambda x: get_months(x.from_age)),
-                column("to_date", lambda x: format_date(x.to_date)),
-                column("to_age_years", lambda x: get_years(x.to_age)),
-                column("to_age_months", lambda x: get_months(x.to_age)),
-                column("prenatal"),
-                column("gene_test"),
-                column("biochemistry"),
-                column("clinical_picture"),
-                column("biopsy"),
-                column("biopsy_diagnosis"),
-                column("biopsy_diagnosis_label"),
-                d("comments", anonymised_getter=None)
-            ]
-        )           
+            self._columns.extend(
+                [
+                    column("ins_diagnosis"), #27
+                    column('ins_diagnosis_date'),
+                    column('ins_biopsy_diagnosis'),
+                    column('ins_biopsy_diagnosis_label'),
+                    column('ins_diagnosis_comments') #31                                  
+                ]
+            )
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
-        self._primary = queries.get_primary_diagnoses(self.config)        
+        self._primary = queries.get_primary_diagnoses(self.config)
 
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
-    
+    '''
+    A class that extends DiagnosisExporter exporter for the 
+    purpose of constructing all the relevant data to be 
+    written to a CSV file. The CSV file will be conserned with
+    all the patients in a cohort and their primary diagnosis.
+
+    The exporter contains extra functionality that enables 
+    the combination of nurture INS data and INS data although
+    in general it is expected that each export will focus on
+    only one cohort. It works by storing the patient ID during
+    a search for primary diagnosis and only yielding a row when
+    a new patient is found. Before yielding a row it combines
+    INS data with Nurture INS data.
+
+    :param DiagnosisExporter: a class that contains all the header
+    for the CSV and the results of the relevant queries
+    :type DiagnosisExporter: class: DiagnosisExporter   
+    '''    
+
+        
     def get_rows(self):
+        '''
+        Gets all the primary diagnosis data for a specific cohort
+
+        :yield: yields CSV row for writting to file
+        :rtype: list
+        '''        
+
         headers = [col[0] for col in self._columns]
         yield headers
 
-        self.ins_data = {
-            'dia_name': '',
-            'dia_date': ''
-        }
-        self.row = []        
+        # Differnet process for Nurture INS patients
+        if self.config['patient_group'].code == 'NURTUREINS':
 
-        for result in self._query:
-            # if not being run for the first time and new patient
-            if len(self.row) > 1 and result.patient.id != self.row[1]:
-                # if the export is being run for INS
-                if 'INS diagnosis' in headers:
-                    self.row[8] = self.ins_data['dia_name']
-                    self.ins_data['dia_name'] = ''
-                    self.row[9] = self.ins_data['dia_date']
-                    self.ins_data['dia_date'] = ''
+            patient_id = 0            
+            row = []            
+            self.ins_data = {
+                'pat_id': '',
+                'ins_dia_name': '',
+                'ins_dia_date': '',
+                'ins_biopsy_dia': '',
+                'ins_biopsy_dia_label': '',
+                'ins_biopsy_dia_comments': ''                
+            }
+
+            for record in self._query:
+                diagnosis = record.diagnosis                
+                if not diagnosis:                
+                    continue
+
+                # New patient identified
+                if record.patient_id != patient_id:
+                    patient_id = record.patient_id
                     
-                                
-                yield self.row
-                self.row = []
-                self.makeRow(result)
+                    # Primary diagnosis found for previous patient, add INS data to row and yield
+                    if row:                        
+                        self.insert_ins_data(row)                      
+                        yield row
 
-            else:
-                self.makeRow(result)
+                        if diagnosis in self._primary:
+                            row = self.make_row(record, diagnosis)
+                        else:
+                            row = []
 
+                        ins_data = self.get_ins_data(record, diagnosis) 
 
-    def makeRow(self, result):
-        diagnosis = result.diagnosis
-            
-        if diagnosis and diagnosis.groups:
-                for group in diagnosis.group_diagnoses:
-                    if group.group.code == 'INS' and group.type.value == 'PRIMARY':
-                        if not self.ins_data['dia_date'] or self.ins_data['dia_date'] < result.from_date:
-                            self.ins_data['dia_name'] = diagnosis.name 
-                            self.ins_data['dia_date'] = result.from_date
+                    # No primary diagnosis found for previous patient
+                    # Check for INS data                    
+                    else:
+                        # INS data present create blank row, add INS data and yield
+                        if self.ins_data['ins_dia_name'] != '':
+                            row = [''] * len(headers)
+                            row[1] = self.ins_data['pat_id']
+                            self.ins_data['pat_id'] = ''
+                            self.insert_ins_data(row)
+                            yield row
+
+                            if diagnosis in self._primary:                            
+                                row = self.make_row(record, diagnosis)
+                            else:
+                                row = []
+
+                            ins_data = self.get_ins_data(record, diagnosis)
+
+                        # No data found for previous patient so no yield required
+                        else:
+                            if diagnosis in self._primary:
+                                row = self.make_row(record, diagnosis)
+                            else:
+                                row = []
+
+                            ins_data = self.get_ins_data(record, diagnosis)
+                
+                # Not new patient
+                else:
+                    # Primary diagnosis has been found, continue to check for INS data
+                    if row:
+                        if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < record.from_date:
+                            ins_data = self.get_ins_data(record, diagnosis)
+
+                    # Search for primary diagnosis and INS data
+                    else:
+                        if diagnosis in self._primary:
+                            row = self.make_row(record, diagnosis)
+                        else:
+                            row = []
+
+                        if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < record.from_date:
+                            ins_data = self.get_ins_data(record, diagnosis)
         
-        if diagnosis not in self._primary:
-            return
+        # Not Nurture-ins export
+        else:            
+            for record in self._query:
+                diagnosis = record.diagnosis
+                if not diagnosis:
+                    continue
+                if diagnosis in self._primary:
+                    row = self.make_row(record, diagnosis)
+                else:
+                    row = []
+                if row:
+                    yield row   
+
+    def make_row(self, record, diagnosis):
+        '''
+        Returns a list that represents the content of a single row
+        in a CSV file that provides data about a patients diagnoses.
+
+        :param record: An object containing a single record from primary diagnoses query
+        :type record:  class: queries.get_primary_diagnoses()
+        :param diagnosis: A diagnosis object provided by record
+        :type diagnosis: class: radar.models.diagnoses.Diagnosis
+        :return: returns a CSV row with diagnosis data
+        :rtype: list
+        '''
         
-        self.row = [col[1](result) for col in self._columns]
+        row = [col[1](record) for col in self._columns]        
         
-        if diagnosis and diagnosis.codes:
+        if diagnosis.codes:
             for code in diagnosis.codes:
                 if code.system == "ERA-EDTA PRD":
-                    self.row[5] = code.code
+                    row[5] = code.code                        
                 if code.system == "ICD-10":
-                    self.row[6] = code.code
+                    row[6] = code.code                        
                 if code.system == "SNOMED CT":
-                    self.row[7] = code.code
+                    row[7] = code.code
+
+        return row
+
+    def get_ins_data(self, record, diagnosis):
+        '''
+        Updates ins_data dictionary with INS data
+
+        :param record: An object containing a single record from primary diagnoses query
+        :type record: class: queries.get_primary_diagnoses()
+        :param diagnosis: A diagnosis object provided by record
+        :type diagnosis: class: radar.models.diagnoses.Diagnosis
+        '''        
+
+        for group_diagnosis in diagnosis.group_diagnoses:
+            if group_diagnosis.group.code == 'INS' and group_diagnosis.type.value == 'PRIMARY':
+                self.ins_data['pat_id'] = record.patient_id
+                self.ins_data['ins_dia_name'] = diagnosis.name 
+                self.ins_data['ins_dia_date'] = record.from_date
+                self.ins_data['ins_biopsy_dia'] = record.biopsy_diagnosis
+                self.ins_data['ins_biopsy_dia_label'] = record.biopsy_diagnosis_label
+                self.ins_data['ins_biopsy_dia_comments'] = record.comments
+        
+
+    def insert_ins_data(self, row):
+        '''
+        Inserts ins_data into row once a new patient is identified
+
+        :param row: a list containing primary diagnosis data if any
+                    otherwise a blank row the same length as headers
+        :type row: list
+        '''        
+        row[27] = self.ins_data['ins_dia_name']
+        self.ins_data['ins_dia_name'] = ''
+        row[28] = self.ins_data['ins_dia_date']
+        self.ins_data['ins_dia_date'] = ''
+        row[29] = self.ins_data['ins_biopsy_dia']
+        self.ins_data['ins_biopsy_dia'] = ''
+        row[30] = self.ins_data['ins_biopsy_dia_label']
+        self.ins_data['ins_biopsy_dia_label'] = ''
+        row[31] = self.ins_data['ins_biopsy_dia_comments']
+        self.ins_data['ins_biopsy_dia_comments'] = ''
+        
 
 
 @register("comorbidities")
