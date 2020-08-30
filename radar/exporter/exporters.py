@@ -654,7 +654,7 @@ class PathologyExporter(Exporter):
                 "histological_summary",
                 anonymised_getter=lambda x: x.histological_summary
                 if x.histological_summary is None
-                else "TEXT",
+                else "REDACTED",
             ),
             d("em_findings", anonymised_getter=None),
         ]
