@@ -20,7 +20,7 @@ def upgrade():
     op.create_table(
         'nurture_samples_urine',
         sa.Column('sample_id', sa.String(20), primary_key=True),
-        sa.Column('sample_date' sa.DateTime(), nullable=False)
+        sa.Column('sample_date', sa.DateTime(), nullable=False),
         sa.Column('radar_id', sa.String(20), nullable=False),
         sa.Column('albumin', sa.String(10)),
         sa.Column('creatinin', sa.String(10)),
@@ -31,7 +31,7 @@ def upgrade():
     op.create_table(
         'nurture_samples_blood',
         sa.Column('sample_id', sa.String(20), primary_key=True),
-        sa.Column('sample_date' sa.DateTime(), nullable=False)
+        sa.Column('sample_date', sa.DateTime(), nullable=False),
         sa.Column('radar_id', sa.String(20), nullable=False),
         sa.Column('bnp', sa.String(10)),
         sa.Column('creat', sa.String(10)),
@@ -44,5 +44,5 @@ def upgrade():
         sa.Column('comments_sample', sa.String(50)))
 
 def downgrade():
-    op.drop_table(nurture_samples_urine)
-    op.drop_table(nurture_samples_blood)
+    op.drop_table('nurture_samples_urine')
+    op.drop_table('nurture_samples_blood')
