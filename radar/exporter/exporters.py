@@ -1274,6 +1274,7 @@ class SamplesExporter(Exporter):
             column("patient_id"),
             column("date", "data.date"),
             column("barcode", "data.barcode"),
+            column("ins_state", "data.insstate")
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
