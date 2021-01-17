@@ -39,6 +39,7 @@ class Pathology(db.Model, MetaModelMixin):
     image_url = Column(String)
     histological_summary = Column(String)
     em_findings = Column(String)
+    report_cleaned = Column(Date)
 
     @property
     def kidney_type_label(self):
