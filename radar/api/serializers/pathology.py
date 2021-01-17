@@ -23,6 +23,7 @@ class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
         validators=[none_if_blank(), optional(), max_length(10000)]
     )
     em_findings = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    report_cleaned = fields.DateField(required=False)
 
     class Meta(object):
         model_class = Pathology
