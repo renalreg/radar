@@ -22,6 +22,19 @@ ILLEGAL_CHARACTERS_RE = re.compile(r"[\000-\010]|[\013-\014]|[\016-\037]")
 
 exporter_map = {}
 
+INS_STATE = {
+    0: 'INS Baseline visit',
+    1: 'INS Follow Up visit',
+    2: 'INS Relapse',
+    3: 'INS Remission',
+    4: 'INS Transplant',
+    5: '2nd INS Baseline visit',
+    6: 'INS Pre-transplant',
+    7: 'INS 1 week post-transplant',
+    8: 'INS 12 months post-transplant',
+    9: 'INS 18 months post-transplant',
+}
+
 
 def none_to_empty(value):
     return "" if value is None else value
@@ -1279,6 +1292,19 @@ class SamplesExporter(Exporter):
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
+
+    def get_rows(self):
+
+        headers = [col[0] for col in self._columns]
+        headers[4] = 'sample_type'
+        yield headers
+        for data in self._query:
+            row = [col[1](data) for col in self._columns]
+
+            if row[4] is not None:
+                row[4] = INS_STATE[row[4]]
+
+            yield row
 
 
 @register("anthropometrics")
