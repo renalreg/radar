@@ -309,7 +309,7 @@ class ObservationView(ModelView):
     column_export_list = [
         'id', 'name', 'short_name',
         'value_type', 'sample_type', 'pv_code',
-        'min_value' 'max_value', 'min_length',
+        'min_value', 'max_value', 'min_length',
         'max_length', 'units', 'options',
     ]
 
