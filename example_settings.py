@@ -1,5 +1,5 @@
 SECRET_KEY = 'SECRET'
-SQLALCHEMY_DATABASE_URI = 'postgres://radar:password@radar_db_1/radar'
+SQLALCHEMY_DATABASE_URI = 'postgres://radar:password@radar-db/radar'
 DEBUG = True
 
 SESSION_TIMEOUT = 3600
