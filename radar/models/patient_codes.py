@@ -5,7 +5,11 @@ GENDER_FEMALE = 2
 GENDER_NOT_SPECIFIED = 9
 
 GENDERS = OrderedDict(
-    [(GENDER_MALE, "Male"), (GENDER_FEMALE, "Female"), (GENDER_NOT_SPECIFIED, "Not Specified")]
+    [
+        (GENDER_MALE, "Male"),
+        (GENDER_FEMALE, "Female"),
+        (GENDER_NOT_SPECIFIED, "Not Specified"),
+    ]
 )
 
 SIGNED_OFF_NOT_COMPLETE = 0
@@ -19,8 +23,11 @@ SIGNED_OFF = OrderedDict(
         (SIGNED_OFF_NOT_COMPLETE, "Not signed off"),
         (SIGNED_OFF_NURTURE_BASELINE, "Nurture baseline data complete"),
         (SIGNED_OFF_FOLLOW_UP, "Nurture baseline and follow up data complete"),
-        (SIGNED_OFF_BASELINE_COMPLETE_NO_FUP, "Baseline complete, no FUP as Tx"),
-        (SIGNED_OFF_FOLLOW_UP_REFUSED, "Patient refused Follow Up")
+        (
+            SIGNED_OFF_BASELINE_COMPLETE_NO_FUP,
+            "Baseline complete, no FUP as Tx or dialysis",
+        ),
+        (SIGNED_OFF_FOLLOW_UP_REFUSED, "Patient refused Follow Up"),
     ]
 )
 
