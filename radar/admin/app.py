@@ -57,7 +57,7 @@ class RadarAdmin(Radar):
 
         admin = Admin(
             self,
-            'RADAR Admin',
+            'Star Registry Admin',
             index_view=AdminIndexView(),
             template_mode='bootstrap3',
             base_template='master.html',
