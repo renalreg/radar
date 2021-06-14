@@ -1294,3 +1294,43 @@ class NutritionExporter(Exporter):
         ]
         q = queries.get_nutrition(self.config)
         self._query = q
+
+
+@register("initial-presentation")
+class InitialPresentationExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column("id"),
+            column("patient_id"),
+            column("date", "data.date"),
+            column("presentation", "data.presentation"),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+@register("bsi")
+class BodySystemInvolvementExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column("id"),
+            column("patient_id"),
+            column("bodyInvolvement", "data.bodyInvolvement"),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
+@register("fhoosd")
+class BodySystemInvolvementExporter(Exporter):
+    def run(self):
+        self._columns = [
+            column("id"),
+            column("patient_id"),
+            column("disease", "data.disease"),
+            column("relative", "data.relative"),
+        ]
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
