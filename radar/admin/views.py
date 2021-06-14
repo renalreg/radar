@@ -227,7 +227,7 @@ class CohortView(ModelView):
     column_list = ['name', 'code', 'parent_group']
     column_default_sort = 'name'
     column_searchable_list = ['name', 'short_name', 'code']
-    form_columns = ['name', 'short_name', 'code', 'parent_group', 'instructions']
+    form_columns = ['name', 'short_name', 'code', 'parent_group', 'multiple_diagnoses', 'instructions']
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
     def create_form(self):
