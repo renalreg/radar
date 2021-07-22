@@ -1,7 +1,7 @@
 """rename rituximab selection criteria column
 
 Revision ID: 99da04e11317
-Revises: 2e5e536d3a26
+Revises: e23d1a7e678d
 Create Date: 2018-10-05 13:35:47.380000
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '99da04e11317'
-down_revision = '2e5e536d3a26'
+down_revision = 'e23d1a7e678d'
 branch_labels = None
 depends_on = None
 
