@@ -45,7 +45,7 @@ def unique_aliases(sda_names):
         return (sda_name.given_name, sda_name.family_name)
 
     def log(sda_name):
-        logger.error('Ignoring duplicate alias')
+        logger.warning('Ignoring duplicate alias')
 
     sda_names = unique_list(sda_names, key_f=key, duplicate_f=log)
 

@@ -8,10 +8,12 @@ from radar.api.serializers.common import (
     MetaMixin,
     PatientMixin,
     SourceMixin,
+    StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.database import db
 from radar.models.transplants import (
+    GRAFT_LOSS_CAUSES,
     Transplant,
     TRANSPLANT_MODALITIES,
     TransplantBiopsy,
@@ -63,8 +65,13 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     date = fields.DateField()
     transplant_group = GroupField(required=False)
     modality = IntegerLookupField(TRANSPLANT_MODALITIES)
+    recipient_hla = fields.StringField(required=False)
+    donor_hla = fields.StringField(required=False)
+    date_of_cmv_infection = fields.DateField(required=False)
+    recurrence = fields.BooleanField(required=False)
     date_of_recurrence = fields.DateField(required=False)
     date_of_failure = fields.DateField(required=False)
+    graft_loss_cause = StringLookupField(GRAFT_LOSS_CAUSES, required=False)
     rejections = ListSerializer(child=TransplantRejectionSerializer())
     biopsies = ListSerializer(child=TransplantBiopsySerializer())
 
@@ -111,8 +118,13 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
         instance.date = data['date']
         instance.modality = data['modality']
+        instance.recipient_hla = data['recipient_hla']
+        instance.donor_hla = data['donor_hla']
+        instance.date_of_cmv_infection = data['date_of_cmv_infection']
+        instance.recurrence = data['recurrence']
         instance.date_of_recurrence = data['date_of_recurrence']
         instance.date_of_failure = data['date_of_failure']
+        instance.graft_loss_cause = data['graft_loss_cause']
         instance.transplant_group = data['transplant_group']
         instance.rejections = self.fields['rejections'].create(data['rejections'])
         instance.biopsies = self.fields['biopsies'].create(data['biopsies'])

@@ -9,10 +9,15 @@ from radar.api.serializers.common import MetaMixin
 from radar.models.posts import Post
 
 
-class PostSerializer(MetaMixin, ModelSerializer):
+class PostSerializer(ModelSerializer):
     title = fields.StringField(validators=[not_empty()])
     published_date = fields.DateTimeField(default=lambda: datetime.now(pytz.utc))
     body = fields.StringField(validators=[not_empty(), sanitize_html()])
 
     class Meta(object):
         model_class = Post
+        exclude = ["created_user_id", "modified_user_id"]
+
+
+class PostAuthorSerializer(MetaMixin, PostSerializer):
+    pass

@@ -133,10 +133,6 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         if not data['biopsy']:
             data['biopsy_diagnosis'] = None
 
-        # Ignore the symptoms date for negative diagnoses
-        if data['status'] is False:
-            data['symptoms_date'] = None
-
         return data
 
     def validate_diagnosis(self, diagnosis):
@@ -162,8 +158,3 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             raise ValidationError({'to_date': 'Must be on or after from date.'})
 
         return data
-
-
-class AbsentDiagnosisListSerializer(PatientMixin, SourceMixin, MetaMixin):
-    checked = fields.BooleanField(default=False)
-    from_date = fields.DateField()

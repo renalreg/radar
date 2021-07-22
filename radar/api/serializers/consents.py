@@ -1,11 +1,16 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 
+
 from radar.api.serializers.common import (
     MetaMixin,
     PatientMixin,
 )
+from radar.exceptions import PermissionDenied
 from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
+from radar.models.patients import Patient
+from radar.permissions import has_permission_for_patient
+from radar.roles import PERMISSION
 
 
 class ConsentSerializer(ModelSerializer):
@@ -25,7 +30,23 @@ class ConsentField(ReferenceField):
     serializer_class = ConsentSerializer
 
 
-class PatientConsentSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class PatientConsentField(ReferenceField):
+    model_class = Patient
+
+    def validate(self, patient):
+        user = self.context['user']
+
+        if not has_permission_for_patient(user, patient, PERMISSION.EDIT_CONSENT):
+            raise PermissionDenied()
+
+        return patient
+
+
+class PatientConsentMixin(PatientMixin):
+    patient = PatientConsentField()
+
+
+class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
     signed_on_date = fields.DateField()
     withdrawn_on_date = fields.DateField(required=False)

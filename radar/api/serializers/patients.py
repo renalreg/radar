@@ -14,7 +14,7 @@ from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.models.patient_codes import GENDERS
-from radar.models.patients import Patient
+from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -46,7 +46,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
-    gender = IntegerLookupField(GENDERS, read_only=True)
+    gender = IntegerLookupField(GENDERS, read_only=True, source='radar_gender')
     nationality = NationalityField(read_only=True)
     ethnicity = EthnicityField(read_only=True)
     groups = fields.ListField(child=GroupPatientSerializer(), source='group_patients', read_only=True)
@@ -58,10 +58,12 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
+    signed_off = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
+    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 
     class Meta(object):
         model_class = Patient
@@ -97,7 +99,7 @@ class TinyPatientSerializer(serializers.Serializer):
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
-    gender = IntegerLookupField(GENDERS, read_only=True)
+    gender = IntegerLookupField(GENDERS, read_only=True, source='radar_gender')
     nationality = NationalityField(read_only=True)
     ethnicity = EthnicityField(read_only=True)
     groups = fields.ListField(child=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
@@ -111,8 +113,9 @@ class TinyPatientSerializer(serializers.Serializer):
     control = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
-    consented = fields.BooleanField(read_only=True)
+    # consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
+    # consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
 
     def to_representation(self, value):
         user = self.context['user']

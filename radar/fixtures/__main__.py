@@ -5,6 +5,7 @@ import click
 from radar.app import Radar
 from radar.database import db, do_create, do_drop
 from radar.fixtures import create_bot_user, create_data, create_patients, create_users
+from radar.fixtures.users import create_user
 
 
 @click.group()
@@ -35,6 +36,14 @@ def patients(patients, data):
 def users(password):
     create_bot_user(password)
     create_users(password)
+    db.session.commit()
+
+
+@cli.command()
+@click.argument('username')
+@click.option('--password', default='password')
+def user(username, password):
+    create_user(username, password)
     db.session.commit()
 
 

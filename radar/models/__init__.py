@@ -24,7 +24,14 @@ from radar.models.india_ethnicities import IndiaEthnicity
 from radar.models.ins import *
 from radar.models.logs import *
 from radar.models.results import *
-from radar.models.medications import *
+from radar.models.medications import (
+    CurrentMedication,
+    Drug,
+    DrugGroup,
+    MEDICATION_ROUTES,
+    MEDICATION_DOSE_UNITS,
+    Medication,
+)
 from radar.models.mpgn import *
 from radar.models.nephrectomies import *
 from radar.models.nurture_tubes import Samples
@@ -42,6 +49,7 @@ from radar.models.plasmapheresis import *
 from radar.models.pregnancies import *
 from radar.models.renal_progressions import *
 from radar.models.renal_imaging import *
+from radar.models.rituximab import BaselineAssessment
 from radar.models.salt_wasting import *
 from radar.models.source_types import *
 from radar.models.transplants import *

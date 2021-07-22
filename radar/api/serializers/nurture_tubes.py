@@ -4,11 +4,6 @@ from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from radar.api.serializers.common import MetaMixin, PatientMixin
 from radar.models.nurture_tubes import PROTOCOL_OPTION_TYPE, SampleOption, Samples
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 class OptionSerializer(ModelSerializer):
     id = fields.EnumField(PROTOCOL_OPTION_TYPE)
@@ -22,7 +17,7 @@ class ProtocolField(ReferenceField):
     serializer_class = OptionSerializer
 
     def to_internal_value(self, data):
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             data = PROTOCOL_OPTION_TYPE(data)
         instance = self.get_instance(data)
         return instance

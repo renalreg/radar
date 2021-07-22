@@ -3,18 +3,27 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import true
 
 from radar.database import db
+from radar.models.alport import AlportClinicalPicture
 from radar.models.codes import Code
+from radar.models.consents import PatientConsent
 from radar.models.consultants import Consultant, GroupConsultant
-from radar.models.diagnoses import Diagnosis, DiagnosisCode, PatientDiagnosis
+from radar.models.diagnoses import (
+    Diagnosis,
+    DiagnosisCode,
+    GROUP_DIAGNOSIS_TYPE,
+    GroupDiagnosis,
+    PatientDiagnosis,
+)
 from radar.models.dialysis import Dialysis
 from radar.models.family_histories import FamilyHistory, FamilyHistoryRelative
 from radar.models.fetal_ultrasounds import FetalUltrasound
 from radar.models.forms import Entry
+from radar.models.fuan import FuanClinicalPicture
 from radar.models.genetics import Genetics
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
 from radar.models.ins import InsClinicalPicture, InsRelapse
-from radar.models.medications import Medication
+from radar.models.medications import CurrentMedication, Medication
 from radar.models.mpgn import MpgnClinicalPicture
 from radar.models.nephrectomies import Nephrectomy
 from radar.models.nurture_tubes import Samples
@@ -27,8 +36,10 @@ from radar.models.patients import Patient
 from radar.models.pkd import LiverDiseases, LiverImaging, LiverTransplant, Nutrition
 from radar.models.plasmapheresis import Plasmapheresis
 from radar.models.pregnancies import Pregnancy
+from radar.models.renal_imaging import RenalImaging
 from radar.models.renal_progressions import RenalProgression
-from radar.models.results import Result
+from radar.models.results import Observation, Result
+from radar.models.rituximab import BaselineAssessment, RituximabCriteria
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
 from radar.roles import get_roles_with_permission, PERMISSION
@@ -220,11 +231,26 @@ def get_patient_diagnoses(config):
     return q
 
 
+def get_primary_diagnoses(config):
+    """Return query to get primary diagnoses for data_group."""
+    q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
+    q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
+    q = q.filter(GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY)
+    return q
+
+
+def get_observations():
+    """Return all available observations."""
+    q = db.session.query(Observation).order_by(Observation.short_name)
+    return q
+
+
 get_patient_demographics = patient_helper(PatientDemographics)
 get_patient_aliases = patient_helper(PatientAlias)
 get_patient_addresses = patient_helper(PatientAddress)
 get_patient_numbers = patient_helper(PatientNumber)
 get_medications = patient_helper(Medication)
+get_current_medications = patient_helper(CurrentMedication)
 get_family_histories = patient_group_helper(FamilyHistory)
 get_genetics = patient_group_helper(Genetics)
 get_pathology = patient_helper(Pathology)
@@ -235,6 +261,7 @@ get_plasmapheresis = patient_helper(Plasmapheresis)
 get_transplants = patient_helper(Transplant)
 get_hospitalisations = patient_helper(Hospitalisation)
 get_group_patients = patient_helper(GroupPatient)
+get_renal_imaging = patient_helper(RenalImaging)
 get_renal_progressions = patient_helper(RenalProgression)
 get_mpgn_clinical_pictures = patient_helper(MpgnClinicalPicture)
 get_results = patient_helper(Result)
@@ -247,3 +274,8 @@ get_liver_transplants = patient_helper(LiverTransplant)
 get_nephrectomies = patient_helper(Nephrectomy)
 get_nutrition = patient_helper(Nutrition)
 get_nurture_samples = patient_helper(Samples)
+get_consents = patient_helper(PatientConsent)
+get_alport_clinical_pictures = patient_helper(AlportClinicalPicture)
+get_rituximab_consents = patient_helper(RituximabCriteria)
+get_rituximab_baseline_assessment_data = patient_helper(BaselineAssessment)
+get_adtkd_clinical_pictures = patient_helper(FuanClinicalPicture)

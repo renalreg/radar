@@ -106,7 +106,7 @@ def unique_results(sda_lab_orders):
 
     def log(sda_lab_order):
         external_id = sda_lab_order.external_id
-        logger.error('Ignoring duplicate lab order external_id={external_id}'.format(external_id=external_id))
+        logger.warning('Ignoring duplicate lab order external_id={external_id}'.format(external_id=external_id))
 
     sda_lab_orders = unique_list(sda_lab_orders, key_f=key, duplicate_f=log)
 

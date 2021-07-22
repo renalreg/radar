@@ -327,7 +327,7 @@ class ExportView(BaseView):
     def index(self):
         """Default page listing files in the directory."""
 
-        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.xlsx'))
+        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.zip'))
         files = [os.path.split(path)[1] for path in files]
         return self.render('admin/export.html', files=files)
 
@@ -336,6 +336,10 @@ class ExportView(BaseView):
         """Serve back requested file."""
         requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
         return send_file(requested_file, as_attachment=True, attachment_filename=param)
+
+    def is_accessible(self):
+        # User needs to be logged in and a super admin to use this view
+        return current_user.is_authenticated() and current_user.is_admin
 
 
 class ConsentView(ModelView):

@@ -1,3 +1,4 @@
+from datetime import datetime
 import os.path
 import random
 
@@ -12,6 +13,18 @@ from radar.fixtures.groups import create_groups
 from radar.fixtures.patients import create_ethnicities, create_patients
 from radar.fixtures.posts import create_posts
 from radar.fixtures.users import create_bot_user, create_users, DEFAULT_PASSWORD
+from radar.fixtures.utils import add
+from radar.models.consents import Consent, CONSENT_TYPE
+
+
+def create_consent():
+    consent = Consent()
+    consent.code = 'v1'
+    consent.label = 'Default consent'
+    consent.from_date = datetime(2016, 1, 1, 0, 0, 0)
+    consent.consent_type = CONSENT_TYPE.FORM
+    consent.weight = 100
+    add(consent)
 
 
 @no_autoflush
@@ -20,6 +33,7 @@ def create_data(patients=5, password=DEFAULT_PASSWORD):
     random.seed(0)
 
     create_bot_user(password)
+    create_consent()
     create_diagnoses()
     create_forms()
     create_groups()

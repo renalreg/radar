@@ -19,7 +19,7 @@ def test_intersecting():
     p_a, p_b, p_c = patient.group_patients
 
     user = make_user([b, c, d])
-    print user.group_users
+    print(user.group_users)
     u_b, u_c, u_d = user.group_users
 
     assert intersect_groups_with_patient(user, patient) == [b, c]

@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from sqlalchemy import Boolean, Column, exists, func, Integer, join, select, Sequence, String, text
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
@@ -6,12 +7,39 @@ from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
+from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
+from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
+
+
+SIXTEEN_YEARS_IN_MONTHS = 12 * 16
+EIGHTEEN_YEARS_IN_MONTHS = 12 * 18
+
+
+class CONSENT_STATUS(Enum):
+    """Enum for possible patient status in regards to consents.
+
+    OK - means patient is consented, nothing needs to be done.
+    SOON - patient is consented, but consent is coming to an end.
+           Usually that means that patient has been consented as a
+           child and now is coming to adulthood and needs to be
+           reconsented as an adult.
+    EXPIRED - consent is not valid anymore and patient should be
+              frozen.
+    MISSING - patient was not consented.
+    """
+    OK = 'OK'
+    SOON = 'SOON'
+    EXPIRED = 'EXPIRED'
+    MISSING = 'MISSING'
+
+    def __str__(self):
+        return str(self.value)
 
 
 def clean(items):
@@ -26,6 +54,7 @@ class Patient(db.Model, MetaModelMixin):
     comments = Column(String)
     test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
     control = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    signed_off = Column(Boolean, default=False, nullable=False, server_default=text('false'))
 
     @property
     def cohorts(self):
@@ -179,8 +208,8 @@ class Patient(db.Model, MetaModelMixin):
             .as_scalar()
         )
 
-    def latest_demographics_attr(self, attr):
-        demographics = self.latest_demographics
+    def latest_demographics_attr(self, attr, radar_only=False):
+        demographics = self.latest_demographics(radar_only)
 
         if demographics is None:
             return None
@@ -203,8 +232,7 @@ class Patient(db.Model, MetaModelMixin):
             .as_scalar()
         )
 
-    @property
-    def latest_demographics(self):
+    def latest_demographics(self, radar_only):
         patient_demographics = self.patient_demographics
 
         if len(patient_demographics) == 0:
@@ -213,15 +241,45 @@ class Patient(db.Model, MetaModelMixin):
         def by_modified_date(x):
             return (x.modified_date or datetime.min, x.id)
 
+        def filter_radar_only(x):
+            return x.source_type == SOURCE_TYPE_MANUAL
+
+        if radar_only:
+            patient_demographics = filter(filter_radar_only, patient_demographics)
+
         return max(patient_demographics, key=by_modified_date)
+
+    @property
+    def available_ethnicity(self):
+        ethnicities = [demog.ethnicity for demog in self.patient_demographics]
+        first_available = next((ethn for ethn in ethnicities if ethn is not None), None)
+        return first_available
+
+    @property
+    def available_gender(self):
+        genders = [demog.gender for demog in self.patient_demographics]
+        first_available = next((gender for gender in genders if gender is not None), None)
+        return first_available
+
+    @property
+    def available_gender_label(self):
+        return GENDERS.get(self.available_gender)
 
     @hybrid_property
     def first_name(self):
         return self.latest_demographics_attr('first_name')
 
+    @property
+    def radar_first_name(self):
+        return self.latest_demographics_attr('first_name', radar_only=True)
+
     @hybrid_property
     def last_name(self):
         return self.latest_demographics_attr('last_name')
+
+    @property
+    def radar_last_name(self):
+        return self.latest_demographics_attr('last_name', radar_only=True)
 
     @property
     def full_name(self):
@@ -238,6 +296,10 @@ class Patient(db.Model, MetaModelMixin):
         return self.latest_demographics_attr('date_of_birth')
 
     @property
+    def radar_date_of_birth(self):
+        return self.latest_demographics_attr('date_of_birth', radar_only=True)
+
+    @property
     def year_of_birth(self):
         date_of_birth = self.date_of_birth
 
@@ -251,6 +313,10 @@ class Patient(db.Model, MetaModelMixin):
     @hybrid_property
     def date_of_death(self):
         return self.latest_demographics_attr('date_of_death')
+
+    @property
+    def radar_date_of_death(self):
+        return self.latest_demographics_attr('date_of_death', radar_only=True)
 
     @property
     def year_of_death(self):
@@ -271,9 +337,17 @@ class Patient(db.Model, MetaModelMixin):
     def ethnicity(self):
         return self.latest_demographics_attr('ethnicity')
 
+    @property
+    def radar_ethnicity(self):
+        return self.latest_demographics_attr('ethnicity', radar_only=True)
+
     @hybrid_property
     def gender(self):
         return self.latest_demographics_attr('gender')
+
+    @property
+    def radar_gender(self):
+        return self.latest_demographics_attr('gender', radar_only=True)
 
     @hybrid_property
     def home_number(self):
@@ -426,8 +500,90 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def paediatric(self):
+        """Return true if patient is less than 16 years old."""
         months = self.to_age(datetime.now().date())
         if months:
             years_old = months // 12
             return years_old < 16
+        return False
+
+    def recruited_paediatric(self):
+        """Return whether patient was recruited as paediatric."""
+        months = self.to_age(self.recruited_date())
+        if months and months < SIXTEEN_YEARS_IN_MONTHS:
+            return True
+        return False
+
+    @property
+    def youth(self):
+        """Return true if patient is [16-18) years old."""
+        months = self.to_age(datetime.now().date())
+        if months:
+            years_old = months // 12
+            return 16 <= years_old < 18
+        return False
+
+    @property
+    def adult(self):
+        """Return true if patient is 18 years or older."""
+        return not self.paediatric and not self.youth
+
+    @property
+    def consent_status(self):
+        """Return what consent status patient is in."""
+        if self.year_of_death:
+            return CONSENT_STATUS.OK
+
+        if len(self.consents) == 0:
+            return CONSENT_STATUS.MISSING
+
+        old = False
+        if len(self.consents) == 1 and self.consents[0].consent.code == 'old':
+            old = True
+
+        if self.paediatric and old:
+            return CONSENT_STATUS.EXPIRED
+        elif self.youth and old:
+            return CONSENT_STATUS.SOON
+        elif old:
+            return CONSENT_STATUS.EXPIRED
+
+        paediatric_consent = False
+        new_consent = False
+        old_consent = False
+        for patient_consent in self.consents:
+            consent = patient_consent.consent
+            if consent.paediatric:
+                paediatric_consent = True
+            elif consent.code != 'old':
+                new_consent = True
+            else:
+                old_consent = True
+
+        if paediatric_consent and self.adult and not new_consent:
+            return CONSENT_STATUS.EXPIRED
+
+        if paediatric_consent and self.youth and not new_consent:
+            return CONSENT_STATUS.SOON
+
+        if old_consent and not new_consent and not paediatric_consent:
+            return CONSENT_STATUS.EXPIRED
+
+        return CONSENT_STATUS.OK
+
+    def primary_diagnosis(self, cohort):
+        """
+        Return primary diagnosis in a cohort, or None if it is not
+        yet added.
+        """
+        primary_diagnoses = [
+            group_diagnosis.diagnosis
+            for group_diagnosis in cohort.group_diagnoses
+            if group_diagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY
+        ]
+
+        for patient_diagnosis in self.patient_diagnoses:
+            if patient_diagnosis.diagnosis in primary_diagnoses:
+                return patient_diagnosis
+
         return None

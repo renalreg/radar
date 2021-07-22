@@ -15,7 +15,9 @@ class GroupSelector(object):
         self.now = now
 
     def _get_status(self, membership):
-        if membership.from_date <= self.now and (membership.to_date is None or membership.to_date > self.now):
+        if membership.from_date <= self.now and (
+            membership.to_date is None or membership.to_date > self.now
+        ):
             status = self.PRESENT
         elif membership.from_date > self.now:
             status = self.FUTURE
@@ -53,9 +55,9 @@ class GroupSelector(object):
             return a
         elif b.to_date is None and a.to_date is not None:
             return b
-        elif a.to_date > b.to_date:
+        elif a.to_date is not None and b.to_date is not None and a.to_date > b.to_date:
             return a
-        elif b.to_date > a.to_date:
+        elif a.to_date is not None and b.to_date is not None and b.to_date > a.to_date:
             return b
         elif a.from_date < b.from_date:
             return a
@@ -80,9 +82,9 @@ class GroupSelector(object):
             return a
         elif b.to_date is None and a.to_date is not None:
             return b
-        elif a.to_date > b.to_date:
+        elif a.to_date is not None and b.to_date is not None and a.to_date > b.to_date:
             return a
-        elif b.to_date > a.to_date:
+        elif a.to_date is not None and b.to_date is not None and b.to_date > a.to_date:
             return b
         elif a.id > b.id:
             return a

@@ -11,6 +11,7 @@ from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
 from radar.models.consents import PatientConsent
+from radar.models.diagnoses import PatientDiagnosis
 from radar.models.groups import GroupPatient
 from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -191,13 +192,22 @@ class SearchPatient(object):
 
 
 class RecruitmentPatient(object):
-    def __init__(self, search_patient, cohort_group, hospital_group, consents, ethnicity=None, nationality=None):
+    def __init__(
+            self,
+            search_patient,
+            cohort_group,
+            hospital_group,
+            consents,
+            diagnosis,
+            ethnicity=None,
+            nationality=None):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
         self.consents = consents
         self.nationality = nationality
         self.ethnicity = ethnicity
+        self.diagnosis = diagnosis
 
     @property
     def first_name(self):
@@ -274,6 +284,26 @@ class RecruitmentPatient(object):
 
         return patient
 
+    def _make_diagnosis(self, patient, system_group):
+        diagnosis = PatientDiagnosis()
+        diagnosis.patient = patient
+        diagnosis.source_group = system_group
+        diagnosis.source_type = SOURCE_TYPE_MANUAL
+        diagnosis.diagnosis_id = self.diagnosis.get('diagnosis_id')
+        diagnosis.symptoms_date = self.diagnosis.get('symptoms_date')
+        diagnosis.from_date = self.diagnosis.get('from_date')
+        diagnosis.to_date = self.diagnosis.get('to_date')
+        diagnosis.prenatal = self.diagnosis.get('prenatal')
+        diagnosis.gene_test = self.diagnosis.get('gene_test')
+        diagnosis.biochemistry = self.diagnosis.get('biochemistry')
+        diagnosis.clinical_picture = self.diagnosis.get('clinical_picture')
+        diagnosis.biopsy = self.diagnosis.get('biopsy')
+        diagnosis.biopsy_diagnosis = self.diagnosis.get('biopsy_diagnosis')
+        diagnosis.comments = self.diagnosis.get('comments')
+        diagnosis.created_user = current_user
+        diagnosis.modified_user = current_user
+        return diagnosis
+
     def _add_to_group(self, patient, group):
         if not patient.in_group(group, current=True):
             logger.info('Adding patient number={} to group id={}'.format(self.number, group.id))
@@ -289,9 +319,18 @@ class RecruitmentPatient(object):
 
     def _update_patient(self, patient):
         # Add to system, cohort, and hospital
-        self._add_to_group(patient, self.cohort_group.parent_group)
+        # create primary diagnosis
+        system_group = self.cohort_group.parent_group
+        self._add_to_group(patient, system_group)
         self._add_to_group(patient, self.cohort_group)
         self._add_to_group(patient, self.hospital_group)
+
+        diagnosis = patient.primary_diagnosis(self.cohort_group)
+        if diagnosis:
+            db.session.delete(diagnosis)
+
+        diagnosis = self._make_diagnosis(patient, system_group)
+        db.session.add(diagnosis)
 
     def save(self):
         patient = self.search_radar()

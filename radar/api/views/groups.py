@@ -1,6 +1,6 @@
 from cornflake import fields, serializers
 
-from radar.api.permissions import AdminWritePermission
+from radar.api.permissions import AdminWritePermission, GroupPermission
 from radar.api.serializers.groups import GroupSerializer
 from radar.api.views.generics import (
     ListCreateModelView,
@@ -67,7 +67,7 @@ class GroupListView(ListCreateModelView):
 class GroupDetailView(RetrieveUpdateDestroyModelView):
     serializer_class = GroupSerializer
     model_class = Group
-    permission_classes = [AdminWritePermission]
+    permission_classes = [AdminWritePermission, GroupPermission]
 
 
 def register_views(app):

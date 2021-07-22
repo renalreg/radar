@@ -24,6 +24,17 @@ TRANSPLANT_MODALITIES = OrderedDict([
     (29, 'Unknown'),
 ])
 
+GRAFT_LOSS_CAUSES = OrderedDict([
+    ('ALLOIMMUNE_PATHOLOGY', 'Alloimmune pathology (rejection)'),
+    ('RECURRENT_DISEASE', 'Recurrent disease'),
+    ('SURGICAL_CAUSE', 'Surgical cause'),
+    ('INFECTION', 'Infection (non BK virus)'),
+    ('GRAFT_REMOVAL', 'Removal of functioning graft'),
+    ('DEATH', 'Death with functioning graft'),
+    ('BK_VIRUS', 'BK virus'),
+    ('OTHER', 'Other'),
+])
+
 
 @log_changes
 class Transplant(db.Model, MetaModelMixin):
@@ -43,8 +54,13 @@ class Transplant(db.Model, MetaModelMixin):
 
     date = Column(Date, nullable=False)
     modality = Column(Integer, nullable=False)
+    recipient_hla = Column(String)
+    donor_hla = Column(String)
+    date_of_cmv_infection = Column(Date)
+    recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)
     date_of_failure = Column(Date)
+    graft_loss_cause = Column(String)
 
     @property
     def modality_label(self):

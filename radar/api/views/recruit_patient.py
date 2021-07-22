@@ -68,6 +68,7 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
             hospital_group=data['hospital_group'],
             cohort_group=data['cohort_group'],
             consents=data['consents'],
+            diagnosis=data['diagnosis'],
             nationality=data['nationality'],
             ethnicity=data['ethnicity'],
         )

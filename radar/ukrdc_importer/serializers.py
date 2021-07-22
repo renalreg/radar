@@ -5,6 +5,8 @@ from cornflake.exceptions import ValidationError
 from cornflake.validators import upper
 import pytz
 
+from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
+
 
 def parse_sda_datetime(value):
     value = datetime.strptime('%Y-%m-%d %H:%M:%S', value)
@@ -94,6 +96,17 @@ class PatientNumberSerializer(serializers.Serializer):
     number_type = fields.StringField()
     organization = CodeDescriptionSerializer()
 
+    def validate(self, value):
+        value = super(PatientNumberSerializer, self).validate(value)
+        number_type = value['number_type']
+        if number_type in ('NHS', 'CHI', 'HSC'):
+            number = value['number']
+            try:
+                _nhs_no(number, MIN_CHI_NO)
+            except ValueError:
+                raise ValidationError({'number': 'Not a valid {} number {}'.format(number_type, number)})
+        return value
+
 
 class MedicationSerializer(serializers.Serializer):
     external_id = fields.StringField()
@@ -121,6 +134,12 @@ class LabOrderSerializer(serializers.Serializer):
     entering_organization = EnteringOrganizationSerializer()
     result = ResultSerializer()
     entered_at = CodeDescriptionSerializer(required=False)
+
+    def pre_validate(self, data):
+        """Populate entering_organization if it is empty from entered_at."""
+        if data['entering_organization'] is fields.empty:
+            data['entering_organization'] = data['entered_at']
+        return super(LabOrderSerializer, self).pre_validate(data)
 
 
 class ContainerSerializer(serializers.Serializer):

@@ -12,16 +12,16 @@ from radar.models.users import User
 
 
 def get_password_reset_max_age():
-    return config['PASSWORD_RESET_MAX_AGE']
+    return config["PASSWORD_RESET_MAX_AGE"]
 
 
 def get_base_url():
-    return config['BASE_URL']
+    return config["BASE_URL"]
 
 
 def generate_reset_password_token():
     # Token is given to user, hash is stored
-    token = base64.urlsafe_b64encode(os.urandom(32))
+    token = base64.urlsafe_b64encode(os.urandom(32)).decode("utf-8")
     token_hash = generate_password_hash(token)
     return token, token_hash
 
@@ -45,12 +45,14 @@ def forgot_password(username, email):
 
 def send_reset_password_email(user, token):
     base_url = get_base_url()
-    reset_password_url = base_url + '/reset-password/%s' % token
+    reset_password_url = base_url + "/reset-password/%s" % token
 
-    send_email_from_template(user.email, 'RaDaR Password Reset', 'reset_password', {
-        'reset_password_url': reset_password_url,
-        'user': user,
-    })
+    send_email_from_template(
+        user.email,
+        "RaDaR Password Reset",
+        "reset_password",
+        {"reset_password_url": reset_password_url, "user": user},
+    )
 
 
 def reset_password(token, username, password):
@@ -72,7 +74,10 @@ def reset_password(token, username, password):
 
     # Token has expired
     # TODO timezone?
-    if user.reset_password_date is not None and (datetime.now() - user.reset_password_date).total_seconds() > max_age:
+    if (
+        user.reset_password_date is not None
+        and (datetime.now() - user.reset_password_date).total_seconds() > max_age
+    ):
         raise InvalidToken()
 
     # Update the user's password

@@ -35,6 +35,12 @@
                             "help": {
                                 "type": "string"
                             },
+                            "warning": {
+                                "type": "string"
+                            },
+                            "titleHelp": {
+                                "type": "string"
+                            },
                             "unit": {
                                 "type": "string"
                             },
@@ -124,6 +130,12 @@
                             },
                             "help": {
                                 "type": "string"
+                            },
+                            "warning": {
+                                "type": "string"
+                            },
+                            "titleHelp": {
+                              "type": "string"
                             },
                             "unit": {
                                 "type": "string"

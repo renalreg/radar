@@ -92,7 +92,8 @@ def test_recruit_patient(api, username, cohort_code, hospital_code, expected):
         'cohort_group': cohort_group.id,
         'hospital_group': hospital_group.id,
         'number': '9434765919',
-        'number_group': nhs_group.id
+        'number_group': nhs_group.id,
+        'diagnosis': {'from_date': '2018-01-01', 'diagnosis_id': 1}
     })
 
     if expected:

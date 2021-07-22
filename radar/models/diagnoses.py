@@ -110,10 +110,8 @@ class Diagnosis(db.Model):
     def codes(self):
         return [x.code for x in self.diagnosis_codes]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    __str__ = __unicode__
 
 
 class GROUP_DIAGNOSIS_TYPE(Enum):
@@ -152,7 +150,7 @@ class GroupDiagnosis(db.Model):
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False, default=9999, server_default=text('9999'))
 
     def __str__(self):
-        return u"{} - {}".format(str(self.group), str(self.weight))
+        return "{} - {}".format(str(self.group), str(self.weight))
 
 
 Index('group_diagnoses_group_idx', GroupDiagnosis.group_id)

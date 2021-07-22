@@ -1,7 +1,7 @@
+import csv
 import io
 import re
 
-from backports import csv
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
 from flask import Response
@@ -20,7 +20,7 @@ from radar.api.views.generics import (
 )
 from radar.auth.sessions import current_user
 from radar.models.groups import Group, GROUP_TYPE
-from radar.models.patients import Patient
+from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
 from radar.utils import get_attrs, SkipProxy, uniq
 
@@ -40,6 +40,8 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
+    signed_off = fields.BooleanField(required=False)
+    consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
 
 
 def list_patients():
@@ -157,17 +159,34 @@ class PatientListCSVView(ApiView):
     def get(self):
         f = io.StringIO()
         writer = csv.writer(f)
+        args = parse_args(PatientListRequestSerializer)
+
+        cohorts = [i for i in args['group'] if i.type == GROUP_TYPE.COHORT]
 
         headers = [
             'Patient ID',
-            'First Name', 'Last Name',
-            'Date of Birth', 'Year of Birth', 'Date of Death', 'Year of Death',
-            'Gender', 'Gender Label',
-            'Ethnicity', 'Ethnicity Label',
+            'First Name',
+            'Last Name',
+            'Date of Birth',
+            'Year of Birth',
+            'Date of Death',
+            'Year of Death',
+            'Gender',
+            'Gender Label',
+            'Ethnicity',
+            'Ethnicity Label',
             'Patient Number',
-            'Recruited On', 'Recruited Group',
-            'Cohorts', 'Hospitals',
+            'PV',
+            'Recruited On',
+            'Recruited Group Name',
+            'Recruited Group Code',
+            'Cohorts',
+            'Hospitals',
+
         ]
+        for cohort in cohorts:
+            headers.append(cohort.short_name)
+
         writer.writerow(headers)
 
         def get_groups(patient, group_type):
@@ -186,33 +205,26 @@ class PatientListCSVView(ApiView):
 
             output = []
             output.append(patient.id)
-            if current_user.is_admin:
-                output.append(patient.first_name)
-                output.append(patient.last_name)
-                output.append(patient.date_of_birth)
-            else:
-                output.append('hidden')
-                output.append('hidden')
-                output.append('hidden')
-
+            output.append(patient.first_name)
+            output.append(patient.last_name)
+            output.append(patient.date_of_birth)
             output.append(patient.year_of_birth)
-            if current_user.is_admin:
-                output.append(patient.date_of_death)
-            else:
-                output.append('hidden')
+            output.append(patient.date_of_death)
             output.append(patient.year_of_death)
             output.append(patient.gender)
             output.append(patient.gender_label)
-            output.append(patient.ethnicity)
+            output.append(patient.available_ethnicity)
             output.append(patient.ethnicity_label)
-            if current_user.is_admin:
-                output.append(get_attrs(patient, 'primary_patient_number', 'number'))
-            else:
-                output.append('hidden')
+            output.append(get_attrs(patient, 'primary_patient_number', 'number'))
+            output.append('Y' if patient.ukrdc else 'N')
             output.append(patient.recruited_date())
             output.append(get_attrs(patient.recruited_group(), 'name'))
+            output.append(get_attrs(patient.recruited_group(), 'code'))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
+
+            for cohort in cohorts:
+                output.append(patient.recruited_date(cohort))
 
             writer.writerow(output)
 

@@ -18,11 +18,6 @@ from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 logger = logging.getLogger(__name__)
 
 QUEUE = 'ukrdc_importer'
@@ -38,13 +33,13 @@ def find_patient_ids(sda_patient_numbers):
         if sda_patient_number['organization']['code'] in system_codes:
             numbers.append(sda_patient_number['number'])
 
-    return numbers or None
+    return numbers or []
 
 
 def parse_patient_id(value):
     """Check the patient id is an integer."""
 
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         value = int(value)
 
     return value
@@ -79,15 +74,11 @@ def lock_patient(patient):
                 pass
 
 
-def log_data_import(patient, raw=False):
+def log_data_import(patient):
     log = Log()
     log.type = 'UKRDC_IMPORTER'
     log.user = get_import_user()
-    if raw:
-        log.data = patient
-        log.data['container'] = True
-    else:
-        log.data = {'patient_id': patient.id}
+    log.data = {'patient_id': patient.id}
     db.session.add(log)
 
 
@@ -119,7 +110,7 @@ def import_sda(data, sequence_number, patient_id=None):
         patient_ids = find_patient_ids(sda_patient_numbers)
 
         # No patient ID in file
-        if patient_ids is None:
+        if not patient_ids:
             logger.error('Patient ID is missing. Data - %s', data)
             return False
 
@@ -160,9 +151,6 @@ def import_sda(data, sequence_number, patient_id=None):
     sda_addresses = sda_patient.get('addresses', list())
     sda_medications = sda_container.get('medications', list())
     sda_lab_orders = sda_container.get('lab_orders', list())
-
-    if patient.id == 8241:
-        log_data_import(sda_container, raw=True)
 
     import_demographics(patient, data['patient'])
     import_patient_numbers(patient, sda_patient_numbers)
