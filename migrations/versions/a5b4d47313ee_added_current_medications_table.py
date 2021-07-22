@@ -1,7 +1,7 @@
 """added current medications table
 
 Revision ID: a5b4d47313ee
-Revises: d7a47953addd
+Revises: 9f1f5f15d8e0
 Create Date: 2018-04-03 10:59:32.986742
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = 'a5b4d47313ee'
-down_revision = 'd7a47953addd'
+down_revision = '9f1f5f15d8e0'
 branch_labels = None
 depends_on = None
 

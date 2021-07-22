@@ -24,9 +24,9 @@ RUN yum groupinstall -y "Development Tools"
 
 COPY . /radar
 
-RUN python -m pip install -r dev-requirements.txt
+RUN python3 -m pip install -r dev-requirements.txt
 
-RUN python -m pip install -e .
+RUN python3 -m pip install -e .
 
 # Create a venv for building deployemnt packages
 
