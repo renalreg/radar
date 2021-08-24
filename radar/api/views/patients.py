@@ -9,7 +9,11 @@ from flask import Response
 from radar.api.logs import log_view_patient
 from radar.api.permissions import AdminPermission, PatientPermission
 from radar.api.serializers.common import GroupField
-from radar.api.serializers.patients import PatientProxy, PatientSerializer, TinyPatientSerializer
+from radar.api.serializers.patients import (
+    PatientProxy,
+    PatientSerializer,
+    TinyPatientSerializer,
+)
 from radar.api.views.generics import (
     ApiView,
     DestroyModelView,
@@ -27,6 +31,7 @@ from radar.utils import get_attrs, SkipProxy, uniq
 
 class PatientListRequestSerializer(serializers.Serializer):
     id = fields.IntegerField(required=False)
+    orpha_code = fields.StringField(required=False, validators=[none_if_blank()])
     first_name = fields.StringField(required=False, validators=[none_if_blank()])
     last_name = fields.StringField(required=False, validators=[none_if_blank()])
     date_of_birth = fields.DateField(required=False)
@@ -49,23 +54,27 @@ def list_patients():
 
     builder = PatientQueryBuilder(current_user)
 
-    patient_id = args['id']
-    first_name = args['first_name']
-    last_name = args['last_name']
-    patient_number = args['patient_number']
-    gender = args['gender']
-    date_of_birth = args['date_of_birth']
-    year_of_birth = args['year_of_birth']
-    date_of_death = args['date_of_death']
-    year_of_death = args['year_of_death']
-    groups = args['group']
-    current = args['current']
-    ukrdc = args['ukrdc']
-    test = args['test']
-    control = args['control']
+    patient_id = args["id"]
+    orpha_code = args["orpha_code"]
+    first_name = args["first_name"]
+    last_name = args["last_name"]
+    patient_number = args["patient_number"]
+    gender = args["gender"]
+    date_of_birth = args["date_of_birth"]
+    year_of_birth = args["year_of_birth"]
+    date_of_death = args["date_of_death"]
+    year_of_death = args["year_of_death"]
+    groups = args["group"]
+    current = args["current"]
+    ukrdc = args["ukrdc"]
+    test = args["test"]
+    control = args["control"]
 
     if patient_id is not None:
         builder.patient_id(patient_id)
+
+    if orpha_code is not None:
+        builder.patient_diagnosis(orpha_code)
 
     if first_name is not None:
         builder.first_name(first_name)
@@ -107,7 +116,7 @@ def list_patients():
 
     if sort is not None:
         # Check if we are sorting by group recruitment date
-        m = re.match('^group_([0-9]+)', sort)
+        m = re.match("^group_([0-9]+)", sort)
 
         if m:
             group = Group.query.get(int(m.group(1)))
@@ -161,28 +170,27 @@ class PatientListCSVView(ApiView):
         writer = csv.writer(f)
         args = parse_args(PatientListRequestSerializer)
 
-        cohorts = [i for i in args['group'] if i.type == GROUP_TYPE.COHORT]
+        cohorts = [i for i in args["group"] if i.type == GROUP_TYPE.COHORT]
 
         headers = [
-            'Patient ID',
-            'First Name',
-            'Last Name',
-            'Date of Birth',
-            'Year of Birth',
-            'Date of Death',
-            'Year of Death',
-            'Gender',
-            'Gender Label',
-            'Ethnicity',
-            'Ethnicity Label',
-            'Patient Number',
-            'PV',
-            'Recruited On',
-            'Recruited Group Name',
-            'Recruited Group Code',
-            'Cohorts',
-            'Hospitals',
-
+            "Patient ID",
+            "First Name",
+            "Last Name",
+            "Date of Birth",
+            "Year of Birth",
+            "Date of Death",
+            "Year of Death",
+            "Gender",
+            "Gender Label",
+            "Ethnicity",
+            "Ethnicity Label",
+            "Patient Number",
+            "PV",
+            "Recruited On",
+            "Recruited Group Name",
+            "Recruited Group Code",
+            "Cohorts",
+            "Hospitals",
         ]
         for cohort in cohorts:
             headers.append(cohort.short_name)
@@ -195,7 +203,7 @@ class PatientListCSVView(ApiView):
             groups = [x.name for x in patient.current_groups if x.type == group_type]
             groups = sorted(groups)
             groups = uniq(groups)
-            return ', '.join(groups)
+            return ", ".join(groups)
 
         patients = list_patients()
 
@@ -215,11 +223,11 @@ class PatientListCSVView(ApiView):
             output.append(patient.gender_label)
             output.append(patient.available_ethnicity)
             output.append(patient.ethnicity_label)
-            output.append(get_attrs(patient, 'primary_patient_number', 'number'))
-            output.append('Y' if patient.ukrdc else 'N')
+            output.append(get_attrs(patient, "primary_patient_number", "number"))
+            output.append("Y" if patient.ukrdc else "N")
             output.append(patient.recruited_date())
-            output.append(get_attrs(patient.recruited_group(), 'name'))
-            output.append(get_attrs(patient.recruited_group(), 'code'))
+            output.append(get_attrs(patient.recruited_group(), "name"))
+            output.append(get_attrs(patient.recruited_group(), "code"))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
 
@@ -228,11 +236,17 @@ class PatientListCSVView(ApiView):
 
             writer.writerow(output)
 
-        return Response(f.getvalue(), content_type='text/csv')
+        return Response(f.getvalue(), content_type="text/csv")
 
 
 def register_views(app):
-    app.add_url_rule('/patients', view_func=PatientListView.as_view('patient_list'))
-    app.add_url_rule('/patients/<int:id>', view_func=PatientDetailView.as_view('patient_detail'))
-    app.add_url_rule('/patients/<int:id>', view_func=PatientDestroyView.as_view('patient_destroy'))
-    app.add_url_rule('/patients.csv', view_func=PatientListCSVView.as_view('patient_list_csv'))
+    app.add_url_rule("/patients", view_func=PatientListView.as_view("patient_list"))
+    app.add_url_rule(
+        "/patients/<int:id>", view_func=PatientDetailView.as_view("patient_detail")
+    )
+    app.add_url_rule(
+        "/patients/<int:id>", view_func=PatientDestroyView.as_view("patient_destroy")
+    )
+    app.add_url_rule(
+        "/patients.csv", view_func=PatientListCSVView.as_view("patient_list_csv")
+    )
