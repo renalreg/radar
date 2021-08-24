@@ -1,5 +1,7 @@
+from radar.models.diagnoses import Diagnosis, DiagnosisCode, PatientDiagnosis
 from sqlalchemy import and_, case, desc, extract, func, null, or_
 from sqlalchemy.orm import aliased, subqueryload
+from sqlalchemy.sql.selectable import subquery
 
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser
@@ -7,6 +9,7 @@ from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
+from radar.models.codes import Code
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_date_filter, sql_year_filter
 
@@ -173,6 +176,18 @@ def patient_demographics_sub_query(*args):
     return sub_query
 
 
+def patient_diagnoses_sub_query(*args):
+    patient_alias = aliased(Patient)
+    sub_query = (
+        db.session.query(PatientDiagnosis)
+        .join(patient_alias)
+        .filter(Patient.id == patient_alias.id)
+        .filter(*args)
+        .exists()
+    )
+    return sub_query
+
+
 def patient_alias_sub_query(*args):
     patient_alias = aliased(Patient)
     sub_query = (
@@ -268,7 +283,11 @@ def filter_by_patient_id(patient_id):
 def filter_by_patient_diagnosis(diagnosis_code):
     # needs to return true or false depending
     # on if that patient has the requested diagnoses
-    return None
+    code_id = db.session.query(Code).filter(Code.code == diagnosis_code)
+    diagnosis_id = db.session.query(DiagnosisCode).filter(
+        DiagnosisCode.code_id == code_id
+    )
+    return patient_diagnoses_sub_query(Diagnosis.id == diagnosis_id)
 
 
 def filter_by_gender(gender_code):
