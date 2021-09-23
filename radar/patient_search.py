@@ -1,3 +1,4 @@
+import re
 from radar.models.diagnoses import Diagnosis, DiagnosisCode, PatientDiagnosis
 from sqlalchemy import and_, case, desc, extract, func, null, or_
 from sqlalchemy.orm import aliased, subqueryload
@@ -176,13 +177,13 @@ def patient_demographics_sub_query(*args):
     return sub_query
 
 
-def patient_diagnoses_sub_query(*args):
+def patient_diagnoses_sub_query(diagnosis_id):
     patient_alias = aliased(Patient)
     sub_query = (
         db.session.query(PatientDiagnosis)
         .join(patient_alias)
         .filter(Patient.id == patient_alias.id)
-        .filter(*args)
+        .filter(PatientDiagnosis.diagnosis_id == diagnosis_id)
         .exists()
     )
     return sub_query
