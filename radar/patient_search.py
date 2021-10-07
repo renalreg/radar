@@ -284,11 +284,19 @@ def filter_by_patient_id(patient_id):
 def filter_by_patient_diagnosis(diagnosis_code):
     # needs to return true or false depending
     # on if that patient has the requested diagnoses
-    code_id = db.session.query(Code).filter(Code.code == diagnosis_code)
-    diagnosis_id = db.session.query(DiagnosisCode).filter(
-        DiagnosisCode.code_id == code_id
+
+    # TODO: This will probably all die if code_id/diagnosis_id are None.
+
+    code = db.session.query(Code).filter(Code.code == diagnosis_code).first()
+    if code:
+        code_id = code.id
+    diagnosis = (
+        db.session.query(DiagnosisCode).filter(DiagnosisCode.code_id == code_id).first()
     )
-    return patient_diagnoses_sub_query(Diagnosis.id == diagnosis_id)
+    if diagnosis:
+        diagnosis_id = diagnosis.id
+    return patient_diagnoses_sub_query(diagnosis_id)
+    # return True
 
 
 def filter_by_gender(gender_code):
