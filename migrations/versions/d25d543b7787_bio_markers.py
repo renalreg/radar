@@ -24,17 +24,35 @@ def upgrade():
         sa.Column("name", sa.String(100), nullable=False),
         sa.Column("type", sa.String(100)),
     )
+
+    op.create_table(
+        "biomarker_barcodes",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("pat_id", sa.Integer, ForeignKey("patients.id")),
+        sa.Column("barcode", sa.String(100)),
+    )
+
+    op.create_table(
+        "biomarker_samples",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("barcode_id", sa.Integer, ForeignKey("biomarker_barcodes.id")),
+        sa.Column("label", sa.String(100), nullable=False),
+    )
+
     op.create_table(
         "biomarker_results",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("pat_id", sa.Integer, ForeignKey("patients.id")),
         sa.Column("bio_id", sa.Integer, ForeignKey("biomarkers.id")),
-        sa.Column("sample_id", sa.String(100)),
-        sa.Column("barcode", sa.String(100)),
+        sa.Column("sample_id", sa.Integer),
         sa.Column("value", sa.Float),
+        sa.Column("unit_measure", sa.String(100)),
+        sa.Column("proc_date", sa.DateTime),
+        sa.Column("hospital", sa.String(100)),
     )
 
 
 def downgrade():
     op.drop_table("biomarker_results")
+    op.drop_table("biomarker_samples")
+    op.drop_table("biomarker_barcodes")
     op.drop_table("biomarkers")
