@@ -358,8 +358,9 @@ class DiagnosisExporter(Exporter):
             column("source_group", "source_group.name"),
             column("source_type"),
             column("era-edta prd"),  # 5
-            column("icd-10"),  # 6
-            column("snomed ct"),  # 7
+            column("ORPHA"),  # 6
+            column("icd-10"),  # 7
+            column("snomed ct"),  # 8
             column("diagnosis", "diagnosis.name"),
             column("diagnosis_text"),
             column("symptoms_date", lambda x: format_date(x.symptoms_date)),
@@ -402,10 +403,12 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                 for code in diagnosis.codes:
                     if code.system == "ERA-EDTA PRD":
                         row[5] = code.code
-                    if code.system == "ICD-10":
+                    if code.system == "ORPHA":
                         row[6] = code.code
-                    if code.system == "SNOMED CT":
+                    if code.system == "ICD-10":
                         row[7] = code.code
+                    if code.system == "SNOMED CT":
+                        row[8] = code.code
 
             yield row
 
@@ -429,10 +432,12 @@ class ComorbiditiesExporter(DiagnosisExporter):
                 for code in diagnosis.codes:
                     if code.system == "ERA-EDTA PRD":
                         row[5] = code.code
-                    if code.system == "ICD-10":
+                    if code.system == "ORPHA":
                         row[6] = code.code
-                    if code.system == "SNOMED CT":
+                    if code.system == "ICD-10":
                         row[7] = code.code
+                    if code.system == "SNOMED CT":
+                        row[8] = code.code
 
             yield row
 
