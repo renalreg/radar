@@ -203,7 +203,6 @@ class PatientNumberExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("number_group_id"),
             column("number_group", "number_group.name"),
             d("number"),
@@ -224,7 +223,6 @@ class PatientAddressExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("from_date", lambda x: format_date(x.from_date)),
             column("to_date", lambda x: format_date(x.to_date)),
             d("address1"),
@@ -249,7 +247,6 @@ class PatientAliasExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             d("first_name"),
             d("last_name"),
         ]
@@ -269,7 +266,6 @@ class PatientDemographicsExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             d("first_name"),
             d("last_name"),
             d("date_of_birth", lambda x: format_date(x.date_of_birth)),
@@ -300,7 +296,6 @@ class MedicationExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("from_date", lambda x: format_date(x.from_date)),
             column("to_date", lambda x: format_date(x.to_date)),
             column("drug_id"),
@@ -329,7 +324,6 @@ class CurrentMedicationExporter(Exporter):
             column("date_of_visit", lambda x: format_date(x.date_recorded)),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("drug_id"),
             column("drug", "drug.name"),
             column("drug_text"),
@@ -356,11 +350,10 @@ class DiagnosisExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
-            column("era-edta prd"),  # 5
-            column("ORPHA"),  # 6
-            column("icd-10"),  # 7
-            column("snomed ct"),  # 8
+            column("era-edta prd"),  # 4
+            column("ORPHA"),  # 5
+            column("icd-10"),  # 6
+            column("snomed ct"),  # 7
             column("diagnosis", "diagnosis.name"),
             column("diagnosis_text"),
             column("symptoms_date", lambda x: format_date(x.symptoms_date)),
@@ -402,13 +395,13 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
             if diagnosis and diagnosis.codes:
                 for code in diagnosis.codes:
                     if code.system == "ERA-EDTA PRD":
-                        row[5] = code.code
+                        row[4] = code.code
                     if code.system == "ORPHA":
-                        row[6] = code.code
+                        row[5] = code.code
                     if code.system == "ICD-10":
-                        row[7] = code.code
+                        row[6] = code.code
                     if code.system == "SNOMED CT":
-                        row[8] = code.code
+                        row[7] = code.code
 
             yield row
 
@@ -431,13 +424,13 @@ class ComorbiditiesExporter(DiagnosisExporter):
             if diagnosis and diagnosis.codes:
                 for code in diagnosis.codes:
                     if code.system == "ERA-EDTA PRD":
-                        row[5] = code.code
+                        row[4] = code.code
                     if code.system == "ORPHA":
-                        row[6] = code.code
+                        row[5] = code.code
                     if code.system == "ICD-10":
-                        row[7] = code.code
+                        row[6] = code.code
                     if code.system == "SNOMED CT":
-                        row[8] = code.code
+                        row[7] = code.code
 
             yield row
 
@@ -529,7 +522,6 @@ class TransplantExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("transplant_group_id"),
             column("transplant_group", "transplant_group.name"),
             column("date", lambda x: format_date(x.date)),
@@ -586,7 +578,6 @@ class HospitalisationExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("date_of_admission", lambda x: format_date(x.date_of_admission)),
             column("date_of_discharge", lambda x: format_date(x.date_of_discharge)),
             column("reason_for_admission"),
@@ -626,7 +617,6 @@ class ResultExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("date"),
             column("observation_name", "observation.name"),
             column("value"),
@@ -650,7 +640,6 @@ class PivotedResultExporter(Exporter):
         self._columns = [
             column("patient_id"),
             column("source_group"),
-            column("source_type"),
             column("date"),
         ]
 
@@ -885,7 +874,6 @@ class FetalUltrasoundsExporter(Exporter):
             column("patient_id"),
             column("source_group_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("date_of_scan", lambda x: format_date(x.date_of_scan)),
             column("fetal_identifier"),
             column("gestational_age"),
@@ -937,7 +925,6 @@ class LiverImagingExporter(Exporter):
             column("id"),
             column("patient_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("date", lambda x: format_date(x.date)),
             column("imaging_type"),
             column("size"),
@@ -1007,7 +994,6 @@ class LiverTransplantsExporter(Exporter):
             column("id"),
             column("patient_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("transplant_group", "transplant_group.name"),
             column("registration_date", lambda x: format_date(x.registration_date)),
             column("transplant_date", lambda x: format_date(x.transplant_date)),
@@ -1028,7 +1014,6 @@ class NephrectomiesExporter(Exporter):
             column("id"),
             column("patient_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("date", lambda x: format_date(x.date)),
             column("kidney_side"),
             column("kidney_type"),
@@ -1045,7 +1030,6 @@ class NutritionExporter(Exporter):
             column("id"),
             column("patient_id"),
             column("source_group", "source_group.name"),
-            column("source_type"),
             column("feeding_type"),
             column("from_date", lambda x: format_date(x.from_date)),
             column("to_date", lambda x: format_date(x.to_date)),

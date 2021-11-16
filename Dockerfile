@@ -6,12 +6,6 @@ RUN yum update -y
 
 RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm epel-release
 
-# Sort out certificates to deal with NBT SSL interceptions
-
-COPY ./CERTIFICATE.cer /etc/pki/ca-trust/source/anchors/
-
-RUN update-ca-trust
-
 # Install Python 3.6 and upgrade tools
 
 RUN yum install -y python36 python36-pip python36-devel libpqxx-devel.x86_64 python-devel
@@ -29,8 +23,6 @@ RUN yum groupinstall -y "Development Tools"
 # Install Radar
 
 COPY . /radar
-
-RUN python3 -m pip config set global.cert /etc/ssl/certs/ca-bundle.crt
 
 RUN python3 -m pip install -r dev-requirements.txt
 
