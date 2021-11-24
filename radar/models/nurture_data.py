@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, text
 from sqlalchemy.sql.sqltypes import Boolean
+from collections import OrderedDict
 
 from radar.database import db
 from radar.models.common import (
@@ -8,6 +9,25 @@ from radar.models.common import (
     patient_relationship_no_list,
 )
 from radar.models.logs import log_changes
+
+SIGNED_OFF_NOT_COMPLETE = 0
+SIGNED_OFF_NURTURE_BASELINE = 1
+SIGNED_OFF_FOLLOW_UP = 2
+SIGNED_OFF_FOLLOW_UP_REFUSED = 3
+SIGNED_OFF_BASELINE_COMPLETE_NO_FUP = 4
+
+SIGNED_OFF = OrderedDict(
+    [
+        (SIGNED_OFF_NOT_COMPLETE, "Not signed off"),
+        (SIGNED_OFF_NURTURE_BASELINE, "Nurture baseline data complete"),
+        (SIGNED_OFF_FOLLOW_UP, "Nurture baseline and follow up data complete"),
+        (
+            SIGNED_OFF_BASELINE_COMPLETE_NO_FUP,
+            "Baseline complete, no FUP as Tx or dialysis",
+        ),
+        (SIGNED_OFF_FOLLOW_UP_REFUSED, "Patient refused Follow Up"),
+    ]
+)
 
 
 @log_changes

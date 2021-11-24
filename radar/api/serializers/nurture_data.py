@@ -1,7 +1,7 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import MetaMixin, PatientMixin, SystemSourceMixin
+from radar.api.serializers.common import MetaMixin, PatientMixin
 from radar.models.nurture_data import NurtureData
 
 

@@ -13,7 +13,8 @@ from radar.api.serializers.common import (
 from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.group_patients import GroupPatientSerializer
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
-from radar.models.patient_codes import GENDERS, SIGNED_OFF
+from radar.api.serializers.nurture_data import NurtureDataSerializer
+from radar.models.patient_codes import GENDERS
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
@@ -47,46 +48,47 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     date_of_death = fields.DateField(read_only=True)
     cause_of_death = fields.StringField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
-    gender = IntegerLookupField(GENDERS, read_only=True, source='radar_gender')
+    gender = IntegerLookupField(GENDERS, read_only=True, source="radar_gender")
     nationality = NationalityField(read_only=True)
     ethnicity = EthnicityField(read_only=True)
-    groups = fields.ListField(child=GroupPatientSerializer(), source='group_patients', read_only=True)
+    groups = fields.ListField(
+        child=GroupPatientSerializer(), source="group_patients", read_only=True
+    )
     recruited_date = RecruitedDateField(read_only=True)
     recruited_group = RecruitedGroupField(read_only=True)
     recruited_user = RecruitedUserField(read_only=True)
-    comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    comments = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     current = CurrentField(read_only=True)
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
-    signed_off_state = IntegerLookupField(SIGNED_OFF, required=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
+    nurture_data = NurtureDataSerializer()
 
     class Meta(object):
         model_class = Patient
 
     def validate_test(self, value):
         instance = self.root.instance
-        user = self.context['user']
+        user = self.context["user"]
 
         # Must be an admin to change the test flag
         if (
-            (
-                (instance is None and value) or
-                (instance is not None and instance.test != value)
-            ) and
-            not user.is_admin
-        ):
-            raise ValidationError('Must be an admin!')
+            (instance is None and value)
+            or (instance is not None and instance.test != value)
+        ) and not user.is_admin:
+            raise ValidationError("Must be an admin!")
 
         return value
 
     def to_representation(self, value):
-        user = self.context['user']
+        user = self.context["user"]
         value = PatientProxy(value, user)
         value = super(PatientSerializer, self).to_representation(value)
         return value
@@ -98,14 +100,16 @@ class TinyPatientSerializer(serializers.Serializer):
     last_name = fields.StringField(read_only=True)
     date_of_birth = fields.DateField(read_only=True)
     year_of_birth = fields.IntegerField(read_only=True)
-    radar_date_of_death = fields.DateField(source='radar_date_of_death', read_only=True)
+    radar_date_of_death = fields.DateField(source="radar_date_of_death", read_only=True)
     date_of_death = fields.DateField(read_only=True)
     cause_of_death = fields.StringField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
-    gender = IntegerLookupField(GENDERS, read_only=True, source='radar_gender')
+    gender = IntegerLookupField(GENDERS, read_only=True, source="radar_gender")
     nationality = NationalityField(read_only=True)
     ethnicity = EthnicityField(read_only=True)
-    groups = fields.ListField(child=TinyGroupPatientSerializer(), source='group_patients', read_only=True)
+    groups = fields.ListField(
+        child=TinyGroupPatientSerializer(), source="group_patients", read_only=True
+    )
     recruited_date = RecruitedDateField(read_only=True)
     recruited_group = RecruitedGroupField(read_only=True)
     recruited_user = RecruitedUserField(read_only=True)
@@ -114,15 +118,14 @@ class TinyPatientSerializer(serializers.Serializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
-    signed_off_state = IntegerLookupField(SIGNED_OFF, read_only=True)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
-    # consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
-    # consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
+    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
+    nurture_data = NurtureDataSerializer()
 
     def to_representation(self, value):
-        user = self.context['user']
+        user = self.context["user"]
         value = PatientProxy(value, user)
         value = super(TinyPatientSerializer, self).to_representation(value)
         return value
@@ -132,7 +135,9 @@ class PatientProxy(object):
     def __init__(self, patient, user):
         self.patient = patient
         self.user = user
-        self.demographics_permission = has_permission_for_patient(user, patient, PERMISSION.VIEW_DEMOGRAPHICS)
+        self.demographics_permission = has_permission_for_patient(
+            user, patient, PERMISSION.VIEW_DEMOGRAPHICS
+        )
 
     @property
     def first_name(self):
