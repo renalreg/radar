@@ -18,6 +18,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
+from radar.models.nurture_data import NurtureData
 from radar.ukrdc_importer.tasks import import_sda
 
 
@@ -37,7 +38,9 @@ class DemographicsMismatch(Exception):
 
 
 class SearchPatient(object):
-    def __init__(self, first_name, last_name, date_of_birth, gender, number_group, number):
+    def __init__(
+        self, first_name, last_name, date_of_birth, gender, number_group, number
+    ):
         self.first_name = first_name
         self.last_name = last_name
         self.date_of_birth = date_of_birth
@@ -46,38 +49,35 @@ class SearchPatient(object):
         self.number = number
 
     def search_ukrdc(self):
-        enabled = config['UKRDC_SEARCH_ENABLED']
+        enabled = config["UKRDC_SEARCH_ENABLED"]
 
         if not enabled:
-            logger.info('UKRDC search is disabled')
+            logger.info("UKRDC search is disabled")
             return None
 
-        logger.info('Searching UKRDC number={}'.format(self.number))
+        logger.info("Searching UKRDC number={}".format(self.number))
 
-        url = config['UKRDC_SEARCH_URL']
-        timeout = config.get('UKRDC_SEARCH_TIMEOUT', 60)
+        url = config["UKRDC_SEARCH_URL"]
+        timeout = config.get("UKRDC_SEARCH_TIMEOUT", 60)
 
         data = {
-            'patient': {
-                'name': {
-                    'given_name': self.first_name,
-                    'family_name': self.last_name
+            "patient": {
+                "name": {"given_name": self.first_name, "family_name": self.last_name},
+                "birth_time": self.date_of_birth.isoformat(),
+                "gender": {
+                    "code": str(self.gender),
+                    "description": GENDERS[self.gender],
                 },
-                'birth_time': self.date_of_birth.isoformat(),
-                'gender': {
-                    'code': str(self.gender),
-                    'description': GENDERS[self.gender]
-                },
-                'patient_numbers': [
+                "patient_numbers": [
                     {
-                        'number': self.number,
-                        'number_type': 'NI',
-                        'organization': {
-                            'code': self.number_group.code,
-                            'description': self.number_group.name
-                        }
+                        "number": self.number,
+                        "number_type": "NI",
+                        "organization": {
+                            "code": self.number_group.code,
+                            "description": self.number_group.name,
+                        },
                     }
-                ]
+                ],
             }
         }
 
@@ -85,21 +85,21 @@ class SearchPatient(object):
             r = requests.post(url, json=data, timeout=timeout)
 
             if r.status_code == 404:
-                logger.info('UKRDC patient not found')
+                logger.info("UKRDC patient not found")
                 return None
             else:
                 r.raise_for_status()
         except requests.exceptions.RequestException as e:
-            logger.exception('API error')
+            logger.exception("API error")
             raise ApiError(e)
 
         try:
             data = r.json()
         except ValueError as e:
-            logger.exception('Error decoding JSON')
+            logger.exception("Error decoding JSON")
             raise ApiError(e)
 
-        logger.info('UKRDC patient found')
+        logger.info("UKRDC patient found")
 
         return SDAContainer(data)
 
@@ -127,8 +127,8 @@ class SearchPatient(object):
 
             # Month and day swapped
             if (
-                self.date_of_birth.month == date_of_birth.day and
-                self.date_of_birth.day == date_of_birth.month
+                self.date_of_birth.month == date_of_birth.day
+                and self.date_of_birth.day == date_of_birth.month
             ):
                 month_match = True
                 day_match = True
@@ -145,14 +145,14 @@ class SearchPatient(object):
 
     def _check_demographics(self, patient):
         return (
-            self._check_first_name(patient) and
-            self._check_last_name(patient) and
-            self._check_date_of_birth(patient) and
-            self._check_gender(patient)
+            self._check_first_name(patient)
+            and self._check_last_name(patient)
+            and self._check_date_of_birth(patient)
+            and self._check_gender(patient)
         )
 
     def _search_radar(self):
-        logger.info('Searching RaDaR number={}'.format(self.number))
+        logger.info("Searching RaDaR number={}".format(self.number))
 
         q = Patient.query
         q = q.join(Patient.patient_numbers)
@@ -161,9 +161,9 @@ class SearchPatient(object):
         patient = q.first()
 
         if patient is not None:
-            logger.info('Found RaDaR patient id={}'.format(patient.id))
+            logger.info("Found RaDaR patient id={}".format(patient.id))
         else:
-            logger.info('RaDaR patient not found')
+            logger.info("RaDaR patient not found")
 
         return patient
 
@@ -172,16 +172,16 @@ class SearchPatient(object):
 
         if patient is not None and not self._check_demographics(patient):
             logger.error(
-                'Demographics mismatch '
-                'id={id} '
-                'first_name={first_name} '
-                'last_name={last_name} '
-                'date_of_birth={date_of_birth} '
-                'gender={gender}'.format(
+                "Demographics mismatch "
+                "id={id} "
+                "first_name={first_name} "
+                "last_name={last_name} "
+                "date_of_birth={date_of_birth} "
+                "gender={gender}".format(
                     id=patient.id,
                     first_name=self.first_name,
                     last_name=self.last_name,
-                    date_of_birth=self.date_of_birth.strftime('%d/%m/%Y'),
+                    date_of_birth=self.date_of_birth.strftime("%d/%m/%Y"),
                     gender=self.gender,
                 )
             )
@@ -193,14 +193,15 @@ class SearchPatient(object):
 
 class RecruitmentPatient(object):
     def __init__(
-            self,
-            search_patient,
-            cohort_group,
-            hospital_group,
-            consents,
-            diagnosis,
-            ethnicity=None,
-            nationality=None):
+        self,
+        search_patient,
+        cohort_group,
+        hospital_group,
+        consents,
+        diagnosis,
+        ethnicity=None,
+        nationality=None,
+    ):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
         self.hospital_group = hospital_group
@@ -240,7 +241,7 @@ class RecruitmentPatient(object):
         return self.search_patient.search_ukrdc()
 
     def _create_patient(self):
-        logger.info('Creating patient number={}'.format(self.number))
+        logger.info("Creating patient number={}".format(self.number))
 
         system_group = self.cohort_group.parent_group
         patient = Patient()
@@ -248,7 +249,9 @@ class RecruitmentPatient(object):
         patient.modified_user = current_user
         db.session.add(patient)
 
-        checked_consents = [consent_id for consent_id, checked in self.consents.items() if checked]
+        checked_consents = [
+            consent_id for consent_id, checked in self.consents.items() if checked
+        ]
         for consent_id in checked_consents:
             patient_consent = PatientConsent()
             patient_consent.patient = patient
@@ -282,6 +285,15 @@ class RecruitmentPatient(object):
         patient_number.modified_user = current_user
         db.session.add(patient_number)
 
+        if "nurture" in str(self.cohort_group.name).lower():
+            nurture_data = NurtureData()
+            nurture_data.patient = patient
+            nurture_data.signed_off_state = 0
+            nurture_data.blood_tests = True
+            nurture_data.interviews = True
+            nurture_data.created_user = current_user
+            nurture_data.modified_user = current_user
+
         return patient
 
     def _make_diagnosis(self, patient, system_group):
@@ -289,25 +301,26 @@ class RecruitmentPatient(object):
         diagnosis.patient = patient
         diagnosis.source_group = system_group
         diagnosis.source_type = SOURCE_TYPE_MANUAL
-        diagnosis.diagnosis_id = self.diagnosis.get('diagnosis_id')
-        diagnosis.symptoms_date = self.diagnosis.get('symptoms_date')
-        diagnosis.from_date = self.diagnosis.get('from_date')
-        diagnosis.to_date = self.diagnosis.get('to_date')
-        diagnosis.prenatal = self.diagnosis.get('prenatal')
-        diagnosis.gene_test = self.diagnosis.get('gene_test')
-        diagnosis.biochemistry = self.diagnosis.get('biochemistry')
-        diagnosis.clinical_picture = self.diagnosis.get('clinical_picture')
-        diagnosis.biopsy = self.diagnosis.get('biopsy')
-        diagnosis.biopsy_diagnosis = self.diagnosis.get('biopsy_diagnosis')
-        diagnosis.comments = self.diagnosis.get('comments')
+        diagnosis.diagnosis_id = self.diagnosis.get("diagnosis_id")
+        diagnosis.symptoms_date = self.diagnosis.get("symptoms_date")
+        diagnosis.from_date = self.diagnosis.get("from_date")
+        diagnosis.to_date = self.diagnosis.get("to_date")
+        diagnosis.prenatal = self.diagnosis.get("prenatal")
+        diagnosis.gene_test = self.diagnosis.get("gene_test")
+        diagnosis.biochemistry = self.diagnosis.get("biochemistry")
+        diagnosis.clinical_picture = self.diagnosis.get("clinical_picture")
+        diagnosis.biopsy = self.diagnosis.get("biopsy")
+        diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
+        diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
         return diagnosis
 
     def _add_to_group(self, patient, group):
         if not patient.in_group(group, current=True):
-            logger.info('Adding patient number={} to group id={}'.format(self.number, group.id))
-
+            logger.info(
+                "Adding patient number={} to group id={}".format(self.number, group.id)
+            )
             group_patient = GroupPatient()
             group_patient.patient = patient
             group_patient.group = group
@@ -366,9 +379,9 @@ class SDAContainer(object):
         sequence_number = self._get_sequence_number()
 
         args = [self.data, sequence_number]
-        kwargs = {'patient_id': patient.id}
+        kwargs = {"patient_id": patient.id}
 
-        logger.info('Adding SDA to queue')
+        logger.info("Adding SDA to queue")
 
         import_sda.delay(*args, **kwargs)
 
@@ -379,6 +392,6 @@ def _split_names(names):
 
 def _split_name(name):
     name = name.upper()
-    name = re.sub('[^A-Z ]', '', name)
-    parts = name.split(' ')
+    name = re.sub("[^A-Z ]", "", name)
+    parts = name.split(" ")
     return parts

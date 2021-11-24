@@ -10,6 +10,7 @@ from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.database import db
 from radar.exceptions import PermissionDenied
 from radar.models.groups import check_dependencies, DependencyError, GroupPatient
+from radar.models.nurture_data import NurtureData
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
 
@@ -24,24 +25,23 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
 
     class Meta(object):
         model_class = GroupPatient
-        exclude = ['group_id', 'created_group_id']
+        exclude = ["group_id", "created_group_id"]
 
     def is_duplicate(self, data):
-        group = data['group']
-        patient = data['patient']
+        group = data["group"]
+        patient = data["patient"]
         instance = self.instance
 
         duplicate = any(
-            group == x.group and
-            (instance is None or instance != x)
+            group == x.group and (instance is None or instance != x)
             for x in patient.current_group_patients
         )
 
         return duplicate
 
     def check_dependencies(self, data):
-        group = data['group']
-        patient = data['patient']
+        group = data["group"]
+        patient = data["patient"]
 
         # Get the patient's groups
         groups = patient.groups
@@ -59,48 +59,51 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         try:
             check_dependencies(groups)
         except DependencyError as e:
-            raise ValidationError({'group': e.args[0]})
+            raise ValidationError({"group": e.args[0]})
 
     def validate(self, data):
         data = super(GroupPatientSerializer, self).validate(data)
 
-        current_user = self.context['user']
+        current_user = self.context["user"]
         instance = self.instance
 
-        if not has_permission_for_patient(current_user, data['patient'], PERMISSION.VIEW_DEMOGRAPHICS):
+        if not has_permission_for_patient(
+            current_user, data["patient"], PERMISSION.VIEW_DEMOGRAPHICS
+        ):
             raise PermissionDenied()
 
-        if not has_permission_for_group(current_user, data['group'], PERMISSION.EDIT_PATIENT_MEMBERSHIP):
+        if not has_permission_for_group(
+            current_user, data["group"], PERMISSION.EDIT_PATIENT_MEMBERSHIP
+        ):
             raise PermissionDenied()
 
         # True if permissions on the old created group need to be checked
         check_old_created_group = (
-            instance is not None and
-            instance.created_group != data['created_group']
+            instance is not None and instance.created_group != data["created_group"]
         )
 
         # True if permissions on the new created group need to be checked
         check_new_created_group = (
-            instance is None or
-            instance.group != data['group'] or
-            instance.created_group != data['created_group']
+            instance is None
+            or instance.group != data["group"]
+            or instance.created_group != data["created_group"]
         )
 
         if (
-            check_old_created_group and
-            not has_permission_for_group(
+            check_old_created_group
+            and not has_permission_for_group(
                 current_user,
-                data['created_group'],
+                data["created_group"],
                 PERMISSION.EDIT_PATIENT_MEMBERSHIP,
-                explicit=True
+                explicit=True,
             )
         ) or (
-            check_new_created_group and
-            not has_permission_for_group(
+            check_new_created_group
+            and not has_permission_for_group(
                 current_user,
-                data['created_group'],
+                data["created_group"],
                 PERMISSION.EDIT_PATIENT_MEMBERSHIP,
-                explicit=True
+                explicit=True,
             )
         ):
             raise PermissionDenied()
@@ -110,7 +113,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         # Check that the patient doesn't already belong to this group
         # Note: it's important this check happens after the permission checks to prevent membership enumeration
         if self.is_duplicate(data):
-            raise ValidationError({'group': 'Patient already belongs to this group.'})
+            raise ValidationError({"group": "Patient already belongs to this group."})
 
         return data
 
@@ -121,7 +124,9 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         parent_group = group_patient.group.parent_group
 
         # Add the patient to the parent group
-        if parent_group is not None and not patient.in_group(parent_group, current=True):
+        if parent_group is not None and not patient.in_group(
+            parent_group, current=True
+        ):
             parent_group_patient = GroupPatient()
             parent_group_patient.patient = patient
             parent_group_patient.group = parent_group
@@ -131,6 +136,15 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             parent_group_patient.modified_user = group_patient.modified_user
             parent_group_patient.created_date = group_patient.created_date
             parent_group_patient.modified_date = group_patient.modified_date
+            if "nurture" in str(parent_group_patient.group.name).lower():
+                if not patient.nurture_data:
+                    nurture_data = NurtureData()
+                    nurture_data.patient = patient
+                    nurture_data.signed_off_state = 0
+                    nurture_data.blood_tests = True
+                    nurture_data.interviews = True
+                    nurture_data.created_user = group_patient.created_user
+                    nurture_data.modified_user = group_patient.modified_user
             db.session.add(parent_group_patient)
 
         return group_patient
