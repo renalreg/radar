@@ -69,7 +69,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
-    nurture_data = NurtureDataSerializer()
+    nurture_data = NurtureDataSerializer(read_only=True)
 
     class Meta(object):
         model_class = Patient
@@ -122,7 +122,7 @@ class TinyPatientSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
-    nurture_data = NurtureDataSerializer()
+    nurture_data = NurtureDataSerializer(read_only=True)
 
     def to_representation(self, value):
         user = self.context["user"]
