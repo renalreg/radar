@@ -78,7 +78,7 @@ def upgrade():
 def downgrade():
 
     pat_query = """
-        SELECT id, signed_off_state 
+        SELECT patient_id, signed_off_state 
         FROM nurture_data
     """
 

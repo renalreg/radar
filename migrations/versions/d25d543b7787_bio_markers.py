@@ -30,6 +30,7 @@ def upgrade():
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("pat_id", sa.Integer, ForeignKey("patients.id")),
         sa.Column("barcode", sa.String(100)),
+        sa.Column("sample_date", sa.DateTime),
     )
 
     op.create_table(
@@ -43,10 +44,9 @@ def upgrade():
         "biomarker_results",
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("bio_id", sa.Integer, ForeignKey("biomarkers.id")),
-        sa.Column("sample_id", sa.Integer),
+        sa.Column("sample_id", sa.Integer, ForeignKey("biomarker_samples.id")),
         sa.Column("value", sa.Float),
         sa.Column("unit_measure", sa.String(100)),
-        sa.Column("proc_date", sa.DateTime),
         sa.Column("hospital", sa.String(100)),
     )
 
