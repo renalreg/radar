@@ -23,8 +23,11 @@ def upgrade():
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("patient_id", sa.Integer()),
         sa.Column("signed_off_state", sa.Integer()),
+        sa.Column("follow_up_refused_date", sa.Date()),
         sa.Column("blood_tests", sa.Boolean()),
+        sa.Column("blood_refused_date", sa.Date()),
         sa.Column("interviews", sa.Boolean()),
+        sa.Column("interviews_refused_date", sa.Date()),
         sa.Column("created_user_id", sa.Integer(), nullable=False),
         sa.Column(
             "created_date",
