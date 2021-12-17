@@ -30,6 +30,7 @@ from radar.api.views import logs
 from radar.api.views import medications
 from radar.api.views import mpgn
 from radar.api.views import nephrectomies
+from radar.api.views import nurture_data
 from radar.api.views import nurture_tubes
 from radar.api.views import pathology
 from radar.api.views import patient_addresses
@@ -86,6 +87,7 @@ def setup(app):
     medications.register_views(app)
     mpgn.register_views(app)
     nephrectomies.register_views(app)
+    nurture_data.register_views(app)
     nurture_tubes.register_views(app)
     pathology.register_views(app)
     patient_addresses.register_views(app)
