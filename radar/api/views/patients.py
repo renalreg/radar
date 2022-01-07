@@ -230,7 +230,7 @@ class PatientListCSVView(ApiView):
             output.append(get_attrs(patient.recruited_group(), "code"))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
-            output.append(patient.signed_off_state)
+            output.append(get_attrs(patient, "nurture_data", "signed_off_state"))
 
             for cohort in cohorts:
                 output.append(patient.recruited_date(cohort))
