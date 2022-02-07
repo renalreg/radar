@@ -44,7 +44,7 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
-    signed_off_state = fields.StringField(required=False)
+    signed_off_state = fields.IntegerField(required=False)
     consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
 
 
