@@ -1,3 +1,4 @@
+from curses.ascii import NUL
 from sqlalchemy import and_, case, desc, extract, func, null, or_
 from sqlalchemy.orm import aliased, subqueryload
 
@@ -283,9 +284,15 @@ def filter_by_year_of_death(year):
 
 
 def filter_by_signed_off_state(signed_off_state):
-    return patient_demographics_sub_query(
-        NurtureData.signed_off_state == signed_off_state
+    patient_alias = aliased(Patient)
+    sub_query = (
+        db.session.query(NurtureData)
+        .join(patient_alias)
+        .filter(Patient.id == patient_alias.id)
+        .filter(NurtureData.signed_off_state == signed_off_state)
+        .exists()
     )
+    return sub_query
 
 
 def filter_by_group_roles(current_user, roles, current=None):
