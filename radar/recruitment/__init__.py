@@ -1,3 +1,4 @@
+from asyncio import protocols
 import calendar
 from datetime import datetime
 import itertools
@@ -39,11 +40,19 @@ class DemographicsMismatch(Exception):
 
 class SearchPatient(object):
     def __init__(
-        self, first_name, last_name, date_of_birth, gender, number_group, number
+        self,
+        first_name,
+        last_name,
+        date_of_birth,
+        email_address,
+        gender,
+        number_group,
+        number,
     ):
         self.first_name = first_name
         self.last_name = last_name
         self.date_of_birth = date_of_birth
+        self.email_address = email_address
         self.gender = gender
         self.number_group = number_group
         self.number = number
@@ -223,6 +232,10 @@ class RecruitmentPatient(object):
         return self.search_patient.date_of_birth
 
     @property
+    def email_address(self):
+        return self.search_patient.email_address
+
+    @property
     def gender(self):
         return self.search_patient.gender
 
@@ -268,6 +281,7 @@ class RecruitmentPatient(object):
         patient_demographics.first_name = self.first_name
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
+        patient_demographics.email_address = self.email_address
         patient_demographics.gender = self.gender
         patient_demographics.nationality = self.nationality
         patient_demographics.ethnicity = self.ethnicity
