@@ -61,3 +61,4 @@ from radar.models.source_types import *
 from radar.models.transplants import *
 from radar.models.ukrdc_patients import *
 from radar.models.user_sessions import *
+from radar.models.biomarker import Biomarker, BiomarkerBarcode, BiomarkerResult, BiomarkerSample
