@@ -28,6 +28,8 @@ class BiomarkerBarcode(db.Model):
     sample_date = Column(DateTime)
 
     pat = relationship("Patient", cascade="all, delete-orphan", single_parent=True)
+    
+
 
 
 class BiomarkerResult(db.Model):
@@ -39,13 +41,15 @@ class BiomarkerResult(db.Model):
         server_default=text("nextval('biomarker_results_id_seq'::regclass)"),
     )
     bio_id = Column(ForeignKey("biomarkers.id"))
-    sample_id = Column(Integer)
+    sample_id = Column(ForeignKey("biomarker_samples.id"))
     value = Column(Float(53))
     unit_measure = Column(String(100))
     proc_date = Column(DateTime)
     hospital = Column(String(100))
 
-    bio = relationship("Biomarker", cascade="all")
+    bio = relationship("Biomarker", cascade="all, delete-orphan", single_parent=True)
+    sample = relationship("BiomarkerSample", cascade="all, delete-orphan", single_parent=True)
+    
 
 class BiomarkerSample(db.Model):
     __tablename__ = "biomarker_samples"
@@ -58,5 +62,6 @@ class BiomarkerSample(db.Model):
     barcode_id = Column(ForeignKey("biomarker_barcodes.id"))
     label = Column(String(100), nullable=False)
 
-    barcode = relationship("BiomarkerBarcode", cascade="all"
-    )
+    barcode = relationship("BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True)
+   
+
