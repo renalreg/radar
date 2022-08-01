@@ -44,7 +44,7 @@ class FamilyHistory(db.Model, MetaModelMixin):
     group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
     group = orm.relationship('Group')
 
-    parental_consanguinity = Column(Boolean)
+    parental_consanguinity = Column(Boolean, nullable=True)
     family_history = Column(Boolean)
     other_family_history = Column(String)
 

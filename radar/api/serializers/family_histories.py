@@ -32,7 +32,7 @@ class RelativeSerializer(ModelSerializer):
 
 
 class FamilyHistorySerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSerializer):
-    parental_consanguinity = fields.BooleanField()
+    parental_consanguinity = fields.BooleanField(required=False)
     family_history = fields.BooleanField()
     other_family_history = fields.StringField(
         required=False,
