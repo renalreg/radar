@@ -2,15 +2,7 @@ FROM centos:7 AS dev
 
 WORKDIR /radar
 
-RUN yum update -y
-
-RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm epel-release
-
-# Sort out certificates to deal with NBT SSL interceptions
-
-COPY ./CERTIFICATE.cer /etc/pki/ca-trust/source/anchors/
-
-RUN update-ca-trust
+RUN yum update -y && yum install -y https://centos7.iuscommunity.org/ius-release.rpm epel-release
 
 # Install Python 3.6 and upgrade tools
 
@@ -22,19 +14,13 @@ RUN yum -y install python-pip
 
 # Dev tools
 
-RUN yum clean all
-
-RUN yum groupinstall -y "Development Tools"
+RUN yum clean all && yum groupinstall -y "Development Tools"
 
 # Install Radar
 
 COPY . /radar
 
-RUN python3 -m pip config set global.cert /etc/ssl/certs/ca-bundle.crt
-
-RUN python3 -m pip install -r dev-requirements.txt
-
-RUN python3 -m pip install -e .
+RUN python3 -m pip install -r dev-requirements.txt && python3 -m pip install -e .
 
 # Create a venv for building deployemnt packages
 
@@ -59,3 +45,9 @@ ENV LANG=en_US.utf8
 # Build for production stage
 
 RUN source ./venv/bin/activate && platter build --virtualenv-version 15.1.0 -p python3 -r requirements.txt .
+
+# Production Image
+
+FROM centos:7 AS prod
+
+COPY --from=dev /radar/dist/ /srv/radar/
