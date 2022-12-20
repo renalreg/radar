@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos:7 AS dev
 
 WORKDIR /radar
 
@@ -56,3 +56,6 @@ ENV LC_ALL=en_US.utf8
 
 ENV LANG=en_US.utf8
 
+# Build for production stage
+
+RUN source ./venv/bin/activate && platter build --virtualenv-version 15.1.0 -p python3 -r requirements.txt .
