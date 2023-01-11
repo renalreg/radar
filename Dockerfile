@@ -51,3 +51,15 @@ RUN source ./venv/bin/activate && platter build --virtualenv-version 15.1.0 -p p
 FROM centos:7 AS prod
 
 COPY --from=dev /radar/dist/ /srv/radar/
+
+RUN yum update -y && yum install -y https://centos7.iuscommunity.org/ius-release.rpm epel-release
+
+# Install Python 3.6 and upgrade tools
+
+RUN yum install -y python36 python36-pip python36-devel libpqxx-devel.x86_64
+
+RUN tar -xzf /srv/radar/radar* -C /srv/radar/ && rm -rf /srv/radar/radar*.tar.gz && mkdir /srv/radar/current
+
+RUN /srv/radar/radar*/install.sh /srv/radar/current/ && rm -rf /srv/radar/radar*
+
+
