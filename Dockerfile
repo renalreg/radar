@@ -6,7 +6,7 @@ RUN yum update -y && yum install -y https://centos7.iuscommunity.org/ius-release
 
 # Install Python 3.6 and upgrade tools
 
-RUN yum install -y python36 python36-pip python36-devel libpqxx-devel.x86_64
+RUN yum install -y python36 python36-pip python36-devel libpqxx-devel.x86_64 pcre-devel
 
 RUN python3 -m pip install --upgrade pip setuptools==57.5.0 wheel
 
