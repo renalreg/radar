@@ -62,4 +62,6 @@ RUN tar -xzf /srv/radar/radar* -C /srv/radar/ && rm -rf /srv/radar/radar*.tar.gz
 
 RUN /srv/radar/radar*/install.sh /srv/radar/current/ && rm -rf /srv/radar/radar*
 
+RUN useradd -ms /bin/bash radar
+
 
