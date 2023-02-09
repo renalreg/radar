@@ -1,9 +1,20 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Column, exists, func, Integer, join, select, Sequence, String, text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    exists,
+    func,
+    Integer,
+    join,
+    select,
+    Sequence,
+    String,
+    text,
+)
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
@@ -15,6 +26,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
+from radar.models.biomarker import BiomarkerBarcode
 
 
 SIXTEEN_YEARS_IN_MONTHS = 12 * 16
@@ -33,10 +45,11 @@ class CONSENT_STATUS(Enum):
               frozen.
     MISSING - patient was not consented.
     """
-    OK = 'OK'
-    SOON = 'SOON'
-    EXPIRED = 'EXPIRED'
-    MISSING = 'MISSING'
+
+    OK = "OK"
+    SOON = "SOON"
+    EXPIRED = "EXPIRED"
+    MISSING = "MISSING"
 
     def __str__(self):
         return str(self.value)
@@ -48,13 +61,20 @@ def clean(items):
 
 @log_changes
 class Patient(db.Model, MetaModelMixin):
-    __tablename__ = 'patients'
+    __tablename__ = "patients"
 
-    id = Column(Integer, Sequence('patients_seq'), primary_key=True)
+    id = Column(Integer, Sequence("patients_seq"), primary_key=True)
     comments = Column(String)
-    test = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    control = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    signed_off_state = Column(Integer, nullable=True)
+    test = Column(Boolean, default=False, nullable=False, server_default=text("false"))
+    control = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+
+    barcode = relationship("BiomarkerBarcode", cascade="all")
+
+    @property
+    def barcodes(self):
+        return relationship("biomarker_barcodes", cascade="all, delete-orphan")
 
     @property
     def cohorts(self):
@@ -136,15 +156,9 @@ class Patient(db.Model, MetaModelMixin):
 
         for group_patient in self.group_patients:
             if (
-                (
-                    (group is not None and group_patient.group == group) or
-                    (group is None and group_patient.group.type == GROUP_TYPE.SYSTEM)
-                ) and
-                (
-                    from_date is None or
-                    group_patient.from_date < from_date
-                )
-            ):
+                (group is not None and group_patient.group == group)
+                or (group is None and group_patient.group.type == GROUP_TYPE.SYSTEM)
+            ) and (from_date is None or group_patient.from_date < from_date):
                 from_date = group_patient.from_date
                 recruited_group_patient = group_patient
 
@@ -172,7 +186,11 @@ class Patient(db.Model, MetaModelMixin):
 
     @property
     def primary_patient_number(self):
-        patient_numbers = [x for x in self.patient_numbers if x.number_group.is_recruitment_number_group]
+        patient_numbers = [
+            x
+            for x in self.patient_numbers
+            if x.number_group.is_recruitment_number_group
+        ]
 
         if len(patient_numbers) == 0:
             return None
@@ -197,7 +215,11 @@ class Patient(db.Model, MetaModelMixin):
 
         return (
             select([PatientNumber.number])
-            .select_from(join(PatientNumber, patient_alias).join(Group, PatientNumber.number_group_id == Group.id))
+            .select_from(
+                join(PatientNumber, patient_alias).join(
+                    Group, PatientNumber.number_group_id == Group.id
+                )
+            )
             .where(patient_alias.id == cls.id)
             .where(Group.is_recruitment_number_group == True)  # noqa
             .order_by(
@@ -258,7 +280,9 @@ class Patient(db.Model, MetaModelMixin):
     @property
     def available_gender(self):
         genders = [demog.gender for demog in self.patient_demographics]
-        first_available = next((gender for gender in genders if gender is not None), None)
+        first_available = next(
+            (gender for gender in genders if gender is not None), None
+        )
         return first_available
 
     @property
@@ -267,19 +291,19 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def first_name(self):
-        return self.latest_demographics_attr('first_name')
+        return self.latest_demographics_attr("first_name")
 
     @property
     def radar_first_name(self):
-        return self.latest_demographics_attr('first_name', radar_only=True)
+        return self.latest_demographics_attr("first_name", radar_only=True)
 
     @hybrid_property
     def last_name(self):
-        return self.latest_demographics_attr('last_name')
+        return self.latest_demographics_attr("last_name")
 
     @property
     def radar_last_name(self):
-        return self.latest_demographics_attr('last_name', radar_only=True)
+        return self.latest_demographics_attr("last_name", radar_only=True)
 
     @property
     def full_name(self):
@@ -289,15 +313,15 @@ class Patient(db.Model, MetaModelMixin):
             return last_name
         if not last_name:
             return first_name
-        return '{} {}'.format(first_name, last_name)
+        return "{} {}".format(first_name, last_name)
 
     @hybrid_property
     def date_of_birth(self):
-        return self.latest_demographics_attr('date_of_birth')
+        return self.latest_demographics_attr("date_of_birth")
 
     @property
     def radar_date_of_birth(self):
-        return self.latest_demographics_attr('date_of_birth', radar_only=True)
+        return self.latest_demographics_attr("date_of_birth", radar_only=True)
 
     @property
     def year_of_birth(self):
@@ -312,11 +336,11 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def date_of_death(self):
-        return self.latest_demographics_attr('date_of_death')
+        return self.latest_demographics_attr("date_of_death")
 
     @property
     def radar_date_of_death(self):
-        return self.latest_demographics_attr('date_of_death', radar_only=True)
+        return self.latest_demographics_attr("date_of_death", radar_only=True)
 
     @property
     def year_of_death(self):
@@ -331,39 +355,39 @@ class Patient(db.Model, MetaModelMixin):
 
     @hybrid_property
     def nationality(self):
-        return self.latest_demographics_attr('nationality')
+        return self.latest_demographics_attr("nationality")
 
     @hybrid_property
     def ethnicity(self):
-        return self.latest_demographics_attr('ethnicity')
+        return self.latest_demographics_attr("ethnicity")
 
     @property
     def radar_ethnicity(self):
-        return self.latest_demographics_attr('ethnicity', radar_only=True)
+        return self.latest_demographics_attr("ethnicity", radar_only=True)
 
     @hybrid_property
     def gender(self):
-        return self.latest_demographics_attr('gender')
+        return self.latest_demographics_attr("gender")
 
     @property
     def radar_gender(self):
-        return self.latest_demographics_attr('gender', radar_only=True)
+        return self.latest_demographics_attr("gender", radar_only=True)
 
     @hybrid_property
     def home_number(self):
-        return self.latest_demographics_attr('home_number')
+        return self.latest_demographics_attr("home_number")
 
     @hybrid_property
     def work_number(self):
-        return self.latest_demographics_attr('work_number')
+        return self.latest_demographics_attr("work_number")
 
     @hybrid_property
     def mobile_number(self):
-        return self.latest_demographics_attr('mobile_number')
+        return self.latest_demographics_attr("mobile_number")
 
     @hybrid_property
     def email_address(self):
-        return self.latest_demographics_attr('email_address')
+        return self.latest_demographics_attr("email_address")
 
     @hybrid_property
     def is_male(self):
@@ -420,7 +444,9 @@ class Patient(db.Model, MetaModelMixin):
         for demographics in self.patient_demographics:
             date_of_birth = demographics.date_of_birth
 
-            if date_of_birth is not None and (earliest_date_of_birth is None or date_of_birth < earliest_date_of_birth):
+            if date_of_birth is not None and (
+                earliest_date_of_birth is None or date_of_birth < earliest_date_of_birth
+            ):
                 earliest_date_of_birth = date_of_birth
 
         return earliest_date_of_birth
@@ -476,6 +502,10 @@ class Patient(db.Model, MetaModelMixin):
     def frozen(self):
         """True if the patient is frozen."""
         return not self.current
+
+    @property
+    def unfrozen(self):
+        return self.current
 
     @hybrid_property
     def ukrdc(self):
@@ -538,7 +568,7 @@ class Patient(db.Model, MetaModelMixin):
             return CONSENT_STATUS.MISSING
 
         old = False
-        if len(self.consents) == 1 and self.consents[0].consent.code == 'old':
+        if len(self.consents) == 1 and self.consents[0].consent.code == "old":
             old = True
 
         if self.paediatric and old:
@@ -555,7 +585,7 @@ class Patient(db.Model, MetaModelMixin):
             consent = patient_consent.consent
             if consent.paediatric:
                 paediatric_consent = True
-            elif consent.code != 'old':
+            elif consent.code != "old":
                 new_consent = True
             else:
                 old_consent = True

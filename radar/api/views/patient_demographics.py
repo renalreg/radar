@@ -5,7 +5,7 @@ from radar.api.views.common import (
     PatientObjectListView,
     SystemObjectViewMixin,
 )
-from radar.models.patient_codes import GENDERS, SIGNED_OFF
+from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 
 
@@ -23,18 +23,13 @@ class GenderListView(IntegerLookupListView):
     items = GENDERS
 
 
-class SignedOffListView(IntegerLookupListView):
-    items = SIGNED_OFF
-
-
 def register_views(app):
     app.add_url_rule(
-        '/patient-demographics',
-        view_func=PatientDemographicsListView.as_view('patient_demographics_list')
+        "/patient-demographics",
+        view_func=PatientDemographicsListView.as_view("patient_demographics_list"),
     )
     app.add_url_rule(
-        '/patient-demographics/<id>',
-        view_func=PatientDemographicsDetailView.as_view('patient_demographics_detail')
+        "/patient-demographics/<id>",
+        view_func=PatientDemographicsDetailView.as_view("patient_demographics_detail"),
     )
-    app.add_url_rule('/genders', view_func=GenderListView.as_view('gender_list'))
-    app.add_url_rule('/signedOffStates', view_func=SignedOffListView.as_view('signed_off_list'))
+    app.add_url_rule("/genders", view_func=GenderListView.as_view("gender_list"))

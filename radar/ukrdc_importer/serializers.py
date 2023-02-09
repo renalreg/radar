@@ -24,7 +24,7 @@ class SDADateTimeField(fields.DateTimeField):
 
 class CodeDescriptionSerializer(serializers.Serializer):
     code = fields.StringField()
-    description = fields.StringField()
+    description = fields.StringField(required=False)
 
 
 class CodeOrDescriptionSerializer(serializers.Serializer):
