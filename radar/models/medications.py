@@ -7,58 +7,68 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 
 
-MEDICATION_ROUTES = OrderedDict([
-    ('ORAL', 'Oral'),
-    ('IV', 'Intravenous'),
-    ('IM', 'Intramuscular'),
-    ('SC', 'Subcutaneous'),
-    ('PR', 'Per Rectum'),
-    ('TOPICAL', 'Topical'),
-    ('PATCH', 'Patch'),
-    ('INHALE', 'Inhale'),
-])
+MEDICATION_ROUTES = OrderedDict(
+    [
+        ("ORAL", "Oral"),
+        ("IV", "Intravenous"),
+        ("IM", "Intramuscular"),
+        ("SC", "Subcutaneous"),
+        ("PR", "Per Rectum"),
+        ("TOPICAL", "Topical"),
+        ("PATCH", "Patch"),
+        ("INHALE", "Inhale"),
+    ]
+)
 
-MEDICATION_DOSE_UNITS = OrderedDict([
-    ('g', 'g'),
-    ('mg', 'mg'),
-    ('µg', 'µg'),
-    ('ng', 'ng'),
-    ('l', 'L'),
-    ('dl', 'dl'),
-    ('ml', 'ml'),
-    ('iu', 'IU'),
-    ('mmol', 'mmol'),
-    ('tab', 'Tab'), 
-    ('puff', 'Puff'),
-    ('unit', 'Unit'),
-    ('ampoule', 'Ampoule'),
-    ('drop', 'Drop'),
-    ('capsule', 'Capsule'),
-    ('patch', 'Patch'),
-    ('sachet', 'Sachet')
-])
+MEDICATION_DOSE_UNITS = OrderedDict(
+    [
+        ("g", "g"),
+        ("mg", "mg"),
+        ("µg", "µg"),
+        ("ng", "ng"),
+        ("l", "L"),
+        ("dl", "dl"),
+        ("ml", "ml"),
+        ("iu", "IU"),
+        ("mmol", "mmol"),
+        ("tab", "Tab"),
+        ("puff", "Puff"),
+        ("unit", "Unit"),
+        ("ampoule", "Ampoule"),
+        ("drop", "Drop"),
+        ("capsule", "Capsule"),
+        ("patch", "Patch"),
+        ("sachet", "Sachet"),
+        ("tbsp", "Table Spoon"),
+    ]
+)
 
 
 @log_changes
 class CurrentMedication(db.Model, MetaModelMixin):
-    __tablename__ = 'current_medications'
+    __tablename__ = "current_medications"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('current_medications')
+    patient = patient_relationship("current_medications")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group")
     source_type = Column(String, nullable=False)
 
     date_recorded = Column(Date, nullable=False)
-    drug_id = Column(Integer, ForeignKey('drugs.id'))
-    drug = relationship('Drug')
+    drug_id = Column(Integer, ForeignKey("drugs.id"))
+    drug = relationship("Drug")
     dose_quantity = Column(Numeric)
     dose_unit = Column(String)
     frequency = Column(String)
@@ -78,21 +88,21 @@ class CurrentMedication(db.Model, MetaModelMixin):
 
 @log_changes
 class Medication(db.Model, MetaModelMixin):
-    __tablename__ = 'medications'
+    __tablename__ = "medications"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('medications')
+    patient = patient_relationship("medications")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group")
     source_type = Column(String, nullable=False)
 
     from_date = Column(Date, nullable=False)
     to_date = Column(Date)
-    drug_id = Column(Integer, ForeignKey('drugs.id'))
-    drug = relationship('Drug')
+    drug_id = Column(Integer, ForeignKey("drugs.id"))
+    drug = relationship("Drug")
     dose_quantity = Column(Numeric)
     dose_unit = Column(String)
     frequency = Column(String)
@@ -110,29 +120,29 @@ class Medication(db.Model, MetaModelMixin):
         return MEDICATION_ROUTES.get(self.route)
 
 
-Index('medications_patient_idx', Medication.patient_id)
+Index("medications_patient_idx", Medication.patient_id)
 
 
 @log_changes
 class Drug(db.Model):
-    __tablename__ = 'drugs'
+    __tablename__ = "drugs"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
-    drug_group = relationship('DrugGroup')
+    drug_group_id = Column(Integer, ForeignKey("drug_groups.id"))
+    drug_group = relationship("DrugGroup")
 
 
 @log_changes
 class DrugGroup(db.Model):
-    __tablename__ = 'drug_groups'
+    __tablename__ = "drug_groups"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
 
-    parent_drug_group_id = Column(Integer, ForeignKey('drug_groups.id'))
-    parent_drug_group = relationship('DrugGroup', remote_side=[id])
+    parent_drug_group_id = Column(Integer, ForeignKey("drug_groups.id"))
+    parent_drug_group = relationship("DrugGroup", remote_side=[id])
 
     def __str__(self):
         return self.name
