@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import date
 from enum import Enum
 from itertools import chain
+import math
 
 from sqlalchemy import (
     CheckConstraint,
@@ -292,6 +293,123 @@ class Result(db.Model, MetaModelMixin):
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-0.411))
 
         return egfr
+    
+    @property
+    def ckd_epi_egfr_calculated_with_ethnicity(self):
+        if self.observation.short_name.lower() != "creatinine" or not self.value:
+            return ""
+        
+        Scr = self.value * 0.0113
+        coef_a = 141.0
+        
+        if self.patient.gender == 1:        
+            kappa = 0.9
+            alpha = -0.411
+            coef_d = 1
+        elif self.patient.gender == 2:
+            kappa = 0.7
+            alpha = -0.329
+            coef_d = 1.018
+        else:
+            return ""
+
+        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
+        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
+        
+        this_year = date.today().year
+        age = this_year - self.patient.year_of_birth
+        if age >= 18:
+            age_coef = math.pow(0.993, age)
+        else:
+            return ""
+        
+        if self.patient.ethnicity in (12, 13, 14):
+            coef_e = 1.159
+        else:
+            coef_e = 1
+
+        egfr = coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
+        return int(round(egfr))
+
+    @property
+    def ckd_epi_egfr_calculated_without_ethnicity(self):
+        if self.observation.short_name.lower() != "creatinine" or not self.value:
+            return ""
+        
+        Scr = self.value * 0.0113
+        coef_a = 141.0
+        
+        if self.patient.gender == 1:        
+            kappa = 0.9
+            alpha = -0.411
+            coef_d = 1
+        elif self.patient.gender == 2:
+            kappa = 0.7
+            alpha = -0.329
+            coef_d = 1.018
+        else:
+            return ""
+
+        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
+        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
+        
+        this_year = date.today().year
+        age = this_year - self.patient.year_of_birth
+        if age >= 18:
+            age_coef = math.pow(0.993, age)
+        else:
+            return ""
+
+        egfr = coef_a * coef_b * coef_c * age_coef * coef_d
+        return int(round(egfr))
+    
+    @property
+    def calculate_z_score_height(self):
+        if self.observation.short_name.lower() != 'height':
+            return ""
+    
+
+        this_year = date.today().year
+        age = this_year - self.patient.year_of_birth
+        if age < 18:
+            age_coef = math.pow(0.993, age)
+        else:
+            return ""
+
+
+
+        if self.patient.age <= 16:
+            print("do z_score calculation")
+        else:
+            z_score = None
+        
+
+        return z_score
+    
+    @property
+    def calculate_z_score_weight(self):
+        if self.observation.short_name.lower() != 'weight':
+            return ""
+        
+        days_diff = (date.today() - self.patient.date_of_birth).day
+        age_as_months = days_diff / 30.4
+
+        lower_age_band, upper_age_band = get_age_bands(age_as_months)
+
+        actual_age_band = ((age_as_months - lower_age_band) / (upper_age_band - lower_age_band))
+        actual_l = lower_age_band.l_value + (actual_age_band * (upper_age_band.l_value - lower_age_band.l_value))
+        actual_median = lower_age_band.median_value + (actual_age_band * (upper_age_band.median_value - lower_age_band.median))
+        actual_s = lower_age_band.s_value + (actual_age_band * (upper_age_band.s_value - lower_age_band.s_value))
+
+        return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
+    
+    def _get_age_band_values(self, type):
+        if type == "weight":
+            
+        current_date = date.today()
+        months_diff = (current_date.year - self.patient.year_of_birth) * 12 + (current_date.month - date_of_birth.month)
+        age_decimal = months_diff / 12
+        return round(age_decimal, 3)
 
 
 Index("results_patient_idx", Result.patient_id)
