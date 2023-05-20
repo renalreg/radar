@@ -406,10 +406,10 @@ class Result(db.Model, MetaModelMixin):
     def _get_age_band_values(self, type):
         if type == "weight":
             
-        current_date = date.today()
-        months_diff = (current_date.year - self.patient.year_of_birth) * 12 + (current_date.month - date_of_birth.month)
-        age_decimal = months_diff / 12
-        return round(age_decimal, 3)
+            current_date = date.today()
+            months_diff = (current_date.year - self.patient.year_of_birth) * 12 + (current_date.month - date_of_birth.month)
+            age_decimal = months_diff / 12
+            return round(age_decimal, 3)
 
 
 Index("results_patient_idx", Result.patient_id)
