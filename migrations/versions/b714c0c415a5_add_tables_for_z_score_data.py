@@ -18,13 +18,24 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'ethnicities',
+        'z_score_constants',
         sa.Column('id', sa.Integer, nullable=False),
-        sa.Column('code', sa.Float()),
-        sa.Column('label', sa.String),
+        sa.Column('age_months', sa.String),
+        sa.Column('male_l_weight', sa.String),
+        sa.Column('male_median_weight', sa.String),
+        sa.Column('male_s_weight', sa.String),
+        sa.Column('female_l_weight', sa.String),
+        sa.Column('female_median_weight', sa.String),
+        sa.Column('female_s_weight', sa.String),
+        sa.Column('male_l_height', sa.String),
+        sa.Column('male_median_height', sa.String),
+        sa.Column('male_s_height', sa.String),
+        sa.Column('female_l_height', sa.String),
+        sa.Column('female_median_height', sa.String),
+        sa.Column('female_s_height', sa.String),
         sa.PrimaryKeyConstraint('id')
     )
 
 
 def downgrade():
-    pass
+    op.drop_table('z_score_constants')
