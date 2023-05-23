@@ -3,6 +3,7 @@ from datetime import date
 from enum import Enum
 from itertools import chain
 import math
+import numpy as np
 
 from sqlalchemy import (
     CheckConstraint,
@@ -28,6 +29,7 @@ from radar.models.common import (
 from radar.models.logs import log_changes
 from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
 from radar.models.types import EnumType
+from radar.models.z_score_constants import z_score_constants
 from radar.utils import pairwise
 
 
@@ -371,7 +373,7 @@ class Result(db.Model, MetaModelMixin):
 
         this_year = date.today().year
         age = this_year - self.patient.year_of_birth
-        if age < 18:
+        if age <= 18:
             age_coef = math.pow(0.993, age)
         else:
             return ""
@@ -392,9 +394,9 @@ class Result(db.Model, MetaModelMixin):
             return ""
         
         days_diff = (date.today() - self.patient.date_of_birth).day
-        age_as_months = days_diff / 30.4
+        age_as_months = days_diff / 30.4375
 
-        lower_age_band, upper_age_band = get_age_bands(age_as_months)
+        lower_age_band, upper_age_band = self._get_age_band_values('weight', age_as_months)
 
         actual_age_band = ((age_as_months - lower_age_band) / (upper_age_band - lower_age_band))
         actual_l = lower_age_band.l_value + (actual_age_band * (upper_age_band.l_value - lower_age_band.l_value))
@@ -403,13 +405,17 @@ class Result(db.Model, MetaModelMixin):
 
         return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
     
-    def _get_age_band_values(self, type):
-        if type == "weight":
-            
-            current_date = date.today()
-            months_diff = (current_date.year - self.patient.year_of_birth) * 12 + (current_date.month - date_of_birth.month)
-            age_decimal = months_diff / 12
-            return round(age_decimal, 3)
+    def _get_age_band_values(self, type, age_as_months):
+        temp_ages = db.session.query(z_score_constants.age_months).all()
+        ages = np.asarray([age_tuple[0] for age_tuple in temp_ages])
+        index = (np.abs(ages - age_as_months)).argmin()
+
+        closest_age = ages[index]
+        if closest_age > age_as_months:
+            return ages[index - 1], closest_age
+        else:
+            return closest_age, ages[index + 1]
+
 
 
 Index("results_patient_idx", Result.patient_id)
