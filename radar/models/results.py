@@ -3,7 +3,6 @@ from datetime import date
 from enum import Enum
 from itertools import chain
 import math
-import numpy as np
 
 from sqlalchemy import (
     CheckConstraint,
@@ -29,7 +28,7 @@ from radar.models.common import (
 from radar.models.logs import log_changes
 from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
 from radar.models.types import EnumType
-from radar.models.z_score_constants import z_score_constants
+from radar.models.z_score_constants import ZScoreConstants
 from radar.utils import pairwise
 
 
@@ -298,13 +297,14 @@ class Result(db.Model, MetaModelMixin):
     
     @property
     def ckd_epi_egfr_calculated_with_ethnicity(self):
+        
         if self.observation.short_name.lower() != "creatinine" or not self.value:
             return ""
         
         Scr = self.value * 0.0113
         coef_a = 141.0
         
-        if self.patient.gender == 1:        
+        if self.patient.gender == 1:      
             kappa = 0.9
             alpha = -0.411
             coef_d = 1
@@ -317,10 +317,13 @@ class Result(db.Model, MetaModelMixin):
 
         coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
         coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
+
+        
         
         this_year = date.today().year
-        age = this_year - self.patient.year_of_birth
-        if age >= 18:
+        age = int(this_year) - int(self.patient.year_of_birth)
+
+        if age <= 18:
             age_coef = math.pow(0.993, age)
         else:
             return ""
@@ -331,7 +334,8 @@ class Result(db.Model, MetaModelMixin):
             coef_e = 1
 
         egfr = coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
-        return int(round(egfr))
+        
+        return round(egfr)
 
     @property
     def ckd_epi_egfr_calculated_without_ethnicity(self):
@@ -356,65 +360,97 @@ class Result(db.Model, MetaModelMixin):
         coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
         
         this_year = date.today().year
-        age = this_year - self.patient.year_of_birth
-        if age >= 18:
-            age_coef = math.pow(0.993, age)
-        else:
-            return ""
-
-        egfr = coef_a * coef_b * coef_c * age_coef * coef_d
-        return int(round(egfr))
-    
-    @property
-    def calculate_z_score_height(self):
-        if self.observation.short_name.lower() != 'height':
-            return ""
-    
-
-        this_year = date.today().year
-        age = this_year - self.patient.year_of_birth
+        age = int(this_year) - int(self.patient.year_of_birth)
         if age <= 18:
             age_coef = math.pow(0.993, age)
         else:
             return ""
 
+        egfr = coef_a * coef_b * coef_c * age_coef * coef_d
+        return round(egfr)
+    
+    @property
+    def calculate_z_score_height(self):
+        if self.observation.short_name.lower() != 'height':
+            return ""
 
+        days_diff = (date.today() - self.patient.date_of_birth).days
+        age_as_months = (days_diff / 30.4375) /12        
 
-        if self.patient.age <= 16:
-            print("do z_score calculation")
+        lower_age_band, upper_age_band = self._get_age_band_values(age_as_months)
+
+        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
+        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
+
+        actual_age_band = ((age_as_months - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+
+        if self.patient.gender == 1:
+            upper_l_value = upper_age_band.male_l_height
+            lower_l_value = lower_age_band.male_l_height
+            upper_median = upper_age_band.male_median_height
+            lower_median = lower_age_band.male_median_height
+            upper_s_value = upper_age_band.male_s_height
+            lower_s_value = lower_age_band.male_s_height
+        elif self.patient.gender == 2:
+            upper_l_value = upper_age_band.female_l_height
+            lower_l_value = lower_age_band.female_l_height
+            upper_median = upper_age_band.female_median_height
+            lower_median = lower_age_band.female_median_height
+            upper_s_value = upper_age_band.female_s_height
+            lower_s_value = lower_age_band.female_s_height
         else:
-            z_score = None
-        
+            return ""
 
-        return z_score
+        actual_l = lower_l_value + (actual_age_band * (upper_l_value - lower_l_value))
+        actual_median = lower_median + (actual_age_band * (upper_median - lower_median))
+        actual_s = lower_s_value + (actual_age_band * (upper_s_value - lower_s_value))
+
+        return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
     
     @property
     def calculate_z_score_weight(self):
         if self.observation.short_name.lower() != 'weight':
             return ""
-        
-        days_diff = (date.today() - self.patient.date_of_birth).day
-        age_as_months = days_diff / 30.4375
 
-        lower_age_band, upper_age_band = self._get_age_band_values('weight', age_as_months)
 
-        actual_age_band = ((age_as_months - lower_age_band) / (upper_age_band - lower_age_band))
-        actual_l = lower_age_band.l_value + (actual_age_band * (upper_age_band.l_value - lower_age_band.l_value))
-        actual_median = lower_age_band.median_value + (actual_age_band * (upper_age_band.median_value - lower_age_band.median))
-        actual_s = lower_age_band.s_value + (actual_age_band * (upper_age_band.s_value - lower_age_band.s_value))
+        days_diff = (date.today() - self.patient.date_of_birth).days
+        age_as_months = (days_diff / 30.4375) /12        
+
+        lower_age_band, upper_age_band = self._get_age_band_values(age_as_months)
+
+        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
+        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
+
+        actual_age_band = ((age_as_months - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+
+        if self.patient.gender == 1:
+            upper_l_value = upper_age_band.male_l_weight
+            lower_l_value = lower_age_band.male_l_weight
+            upper_median = upper_age_band.male_median_weight
+            lower_median = lower_age_band.male_median_weight
+            upper_s_value = upper_age_band.male_s_weight
+            lower_s_value = lower_age_band.male_s_weight
+        elif self.patient.gender == 2:
+            upper_l_value = upper_age_band.female_l_weight
+            lower_l_value = lower_age_band.female_l_weight
+            upper_median = upper_age_band.female_median_weight
+            lower_median = lower_age_band.female_median_weight
+            upper_s_value = upper_age_band.female_s_weight
+            lower_s_value = lower_age_band.female_s_weight
+        else:
+            return ""
+
+        actual_l = lower_l_value + (actual_age_band * (upper_l_value - lower_l_value))
+        actual_median = lower_median + (actual_age_band * (upper_median - lower_median))
+        actual_s = lower_s_value + (actual_age_band * (upper_s_value - lower_s_value))
 
         return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
     
-    def _get_age_band_values(self, type, age_as_months):
-        temp_ages = db.session.query(z_score_constants.age_months).all()
-        ages = np.asarray([age_tuple[0] for age_tuple in temp_ages])
-        index = (np.abs(ages - age_as_months)).argmin()
+    def _get_age_band_values(self, age_as_months):
+        temp_ages = db.session.query(ZScoreConstants.age_months).all()
+        ages = sorted(temp_ages, key=lambda x: abs(x[0] - age_as_months))[:2]
 
-        closest_age = ages[index]
-        if closest_age > age_as_months:
-            return ages[index - 1], closest_age
-        else:
-            return closest_age, ages[index + 1]
+        return ages[1][0], ages[0][0]
 
 
 

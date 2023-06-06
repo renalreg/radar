@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, Float
 
 from radar.database import db
 
-class z_score_constants(db.Model):
+class ZScoreConstants(db.Model):
     __tablename__ = 'z_score_constants'
 
     id = Column(

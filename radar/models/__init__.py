@@ -62,4 +62,4 @@ from radar.models.transplants import *
 from radar.models.ukrdc_patients import *
 from radar.models.user_sessions import *
 from radar.models.biomarker import Biomarker, BiomarkerBarcode, BiomarkerResult, BiomarkerSample
-from radar.models.z_score_constants import z_score_constants
+from radar.models.z_score_constants import ZScoreConstants
