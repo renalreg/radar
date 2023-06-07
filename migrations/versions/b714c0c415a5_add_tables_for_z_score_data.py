@@ -20,7 +20,7 @@ def upgrade():
     op.create_table(
         'z_score_constants',
         sa.Column('id', sa.Integer, nullable=False),
-        sa.Column('age_months', sa.Float),
+        sa.Column('age_years_as_decimal', sa.Float),
         sa.Column('male_l_weight', sa.Float),
         sa.Column('male_median_weight', sa.Float),
         sa.Column('male_s_weight', sa.Float),

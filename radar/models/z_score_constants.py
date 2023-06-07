@@ -9,7 +9,7 @@ class ZScoreConstants(db.Model):
         Integer,
         primary_key=True
     )
-    age_months = Column(Float())
+    age_years_as_decimal = Column(Float())
     male_l_weight = Column(Float())
     male_median_weight = Column(Float())
     male_s_weight = Column(Float())

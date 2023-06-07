@@ -996,13 +996,13 @@ class ResultExporter(Exporter):
             value = result.ckd_epi_egfr_calculated_with_ethnicity
             if value:
                 row = [col[1](result) for col in self._columns]
-                row[6] = "RADAR Calculated eGFR New 1"
+                row[6] = "RADAR Calculated eGFR with ethnicity"
                 row[7] = row[9] = value
                 yield row
             value = result.ckd_epi_egfr_calculated_without_ethnicity
             if value:
                 row = [col[1](result) for col in self._columns]
-                row[6] = "RADAR Calculated eGFR New 2"
+                row[6] = "RADAR Calculated eGFR without ethnicity"
                 row[7] = row[9] = value
                 yield row
 

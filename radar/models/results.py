@@ -332,10 +332,8 @@ class Result(db.Model, MetaModelMixin):
             coef_e = 1.159
         else:
             coef_e = 1
-
-        egfr = coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
         
-        return round(egfr)
+        return coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
 
     @property
     def ckd_epi_egfr_calculated_without_ethnicity(self):
@@ -366,8 +364,7 @@ class Result(db.Model, MetaModelMixin):
         else:
             return ""
 
-        egfr = coef_a * coef_b * coef_c * age_coef * coef_d
-        return round(egfr)
+        return coef_a * coef_b * coef_c * age_coef * coef_d
     
     @property
     def calculate_z_score_height(self):
@@ -375,14 +372,14 @@ class Result(db.Model, MetaModelMixin):
             return ""
 
         days_diff = (date.today() - self.patient.date_of_birth).days
-        age_as_months = (days_diff / 30.4375) /12        
+        age_years_as_decimal = (days_diff / 30.4375) /12        
 
-        lower_age_band, upper_age_band = self._get_age_band_values(age_as_months)
+        lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
         lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
         upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
 
-        actual_age_band = ((age_as_months - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+        actual_age_band = ((age_years_as_decimal - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_height
@@ -414,14 +411,14 @@ class Result(db.Model, MetaModelMixin):
 
 
         days_diff = (date.today() - self.patient.date_of_birth).days
-        age_as_months = (days_diff / 30.4375) /12        
+        age_years_as_decimal = (days_diff / 30.4375) /12        
 
-        lower_age_band, upper_age_band = self._get_age_band_values(age_as_months)
+        lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
         lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
         upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
 
-        actual_age_band = ((age_as_months - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+        actual_age_band = ((age_years_as_decimal - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_weight
@@ -446,9 +443,9 @@ class Result(db.Model, MetaModelMixin):
 
         return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
     
-    def _get_age_band_values(self, age_as_months):
+    def _get_age_band_values(self, age_years_as_decimal):
         temp_ages = db.session.query(ZScoreConstants.age_months).all()
-        ages = sorted(temp_ages, key=lambda x: abs(x[0] - age_as_months))[:2]
+        ages = sorted(temp_ages, key=lambda x: abs(x[0] - age_years_as_decimal))[:2]
 
         return ages[1][0], ages[0][0]
 
