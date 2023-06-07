@@ -376,10 +376,10 @@ class Result(db.Model, MetaModelMixin):
 
         lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
-        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
-        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
+        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=lower_age_band).first()
+        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=upper_age_band).first()       
 
-        actual_age_band = ((age_years_as_decimal - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+        actual_age_band = ((age_years_as_decimal - lower_age_band.age_years_as_decimal) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal))
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_height
@@ -415,10 +415,10 @@ class Result(db.Model, MetaModelMixin):
 
         lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
-        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_months=lower_age_band).first()
-        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_months=upper_age_band).first()       
+        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=lower_age_band).first()
+        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=upper_age_band).first()       
 
-        actual_age_band = ((age_years_as_decimal - lower_age_band.age_months) / (upper_age_band.age_months - lower_age_band.age_months))
+        actual_age_band = ((age_years_as_decimal - lower_age_band.age_years_as_decimal) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal))
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_weight
@@ -444,7 +444,7 @@ class Result(db.Model, MetaModelMixin):
         return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
     
     def _get_age_band_values(self, age_years_as_decimal):
-        temp_ages = db.session.query(ZScoreConstants.age_months).all()
+        temp_ages = db.session.query(ZScoreConstants.age_years_as_decimal).all()
         ages = sorted(temp_ages, key=lambda x: abs(x[0] - age_years_as_decimal))[:2]
 
         return ages[1][0], ages[0][0]
