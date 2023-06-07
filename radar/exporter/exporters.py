@@ -975,10 +975,34 @@ class ResultExporter(Exporter):
         q = queries.get_results(self.config)
         for result in q.yield_per(1000):
             yield [col[1](result) for col in self._columns]
+            value = result.calculate_z_score_height
+            if value:
+                row = [col[1](result) for col in self._columns]
+                row[6] = "RADAR Z Score Height"
+                row[7] = row[9] = value
+                yield row
+            value = result.calculate_z_score_weight
+            if value:
+                row = [col[1](result) for col in self._columns]
+                row[6] = "RADAR Z Score Weight"
+                row[7] = row[9] = value
+                yield row
             value = result.egfr_calculated
             if value:
                 row = [col[1](result) for col in self._columns]
                 row[6] = "RADAR Calculated eGFR"
+                row[7] = row[9] = value
+                yield row
+            value = result.ckd_epi_egfr_calculated_with_ethnicity
+            if value:
+                row = [col[1](result) for col in self._columns]
+                row[6] = "RADAR Calculated eGFR with ethnicity"
+                row[7] = row[9] = value
+                yield row
+            value = result.ckd_epi_egfr_calculated_without_ethnicity
+            if value:
+                row = [col[1](result) for col in self._columns]
+                row[6] = "RADAR Calculated eGFR without ethnicity"
                 row[7] = row[9] = value
                 yield row
 
