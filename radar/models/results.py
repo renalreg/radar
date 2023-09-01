@@ -281,7 +281,7 @@ class Result(db.Model, MetaModelMixin):
             return ""
 
         years_old = months // 12
-        age_adj = 0.993 ** years_old
+        age_adj = 0.993**years_old
         is_female = self.patient.radar_gender == GENDER_FEMALE
         is_male = self.patient.radar_gender == GENDER_MALE
         if is_female and creat88 > 0.7:
@@ -294,17 +294,34 @@ class Result(db.Model, MetaModelMixin):
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-0.411))
 
         return egfr
-    
+
     @property
     def ckd_epi_egfr_calculated_with_ethnicity(self):
-        
         if self.observation.short_name.lower() != "creatinine" or not self.value:
             return ""
-        
+
+        black_ethnicities = (
+            "Black Caribbean",
+            "Black African",
+            "Other Black Background",
+        )
+
+        if (
+            self.patient.radar_ethnicity
+            and self.patient.radar_ethnicity.label in black_ethnicities
+        ):
+            coef_e = 1.159
+        elif (
+            self.patient.ethnicity and self.patient.ethnicity.label in black_ethnicities
+        ):
+            coef_e = 1.159
+        else:
+            return ""
+
         Scr = self.value * 0.0113
         coef_a = 141.0
-        
-        if self.patient.gender == 1:      
+
+        if self.patient.gender == 1:
             kappa = 0.9
             alpha = -0.411
             coef_d = 1
@@ -315,35 +332,28 @@ class Result(db.Model, MetaModelMixin):
         else:
             return ""
 
-        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
-        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
+        this_year = self.date.year
+        age = this_year - int(self.patient.year_of_birth)
 
-        
-        
-        this_year = date.today().year
-        age = int(this_year) - int(self.patient.year_of_birth)
-
-        if age <= 18:
+        if age <= 18 and age > 0:
             age_coef = math.pow(0.993, age)
         else:
             return ""
-        
-        if self.patient.ethnicity in (12, 13, 14):
-            coef_e = 1.159
-        else:
-            coef_e = 1
-        
+
+        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
+        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
+
         return coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
 
     @property
     def ckd_epi_egfr_calculated_without_ethnicity(self):
         if self.observation.short_name.lower() != "creatinine" or not self.value:
             return ""
-        
+
         Scr = self.value * 0.0113
         coef_a = 141.0
-        
-        if self.patient.gender == 1:        
+
+        if self.patient.gender == 1:
             kappa = 0.9
             alpha = -0.411
             coef_d = 1
@@ -356,30 +366,51 @@ class Result(db.Model, MetaModelMixin):
 
         coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
         coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
-        
-        this_year = date.today().year
-        age = int(this_year) - int(self.patient.year_of_birth)
-        if age <= 18:
+
+        this_year = self.date.year
+        age = this_year - int(self.patient.year_of_birth)
+        if age <= 18 and age > 0:
             age_coef = math.pow(0.993, age)
         else:
             return ""
 
         return coef_a * coef_b * coef_c * age_coef * coef_d
-    
+
     @property
     def calculate_z_score_height(self):
-        if self.observation.short_name.lower() != 'height' or not self.value:
+        if (
+            self.observation.short_name.lower() != "height"
+            or not self.value
+            or self.value < 0
+        ):
             return ""
 
-        days_diff = (date.today() - self.patient.date_of_birth).days
-        age_years_as_decimal = (days_diff / 30.4375) /12        
+        days_diff = (self.date.date() - self.patient.date_of_birth).days
+
+        if days_diff < 0:
+            return ""
+
+        age_years_as_decimal = (days_diff / 30.4375) / 12
 
         lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
-        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=lower_age_band).first()
-        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=upper_age_band).first()       
+        if not lower_age_band or not upper_age_band:
+            return ""
 
-        actual_age_band = ((age_years_as_decimal - lower_age_band.age_years_as_decimal) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal))
+        lower_age_band = (
+            db.session.query(ZScoreConstants)
+            .filter_by(age_years_as_decimal=lower_age_band)
+            .first()
+        )
+        upper_age_band = (
+            db.session.query(ZScoreConstants)
+            .filter_by(age_years_as_decimal=upper_age_band)
+            .first()
+        )
+
+        actual_age_band = (
+            age_years_as_decimal - lower_age_band.age_years_as_decimal
+        ) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal)
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_height
@@ -402,23 +433,45 @@ class Result(db.Model, MetaModelMixin):
         actual_median = lower_median + (actual_age_band * (upper_median - lower_median))
         actual_s = lower_s_value + (actual_age_band * (upper_s_value - lower_s_value))
 
-        return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
-    
+        return (math.pow((self.value / actual_median), actual_l) - 1) / (
+            actual_l * actual_s
+        )
+
     @property
     def calculate_z_score_weight(self):
-        if self.observation.short_name.lower() != 'weight' or not self.value:
+        if (
+            self.observation.short_name.lower() != "weight"
+            or not self.value
+            or self.value < 0
+        ):
             return ""
 
+        days_diff = (self.date.date() - self.patient.date_of_birth).days
 
-        days_diff = (date.today() - self.patient.date_of_birth).days
-        age_years_as_decimal = (days_diff / 30.4375) /12        
+        if days_diff < 0:
+            return ""
+
+        age_years_as_decimal = (days_diff / 30.4375) / 12
 
         lower_age_band, upper_age_band = self._get_age_band_values(age_years_as_decimal)
 
-        lower_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=lower_age_band).first()
-        upper_age_band = db.session.query(ZScoreConstants).filter_by(age_years_as_decimal=upper_age_band).first()       
+        if not lower_age_band or not upper_age_band:
+            return ""
 
-        actual_age_band = ((age_years_as_decimal - lower_age_band.age_years_as_decimal) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal))
+        lower_age_band = (
+            db.session.query(ZScoreConstants)
+            .filter_by(age_years_as_decimal=lower_age_band)
+            .first()
+        )
+        upper_age_band = (
+            db.session.query(ZScoreConstants)
+            .filter_by(age_years_as_decimal=upper_age_band)
+            .first()
+        )
+
+        actual_age_band = (
+            age_years_as_decimal - lower_age_band.age_years_as_decimal
+        ) / (upper_age_band.age_years_as_decimal - lower_age_band.age_years_as_decimal)
 
         if self.patient.gender == 1:
             upper_l_value = upper_age_band.male_l_weight
@@ -441,14 +494,15 @@ class Result(db.Model, MetaModelMixin):
         actual_median = lower_median + (actual_age_band * (upper_median - lower_median))
         actual_s = lower_s_value + (actual_age_band * (upper_s_value - lower_s_value))
 
-        return (math.pow((self.value / actual_median), actual_l) - 1) / (actual_l * actual_s)
-    
+        return (math.pow((self.value / actual_median), actual_l) - 1) / (
+            actual_l * actual_s
+        )
+
     def _get_age_band_values(self, age_years_as_decimal):
         temp_ages = db.session.query(ZScoreConstants.age_years_as_decimal).all()
         ages = sorted(temp_ages, key=lambda x: abs(x[0] - age_years_as_decimal))[:2]
 
         return ages[1][0], ages[0][0]
-
 
 
 Index("results_patient_idx", Result.patient_id)
