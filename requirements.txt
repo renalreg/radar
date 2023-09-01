@@ -35,3 +35,4 @@ wtforms==2.2.1
 zxcvbn-python==4.4.24
 tzlocal==1.2.2
 xlsxwriter==1.1.8
+tqdm
