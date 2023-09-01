@@ -378,7 +378,11 @@ class Result(db.Model, MetaModelMixin):
 
     @property
     def calculate_z_score_height(self):
-        if self.observation.short_name.lower() != "height" or not self.value:
+        if (
+            self.observation.short_name.lower() != "height"
+            or not self.value
+            or self.value < 0
+        ):
             return ""
 
         days_diff = (self.date.date() - self.patient.date_of_birth).days
@@ -435,7 +439,11 @@ class Result(db.Model, MetaModelMixin):
 
     @property
     def calculate_z_score_weight(self):
-        if self.observation.short_name.lower() != "weight" or not self.value:
+        if (
+            self.observation.short_name.lower() != "weight"
+            or not self.value
+            or self.value < 0
+        ):
             return ""
 
         days_diff = (self.date.date() - self.patient.date_of_birth).days
