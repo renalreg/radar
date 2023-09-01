@@ -1,9 +1,24 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, func, Index, Integer, select, String, text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    func,
+    Index,
+    Integer,
+    select,
+    String,
+    text,
+)
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property, relationship
 
-from radar.auth.passwords import check_password_hash, generate_password_hash, get_password_hash_method
+from radar.auth.passwords import (
+    check_password_hash,
+    generate_password_hash,
+    get_password_hash_method,
+)
 from radar.database import db
 from radar.models.common import CreatedDateMixin, ModifiedDateMixin
 from radar.models.logs import Log, log_changes
@@ -13,56 +28,77 @@ class UserCreatedUserMixin(object):
     @declared_attr
     def created_user_id(cls):
         # Nullable as it is a self-reference
-        return Column(Integer, ForeignKey('users.id'), nullable=True)
+        return Column(Integer, ForeignKey("users.id"), nullable=True)
 
     @declared_attr
     def created_user(cls):
         return relationship(
-            'User',
+            "User",
             primaryjoin="User.id == %s.created_user_id" % cls.__name__,
-            remote_side='User.id', post_update=True)
+            remote_side="User.id",
+            post_update=True,
+        )
 
 
 class UserModifiedUserMixin(object):
     @declared_attr
     def modified_user_id(cls):
         # Nullable as it is a self-reference
-        return Column(Integer, ForeignKey('users.id'), nullable=True)
+        return Column(Integer, ForeignKey("users.id"), nullable=True)
 
     @declared_attr
     def modified_user(cls):
         return relationship(
-            'User',
+            "User",
             primaryjoin="User.id == %s.modified_user_id" % cls.__name__,
-            remote_side='User.id', post_update=True)
+            remote_side="User.id",
+            post_update=True,
+        )
 
 
 @log_changes
-class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMixin, ModifiedDateMixin):
-    __tablename__ = 'users'
+class User(
+    db.Model,
+    UserCreatedUserMixin,
+    UserModifiedUserMixin,
+    CreatedDateMixin,
+    ModifiedDateMixin,
+):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    _username = Column('username', String, nullable=False)
-    _password = Column('password', String)
-    _email = Column('email', String)
+    _username = Column("username", String, nullable=False)
+    _password = Column("password", String)
+    _email = Column("email", String)
     first_name = Column(String)
     last_name = Column(String)
     telephone_number = Column(String)
-    is_admin = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    is_bot = Column(Boolean, default=False, nullable=False, server_default=text('false'))
-    is_enabled = Column(Boolean, default=True, nullable=False, server_default=text('true'))
+    is_admin = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+    is_bot = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+    is_enabled = Column(
+        Boolean, default=True, nullable=False, server_default=text("true")
+    )
 
     reset_password_token = Column(String)
     reset_password_date = Column(DateTime)
 
-    force_password_change = Column(Boolean, default=False, nullable=False, server_default=text('false'))
+    force_password_change = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
 
     last_login_date = column_property(
-        select([func.max(Log.date)]).where(Log.user_id == id).where(Log.type == 'LOGIN')
+        select([func.max(Log.date)])
+        .where(Log.user_id == id)
+        .where(Log.type == "LOGIN"),
+        deferred=True,
     )
 
     last_active_date = column_property(
-        select([func.max(Log.date)]).where(Log.user_id == id)
+        select([func.max(Log.date)]).where(Log.user_id == id), deferred=True
     )
 
     @hybrid_property
@@ -106,9 +142,8 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         self._password = value
 
     def check_password(self, password):
-        return (
-            self.password_hash is not None and
-            check_password_hash(self.password_hash, password)
+        return self.password_hash is not None and check_password_hash(
+            self.password_hash, password
         )
 
     @property
@@ -118,7 +153,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
         if self.password_hash is None:
             r = False
         else:
-            current_hash_method = self.password_hash.split('$')[0]
+            current_hash_method = self.password_hash.split("$")[0]
             r = current_hash_method != new_hash_method
 
         return r
@@ -126,7 +161,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
     @property
     def name(self):
         if self.first_name and self.last_name:
-            return '{} {}'.format(self.first_name, self.last_name)
+            return "{} {}".format(self.first_name, self.last_name)
         elif self.first_name:
             return self.first_name
         elif self.last_name:
@@ -139,7 +174,7 @@ class User(db.Model, UserCreatedUserMixin, UserModifiedUserMixin, CreatedDateMix
 
 
 # Ensure usernames are unique
-Index('users_username_idx', func.lower(User.username), unique=True)
+Index("users_username_idx", func.lower(User.username), unique=True)
 
 
 class AnonymousUser(object):
