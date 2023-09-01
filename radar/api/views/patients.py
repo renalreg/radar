@@ -221,7 +221,7 @@ class PatientListCSVView(ApiView):
             output.append(patient.year_of_death)
             output.append(patient.gender)
             output.append(patient.gender_label)
-            output.append(patient.available_ethnicity)
+            output.append(patient.radar_ethnicity)
             output.append(patient.ethnicity_label)
             output.append(get_attrs(patient, "primary_patient_number", "number"))
             output.append("Y" if patient.ukrdc else "N")
