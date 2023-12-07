@@ -31,7 +31,7 @@ def forgot_password(username, email):
 
     # User not found
     if user is None:
-        raise UserNotFound()
+        return user
 
     token, token_hash = generate_reset_password_token()
 
