@@ -5,9 +5,10 @@ from radar.api.views.common import (
     SourceObjectViewMixin,
     StringLookupListView,
 )
-from radar.models.fetal_anomaly_scans import FetalAnomalyScan
-
-from collections import OrderedDict
+from radar.models.fetal_anomaly_scans import (
+    FetalAnomalyScan,
+    FETAL_ANOMALY_IMAGING_TYPES,
+)
 
 
 class FetalAnomalyScanListView(SourceObjectViewMixin, PatientObjectListView):
@@ -21,12 +22,7 @@ class FetalAnomalyScanDetailView(SourceObjectViewMixin, PatientObjectDetailView)
 
 
 class FetalAnomalyImagingTypes(StringLookupListView):
-    items = OrderedDict(
-        [
-            ("USS", "USS"),
-            ("MRI", "MRI"),
-        ]
-    )
+    items = FETAL_ANOMALY_IMAGING_TYPES
 
 
 def register_views(app):
