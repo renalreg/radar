@@ -8,10 +8,15 @@ def forgot_username(email):
 
     # No users with that email
     if len(users) == 0:
-        raise UserNotFound()
+        return None
 
     # Send username reminder email
-    send_email_from_template(email, 'RaDaR Username Reminder', 'forgot_username', {
-        'email': email,
-        'users': users,
-    })
+    send_email_from_template(
+        email,
+        "RaDaR Username Reminder",
+        "forgot_username",
+        {
+            "email": email,
+            "users": users,
+        },
+    )
