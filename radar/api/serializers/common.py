@@ -10,7 +10,11 @@ from radar.exceptions import PermissionDenied
 from radar.models.forms import Form, GroupForm
 from radar.models.groups import Group, GROUP_TYPE, GroupPage
 from radar.models.patients import Patient
-from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
+from radar.models.source_types import (
+    SOURCE_TYPE_MANUAL,
+    SOURCE_TYPE_UKRDC,
+    SOURCE_TYPE_BATCH,
+)
 from radar.models.users import User
 from radar.pages import PAGE
 from radar.permissions import has_permission_for_group, has_permission_for_patient
@@ -18,8 +22,8 @@ from radar.roles import PERMISSION
 
 
 def lookup_field_defaults(kwargs):
-    kwargs.setdefault('key_name', 'id')  # Value stored in database
-    kwargs.setdefault('value_name', 'label')  # Value displayed to user
+    kwargs.setdefault("key_name", "id")  # Value stored in database
+    kwargs.setdefault("value_name", "label")  # Value displayed to user
 
 
 class StringLookupField(fields.StringLookupField):
@@ -49,13 +53,7 @@ class TinyUserSerializer(ModelSerializer):
 
     class Meta:
         model_class = User
-        fields = (
-            'id',
-            'username',
-            'email',
-            'first_name',
-            'last_name'
-        )
+        fields = ("id", "username", "email", "first_name", "last_name")
 
 
 class UserField(ReferenceField):
@@ -69,7 +67,7 @@ class CreatedUserField(UserField):
 
         # Set the created_user to the current_user for new records
         if instance is None:
-            return self.context['user']
+            return self.context["user"]
         else:
             return self.get_attribute(instance)
 
@@ -77,7 +75,7 @@ class CreatedUserField(UserField):
 class ModifiedUserField(UserField):
     def get_value(self, data):
         # Set the modified user to the current_user
-        return self.context['user']
+        return self.context["user"]
 
 
 class CreatedDateField(fields.DateTimeField):
@@ -105,8 +103,8 @@ class MetaMixin(serializers.Serializer):
 
     def get_model_exclude(self):
         model_exclude = super(MetaMixin, self).get_model_exclude()
-        model_exclude.add('created_user_id')
-        model_exclude.add('modified_user_id')
+        model_exclude.add("created_user_id")
+        model_exclude.add("modified_user_id")
         return model_exclude
 
 
@@ -119,7 +117,7 @@ class UserMixin(object):
 
     def get_model_exclude(self):
         attrs = super(UserMixin, self).get_model_exclude()
-        attrs.add('user_id')
+        attrs.add("user_id")
         return attrs
 
 
@@ -127,7 +125,7 @@ class QueryPatientField(ReferenceField):
     model_class = Patient
 
     def validate(self, patient):
-        user = self.context['user']
+        user = self.context["user"]
 
         if not has_permission_for_patient(user, patient, PERMISSION.VIEW_PATIENT):
             raise PermissionDenied()
@@ -139,7 +137,7 @@ class PatientField(ReferenceField):
     model_class = Patient
 
     def validate(self, patient):
-        user = self.context['user']
+        user = self.context["user"]
 
         if not has_permission_for_patient(user, patient, PERMISSION.EDIT_PATIENT):
             raise PermissionDenied()
@@ -152,7 +150,7 @@ class PatientMixin(object):
 
     def get_model_exclude(self):
         model_exclude = super(PatientMixin, self).get_model_exclude()
-        model_exclude.add('patient_id')
+        model_exclude.add("patient_id")
         return model_exclude
 
 
@@ -161,7 +159,7 @@ class TinyGroupSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Group
-        fields = ['id', 'type', 'code', 'name', 'short_name']
+        fields = ["id", "type", "code", "name", "short_name"]
 
 
 class GroupPageSerializer(ModelSerializer):
@@ -170,13 +168,13 @@ class GroupPageSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = GroupPage
-        exclude = ['group_id']
+        exclude = ["group_id"]
 
 
 class TinyFormSerializer(ModelSerializer):
     class Meta(object):
         model_class = Form
-        fields = ['id', 'name', 'slug']
+        fields = ["id", "name", "slug"]
 
 
 class GroupFormSerializer(ModelSerializer):
@@ -185,20 +183,20 @@ class GroupFormSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = GroupForm
-        exclude = ['group_id', 'form_id']
+        exclude = ["group_id", "form_id"]
 
 
 class GroupSerializer(ModelSerializer):
     type = fields.EnumField(GROUP_TYPE)
-    pages = fields.ListField(child=GroupPageSerializer(), source='group_pages')
-    forms = fields.ListField(child=GroupFormSerializer(), source='group_forms')
+    pages = fields.ListField(child=GroupPageSerializer(), source="group_pages")
+    forms = fields.ListField(child=GroupFormSerializer(), source="group_forms")
     has_dependencies = fields.BooleanField(read_only=True)
     instructions = fields.StringField()
     is_transplant_centre = fields.BooleanField()
 
     class Meta(object):
         model_class = Group
-        exclude = ['_instructions', 'parent_group_id']
+        exclude = ["_instructions", "parent_group_id"]
 
 
 class GroupField(ReferenceField):
@@ -213,10 +211,13 @@ class TinyGroupField(ReferenceField):
 
 class SourceGroupField(GroupField):
     def validate(self, group):
-        user = self.context['user']
+        user = self.context["user"]
 
         # Group must be a system or hospital (unless the user is an admin)
-        if not user.is_admin and group.type not in (GROUP_TYPE.SYSTEM, GROUP_TYPE.HOSPITAL):
+        if not user.is_admin and group.type not in (
+            GROUP_TYPE.SYSTEM,
+            GROUP_TYPE.HOSPITAL,
+        ):
             raise PermissionDenied()
 
         if not has_permission_for_group(user, group, PERMISSION.EDIT_PATIENT):
@@ -227,7 +228,7 @@ class SourceGroupField(GroupField):
 
 class SystemSourceGroupField(GroupField):
     def validate(self, group):
-        user = self.context['user']
+        user = self.context["user"]
 
         # Group must be a system (unless the user is an admin)
         if not user.is_admin and group.type != GROUP_TYPE.SYSTEM:
@@ -250,12 +251,15 @@ class CohortGroupField(GroupField):
 
 class SourceTypeField(fields.StringField):
     def __init__(self, **kwargs):
-        kwargs.setdefault('default', SOURCE_TYPE_MANUAL)
-        kwargs.setdefault('validators', [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC])])
+        kwargs.setdefault("default", SOURCE_TYPE_MANUAL)
+        kwargs.setdefault(
+            "validators",
+            [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH])],
+        )
         super(SourceTypeField, self).__init__(**kwargs)
 
     def validate(self, source_type):
-        user = self.context['user']
+        user = self.context["user"]
 
         # Only admins can enter data for non-manual source types
         if not user.is_admin and source_type != SOURCE_TYPE_MANUAL:
@@ -270,7 +274,7 @@ class SourceMixin(object):
 
     def get_model_exclude(self):
         model_exclude = super(SourceMixin, self).get_model_exclude()
-        model_exclude.add('source_group_id')
+        model_exclude.add("source_group_id")
         return model_exclude
 
 
@@ -280,7 +284,7 @@ class SystemSourceMixin(object):
 
     def get_model_exclude(self):
         model_exclude = super(SystemSourceMixin, self).get_model_exclude()
-        model_exclude.add('source_group_id')
+        model_exclude.add("source_group_id")
         return model_exclude
 
 
@@ -289,14 +293,14 @@ class CohortGroupMixin(object):
 
     def get_model_exclude(self):
         model_exclude = super(CohortGroupMixin, self).get_model_exclude()
-        model_exclude.add('group_id')
+        model_exclude.add("group_id")
         return model_exclude
 
     def validate(self, data):
         data = super(CohortGroupMixin, self).validate(data)
 
-        patient = data['patient']
-        group = data['group']
+        patient = data["patient"]
+        group = data["group"]
 
         if not patient.in_group(group):
             raise PermissionDenied()
