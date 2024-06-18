@@ -1485,6 +1485,7 @@ class PregnanciesExporter(Exporter):
             column("parity1"),
             column("parity2"),
             column("outcome"),
+            column("infant_dob", lambda x: format_date(x.infant_dob)),
             column("weight"),
             column("weight_centile"),
             column("gestational_age"),
