@@ -11,6 +11,7 @@ from radar.models.logs import log_changes
 PATHOLOGY_KIDNEY_TYPES = OrderedDict([
     ('TRANSPLANT', 'Transplant'),
     ('NATIVE', 'Native'),
+    ('TIME ZERO TRANSPLANT', 'Time zero transplant')
 ])
 
 PATHOLOGY_KIDNEY_SIDES = OrderedDict([
