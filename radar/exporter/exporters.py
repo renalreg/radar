@@ -394,14 +394,14 @@ class DiagnosisExporter(Exporter):
             d("comments", anonymised_getter=None)
             ]
 
-        if self.config['patient_group'].code == 'NURTUREINS':            
+        if self.config['patient_group'].code == 'NURTUREINS':
             self._columns.extend(
                 [
                     column("ins_diagnosis"), #27
                     column('ins_diagnosis_date'),
                     column('ins_biopsy_diagnosis'),
                     column('ins_biopsy_diagnosis_label'),
-                    column('ins_diagnosis_comments') #31                                  
+                    column('ins_diagnosis_comments') #31
                 ]
             )
         self._columns.extend(get_meta_columns(self.config))
@@ -411,12 +411,12 @@ class DiagnosisExporter(Exporter):
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
     '''
-    A class that extends DiagnosisExporter exporter for the 
-    purpose of constructing all the relevant data to be 
+    A class that extends DiagnosisExporter exporter for the
+    purpose of constructing all the relevant data to be
     written to a CSV file. The CSV file will be conserned with
     all the patients in a cohort and their primary diagnosis.
 
-    The exporter contains extra functionality that enables 
+    The exporter contains extra functionality that enables
     the combination of nurture INS data and INS data although
     in general it is expected that each export will focus on
     only one cohort. It works by storing the patient ID during
@@ -426,17 +426,17 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
 
     :param DiagnosisExporter: a class that contains all the header
     for the CSV and the results of the relevant queries
-    :type DiagnosisExporter: class: DiagnosisExporter   
-    '''    
+    :type DiagnosisExporter: class: DiagnosisExporter
+    '''
 
-        
+
     def get_rows(self):
         '''
         Gets all the primary diagnosis data for a specific cohort
 
         :yield: yields CSV row for writting to file
         :rtype: list
-        '''        
+        '''
 
         headers = [col[0] for col in self._columns]
         yield headers
@@ -444,29 +444,29 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         # Differnet process for Nurture INS patients
         if self.config['patient_group'].code == 'NURTUREINS':
 
-            patient_id = 0            
-            row = []            
+            patient_id = 0
+            row = []
             self.ins_data = {
                 'pat_id': '',
                 'ins_dia_name': '',
                 'ins_dia_date': '',
                 'ins_biopsy_dia': '',
                 'ins_biopsy_dia_label': '',
-                'ins_biopsy_dia_comments': ''                
+                'ins_biopsy_dia_comments': ''
             }
 
             for record in self._query:
-                diagnosis = record.diagnosis                
-                if not diagnosis:                
+                diagnosis = record.diagnosis
+                if not diagnosis:
                     continue
 
                 # New patient identified
                 if record.patient_id != patient_id:
                     patient_id = record.patient_id
-                    
+
                     # Primary diagnosis found for previous patient, add INS data to row and yield
-                    if row:                        
-                        self.insert_ins_data(row)                      
+                    if row:
+                        self.insert_ins_data(row)
                         yield row
 
                         if diagnosis in self._primary:
@@ -474,10 +474,10 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         else:
                             row = []
 
-                        ins_data = self.get_ins_data(record, diagnosis) 
+                        ins_data = self.get_ins_data(record, diagnosis)
 
                     # No primary diagnosis found for previous patient
-                    # Check for INS data                    
+                    # Check for INS data
                     else:
                         # INS data present create blank row, add INS data and yield
                         if self.ins_data['ins_dia_name'] != '':
@@ -487,7 +487,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             self.insert_ins_data(row)
                             yield row
 
-                            if diagnosis in self._primary:                            
+                            if diagnosis in self._primary:
                                 row = self.make_row(record, diagnosis)
                             else:
                                 row = []
@@ -502,7 +502,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                                 row = []
 
                             ins_data = self.get_ins_data(record, diagnosis)
-                
+
                 # Not new patient
                 else:
                     # Primary diagnosis has been found, continue to check for INS data
@@ -519,9 +519,9 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
 
                         if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < record.from_date:
                             ins_data = self.get_ins_data(record, diagnosis)
-        
+
         # Not Nurture-ins export
-        else:            
+        else:
             for record in self._query:
                 diagnosis = record.diagnosis
                 if not diagnosis:
@@ -531,7 +531,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                 else:
                     row = []
                 if row:
-                    yield row   
+                    yield row
 
     def make_row(self, record, diagnosis):
         '''
@@ -545,15 +545,15 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         :return: returns a CSV row with diagnosis data
         :rtype: list
         '''
-        
-        row = [col[1](record) for col in self._columns]        
-        
+
+        row = [col[1](record) for col in self._columns]
+
         if diagnosis.codes:
             for code in diagnosis.codes:
                 if code.system == "ERA-EDTA PRD":
-                    row[5] = code.code                        
+                    row[5] = code.code
                 if code.system == "ICD-10":
-                    row[6] = code.code                        
+                    row[6] = code.code
                 if code.system == "SNOMED CT":
                     row[7] = code.code
 
@@ -567,17 +567,17 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         :type record: class: queries.get_primary_diagnoses()
         :param diagnosis: A diagnosis object provided by record
         :type diagnosis: class: radar.models.diagnoses.Diagnosis
-        '''        
+        '''
 
         for group_diagnosis in diagnosis.group_diagnoses:
             if group_diagnosis.group.code == 'INS' and group_diagnosis.type.value == 'PRIMARY':
                 self.ins_data['pat_id'] = record.patient_id
-                self.ins_data['ins_dia_name'] = diagnosis.name 
+                self.ins_data['ins_dia_name'] = diagnosis.name
                 self.ins_data['ins_dia_date'] = record.from_date
                 self.ins_data['ins_biopsy_dia'] = record.biopsy_diagnosis
                 self.ins_data['ins_biopsy_dia_label'] = record.biopsy_diagnosis_label
                 self.ins_data['ins_biopsy_dia_comments'] = record.comments
-        
+
 
     def insert_ins_data(self, row):
         '''
@@ -586,7 +586,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         :param row: a list containing primary diagnosis data if any
                     otherwise a blank row the same length as headers
         :type row: list
-        '''        
+        '''
         row[27] = self.ins_data['ins_dia_name']
         self.ins_data['ins_dia_name'] = ''
         row[28] = self.ins_data['ins_dia_date']
@@ -597,7 +597,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         self.ins_data['ins_biopsy_dia_label'] = ''
         row[31] = self.ins_data['ins_biopsy_dia_comments']
         self.ins_data['ins_biopsy_dia_comments'] = ''
-        
+
 
 
 @register("comorbidities")
@@ -796,6 +796,7 @@ class TransplantExporter(Exporter):
             column("modality_label"),
             column("recipient_hla"),
             column("donor_hla"),
+            column("mismatch_hla"),
             column(
                 "date_of_cmv_infection", lambda x: format_date(x.date_of_cmv_infection)
             ),
