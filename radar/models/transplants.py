@@ -22,9 +22,9 @@ TRANSPLANT_MODALITIES = OrderedDict([
     (78, 'Live - Unknown'),    
     (20, 'Cadaver'),
     (25, 'Cadaver - With Transplant of Other Organ'),
-    (28, 'Non-Heart-Beating'),
+    (28, 'DCD - Non-Heart-Beating'),
     (29, 'Unknown'),
-    (300, 'Heart-Beating')
+    (300, 'DBD - Heart-Beating')
 ])
 
 GRAFT_LOSS_CAUSES = OrderedDict([
