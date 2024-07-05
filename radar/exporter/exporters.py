@@ -1080,12 +1080,44 @@ class SamplesExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'data.date'),
-            column('barcode', 'data.barcode'),
+            column('taken_on'),
+            column('barcode'),
+            column('epa'),
+            column('epb'),
+
+            column('lpa'),
+            column('lpb'),
+
+            column('uc'),
+            column('ub'),
+            column('ud'),
+
+            column('fub'),
+
+            column('sc'),
+            column('sa'),
+            column('sb'),
+
+            column('rna'),
+
+            column('wb')
+
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
+
+    def get_rows(self):
+        # Generate headers from column definitions
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        # Execute the query and process results in chunks
+        q = queries.get_nurture_samples(self.config)
+        for result in q.yield_per(1000):
+            # Create a row based on the result
+            print(result)
+            yield [col[1](result) for col in self._columns]
 
 
 @register('anthropometrics')
