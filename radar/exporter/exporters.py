@@ -1116,7 +1116,6 @@ class SamplesExporter(Exporter):
         q = queries.get_nurture_samples(self.config)
         for result in q.yield_per(1000):
             # Create a row based on the result
-            print(result)
             yield [col[1](result) for col in self._columns]
 
 
