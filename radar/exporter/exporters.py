@@ -1100,7 +1100,9 @@ class SamplesExporter(Exporter):
 
             column('rna'),
 
-            column('wb')
+            column('wb'),
+
+            column('protocol_id')
 
         ]
         self._columns.extend(get_meta_columns(self.config))
