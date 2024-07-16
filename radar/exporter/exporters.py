@@ -17,7 +17,6 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
 
-
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 
 exporter_map = {}
@@ -133,7 +132,6 @@ class Exporter(object):
         self._columns = []
 
     def get_rows(self):
-
         headers = [col[0] for col in self._columns]
         yield headers
         for result in self._query:
@@ -147,6 +145,7 @@ class PatientExporter(Exporter):
 
         def d(name, getter=None, anonymised_getter=None):
             return demographics_column(name, getter, anonymised_getter, identity_getter)
+
         group = self.config['patient_group']
 
         def recruited_user(x):
@@ -346,8 +345,8 @@ class DiagnosisExporter(Exporter):
             column('source_type'),
 
             column('era-edta prd'),  # 5
-            column('icd-10'),        # 6
-            column('snomed ct'),     # 7
+            column('icd-10'),  # 6
+            column('snomed ct'),  # 7
 
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
@@ -1119,6 +1118,45 @@ class SamplesExporter(Exporter):
         for result in q.yield_per(1000):
             # Create a row based on the result
             yield [col[1](result) for col in self._columns]
+
+
+@register('entries-samples')
+class EntriessamplesExporter(Exporter):
+    def setup(self):
+        self._columns = [
+            column('id', ),
+            column('patient_id'),
+            column('date', "data.date"),
+            column('visit', 'data.visit'),
+            column('barcode', 'data.barcode'),
+            column('edtaPlasmaA', 'data.edtaPlasmaA'),
+            column('edtaPlasmaB', 'data.edtaPlasmaB'),
+
+            column('lihepPlasmaA', 'data.lihepPlasmaA'),
+            column('lihepPlasmaB', 'data.lihepPlasmaB'),
+
+            column('urineC', "data.urineC"),
+            column('urineD', "data.urineD"),
+            column('urineB', "data.urineB"),
+
+            column('cfUrineB', "data.cfUrineB"),
+
+            column('serumC', "data.serumC"),
+            column('serumA', "data.serumA"),
+            column('serumB', "data.serumB"),
+
+            column('rna', "data.rna"),
+
+            column('wholeBlood', "data.wholeBlood"),
+
+            column('protocol', 'data.protocol')
+        ]
+        self.config["name"] = "samples"
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+
 
 
 @register('anthropometrics')
