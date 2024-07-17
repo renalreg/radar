@@ -1127,8 +1127,11 @@ class EntriessamplesExporter(Exporter):
             column('id', ),
             column('patient_id'),
             column('date', "data.date"),
-            column('visit', 'data.visit'),
             column('barcode', 'data.barcode'),
+            column('visit', 'data.visit'),
+
+            column('protocol', 'data.protocol'),
+
             column('edtaPlasmaA', 'data.edtaPlasmaA'),
             column('edtaPlasmaB', 'data.edtaPlasmaB'),
 
@@ -1148,15 +1151,46 @@ class EntriessamplesExporter(Exporter):
             column('rna', "data.rna"),
 
             column('wholeBlood', "data.wholeBlood"),
-
-            column('protocol', 'data.protocol')
         ]
         self.config["name"] = "samples"
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
 
+    def get_rows(self):
+        # Generate headers from column definitions
+        headers = [col[0] for col in self._columns]
+        yield headers
 
+        # Define mappings for protocol and visit values
+        protocol_options = {
+            1: "ADULT",
+            2: "CHILDREN > 30KG",
+            4: "CHILDREN 15-30KG",
+            5: "CHILDREN < 15KG"
+        }
+        visit_options = {
+            1: "Baseline, Disease F. Up",
+            2: "2nd visit",
+            3: "Relapse",
+            4: "Remission",
+        }
+
+        # Execute the query and process results in chunks
+        query = self._query
+        for result in query.yield_per(1000):
+            row = []
+            for col_name, col_func in self._columns:
+                value = col_func(result)
+                # Check if the column is 'protocol' and apply the corresponding mapping
+                if col_name == 'protocol':
+                    value = protocol_options.get(value, value)
+                # Check if the column is 'visit' and apply the corresponding mapping
+                if col_name == 'visit':
+                    value = visit_options.get(value, value)
+                row.append(value)
+            # Yield the constructed row
+            yield row
 
 
 @register('anthropometrics')
