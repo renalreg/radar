@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Boolean, text
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -37,6 +37,13 @@ class PatientDemographics(db.Model, MetaModelMixin):
 
     nationality_id = Column(Integer, ForeignKey('nationalities.id'))
     nationality = relationship('Nationality')
+
+    opt_out_surveys = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+    opt_out_newsletters = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
 
     @property
     def year_of_birth(self):
