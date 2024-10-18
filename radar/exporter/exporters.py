@@ -17,7 +17,6 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
 
-
 ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
 
 exporter_map = {}
@@ -133,7 +132,6 @@ class Exporter(object):
         self._columns = []
 
     def get_rows(self):
-
         headers = [col[0] for col in self._columns]
         yield headers
         for result in self._query:
@@ -147,6 +145,7 @@ class PatientExporter(Exporter):
 
         def d(name, getter=None, anonymised_getter=None):
             return demographics_column(name, getter, anonymised_getter, identity_getter)
+
         group = self.config['patient_group']
 
         def recruited_user(x):
@@ -346,8 +345,8 @@ class DiagnosisExporter(Exporter):
             column('source_type'),
 
             column('era-edta prd'),  # 5
-            column('icd-10'),        # 6
-            column('snomed ct'),     # 7
+            column('icd-10'),  # 6
+            column('snomed ct'),  # 7
 
             column('diagnosis', 'diagnosis.name'),
             column('diagnosis_text'),
@@ -1080,12 +1079,118 @@ class SamplesExporter(Exporter):
         self._columns = [
             column('id'),
             column('patient_id'),
-            column('date', 'data.date'),
-            column('barcode', 'data.barcode'),
+            column('taken_on'),
+            column('barcode'),
+            column('epa'),
+            column('epb'),
+
+            column('lpa'),
+            column('lpb'),
+
+            column('uc'),
+            column('ub'),
+            column('ud'),
+
+            column('fub'),
+
+            column('sc'),
+            column('sa'),
+            column('sb'),
+
+            column('rna'),
+
+            column('wb'),
+
+            column('protocol_id')
+
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
+
+    def get_rows(self):
+        # Generate headers from column definitions
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        # Execute the query and process results in chunks
+        q = queries.get_nurture_samples(self.config)
+        for result in q.yield_per(1000):
+            # Create a row based on the result
+            yield [col[1](result) for col in self._columns]
+
+
+@register('entries-samples')
+class EntriessamplesExporter(Exporter):
+    def setup(self):
+        self._columns = [
+            column('id', ),
+            column('patient_id'),
+            column('date', "data.date"),
+            column('barcode', 'data.barcode'),
+            column('visit', 'data.visit'),
+
+            column('protocol', 'data.protocol'),
+
+            column('edtaPlasmaA', 'data.edtaPlasmaA'),
+            column('edtaPlasmaB', 'data.edtaPlasmaB'),
+
+            column('lihepPlasmaA', 'data.lihepPlasmaA'),
+            column('lihepPlasmaB', 'data.lihepPlasmaB'),
+
+            column('urineC', "data.urineC"),
+            column('urineD', "data.urineD"),
+            column('urineB', "data.urineB"),
+
+            column('cfUrineB', "data.cfUrineB"),
+
+            column('serumC', "data.serumC"),
+            column('serumA', "data.serumA"),
+            column('serumB', "data.serumB"),
+
+            column('rna', "data.rna"),
+
+            column('wholeBlood', "data.wholeBlood"),
+        ]
+        self.config["name"] = "samples"
+        self._columns.extend(get_meta_columns(self.config))
+        q = queries.get_form_data(self.config)
+        self._query = q
+
+    def get_rows(self):
+        # Generate headers from column definitions
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        # Define mappings for protocol and visit values
+        protocol_options = {
+            1: "ADULT",
+            2: "CHILDREN > 30KG",
+            4: "CHILDREN 15-30KG",
+            5: "CHILDREN < 15KG"
+        }
+        visit_options = {
+            1: "Baseline, Disease F. Up",
+            2: "2nd visit",
+            3: "Relapse",
+            4: "Remission",
+        }
+
+        # Execute the query and process results in chunks
+        query = self._query
+        for result in query.yield_per(1000):
+            row = []
+            for col_name, col_func in self._columns:
+                value = col_func(result)
+                # Check if the column is 'protocol' and apply the corresponding mapping
+                if col_name == 'protocol':
+                    value = protocol_options.get(value, value)
+                # Check if the column is 'visit' and apply the corresponding mapping
+                if col_name == 'visit':
+                    value = visit_options.get(value, value)
+                row.append(value)
+            # Yield the constructed row
+            yield row
 
 
 @register('anthropometrics')
