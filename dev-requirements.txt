@@ -18,5 +18,5 @@ pyflakes==1.6.0
 pytest==2.9.2
 pytest-cov==2.2.1
 tox==2.3.1
-virtualenv==13.1.2
+virtualenv==20.26.6
 -r requirements.txt
