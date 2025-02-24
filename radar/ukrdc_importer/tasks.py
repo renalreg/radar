@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from celery import shared_task
 from cornflake.exceptions import ValidationError
@@ -45,7 +46,7 @@ def parse_patient_id(value):
     return value
 
 
-def get_patient(patient_id):
+def get_patient(patient_id)->Patient:
     """Get a patient by id."""
 
     return Patient.query.get(patient_id)
@@ -83,6 +84,25 @@ def log_data_import(patient):
     log.data = {"patient_id": patient.id}
     db.session.add(log)
 
+
+def withdrawn_consent_cohorts(patient: Patient) -> bool:
+    """
+    Checks if the given patient belongs to withdrawn consent cohorts.
+
+    Returns:
+        bool: True if the patient is in a withdrawn consent cohort, False otherwise.
+    """
+    withdrawn_consent_codes = {"CONS_WDTWN", "NOCON"}
+    withdrawn_consent_ids = {182, 152}
+    cohorts:List[Group] = patient.cohorts
+
+    if not cohorts:  # Handles None or empty list
+        return False
+
+    return any(
+        cohort.code in withdrawn_consent_codes and cohort.id in withdrawn_consent_ids
+        for cohort in cohorts
+    )
 
 @shared_task(ignore_result=True, queue=QUEUE)
 def import_sda(data, sequence_number, patient_id=None):
@@ -137,6 +157,12 @@ def import_sda(data, sequence_number, patient_id=None):
     if patient is None:
         logger.error("Patient not found id=%s", patient_id)
         return False
+
+    # Check that the patient is not within the withdrawn consent cohorts
+    if withdrawn_consent_cohorts(patient):
+        logger.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
+        return False
+
 
     # Lock the patient while we import the data
     # Simulatenous updates could result in inconsistency otherwise

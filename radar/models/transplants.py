@@ -19,12 +19,12 @@ TRANSPLANT_MODALITIES = OrderedDict([
     (24, 'Live - Gentically Unrelated'),
     (26, 'Live - With Transplant of Other Organ'),
     (27, 'Live - Non-UK'),
-    (78, 'Live - Unknown'),    
+    (78, 'Live - Unknown'),
     (20, 'Cadaver'),
     (25, 'Cadaver - With Transplant of Other Organ'),
-    (28, 'Non-Heart-Beating'),
+    (28, 'DCD - Non-Heart-Beating'),
     (29, 'Unknown'),
-    (300, 'Heart-Beating')
+    (300, 'DBD - Heart-Beating')
 ])
 
 GRAFT_LOSS_CAUSES = OrderedDict([
@@ -59,6 +59,7 @@ class Transplant(db.Model, MetaModelMixin):
     modality = Column(Integer, nullable=False)
     recipient_hla = Column(String)
     donor_hla = Column(String)
+    mismatch_hla = Column(String)
     date_of_cmv_infection = Column(Date)
     recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)

@@ -60,6 +60,9 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
     nationality = NationalityField(required=False)
     ethnicity = EthnicityField(required=False)
 
+    opt_out_surveys = fields.BooleanField(required=False)
+    opt_out_newsletters = fields.BooleanField(required=False)
+
     class Meta(object):
         model_class = PatientDemographics
 
