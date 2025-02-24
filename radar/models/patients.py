@@ -104,8 +104,8 @@ class Patient(db.Model, MetaModelMixin):
         return [x for x in self.group_patients if x.current]
 
     @hybrid_method
-    def recruited_date(self, group=None):
-        group_patient = self._recruited_group_patient(group)
+    def recruited_date(self, group=None, group_type=None):
+        group_patient = self._recruited_group_patient(group, group_type)
 
         if group_patient is None:
             from_date = None
@@ -115,7 +115,7 @@ class Patient(db.Model, MetaModelMixin):
         return from_date
 
     @recruited_date.expression
-    def recruited_date(cls, group=None):
+    def recruited_date(cls, group=None, group_type=None):
         q = select([func.min(GroupPatient.from_date)])
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
         q = q.where(GroupPatient.patient_id == cls.id)
@@ -123,7 +123,8 @@ class Patient(db.Model, MetaModelMixin):
         if group is not None:
             q = q.where(Group.id == group.id)
         else:
-            q = q.where(Group.type == GROUP_TYPE.SYSTEM)
+            gt = GROUP_TYPE.HOSPITAL if group_type else GROUP_TYPE.SYSTEM
+            q = q.where(Group.type == gt)
 
         q = q.as_scalar()
 
@@ -150,22 +151,33 @@ class Patient(db.Model, MetaModelMixin):
 
         return q
 
-    def _recruited_group_patient(self, group=None):
+    def _recruited_group_patient(self, group=None, group_type=None):
         from_date = None
         recruited_group_patient = None
 
-        for group_patient in self.group_patients:
-            if (
-                (group is not None and group_patient.group == group)
-                or (group is None and group_patient.group.type == GROUP_TYPE.SYSTEM)
-            ) and (from_date is None or group_patient.from_date < from_date):
-                from_date = group_patient.from_date
-                recruited_group_patient = group_patient
+        def find_group_patient(gt):
+            nonlocal from_date, recruited_group_patient
+            for group_patient in self.group_patients:
+                if (
+                    (group is not None and group_patient.group == group)
+                    or (group is None and group_patient.group.type == gt)
+                ) and (from_date is None or group_patient.from_date < from_date):
+                    from_date = group_patient.from_date
+                    recruited_group_patient = group_patient
+
+        # Initial search with specified group type or default to HOSPITAL
+        initial_gt = GROUP_TYPE.HOSPITAL if group_type else GROUP_TYPE.SYSTEM
+        find_group_patient(initial_gt)
+
+        # Retry with SYSTEM if nothing found and the initial search was not SYSTEM
+        if not recruited_group_patient and initial_gt != GROUP_TYPE.SYSTEM:
+            find_group_patient(GROUP_TYPE.SYSTEM)
 
         return recruited_group_patient
 
-    def recruited_user(self, group=None):
-        group_patient = self._recruited_group_patient(group)
+
+    def recruited_user(self, group=None, group_type=None):
+        group_patient = self._recruited_group_patient(group, group_type)
 
         if group_patient is None:
             user = None
@@ -174,8 +186,8 @@ class Patient(db.Model, MetaModelMixin):
 
         return user
 
-    def recruited_group(self, group=None):
-        group_patient = self._recruited_group_patient(group)
+    def recruited_group(self, group=None, group_type=None):
+        group_patient = self._recruited_group_patient(group, group_type)
 
         if group_patient is None:
             group = None
