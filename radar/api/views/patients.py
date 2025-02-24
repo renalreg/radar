@@ -210,7 +210,6 @@ class PatientListCSVView(ApiView):
         for patient in patients:
             # Wrap the patient so demographics aren't exposed to unprivileged users
             patient = SkipProxy(PatientProxy(patient, current_user))
-
             output = []
             output.append(patient.id)
             output.append(patient.first_name)
@@ -225,9 +224,9 @@ class PatientListCSVView(ApiView):
             output.append(patient.ethnicity_label)
             output.append(get_attrs(patient, "primary_patient_number", "number"))
             output.append("Y" if patient.ukrdc else "N")
-            output.append(patient.recruited_date())
-            output.append(get_attrs(patient.recruited_group(), "name"))
-            output.append(get_attrs(patient.recruited_group(), "code"))
+            output.append(patient.recruited_date(group_type="HOSPITAL"))
+            output.append(get_attrs(patient.recruited_group(group_type="HOSPITAL"), "name"))
+            output.append(get_attrs(patient.recruited_group(group_type="HOSPITAL"), "code"))
             output.append(get_groups(patient, GROUP_TYPE.COHORT))
             output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
             output.append(get_attrs(patient, "nurture_data", "signed_off_state"))
