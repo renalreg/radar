@@ -49,6 +49,8 @@ MEDICATION_DOSE_UNITS = OrderedDict(
         ("patch", "Patch"),
         ("sachet", "Sachet"),
         ("tbsp", "Table Spoon"),
+        ("units", "Units"),
+        ("other", "Other"),
     ]
 )
 
