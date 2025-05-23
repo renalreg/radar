@@ -3,7 +3,6 @@ import logging
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
-from radar.logging.logger import PatientLoggerAdapter
 from radar.models.demographics import Ethnicity
 from radar.models.patient_demographics import PatientDemographics
 from radar.ukrdc_importer.serializers import PatientSerializer

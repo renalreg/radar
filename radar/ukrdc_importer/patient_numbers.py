@@ -13,7 +13,6 @@ from radar.ukrdc_importer.utils import (
     unique_list,
     validate_list,
 )
-from radar.logging.logger import PatientLoggerAdapter
 
 
 logger = logging.getLogger(__name__)
