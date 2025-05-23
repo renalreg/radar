@@ -29,9 +29,9 @@ class SDAName(object):
         return self.data['family_name']
 
 
-def parse_aliases(sda_names):
+def parse_aliases(sda_names, adapter):
     def log(index, sda_name, e):
-        logger.error('Ignoring invalid alias index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
+        adapter.error('Ignoring invalid alias index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
     serializer = NameSerializer()
     sda_names = validate_list(sda_names, serializer, invalid_f=log)
@@ -40,12 +40,12 @@ def parse_aliases(sda_names):
     return sda_names
 
 
-def unique_aliases(sda_names):
+def unique_aliases(sda_names, adapter):
     def key(sda_name):
         return (sda_name.given_name, sda_name.family_name)
 
     def log(sda_name):
-        logger.warning('Ignoring duplicate alias')
+        adapter.warning('Ignoring duplicate alias')
 
     sda_names = unique_list(sda_names, key_f=key, duplicate_f=log)
 
@@ -63,9 +63,9 @@ def get_aliases(patient):
     return q.all()
 
 
-def sync_aliases(patient, alises_to_keep):
+def sync_aliases(patient, alises_to_keep, adapter):
     def log(alias):
-        logger.info('Deleting alias id={}'.format(alias.id))
+        adapter.info('Deleting alias id={}'.format(alias.id))
 
     aliases = get_aliases(patient)
     delete_list(aliases, alises_to_keep, delete_f=log)
@@ -75,7 +75,7 @@ def build_alias_id(patient, sda_name):
     return build_id(patient.id, PatientAlias.__tablename__, sda_name.given_name, sda_name.family_name)
 
 
-def convert_aliases(patient, sda_names):
+def convert_aliases(patient, sda_names, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
@@ -86,10 +86,10 @@ def convert_aliases(patient, sda_names):
         alias = get_alias(alias_id)
 
         if alias is None:
-            logger.info('Creating alias id={id}'.format(id=alias_id))
+            adapter.info('Creating alias id={id}'.format(id=alias_id))
             alias = PatientAlias(id=alias_id)
         else:
-            logger.info('Updating alias id={id}'.format(id=alias_id))
+            adapter.info('Updating alias id={id}'.format(id=alias_id))
 
         alias.patient = patient
         alias.source_group = source_group
@@ -106,12 +106,12 @@ def convert_aliases(patient, sda_names):
     return aliases
 
 
-def import_aliases(patient, sda_names):
-    logger.info('Importing aliases')
+def import_aliases(patient, sda_names, adapter):
+    adapter.info('Importing aliases')
 
-    sda_names = parse_aliases(sda_names)
-    sda_names = unique_aliases(sda_names)
-    aliases = convert_aliases(patient, sda_names)
-    sync_aliases(patient, aliases)
+    sda_names = parse_aliases(sda_names, adapter)
+    sda_names = unique_aliases(sda_names, adapter)
+    aliases = convert_aliases(patient, sda_names, adapter)
+    sync_aliases(patient, aliases, adapter)
 
-    logger.info('Imported {n} alias(es)'.format(n=len(aliases)))
+    adapter.info('Imported {n} alias(es)'.format(n=len(aliases)))

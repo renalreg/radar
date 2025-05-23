@@ -74,9 +74,9 @@ class SDAAddress(object):
         return postcode
 
 
-def parse_addresses(sda_addresses):
+def parse_addresses(sda_addresses,adapter):
     def log(index, sda_address, e):
-        logger.error('Ignoring invalid address index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
+        adapter.error('Ignoring invalid address index={index}, errors={errors}'.format(index=index, errors=e.flatten()))
 
     serializer = AddressSerializer()
     sda_addresses = validate_list(sda_addresses, serializer, invalid_f=log)
@@ -85,12 +85,12 @@ def parse_addresses(sda_addresses):
     return sda_addresses
 
 
-def unique_addresses(sda_addresses):
+def unique_addresses(sda_addresses, adapter):
     def key(sda_address):
         return (sda_address.street, sda_address.zip)
 
     def log(sda_address):
-        logger.warning('Ignoring duplicate address')
+        adapter.warning('Ignoring duplicate address')
 
     sda_addresses = unique_list(sda_addresses, key_f=key, duplicate_f=log)
 
@@ -108,9 +108,9 @@ def get_addresses(patient):
     return q.all()
 
 
-def sync_addresses(patient, addresses_to_keep):
+def sync_addresses(patient, addresses_to_keep, adapter):
     def log(address):
-        logger.info('Deleting address id={id}'.format(id=address.id))
+        adapter.info('Deleting address id={id}'.format(id=address.id))
 
     addresses = get_addresses(patient)
     delete_list(addresses, addresses_to_keep, delete_f=log)
@@ -125,7 +125,7 @@ def build_address_id(patient, sda_address):
     )
 
 
-def convert_addresses(patient, sda_addresses):
+def convert_addresses(patient, sda_addresses, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
@@ -136,10 +136,10 @@ def convert_addresses(patient, sda_addresses):
         address = get_address(address_id)
 
         if address is None:
-            logger.info('Creating address id={id}'.format(id=address_id))
+            adapter.info('Creating address id={id}'.format(id=address_id))
             address = PatientAddress(id=address_id)
         else:
-            logger.info('Updating address id={id}'.format(id=address_id))
+            adapter.info('Updating address id={id}'.format(id=address_id))
 
         address.patient = patient
         address.source_group = source_group
@@ -161,12 +161,12 @@ def convert_addresses(patient, sda_addresses):
     return addresses
 
 
-def import_addresses(patient, sda_addresses):
-    logger.info('Importing addresses: %s', patient.id)
+def import_addresses(patient, sda_addresses, adapter):
+    adapter.info('Importing addresses: %s', patient.id)
 
-    sda_addresses = parse_addresses(sda_addresses)
-    sda_addresses = unique_addresses(sda_addresses)
-    addresses = convert_addresses(patient, sda_addresses)
-    sync_addresses(patient, addresses)
+    sda_addresses = parse_addresses(sda_addresses, adapter)
+    sda_addresses = unique_addresses(sda_addresses, adapter)
+    addresses = convert_addresses(patient, sda_addresses, adapter)
+    sync_addresses(patient, addresses, adapter)
 
-    logger.info('Imported {n} address(es)'.format(n=len(addresses)))
+    adapter.info('Imported {n} address(es)'.format(n=len(addresses)))

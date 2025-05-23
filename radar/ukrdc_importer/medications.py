@@ -71,9 +71,9 @@ class SDAMedication(object):
         return self.data.get("dose_text", None)
 
 
-def parse_medications(sda_medications):
+def parse_medications(sda_medications, adapter):
     def log(index, sda_medication, e):
-        logger.error(
+        adapter.error(
             "Ignoring invalid medication index={index}, errors={errors}".format(
                 index=index, errors=e.flatten()
             )
@@ -86,13 +86,13 @@ def parse_medications(sda_medications):
     return sda_medications
 
 
-def unique_medications(sda_medications):
+def unique_medications(sda_medications,adapter):
     def key(sda_medication):
         return sda_medication.external_id
 
     def log(sda_medication):
         external_id = sda_medication.external_id
-        logger.warning("Ignoring duplicate medication external_id=%s", external_id)
+        adapter.warning("Ignoring duplicate medication external_id=%s", external_id)
 
     sda_medications = unique_list(sda_medications, key_f=key, duplicate_f=log)
 
@@ -114,9 +114,9 @@ def get_medications(patient):
     return q.all()
 
 
-def sync_medications(patient, medications_to_keep):
+def sync_medications(patient, medications_to_keep, adapter):
     def log(medication):
-        logger.info("Deleting medication id={}".format(medication.id))
+        adapter.info("Deleting medication id={}".format(medication.id))
 
     medications = get_medications(patient)
     delete_list(medications, medications_to_keep, delete_f=log)
@@ -126,7 +126,7 @@ def build_medication_id(patient, group, sda_medication):
     return build_id(patient.id, Medication.__tablename__, group.id, sda_medication.external_id)
 
 
-def convert_medications(patient, sda_medications):
+def convert_medications(patient, sda_medications, adapter):
     user = get_import_user()
 
     medications = list()
@@ -137,17 +137,17 @@ def convert_medications(patient, sda_medications):
         source_group = get_group(code)
 
         if source_group is None:
-            logger.error("Ignoring medication due to unknown entering organization code=%s", code)
+            adapter.error("Ignoring medication due to unknown entering organization code=%s", code)
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)
         medication = get_medication(medication_id)
 
         if medication is None:
-            logger.info("Creating medication id={id}".format(id=medication_id))
+            adapter.info("Creating medication id={id}".format(id=medication_id))
             medication = Medication(id=medication_id)
         else:
-            logger.info("Updating medication id={id}".format(id=medication_id))
+            adapter.info("Updating medication id={id}".format(id=medication_id))
 
         medication.patient = patient
         medication.source_group = source_group
@@ -172,14 +172,14 @@ def convert_medications(patient, sda_medications):
     return medications
 
 
-def import_medications(patient, sda_medications):
-    logger.info("Importing medications")
+def import_medications(patient, sda_medications, adapter):
+    adapter.info("Importing medications")
 
     preload_medications(patient)
 
-    sda_medications = parse_medications(sda_medications)
-    sda_medications = unique_medications(sda_medications)
-    medications = convert_medications(patient, sda_medications)
-    sync_medications(patient, medications)
+    sda_medications = parse_medications(sda_medications, adapter)
+    sda_medications = unique_medications(sda_medications, adapter)
+    medications = convert_medications(patient, sda_medications, adapter)
+    sync_medications(patient, medications, adapter)
 
-    logger.info("Imported {n} medication(s)".format(n=len(medications)))
+    adapter.info("Imported {n} medication(s)".format(n=len(medications)))

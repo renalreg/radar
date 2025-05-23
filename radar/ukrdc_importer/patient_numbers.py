@@ -13,6 +13,7 @@ from radar.ukrdc_importer.utils import (
     unique_list,
     validate_list,
 )
+from radar.logging.logger import PatientLoggerAdapter
 
 
 logger = logging.getLogger(__name__)
@@ -35,9 +36,9 @@ class SDAPatientNumber(object):
         return self.data['organization']['code']
 
 
-def parse_patient_numbers(sda_patient_numbers):
+def parse_patient_numbers(sda_patient_numbers,adapter):
     def log(index, sda_medication, e):
-        logger.error(
+        adapter.error(
             'Ignoring invalid patient number index={index}, errors={errors}'.format(
                 index=index,
                 errors=e.flatten()
@@ -51,14 +52,14 @@ def parse_patient_numbers(sda_patient_numbers):
     return sda_patient_numbers
 
 
-def unique_patient_numbers(sda_patient_numbers):
+def unique_patient_numbers(sda_patient_numbers,adapter):
     def key(sda_patient_number):
         return sda_patient_number.organization
 
     def log(sda_patient_number):
-        logger.warning('Ignoring duplicate patient number')
+        adapter.warning(f'Ignoring duplicate patient number {sda_patient_number}')
 
-    sda_patient_numbers = unique_list(sda_patient_numbers, key_f=key, duplicate_f=None)
+    sda_patient_numbers = unique_list(sda_patient_numbers, key_f=key, duplicate_f=log)
 
     return sda_patient_numbers
 
@@ -74,9 +75,9 @@ def get_patient_numbers(patient):
     return q.all()
 
 
-def sync_patient_numbers(patient, patient_numbers_to_keep):
+def sync_patient_numbers(patient, patient_numbers_to_keep,adapter):
     def log(patient_number):
-        logger.info('Deleting patient number id={}'.format(patient_number.id))
+        adapter.info('Deleting patient number id={}'.format(patient_number.id))
 
     patient_numbers = get_patient_numbers(patient)
     delete_list(patient_numbers, patient_numbers_to_keep, delete_f=log)
@@ -86,7 +87,7 @@ def build_patient_number_id(patient, sda_patient_number):
     return build_id(patient.id, PatientNumber.__tablename__, sda_patient_number.organization)
 
 
-def convert_patient_numbers(patient, sda_patient_numbers):
+def convert_patient_numbers(patient, sda_patient_numbers, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
@@ -98,7 +99,7 @@ def convert_patient_numbers(patient, sda_patient_numbers):
         number_group = get_group(code)
 
         if number_group is None:
-            logger.error('Ignoring patient number due to unknown organization code={code}'.format(code=code))
+            adapter.error('Ignoring patient number due to unknown organization code={code}'.format(code=code))
             continue
 
         # Ignore patient numbers for system groups
@@ -109,10 +110,10 @@ def convert_patient_numbers(patient, sda_patient_numbers):
         patient_number = get_patient_number(patient_number_id)
 
         if patient_number is None:
-            logger.info('Creating patient number id={id}'.format(id=patient_number_id))
+            adapter.info('Creating patient number id={id}'.format(id=patient_number_id))
             patient_number = PatientNumber(id=patient_number_id)
         else:
-            logger.info('Updating patient number id={id}'.format(id=patient_number_id))
+            adapter.info('Updating patient number id={id}'.format(id=patient_number_id))
 
         patient_number.patient = patient
         patient_number.source_group = source_group
@@ -129,12 +130,12 @@ def convert_patient_numbers(patient, sda_patient_numbers):
     return patient_numbers
 
 
-def import_patient_numbers(patient, sda_patient_numbers):
-    logger.info('Importing patient numbers')
+def import_patient_numbers(patient, sda_patient_numbers,adapter):
+    adapter.info('Importing patient numbers')
 
-    sda_patient_numbers = parse_patient_numbers(sda_patient_numbers)
-    sda_patient_numbers = unique_patient_numbers(sda_patient_numbers)
-    patient_numbers = convert_patient_numbers(patient, sda_patient_numbers)
-    sync_patient_numbers(patient, patient_numbers)
+    sda_patient_numbers = parse_patient_numbers(sda_patient_numbers, adapter)
+    sda_patient_numbers = unique_patient_numbers(sda_patient_numbers, adapter)
+    patient_numbers = convert_patient_numbers(patient, sda_patient_numbers, adapter)
+    sync_patient_numbers(patient, patient_numbers, adapter)
 
-    logger.info('Imported {n} patient number(s)'.format(n=len(patient_numbers)))
+    adapter.info('Imported {n} patient number(s)'.format(n=len(patient_numbers)))

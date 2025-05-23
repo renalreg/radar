@@ -84,9 +84,9 @@ class SDALabOrder(object):
         return get_path(self.data, 'entered_at', 'code')
 
 
-def parse_results(sda_lab_orders):
+def parse_results(sda_lab_orders, adapter):
     def log(index, sda_lab_order, e):
-        logger.error(
+        adapter.error(
             'Ignoring invalid lab order index={index}, errors={errors}'.format(
                 index=index,
                 errors=e.flatten()
@@ -100,13 +100,13 @@ def parse_results(sda_lab_orders):
     return sda_lab_orders
 
 
-def unique_results(sda_lab_orders):
+def unique_results(sda_lab_orders, adapter):
     def key(sda_lab_order):
         return sda_lab_order.external_id
 
     def log(sda_lab_order):
         external_id = sda_lab_order.external_id
-        logger.warning('Ignoring duplicate lab order external_id={external_id}'.format(external_id=external_id))
+        adapter.warning('Ignoring duplicate lab order external_id={external_id}'.format(external_id=external_id))
 
     sda_lab_orders = unique_list(sda_lab_orders, key_f=key, duplicate_f=log)
 
@@ -147,7 +147,7 @@ def find_earliest_observations(results):
     return min_dates
 
 
-def sync_results(patient, results_to_keep):
+def sync_results(patient, results_to_keep, adapter):
     """Deletes results on or after the earliest date in the input data."""
 
     # No results in the file, nothing to do
@@ -156,7 +156,7 @@ def sync_results(patient, results_to_keep):
         return
 
     def log(result):
-        logger.info('Deleting result id={}'.format(result.id))
+        adapter.info('Deleting result id={}'.format(result.id))
 
     # Find the earliest date for each observation
     min_dates = find_earliest_observations(results_to_keep)
@@ -190,7 +190,7 @@ def build_result_id(patient, group, sda_lab_result_item):
     )
 
 
-def convert_results(patient, sda_lab_orders):
+def convert_results(patient, sda_lab_orders, adapter):
     user = get_import_user()
 
     results = list()
@@ -204,7 +204,7 @@ def convert_results(patient, sda_lab_orders):
         source_group = get_group(code)
 
         if source_group is None:
-            logger.error('Ignoring lab order due to unknown entering organization code={code}'.format(code=code))
+            adapter.error('Ignoring lab order due to unknown entering organization code={code}'.format(code=code))
             continue
 
         for sda_lab_result_item in sda_lab_order.results:
@@ -212,23 +212,23 @@ def convert_results(patient, sda_lab_orders):
             observation = get_observation(test_item_code)
 
             if observation is None:
-                logger.error('Ignoring lab result due to unknown test item code={code}'.format(code=test_item_code))
+                adapter.error('Ignoring lab result due to unknown test item code={code}'.format(code=test_item_code))
                 continue
 
             dt = sda_lab_result_item.observation_time or sda_lab_order.from_time
 
             if dt is None:
-                logger.error('Ignoring lab result due to missing date')
+                adapter.error('Ignoring lab result due to missing date')
                 continue
 
             result_id = build_result_id(patient, source_group, sda_lab_result_item)
             result = get_result(result_id)
 
             if result is None:
-                logger.info('Creating result id={id}'.format(id=result_id))
+                adapter.info('Creating result id={id}'.format(id=result_id))
                 result = Result(id=result_id)
             else:
-                logger.info('Updating result id={id}'.format(id=result_id))
+                adapter.info('Updating result id={id}'.format(id=result_id))
 
             result.patient = patient
             result.source_group = source_group
@@ -247,15 +247,15 @@ def convert_results(patient, sda_lab_orders):
     return results
 
 
-def import_results(patient, sda_lab_orders):
-    logger.info('Importing results: %s', patient.id)
+def import_results(patient, sda_lab_orders, adapter):
+    adapter.info('Importing results: %s', patient.id)
 
     # Preload results so calls to get() can use the cache rather than querying the database
     preload_results(patient)
 
-    sda_lab_orders = parse_results(sda_lab_orders)
-    sda_lab_orders = unique_results(sda_lab_orders)
-    results = convert_results(patient, sda_lab_orders)
-    sync_results(patient, results)
+    sda_lab_orders = parse_results(sda_lab_orders, adapter)
+    sda_lab_orders = unique_results(sda_lab_orders, adapter)
+    results = convert_results(patient, sda_lab_orders, adapter)
+    sync_results(patient, results, adapter)
 
-    logger.info('Imported {n} result(s)'.format(n=len(results)))
+    adapter.info('Imported {n} result(s)'.format(n=len(results)))
