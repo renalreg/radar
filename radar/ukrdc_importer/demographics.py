@@ -125,13 +125,12 @@ class SDAPatient(object):
         return get_path(self.data, 'contact_info', 'email_address')
 
 
-def parse_demographics(sda_patient):
+def parse_demographics(sda_patient,adapter):
     serializer = PatientSerializer()
-
     try:
         sda_patient = serializer.run_validation(sda_patient)
     except ValidationError as e:
-        logger.error('Ignoring invalid patient errors={errors}'.format(errors=e.flatten()))
+        adapter.error('Ignoring invalid patient errors={errors}'.format(errors=e.flatten()))
         return None
 
     sda_patient = SDAPatient(sda_patient)
@@ -185,10 +184,10 @@ def convert_demographics(patient, sda_patient):
     return demographics
 
 
-def import_demographics(patient, sda_patient):
-    logger.info('Importing demographics: %s', patient.id)
+def import_demographics(patient, sda_patient,adapter):
+    adapter.info('Importing demographics: %s', patient.id)
 
-    sda_patient = parse_demographics(sda_patient)
+    sda_patient = parse_demographics(sda_patient,adapter)
 
     if sda_patient:
         convert_demographics(patient, sda_patient)

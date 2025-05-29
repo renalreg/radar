@@ -6,6 +6,7 @@ from cornflake.exceptions import ValidationError
 import sqlalchemy
 
 from radar.database import db
+from radar.logging.logger import PatientLoggerAdapter
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.models.patient_locks import PatientLock
@@ -152,15 +153,16 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Get the patient by their ID
     patient = get_patient(patient_id)
+    adapter = PatientLoggerAdapter(logger, {"patient_id": patient_id})
 
     # Patient not found (possibly the patient was deleted)
     if patient is None:
-        logger.error("Patient not found id=%s", patient_id)
+        adapter.error("Patient not found id=%s", patient_id)
         return False
 
     # Check that the patient is not within the withdrawn consent cohorts
     if withdrawn_consent_cohorts(patient):
-        logger.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
+        adapter.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
         return False
 
 
@@ -170,7 +172,7 @@ def import_sda(data, sequence_number, patient_id=None):
 
     # Check we haven't already imported a newer sequence number
     if patient_lock.sequence_number is not None and sequence_number < patient_lock.sequence_number:
-        logger.info(
+        adapter.info(
             "Skipping old sequence number %s < %s", sequence_number, patient_lock.sequence_number
         )
         return False
@@ -182,12 +184,12 @@ def import_sda(data, sequence_number, patient_id=None):
     sda_medications = sda_container.get("medications", list())
     sda_lab_orders = sda_container.get("lab_orders", list())
 
-    import_demographics(patient, data["patient"])
-    import_patient_numbers(patient, sda_patient_numbers)
-    import_aliases(patient, sda_names)
-    import_addresses(patient, sda_addresses)
-    import_medications(patient, sda_medications)
-    import_results(patient, sda_lab_orders)
+    import_demographics(patient, data["patient"], adapter)
+    import_patient_numbers(patient, sda_patient_numbers, adapter)
+    import_aliases(patient, sda_names, adapter)
+    import_addresses(patient, sda_addresses, adapter)
+    import_medications(patient, sda_medications, adapter)
+    import_results(patient, sda_lab_orders ,adapter)
 
     log_data_import(patient)
 
