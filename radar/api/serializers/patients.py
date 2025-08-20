@@ -22,17 +22,17 @@ from radar.roles import PERMISSION
 
 class RecruitedDateField(fields.DateField):
     def get_attribute(self, patient):
-        return patient.recruited_date(group_type="HOSPITAL")
+        return patient.recruited_date()
 
 
 class RecruitedGroupField(TinyGroupSerializer):
     def get_attribute(self, patient):
-        return patient.recruited_group(group_type="HOSPITAL")
+        return patient.recruited_group()
 
 
 class RecruitedUserField(TinyUserSerializer):
     def get_attribute(self, patient):
-        return patient.recruited_user(group_type="HOSPITAL")
+        return patient.recruited_user()
 
 
 class CurrentField(fields.BooleanField):
