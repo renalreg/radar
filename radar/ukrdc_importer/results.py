@@ -16,6 +16,7 @@ from radar.ukrdc_importer.utils import (
 )
 from radar.utils import get_path
 
+from ukrdc.services.codes import Codes
 
 logger = logging.getLogger(__name__)
 
@@ -190,7 +191,7 @@ def build_result_id(patient, group, sda_lab_result_item):
     )
 
 
-def convert_results(patient, sda_lab_orders, adapter):
+def convert_results(patient, sda_lab_orders, adapter, ukrdc_redis):
     user = get_import_user()
 
     results = list()
@@ -214,7 +215,11 @@ def convert_results(patient, sda_lab_orders, adapter):
             if observation is None:
                 adapter.error('Ignoring lab result due to unknown test item code={code}'.format(code=test_item_code))
                 continue
-
+            
+            if Codes().get_code_exclusion(ukrdc_redis, 'PV', test_item_code, "PKB"):
+                adapter.error(f"Code {test_item_code} is excluded")
+                continue
+            
             dt = sda_lab_result_item.observation_time or sda_lab_order.from_time
 
             if dt is None:
@@ -247,7 +252,7 @@ def convert_results(patient, sda_lab_orders, adapter):
     return results
 
 
-def import_results(patient, sda_lab_orders, adapter):
+def import_results(patient, sda_lab_orders, adapter, ukrdc_redis):
     adapter.info('Importing results: %s', patient.id)
 
     # Preload results so calls to get() can use the cache rather than querying the database
@@ -255,7 +260,7 @@ def import_results(patient, sda_lab_orders, adapter):
 
     sda_lab_orders = parse_results(sda_lab_orders, adapter)
     sda_lab_orders = unique_results(sda_lab_orders, adapter)
-    results = convert_results(patient, sda_lab_orders, adapter)
+    results = convert_results(patient, sda_lab_orders, adapter, ukrdc_redis)
     sync_results(patient, results, adapter)
 
     adapter.info('Imported {n} result(s)'.format(n=len(results)))

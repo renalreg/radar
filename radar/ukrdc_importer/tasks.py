@@ -1,5 +1,8 @@
+import os
 import logging
 from typing import List
+
+import redis
 
 from celery import shared_task
 from cornflake.exceptions import ValidationError
@@ -19,6 +22,17 @@ from radar.ukrdc_importer.patient_numbers import import_patient_numbers
 from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
+
+
+redis_host: str = os.environ.get("REDIS_HOST") or "localhost"
+redis_port: int = int(os.environ.get("REDIS_PORT", 6379))
+redis_db: int = int(os.environ.get("REDIS_DB", 0))
+ukrdc_redis = redis.Redis(
+    host=redis_host,
+    port=redis_port,
+    db=redis_db,
+    decode_responses=True,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +203,7 @@ def import_sda(data, sequence_number, patient_id=None):
     import_aliases(patient, sda_names, adapter)
     import_addresses(patient, sda_addresses, adapter)
     import_medications(patient, sda_medications, adapter)
-    import_results(patient, sda_lab_orders ,adapter)
+    import_results(patient, sda_lab_orders, adapter, ukrdc_redis)
 
     log_data_import(patient)
 
