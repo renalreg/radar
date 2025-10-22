@@ -7,7 +7,7 @@ import sqlalchemy
 
 from radar.database import db
 from radar.logging.logger import PatientLoggerAdapter
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import Group, GROUP_TYPE, GroupPatient
 from radar.models.logs import Log
 from radar.models.patient_locks import PatientLock
 from radar.models.patients import Patient
@@ -95,15 +95,17 @@ def withdrawn_consent_cohorts(patient: Patient) -> bool:
     """
     withdrawn_consent_codes = {"CONS_WDTWN", "NOCON"}
     withdrawn_consent_ids = {182, 152}
-    cohorts:List[Group] = patient.cohorts
 
-    if not cohorts:  # Handles None or empty list
-        return False
+    for gp in patient.groups:
+        group = gp.group
+        if (
+            gp.to_date is None  # active consent
+            and (group.code in withdrawn_consent_codes or group.id in withdrawn_consent_ids)
+        ):
+            return True
 
-    return any(
-        cohort.code in withdrawn_consent_codes and cohort.id in withdrawn_consent_ids
-        for cohort in cohorts
-    )
+    return False
+
 
 @shared_task(ignore_result=True, queue=QUEUE)
 def import_sda(data, sequence_number, patient_id=None):
