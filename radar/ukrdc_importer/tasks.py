@@ -96,7 +96,7 @@ def withdrawn_consent_cohorts(patient: Patient) -> bool:
     withdrawn_consent_codes = {"CONS_WDTWN", "NOCON"}
     withdrawn_consent_ids = {182, 152}
 
-    for gp in patient.groups:
+    for gp in patient.group_patients:
         group = gp.group
         if (
             gp.to_date is None  # active consent
