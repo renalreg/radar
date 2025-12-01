@@ -11,6 +11,7 @@ from sqlalchemy import (
     Integer,
     String,
     text,
+    Enum as sqlenum
 )
 from sqlalchemy.orm import backref, relationship
 
@@ -34,6 +35,10 @@ BIOPSY_DIAGNOSES = OrderedDict(
     ]
 )
 
+ANTIBODY_TYPES_list = ["Anti-PLA2R", "Anti-THSD7A"]
+ANTIBODY_TYPES = OrderedDict(
+    (v, v) for v in ANTIBODY_TYPES_list
+)
 
 @log_changes
 class PatientDiagnosis(db.Model, MetaModelMixin):
@@ -62,6 +67,11 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     clinical_picture = Column(Boolean)
     biopsy = Column(Boolean)
     biopsy_diagnosis = Column(Integer)
+    proteinuria_positive_antibody = Column(Boolean)
+    antibodies = Column(
+        sqlenum("Anti-PLA2R", "Anti-THSD7A", name="antibody_type_enum"),
+        nullable=True
+    )
     paraprotein = Column(Boolean)
 
     comments = Column(String)
