@@ -22,13 +22,14 @@ from radar.api.views.generics import (
     RetrieveModelView,
     UpdateModelView,
 )
+
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis,
-    PatientDiagnosis,
+    PatientDiagnosis, ANTIBODY_TYPES
 )
 from radar.models.groups import Group
 
@@ -170,6 +171,9 @@ class BiopsyDiagnosisListView(IntegerLookupListView):
 class GroupDiagnosisTypeListView(StringLookupListView):
     items = GROUP_DIAGNOSIS_TYPE_NAMES
 
+class AntibodyListView(StringLookupListView):
+    items = ANTIBODY_TYPES
+
 
 def register_views(app):
     app.add_url_rule('/patient-diagnoses', view_func=PatientDiagnosisListView.as_view('patient_diagnosis_list'))
@@ -186,3 +190,5 @@ def register_views(app):
         '/group-diagnosis-types',
         view_func=GroupDiagnosisTypeListView.as_view('group_diagnosis_type_list')
     )
+    app.add_url_rule('/antibodies', view_func=AntibodyListView.as_view('antibodies_list'))
+
