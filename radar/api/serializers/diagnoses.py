@@ -149,6 +149,8 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         if data["biopsy"]:
             data["antibodies"] = None
             data["proteinuria_positive_antibody"] = None
+        elif not data.get("proteinuria_positive_antibody"):
+            data["antibodies"] = None
         return data
 
     def validate_diagnosis(self, diagnosis):

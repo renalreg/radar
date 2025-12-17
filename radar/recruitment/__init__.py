@@ -325,6 +325,8 @@ class RecruitmentPatient(object):
         diagnosis.clinical_picture = self.diagnosis.get("clinical_picture")
         diagnosis.biopsy = self.diagnosis.get("biopsy")
         diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
+        diagnosis.proteinuria_positive_antibody = self.diagnosis.get("proteinuria_positive_antibody")
+        diagnosis.antibodies = self.diagnosis.get("antibodies")
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
