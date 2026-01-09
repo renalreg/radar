@@ -29,7 +29,6 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis,
     PatientDiagnosis,
-    ANTIBODY_TYPES,
 )
 
 
@@ -121,7 +120,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
     proteinuria_positive_antibody = fields.BooleanField(required=False)
-    antibodies = fields.StringLookupField(ANTIBODY_TYPES,required=False)
+
     paraprotein = fields.BooleanField(required=False)
     comments = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]

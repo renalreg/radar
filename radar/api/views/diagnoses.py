@@ -1,4 +1,7 @@
+from collections import OrderedDict
+
 from cornflake import fields, serializers
+from flask import request
 from sqlalchemy.orm import subqueryload
 
 from radar.api.permissions import AdminPermission
@@ -20,16 +23,17 @@ from radar.api.views.generics import (
     ListModelView,
     parse_args,
     RetrieveModelView,
-    UpdateModelView,
+    UpdateModelView, response_json, ApiView,
 )
-
+from radar.database import db
+from radar.models import GroupAntibody, Antibody
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis,
-    PatientDiagnosis, ANTIBODY_TYPES
+    PatientDiagnosis
 )
 from radar.models.groups import Group
 
@@ -171,8 +175,45 @@ class BiopsyDiagnosisListView(IntegerLookupListView):
 class GroupDiagnosisTypeListView(StringLookupListView):
     items = GROUP_DIAGNOSIS_TYPE_NAMES
 
+
+
+
+
+
+# Request serializer for input validation
+class GroupAntibodiesRequestSerializer(serializers.Serializer):
+    group_id = fields.IntegerField(required=True)
+
+
 class AntibodyListView(StringLookupListView):
-    items = ANTIBODY_TYPES
+    permissions = [AdminPermission]
+    @property
+    def items(self):
+        # Build the base query
+        query = self.filter_query(Antibody.query)
+
+        # Return as OrderedDict {id: id} for StringLookupListView
+        return OrderedDict((a.id, a.id) for a in query.all())
+
+    def filter_query(self, query):
+        """
+        Filter antibodies based on cohort_id query parameter.
+        Only include official antibodies mapped to the cohort's group.
+        """
+
+        # Get cohort_id from query params
+        cohort_code = request.args.get('group_id')
+        if not cohort_code:
+            return query.filter(False)  # No cohort -> return empty query
+
+        # Filter: official antibodies linked to this group
+        query = (
+            query.join(Antibody.group_antibodies)
+                 .filter(GroupAntibody.group_id == cohort_code)
+                 .filter(Antibody.is_official==True)
+                 .order_by(Antibody.id)
+        )
+        return query
 
 
 def register_views(app):
@@ -190,5 +231,6 @@ def register_views(app):
         '/group-diagnosis-types',
         view_func=GroupDiagnosisTypeListView.as_view('group_diagnosis_type_list')
     )
-    app.add_url_rule('/antibodies', view_func=AntibodyListView.as_view('antibodies_list'))
+    app.add_url_rule('/antibodies',view_func=AntibodyListView.as_view('group_antibodies'))
+
 
