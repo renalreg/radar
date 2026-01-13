@@ -6,6 +6,7 @@ from radar.api.serializers.common import GroupField, IntegerLookupField
 from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.validators import get_number_validators
 from radar.exceptions import PermissionDenied
+from radar.models.antibodies import reset_data
 from radar.models.diagnoses import BIOPSY_DIAGNOSES
 from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
 from radar.models.patient_codes import GENDERS
@@ -51,18 +52,13 @@ class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
     proteinuria_positive_antibody = fields.BooleanField(required=False)
-
+    antibody_id = fields.StringField(required=False)
+    antibody_custom = fields.StringField(required=False)
     comments = fields.StringField(required=False)
 
     def pre_validate(self, data):
-        if data["biopsy"]:
-            data["antibodies"] = None
-            data["proteinuria_positive_antibody"] = None
-        elif not data.get("proteinuria_positive_antibody"):
-            data["antibodies"] = None
-
+        data=reset_data(data)
         return data
-
 
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
     cohort_group = GroupField()
