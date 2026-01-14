@@ -11,6 +11,7 @@ import requests
 from radar.auth.sessions import current_user
 from radar.config import config
 from radar.database import db
+from radar.models.antibodies import resolve_antibody_name
 from radar.models.consents import PatientConsent
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.groups import GroupPatient
@@ -326,10 +327,13 @@ class RecruitmentPatient(object):
         diagnosis.biopsy = self.diagnosis.get("biopsy")
         diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
         diagnosis.proteinuria_positive_antibody = self.diagnosis.get("proteinuria_positive_antibody")
-        diagnosis.antibodies = self.diagnosis.get("antibodies")
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
+        antibodyname = resolve_antibody_name(self.diagnosis)
+        if antibodyname:
+            diagnosis.set_antibody(antibodyname)
+        diagnosis.antibody_id = antibodyname
         return diagnosis
 
     def _add_to_group(self, patient, group):

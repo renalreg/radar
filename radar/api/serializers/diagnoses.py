@@ -22,6 +22,7 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.database import db
+from radar.models.antibodies import resolve_antibody_name, reset_data
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,
@@ -29,7 +30,6 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE_NAMES,
     GroupDiagnosis,
     PatientDiagnosis,
-    ANTIBODY_TYPES,
 )
 
 
@@ -121,7 +121,8 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
     proteinuria_positive_antibody = fields.BooleanField(required=False)
-    antibodies = fields.StringLookupField(ANTIBODY_TYPES,required=False)
+    antibody_id = fields.StringField(required=False)
+    antibody_custom = fields.StringField(required=False) # this will overwrite antibody if antibody is 'other'
     paraprotein = fields.BooleanField(required=False)
     comments = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
@@ -136,21 +137,33 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             valid_date_for_patient("to_date"),
         ]
 
+    def create(self, data):
+        antibody_name=resolve_antibody_name(data)
+        if antibody_name:
+            data.pop("antibody_id",None)
+            data.pop("antibody_custom",None)
+        instance = super().create(data)
+        if antibody_name:
+            instance.set_antibody(antibody_name)
+        return instance
+
+    def update(self, instance, data):
+        antibody_name = resolve_antibody_name(data)
+        if antibody_name:
+            data.pop("antibody_id",None)
+            data.pop("antibody_custom",None)
+        instance = super().update(instance, data)
+        if antibody_name:
+            instance.set_antibody(antibody_name)
+        return instance
+
+
     def pre_validate(self, data):
         # Ignore the text diagnosis if there is a coded diagnosis
         if data["diagnosis"]:
             data["diagnosis_text"] = None
 
-        # Ignore the biopsy diagnosis if a biopsy wasn't peformed
-        if not data["biopsy"]:
-            data["biopsy_diagnosis"] = None
-
-        # Set the data to blank if bipsy is yes
-        if data["biopsy"]:
-            data["antibodies"] = None
-            data["proteinuria_positive_antibody"] = None
-        elif not data.get("proteinuria_positive_antibody"):
-            data["antibodies"] = None
+        data=reset_data(data)
         return data
 
     def validate_diagnosis(self, diagnosis):

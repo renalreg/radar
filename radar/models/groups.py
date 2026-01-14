@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List
 
 import pytz
 from sqlalchemy import (
@@ -23,6 +24,7 @@ from sqlalchemy.orm import backref, relationship, synonym
 
 from radar.config import config
 from radar.database import db
+from radar.models.antibodies import Antibody, GroupAntibody
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
 from radar.models.types import EnumToStringType, EnumType
@@ -75,6 +77,20 @@ class Group(db.Model):
     is_transplant_centre = Column(Boolean, nullable=True, default=False, server_default=text('false'))
     country_code = Column(String, ForeignKey('countries.code'), nullable=True)
     country = relationship('Country', foreign_keys=[country_code], backref=backref('groups'))
+    group_antibodies = relationship('GroupAntibody',back_populates='group',cascade='all, delete-orphan')
+    @property
+    def antibodies(self)->List[Antibody]:
+        """
+        Returns antibodies allowed for this group.
+        Only valid for COHORT groups.
+        """
+        if self.type == GROUP_TYPE.COHORT:
+            found=(db.session.query(Antibody)
+                    .join(GroupAntibody, Antibody.id == GroupAntibody.c.antibody_id)
+                    .filter(GroupAntibody.c.group_id == self.id)
+                    .all())
+            return found
+        return []
 
     @property
     def patients(self):

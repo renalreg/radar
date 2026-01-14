@@ -1,3 +1,4 @@
+import re
 from collections import OrderedDict
 from enum import Enum
 
@@ -11,11 +12,12 @@ from sqlalchemy import (
     Integer,
     String,
     text,
-    Enum as sqlenum
+    Enum as sqlenum, or_, desc
 )
 from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
+from radar.models.antibodies import Antibody
 from radar.models.common import (
     MetaModelMixin,
     patient_id_column,
@@ -35,11 +37,8 @@ BIOPSY_DIAGNOSES = OrderedDict(
     ]
 )
 
-ANTIBODY_TYPES_list = ["Anti-PLA2R", "Anti-THSD7A"]
-ANTIBODY_TYPES = OrderedDict(
-    (v, v) for v in ANTIBODY_TYPES_list
-)
 
+normalize_name = lambda name: re.sub(r"\s+", " ", name.strip()).lower() if name else ""
 @log_changes
 class PatientDiagnosis(db.Model, MetaModelMixin):
     __tablename__ = "patient_diagnoses"
@@ -68,10 +67,8 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     biopsy = Column(Boolean)
     biopsy_diagnosis = Column(Integer)
     proteinuria_positive_antibody = Column(Boolean)
-    antibodies = Column(
-        sqlenum("Anti-PLA2R", "Anti-THSD7A", name="antibody_type_enum"),
-        nullable=True
-    )
+    antibody_id = Column(String, ForeignKey("antibodies.id"), nullable=True)
+    antibody = relationship("Antibody", foreign_keys=[antibody_id])
     paraprotein = Column(Boolean)
 
     comments = Column(String)
@@ -114,6 +111,45 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
             return self.diagnosis.name
         else:
             return self.diagnosis_text
+
+    def set_antibody(self, name: str):
+        """
+        Assigns an antibody to this diagnosis.
+        Prefers official antibodies if multiple matches exist.
+        Creates an unofficial antibody if none exists.
+        """
+        if not name:
+            self.antibody_id = None
+            return
+
+        normalized = normalize_name(name)  # e.g., "Anti-PLA2R" -> "anti-pla2r"
+
+        # Query for matching antibodies
+        antibody = (
+            db.session.query(Antibody)
+            .filter(
+                or_(
+                    Antibody.id == name,        # exact match
+                    Antibody.id == normalized   # normalized match
+                )
+            )
+            .order_by(desc(Antibody.is_official))  # official first
+            .first()  # get one match or None
+        )
+
+        # If none found → create unofficial antibody
+        if antibody is None:
+            antibody = Antibody(
+                id=normalized,        # use normalized string as ID
+                is_official=False
+            )
+            db.session.add(antibody)
+            db.session.flush()       # TODO is this correct
+
+        # Assign FK
+        self.antibody_id = antibody.id
+
+
 
 
 Index("patient_diagnoses_patient_idx", PatientDiagnosis.patient_id)
