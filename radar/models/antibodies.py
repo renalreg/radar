@@ -58,7 +58,7 @@ def resolve_antibody_name(data):
     Decide which antibody name to use. used in ui
     """
     if data.get("antibody_id") == "OTHER":
-        return data.get("antibody_custom")
+        return data.get("antibody_custom").lower()
     return data.get("antibody_id")
 
 def reset_data(data):
