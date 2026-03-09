@@ -48,7 +48,7 @@ class EthnicGroupSerializer(serializers.Serializer):
         # Check if both are empty / missing / whitespace-only
         if not (code and str(code).strip()) and not (description and str(description).strip()):
             # Skip this field entirely in parent serializer
-            raise serializers.SkipField()
+            raise None
 
         # Otherwise, return the valid data
         return data
