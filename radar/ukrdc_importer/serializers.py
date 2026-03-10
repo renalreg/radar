@@ -37,6 +37,21 @@ class CodeOrDescriptionSerializer(serializers.Serializer):
 
         raise ValidationError({"code or description": "At least one is required"})
 
+class EthnicGroupSerializer(serializers.Serializer):
+    code = fields.StringField(required=False)
+    description = fields.StringField(required=False)
+
+    def validate(self, data):
+        # Get values
+        code = data.get("code")
+        description = data.get("description")
+        # Check if both are empty / missing / whitespace-only
+        if not (code and str(code).strip()) and not (description and str(description).strip()):
+            # Skip this field entirely in parent serializer
+            raise None
+
+        # Otherwise, return the valid data
+        return data
 
 class EnteringOrganizationSerializer(serializers.Serializer):
     code = fields.StringField()
@@ -70,7 +85,7 @@ class PatientSerializer(serializers.Serializer):
     birth_time = SDADateTimeField(required=False)
     death_time = SDADateTimeField(required=False)
     gender = CodeDescriptionSerializer(required=False)
-    ethnic_group = CodeOrDescriptionSerializer(required=False)
+    ethnic_group = EthnicGroupSerializer(required=False)
     contact_info = ContactInfoSerializer(required=False)
 
 
