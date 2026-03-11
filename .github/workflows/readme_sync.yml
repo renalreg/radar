@@ -1,0 +1,13 @@
+name: Sync README Badges
+
+on:
+  repository_dispatch:
+    types: [sync-readme]
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    uses: renalreg/.github/.github/workflows/reusable_badges.yml@main
+    secrets: inherit
+
+
