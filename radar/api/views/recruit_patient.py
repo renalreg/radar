@@ -79,6 +79,7 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
             diagnosis=data["diagnosis"],
             nationality=data["nationality"],
             ethnicity=data["ethnicity"],
+            email_reason=data["email_reason"],
         )
 
         try:

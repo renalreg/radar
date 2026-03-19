@@ -211,6 +211,7 @@ class RecruitmentPatient(object):
         diagnosis,
         ethnicity=None,
         nationality=None,
+        email_reason=None
     ):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
@@ -219,6 +220,7 @@ class RecruitmentPatient(object):
         self.nationality = nationality
         self.ethnicity = ethnicity
         self.diagnosis = diagnosis
+        self.email_reason = email_reason
 
     @property
     def first_name(self):
@@ -283,6 +285,7 @@ class RecruitmentPatient(object):
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
         patient_demographics.email_address = self.email_address
+        patient_demographics.email_reason = self.email_reason
         patient_demographics.gender = self.gender
         patient_demographics.nationality = self.nationality
         patient_demographics.ethnicity = self.ethnicity
