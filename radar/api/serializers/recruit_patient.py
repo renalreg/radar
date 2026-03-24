@@ -19,7 +19,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
     last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     date_of_birth = fields.DateField(validators=[not_in_future()])
     email_address = fields.StringField(validators=[not_empty()])
-    email_reason = fields.StringField()
+    email_reason = fields.StringField(required=False)
     gender = IntegerLookupField(GENDERS)
     number = fields.StringField(validators=[not_empty()])
     number_group = GroupField()
