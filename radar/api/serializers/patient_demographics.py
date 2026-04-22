@@ -57,6 +57,9 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()]
     )
+    email_reason = fields.StringField(
+        required=False,
+    )
     nationality = NationalityField(required=False)
     ethnicity = EthnicityField(required=False)
 
