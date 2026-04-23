@@ -136,6 +136,9 @@ class PatientListView(ListModelView):
     permission_classes = [PatientPermission]
 
     def get_query(self):
+        value=list_patients()
+        #raise Exception(value["radar_gender"])
+        return value
         return list_patients()
 
     def get_object_list(self):
