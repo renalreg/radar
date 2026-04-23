@@ -23,6 +23,7 @@ from radar.api.views.generics import (
     RetrieveUpdateModelView,
 )
 from radar.auth.sessions import current_user
+from radar.models import GENDERS
 from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
@@ -210,6 +211,8 @@ class PatientListCSVView(ApiView):
         for patient in patients:
             # Wrap the patient so demographics aren't exposed to unprivileged users
             patient = SkipProxy(PatientProxy(patient, current_user))
+            gender = patient.radar_gender if not patient.gender else patient.gender
+            gender_label = GENDERS.get(gender)
             output = []
             output.append(patient.id)
             output.append(patient.first_name)
@@ -218,8 +221,8 @@ class PatientListCSVView(ApiView):
             output.append(patient.year_of_birth)
             output.append(patient.date_of_death)
             output.append(patient.year_of_death)
-            output.append(patient.gender)
-            output.append(patient.gender_label)
+            output.append(gender)
+            output.append(gender_label)
             output.append(patient.radar_ethnicity)
             output.append(patient.ethnicity_label)
             output.append(get_attrs(patient, "primary_patient_number", "number"))
