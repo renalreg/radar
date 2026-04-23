@@ -1,10 +1,11 @@
 import csv
 import io
 import re
+import time
 
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
-from flask import Response
+from flask import Response, stream_with_context
 
 from radar.api.logs import log_view_patient
 from radar.api.permissions import AdminPermission, PatientPermission
@@ -164,40 +165,23 @@ class PatientDestroyView(DestroyModelView):
     permission_classes = [AdminPermission]
 
 
+
 class PatientListCSVView(ApiView):
     def get(self):
-        f = io.StringIO()
-        writer = csv.writer(f)
         args = parse_args(PatientListRequestSerializer)
-
         cohorts = [i for i in args["group"] if i.type == GROUP_TYPE.COHORT]
 
         headers = [
-            "Patient ID",
-            "First Name",
-            "Last Name",
-            "Date of Birth",
-            "Year of Birth",
-            "Date of Death",
-            "Year of Death",
-            "Gender",
-            "Gender Label",
-            "Ethnicity",
-            "Ethnicity Label",
-            "Patient Number",
-            "PV",
-            "Recruited On",
-            "Recruited Group Name",
-            "Recruited Group Code",
-            "Cohorts",
-            "Hospitals",
-            "Signed off State",
+            "Patient ID", "First Name", "Last Name", "Date of Birth",
+            "Year of Birth", "Date of Death", "Year of Death",
+            "Gender", "Gender Label", "Ethnicity", "Ethnicity Label",
+            "Patient Number", "PV", "Recruited On",
+            "Recruited Group Name", "Recruited Group Code",
+            "Cohorts", "Hospitals", "Signed off State",
         ]
+
         for cohort in cohorts:
             headers.append(cohort.short_name)
-
-        writer.writerow(headers)
-
         def get_groups(patient, group_type):
             """Comma-separated list of groups."""
 
@@ -205,41 +189,54 @@ class PatientListCSVView(ApiView):
             groups = sorted(groups)
             groups = uniq(groups)
             return ", ".join(groups)
+        def generate():
+            yield ",".join(headers) + "\n"
 
-        patients = list_patients()
+            patients = list_patients()
 
-        for patient in patients:
-            # Wrap the patient so demographics aren't exposed to unprivileged users
-            patient = SkipProxy(PatientProxy(patient, current_user))
-            gender = patient.radar_gender if not patient.gender else patient.gender
-            gender_label = GENDERS.get(gender)
-            output = []
-            output.append(patient.id)
-            output.append(patient.first_name)
-            output.append(patient.last_name)
-            output.append(patient.date_of_birth)
-            output.append(patient.year_of_birth)
-            output.append(patient.date_of_death)
-            output.append(patient.year_of_death)
-            output.append(gender)
-            output.append(gender_label)
-            output.append(patient.radar_ethnicity)
-            output.append(patient.ethnicity_label)
-            output.append(get_attrs(patient, "primary_patient_number", "number"))
-            output.append("Y" if patient.ukrdc else "N")
-            output.append(patient.recruited_date())
-            output.append(get_attrs(patient.recruited_group(), "name"))
-            output.append(get_attrs(patient.recruited_group(), "code"))
-            output.append(get_groups(patient, GROUP_TYPE.COHORT))
-            output.append(get_groups(patient, GROUP_TYPE.HOSPITAL))
-            output.append(get_attrs(patient, "nurture_data", "signed_off_state"))
+            for patient in patients:
+                patient = SkipProxy(PatientProxy(patient, current_user))
 
-            for cohort in cohorts:
-                output.append(patient.recruited_date(cohort))
+                gender = patient.radar_gender if not patient.gender else patient.gender
+                row = [
+                    patient.id,
+                    patient.first_name,
+                    patient.last_name,
+                    patient.date_of_birth,
+                    patient.year_of_birth,
+                    patient.date_of_death,
+                    patient.year_of_death,
+                    gender,
+                    GENDERS.get(gender),
+                    patient.radar_ethnicity,
+                    patient.ethnicity_label,
+                    get_attrs(patient, "primary_patient_number", "number"),
+                    "Y" if patient.ukrdc else "N",
+                    patient.recruited_date(),
+                    get_attrs(patient.recruited_group(), "name"),
+                    get_attrs(patient.recruited_group(), "code"),
+                    get_groups(patient, GROUP_TYPE.COHORT),
+                    get_groups(patient, GROUP_TYPE.HOSPITAL),
+                    get_attrs(patient, "nurture_data", "signed_off_state"),
+                ]
 
-            writer.writerow(output)
+                for cohort in cohorts:
+                    row.append(patient.recruited_date(cohort))
 
-        return Response(f.getvalue(), content_type="text/csv")
+                # Proper CSV escaping
+                output = []
+                for v in row:
+                    output.append("" if v is None else str(v))
+
+                yield ",".join(output) + "\n"
+
+        return Response(
+            stream_with_context(generate()),
+            mimetype="text/csv",
+            headers={
+                "Content-Disposition": "attachment; filename=patients.csv"
+            }
+        )
 
 
 def register_views(app):
