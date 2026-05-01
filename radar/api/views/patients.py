@@ -169,35 +169,57 @@ class PatientDestroyView(DestroyModelView):
 class PatientListCSVView(ApiView):
     def get(self):
         args = parse_args(PatientListRequestSerializer)
-        cohorts = [i for i in args["group"] if i.type == GROUP_TYPE.COHORT]
+        cohorts = [g for g in args["group"] if g.type == GROUP_TYPE.COHORT]
 
         headers = [
-            "Patient ID", "First Name", "Last Name", "Date of Birth",
-            "Year of Birth", "Date of Death", "Year of Death",
-            "Gender", "Gender Label", "Ethnicity", "Ethnicity Label",
-            "Patient Number", "PV", "Recruited On",
-            "Recruited Group Name", "Recruited Group Code",
-            "Cohorts", "Hospitals", "Signed off State",
-        ]
+                      "Patient ID",
+                      "First Name",
+                      "Last Name",
+                      "Date of Birth",
+                      "Year of Birth",
+                      "Date of Death",
+                      "Year of Death",
+                      "Gender",
+                      "Gender Label",
+                      "Ethnicity",
+                      "Ethnicity Label",
+                      "Patient Number",
+                      "PV",
+                      "Recruited On",
+                      "Recruited Group Name",
+                      "Recruited Group Code",
+                      "Cohorts",
+                      "Hospitals",
+                      "Signed off State",
+                  ] + [cohort.short_name for cohort in cohorts]
 
-        for cohort in cohorts:
-            headers.append(cohort.short_name)
         def get_groups(patient, group_type):
-            """Comma-separated list of groups."""
+            groups = [
+                x.name
+                for x in patient.current_groups
+                if x.type == group_type
+            ]
+            return ", ".join(sorted(uniq(groups)))
 
-            groups = [x.name for x in patient.current_groups if x.type == group_type]
-            groups = sorted(groups)
-            groups = uniq(groups)
-            return ", ".join(groups)
         def generate():
-            yield ",".join(headers) + "\n"
+            buffer = io.StringIO(newline="")
+            writer = csv.writer(buffer)
 
-            patients = list_patients()
+            def emit(row):
+                writer.writerow(row)
+                value = buffer.getvalue()
+                buffer.seek(0)
+                buffer.truncate(0)
+                return value
 
-            for patient in patients:
+            # Header row
+            yield emit(headers)
+
+            for patient in list_patients():
                 patient = SkipProxy(PatientProxy(patient, current_user))
 
-                gender = patient.radar_gender if not patient.gender else patient.gender
+                gender = patient.gender or patient.radar_gender
+
                 row = [
                     patient.id,
                     patient.first_name,
@@ -220,22 +242,19 @@ class PatientListCSVView(ApiView):
                     get_attrs(patient, "nurture_data", "signed_off_state"),
                 ]
 
-                for cohort in cohorts:
-                    row.append(patient.recruited_date(cohort))
+                row.extend(
+                    patient.recruited_date(cohort)
+                    for cohort in cohorts
+                )
 
-                # Proper CSV escaping
-                output = []
-                for v in row:
-                    output.append("" if v is None else str(v))
-
-                yield ",".join(output) + "\n"
+                yield emit(row)
 
         return Response(
             stream_with_context(generate()),
-            mimetype="text/csv",
+            mimetype="text/csv; charset=utf-8",
             headers={
                 "Content-Disposition": "attachment; filename=patients.csv"
-            }
+            },
         )
 
 
