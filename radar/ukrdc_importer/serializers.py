@@ -37,6 +37,15 @@ class CodeOrDescriptionSerializer(serializers.Serializer):
 
         raise ValidationError({"code or description": "At least one is required"})
 
+class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
+
+    def to_internal_value(self, data):
+        # Allow plain string input
+        if isinstance(data, str):
+            data = {"code": data}
+
+        return super().to_internal_value(data)
+
 class EthnicGroupSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     description = fields.StringField(required=False)
@@ -62,8 +71,8 @@ class AddressSerializer(serializers.Serializer):
     from_time = SDADateTimeField(required=False)
     to_time = SDADateTimeField(required=False)
     street = fields.StringField(required=False)
-    city = CodeOrDescriptionSerializer(required=False)
-    state = CodeDescriptionSerializer(required=False)
+    city = StringOrCodeDescriptionSerializer(required=False)
+    state = StringOrCodeDescriptionSerializer(required=False)
     country = CodeDescriptionSerializer(required=False)
     zip = CodeOrDescriptionSerializer(required=False)
 
