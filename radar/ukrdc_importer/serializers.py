@@ -2,6 +2,7 @@ from datetime import datetime
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
+from cornflake.fields import empty
 from cornflake.validators import upper
 import pytz
 
@@ -43,8 +44,13 @@ class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
         # Allow plain string input
         if isinstance(data, str):
             data = {"code": data}
-
         return super().to_internal_value(data)
+
+    def run_validation(self, data=empty):
+        # Treat empty or whitespace-only strings as if the field was not provided
+        if isinstance(data, str) and not data.strip():
+            return None
+        return super().run_validation(data)
 
 class EthnicGroupSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
