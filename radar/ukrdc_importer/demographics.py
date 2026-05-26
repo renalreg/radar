@@ -171,7 +171,8 @@ def convert_demographics(patient, sda_patient):
     demographics.first_name = sda_patient.given_name
     demographics.last_name = sda_patient.family_name
     demographics.date_of_birth = sda_patient.birth_date
-    demographics.date_of_death = sda_patient.death_date
+    if sda_patient.death_date is not None:
+        demographics.date_of_death = sda_patient.death_date
     demographics.gender = sda_patient.gender
     demographics.ethnicity = get_ethnicity(sda_patient.ethnic_group)
     demographics.home_number = sda_patient.home_phone_number
