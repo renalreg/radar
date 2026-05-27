@@ -4,7 +4,7 @@ from cornflake.validators import min_length, not_empty, not_in_future, upper
 
 from radar.api.serializers.common import GroupField, IntegerLookupField
 from radar.api.serializers.demographics import EthnicityField, NationalityField
-from radar.api.serializers.validators import get_number_validators
+from radar.api.serializers.validators import get_number_validators, after_day_zero
 from radar.exceptions import PermissionDenied
 from radar.models.antibodies import reset_data
 from radar.models.diagnoses import BIOPSY_DIAGNOSES
@@ -17,7 +17,7 @@ from radar.roles import PERMISSION
 class RecruitPatientSearchSerializer(serializers.Serializer):
     first_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
-    date_of_birth = fields.DateField(validators=[not_in_future()])
+    date_of_birth = fields.DateField(validators=[after_day_zero(),not_in_future()])
     email_address = fields.StringField(validators=[not_empty()])
     email_reason = fields.StringField(required=False)
     gender = IntegerLookupField(GENDERS)
@@ -43,9 +43,9 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
 class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     diagnosis_id = fields.IntegerField()
-    symptoms_date = fields.DateField(required=False)
-    from_date = fields.DateField()
-    to_date = fields.DateField(required=False)
+    symptoms_date = fields.DateField(validators=[after_day_zero(),not_in_future()],required=False)
+    from_date = fields.DateField(validators=[after_day_zero(),not_in_future()])
+    to_date = fields.DateField(validators=[after_day_zero(),not_in_future()],required=False)
     prenatal = fields.BooleanField(required=False)
     gene_test = fields.BooleanField(required=False)
     biochemistry = fields.BooleanField(required=False)
