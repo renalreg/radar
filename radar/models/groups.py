@@ -164,8 +164,8 @@ class GroupPatient(db.Model, MetaModelMixin):
         return (self.from_date <= now and (self.to_date is None or self.to_date >= now))
 
     @current.expression
-    def current(cls):
-        return and_(cls.from_date <= func.now(), or_(cls.to_date == null(), cls.to_date >= func.now()))
+    def current(self):
+        return and_(self.from_date <= func.now(), or_(self.to_date == null(), self.to_date >= func.now()))
 
 
 Index('group_patients_group_idx', GroupPatient.group_id)

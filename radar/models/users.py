@@ -26,15 +26,15 @@ from radar.models.logs import Log, log_changes
 
 class UserCreatedUserMixin(object):
     @declared_attr
-    def created_user_id(cls):
+    def created_user_id(self):
         # Nullable as it is a self-reference
         return Column(Integer, ForeignKey("users.id"), nullable=True)
 
     @declared_attr
-    def created_user(cls):
+    def created_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.created_user_id" % cls.__name__,
+            primaryjoin="User.id == %s.created_user_id" % self.__name__,
             remote_side="User.id",
             post_update=True,
         )
@@ -42,15 +42,15 @@ class UserCreatedUserMixin(object):
 
 class UserModifiedUserMixin(object):
     @declared_attr
-    def modified_user_id(cls):
+    def modified_user_id(self):
         # Nullable as it is a self-reference
         return Column(Integer, ForeignKey("users.id"), nullable=True)
 
     @declared_attr
-    def modified_user(cls):
+    def modified_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.modified_user_id" % cls.__name__,
+            primaryjoin="User.id == %s.modified_user_id" % self.__name__,
             remote_side="User.id",
             post_update=True,
         )
