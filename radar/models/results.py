@@ -1,6 +1,6 @@
+import enum
 from collections import OrderedDict
 from datetime import date
-from enum import Enum
 from itertools import chain
 import math
 
@@ -14,6 +14,7 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
+    Enum
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
@@ -27,12 +28,11 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 from radar.models.patient_codes import GENDER_FEMALE, GENDER_MALE
-from radar.models.types import EnumType
 from radar.models.z_score_constants import ZScoreConstants
 from radar.utils import pairwise
 
 
-class OBSERVATION_VALUE_TYPE(Enum):
+class OBSERVATION_VALUE_TYPE(enum.Enum):
     INTEGER = "INTEGER"
     REAL = "REAL"
     ENUM = "ENUM"
@@ -52,7 +52,7 @@ OBSERVATION_VALUE_TYPE_NAMES = OrderedDict(
 )
 
 
-class OBSERVATION_SAMPLE_TYPE(Enum):
+class OBSERVATION_SAMPLE_TYPE(enum.Enum):
     URINE = "URINE"
     BLOOD = "BLOOD"
     URINE_DIPSTICK = "URINE_DIPSTICK"
@@ -80,10 +80,10 @@ class Observation(db.Model):
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
     value_type = Column(
-        EnumType(OBSERVATION_VALUE_TYPE, name="observation_value_type"), nullable=False
+        Enum(OBSERVATION_VALUE_TYPE, name="observation_value_type"), nullable=False
     )
     sample_type = Column(
-        EnumType(OBSERVATION_SAMPLE_TYPE, name="observation_sample_type"),
+        Enum(OBSERVATION_SAMPLE_TYPE, name="observation_sample_type"),
         nullable=False,
     )
     pv_code = Column(String)
@@ -127,7 +127,10 @@ class Observation(db.Model):
         ),
     )
 
-    group_observations = relationship("GroupObservation")
+    group_observations = relationship(
+        "GroupObservation",
+        back_populates="observation"
+    )
 
     @property
     def groups(self):
@@ -518,7 +521,10 @@ class GroupObservation(db.Model):
     group = relationship("Group")
 
     observation_id = Column(Integer, ForeignKey("observations.id"), nullable=False)
-    observation = relationship("Observation")
+    observation = relationship(
+        "Observation",
+        back_populates="group_observations"
+    )
 
     weight = Column(Integer, CheckConstraint("weight > 0"))
 

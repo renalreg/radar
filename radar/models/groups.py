@@ -1,5 +1,5 @@
+import enum
 from datetime import datetime
-from enum import Enum
 from typing import List
 
 import pytz
@@ -18,6 +18,7 @@ from sqlalchemy import (
     or_,
     String,
     text,
+    Enum
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship, synonym
@@ -27,12 +28,11 @@ from radar.database import db
 from radar.models.antibodies import Antibody, GroupAntibody
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
-from radar.models.types import EnumToStringType, EnumType
 from radar.pages import PAGE
 from radar.roles import get_roles_managed_by_role, get_roles_with_permission, PERMISSION, ROLE
 
 
-class GROUP_TYPE(Enum):
+class GROUP_TYPE(enum.Enum):
     HOSPITAL = 'HOSPITAL'
     COHORT = 'COHORT'
     SYSTEM = 'SYSTEM'
@@ -58,7 +58,7 @@ class Group(db.Model):
     __tablename__ = 'groups'
 
     id = Column(Integer, primary_key=True)
-    type = Column(EnumType(GROUP_TYPE, name='group_type'), nullable=False)
+    type = Column(Enum(GROUP_TYPE, name='group_type'), nullable=False)
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     short_name = Column(String, nullable=False)
@@ -186,7 +186,7 @@ class GroupUser(db.Model, MetaModelMixin):
         'User',
         foreign_keys=[user_id],
         backref=backref('group_users', cascade='all, delete-orphan', passive_deletes=True))
-    role = Column(EnumType(ROLE, name='role'), nullable=False)
+    role = Column(Enum(ROLE, name='role'), nullable=False)
 
     def has_permission(self, permission):
         permission_method = permission.value.lower()
@@ -225,7 +225,7 @@ class GroupPage(db.Model):
     group_id = Column(Integer, ForeignKey('groups.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     group = relationship('Group', backref=backref('group_pages', cascade='all, delete-orphan', passive_deletes=True))
 
-    page = Column(EnumToStringType(PAGE), nullable=False)
+    page = Column(Enum(PAGE, native_enum=False),  nullable=False)
 
     weight = Column(Integer, CheckConstraint('weight >= 0'), nullable=False)
 

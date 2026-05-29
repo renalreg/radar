@@ -28,8 +28,15 @@ class Radar(Flask):
         register_template_filters(self)
 
     def setup_config(self):
-        if "RADAR_SETTINGS" in os.environ:
-            self.config.from_envvar("RADAR_SETTINGS")
+        settings_path = os.environ.get("RADAR_SETTINGS")
+
+        if not settings_path:
+            raise RuntimeError("RADAR_SETTINGS is not set")
+
+        if not os.path.exists(settings_path):
+            raise RuntimeError(f"Config file not found: {settings_path}")
+
+        self.config.from_pyfile(settings_path)
 
     def check_config(self):
         check_config(self.config)

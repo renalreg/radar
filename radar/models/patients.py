@@ -70,11 +70,11 @@ class Patient(db.Model, MetaModelMixin):
         Boolean, default=False, nullable=False, server_default=text("false")
     )
 
-    barcode = relationship("BiomarkerBarcode", cascade="all")
-
-    @property
-    def barcodes(self):
-        return relationship("biomarker_barcodes", cascade="all, delete-orphan")
+    barcode = relationship(
+        "BiomarkerBarcode",
+        back_populates="pat",
+        cascade="all, delete-orphan"
+    )
 
     @property
     def cohorts(self):

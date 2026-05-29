@@ -91,14 +91,18 @@ class User(
     )
 
     last_login_date = column_property(
-        select([func.max(Log.date)])
+        select(func.max(Log.date))
         .where(Log.user_id == id)
-        .where(Log.type == "LOGIN"),
+        .where(Log.type == "LOGIN")
+        .scalar_subquery(),
         deferred=True,
-    )
+        )
 
     last_active_date = column_property(
-        select([func.max(Log.date)]).where(Log.user_id == id), deferred=True
+        select(func.max(Log.date))
+        .where(Log.user_id == id)
+        .scalar_subquery(),
+        deferred=True
     )
 
     @hybrid_property
