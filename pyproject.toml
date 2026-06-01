@@ -43,8 +43,6 @@ cornflake = { git = "https://github.com/renalreg/cornflake", tag = "v1.0.0" }
 psycopg2-binary = { version = ">=2.9", markers = "sys_platform != 'win32'" }
 psycopg2 = { version = ">=2.9", markers = "sys_platform == 'win32'" }
 setuptools = "*"
-pydantic = "^2.13.4"
-flask-login = "^0.6.3"
 
 [tool.poetry.scripts]
 radar-admin = "radar.admin.__main__:main"
