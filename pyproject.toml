@@ -70,6 +70,7 @@ fabric = ">=3.2"
 tox = ">=4.11"
 virtualenv = ">=20.26"
 pluggy = ">=1.5"
+ruff = "^0.15.15"
 
 [build-system]
 requires = ["poetry-core>=2.3.0"]
