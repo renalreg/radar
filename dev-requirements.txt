@@ -2,8 +2,8 @@ configparser==3.5.0
 coverage==4.1
 ecdsa==0.13.3
 Fabric==2.5.0
-flake8==3.5.0
-flake8-import-order==0.18
+flake8
+flake8-import-order
 freezegun==0.3.11
 mccabe==0.6.1
 mypy
@@ -19,5 +19,5 @@ pyflakes==1.6.0
 pytest==2.9.2
 pytest-cov==2.2.1
 tox
-virtualenv==13.1.2
+virtualenv
 -r requirements.txt
