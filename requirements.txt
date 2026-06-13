@@ -1,8 +1,8 @@
 alembic==1.0.10
 amqp==2.4.2
-anyjson==0.3.3
+anyjson
 billiard==3.6.0.0
-bleach==3.1.4 # updated 26/06/202 from 1.4.3
+bleach==3.1.4 # updated 26/06/2020 from 1.4.3
 celery==4.3.0
 Click==7.0
 cornflake==0.2.4
@@ -22,7 +22,7 @@ psycopg2==2.8.2
 python-dateutil==2.8.0
 pytz==2019.1
 requests==2.21.0
-six==1.12.0
+six
 SQLAlchemy==1.3.3
 SQLAlchemy-Enum34==1.0.1
 openpyxl==2.5.9
