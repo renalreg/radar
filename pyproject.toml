@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "radar"
-version = "3.9.7"
+version = "4.0.0"
 description = "RaDaR - Rare Disease Registry"
 readme = "README.md"
 authors = ["Rupert Bedford <rupert.bedford@renalregistry.nhs.uk>"]
