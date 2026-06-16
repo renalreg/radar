@@ -7,7 +7,7 @@ authors = ["Rupert Bedford <rupert.bedford@renalregistry.nhs.uk>"]
 license = "AGPL-3.0"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<4.0"
+python = ">=3.11,<3.12" # js2py might break on 12
 alembic = ">=1.13"
 sqlalchemy = "1.4.49"
 celery = ">=5.4,<6"
