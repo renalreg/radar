@@ -71,6 +71,7 @@ tox = ">=4.11"
 virtualenv = ">=20.26"
 pluggy = ">=1.5"
 ruff = "^0.15.15"
+deptry = "^0.25.1"
 
 [build-system]
 requires = ["poetry-core>=2.3.0"]
