@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    libpqxx-dev \
     libpcre2-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -54,8 +53,7 @@ WORKDIR /srv/radar
 # Runtime dependencies only
 RUN apt-get update && apt-get install -y \
     libpq5 \
-    libpqxx-6.4 \
-    libpcre3 \
+    libpcre2-8-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed python packages + app

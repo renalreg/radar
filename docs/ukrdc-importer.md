@@ -72,7 +72,7 @@ The UKRDC importer imports patient records from the UKRDC into RaDaR.
 # settings.py
 SQLALCHEMY_DATABASE_URI = 'postgres://radar:password@localhost/radar'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-CELERY_BROKER_URL = 'amqp://guest@localhost//'
+CELERY_BROKER_URL = 'amqp://guest@host.docker.internal//'
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_RESULT_PERSISTENT = False
 ```
