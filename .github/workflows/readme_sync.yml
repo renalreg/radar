@@ -5,6 +5,8 @@ on:
     types: [sync-readme]
   workflow_dispatch:
   push:
+    branches:
+      - RD-4
     paths:
       - 'badges.yml'
 
