@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [sync-readme]
   workflow_dispatch:
+  push:
+    paths:
+      - 'badges.yml'
 
 jobs:
   update-readme:
