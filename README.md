@@ -7,7 +7,6 @@
 
 [![Issues](https://img.shields.io/github/issues/renalreg/radar)](https://github.com/renalreg/radar/issues)
 [![License](https://img.shields.io/github/license/renalreg/radar)](https://github.com/renalreg/radar/blob/main/LICENSE)
-[![readme_sync](https://github.com/renalreg/radar/actions/workflows/readme_sync.yml/badge.svg)](https://github.com/renalreg/radar/actions/workflows/readme_sync.yml)
 [![Build Status](https://img.shields.io/travis/renalreg/radar/master.svg)](https://travis-ci.org/renalreg/radar)
 [![Code Climate](https://img.shields.io/codeclimate/github/renalreg/radar.svg)](https://codeclimate.com/github/renalreg/radar)
 
