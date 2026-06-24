@@ -14,5 +14,6 @@ jobs:
   update-readme:
     uses: renalreg/.github/.github/workflows/reusable_badges.yml@main
     secrets: inherit
-
+    with:
+      visibility: "public"
 
