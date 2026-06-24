@@ -9,7 +9,6 @@
 [![License](https://img.shields.io/github/license/renalreg/radar)](https://github.com/renalreg/radar/blob/main/LICENSE)
 [![Stars](https://img.shields.io/github/stars/renalreg/radar)](https://github.com/renalreg/radar/stargazers)
 [![Dependencies](https://img.shields.io/librariesio/github/renalreg/radar)](https://libraries.io/github/renalreg/radar)
-[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/renalreg/radar)](https://snyk.io/test/github/renalreg/radar)
 [![Coveralls](https://img.shields.io/coveralls/renalreg/radar.svg)](https://coveralls.io/github/renalreg/radar)
 
 </div>
