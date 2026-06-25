@@ -1,4 +1,4 @@
-import pkg_resources
+from importlib import resources
 
 from radar.marmoset.base_registry import BaseRegistry
 from radar.marmoset.handlers import (
@@ -30,7 +30,7 @@ from radar.marmoset.validators import (
     NotInFutureValidator,
 )
 
-HELPERS = pkg_resources.resource_string(__name__, 'helpers.js')
+HELPERS = resources.files(__package__).joinpath("helpers.js").read_bytes()
 
 
 class Registry(BaseRegistry):

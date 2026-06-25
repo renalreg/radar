@@ -27,8 +27,8 @@ class BiomarkerBarcode(db.Model):
     barcode = Column(String(100))
     sample_date = Column(DateTime)
 
-    pat = relationship("Patient", cascade="all, delete-orphan", single_parent=True)
-    
+    pat = relationship("Patient", back_populates="barcode")
+
 
 
 
@@ -49,7 +49,7 @@ class BiomarkerResult(db.Model):
 
     bio = relationship("Biomarker", cascade="all, delete-orphan", single_parent=True)
     sample = relationship("BiomarkerSample", cascade="all, delete-orphan", single_parent=True)
-    
+
 
 class BiomarkerSample(db.Model):
     __tablename__ = "biomarker_samples"
@@ -63,5 +63,5 @@ class BiomarkerSample(db.Model):
     label = Column(String(100), nullable=False)
 
     barcode = relationship("BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True)
-   
+
 

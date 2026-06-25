@@ -6,7 +6,7 @@ from tests.api.client import TestClient
 from tests.api.fixtures import create_fixtures
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def api(app):
     app = RadarAPI({
         'TESTING': True,
@@ -21,7 +21,7 @@ def api(app):
         yield app
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def tables(api):
     db.drop_all()
     db.create_all()
@@ -36,7 +36,7 @@ def tables(api):
     db.drop_all()
 
 
-@pytest.yield_fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def session(api, tables):
     connection = db.engine.connect()
     transaction = connection.begin()

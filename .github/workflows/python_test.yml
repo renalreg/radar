@@ -1,0 +1,25 @@
+# 📘 Full documentation:
+# https://github.com/renalreg/.github/blob/main/README.md#python-test-workflow
+
+
+name: Python Test
+
+on:
+  pull_request:
+    branches:
+      - "master"
+
+  workflow_dispatch:
+
+jobs:
+  call-workflow:
+    name: Python Test workflow
+    if: ${{ !startsWith(github.head_ref, 'release-please--') }}
+    uses: renalreg/.github/.github/workflows/python_test.yml@main
+    secrets: inherit
+    with:
+      python_versions: '["3.11"]'
+      os: '["ubuntu-latest", "windows-latest"]'
+      package_manager_command: "pip install poetry"
+      install_command: "poetry install --no-interaction"
+      test_command: "poetry run tox"
