@@ -13,8 +13,8 @@ jobs:
     uses: renalreg/.github/.github/workflows/python_test.yml@main
     secrets: inherit
     with:
-      python_versions: '["3.6"]'
-      os: '["ubuntu-20.04"]'
+      python_versions: '["3.10"]'
+      os: '["ubuntu-latest"]'
       package_manager_command: ""
       install_command: "pip install -r requirements.txt -r requirements-dev.txt && pip install tox"
       test_command: "tox"
