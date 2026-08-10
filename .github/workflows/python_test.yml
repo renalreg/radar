@@ -14,7 +14,7 @@ jobs:
     secrets: inherit
     with:
       python_versions: '["3.6"]'
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-20.04"]'
       package_manager_command: ""
       install_command: "pip install -r requirements.txt -r requirements-dev.txt && pip install tox"
       test_command: "tox"
