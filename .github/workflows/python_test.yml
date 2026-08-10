@@ -1,0 +1,20 @@
+# 📘 Full documentation:
+# https://github.com/renalreg/.github/blob/main/README.md#python-test-workflow
+name: Python Test
+on:
+  pull_request:
+    branches:
+      - "master"
+  workflow_dispatch:
+jobs:
+  call-workflow:
+    name: Python Test workflow
+    if: ${{ !startsWith(github.head_ref, 'release-please--') }}
+    uses: renalreg/.github/.github/workflows/python_test.yml@main
+    secrets: inherit
+    with:
+      python_versions: '["3.10"]'
+      os: '["ubuntu-22.04"]'
+      package_manager_command: ""
+      install_command: "pip install --upgrade 'pip<24.1' && pip install tox"
+      test_command: "tox"
