@@ -2437,6 +2437,18 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [[package]]
+name = "uwsgi"
+version = "2.0.31"
+description = "The uWSGI server"
+optional = false
+python-versions = "*"
+groups = ["main"]
+markers = "sys_platform != \"win32\""
+files = [
+    {file = "uwsgi-2.0.31.tar.gz", hash = "sha256:e8f8b350ccc106ff93a65247b9136f529c14bf96b936ac5b264c6ff9d0c76257"},
+]
+
+[[package]]
 name = "vine"
 version = "5.1.0"
 description = "Python promises."
@@ -2655,4 +2667,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "fce6144413ce23e0d82663de954b1db14a88e41e20169bc5607b5c83043ad975"
+content-hash = "e09a17ce3cf773d648f6f0e32fd8e6ec375d5f5069c296a72e4bd191b7172986"

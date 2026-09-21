@@ -34,6 +34,7 @@ RUN poetry install --with dev
 COPY . /radar
 
 # Install project itself
+RUN poetry lock --no-update
 RUN poetry install --with dev
 
 # Environment variables (DEV)
