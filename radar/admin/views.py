@@ -344,7 +344,7 @@ class ExportView(BaseView):
     def serve_file(self, param):
         """Serve back requested file."""
         requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
-        return send_file(requested_file, as_attachment=True, attachment_filename=param)
+        return send_file(requested_file, as_attachment=True, download_name=param)
 
     def is_accessible(self):
         # User needs to be logged in and a super admin to use this view
