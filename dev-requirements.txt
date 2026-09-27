@@ -1,6 +1,6 @@
 configparser==3.5.0
 coverage
-ecdsa==0.13.3
+ecdsa==0.19.2
 Fabric==2.5.0
 flake8
 flake8-import-order
