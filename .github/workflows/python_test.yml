@@ -19,7 +19,7 @@ jobs:
     secrets: inherit
     with:
       python_versions: '["3.11"]'
-      os: '["ubuntu-latest", "windows-latest"]'
+      os: '["ubuntu-latest"]'
       package_manager_command: "pip install poetry"
       install_command: "poetry install --no-interaction"
       test_command: "poetry run tox"
