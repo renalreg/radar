@@ -1,0 +1,19 @@
+# 📘 Full documentation:
+# https://github.com/renalreg/.github/blob/main/README.md#python-test-workflow
+
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - "master"
+
+  workflow_dispatch:
+
+jobs:
+  call-workflow:
+    name: Building release branch and updating CHANGELOG.md
+    uses: renalreg/.github/.github/workflows/auto_release.yml@main
+    secrets: inherit
+    with:
+      release_type: "python"
