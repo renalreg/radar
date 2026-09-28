@@ -2,11 +2,16 @@
   <img src="extra/logos/radar_logo_black_final_v1.0_141215.png" width="300" alt="Logo" /></p>
 </p>
 
-<p align="center">
-  <a href="https://travis-ci.org/renalreg/radar"><img src="https://img.shields.io/travis/renalreg/radar/master.svg" alt="Build Status" /></a>
-  <a href="https://codeclimate.com/github/renalreg/radar"><img src="https://img.shields.io/codeclimate/github/renalreg/radar.svg" alt="Code Climate" /></a>
-  <a href="https://coveralls.io/github/renalreg/radar"><img src="https://img.shields.io/coveralls/renalreg/radar.svg" alt="Coveralls" /></a>
-</p>
+
+<div class="badges">
+
+[![Issues](https://img.shields.io/github/issues/renalreg/radar)](https://github.com/renalreg/radar/issues)
+[![License](https://img.shields.io/github/license/renalreg/radar)](https://github.com/renalreg/radar/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/renalreg/radar)](https://github.com/renalreg/radar/stargazers)
+[![Dependencies](https://img.shields.io/librariesio/github/renalreg/radar)](https://libraries.io/github/renalreg/radar)
+[![Coveralls](https://img.shields.io/coveralls/renalreg/radar.svg)](https://coveralls.io/github/renalreg/radar)
+
+</div>
 
 # RADAR
 
