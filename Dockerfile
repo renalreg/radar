@@ -28,14 +28,14 @@ ENV POETRY_NO_INTERACTION=1 \
 COPY pyproject.toml poetry.lock* /radar/
 
 # Install dependencies
-RUN poetry install --with dev
+RUN poetry install --without dev --with server
 
 # Copy source
 COPY . /radar
 
 # Install project itself
 RUN poetry lock --no-update
-RUN poetry install --with dev
+RUN poetry install --without dev --with server
 
 # Environment variables (DEV)
 ENV RADAR_SETTINGS=/radar/example_settings.py \

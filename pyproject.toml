@@ -43,7 +43,6 @@ cornflake = { git = "https://github.com/renalreg/cornflake", tag = "v1.0.0" }
 psycopg2-binary = { version = ">=2.9", markers = "sys_platform != 'win32'" }
 psycopg2 = { version = ">=2.9", markers = "sys_platform == 'win32'" }
 setuptools = "*"
-uwsgi = { version = ">=2.0", markers = "sys_platform != 'win32'" }
 
 [tool.poetry.scripts]
 radar-admin = "radar.admin.__main__:main"
@@ -73,6 +72,12 @@ virtualenv = ">=20.26"
 pluggy = ">=1.5"
 ruff = "^0.15.15"
 deptry = "^0.25.1"
+
+[tool.poetry.group.server]
+optional = true
+
+[tool.poetry.group.server.dependencies]
+uwsgi = { version = ">=2.0", markers = "sys_platform != 'win32'" }
 
 [build-system]
 requires = ["poetry-core>=2.3.0"]

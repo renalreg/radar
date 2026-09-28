@@ -2442,7 +2442,7 @@ version = "2.0.31"
 description = "The uWSGI server"
 optional = false
 python-versions = "*"
-groups = ["main"]
+groups = ["server"]
 markers = "sys_platform != \"win32\""
 files = [
     {file = "uwsgi-2.0.31.tar.gz", hash = "sha256:e8f8b350ccc106ff93a65247b9136f529c14bf96b936ac5b264c6ff9d0c76257"},
@@ -2667,4 +2667,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "e09a17ce3cf773d648f6f0e32fd8e6ec375d5f5069c296a72e4bd191b7172986"
+content-hash = "ca6d58709c951a1111d5b3f9b5af139f23cddeb0fbb08e7f4968286de516d77f"
