@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/renalreg/radar/compare/v3.3.0...v4.0.0) (2026-09-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* **docker:** upgraded radar to use docker, fixed bugs that appeared and some modernisation
+
+### Features
+
+* **docker:** upgraded radar to use docker, fixed bugs that appeared and some modernisation ([5e51d81](https://github.com/renalreg/radar/commit/5e51d814b5789e1d9e9660dc01456dacffa82cac))
+
 ## [3.3.0](https://github.com/renalreg/radar/compare/v3.2.1...v3.3.0) (2026-09-28)
 
 
