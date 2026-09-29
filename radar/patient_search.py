@@ -1,14 +1,13 @@
-from curses.ascii import NUL
 from sqlalchemy import and_, case, desc, extract, func, null, or_
 from sqlalchemy.orm import aliased, subqueryload
 
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser
+from radar.models.nurture_data import NurtureData
 from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.models.nurture_data import NurtureData
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_date_filter, sql_year_filter
 

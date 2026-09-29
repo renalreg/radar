@@ -1,17 +1,16 @@
 #! -*- coding: utf-8 -*-
+import enum
 
-from enum import Enum
-
-from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Enum
 from sqlalchemy.orm import relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
 from radar.models.logs import log_changes
-from radar.models.types import EnumType
 
 
-class PROTOCOL_OPTION_TYPE(Enum):
+
+class PROTOCOL_OPTION_TYPE(enum.Enum):
     ADULT_CKD = 'ADULT_CKD'
     ADULT_NS = 'ADULT_NS'
     CHILDREN30_B = 'CHILDREN30_B'
@@ -25,7 +24,7 @@ class PROTOCOL_OPTION_TYPE(Enum):
 class SampleOption(db.Model):
     __tablename__ = 'nurture_samples_options'
 
-    id = Column(EnumType(PROTOCOL_OPTION_TYPE, name='protocol_type'), unique=True, nullable=False, primary_key=True)
+    id = Column(Enum(PROTOCOL_OPTION_TYPE, name='protocol_type'), unique=True, nullable=False, primary_key=True)
     label = Column(String, nullable=False)
 
     epa = Column(Integer, nullable=True)  # EDTA plasma Tube A 100μl
@@ -61,7 +60,7 @@ class Samples(db.Model, MetaModelMixin):
     taken_on = Column(Date, nullable=False)
     barcode = Column(Integer, nullable=False)
     protocol_id = Column(
-        EnumType(PROTOCOL_OPTION_TYPE, name='protocol_type'),
+        Enum(PROTOCOL_OPTION_TYPE, name='protocol_type'),
         ForeignKey('nurture_samples_options.id'),
         nullable=False
     )

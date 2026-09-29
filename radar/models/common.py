@@ -40,23 +40,23 @@ def patient_relationship_no_list(name):
 
 class CreatedUserMixin(object):
     @declared_attr
-    def created_user_id(cls):
+    def created_user_id(self):
         return Column(Integer, ForeignKey("users.id"), nullable=False)
 
     @declared_attr
-    def created_user(cls):
+    def created_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.created_user_id" % cls.__name__
+            "User", primaryjoin="User.id == %s.created_user_id" % self.__name__
         )
 
     @declared_attr
-    def created_username(cls):
+    def created_username(self):
         return association_proxy("created_user", "username")
 
 
 class CreatedDateMixin(object):
     @declared_attr
-    def created_date(cls):
+    def created_date(self):
         return Column(
             DateTime(timezone=True),
             nullable=False,
@@ -67,23 +67,23 @@ class CreatedDateMixin(object):
 
 class ModifiedUserMixin(object):
     @declared_attr
-    def modified_user_id(cls):
+    def modified_user_id(self):
         return Column(Integer, ForeignKey("users.id"), nullable=False)
 
     @declared_attr
-    def modified_user(cls):
+    def modified_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.modified_user_id" % cls.__name__
+            "User", primaryjoin="User.id == %s.modified_user_id" % self.__name__
         )
 
     @declared_attr
-    def modified_username(cls):
+    def modified_username(self):
         return association_proxy("modified_user", "username")
 
 
 class ModifiedDateMixin(object):
     @declared_attr
-    def modified_date(cls):
+    def modified_date(self):
         return Column(
             DateTime(timezone=True),
             nullable=False,

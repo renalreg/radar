@@ -3,7 +3,7 @@ import glob
 import io
 import os
 
-from flask import redirect, request, send_file, url_for
+from flask import redirect, request, send_file, url_for, flash
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
@@ -326,8 +326,17 @@ class ExportView(BaseView):
     @expose('/', methods=['GET'])
     def index(self):
         """Default page listing files in the directory."""
+        export_path = config.get('EXPORT_PATH')
 
-        files = glob.glob(os.path.join(config.get('EXPORT_PATH'), '*.zip'))
+        if not export_path:
+            flash("Export path has not been set. Contact an admin.", "error")
+            return self.render('admin/export.html', files=[])
+
+        if not os.path.exists(export_path):
+            flash("Export path does not exist. Contact an admin.", "error")
+            return self.render('admin/export.html', files=[])
+
+        files = glob.glob(os.path.join(export_path, '*.zip'))
         files = [os.path.split(path)[1] for path in files]
         return self.render('admin/export.html', files=files)
 
@@ -335,7 +344,7 @@ class ExportView(BaseView):
     def serve_file(self, param):
         """Serve back requested file."""
         requested_file = io.open(os.path.join(config.get('EXPORT_PATH'), param), 'rb')
-        return send_file(requested_file, as_attachment=True, attachment_filename=param)
+        return send_file(requested_file, as_attachment=True, download_name=param)
 
     def is_accessible(self):
         # User needs to be logged in and a super admin to use this view

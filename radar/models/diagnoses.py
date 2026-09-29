@@ -1,6 +1,6 @@
+import enum
 import re
 from collections import OrderedDict
-from enum import Enum
 
 from sqlalchemy import (
     Boolean,
@@ -12,7 +12,7 @@ from sqlalchemy import (
     Integer,
     String,
     text,
-    Enum as sqlenum, or_, desc
+    Enum, or_, desc
 )
 from sqlalchemy.orm import backref, relationship
 
@@ -25,8 +25,6 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-from radar.models.types import EnumType
-
 
 BIOPSY_DIAGNOSES = OrderedDict(
     [
@@ -177,7 +175,7 @@ class Diagnosis(db.Model):
         return self.name
 
 
-class GROUP_DIAGNOSIS_TYPE(Enum):
+class GROUP_DIAGNOSIS_TYPE(enum.Enum):
     PRIMARY = "PRIMARY"
     SECONDARY = "SECONDARY"
 
@@ -215,7 +213,7 @@ class GroupDiagnosis(db.Model):
     )
 
     type = Column(
-        EnumType(GROUP_DIAGNOSIS_TYPE, name="group_diagnosis_type"), nullable=False
+        Enum(GROUP_DIAGNOSIS_TYPE, name="group_diagnosis_type"), nullable=False
     )
 
     weight = Column(

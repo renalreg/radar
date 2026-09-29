@@ -1,12 +1,13 @@
 import copy
 import json
+from importlib import resources
 
 import js2py
-import pkg_resources
 
 from radar.marmoset.exceptions import SchemaError
 
-SCHEMA = json.load(pkg_resources.resource_stream(__name__, 'schema.json'))
+with resources.files(__package__).joinpath("schema.json").open("r", encoding="utf-8") as f:
+    SCHEMA = json.load(f)
 
 
 class BaseRegistry(object):

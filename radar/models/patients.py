@@ -70,11 +70,11 @@ class Patient(db.Model, MetaModelMixin):
         Boolean, default=False, nullable=False, server_default=text("false")
     )
 
-    barcode = relationship("BiomarkerBarcode", cascade="all")
-
-    @property
-    def barcodes(self):
-        return relationship("biomarker_barcodes", cascade="all, delete-orphan")
+    barcode = relationship(
+        "BiomarkerBarcode",
+        back_populates="pat",
+        cascade="all, delete-orphan"
+    )
 
     @property
     def cohorts(self):
@@ -115,10 +115,10 @@ class Patient(db.Model, MetaModelMixin):
         return from_date
 
     @recruited_date.expression
-    def recruited_date(cls, group=None, group_type=None):
+    def recruited_date(self, group=None, group_type=None):
         q = select([func.min(GroupPatient.from_date)])
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
-        q = q.where(GroupPatient.patient_id == cls.id)
+        q = q.where(GroupPatient.patient_id == self.id)
 
         if group is not None:
             q = q.where(Group.id == group.id)
@@ -138,10 +138,10 @@ class Patient(db.Model, MetaModelMixin):
             return any(group.type == GROUP_TYPE.SYSTEM for group in self.current_groups)
 
     @current.expression
-    def current(cls, group=None):
+    def current(self, group=None):
         q = exists()
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
-        q = q.where(GroupPatient.patient_id == cls.id)
+        q = q.where(GroupPatient.patient_id == self.id)
         q = q.where(GroupPatient.current == True)  # noqa
 
         if group is not None:
@@ -222,7 +222,7 @@ class Patient(db.Model, MetaModelMixin):
             return patient_number.number
 
     @primary_patient_number_number.expression
-    def primary_patient_number_number(cls):
+    def primary_patient_number_number(self):
         patient_alias = aliased(Patient)
 
         return (
@@ -232,7 +232,7 @@ class Patient(db.Model, MetaModelMixin):
                     Group, PatientNumber.number_group_id == Group.id
                 )
             )
-            .where(patient_alias.id == cls.id)
+            .where(patient_alias.id == self.id)
             .where(Group.is_recruitment_number_group == True)  # noqa
             .order_by(
                 PatientNumber.modified_date.desc(),
@@ -410,44 +410,44 @@ class Patient(db.Model, MetaModelMixin):
         return self.gender == GENDER_FEMALE
 
     @first_name.expression
-    def first_name(cls):
-        return cls.latest_demographics_query(PatientDemographics.first_name)
+    def first_name(self):
+        return self.latest_demographics_query(PatientDemographics.first_name)
 
     @last_name.expression
-    def last_name(cls):
-        return cls.latest_demographics_query(PatientDemographics.last_name)
+    def last_name(self):
+        return self.latest_demographics_query(PatientDemographics.last_name)
 
     @date_of_birth.expression
-    def date_of_birth(cls):
-        return cls.latest_demographics_query(PatientDemographics.date_of_birth)
+    def date_of_birth(self):
+        return self.latest_demographics_query(PatientDemographics.date_of_birth)
 
     @date_of_death.expression
-    def date_of_death(cls):
-        return cls.latest_demographics_query(PatientDemographics.date_of_death)
+    def date_of_death(self):
+        return self.latest_demographics_query(PatientDemographics.date_of_death)
 
     @ethnicity.expression
-    def ethnicity(cls):
-        return cls.latest_demographics_query(PatientDemographics.ethnicity)
+    def ethnicity(self):
+        return self.latest_demographics_query(PatientDemographics.ethnicity)
 
     @gender.expression
-    def gender(cls):
-        return cls.latest_demographics_query(PatientDemographics.gender)
+    def gender(self):
+        return self.latest_demographics_query(PatientDemographics.gender)
 
     @home_number.expression
-    def home_number(cls):
-        return cls.latest_demographics_query(PatientDemographics.home_number)
+    def home_number(self):
+        return self.latest_demographics_query(PatientDemographics.home_number)
 
     @work_number.expression
-    def work_number(cls):
-        return cls.latest_demographics_query(PatientDemographics.work_number)
+    def work_number(self):
+        return self.latest_demographics_query(PatientDemographics.work_number)
 
     @mobile_number.expression
-    def mobile_number(cls):
-        return cls.latest_demographics_query(PatientDemographics.mobile_number)
+    def mobile_number(self):
+        return self.latest_demographics_query(PatientDemographics.mobile_number)
 
     @email_address.expression
-    def email_address(cls):
-        return cls.latest_demographics_query(PatientDemographics.email_address)
+    def email_address(self):
+        return self.latest_demographics_query(PatientDemographics.email_address)
 
     @property
     def earliest_date_of_birth(self):
@@ -525,8 +525,8 @@ class Patient(db.Model, MetaModelMixin):
         return self.ukrdc_patient is not None
 
     @ukrdc.expression
-    def ukrdc(cls):
-        return cls.ukrdc_patient.has()
+    def ukrdc(self):
+        return self.ukrdc_patient.has()
 
     @property
     def gender_label(self):

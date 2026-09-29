@@ -1,0 +1,17 @@
+# 📘 Full documentation:
+# https://github.com/renalreg/.github/blob/main/README.md#docker_publish
+
+name: Docker Publish
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  call-workflow:
+    name: Build and push image to GHCR
+    if: ${{ !startsWith(github.head_ref, 'release-please--') }}
+    uses: renalreg/.github/.github/workflows/docker_publish.yml@main
+    secrets: inherit

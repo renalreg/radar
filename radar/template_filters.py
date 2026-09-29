@@ -1,6 +1,6 @@
 from cornflake.utils import safe_strftime
-from jinja2 import escape, evalcontextfilter, Markup
-
+from jinja2 import pass_eval_context
+from markupsafe import Markup, escape
 
 def safe_strftime_template_filter(value, format):
     if value is None:
@@ -9,7 +9,7 @@ def safe_strftime_template_filter(value, format):
         return safe_strftime(value, format)
 
 
-@evalcontextfilter
+@pass_eval_context
 def nl2br_template_filter(eval_ctx, value):
     if value is None:
         return ''

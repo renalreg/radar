@@ -3,7 +3,7 @@ import pytest
 from radar.app import Radar
 
 
-@pytest.yield_fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def app():
     app = Radar({
         'TESTING': True,

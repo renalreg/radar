@@ -1,14 +1,13 @@
-from enum import Enum
+import enum
 
-from sqlalchemy import Boolean, CheckConstraint, Column, Date, ForeignKey, Integer, String, text
+from sqlalchemy import Boolean, CheckConstraint, Column, Date, ForeignKey, Integer, String, text, Enum
 from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
-from radar.models.types import EnumType
 
 
-class CONSENT_TYPE(Enum):
+class CONSENT_TYPE(enum.Enum):
     FORM = 'FORM'
     INFORMATION_SHEET = 'INFORMATION_SHEET'
 
@@ -26,7 +25,7 @@ class Consent(db.Model):
     from_date = Column(Date, nullable=False)
     link_url = Column(String, nullable=True)
     retired = Column(Boolean, default=False, server_default=text('false'))
-    consent_type = Column(EnumType(CONSENT_TYPE, name='consent_type'), nullable=False)
+    consent_type = Column(Enum(CONSENT_TYPE, name='consent_type'), nullable=False)
     weight = Column(Integer, CheckConstraint('weight >= 0'))
 
     def __str__(self):
