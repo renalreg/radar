@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/renalreg/radar/compare/v4.0.0...v4.0.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **RD-5:** RADAR Exporter - Crash (or warning?) Due to Models  passive deletes was set on the wrong side, caused warning to raise and sqlalchemy to ignore it ([c8e19ae](https://github.com/renalreg/radar/commit/c8e19ae5a00a1251978f363fca3bc48613266c87))
+
 ## [4.0.0](https://github.com/renalreg/radar/compare/v3.3.0...v4.0.0) (2026-09-29)
 
 
