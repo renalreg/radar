@@ -96,7 +96,7 @@ class Group(db.Model):
     )
     group_antibodies = relationship(
         "GroupAntibody",
-        back_populates="antibody",
+        back_populates="group",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
