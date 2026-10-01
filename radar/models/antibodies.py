@@ -1,10 +1,4 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String
-)
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -13,45 +7,45 @@ from radar.models.logs import log_changes
 
 @log_changes
 class GroupAntibody(db.Model):
-    __tablename__ = 'group_antibodies'
+    __tablename__ = "group_antibodies"
 
     group_id = Column(
         Integer,
-        ForeignKey('groups.id', ondelete='CASCADE'),
+        ForeignKey("groups.id", ondelete="CASCADE"),
         primary_key=True,
     )
 
     antibody_id = Column(
         String,
-        ForeignKey('antibodies.id', ondelete='CASCADE'),
+        ForeignKey("antibodies.id", ondelete="CASCADE"),
         primary_key=True,
     )
 
     group = relationship(
-        'Group',
-        back_populates='group_antibodies',
-        passive_deletes=True,
+        "Group",
+        back_populates="group_antibodies",
     )
 
     antibody = relationship(
-        'Antibody',
-        back_populates='group_antibodies',
-        passive_deletes=True,
+        "Antibody",
+        back_populates="group_antibodies",
     )
 
 
 @log_changes
 class Antibody(db.Model):
-    __tablename__ = 'antibodies'
+    __tablename__ = "antibodies"
 
     id = Column(String, primary_key=True, nullable=False)
     is_official = Column(Boolean, nullable=False, default=False)
 
     group_antibodies = relationship(
-        'GroupAntibody',
-        back_populates='antibody',
-        cascade='all, delete-orphan'
+        "GroupAntibody",
+        back_populates="antibody",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
+
 
 def resolve_antibody_name(data):
     """
@@ -60,6 +54,7 @@ def resolve_antibody_name(data):
     if data.get("antibody_id") == "OTHER":
         return data.get("antibody_custom").lower()
     return data.get("antibody_id")
+
 
 def reset_data(data):
     # Reset fields based on biopsy or proteinuria status
