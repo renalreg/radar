@@ -72,6 +72,13 @@ virtualenv = ">=20.26"
 pluggy = ">=1.5"
 ruff = "^0.15.15"
 deptry = "^0.25.1"
+mypy = ">=1.11"
+types-WTForms = "*"
+types-jsonschema = "*"
+types-python-dateutil = "*"
+types-pytz = "*"
+types-setuptools = "*"
+types-zxcvbn = "*"
 
 [tool.poetry.group.server]
 optional = true
