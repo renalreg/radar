@@ -148,9 +148,7 @@ def parse_demographics(sda_patient, adapter):
     try:
         sda_patient = serializer.run_validation(sda_patient)
     except ValidationError as e:
-        adapter.error(
-            f"Ignoring invalid patient errors={e.flatten()}"
-        )
+        adapter.error(f"Ignoring invalid patient errors={e.flatten()}")
         return None
 
     sda_patient = SDAPatient(sda_patient)

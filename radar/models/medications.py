@@ -1,4 +1,3 @@
-
 from collections import OrderedDict
 
 from sqlalchemy import Column, Date, ForeignKey, Index, Numeric, String

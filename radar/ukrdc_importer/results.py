@@ -87,9 +87,7 @@ class SDALabOrder:
 
 def parse_results(sda_lab_orders, adapter):
     def log(index, sda_lab_order, e):
-        adapter.error(
-            f"Ignoring invalid lab order index={index}, errors={e.flatten()}"
-        )
+        adapter.error(f"Ignoring invalid lab order index={index}, errors={e.flatten()}")
 
     serializer = LabOrderSerializer()
     sda_lab_orders = validate_list(sda_lab_orders, serializer, invalid_f=log)
@@ -104,9 +102,7 @@ def unique_results(sda_lab_orders, adapter):
 
     def log(sda_lab_order):
         external_id = sda_lab_order.external_id
-        adapter.warning(
-            f"Ignoring duplicate lab order external_id={external_id}"
-        )
+        adapter.warning(f"Ignoring duplicate lab order external_id={external_id}")
 
     sda_lab_orders = unique_list(sda_lab_orders, key_f=key, duplicate_f=log)
 

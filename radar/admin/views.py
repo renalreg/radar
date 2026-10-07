@@ -1,7 +1,6 @@
 """Admin views."""
 
 import glob
-import io
 import os
 
 from flask import redirect, request, send_file, url_for, flash
@@ -258,11 +257,7 @@ class HospitalView(ModelView):
         super().on_model_change(form, model, is_created)
 
     def get_query(self):
-        return (
-            super()
-            .get_query()
-            .filter(self.model.type == GROUP_TYPE.HOSPITAL)
-        )
+        return super().get_query().filter(self.model.type == GROUP_TYPE.HOSPITAL)
 
     def get_count_query(self):
         query = self.session.query(func.count("*")).select_from(self.model)
@@ -294,11 +289,7 @@ class CohortView(ModelView):
         super().on_model_change(form, model, is_created)
 
     def get_query(self):
-        return (
-            super()
-            .get_query()
-            .filter(self.model.type == GROUP_TYPE.COHORT)
-        )
+        return super().get_query().filter(self.model.type == GROUP_TYPE.COHORT)
 
     def get_count_query(self):
         query = self.session.query(func.count("*")).select_from(self.model)

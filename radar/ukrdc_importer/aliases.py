@@ -31,9 +31,7 @@ class SDAName:
 
 def parse_aliases(sda_names, adapter):
     def log(index, sda_name, e):
-        adapter.error(
-            f"Ignoring invalid alias index={index}, errors={e.flatten()}"
-        )
+        adapter.error(f"Ignoring invalid alias index={index}, errors={e.flatten()}")
 
     serializer = NameSerializer()
     sda_names = validate_list(sda_names, serializer, invalid_f=log)

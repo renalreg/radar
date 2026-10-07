@@ -64,9 +64,7 @@ class MinValidator(Validator):
 
     def __call__(self, value):
         if value < self.value:
-            raise ValidationError(
-                f"Must be greater than or equal to {self.value}."
-            )
+            raise ValidationError(f"Must be greater than or equal to {self.value}.")
 
 
 class MaxValidator(Validator):
@@ -84,9 +82,7 @@ class MaxValidator(Validator):
 
     def __call__(self, value):
         if value > self.value:
-            raise ValidationError(
-                f"Must be less than or equal to {self.value}."
-            )
+            raise ValidationError(f"Must be less than or equal to {self.value}.")
 
 
 class NotInFutureValidator(Validator):

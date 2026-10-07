@@ -76,9 +76,7 @@ class SDAAddress:
 
 def parse_addresses(sda_addresses, adapter):
     def log(index, sda_address, e):
-        adapter.error(
-            f"Ignoring invalid address index={index}, errors={e.flatten()}"
-        )
+        adapter.error(f"Ignoring invalid address index={index}, errors={e.flatten()}")
 
     serializer = AddressSerializer()
     sda_addresses = validate_list(sda_addresses, serializer, invalid_f=log)

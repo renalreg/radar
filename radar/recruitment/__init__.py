@@ -342,9 +342,7 @@ class RecruitmentPatient:
 
     def _add_to_group(self, patient, group):
         if not patient.in_group(group, current=True):
-            logger.info(
-                f"Adding patient number={self.number} to group id={group.id}"
-            )
+            logger.info(f"Adding patient number={self.number} to group id={group.id}")
             group_patient = GroupPatient()
             group_patient.patient = patient
             group_patient.group = group

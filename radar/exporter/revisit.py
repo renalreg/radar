@@ -27,7 +27,6 @@ def revisit():
     hospital_ids = get_hospitals()
     headers = ["hospital", "patient_id", "latest_visit"]
     import csv
-    import io
 
     fdesc = open("visits.csv", "w", newline="", encoding="utf-8")
     writer = csv.DictWriter(fdesc, fieldnames=headers)

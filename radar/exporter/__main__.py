@@ -2,7 +2,6 @@ import argparse
 from configparser import ConfigParser
 import csv
 from datetime import date
-import io
 import os
 import shutil
 import socket

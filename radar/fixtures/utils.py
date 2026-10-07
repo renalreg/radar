@@ -105,6 +105,7 @@ def generate_phone_number():
     local = "".join(str(random.randint(0, 9)) for _ in range(6))
     return f"0{random.randint(1, 2)}{area} {local}"
 
+
 def generate_mobile_number():
     return "07" + "".join(str(random.randint(0, 9)) for _ in range(9))
 

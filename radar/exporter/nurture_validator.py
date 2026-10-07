@@ -905,9 +905,7 @@ class PatientList:
         try:
             patient = self.data[0]
         except IndexError:
-            print(
-                f"No {self.kind.upper()} patients found in {self.hospital.name}"
-            )
+            print(f"No {self.kind.upper()} patients found in {self.hospital.name}")
             return
 
         workbook = xlsxwriter.Workbook(
