@@ -46,7 +46,7 @@ class CreatedUserMixin:
     @declared_attr
     def created_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.created_user_id" % self.__name__
+            "User", primaryjoin=f"User.id == {self.__name__}.created_user_id"
         )
 
     @declared_attr
@@ -73,7 +73,7 @@ class ModifiedUserMixin:
     @declared_attr
     def modified_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.modified_user_id" % self.__name__
+            "User", primaryjoin=f"User.id == {self.__name__}.modified_user_id"
         )
 
     @declared_attr

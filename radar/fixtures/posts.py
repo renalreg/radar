@@ -11,7 +11,7 @@ def create_posts(n):
         d = random_date(date(2008, 1, 1), date.today() - timedelta(days=1))
 
         post = Post()
-        post.title = "%s Newsletter" % d.strftime("%b %Y")
+        post.title = f"{d:%b %Y} Newsletter"
         post.body = generate_lorem_ipsum(n=3, html=False)
         post.published_date = d
         add(post)

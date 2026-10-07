@@ -45,7 +45,7 @@ def forgot_password(username, email):
 
 def send_reset_password_email(user, token):
     base_url = get_base_url()
-    reset_password_url = base_url + "/reset-password/%s" % token
+    reset_password_url = base_url + f"/reset-password/{token}"
 
     send_email_from_template(
         user.email,

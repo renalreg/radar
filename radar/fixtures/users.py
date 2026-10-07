@@ -27,7 +27,7 @@ def create_users(password=DEFAULT_PASSWORD):
             user.first_name = generate_first_name(generate_gender()).capitalize()
             user.last_name = generate_last_name().capitalize()
             user.username = group.code.lower() + "_" + str(role).lower()
-            user.email = "%s@example.org" % user.username
+            user.email = f"{user.username}@example.org"
             user.password = password
             add(user)
 

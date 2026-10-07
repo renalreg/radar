@@ -34,7 +34,7 @@ class UserCreatedUserMixin:
     def created_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.created_user_id" % self.__name__,
+            primaryjoin=f"User.id == {self.__name__}.created_user_id",
             remote_side="User.id",
             post_update=True,
         )
@@ -50,7 +50,7 @@ class UserModifiedUserMixin:
     def modified_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.modified_user_id" % self.__name__,
+            primaryjoin=f"User.id == {self.__name__}.modified_user_id",
             remote_side="User.id",
             post_update=True,
         )

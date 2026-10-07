@@ -25,7 +25,7 @@ def test_change_email(api):
 
     assert (
         client1.patch(
-            "/users/%s" % user.id,
+            f"/users/{user.id}",
             data={"currentPassword": "password", "email": "bar@example.org"},
         ).status_code
         == 200
@@ -60,7 +60,7 @@ def test_incorrect_password(api):
     assert get_session_count(user) == 2
 
     response = client1.patch(
-        "/users/%s" % user.id,
+        f"/users/{user.id}",
         data={"currentPassword": "foobarbaz", "email": "bar@example.org"},
     )
 

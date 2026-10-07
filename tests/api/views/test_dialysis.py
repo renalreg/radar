@@ -182,7 +182,7 @@ def test_read_dialysis(api, username, group_type, group_code, source_type, expec
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/dialysis/%s" % dialysis.id)
+    response = client.get(f"/dialysis/{dialysis.id}")
 
     if expected:
         assert response.status_code == 200
@@ -207,7 +207,7 @@ def test_delete_dialysis(api, username, group_type, group_code, source_type, exp
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/dialysis/%s" % dialysis.id)
+    response = client.delete(f"/dialysis/{dialysis.id}")
 
     dialysis = Dialysis.query.get(dialysis.id)
 
@@ -281,7 +281,7 @@ def test_update_dialysis(api, username, group_type, group_code, source_type, exp
     client = api.test_client()
     client.login(user)
 
-    response = client.patch("/dialysis/%s" % dialysis.id, data=data)
+    response = client.patch(f"/dialysis/{dialysis.id}", data=data)
 
     assert response.status_code == expected
 

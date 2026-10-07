@@ -33,7 +33,7 @@ def create_results_f():
                 result.source_type = source_type
                 result.observation = observation
                 result.date = random_date(patient.earliest_date_of_birth, date.today())
-                result.value = "%.2f" % random.uniform(min_value, max_value)
+                result.value = f"{random.uniform(min_value, max_value):.2f}"
                 add(result)
 
     return create_results

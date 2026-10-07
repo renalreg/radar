@@ -153,7 +153,7 @@ def test_read_demographics_list(
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/patient-demographics?patient=%s" % patient.id)
+    response = client.get(f"/patient-demographics?patient={patient.id}")
 
     data = json.loads(response.data)
 
@@ -199,7 +199,7 @@ def test_read_demographics(
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/patient-demographics/%s" % demographics.id)
+    response = client.get(f"/patient-demographics/{demographics.id}")
 
     if expected:
         assert response.status_code == 200
@@ -233,7 +233,7 @@ def test_delete_demographics(
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/patient-demographics/%s" % demographics.id)
+    response = client.delete(f"/patient-demographics/{demographics.id}")
 
     demographics = PatientDemographics.query.get(demographics.id)
 
@@ -325,7 +325,7 @@ def test_update_demographics(
     client = api.test_client()
     client.login(user)
 
-    response = client.patch("/patient-demographics/%s" % demographics.id, data=data)
+    response = client.patch(f"/patient-demographics/{demographics.id}", data=data)
 
     assert response.status_code == expected
 

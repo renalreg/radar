@@ -115,7 +115,7 @@ def test_delete_group_user(api, username, group_type, group_code, role, expected
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/group-users/%s" % group_user.id)
+    response = client.delete(f"/group-users/{group_user.id}")
 
     assert response.status_code == expected
 
@@ -175,14 +175,14 @@ def test_read_group_user(api, username, group_type, group_code, role, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/group-users/%s" % group_user.id)
+    response = client.get(f"/group-users/{group_user.id}")
 
     if expected:
         assert response.status_code == 200
     else:
         assert response.status_code == 403
 
-    response = client.get("/group-users?user=%s" % other_user.id)
+    response = client.get(f"/group-users?user={other_user.id}")
 
     assert response.status_code == 200
 
@@ -312,7 +312,7 @@ def test_update_group_user(
     client.login(user)
 
     response = client.patch(
-        "/group-users/%s" % group_user.id,
+        f"/group-users/{group_user.id}",
         data={
             "group": new_group.id,
             "role": str(new_role),
@@ -331,7 +331,7 @@ def test_view_self(api, username):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/group-users?user=%s" % user.id)
+    response = client.get(f"/group-users?user={user.id}")
 
     assert response.status_code == 200
 
@@ -340,7 +340,7 @@ def test_view_self(api, username):
     assert len(data["data"]) == len(user.group_users)
 
     for group_user in user.group_users:
-        response = client.get("/group-users/%s" % group_user.id)
+        response = client.get(f"/group-users/{group_user.id}")
         assert response.status_code == 200
 
 
@@ -354,7 +354,7 @@ def test_delete_self(api, username):
     client.login(user)
 
     for group_user in user.group_users:
-        response = client.delete("/group-users/%s" % group_user.id)
+        response = client.delete(f"/group-users/{group_user.id}")
 
         if user.is_admin:
             assert response.status_code == 200
@@ -512,7 +512,7 @@ def test_update_self(
     client.login(user)
 
     response = client.post(
-        "/group-users/%s" % group_user.id,
+        f"/group-users/{group_user.id}",
         data={
             "user": user.id,
             "group": new_group.id,

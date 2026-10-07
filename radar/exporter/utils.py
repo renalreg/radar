@@ -57,7 +57,7 @@ def format_user(user):
     if user is None:
         return None
     elif user.first_name and user.last_name:
-        return "%s %s" % (user.first_name, user.last_name)
+        return f"{user.first_name} {user.last_name}"
     else:
         return user.username
 

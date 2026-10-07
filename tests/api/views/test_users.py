@@ -78,7 +78,7 @@ def test_read_user_list(
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/users?id=%s" % other_user.id)
+    response = client.get(f"/users?id={other_user.id}")
 
     assert response.status_code == 200
 
@@ -106,7 +106,7 @@ def test_read_user(api, username, group_type, group_code, role, is_admin, expect
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/users/%s" % other_user.id)
+    response = client.get(f"/users/{other_user.id}")
 
     if expected:
         assert response.status_code == 200
@@ -123,10 +123,10 @@ def test_read_self(api, username):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/users/%s" % user.id)
+    response = client.get(f"/users/{user.id}")
     assert response.status_code == 200
 
-    response = client.get("/users?id=%s" % user.id)
+    response = client.get(f"/users?id={user.id}")
     assert response.status_code == 200
     data = json.loads(response.data)
     assert len(data["data"]) == 1
@@ -191,7 +191,7 @@ def test_update_user(api, username, group_type, group_code, role, is_admin, expe
     client.login(user)
 
     response = client.patch(
-        "/users/%s" % other_user.id,
+        f"/users/{other_user.id}",
         data={
             "first_name": "Bruce",
             "last_name": "Wayne",
@@ -222,7 +222,7 @@ def test_update_self(api, username):
     client.login(user)
 
     response = client.patch(
-        "/users/%s" % user.id,
+        f"/users/{user.id}",
         data={
             "first_name": "Bruce",
             "last_name": "Wayne",
@@ -246,7 +246,7 @@ def test_delete_self(api, username):
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/users/%s" % user.id)
+    response = client.delete(f"/users/{user.id}")
 
     # Not possible to delete yourself
     assert response.status_code == 403
@@ -272,7 +272,7 @@ def test_is_admin_true(api, username, other_username, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.patch("/users/%s" % other_user.id, data={"is_admin": True})
+    response = client.patch(f"/users/{other_user.id}", data={"is_admin": True})
 
     assert response.status_code == expected
 
@@ -292,7 +292,7 @@ def test_is_admin_false(api, username, other_username, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.patch("/users/%s" % other_user.id, data={"is_admin": False})
+    response = client.patch(f"/users/{other_user.id}", data={"is_admin": False})
 
     assert response.status_code == expected
 
@@ -318,7 +318,7 @@ def test_change_password(api, username, other_username, expected):
     client.login(user)
 
     response = client.patch(
-        "/users/%s" % other_user.id, data={"password": "qzm5zuLVgL1t"}
+        f"/users/{other_user.id}", data={"password": "qzm5zuLVgL1t"}
     )
 
     assert response.status_code == expected
@@ -345,7 +345,7 @@ def test_change_email(api, username, other_username, expected):
     client.login(user)
 
     response = client.patch(
-        "/users/%s" % other_user.id, data={"email": "bar@example.org"}
+        f"/users/{other_user.id}", data={"email": "bar@example.org"}
     )
 
     assert response.status_code == expected

@@ -97,16 +97,13 @@ def random_datetime(start, end):
 
 
 def generate_email_address(first_name, last_name):
-    return "%s.%s@example.org" % (first_name.lower(), last_name.lower())
+    return f"{first_name.lower()}.{last_name.lower()}@example.org"
 
 
 def generate_phone_number():
-    return "0%d%s %s" % (
-        random.randint(1, 2),
-        "".join(str(random.randint(0, 9)) for _ in range(3)),
-        "".join(str(random.randint(0, 9)) for _ in range(6)),
-    )
-
+    area = "".join(str(random.randint(0, 9)) for _ in range(3))
+    local = "".join(str(random.randint(0, 9)) for _ in range(6))
+    return f"0{random.randint(1, 2)}{area} {local}"
 
 def generate_mobile_number():
     return "07" + "".join(str(random.randint(0, 9)) for _ in range(9))

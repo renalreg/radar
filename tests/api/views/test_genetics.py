@@ -126,7 +126,7 @@ def test_read_genetics_list(api, username, group_type, group_code, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/genetics?patient=%s" % patient.id)
+    response = client.get(f"/genetics?patient={patient.id}")
 
     data = json.loads(response.data)
 
@@ -151,7 +151,7 @@ def test_read_genetics(api, username, group_type, group_code, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/genetics/%s" % genetics.id)
+    response = client.get(f"/genetics/{genetics.id}")
 
     if expected:
         assert response.status_code == 200
@@ -175,7 +175,7 @@ def test_delete_genetics(api, username, group_type, group_code, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/genetics/%s" % genetics.id)
+    response = client.delete(f"/genetics/{genetics.id}")
 
     genetics = Genetics.query.get(genetics.id)
 
@@ -240,7 +240,7 @@ def test_update_genetics(api, username, group_type, group_code, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.patch("/genetics/%s" % genetics.id, data=data)
+    response = client.patch(f"/genetics/{genetics.id}", data=data)
 
     assert response.status_code == expected
 

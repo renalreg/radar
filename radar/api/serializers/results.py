@@ -42,7 +42,7 @@ def get_value_field(observation):
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField(required=False)
     else:
-        raise ValueError("Unknown value type: %s" % value_type)
+        raise ValueError(f"Unknown value type: {value_type}")
 
     return field
 

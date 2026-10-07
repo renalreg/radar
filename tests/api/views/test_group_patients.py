@@ -287,7 +287,7 @@ def test_delete_group_patient(
     client = api.test_client()
     client.login(user)
 
-    response = client.delete("/group-patients/%s" % group_patient.id)
+    response = client.delete(f"/group-patients/{group_patient.id}")
 
     if expected:
         assert response.status_code == 200
@@ -312,7 +312,7 @@ def test_read_group_patient_list(api, username, expected):
     client = api.test_client()
     client.login(user)
 
-    response = client.get("/group-patients?patient=%s" % patient.id)
+    response = client.get(f"/group-patients?patient={patient.id}")
 
     assert response.status_code == 200
 

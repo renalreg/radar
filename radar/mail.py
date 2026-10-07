@@ -75,11 +75,11 @@ def send_email_from_template(
     to_addresses, subject, template_name, context, from_address=None
 ):
     # Render the plaintext email template
-    template_plain = env.get_template("%s.txt" % template_name)
+    template_plain = env.get_template(f"{template_name}.txt")
     message_plain = template_plain.render(**context)
 
     # Render the HTML email template
-    template_html = env.get_template("%s.html" % template_name)
+    template_html = env.get_template(f"{template_name}.html")
     message_html = template_html.render(**context)
 
     send_email(
