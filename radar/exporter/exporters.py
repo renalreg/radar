@@ -473,7 +473,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         else:
                             row = []
 
-                        ins_data = self.get_ins_data(record, diagnosis)
+                        self.set_ins_data(record, diagnosis)
 
                     # No primary diagnosis found for previous patient
                     # Check for INS data
@@ -491,7 +491,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             else:
                                 row = []
 
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
                         # No data found for previous patient so no yield required
                         else:
@@ -500,7 +500,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             else:
                                 row = []
 
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
                 # Not new patient
                 else:
@@ -510,7 +510,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             not self.ins_data["ins_dia_date"]
                             or self.ins_data["ins_dia_date"] < record.from_date
                         ):
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
                     # Search for primary diagnosis and INS data
                     else:
@@ -523,7 +523,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             not self.ins_data["ins_dia_date"]
                             or self.ins_data["ins_dia_date"] < record.from_date
                         ):
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
         # Not Nurture-ins export
         else:
@@ -564,7 +564,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
 
         return row
 
-    def get_ins_data(self, record, diagnosis):
+    def set_ins_data(self, record, diagnosis):
         """
         Updates ins_data dictionary with INS data
 

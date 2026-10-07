@@ -26,7 +26,6 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
-from radar.models.biomarker import BiomarkerBarcode
 
 
 SIXTEEN_YEARS_IN_MONTHS = 12 * 16

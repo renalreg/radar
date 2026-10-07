@@ -24,10 +24,7 @@ from radar.api.views.generics import (
     parse_args,
     RetrieveModelView,
     UpdateModelView,
-    response_json,
-    ApiView,
 )
-from radar.database import db
 from radar.models import GroupAntibody, Antibody
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
@@ -239,7 +236,7 @@ class AntibodyListView(StringLookupListView):
         query = (
             query.join(Antibody.group_antibodies)
             .filter(GroupAntibody.group_id == cohort_code)
-            .filter(Antibody.is_official == True)
+            .filter(Antibody.is_official)
             .order_by(Antibody.id)
         )
         return query

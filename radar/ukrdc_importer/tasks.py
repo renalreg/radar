@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from celery import shared_task
 from cornflake.exceptions import ValidationError
@@ -7,7 +6,7 @@ import sqlalchemy
 
 from radar.database import db
 from radar.logging.logger import PatientLoggerAdapter
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.models.patient_locks import PatientLock
 from radar.models.patients import Patient

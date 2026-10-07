@@ -38,7 +38,10 @@ BIOPSY_DIAGNOSES = OrderedDict(
 )
 
 
-normalize_name = lambda name: re.sub(r"\s+", " ", name.strip()).lower() if name else ""
+def normalize_name(name: str | None) -> str:
+    if not name:
+        return ""
+    return re.sub(r"\s+", " ", name.strip()).lower()
 
 
 @log_changes

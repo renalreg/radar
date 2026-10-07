@@ -1,4 +1,3 @@
-from sqlalchemy.sql.expression import true
 from cornflake.exceptions import ValidationError
 
 from radar.api.permissions import RecruitPatientPermission

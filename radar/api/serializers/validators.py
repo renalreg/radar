@@ -394,6 +394,6 @@ def validate_hla_mismatch(data):
     # Check if all segments are in the allowed values
     for segment in segments:
         if segment[0] in ["A", "B"] and segment[1:] not in allowed_values:
-            raise ValidationError({"mismatch_hla": f"values should be 0, 1, 2 or NA"})
+            raise ValidationError({"mismatch_hla": "values should be 0, 1, 2 or NA"})
         if segment[0:2] == "DR" and segment[2:] not in allowed_values:
-            raise ValidationError({f"mismatch_hla": f"values should be 0, 1, 2 or NA"})
+            raise ValidationError({"mismatch_hla": "values should be 0, 1, 2 or NA"})

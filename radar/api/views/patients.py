@@ -1,7 +1,6 @@
 import csv
 import io
 import re
-import time
 
 from cornflake import fields, serializers
 from cornflake.validators import none_if_blank
