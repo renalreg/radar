@@ -47,15 +47,15 @@ def list_users():
 
     builder = UserQueryBuilder(current_user)
 
-    user_id = args['id']
-    username = args['username']
-    email = args['email']
-    first_name = args['first_name']
-    last_name = args['last_name']
-    groups = args['group']
-    is_enabled = args['is_enabled']
-    is_admin = args['is_admin']
-    has_logged_in = args['has_logged_in']
+    user_id = args["id"]
+    username = args["username"]
+    email = args["email"]
+    first_name = args["first_name"]
+    last_name = args["last_name"]
+    groups = args["group"]
+    is_enabled = args["is_enabled"]
+    is_admin = args["is_admin"]
+    has_logged_in = args["has_logged_in"]
 
     if user_id is not None:
         builder.user_id(user_id)
@@ -131,19 +131,19 @@ class UserListCSVView(ApiView):
         writer = csv.writer(f)
 
         headers = [
-            'User ID',
-            'Username',
-            'First Name',
-            'Last Name',
-            'Email',
-            'Telephone',
-            'Enabled',
-            'Admin',
-            'Last Login',
-            'Last Active',
-            'Cohorts',
-            'Hospitals',
-            'Roles',
+            "User ID",
+            "Username",
+            "First Name",
+            "Last Name",
+            "Email",
+            "Telephone",
+            "Enabled",
+            "Admin",
+            "Last Login",
+            "Last Active",
+            "Cohorts",
+            "Hospitals",
+            "Roles",
         ]
         writer.writerow(headers)
 
@@ -153,12 +153,12 @@ class UserListCSVView(ApiView):
             groups = [x.name for x in user.groups if x.type == group_type]
             groups = sorted(groups)
             groups = uniq(groups)
-            return ', '.join(groups)
+            return ", ".join(groups)
 
         def get_roles(user):
             """Comma-separated list of roles."""
             roles = [gu.role.name for gu in user.group_users]
-            return ', '.join(sorted(set(roles)))
+            return ", ".join(sorted(set(roles)))
 
         users = list_users()
         for user in users:
@@ -179,13 +179,17 @@ class UserListCSVView(ApiView):
 
             writer.writerow(output)
 
-        return Response(f.getvalue(), content_type='text/csv')
+        return Response(f.getvalue(), content_type="text/csv")
 
 
 def register_views(app):
-    app.add_url_rule('/users', view_func=UserListView.as_view('user_list'))
-    app.add_url_rule('/users', view_func=UserCreateView.as_view('user_create'))
-    app.add_url_rule('/users/<int:id>', view_func=UserRetrieveView.as_view('user_retrieve'))
-    app.add_url_rule('/users/<int:id>', view_func=UserUpdateView.as_view('user_update'))
-    app.add_url_rule('/users/<int:id>', view_func=UserDestroyView.as_view('user_destroy'))
-    app.add_url_rule('/users.csv', view_func=UserListCSVView.as_view('user_list_csv'))
+    app.add_url_rule("/users", view_func=UserListView.as_view("user_list"))
+    app.add_url_rule("/users", view_func=UserCreateView.as_view("user_create"))
+    app.add_url_rule(
+        "/users/<int:id>", view_func=UserRetrieveView.as_view("user_retrieve")
+    )
+    app.add_url_rule("/users/<int:id>", view_func=UserUpdateView.as_view("user_update"))
+    app.add_url_rule(
+        "/users/<int:id>", view_func=UserDestroyView.as_view("user_destroy")
+    )
+    app.add_url_rule("/users.csv", view_func=UserListCSVView.as_view("user_list_csv"))

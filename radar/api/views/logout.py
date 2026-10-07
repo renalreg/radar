@@ -17,5 +17,8 @@ class LogoutOtherSessionsView(ApiView):
 
 
 def register_views(app):
-    app.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
-    app.add_url_rule('/logout-other-sessions', view_func=LogoutOtherSessionsView.as_view('logout_other_sessions'))
+    app.add_url_rule("/logout", view_func=LogoutView.as_view("logout"))
+    app.add_url_rule(
+        "/logout-other-sessions",
+        view_func=LogoutOtherSessionsView.as_view("logout_other_sessions"),
+    )

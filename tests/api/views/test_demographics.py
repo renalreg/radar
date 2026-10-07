@@ -18,28 +18,35 @@ from tests.api.fixtures import (
 
 def get_read_list_args():
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital2_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it', 'cohort1_senior_researcher'
+        "admin",
+        "hospital1_clinician",
+        "hospital2_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
+        "cohort1_senior_researcher",
     ]
     groups = [
         (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR),
-        (GROUP_TYPE.HOSPITAL, 'HOSPITAL1'),
-        (GROUP_TYPE.HOSPITAL, 'HOSPITAL2'),
+        (GROUP_TYPE.HOSPITAL, "HOSPITAL1"),
+        (GROUP_TYPE.HOSPITAL, "HOSPITAL2"),
     ]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = True
             expected_demographics = True
-        elif username == 'hospital1_clinician':
+        elif username == "hospital1_clinician":
             expected = True
             expected_demographics = True
-        elif username == 'cohort1_researcher':
+        elif username == "cohort1_researcher":
             expected = True
             expected_demographics = False
-        elif username == 'cohort1_senior_researcher':
+        elif username == "cohort1_senior_researcher":
             expected = True
             expected_demographics = True
         else:
@@ -55,21 +62,28 @@ def get_read_args():
 
 def get_create_args():
     radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
-    cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
+    hospital1_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL1")
+    cohort1_group = (GROUP_TYPE.COHORT, "COHORT1")
 
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital2_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it', 'cohort1_senior_researcher'
+        "admin",
+        "hospital1_clinician",
+        "hospital2_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
+        "cohort1_senior_researcher",
     ]
     groups = [radar_group, hospital1_group, cohort1_group]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = True
-        elif username == 'hospital1_clinician':
+        elif username == "hospital1_clinician":
             expected = source_type == SOURCE_TYPE_MANUAL and group == radar_group
         else:
             expected = False
@@ -83,25 +97,32 @@ def get_delete_args():
 
 def get_update_args():
     radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
+    hospital1_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL1")
 
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital1_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it', 'cohort1_senior_researcher'
+        "admin",
+        "hospital1_clinician",
+        "hospital1_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
+        "cohort1_senior_researcher",
     ]
     groups = [radar_group, hospital1_group]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = 200
-        elif username == 'hospital1_clinician':
+        elif username == "hospital1_clinician":
             if source_type == SOURCE_TYPE_MANUAL and group == radar_group:
                 expected = 200
             else:
                 expected = 403
-        elif username in ['cohort1_researcher', 'cohort1_senior_researcher']:
+        elif username in ["cohort1_researcher", "cohort1_senior_researcher"]:
             expected = 403
         else:
             expected = 404
@@ -110,10 +131,19 @@ def get_update_args():
 
 
 @pytest.mark.parametrize(
-    ['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'],
-    get_read_list_args()
+    [
+        "username",
+        "group_type",
+        "group_code",
+        "source_type",
+        "expected",
+        "expected_demographics",
+    ],
+    get_read_list_args(),
 )
-def test_read_demographics_list(api, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics_list(
+    api, username, group_type, group_code, source_type, expected, expected_demographics
+):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -123,28 +153,37 @@ def test_read_demographics_list(api, username, group_type, group_code, source_ty
     client = api.test_client()
     client.login(user)
 
-    response = client.get('/patient-demographics?patient=%s' % patient.id)
+    response = client.get("/patient-demographics?patient=%s" % patient.id)
 
     data = json.loads(response.data)
 
     assert response.status_code == 200
 
     if expected:
-        assert len(data['data']) == 1
+        assert len(data["data"]) == 1
 
         if expected_demographics:
-            assert data['data'][0]['firstName'] == 'JOHN'
+            assert data["data"][0]["firstName"] == "JOHN"
         else:
-            assert 'firstName' not in data['data'][0]
+            assert "firstName" not in data["data"][0]
     else:
-        assert len(data['data']) == 0
+        assert len(data["data"]) == 0
 
 
 @pytest.mark.parametrize(
-    ['username', 'group_type', 'group_code', 'source_type', 'expected', 'expected_demographics'],
-    get_read_args()
+    [
+        "username",
+        "group_type",
+        "group_code",
+        "source_type",
+        "expected",
+        "expected_demographics",
+    ],
+    get_read_args(),
 )
-def test_read_demographics(api, username, group_type, group_code, source_type, expected, expected_demographics):
+def test_read_demographics(
+    api, username, group_type, group_code, source_type, expected, expected_demographics
+):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -152,42 +191,49 @@ def test_read_demographics(api, username, group_type, group_code, source_type, e
         patient,
         source_group=group,
         source_type=source_type,
-        first_name='JOHN',
-        last_name='SMITH'
+        first_name="JOHN",
+        last_name="SMITH",
     )
     db.session.commit()
 
     client = api.test_client()
     client.login(user)
 
-    response = client.get('/patient-demographics/%s' % demographics.id)
+    response = client.get("/patient-demographics/%s" % demographics.id)
 
     if expected:
         assert response.status_code == 200
 
         data = json.loads(response.data)
-        assert data['id'] == demographics.id
+        assert data["id"] == demographics.id
 
         if expected_demographics:
-            assert data['firstName'] == 'JOHN'
+            assert data["firstName"] == "JOHN"
         else:
-            assert 'firstName' not in data
+            assert "firstName" not in data
     else:
         assert response.status_code == 404
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
-def test_delete_demographics(api, username, group_type, group_code, source_type, expected):
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_delete_args(),
+)
+def test_delete_demographics(
+    api, username, group_type, group_code, source_type, expected
+):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
-    demographics = create_demographics(patient, source_group=group, source_type=source_type)
+    demographics = create_demographics(
+        patient, source_group=group, source_type=source_type
+    )
     db.session.commit()
 
     client = api.test_client()
     client.login(user)
 
-    response = client.delete('/patient-demographics/%s' % demographics.id)
+    response = client.delete("/patient-demographics/%s" % demographics.id)
 
     demographics = PatientDemographics.query.get(demographics.id)
 
@@ -201,8 +247,13 @@ def test_delete_demographics(api, username, group_type, group_code, source_type,
         assert demographics is not None
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
-def test_create_demographics(api, username, group_type, group_code, source_type, expected):
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_create_args(),
+)
+def test_create_demographics(
+    api, username, group_type, group_code, source_type, expected
+):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -210,27 +261,27 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
     db.session.commit()
 
     data = {
-        'patient': patient.id,
-        'sourceGroup': group.id,
-        'sourceType': source_type,
-        'firstName': 'BRUCE',
-        'lastName': 'WAYNE',
-        'gender': 1,
-        'dateOfBirth': '2016-01-01',
-        'nationality': nationality.id,
+        "patient": patient.id,
+        "sourceGroup": group.id,
+        "sourceType": source_type,
+        "firstName": "BRUCE",
+        "lastName": "WAYNE",
+        "gender": 1,
+        "dateOfBirth": "2016-01-01",
+        "nationality": nationality.id,
     }
 
     client = api.test_client()
     client.login(user)
 
-    response = client.post('/patient-demographics', data=data)
+    response = client.post("/patient-demographics", data=data)
 
     if expected:
         assert response.status_code == 200
 
         data = json.loads(response.data)
 
-        demographics = PatientDemographics.query.get(data['id'])
+        demographics = PatientDemographics.query.get(data["id"])
 
         # Check the demographics were created
         assert demographics is not None
@@ -238,11 +289,21 @@ def test_create_demographics(api, username, group_type, group_code, source_type,
         assert response.status_code == 403
 
         # Check the demographics weren't created
-        assert PatientDemographics.query.filter(PatientDemographics.patient_id == patient.id).count() == 0
+        assert (
+            PatientDemographics.query.filter(
+                PatientDemographics.patient_id == patient.id
+            ).count()
+            == 0
+        )
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
-def test_update_demographics(api, username, group_type, group_code, source_type, expected):
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_update_args(),
+)
+def test_update_demographics(
+    api, username, group_type, group_code, source_type, expected
+):
     user = get_user(username)
     patient = get_patient(2)
     group = get_group(group_type, group_code)
@@ -250,21 +311,21 @@ def test_update_demographics(api, username, group_type, group_code, source_type,
         patient,
         source_group=group,
         source_type=source_type,
-        first_name='JOHN',
-        last_name='SMITH'
+        first_name="JOHN",
+        last_name="SMITH",
     )
     db.session.commit()
 
     data = {
-        'id': demographics.id,
-        'firstName': 'BRUCE',
-        'lastName': 'WAYNE',
+        "id": demographics.id,
+        "firstName": "BRUCE",
+        "lastName": "WAYNE",
     }
 
     client = api.test_client()
     client.login(user)
 
-    response = client.patch('/patient-demographics/%s' % demographics.id, data=data)
+    response = client.patch("/patient-demographics/%s" % demographics.id, data=data)
 
     assert response.status_code == expected
 
@@ -272,9 +333,9 @@ def test_update_demographics(api, username, group_type, group_code, source_type,
 
     if expected == 200:
         # Check the demographics were updated
-        assert demographics.first_name == 'BRUCE'
-        assert demographics.last_name == 'WAYNE'
+        assert demographics.first_name == "BRUCE"
+        assert demographics.last_name == "WAYNE"
     else:
         # Check the demographics weren't updated
-        assert demographics.first_name == 'JOHN'
-        assert demographics.last_name == 'SMITH'
+        assert demographics.first_name == "JOHN"
+        assert demographics.last_name == "SMITH"

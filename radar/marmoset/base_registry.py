@@ -6,7 +6,11 @@ import js2py
 
 from radar.marmoset.exceptions import SchemaError
 
-with resources.files(__package__).joinpath("schema.json").open("r", encoding="utf-8") as f:
+with (
+    resources.files(__package__)
+    .joinpath("schema.json")
+    .open("r", encoding="utf-8") as f
+):
     SCHEMA = json.load(f)
 
 
@@ -31,7 +35,9 @@ class BaseRegistry(object):
         self.helpers = []
 
     def _get_property(self, name, index=0):
-        return self.schema['properties']['fields']['items']['oneOf'][index]['properties'][name]
+        return self.schema["properties"]["fields"]["items"]["oneOf"][index][
+            "properties"
+        ][name]
 
     def add_type(self, type, parser, formatter):
         self.parsers[type] = parser
@@ -52,8 +58,8 @@ class BaseRegistry(object):
     def add_default(self, name, f, type=None):
         if name not in self.seen_defaults:
             schema = f.get_schema()
-            p = self._get_property('default')
-            schemas = p['oneOf']
+            p = self._get_property("default")
+            schemas = p["oneOf"]
             schemas.append(schema)
             self.seen_defaults.add(name)
 
@@ -71,8 +77,8 @@ class BaseRegistry(object):
     def add_required(self, name, f):
         if name not in self.required:
             schema = f.get_schema()
-            p = self._get_property('required')
-            schemas = p['oneOf']
+            p = self._get_property("required")
+            schemas = p["oneOf"]
             schemas.append(schema)
 
         self.required[name] = f
@@ -88,8 +94,8 @@ class BaseRegistry(object):
             schema = f.get_schema()
 
             for index in (0, 1):
-                p = self._get_property('visible', index=index)
-                schemas = p['oneOf']
+                p = self._get_property("visible", index=index)
+                schemas = p["oneOf"]
                 schemas.append(schema)
 
         self.visible[name] = f
@@ -102,9 +108,9 @@ class BaseRegistry(object):
 
     def add_validator(self, name, f, type=None):
         if name not in self.seen_validators:
-            p = self._get_property('validators')
+            p = self._get_property("validators")
             schema = f.get_schema()
-            schemas = p['items']['oneOf']
+            schemas = p["items"]["oneOf"]
             schemas.append(schema)
             self.seen_validators.add(name)
 
@@ -122,8 +128,8 @@ class BaseRegistry(object):
     def add_formula(self, name, f):
         if name not in self.formula:
             schema = f.get_schema()
-            p = self._get_property('formula', index=1)
-            schemas = p['oneOf']
+            p = self._get_property("formula", index=1)
+            schemas = p["oneOf"]
             schemas.append(schema)
 
         self.formula[name] = f
@@ -141,6 +147,6 @@ class BaseRegistry(object):
         context = js2py.EvalJs()
 
         for helper in self.helpers:
-            context.eval(helper.decode('utf-8'))
+            context.eval(helper.decode("utf-8"))
 
         return context

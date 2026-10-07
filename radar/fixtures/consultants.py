@@ -8,7 +8,7 @@ from radar.models.consultants import Consultant, GroupConsultant, Specialty
 from radar.models.groups import Group, GROUP_TYPE
 
 
-specialties = ['Nephrologist']
+specialties = ["Nephrologist"]
 
 
 def create_specialities():

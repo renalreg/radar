@@ -18,5 +18,11 @@ class HospitalisationDetailView(SourceObjectViewMixin, PatientObjectDetailView):
 
 
 def register_views(app):
-    app.add_url_rule('/hospitalisations', view_func=HospitalisationListView.as_view('hospitalisation_list'))
-    app.add_url_rule('/hospitalisations/<id>', view_func=HospitalisationDetailView.as_view('hospitalisation_detail'))
+    app.add_url_rule(
+        "/hospitalisations",
+        view_func=HospitalisationListView.as_view("hospitalisation_list"),
+    )
+    app.add_url_rule(
+        "/hospitalisations/<id>",
+        view_func=HospitalisationDetailView.as_view("hospitalisation_detail"),
+    )

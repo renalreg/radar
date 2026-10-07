@@ -1,5 +1,6 @@
 import logging
 
+
 class PatientLoggerAdapter(logging.LoggerAdapter):
     def process(self, msg, kwargs):
         # Create a prefix with all extra keys and values

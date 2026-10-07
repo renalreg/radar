@@ -13,8 +13,8 @@ from sqlalchemy.orm.session import Session as SessionBase
 class Session(SessionBase):
     def __init__(self, db, autocommit=False, autoflush=True, **options):
         app = db.get_app()
-        bind = options.pop('bind', None) or db.engine
-        binds = options.pop('binds', None)
+        bind = options.pop("bind", None) or db.engine
+        binds = options.pop("binds", None)
 
         if binds is None:
             db.get_binds(app)
@@ -24,7 +24,7 @@ class Session(SessionBase):
             autoflush=autoflush,
             bind=bind,
             binds=binds,
-            **options
+            **options,
         )
 
 
@@ -37,7 +37,7 @@ class SQLAlchemy(SQLAlchemyBase):
     def make_connector(self, app=None, bind=None):
         connector = super(SQLAlchemy, self).make_connector(app, bind)
         engine = connector.get_engine()
-        event.listens_for(engine, 'engine_connect')(ping_connection)
+        event.listens_for(engine, "engine_connect")(ping_connection)
         return connector
 
 

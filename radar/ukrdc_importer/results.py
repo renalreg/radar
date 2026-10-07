@@ -20,41 +20,43 @@ from radar.utils import get_path
 logger = logging.getLogger(__name__)
 
 REPLACEMENTS = {
-    '&lt;': '<',
-    '&gt;': '>',
-    'LT': '<',
-    'GT': '>',
-    '&amp;lt;': '<',
-    '&amp;gt;': '>',
+    "&lt;": "<",
+    "&gt;": ">",
+    "LT": "<",
+    "GT": ">",
+    "&amp;lt;": "<",
+    "&amp;gt;": ">",
 }
 
 
 class SDALabResultItem(object):
     def __init__(self, data, parent=None):
         self.data = data
-        self.data['result_value'].replace(',', '')
+        self.data["result_value"].replace(",", "")
         for replacable, replacement in REPLACEMENTS.items():
-            self.data['result_value'] = self.data['result_value'].replace(replacable, replacement)
+            self.data["result_value"] = self.data["result_value"].replace(
+                replacable, replacement
+            )
         self.parent = parent
 
     @property
     def observation_time(self):
-        return self.data.get('observation_time')
+        return self.data.get("observation_time")
 
     @property
     def test_item_code(self):
-        return self.data['test_item_code']['code']
+        return self.data["test_item_code"]["code"]
 
     @property
     def result_value(self):
         try:
-            return float(self.data['result_value'])
+            return float(self.data["result_value"])
         except (TypeError, ValueError):
             return None
 
     @property
     def sent_value(self):
-        return self.data['result_value']
+        return self.data["result_value"]
 
 
 class SDALabOrder(object):
@@ -62,34 +64,32 @@ class SDALabOrder(object):
         self.data = data
 
         sda_lab_result_item = partial(SDALabResultItem, parent=self)
-        self.results = map(sda_lab_result_item, self.data['result']['result_items'])
+        self.results = map(sda_lab_result_item, self.data["result"]["result_items"])
 
     @property
     def external_id(self):
-        return self.data['external_id']
+        return self.data["external_id"]
 
     @property
     def from_time(self):
-        return self.data.get('from_time')
+        return self.data.get("from_time")
 
     @property
     def entering_organization(self):
-        return (
-            get_path(self.data, 'entering_organization', 'organization', 'code') or
-            get_path(self.data, 'entering_organization', 'code')
-        )
+        return get_path(
+            self.data, "entering_organization", "organization", "code"
+        ) or get_path(self.data, "entering_organization", "code")
 
     @property
     def entered_at(self):
-        return get_path(self.data, 'entered_at', 'code')
+        return get_path(self.data, "entered_at", "code")
 
 
 def parse_results(sda_lab_orders, adapter):
     def log(index, sda_lab_order, e):
         adapter.error(
-            'Ignoring invalid lab order index={index}, errors={errors}'.format(
-                index=index,
-                errors=e.flatten()
+            "Ignoring invalid lab order index={index}, errors={errors}".format(
+                index=index, errors=e.flatten()
             )
         )
 
@@ -106,7 +106,11 @@ def unique_results(sda_lab_orders, adapter):
 
     def log(sda_lab_order):
         external_id = sda_lab_order.external_id
-        adapter.warning('Ignoring duplicate lab order external_id={external_id}'.format(external_id=external_id))
+        adapter.warning(
+            "Ignoring duplicate lab order external_id={external_id}".format(
+                external_id=external_id
+            )
+        )
 
     sda_lab_orders = unique_list(sda_lab_orders, key_f=key, duplicate_f=log)
 
@@ -124,7 +128,7 @@ def get_result(result_id):
 
 def get_results(patient):
     q = Result.query
-    q = q.filter(Result.source_type == 'UKRDC')
+    q = q.filter(Result.source_type == "UKRDC")
     q = q.filter(Result.patient == patient)
     return q.all()
 
@@ -156,7 +160,7 @@ def sync_results(patient, results_to_keep, adapter):
         return
 
     def log(result):
-        adapter.info('Deleting result id={}'.format(result.id))
+        adapter.info("Deleting result id={}".format(result.id))
 
     # Find the earliest date for each observation
     min_dates = find_earliest_observations(results_to_keep)
@@ -169,7 +173,7 @@ def sync_results(patient, results_to_keep, adapter):
 
     # Fetch previously imported results that we expected to see in this file
     q = Result.query
-    q = q.filter(Result.source_type == 'UKRDC')
+    q = q.filter(Result.source_type == "UKRDC")
     q = q.filter(Result.patient == patient)
     q = q.filter(or_(*clauses))
     results = q.all()
@@ -186,7 +190,7 @@ def build_result_id(patient, group, sda_lab_result_item):
         Result.__tablename__,
         group.id,
         sda_lab_result_item.parent.external_id,
-        sda_lab_result_item.test_item_code
+        sda_lab_result_item.test_item_code,
     )
 
 
@@ -197,14 +201,18 @@ def convert_results(patient, sda_lab_orders, adapter):
 
     for sda_lab_order in sda_lab_orders:
         # Ignore RaDaR data
-        if sda_lab_order.entered_at == 'RADAR':
+        if sda_lab_order.entered_at == "RADAR":
             continue
 
         code = sda_lab_order.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
-            adapter.error('Ignoring lab order due to unknown entering organization code={code}'.format(code=code))
+            adapter.error(
+                "Ignoring lab order due to unknown entering organization code={code}".format(
+                    code=code
+                )
+            )
             continue
 
         for sda_lab_result_item in sda_lab_order.results:
@@ -212,27 +220,31 @@ def convert_results(patient, sda_lab_orders, adapter):
             observation = get_observation(test_item_code)
 
             if observation is None:
-                adapter.error('Ignoring lab result due to unknown test item code={code}'.format(code=test_item_code))
+                adapter.error(
+                    "Ignoring lab result due to unknown test item code={code}".format(
+                        code=test_item_code
+                    )
+                )
                 continue
 
             dt = sda_lab_result_item.observation_time or sda_lab_order.from_time
 
             if dt is None:
-                adapter.error('Ignoring lab result due to missing date')
+                adapter.error("Ignoring lab result due to missing date")
                 continue
 
             result_id = build_result_id(patient, source_group, sda_lab_result_item)
             result = get_result(result_id)
 
             if result is None:
-                adapter.info('Creating result id={id}'.format(id=result_id))
+                adapter.info("Creating result id={id}".format(id=result_id))
                 result = Result(id=result_id)
             else:
-                adapter.info('Updating result id={id}'.format(id=result_id))
+                adapter.info("Updating result id={id}".format(id=result_id))
 
             result.patient = patient
             result.source_group = source_group
-            result.source_type = 'UKRDC'
+            result.source_type = "UKRDC"
             result.created_user = user
             result.modified_user = user
 
@@ -248,7 +260,7 @@ def convert_results(patient, sda_lab_orders, adapter):
 
 
 def import_results(patient, sda_lab_orders, adapter):
-    adapter.info('Importing results: %s', patient.id)
+    adapter.info("Importing results: %s", patient.id)
 
     # Preload results so calls to get() can use the cache rather than querying the database
     preload_results(patient)
@@ -258,4 +270,4 @@ def import_results(patient, sda_lab_orders, adapter):
     results = convert_results(patient, sda_lab_orders, adapter)
     sync_results(patient, results, adapter)
 
-    adapter.info('Imported {n} result(s)'.format(n=len(results)))
+    adapter.info("Imported {n} result(s)".format(n=len(results)))

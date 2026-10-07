@@ -7,7 +7,7 @@ from radar.models import Code, Diagnosis, DiagnosisCode
 
 def updatedb():
     session = db.session.session_factory()
-    icd_diagnoses = session.query(Code).filter(Code.system == 'ICD-10')
+    icd_diagnoses = session.query(Code).filter(Code.system == "ICD-10")
     for code in icd_diagnoses:
         diagnosis = Diagnosis(name=code.display)
         session.add(diagnosis)
@@ -21,5 +21,5 @@ def main():
         updatedb()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

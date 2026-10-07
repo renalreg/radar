@@ -5,7 +5,7 @@ from radar.database import db
 
 
 class Ethnicity(db.Model):
-    __tablename__ = 'ethnicities'
+    __tablename__ = "ethnicities"
 
     id = Column(Integer, primary_key=True)
     code = Column(String(length=10))
@@ -16,22 +16,28 @@ class Ethnicity(db.Model):
 
 
 class CountryEthnicity(db.Model):
-    __tablename__ = 'country_ethnicities'
+    __tablename__ = "country_ethnicities"
 
     id = Column(Integer, primary_key=True)
 
-    ethnicity_id = Column(Integer, ForeignKey('ethnicities.id'))
-    ethnicity = relationship('Ethnicity', foreign_keys=[ethnicity_id], backref=backref('countries', lazy='joined'))
+    ethnicity_id = Column(Integer, ForeignKey("ethnicities.id"))
+    ethnicity = relationship(
+        "Ethnicity",
+        foreign_keys=[ethnicity_id],
+        backref=backref("countries", lazy="joined"),
+    )
 
-    country_code = Column(String(length=2), ForeignKey('countries.code'))
-    country = relationship('Country', foreign_keys=[country_code], backref=backref('ethnicities'))
+    country_code = Column(String(length=2), ForeignKey("countries.code"))
+    country = relationship(
+        "Country", foreign_keys=[country_code], backref=backref("ethnicities")
+    )
 
     def __str__(self):
-        return '{}-{}'.format(self.country, self.ethnicity)
+        return "{}-{}".format(self.country, self.ethnicity)
 
 
 class Nationality(db.Model):
-    __tablename__ = 'nationalities'
+    __tablename__ = "nationalities"
 
     id = Column(Integer, primary_key=True)
     label = Column(String)
@@ -41,19 +47,21 @@ class Nationality(db.Model):
 
 
 class CountryNationality(db.Model):
-    __tablename__ = 'country_nationalities'
+    __tablename__ = "country_nationalities"
 
     id = Column(Integer, primary_key=True)
 
-    nationality_id = Column(Integer, ForeignKey('nationalities.id'))
+    nationality_id = Column(Integer, ForeignKey("nationalities.id"))
     nationality = relationship(
-        'Nationality',
+        "Nationality",
         foreign_keys=[nationality_id],
-        backref=backref('countries', lazy='joined')
+        backref=backref("countries", lazy="joined"),
     )
 
-    country_code = Column(String(length=2), ForeignKey('countries.code'))
-    country = relationship('Country', foreign_keys=[country_code], backref=backref('nationalities'))
+    country_code = Column(String(length=2), ForeignKey("countries.code"))
+    country = relationship(
+        "Country", foreign_keys=[country_code], backref=backref("nationalities")
+    )
 
     def __str__(self):
-        return '{}-{}'.format(self.country, self.nationality)
+        return "{}-{}".format(self.country, self.nationality)

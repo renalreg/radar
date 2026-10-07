@@ -7,4 +7,4 @@ class RoleListView(StringLookupListView):
 
 
 def register_views(app):
-    app.add_url_rule('/roles', view_func=RoleListView.as_view('role_list'))
+    app.add_url_rule("/roles", view_func=RoleListView.as_view("role_list"))

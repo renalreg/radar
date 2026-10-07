@@ -1,7 +1,12 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import MetaMixin, PatientMixin, SourceMixin, StringLookupField
+from radar.api.serializers.common import (
+    MetaMixin,
+    PatientMixin,
+    SourceMixin,
+    StringLookupField,
+)
 from radar.models.rituximab import (
     BaselineAssessment,
     NEPHROPATHY_TYPES,
@@ -10,7 +15,9 @@ from radar.models.rituximab import (
 )
 
 
-class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class RituximabBaselineAssessmentSerializer(
+    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
+):
     date = fields.DateField()
     past_remission = fields.BooleanField(required=False)
     nephropathy = StringLookupField(NEPHROPATHY_TYPES, required=False)

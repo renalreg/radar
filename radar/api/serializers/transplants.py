@@ -10,7 +10,10 @@ from radar.api.serializers.common import (
     SourceMixin,
     StringLookupField,
 )
-from radar.api.serializers.validators import valid_date_for_patient, validate_hla_mismatch
+from radar.api.serializers.validators import (
+    valid_date_for_patient,
+    validate_hla_mismatch,
+)
 from radar.database import db
 from radar.models.transplants import (
     GRAFT_LOSS_CAUSES,
@@ -39,12 +42,12 @@ class TransplantRejectionSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantRejection
-        exclude = ['id', 'transplant_id']
+        exclude = ["id", "transplant_id"]
 
     def validate_patient(self, data, patient):
-        return self.run_validators_on_serializer(data, [
-            valid_date_for_patient('date_of_rejection', patient)
-        ])
+        return self.run_validators_on_serializer(
+            data, [valid_date_for_patient("date_of_rejection", patient)]
+        )
 
 
 class TransplantBiopsySerializer(ModelSerializer):
@@ -53,12 +56,12 @@ class TransplantBiopsySerializer(ModelSerializer):
 
     class Meta(object):
         model_class = TransplantBiopsy
-        exclude = ['id', 'transplant_id']
+        exclude = ["id", "transplant_id"]
 
     def validate_patient(self, data, patient):
-        return self.run_validators_on_serializer(data, [
-            valid_date_for_patient('date_of_biopsy', patient)
-        ])
+        return self.run_validators_on_serializer(
+            data, [valid_date_for_patient("date_of_biopsy", patient)]
+        )
 
 
 class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -79,67 +82,76 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     class Meta(object):
         model_class = Transplant
         validators = [
-            valid_date_for_patient('date'),
-            valid_date_for_patient('date_of_recurrence'),
-            valid_date_for_patient('date_of_failure'),
+            valid_date_for_patient("date"),
+            valid_date_for_patient("date_of_recurrence"),
+            valid_date_for_patient("date_of_failure"),
         ]
-        exclude = ['transplant_group_id']
+        exclude = ["transplant_group_id"]
 
     def validate(self, data):
         data = super(TransplantSerializer, self).validate(data)
 
-        patient = data['patient']
+        patient = data["patient"]
 
         # TODO wrap this with a context manager
         try:
-            self.fields['rejections'].validate_patient(data['rejections'], patient)
+            self.fields["rejections"].validate_patient(data["rejections"], patient)
         except ValidationError as e:
-            raise ValidationError({'rejections': e.errors})
+            raise ValidationError({"rejections": e.errors})
 
         try:
-            self.fields['biopsies'].validate_patient(data['biopsies'], patient)
+            self.fields["biopsies"].validate_patient(data["biopsies"], patient)
         except ValidationError as e:
-            raise ValidationError({'biopsies': e.errors})
+            raise ValidationError({"biopsies": e.errors})
 
         # Date of recurrence must be after transplant date
-        if data['date_of_recurrence'] is not None and data['date_of_recurrence'] < data['date']:
-            raise ValidationError({'date_of_recurrence': 'Must be on or after transplant date.'})
+        if (
+            data["date_of_recurrence"] is not None
+            and data["date_of_recurrence"] < data["date"]
+        ):
+            raise ValidationError(
+                {"date_of_recurrence": "Must be on or after transplant date."}
+            )
 
         # Date of failure must be after transplant date
-        if data['date_of_failure'] is not None and data['date_of_failure'] < data['date']:
-            raise ValidationError({'date_of_failure': 'Must be on or after transplant date.'})
-        if data['mismatch_hla']:
-            validate_hla_mismatch(data['mismatch_hla'])
-
+        if (
+            data["date_of_failure"] is not None
+            and data["date_of_failure"] < data["date"]
+        ):
+            raise ValidationError(
+                {"date_of_failure": "Must be on or after transplant date."}
+            )
+        if data["mismatch_hla"]:
+            validate_hla_mismatch(data["mismatch_hla"])
 
         return data
 
     def _save(self, instance, data):
-        instance.patient = data['patient']
+        instance.patient = data["patient"]
 
-        instance.source_group = data['source_group']
-        instance.source_type = data['source_type']
+        instance.source_group = data["source_group"]
+        instance.source_type = data["source_type"]
 
-        instance.date = data['date']
-        instance.modality = data['modality']
-        instance.recipient_hla = data['recipient_hla']
-        instance.donor_hla = data['donor_hla']
-        if data['mismatch_hla']:
-            instance.mismatch_hla = data['mismatch_hla']
+        instance.date = data["date"]
+        instance.modality = data["modality"]
+        instance.recipient_hla = data["recipient_hla"]
+        instance.donor_hla = data["donor_hla"]
+        if data["mismatch_hla"]:
+            instance.mismatch_hla = data["mismatch_hla"]
 
-        instance.date_of_cmv_infection = data['date_of_cmv_infection']
-        instance.recurrence = data['recurrence']
-        instance.date_of_recurrence = data['date_of_recurrence']
-        instance.date_of_failure = data['date_of_failure']
-        instance.graft_loss_cause = data['graft_loss_cause']
-        instance.transplant_group = data['transplant_group']
-        instance.rejections = self.fields['rejections'].create(data['rejections'])
-        instance.biopsies = self.fields['biopsies'].create(data['biopsies'])
+        instance.date_of_cmv_infection = data["date_of_cmv_infection"]
+        instance.recurrence = data["recurrence"]
+        instance.date_of_recurrence = data["date_of_recurrence"]
+        instance.date_of_failure = data["date_of_failure"]
+        instance.graft_loss_cause = data["graft_loss_cause"]
+        instance.transplant_group = data["transplant_group"]
+        instance.rejections = self.fields["rejections"].create(data["rejections"])
+        instance.biopsies = self.fields["biopsies"].create(data["biopsies"])
 
-        instance.created_user = data['created_user']
-        instance.modified_user = data['modified_user']
-        instance.created_date = data['created_date']
-        instance.modified_date = data['modified_date']
+        instance.created_user = data["created_user"]
+        instance.modified_user = data["modified_user"]
+        instance.created_date = data["created_date"]
+        instance.modified_date = data["modified_date"]
 
     def create(self, data):
         instance = Transplant()

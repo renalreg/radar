@@ -89,9 +89,9 @@ def filter_by_patient_group_permissions(query, user, patient_id, group_id):
                 GroupPatient.group_id == group_id,
                 and_(
                     group_a.type == GROUP_TYPE.COHORT,
-                    group_b.type == GROUP_TYPE.HOSPITAL
-                )
-            )
+                    group_b.type == GROUP_TYPE.HOSPITAL,
+                ),
+            ),
         )
         sub_query = sub_query.exists()
 
@@ -109,7 +109,7 @@ def filter_by_patient_group(query, group, patient_id):
     sub_query = sub_query.join(group_patient_alias, patient_alias.group_patients)
     sub_query = sub_query.filter(
         group_patient_alias.patient_id == patient_id,
-        group_patient_alias.group_id == group.id
+        group_patient_alias.group_id == group.id,
     )
     sub_query = sub_query.exists()
 
@@ -124,9 +124,13 @@ def filter_by_data_group(query, group, group_id):
 
 def patient_helper(klass):
     def f(config):
-        q = db.session.query(klass).filter(Patient.test != true(), klass.patient_id == Patient.id)
+        q = db.session.query(klass).filter(
+            Patient.test != true(), klass.patient_id == Patient.id
+        )
         q = q.order_by(klass.patient_id, klass.id)
-        q = _patient_filter(q, klass.patient_id, config['user'], config['patient_group'])
+        q = _patient_filter(
+            q, klass.patient_id, config["user"], config["patient_group"]
+        )
         return q
 
     return f
@@ -149,9 +153,10 @@ def patient_group_helper(klass):
             q,
             klass.patient_id,
             klass.group_id,
-            config['user'],
-            config['patient_group'],
-            config['data_group'])
+            config["user"],
+            config["patient_group"],
+            config["data_group"],
+        )
         return q
 
     return f
@@ -172,7 +177,7 @@ def _patient_group_filter(query, patient_id, group_id, user, patient_group, data
 
 def get_patients(config):
     q = db.session.query(Patient).filter(Patient.test != true()).order_by(Patient.id)
-    q = _patient_filter(q, Patient.id, config['user'], config['patient_group'])
+    q = _patient_filter(q, Patient.id, config["user"], config["patient_group"])
     return q
 
 
@@ -183,9 +188,10 @@ def get_family_history_relatives(config):
         q,
         FamilyHistory.patient_id,
         FamilyHistory.group_id,
-        config['user'],
-        config['patient_group'],
-        config['data_group'])
+        config["user"],
+        config["patient_group"],
+        config["data_group"],
+    )
     q = q.order_by(FamilyHistory.patient_id, FamilyHistory.id, FamilyHistoryRelative.id)
     return q
 
@@ -193,7 +199,9 @@ def get_family_history_relatives(config):
 def get_transplant_biopsies(config):
     q = db.session.query(TransplantBiopsy)
     q = q.join(TransplantBiopsy.transplant)
-    q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
+    q = _patient_filter(
+        q, Transplant.patient_id, config["user"], config["patient_group"]
+    )
     q = q.order_by(Transplant.patient_id, Transplant.id, TransplantBiopsy.id)
     return q
 
@@ -201,7 +209,9 @@ def get_transplant_biopsies(config):
 def get_transplant_rejections(config):
     q = db.session.query(TransplantRejection)
     q = q.join(TransplantRejection.transplant)
-    q = _patient_filter(q, Transplant.patient_id, config['user'], config['patient_group'])
+    q = _patient_filter(
+        q, Transplant.patient_id, config["user"], config["patient_group"]
+    )
     q = q.order_by(Transplant.patient_id, Transplant.id, TransplantRejection.id)
     return q
 
@@ -210,15 +220,15 @@ def get_form_data(config):
     q = db.session.query(Entry)
     q = q.filter(Patient.test != true(), Entry.patient_id == Patient.id)
     q = q.order_by(Entry.patient_id, Entry.id)
-    q = _patient_filter(q, Entry.patient_id, config['user'], config['patient_group'])
-    q = q.filter(Entry.form.has(slug=config['name']))
+    q = _patient_filter(q, Entry.patient_id, config["user"], config["patient_group"])
+    q = q.filter(Entry.form.has(slug=config["name"]))
     return q
 
 
 def get_consultants(config):
     q = db.session.query(Consultant)
     q = q.join(Consultant.group_consultants)
-    q = q.filter(GroupConsultant.group == config['data_group'])
+    q = q.filter(GroupConsultant.group == config["data_group"])
     return q
 
 
@@ -233,7 +243,7 @@ def get_patient_diagnoses(config):
 
 def get_primary_diagnoses(config):
     """Return query to get primary diagnoses for data_group."""
-    q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config['data_group'])
+    q = db.session.query(Diagnosis).filter(GroupDiagnosis.group == config["data_group"])
     q = q.join(GroupDiagnosis, GroupDiagnosis.diagnosis_id == Diagnosis.id)
     q = q.filter(GroupDiagnosis.type == GROUP_DIAGNOSIS_TYPE.PRIMARY)
     return q

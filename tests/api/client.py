@@ -8,36 +8,36 @@ class TestClient(FlaskClient):
         super(TestClient, self).__init__(*args, **kwargs)
         self.token = None
 
-    def login(self, user, password='password'):
+    def login(self, user, password="password"):
         response = self.post(
-            '/login',
+            "/login",
             data={
-                'username': user.username,
-                'password': password,
-            }
+                "username": user.username,
+                "password": password,
+            },
         )
 
         assert response.status_code == 200
 
-        self.token = json.loads(response.data)['token']
+        self.token = json.loads(response.data)["token"]
 
     def open(self, *args, **kwargs):
-        content_type = kwargs.pop('content_type', None)
-        data = kwargs.pop('data', None)
+        content_type = kwargs.pop("content_type", None)
+        data = kwargs.pop("data", None)
 
         if data is not None and content_type is None:
-            content_type = 'application/json'
+            content_type = "application/json"
 
-        if content_type == 'application/json':
+        if content_type == "application/json":
             data = json.dumps(data)
 
-        environ_base = kwargs.pop('environ_base', {})
-        environ_base.setdefault('REMOTE_ADDR', '127.0.0.1')
+        environ_base = kwargs.pop("environ_base", {})
+        environ_base.setdefault("REMOTE_ADDR", "127.0.0.1")
 
-        headers = kwargs.pop('headers', {})
+        headers = kwargs.pop("headers", {})
 
         if self.token is not None:
-            headers['x-auth-token'] = self.token
+            headers["x-auth-token"] = self.token
 
         return super(TestClient, self).open(
             *args,
@@ -45,5 +45,5 @@ class TestClient(FlaskClient):
             data=data,
             environ_base=environ_base,
             headers=headers,
-            **kwargs
+            **kwargs,
         )

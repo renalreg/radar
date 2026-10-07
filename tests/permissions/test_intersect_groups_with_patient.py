@@ -9,7 +9,12 @@ def test_empty():
     assert intersect_groups_with_patient(user, patient) == []
     assert intersect_groups_with_patient(user, patient, patient_membership=True) == []
     assert intersect_groups_with_patient(user, patient, patient_membership=True) == []
-    assert intersect_groups_with_patient(user, patient, user_membership=True, patient_membership=True) == []
+    assert (
+        intersect_groups_with_patient(
+            user, patient, user_membership=True, patient_membership=True
+        )
+        == []
+    )
 
 
 def test_intersecting():
@@ -23,9 +28,17 @@ def test_intersecting():
     u_b, u_c, u_d = user.group_users
 
     assert intersect_groups_with_patient(user, patient) == [b, c]
-    assert intersect_groups_with_patient(user, patient, user_membership=True) == [u_b, u_c]
-    assert intersect_groups_with_patient(user, patient, patient_membership=True) == [p_b, p_c]
-    assert intersect_groups_with_patient(user, patient, user_membership=True, patient_membership=True) == [
+    assert intersect_groups_with_patient(user, patient, user_membership=True) == [
+        u_b,
+        u_c,
+    ]
+    assert intersect_groups_with_patient(user, patient, patient_membership=True) == [
+        p_b,
+        p_c,
+    ]
+    assert intersect_groups_with_patient(
+        user, patient, user_membership=True, patient_membership=True
+    ) == [
         (u_b, p_b),
         (u_c, p_c),
     ]
@@ -43,7 +56,12 @@ def test_disjoint():
     assert intersect_groups_with_patient(user, patient) == []
     assert intersect_groups_with_patient(user, patient, user_membership=True) == []
     assert intersect_groups_with_patient(user, patient, patient_membership=True) == []
-    assert intersect_groups_with_patient(user, patient, user_membership=True, patient_membership=True) == []
+    assert (
+        intersect_groups_with_patient(
+            user, patient, user_membership=True, patient_membership=True
+        )
+        == []
+    )
 
 
 def test_admin():
@@ -58,5 +76,9 @@ def test_admin():
 
     assert intersect_groups_with_patient(user, patient) == [b]
     assert intersect_groups_with_patient(user, patient, user_membership=True) == [u_b]
-    assert intersect_groups_with_patient(user, patient, patient_membership=True) == [p_b]
-    assert intersect_groups_with_patient(user, patient, user_membership=True, patient_membership=True) == [(u_b, p_b)]
+    assert intersect_groups_with_patient(user, patient, patient_membership=True) == [
+        p_b
+    ]
+    assert intersect_groups_with_patient(
+        user, patient, user_membership=True, patient_membership=True
+    ) == [(u_b, p_b)]

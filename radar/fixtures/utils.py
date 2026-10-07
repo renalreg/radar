@@ -12,19 +12,19 @@ from radar.fixtures.constants import (
     GENDER_MALE,
     LAST_NAMES,
     POSTCODES,
-    TITLES
+    TITLES,
 )
 from radar.models.users import User
 from radar.utils import date_to_datetime, is_date
 
 
 def add(obj):
-    user = User.query.filter(User.username == 'bot').first()
+    user = User.query.filter(User.username == "bot").first()
 
-    if hasattr(obj, 'created_user') and obj.created_user is None:
+    if hasattr(obj, "created_user") and obj.created_user is None:
         obj.created_user = user
 
-    if hasattr(obj, 'modified_user') and obj.modified_user is None:
+    if hasattr(obj, "modified_user") and obj.modified_user is None:
         obj.modified_user = user
 
     db.session.add(obj)
@@ -97,24 +97,26 @@ def random_datetime(start, end):
 
 
 def generate_email_address(first_name, last_name):
-    return '%s.%s@example.org' % (first_name.lower(), last_name.lower())
+    return "%s.%s@example.org" % (first_name.lower(), last_name.lower())
 
 
 def generate_phone_number():
-    return '0%d%s %s' % (
+    return "0%d%s %s" % (
         random.randint(1, 2),
-        ''.join(str(random.randint(0, 9)) for _ in range(3)),
-        ''.join(str(random.randint(0, 9)) for _ in range(6)),
+        "".join(str(random.randint(0, 9)) for _ in range(3)),
+        "".join(str(random.randint(0, 9)) for _ in range(6)),
     )
 
 
 def generate_mobile_number():
-    return '07' + ''.join(str(random.randint(0, 9)) for _ in range(9))
+    return "07" + "".join(str(random.randint(0, 9)) for _ in range(9))
 
 
-def generate_number(prefix=''):
+def generate_number(prefix=""):
     while True:
-        number = prefix + ''.join(str(random.randint(0, 9)) for _ in range(9 - len(prefix)))
+        number = prefix + "".join(
+            str(random.randint(0, 9)) for _ in range(9 - len(prefix))
+        )
 
         check_digit = 0
 
@@ -134,11 +136,11 @@ def generate_number(prefix=''):
 
 
 def generate_nhs_no():
-    return generate_number('4')
+    return generate_number("4")
 
 
 def generate_chi_no():
-    return generate_number('01')
+    return generate_number("01")
 
 
 def generate_ukrr_no():

@@ -9,4 +9,4 @@ class LogSerializer(ModelSerializer):
 
     class Meta(object):
         model_class = Log
-        exclude = ['user_id']
+        exclude = ["user_id"]

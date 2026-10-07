@@ -2,22 +2,15 @@ class JSHandler(object):
     def __init__(self, field, data):
         context = field.registry.get_js_context()
         # TODO catch errors
-        self.f = context.eval('function f(form, path) {{ {} }}'.format(data['value']))
+        self.f = context.eval("function f(form, path) {{ {} }}".format(data["value"]))
 
     @classmethod
     def get_schema(cls):
         return {
-            'type': 'object',
-            'properties': {
-                'name': {
-                    'enum': ['js']
-                },
-                'value': {
-                    'type': 'string'
-                }
-            },
-            'required': ['name', 'value'],
-            'additionalProperties': False
+            "type": "object",
+            "properties": {"name": {"enum": ["js"]}, "value": {"type": "string"}},
+            "required": ["name", "value"],
+            "additionalProperties": False,
         }
 
     def __call__(self, form, path):

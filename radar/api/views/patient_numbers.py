@@ -12,12 +12,16 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 
 
-class PatientNumberListView(SystemObjectViewMixin, DemographicsViewMixin, PatientObjectListView):
+class PatientNumberListView(
+    SystemObjectViewMixin, DemographicsViewMixin, PatientObjectListView
+):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
 
 
-class PatientNumberDetailView(SystemObjectViewMixin, DemographicsViewMixin, PatientObjectDetailView):
+class PatientNumberDetailView(
+    SystemObjectViewMixin, DemographicsViewMixin, PatientObjectDetailView
+):
     serializer_class = PatientNumberSerializer
     model_class = PatientNumber
 
@@ -34,9 +38,17 @@ class PatientNumberDetailView(SystemObjectViewMixin, DemographicsViewMixin, Pati
                 if number.number_group.code in interested:
                     return self.destroy(*args, **kwargs)
 
-        raise ValidationError({'number': 'Can\'t delete the last NHS/CHI/HSC patient number.'})
+        raise ValidationError(
+            {"number": "Can't delete the last NHS/CHI/HSC patient number."}
+        )
 
 
 def register_views(app):
-    app.add_url_rule('/patient-numbers', view_func=PatientNumberListView.as_view('patient_number_list'))
-    app.add_url_rule('/patient-numbers/<id>', view_func=PatientNumberDetailView.as_view('patient_number_detail'))
+    app.add_url_rule(
+        "/patient-numbers",
+        view_func=PatientNumberListView.as_view("patient_number_list"),
+    )
+    app.add_url_rule(
+        "/patient-numbers/<id>",
+        view_func=PatientNumberDetailView.as_view("patient_number_detail"),
+    )

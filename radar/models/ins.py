@@ -3,39 +3,50 @@ from collections import OrderedDict
 from sqlalchemy import Boolean, Column, Date, Float, Index, String
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 
 
-KIDNEY_TYPES = OrderedDict([
-    ('TRANSPLANT', 'Transplant'),
-    ('NATIVE', 'Native'),
-])
+KIDNEY_TYPES = OrderedDict(
+    [
+        ("TRANSPLANT", "Transplant"),
+        ("NATIVE", "Native"),
+    ]
+)
 
-REMISSION_TYPES = OrderedDict([
-    ('COMPLETE', 'Complete'),
-    ('PARTIAL', 'Partial'),
-    ('NONE', 'None'),
-])
+REMISSION_TYPES = OrderedDict(
+    [
+        ("COMPLETE", "Complete"),
+        ("PARTIAL", "Partial"),
+        ("NONE", "None"),
+    ]
+)
 
-DIPSTICK_TYPES = OrderedDict([
-    ('NEGATIVE', 'Negative'),
-    ('ONEPLUS', '+'),
-    ('TWOPLUS', '++'),
-    ('THREEPLUS', '+++'),
-    ('FOURPLUS', '++++'),
-    ('TRACE', 'Trace'),
-])
+DIPSTICK_TYPES = OrderedDict(
+    [
+        ("NEGATIVE", "Negative"),
+        ("ONEPLUS", "+"),
+        ("TWOPLUS", "++"),
+        ("THREEPLUS", "+++"),
+        ("FOURPLUS", "++++"),
+        ("TRACE", "Trace"),
+    ]
+)
 
 
 @log_changes
 class InsClinicalPicture(db.Model, MetaModelMixin):
-    __tablename__ = 'ins_clinical_pictures'
+    __tablename__ = "ins_clinical_pictures"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('ins_clinical_pictures')
+    patient = patient_relationship("ins_clinical_pictures")
 
     date_of_picture = Column(Date, nullable=False)
     oedema = Column(Boolean)
@@ -54,17 +65,17 @@ class InsClinicalPicture(db.Model, MetaModelMixin):
     comments = Column(String)
 
 
-Index('ins_clinical_pictures_patient_idx', InsClinicalPicture.patient_id)
+Index("ins_clinical_pictures_patient_idx", InsClinicalPicture.patient_id)
 
 
 @log_changes
 class InsRelapse(db.Model, MetaModelMixin):
-    __tablename__ = 'ins_relapses'
+    __tablename__ = "ins_relapses"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('ins_relapses')
+    patient = patient_relationship("ins_relapses")
 
     date_of_relapse = Column(Date, nullable=False)
     kidney_type = Column(String)
@@ -92,4 +103,4 @@ class InsRelapse(db.Model, MetaModelMixin):
         return REMISSION_TYPES.get(self.remission_type)
 
 
-Index('ins_relapses_patient_idx', InsRelapse.patient_id)
+Index("ins_relapses_patient_idx", InsRelapse.patient_id)

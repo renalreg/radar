@@ -20,27 +20,27 @@ from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime
 
 
-HUMAN_DATE_FORMAT = '%d/%m/%Y'
+HUMAN_DATE_FORMAT = "%d/%m/%Y"
 
-EMAIL_REGEX = re.compile(r'^\S+@[^\.@\s][^@]*\.[^\.@\s]+$')
+EMAIL_REGEX = re.compile(r"^\S+@[^\.@\s][^@]*\.[^\.@\s]+$")
 
-USERNAME_REGEX = re.compile(r'^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$')
+USERNAME_REGEX = re.compile(r"^[a-z0-9](?:[a-z0-9]*(?:[\.][a-z0-9]+)?)*$")
 USERNAME_MIN_LENGTH = 4
 USERNAME_MAX_LENGTH = 32
 
-TRAILING_COMMA_REGEX = re.compile(r'\s*,$')
+TRAILING_COMMA_REGEX = re.compile(r"\s*,$")
 
 DAY_ZERO = datetime(1900, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
 
-WHITESPACE_REGEX = re.compile(r'\s')
-LEADING_ZERO_REGEX = re.compile(r'^0+')
-DIGITS_REGEX = re.compile(r'^[0-9]+$')
+WHITESPACE_REGEX = re.compile(r"\s")
+LEADING_ZERO_REGEX = re.compile(r"^0+")
+DIGITS_REGEX = re.compile(r"^[0-9]+$")
 
 MIN_UKRR_NO = 199600001
 MAX_UKRR_NO = 999999999
 
-BAPN_NO_REGEX = re.compile(r'^[ABCDFGHJKLMNPT][0-9]{,3}$')
-BAPN_LEADING_ZEROS = re.compile(r'^[A-Z](0+)')
+BAPN_NO_REGEX = re.compile(r"^[ABCDFGHJKLMNPT][0-9]{,3}$")
+BAPN_LEADING_ZEROS = re.compile(r"^[A-Z](0+)")
 
 MIN_UKRDC_NO = 100000001
 MAX_UKRDC_NO = 999999999
@@ -67,7 +67,7 @@ def after_day_zero(dt_format=HUMAN_DATE_FORMAT):
 
 
 class after_date_of_birth(object):
-    def __init__(self, field_name, patient='patient', parent=None):
+    def __init__(self, field_name, patient="patient", parent=None):
         self.field_name = field_name
         self.patient = patient
         self.parent = parent
@@ -112,7 +112,7 @@ class after_date_of_birth(object):
 
 
 class valid_date_for_patient(object):
-    def __init__(self, field_name, patient='patient', parent=None):
+    def __init__(self, field_name, patient="patient", parent=None):
         self.field_name = field_name
         self.patient = patient
         self.parent = parent
@@ -152,11 +152,11 @@ def username():
         # Old usernames are email addresses
         if not EMAIL_REGEX.match(value):
             if not USERNAME_REGEX.match(value):
-                raise ValidationError('Not a valid username.')
+                raise ValidationError("Not a valid username.")
             elif len(value) < USERNAME_MIN_LENGTH:
-                raise ValidationError('Username too short.')
+                raise ValidationError("Username too short.")
             elif len(value) > USERNAME_MAX_LENGTH:
-                raise ValidationError('Username too long.')
+                raise ValidationError("Username too long.")
 
         return value
 
@@ -166,7 +166,7 @@ def username():
 def remove_trailing_comma():
     def remove_trailing_comma_f(value):
         # Remove a trailing comma
-        value = TRAILING_COMMA_REGEX.sub('', value)
+        value = TRAILING_COMMA_REGEX.sub("", value)
         return value
 
     return remove_trailing_comma_f
@@ -175,10 +175,10 @@ def remove_trailing_comma():
 def clean_int(value):
     if isinstance(value, str):
         # Remove non-digits
-        value = re.sub('[^0-9]', '', value)
+        value = re.sub("[^0-9]", "", value)
 
         # Remove leading zeros
-        value = re.sub('^0+', '', value)
+        value = re.sub("^0+", "", value)
 
     return value
 
@@ -188,9 +188,8 @@ def check_range(value, min_value=None, max_value=None):
         value = int(value)
 
     # min_value <= x <= max_value
-    return (
-        (min_value is None or value >= min_value) and
-        (max_value is None or value <= max_value)
+    return (min_value is None or value >= min_value) and (
+        max_value is None or value <= max_value
     )
 
 
@@ -199,18 +198,18 @@ def _nhs_no(value, min_value=None, max_value=None):
         value = str(value)
 
     # Remove non-digits
-    value = re.sub('[^0-9]', '', value)
+    value = re.sub("[^0-9]", "", value)
 
     if len(value) > 10:
         # Remove extra leading zeros
-        if re.match('^0+$', value[0:-10]):
+        if re.match("^0+$", value[0:-10]):
             value = value[-10:]
     elif len(value) < 10:
         # Add leading zeros
         value = value.zfill(10)
 
     if len(value) != 10:
-        raise ValueError('Not 10 digits.')
+        raise ValueError("Not 10 digits.")
 
     check_digit = 0
 
@@ -223,10 +222,10 @@ def _nhs_no(value, min_value=None, max_value=None):
         check_digit = 0
 
     if check_digit != int(value[9]):
-        raise ValueError('Bas check digit.')
+        raise ValueError("Bas check digit.")
 
     if not check_range(value, min_value, max_value):
-        raise ValueError('Not in range.')
+        raise ValueError("Not in range.")
 
     return value
 
@@ -236,7 +235,7 @@ def nhs_no():
         try:
             new_value = _nhs_no(value, MIN_NHS_NO)
         except ValueError:
-            raise ValidationError('Not a valid NHS number.')
+            raise ValidationError("Not a valid NHS number.")
 
         if isinstance(value, str):
             value = new_value
@@ -251,7 +250,7 @@ def chi_no():
         try:
             new_value = _nhs_no(value, MIN_CHI_NO, MAX_CHI_NO)
         except ValueError:
-            raise ValidationError('Not a valid CHI number.')
+            raise ValidationError("Not a valid CHI number.")
 
         if isinstance(value, str):
             value = new_value
@@ -266,7 +265,7 @@ def hsc_no():
         try:
             new_value = _nhs_no(value, MIN_HSC_NO, MAX_HSC_NO)
         except ValueError:
-            raise ValidationError('Not a valid H&C number.')
+            raise ValidationError("Not a valid H&C number.")
 
         if isinstance(value, str):
             value = new_value
@@ -283,10 +282,10 @@ def ukrr_no():
         try:
             x = int(value)
         except ValueError:
-            raise ValidationError('Not a valid UK Renal Registry number.')
+            raise ValidationError("Not a valid UK Renal Registry number.")
 
         if x < MIN_UKRR_NO or x > MAX_UKRR_NO:
-            raise ValidationError('Not a valid UK Renal Registry number.')
+            raise ValidationError("Not a valid UK Renal Registry number.")
 
         return value
 
@@ -297,11 +296,11 @@ def nhsbt_no():
     def nhsbt_no_f(value):
         if isinstance(value, str):
             # Remove leading zeros and whitespace
-            value = LEADING_ZERO_REGEX.sub('', value)
-            value = WHITESPACE_REGEX.sub('', value)
+            value = LEADING_ZERO_REGEX.sub("", value)
+            value = WHITESPACE_REGEX.sub("", value)
 
             if not DIGITS_REGEX.match(value):
-                raise ValidationError('Not a valid NHS Blood and Tracing number.')
+                raise ValidationError("Not a valid NHS Blood and Tracing number.")
 
         return value
 
@@ -311,13 +310,13 @@ def nhsbt_no():
 def bapn_no():
     def bapn_no_f(value):
         value = value.upper()
-        value = re.sub('[^A-Z0-9]', '', value)
+        value = re.sub("[^A-Z0-9]", "", value)
 
         if not BAPN_NO_REGEX.match(value):
-            raise ValidationError('Not a valid BAPN number.')
+            raise ValidationError("Not a valid BAPN number.")
 
         # Remove leading zeros
-        value = BAPN_LEADING_ZEROS.sub('', value)
+        value = BAPN_LEADING_ZEROS.sub("", value)
 
         return value
 
@@ -331,10 +330,10 @@ def ukrdc_no():
         try:
             x = int(value)
         except ValueError:
-            raise ValidationError('Not a valid UKRDC number.')
+            raise ValidationError("Not a valid UKRDC number.")
 
         if x < MIN_UKRDC_NO or x > MAX_UKRDC_NO:
-            raise ValidationError('Not a valid UKRDC number.')
+            raise ValidationError("Not a valid UKRDC number.")
 
         return value
 
@@ -348,10 +347,10 @@ def gmc_number():
         try:
             x = int(value)
         except ValueError:
-            raise ValidationError('Not a valid GMC number.')
+            raise ValidationError("Not a valid GMC number.")
 
         if x < MIN_GMC_NO or x > MAX_GMC_NO:
-            raise ValidationError('Not a valid GMC number.')
+            raise ValidationError("Not a valid GMC number.")
 
         return value
 
@@ -365,7 +364,7 @@ def radar_no():
         try:
             int(value)
         except ValueError:
-            raise ValidationError('Not a valid RaDaR number.')
+            raise ValidationError("Not a valid RaDaR number.")
 
         return value
 
@@ -388,14 +387,13 @@ def get_number_validators(group):
 
 
 def validate_hla_mismatch(data):
-    segments = data.split('/')
+    segments = data.split("/")
     # Define the allowed values
-    allowed_values = {'0', '1', '2', 'NA'}
+    allowed_values = {"0", "1", "2", "NA"}
 
     # Check if all segments are in the allowed values
     for segment in segments:
-        if segment[0] in ['A','B'] and segment[1:] not in allowed_values:
-            raise ValidationError({'mismatch_hla':f'values should be 0, 1, 2 or NA'})
-        if segment[0:2]=='DR' and segment[2:] not in allowed_values:
-            raise ValidationError({f'mismatch_hla':f'values should be 0, 1, 2 or NA'})
-
+        if segment[0] in ["A", "B"] and segment[1:] not in allowed_values:
+            raise ValidationError({"mismatch_hla": f"values should be 0, 1, 2 or NA"})
+        if segment[0:2] == "DR" and segment[2:] not in allowed_values:
+            raise ValidationError({f"mismatch_hla": f"values should be 0, 1, 2 or NA"})

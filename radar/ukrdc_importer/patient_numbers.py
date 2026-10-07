@@ -24,23 +24,22 @@ class SDAPatientNumber(object):
 
     @property
     def number(self):
-        return self.data['number']
+        return self.data["number"]
 
     @property
     def number_type(self):
-        return self.data['number_type']
+        return self.data["number_type"]
 
     @property
     def organization(self):
-        return self.data['organization']['code']
+        return self.data["organization"]["code"]
 
 
-def parse_patient_numbers(sda_patient_numbers,adapter):
+def parse_patient_numbers(sda_patient_numbers, adapter):
     def log(index, sda_medication, e):
         adapter.error(
-            'Ignoring invalid patient number index={index}, errors={errors}'.format(
-                index=index,
-                errors=e.flatten()
+            "Ignoring invalid patient number index={index}, errors={errors}".format(
+                index=index, errors=e.flatten()
             )
         )
 
@@ -51,12 +50,12 @@ def parse_patient_numbers(sda_patient_numbers,adapter):
     return sda_patient_numbers
 
 
-def unique_patient_numbers(sda_patient_numbers,adapter):
+def unique_patient_numbers(sda_patient_numbers, adapter):
     def key(sda_patient_number):
         return sda_patient_number.organization
 
     def log(sda_patient_number):
-        adapter.warning(f'Ignoring duplicate patient number {sda_patient_number}')
+        adapter.warning(f"Ignoring duplicate patient number {sda_patient_number}")
 
     sda_patient_numbers = unique_list(sda_patient_numbers, key_f=key, duplicate_f=log)
 
@@ -69,21 +68,23 @@ def get_patient_number(patient_number_id):
 
 def get_patient_numbers(patient):
     q = PatientNumber.query
-    q = q.filter(PatientNumber.source_type == 'UKRDC')
+    q = q.filter(PatientNumber.source_type == "UKRDC")
     q = q.filter(PatientNumber.patient == patient)
     return q.all()
 
 
-def sync_patient_numbers(patient, patient_numbers_to_keep,adapter):
+def sync_patient_numbers(patient, patient_numbers_to_keep, adapter):
     def log(patient_number):
-        adapter.info('Deleting patient number id={}'.format(patient_number.id))
+        adapter.info("Deleting patient number id={}".format(patient_number.id))
 
     patient_numbers = get_patient_numbers(patient)
     delete_list(patient_numbers, patient_numbers_to_keep, delete_f=log)
 
 
 def build_patient_number_id(patient, sda_patient_number):
-    return build_id(patient.id, PatientNumber.__tablename__, sda_patient_number.organization)
+    return build_id(
+        patient.id, PatientNumber.__tablename__, sda_patient_number.organization
+    )
 
 
 def convert_patient_numbers(patient, sda_patient_numbers, adapter):
@@ -98,7 +99,11 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
         number_group = get_group(code)
 
         if number_group is None:
-            adapter.error('Ignoring patient number due to unknown organization code={code}'.format(code=code))
+            adapter.error(
+                "Ignoring patient number due to unknown organization code={code}".format(
+                    code=code
+                )
+            )
             continue
 
         # Ignore patient numbers for system groups
@@ -109,14 +114,14 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
         patient_number = get_patient_number(patient_number_id)
 
         if patient_number is None:
-            adapter.info('Creating patient number id={id}'.format(id=patient_number_id))
+            adapter.info("Creating patient number id={id}".format(id=patient_number_id))
             patient_number = PatientNumber(id=patient_number_id)
         else:
-            adapter.info('Updating patient number id={id}'.format(id=patient_number_id))
+            adapter.info("Updating patient number id={id}".format(id=patient_number_id))
 
         patient_number.patient = patient
         patient_number.source_group = source_group
-        patient_number.source_type = 'UKRDC'
+        patient_number.source_type = "UKRDC"
         patient_number.created_user = user
         patient_number.modified_user = user
 
@@ -129,12 +134,12 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
     return patient_numbers
 
 
-def import_patient_numbers(patient, sda_patient_numbers,adapter):
-    adapter.info('Importing patient numbers')
+def import_patient_numbers(patient, sda_patient_numbers, adapter):
+    adapter.info("Importing patient numbers")
 
     sda_patient_numbers = parse_patient_numbers(sda_patient_numbers, adapter)
     sda_patient_numbers = unique_patient_numbers(sda_patient_numbers, adapter)
     patient_numbers = convert_patient_numbers(patient, sda_patient_numbers, adapter)
     sync_patient_numbers(patient, patient_numbers, adapter)
 
-    adapter.info('Imported {n} patient number(s)'.format(n=len(patient_numbers)))
+    adapter.info("Imported {n} patient number(s)".format(n=len(patient_numbers)))

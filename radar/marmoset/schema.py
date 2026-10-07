@@ -20,7 +20,7 @@ class Schema(object):
         self.registry = registry
         self.fields = []
 
-        for field_data in schema_data['fields']:
+        for field_data in schema_data["fields"]:
             self.fields.append(Field(self, field_data))
 
     @property
@@ -100,7 +100,7 @@ class Schema(object):
             value = data[name]
 
             if required(data, [name]) and value is None:
-                errors[name] = 'This field is required.'
+                errors[name] = "This field is required."
 
         if errors:
             raise ValidationError(errors)
@@ -157,18 +157,18 @@ class Schema(object):
 class Field(object):
     def __init__(self, schema, field_data):
         self.schema = schema
-        self.name = field_data['name']
-        self.type = field_data['type']
+        self.name = field_data["name"]
+        self.type = field_data["type"]
         self.parser = self.registry.get_parser(self.type)
         self.formatter = self.registry.get_formatter(self.type)
         self.validators = []
 
         # Default to None
-        default_data = field_data.get('default')
+        default_data = field_data.get("default")
         self.default = self.parse_default(default_data)
 
         # Field is read only if it has a formula
-        self.read_only = bool(field_data.get('formula'))
+        self.read_only = bool(field_data.get("formula"))
 
         # Required by default
         # Required fields will return an error if the value is None
@@ -178,24 +178,24 @@ class Field(object):
         if self.read_only:
             required_data = False
         else:
-            required_data = field_data.get('required', True)
+            required_data = field_data.get("required", True)
 
         self.required = self.parse_required(required_data)
 
         # Visible by default
         # Hidden fields are set to None during validation
-        visible_data = field_data.get('visible', True)
+        visible_data = field_data.get("visible", True)
         self.visible = self.parse_visible(visible_data)
 
-        options_data = field_data.get('options')
+        options_data = field_data.get("options")
 
         if options_data:
             self.validators.append(self.parse_options(options_data))
 
-        validators_data = field_data.get('validators', [])
+        validators_data = field_data.get("validators", [])
         self.validators.extend(self.parse_validators(validators_data))
 
-        formula_data = field_data.get('formula')
+        formula_data = field_data.get("formula")
 
         if formula_data is None:
             self.formula = None
@@ -225,7 +225,7 @@ class Field(object):
             return wrap(None)
         elif isinstance(default_data, dict):
             # Run a function to get the default value
-            name = default_data.get('name')
+            name = default_data.get("name")
 
             if name is None:
                 raise SchemaError()
@@ -274,7 +274,7 @@ class Field(object):
             return optional_f
         elif isinstance(required_data, dict):
             # Run a function to determine if this field is required
-            name = required_data['name']
+            name = required_data["name"]
             required = self.registry.get_required(name)(self, required_data)
             return required
         else:
@@ -313,7 +313,7 @@ class Field(object):
             return hidden_f
         elif isinstance(visible_data, dict):
             # Run a function to determine if this field is visible
-            name = visible_data['name']
+            name = visible_data["name"]
             visible = self.registry.get_visible(name)(self, visible_data)
             return visible
         else:
@@ -325,10 +325,12 @@ class Field(object):
 
         # TODO validate options
 
-        return self.parse_validator({
-            'name': 'in',
-            'values': [x['value'] for x in options_data],
-        })
+        return self.parse_validator(
+            {
+                "name": "in",
+                "values": [x["value"] for x in options_data],
+            }
+        )
 
     def parse_validator(self, validator_data):
         """Returns a function that checks the value of a field.
@@ -343,7 +345,7 @@ class Field(object):
         * value - parsed value of the current field.
         """
 
-        name = validator_data['name']
+        name = validator_data["name"]
         validator = self.registry.get_validator(self.type, name)(self, validator_data)
         return validator
 
@@ -361,7 +363,7 @@ class Field(object):
         return validators
 
     def parse_formula(self, formula_data):
-        name = formula_data['name']
+        name = formula_data["name"]
         formula = self.registry.get_formula(name)(self, formula_data)
         return formula
 

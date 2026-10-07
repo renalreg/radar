@@ -34,7 +34,10 @@ def get_value_field(observation):
         field = fields.FloatField(required=False)
     elif value_type == OBSERVATION_VALUE_TYPE.ENUM:
         field = StringLookupField(
-            observation.options_dict, key_name="code", value_name="description", required=False
+            observation.options_dict,
+            key_name="code",
+            value_name="description",
+            required=False,
         )
     elif value_type == OBSERVATION_VALUE_TYPE.STRING:
         field = fields.StringField(required=False)
@@ -74,7 +77,9 @@ _custom_fields = {
         "units": fields.StringField(required=False),
     },
     OBSERVATION_VALUE_TYPE.ENUM: {
-        "options": fields.ListField(child=OptionSerializer(), source="code_description_pairs")
+        "options": fields.ListField(
+            child=OptionSerializer(), source="code_description_pairs"
+        )
     },
     OBSERVATION_VALUE_TYPE.STRING: {
         "min_length": fields.IntegerField(required=False),
@@ -107,14 +112,18 @@ class BaseObservationSerializer(serializers.Serializer):
     name = fields.StringField()
     short_name = fields.StringField()
     value_type = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
-    sample_type = EnumLookupField(OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES)
+    sample_type = EnumLookupField(
+        OBSERVATION_SAMPLE_TYPE, OBSERVATION_SAMPLE_TYPE_NAMES
+    )
     groups = GroupObservationListSerializer(source="group_observations")
 
 
 class ObservationSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
         super(ObservationSerializer, self).__init__(*args, **kwargs)
-        value_type_field = EnumLookupField(OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES)
+        value_type_field = EnumLookupField(
+            OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES
+        )
         value_type_field.bind(self, "value_type")
         self.value_type_field = value_type_field
 
@@ -213,7 +222,9 @@ class ResultSerializer(serializers.ProxySerializer):
         field = get_value_field(observation)
         sent = get_sent_value_field(observation)
         serializer = type(
-            "CustomResultSerializer", (BaseResultSerializer,), {"value": field, "sent_value": sent}
+            "CustomResultSerializer",
+            (BaseResultSerializer,),
+            {"value": field, "sent_value": sent},
         )()
         return serializer
 
@@ -257,7 +268,9 @@ class TinyResultSerializer(serializers.ProxySerializer):
     def create_serializer(self, observation):
         field = get_sent_value_field(observation)
         serializer = type(
-            "CustomTinyResultSerializer", (BaseTinyResultSerializer,), {"sent_value": field}
+            "CustomTinyResultSerializer",
+            (BaseTinyResultSerializer,),
+            {"sent_value": field},
         )()
         return serializer
 

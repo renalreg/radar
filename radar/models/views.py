@@ -18,15 +18,15 @@ class DropView(DDLElement):
 
 @compiler.compiles(CreateView)
 def compile_create_view(element, compiler, **kwargs):
-    return 'CREATE OR REPLACE VIEW {name} AS {query}'.format(
+    return "CREATE OR REPLACE VIEW {name} AS {query}".format(
         name=element.name,
-        query=compiler.sql_compiler.process(element.selectable, literal_binds=True)
+        query=compiler.sql_compiler.process(element.selectable, literal_binds=True),
     )
 
 
 @compiler.compiles(DropView)
 def compile_drop_view(element, compiler, **kwargs):
-    return 'DROP VIEW IF EXISTS {name}'.format(name=element.name)
+    return "DROP VIEW IF EXISTS {name}".format(name=element.name)
 
 
 def create_view(name, selectable, *args):
@@ -37,7 +37,7 @@ def create_view(name, selectable, *args):
     t = Table(name, tmp_metadata, *table_args)
 
     metadata = db.Model.metadata
-    event.listen(metadata, 'after_create', CreateView(name, selectable))
-    event.listen(metadata, 'before_drop', DropView(name))
+    event.listen(metadata, "after_create", CreateView(name, selectable))
+    event.listen(metadata, "before_drop", DropView(name))
 
     return t

@@ -6,7 +6,9 @@ from urllib.parse import urlparse
 from radar.config import config
 
 
-PostgreSQL = namedtuple('PostgreSQL', ['hostname', 'port', 'database', 'username', 'password'])
+PostgreSQL = namedtuple(
+    "PostgreSQL", ["hostname", "port", "database", "username", "password"]
+)
 
 
 def pg_parse(connection_string):
@@ -15,22 +17,22 @@ def pg_parse(connection_string):
 
 
 def pg_dump(args, dest):
-    connection_string = config['SQLALCHEMY_DATABASE_URI']
+    connection_string = config["SQLALCHEMY_DATABASE_URI"]
     pg = pg_parse(connection_string)
 
     environment = os.environ.copy()
-    command = ['pg_dump']
+    command = ["pg_dump"]
 
-    command += ['-h', pg.hostname]
+    command += ["-h", pg.hostname]
 
     if pg.port:
-        command += ['-p', str(pg.port)]
+        command += ["-p", str(pg.port)]
 
     if pg.username:
-        command += ['-U', pg.username]
+        command += ["-U", pg.username]
 
     if pg.password is not None:
-        environment['PGPASSWORD'] = pg.password
+        environment["PGPASSWORD"] = pg.password
 
     command += args
 
@@ -44,23 +46,23 @@ def pg_dump(args, dest):
 
 
 def pg_restore(args):
-    connection_string = config['SQLALCHEMY_DATABASE_URI']
+    connection_string = config["SQLALCHEMY_DATABASE_URI"]
     pg = pg_parse(connection_string)
 
     environment = os.environ.copy()
-    command = ['pg_restore']
+    command = ["pg_restore"]
 
-    command += ['-h', pg.hostname]
-    command += ['-d', pg.database]
+    command += ["-h", pg.hostname]
+    command += ["-d", pg.database]
 
     if pg.port:
-        command += ['-p', str(pg.port)]
+        command += ["-p", str(pg.port)]
 
     if pg.username:
-        command += ['-U', pg.username]
+        command += ["-U", pg.username]
 
     if pg.password is not None:
-        environment['PGPASSWORD'] = pg.password
+        environment["PGPASSWORD"] = pg.password
 
     command += args
 

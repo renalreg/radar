@@ -33,17 +33,11 @@ def datetime_to_date(dt):
 
 
 def sql_date_filter(column, date):
-    return and_(
-        column >= date,
-        column < date + timedelta(days=1)
-    )
+    return and_(column >= date, column < date + timedelta(days=1))
 
 
 def sql_year_filter(column, year):
-    return and_(
-        column >= datetime(year, 1, 1),
-        column < datetime(year + 1, 1, 1)
-    )
+    return and_(column >= datetime(year, 1, 1), column < datetime(year + 1, 1, 1))
 
 
 def months_between(a, b):
@@ -66,7 +60,7 @@ def round_age(months):
 def random_string(alphabet, length):
     """Random string from an alphabet."""
 
-    return ''.join(SystemRandom().choice(alphabet) for _ in range(length))
+    return "".join(SystemRandom().choice(alphabet) for _ in range(length))
 
 
 def uniq(items):

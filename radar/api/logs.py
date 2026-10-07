@@ -21,9 +21,9 @@ def get_url():
     """Get the current URL being served."""
 
     url = request.path
-    query_string = request.query_string.decode('utf-8')
+    query_string = request.query_string.decode("utf-8")
     if query_string:
-        url = url + '?' + query_string
+        url = url + "?" + query_string
 
     return url
 
@@ -33,14 +33,14 @@ def log_request(response):
     session = db.session.session_factory()
 
     log = Log()
-    log.type = 'API'
+    log.type = "API"
     log.user = get_user(session)
     log.data = dict(
         method=request.method,
         url=get_url(),
         status_code=response.status_code,
         user_agent=get_user_agent(),
-        ip_address=get_ip_address()
+        ip_address=get_ip_address(),
     )
     session.add(log)
 
@@ -51,7 +51,7 @@ def log_request(response):
 
 def _log_view_patient(session, patient):
     log = Log()
-    log.type = 'VIEW_PATIENT'
+    log.type = "VIEW_PATIENT"
     log.user = get_user(session)
     log.data = dict(
         patient_id=patient.id,

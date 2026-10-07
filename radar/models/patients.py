@@ -71,9 +71,7 @@ class Patient(db.Model, MetaModelMixin):
     )
 
     barcode = relationship(
-        "BiomarkerBarcode",
-        back_populates="pat",
-        cascade="all, delete-orphan"
+        "BiomarkerBarcode", back_populates="pat", cascade="all, delete-orphan"
     )
 
     @property
@@ -174,7 +172,6 @@ class Patient(db.Model, MetaModelMixin):
             find_group_patient(GROUP_TYPE.SYSTEM)
 
         return recruited_group_patient
-
 
     def recruited_user(self, group=None, group_type=None):
         group_patient = self._recruited_group_patient(group, group_type)

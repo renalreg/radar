@@ -13,7 +13,7 @@ CODE_CONSTRAINT = CheckConstraint(r"""
 
 @log_changes
 class Code(db.Model):
-    __tablename__ = 'codes'
+    __tablename__ = "codes"
 
     id = Column(Integer, primary_key=True)
     system = Column(String, nullable=False)
@@ -21,7 +21,7 @@ class Code(db.Model):
     display = Column(String, nullable=False)
 
     def __str__(self):
-        return '{0} - {1} - {2}'.format(self.system, self.code, self.display)
+        return "{0} - {1} - {2}".format(self.system, self.code, self.display)
 
 
-Index('codes_system_code_idx', Code.system, Code.code, unique=True)
+Index("codes_system_code_idx", Code.system, Code.code, unique=True)

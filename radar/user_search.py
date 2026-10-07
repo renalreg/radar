@@ -18,31 +18,30 @@ class UserQueryBuilder(object):
         return self
 
     def username(self, username):
-        self.query = self.query.filter(User.username.ilike('%' + username + '%'))
+        self.query = self.query.filter(User.username.ilike("%" + username + "%"))
         return self
 
     def email(self, email):
-        self.query = self.query.filter(User.email.ilike('%' + email + '%'))
+        self.query = self.query.filter(User.email.ilike("%" + email + "%"))
         return self
 
     def first_name(self, first_name):
-        self.query = self.query.filter(User.first_name.ilike(first_name + '%'))
+        self.query = self.query.filter(User.first_name.ilike(first_name + "%"))
         return self
 
     def last_name(self, last_name):
-        self.query = self.query.filter(User.last_name.ilike(last_name + '%'))
+        self.query = self.query.filter(User.last_name.ilike(last_name + "%"))
         return self
 
     def group(self, group):
         sub_query = db.session.query(GroupUser)
-        sub_query = sub_query.filter(GroupUser.group == group, GroupUser.user_id == User.id)
+        sub_query = sub_query.filter(
+            GroupUser.group == group, GroupUser.user_id == User.id
+        )
         sub_query = sub_query.exists()
 
         # Include admins even though they don't have explicit group membership
-        self.query = self.query.filter(or_(
-            User.is_admin,
-            sub_query
-        ))
+        self.query = self.query.filter(or_(User.is_admin, sub_query))
 
         return self
 
@@ -69,19 +68,19 @@ class UserQueryBuilder(object):
 
             return expression
 
-        if column == 'email':
+        if column == "email":
             expressions = [direction(User.email)]
-        elif column == 'first_name':
+        elif column == "first_name":
             expressions = [direction(User.first_name), direction(User.last_name)]
-        elif column == 'last_name':
+        elif column == "last_name":
             expressions = [direction(User.last_name), direction(User.first_name)]
-        elif column == 'username':
+        elif column == "username":
             expressions = [direction(User.username)]
         else:
             expressions = [direction(User.id)]
 
         # Decide ties using ID
-        if column in ('email', 'first_name', 'last_name'):
+        if column in ("email", "first_name", "last_name"):
             expressions.append(User.id)
 
         self.query = self.query.order_by(*expressions)
@@ -103,7 +102,7 @@ def filter_by_permissions(current_user):
     # User's can always view their own accounts
     return or_(
         filter_by_roles(current_user, get_roles_with_permission(PERMISSION.VIEW_USER)),
-        User.id == current_user.id
+        User.id == current_user.id,
     )
 
 
@@ -112,15 +111,16 @@ def filter_by_roles(current_user, roles):
     group_user_alias = aliased(GroupUser)
 
     # Users in the same group as the parent user (correlated query)
-    query = db.session.query(GroupUser)\
-        .join(GroupUser.group)\
-        .join(group_user_alias, Group.group_users)\
+    query = (
+        db.session.query(GroupUser)
+        .join(GroupUser.group)
+        .join(group_user_alias, Group.group_users)
         .filter(GroupUser.user_id == User.id)
+    )
 
     # Filter on the current user's group membership and roles
     query = query.filter(
-        group_user_alias.user_id == current_user.id,
-        group_user_alias.role.in_(roles)
+        group_user_alias.user_id == current_user.id, group_user_alias.role.in_(roles)
     )
 
     return query.exists()

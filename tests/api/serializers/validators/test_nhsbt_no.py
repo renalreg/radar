@@ -10,25 +10,25 @@ def test_valid_int():
 
 
 def test_valid_string():
-    value = valid('168292')
-    assert value == '168292'
+    value = valid("168292")
+    assert value == "168292"
 
 
 def test_remove_spaces():
-    value = valid('168 292')
-    assert value == '168292'
+    value = valid("168 292")
+    assert value == "168292"
 
 
 def test_remove_leading_zeros():
-    valid('000168292')
+    valid("000168292")
 
 
 def test_invalid():
-    invalid('HELLO')
+    invalid("HELLO")
 
 
 def test_invalid_slash():
-    invalid('168/292')
+    invalid("168/292")
 
 
 def valid(value):

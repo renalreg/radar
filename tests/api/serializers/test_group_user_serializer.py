@@ -10,11 +10,7 @@ from radar.roles import ROLE
 
 @pytest.fixture
 def group_user():
-    return {
-        'user': User(),
-        'group': Group(),
-        'role': ROLE.SENIOR_RESEARCHER
-    }
+    return {"user": User(), "group": Group(), "role": ROLE.SENIOR_RESEARCHER}
 
 
 def test_valid(group_user):
@@ -29,17 +25,17 @@ def test_valid(group_user):
 
 
 def test_user_missing(group_user):
-    group_user['user'] = None
+    group_user["user"] = None
     invalid(data=group_user)
 
 
 def test_group_missing(group_user):
-    group_user['group'] = None
+    group_user["group"] = None
     invalid(data=group_user)
 
 
 def test_role_missing(group_user):
-    group_user['role'] = None
+    group_user["role"] = None
     invalid(data=group_user)
 
 
@@ -53,11 +49,7 @@ def test_add_to_group():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    data = {
-        'group': group,
-        'user': User(),
-        'role': ROLE.RESEARCHER
-    }
+    data = {"group": group, "user": User(), "role": ROLE.RESEARCHER}
 
     valid(data=data, user=current_user)
 
@@ -70,11 +62,7 @@ def test_add_to_another_group():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    data = {
-        'group': Group(),
-        'user': User(),
-        'role': ROLE.RESEARCHER
-    }
+    data = {"group": Group(), "user": User(), "role": ROLE.RESEARCHER}
 
     with pytest.raises(PermissionDenied):
         valid(data=data, user=current_user)
@@ -90,11 +78,7 @@ def test_add_to_group_not_managed_role():
     current_user_group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(current_user_group_user)
 
-    data = {
-        'group': group,
-        'user': User(),
-        'role': ROLE.SENIOR_RESEARCHER
-    }
+    data = {"group": group, "user": User(), "role": ROLE.SENIOR_RESEARCHER}
 
     with pytest.raises(PermissionDenied):
         valid(data=data, user=current_user)
@@ -109,11 +93,7 @@ def test_remove_own_membership():
     group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(group_user)
 
-    data = {
-        'group': Group(),
-        'user': User(),
-        'role': ROLE.RESEARCHER
-    }
+    data = {"group": Group(), "user": User(), "role": ROLE.RESEARCHER}
 
     with pytest.raises(PermissionDenied):
         valid(group_user, data=data, user=current_user)
@@ -129,11 +109,7 @@ def test_update_own_membership():
     group_user.role = ROLE.SENIOR_RESEARCHER
     current_user.group_users.append(group_user)
 
-    data = {
-        'group': group,
-        'user': current_user,
-        'role': ROLE.RESEARCHER
-    }
+    data = {"group": group, "user": current_user, "role": ROLE.RESEARCHER}
 
     with pytest.raises(PermissionDenied):
         valid(group_user, data=data, user=current_user)
@@ -149,11 +125,7 @@ def test_already_in_group():
     group_user.role = ROLE.RESEARCHER
     user.group_users.append(group_user)
 
-    data = {
-        'user': user,
-        'group': group,
-        'role': ROLE.SENIOR_RESEARCHER
-    }
+    data = {"user": user, "group": group, "role": ROLE.SENIOR_RESEARCHER}
 
     valid(data=data)
 
@@ -168,11 +140,7 @@ def test_already_in_group_and_role():
     group_user.role = ROLE.RESEARCHER
     user.group_users.append(group_user)
 
-    data = {
-        'user': user,
-        'group': group,
-        'role': ROLE.RESEARCHER
-    }
+    data = {"user": user, "group": group, "role": ROLE.RESEARCHER}
 
     invalid(data=data)
 
@@ -188,6 +156,8 @@ def valid(instance=None, data=None, user=None):
     if user is None:
         user = User(is_admin=True)
 
-    serializer = GroupUserSerializer(instance=instance, data=data, context={'user': user})
+    serializer = GroupUserSerializer(
+        instance=instance, data=data, context={"user": user}
+    )
     serializer.is_valid(raise_exception=True)
     return serializer.save()

@@ -8,27 +8,28 @@ from radar.models import Group
 
 
 def get_hospitals():
-    select_stmt = text('''
+    select_stmt = text("""
         SELECT DISTINCT created_group_id FROM group_patients
         WHERE group_id IN (
             SELECT id FROM groups
             WHERE code = 'NURTUREINS' OR code = 'NURTURECKD'
         )
-    ''')
+    """)
     results = db.session.execute(select_stmt)
-    return [row for row, in results]
+    return [row for (row,) in results]
 
 
 def revisit():
 
-    nurtureins = Group.query.filter_by(code='NURTUREINS').first()
-    nurtureckd = Group.query.filter_by(code='NURTURECKD').first()
+    nurtureins = Group.query.filter_by(code="NURTUREINS").first()
+    nurtureckd = Group.query.filter_by(code="NURTURECKD").first()
 
     hospital_ids = get_hospitals()
-    headers = ['hospital', 'patient_id', 'latest_visit']
+    headers = ["hospital", "patient_id", "latest_visit"]
     import csv
     import io
-    fdesc = io.open('visits.csv', 'w', newline='', encoding='utf-8')
+
+    fdesc = io.open("visits.csv", "w", newline="", encoding="utf-8")
     writer = csv.DictWriter(fdesc, fieldnames=headers)
     writer.writeheader()
 
@@ -45,10 +46,10 @@ def revisit():
             if patient.in_group(nurtureckd) or patient.in_group(nurtureins):
                 visits = {}
                 for entry in patient.entries:
-                    if entry.form.slug != 'nurtureckd':
+                    if entry.form.slug != "nurtureckd":
                         continue
 
-                    visit = datetime.strptime(entry.data['date'], '%Y-%m-%d').date()
+                    visit = datetime.strptime(entry.data["date"], "%Y-%m-%d").date()
                     visits[visit] = entry.data
                     headers
 
@@ -58,11 +59,13 @@ def revisit():
                 latest = sorted(visits)[-1]
 
                 if latest < datetime(2017, 10, 1).date():
-                    writer.writerow({
-                        'hospital': hospital.name,
-                        'patient_id': patient.id,
-                        'latest_visit': latest.strftime('%Y-%m-%d')
-                    })
+                    writer.writerow(
+                        {
+                            "hospital": hospital.name,
+                            "patient_id": patient.id,
+                            "latest_visit": latest.strftime("%Y-%m-%d"),
+                        }
+                    )
 
     fdesc.close()
     #     ckd_list.append(p)
@@ -80,5 +83,5 @@ def main():
         revisit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

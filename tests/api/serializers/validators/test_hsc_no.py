@@ -10,16 +10,16 @@ def test_valid_int():
 
 
 def test_valid_string():
-    assert valid('3232255825') == '3232255825'
-    assert valid('3232255825') == '3232255825'
+    assert valid("3232255825") == "3232255825"
+    assert valid("3232255825") == "3232255825"
 
 
 def test_nhs_no():
-    invalid('9434765919')
+    invalid("9434765919")
 
 
 def test_chi_no():
-    invalid('101299877')
+    invalid("101299877")
 
 
 def valid(value):

@@ -8,8 +8,8 @@ from radar.auth.sessions import current_user
 
 
 @click.command()
-@click.option('--host', default='0.0.0.0')
-@click.option('--port', default=5002)
+@click.option("--host", default="0.0.0.0")
+@click.option("--port", default=5002)
 def start(host, port):
     current_app.run(host=host, port=port)
 
@@ -27,5 +27,5 @@ def main():
         start()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

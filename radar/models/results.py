@@ -14,7 +14,7 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
-    Enum
+    Enum,
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
@@ -127,10 +127,7 @@ class Observation(db.Model):
         ),
     )
 
-    group_observations = relationship(
-        "GroupObservation",
-        back_populates="observation"
-    )
+    group_observations = relationship("GroupObservation", back_populates="observation")
 
     @property
     def groups(self):
@@ -521,10 +518,7 @@ class GroupObservation(db.Model):
     group = relationship("Group")
 
     observation_id = Column(Integer, ForeignKey("observations.id"), nullable=False)
-    observation = relationship(
-        "Observation",
-        back_populates="group_observations"
-    )
+    observation = relationship("Observation", back_populates="group_observations")
 
     weight = Column(Integer, CheckConstraint("weight > 0"))
 

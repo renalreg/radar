@@ -17,7 +17,7 @@ from radar.roles import PERMISSION
 class RecruitPatientSearchSerializer(serializers.Serializer):
     first_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
-    date_of_birth = fields.DateField(validators=[after_day_zero(),not_in_future()])
+    date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
     email_address = fields.StringField(validators=[not_empty()])
     email_reason = fields.StringField(required=False)
     gender = IntegerLookupField(GENDERS)
@@ -43,9 +43,13 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
 
 class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     diagnosis_id = fields.IntegerField()
-    symptoms_date = fields.DateField(validators=[after_day_zero(),not_in_future()],required=False)
-    from_date = fields.DateField(validators=[after_day_zero(),not_in_future()])
-    to_date = fields.DateField(validators=[after_day_zero(),not_in_future()],required=False)
+    symptoms_date = fields.DateField(
+        validators=[after_day_zero(), not_in_future()], required=False
+    )
+    from_date = fields.DateField(validators=[after_day_zero(), not_in_future()])
+    to_date = fields.DateField(
+        validators=[after_day_zero(), not_in_future()], required=False
+    )
     prenatal = fields.BooleanField(required=False)
     gene_test = fields.BooleanField(required=False)
     biochemistry = fields.BooleanField(required=False)
@@ -58,8 +62,9 @@ class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     comments = fields.StringField(required=False)
 
     def pre_validate(self, data):
-        data=reset_data(data)
+        data = reset_data(data)
         return data
+
 
 class RecruitPatientSerializer(RecruitPatientSearchSerializer):
     cohort_group = GroupField()

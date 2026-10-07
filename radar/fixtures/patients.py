@@ -62,7 +62,9 @@ def create_ethnicities():
 
 def create_demographics_f():
     def create_demographics(patient, source_group, source_type, gender):
-        old_d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
+        old_d = PatientDemographics.query.filter(
+            PatientDemographics.patient == patient
+        ).first()
         new_d = PatientDemographics()
         new_d.patient = patient
         new_d.source_group = source_group
@@ -82,11 +84,15 @@ def create_demographics_f():
             new_d.home_number = generate_phone_number()
             new_d.mobile_number = generate_mobile_number()
             new_d.work_number = generate_phone_number()
-            new_d.email_address = generate_email_address(new_d.first_name, new_d.last_name)
+            new_d.email_address = generate_email_address(
+                new_d.first_name, new_d.last_name
+            )
         else:
             # 50% chance of mutating the first name
             if random.random() > 0.5:
-                new_d.first_name = generate_first_name_alias(old_d.gender, old_d.first_name)
+                new_d.first_name = generate_first_name_alias(
+                    old_d.gender, old_d.first_name
+                )
             else:
                 new_d.first_name = old_d.first_name
 
@@ -101,7 +107,9 @@ def create_demographics_f():
 
             # 50% chance of the DOB being incorrect
             if random.random() > 0.5:
-                new_d.date_of_birth = new_d.date_of_birth + timedelta(random.randint(-100, 100))
+                new_d.date_of_birth = new_d.date_of_birth + timedelta(
+                    random.randint(-100, 100)
+                )
 
             new_d.ethnicity = old_d.ethnicity
             new_d.date_of_death = old_d.date_of_death
@@ -117,7 +125,9 @@ def create_demographics_f():
 
 def create_patient_aliases_f():
     def create_patient_aliases(patient, source_group, source_type):
-        d = PatientDemographics.query.filter(PatientDemographics.patient == patient).first()
+        d = PatientDemographics.query.filter(
+            PatientDemographics.patient == patient
+        ).first()
 
         alias = PatientAlias()
         alias.patient = patient
@@ -143,17 +153,38 @@ def create_patient_aliases_f():
 
 def create_patient_numbers_f():
     number_groups = [
-        (Group.query.filter(Group.code == GROUP_CODE_NHS, Group.type == GROUP_TYPE.OTHER).one(), generate_nhs_no),
-        (Group.query.filter(Group.code == GROUP_CODE_CHI, Group.type == GROUP_TYPE.OTHER).one(), generate_chi_no),
-        (Group.query.filter(Group.code == GROUP_CODE_UKRR, Group.type == GROUP_TYPE.OTHER).one(), generate_ukrr_no),
-        (Group.query.filter(Group.code == GROUP_CODE_NHSBT, Group.type == GROUP_TYPE.OTHER).one(), generate_nhsbt_no),
+        (
+            Group.query.filter(
+                Group.code == GROUP_CODE_NHS, Group.type == GROUP_TYPE.OTHER
+            ).one(),
+            generate_nhs_no,
+        ),
+        (
+            Group.query.filter(
+                Group.code == GROUP_CODE_CHI, Group.type == GROUP_TYPE.OTHER
+            ).one(),
+            generate_chi_no,
+        ),
+        (
+            Group.query.filter(
+                Group.code == GROUP_CODE_UKRR, Group.type == GROUP_TYPE.OTHER
+            ).one(),
+            generate_ukrr_no,
+        ),
+        (
+            Group.query.filter(
+                Group.code == GROUP_CODE_NHSBT, Group.type == GROUP_TYPE.OTHER
+            ).one(),
+            generate_nhsbt_no,
+        ),
     ]
 
     def create_patient_numbers(patient, source_group, source_type):
         for number_group, f in number_groups:
             old_n = PatientNumber.query.filter(
                 PatientNumber.patient == patient,
-                PatientNumber.number_group == number_group).first()
+                PatientNumber.number_group == number_group,
+            ).first()
             new_n = PatientNumber()
             new_n.patient = patient
             new_n.source_group = source_group
@@ -172,10 +203,11 @@ def create_patient_numbers_f():
 
 def create_patient_addresses_f():
     def create_patient_addresses(patient, source_group, source_type):
-        old_a = PatientAddress.query\
-            .filter(PatientAddress.patient == patient)\
-            .order_by(desc(PatientAddress.from_date), desc(PatientAddress.to_date))\
+        old_a = (
+            PatientAddress.query.filter(PatientAddress.patient == patient)
+            .order_by(desc(PatientAddress.from_date), desc(PatientAddress.to_date))
             .first()
+        )
 
         new_a = PatientAddress()
         new_a.patient = patient
@@ -188,7 +220,7 @@ def create_patient_addresses_f():
             new_a.address2 = generate_address2()
             new_a.address3 = generate_address3()
             new_a.postcode = generate_postcode()
-            new_a.country = 'GB'
+            new_a.country = "GB"
         else:
             to_date = random_date(old_a.from_date, date.today())
 
@@ -199,7 +231,7 @@ def create_patient_addresses_f():
                 new_a.address2 = generate_address2()
                 new_a.address3 = generate_address3()
                 new_a.postcode = generate_postcode()
-                new_a.country = 'GB'
+                new_a.country = "GB"
             else:
                 new_a.from_date = old_a.from_date
                 new_a.address1 = old_a.address1
@@ -233,12 +265,14 @@ def create_patients(n, data=True):
     create_results = create_results_f()
 
     for i in range(n):
-        print('patient #%d' % (i + 1))
+        print("patient #%d" % (i + 1))
 
         patient = Patient()
         add(patient)
 
-        recruited_date = random_datetime(datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC))
+        recruited_date = random_datetime(
+            datetime(2008, 1, 1, tzinfo=pytz.UTC), datetime.now(tz=pytz.UTC)
+        )
 
         cohort_group = random.choice(cohort_groups)
         system_group = cohort_group.parent_group
@@ -246,7 +280,9 @@ def create_patients(n, data=True):
         cohort_group_patient = GroupPatient()
         cohort_group_patient.group = cohort_group
         cohort_group_patient.patient = patient
-        cohort_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+        cohort_group_patient.from_date = random_datetime(
+            recruited_date, datetime.now(tz=pytz.UTC)
+        )
         cohort_group_patient.created_group = system_group
         add(cohort_group_patient)
 
@@ -264,18 +300,24 @@ def create_patients(n, data=True):
         create_patient_numbers(patient, system_group, SOURCE_TYPE_MANUAL)
         create_patient_addresses(patient, system_group, SOURCE_TYPE_MANUAL)
 
-        for hospital_group in random.sample(hospital_groups, random.randint(1, min(3, len(hospital_groups)))):
+        for hospital_group in random.sample(
+            hospital_groups, random.randint(1, min(3, len(hospital_groups)))
+        ):
             hospital_group_patient = GroupPatient()
             hospital_group_patient.group = hospital_group
             hospital_group_patient.patient = patient
-            hospital_group_patient.from_date = random_datetime(recruited_date, datetime.now(tz=pytz.UTC))
+            hospital_group_patient.from_date = random_datetime(
+                recruited_date, datetime.now(tz=pytz.UTC)
+            )
             hospital_group_patient.created_group = system_group
             add(hospital_group_patient)
 
             if data:
                 for source_type in source_types:
                     if source_type != SOURCE_TYPE_MANUAL:
-                        create_demographics(patient, hospital_group, source_type, gender)
+                        create_demographics(
+                            patient, hospital_group, source_type, gender
+                        )
                         create_patient_aliases(patient, hospital_group, source_type)
                         create_patient_numbers(patient, hospital_group, source_type)
                         create_patient_addresses(patient, hospital_group, source_type)

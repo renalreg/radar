@@ -28,34 +28,65 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
 
-class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
+class PatientDemographicsSerializer(
+    PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer
+):
     first_name = fields.StringField(
-        validators=[not_empty(), upper(), normalise_whitespace(), max_length(100), min_length(2)]
+        validators=[
+            not_empty(),
+            upper(),
+            normalise_whitespace(),
+            max_length(100),
+            min_length(2),
+        ]
     )
     last_name = fields.StringField(
-        validators=[not_empty(), upper(), normalise_whitespace(), max_length(100), min_length(2)]
+        validators=[
+            not_empty(),
+            upper(),
+            normalise_whitespace(),
+            max_length(100),
+            min_length(2),
+        ]
     )
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
     year_of_birth = fields.IntegerField(read_only=True)
-    date_of_death = fields.DateField(required=False, validators=[after_day_zero(), not_in_future()])
+    date_of_death = fields.DateField(
+        required=False, validators=[after_day_zero(), not_in_future()]
+    )
     cause_of_death = fields.StringField(required=False)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
     home_number = fields.StringField(
         required=False,
-        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+        validators=[
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(30),
+        ],
     )
     work_number = fields.StringField(
         required=False,
-        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+        validators=[
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(30),
+        ],
     )
     mobile_number = fields.StringField(
         required=False,
-        validators=[none_if_blank(), optional(), normalise_whitespace(), max_length(30)]
+        validators=[
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(30),
+        ],
     )
     email_address = fields.StringField(
         required=False,
-        validators=[none_if_blank(), optional(), lower(), email_address()]
+        validators=[none_if_blank(), optional(), lower(), email_address()],
     )
     email_reason = fields.StringField(
         required=False,
@@ -71,12 +102,12 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
 
     def get_model_exclude(self):
         model_exclude = super(PatientDemographicsSerializer, self).get_model_exclude()
-        model_exclude.add('nationality_id')
-        model_exclude.add('ethnicity_id')
+        model_exclude.add("nationality_id")
+        model_exclude.add("ethnicity_id")
         return model_exclude
 
     def to_representation(self, value):
-        user = self.context['user']
+        user = self.context["user"]
         value = PatientDemographicsProxy(value, user)
         value = super(PatientDemographicsSerializer, self).to_representation(value)
         return value
@@ -85,8 +116,11 @@ class PatientDemographicsSerializer(PatientMixin, SystemSourceMixin, MetaMixin, 
         data = super(PatientDemographicsSerializer, self).validate(data)
 
         # Can't die before you are born
-        if data['date_of_death'] is not None and data['date_of_death'] < data['date_of_birth']:
-            raise ValidationError({'date_of_death': 'Must be after date of birth.'})
+        if (
+            data["date_of_death"] is not None
+            and data["date_of_death"] < data["date_of_birth"]
+        ):
+            raise ValidationError({"date_of_death": "Must be after date of birth."})
 
         return data
 
@@ -96,9 +130,7 @@ class PatientDemographicsProxy(object):
         self.demographics = demographics
         self.user = user
         self.demographics_permission = has_permission_for_patient(
-            user,
-            demographics.patient,
-            PERMISSION.VIEW_DEMOGRAPHICS
+            user, demographics.patient, PERMISSION.VIEW_DEMOGRAPHICS
         )
 
     @property

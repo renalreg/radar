@@ -11,7 +11,7 @@ from radar.models.groups import Group, GROUP_TYPE, GroupUser
 from radar.models.users import User
 from radar.roles import ROLE
 
-DEFAULT_PASSWORD = 'password'
+DEFAULT_PASSWORD = "password"
 
 
 @no_autoflush
@@ -19,13 +19,15 @@ def create_users(password=DEFAULT_PASSWORD):
     create_admin_user(password)
     create_ukrdc_importer_user(password)
 
-    for group in Group.query.filter(or_(Group.type == GROUP_TYPE.COHORT, Group.type == GROUP_TYPE.HOSPITAL)):
+    for group in Group.query.filter(
+        or_(Group.type == GROUP_TYPE.COHORT, Group.type == GROUP_TYPE.HOSPITAL)
+    ):
         for role in ROLE:
             user = User()
             user.first_name = generate_first_name(generate_gender()).capitalize()
             user.last_name = generate_last_name().capitalize()
-            user.username = group.code.lower() + '_' + str(role).lower()
-            user.email = '%s@example.org' % user.username
+            user.username = group.code.lower() + "_" + str(role).lower()
+            user.email = "%s@example.org" % user.username
             user.password = password
             add(user)
 
@@ -38,7 +40,7 @@ def create_users(password=DEFAULT_PASSWORD):
 
 def create_bot_user(password=DEFAULT_PASSWORD):
     bot = User()
-    bot.username = 'bot'
+    bot.username = "bot"
     bot.is_admin = True
     bot.is_bot = True
     bot.created_user = bot
@@ -51,10 +53,10 @@ def create_bot_user(password=DEFAULT_PASSWORD):
 
 def create_admin_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'admin'
-    user.email = 'admin@example.org'
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
+    user.username = "admin"
+    user.email = "admin@example.org"
+    user.first_name = "Foo"
+    user.last_name = "Bar"
     user.is_admin = True
     user.password = password
     add(user)
@@ -62,7 +64,7 @@ def create_admin_user(password=DEFAULT_PASSWORD):
 
 def create_ukrdc_importer_user(password=DEFAULT_PASSWORD):
     user = User()
-    user.username = 'ukrdc_importer'
+    user.username = "ukrdc_importer"
     user.is_admin = True
     user.is_bot = True
     add(user)
@@ -71,9 +73,11 @@ def create_ukrdc_importer_user(password=DEFAULT_PASSWORD):
 def create_user(username, password=DEFAULT_PASSWORD):
     user = User()
     user.username = username
-    user.email = '{0}@example.org'.format(username,)
-    user.first_name = 'Foo'
-    user.last_name = 'Bar'
+    user.email = "{0}@example.org".format(
+        username,
+    )
+    user.first_name = "Foo"
+    user.last_name = "Bar"
     user.is_admin = False
-    user.password = 'password'
+    user.password = "password"
     add(user)

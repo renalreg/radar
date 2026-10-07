@@ -33,4 +33,4 @@ class EnumSelectField(SelectFieldBase):
                 # Attempt to convert the value (unicode) to an enum value
                 self.data = self.coerce(valuelist[0])
             except ValueError:
-                raise ValueError(self.gettext('Not a valid choice'))
+                raise ValueError(self.gettext("Not a valid choice"))

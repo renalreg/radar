@@ -71,9 +71,9 @@ def filter_query_by_group_permissions(query, model_class):
                 GroupPatient.group_id == model_class.group_id,
                 and_(
                     group_a.type == GROUP_TYPE.COHORT,
-                    group_b.type == GROUP_TYPE.HOSPITAL
-                )
-            )
+                    group_b.type == GROUP_TYPE.HOSPITAL,
+                ),
+            ),
         )
         sub_query = sub_query.exists()
 
@@ -87,8 +87,8 @@ def filter_query_by_group(query, model_class):
     args = parse_args(GroupRequestSerializer)
 
     # Filter by group
-    if args['group'] is not None:
-        query = query.filter(model_class.group_id == args['group'])
+    if args["group"] is not None:
+        query = query.filter(model_class.group_id == args["group"])
 
     return query
 
@@ -122,8 +122,8 @@ def filter_query_by_patient(query, model_class):
     args = parse_args(PatientRequestSerializer)
 
     # Filter by patient
-    if args['patient'] is not None:
-        query = query.filter(model_class.patient_id == args['patient'])
+    if args["patient"] is not None:
+        query = query.filter(model_class.patient_id == args["patient"])
 
     return query
 
@@ -139,7 +139,9 @@ class DemographicsRequestSerializer(serializers.Serializer):
 
 class PatientObjectViewMixin(object):
     def get_permission_classes(self):
-        permission_classes = super(PatientObjectViewMixin, self).get_permission_classes()
+        permission_classes = super(
+            PatientObjectViewMixin, self
+        ).get_permission_classes()
         permission_classes.append(PatientObjectPermission)
         return permission_classes
 
@@ -184,14 +186,14 @@ class SourceFilterMixin(object):
         args = parse_args(SourceRequestSerializer)
 
         # Filter by source group
-        if args['source_group'] is not None:
+        if args["source_group"] is not None:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_group_id == args['source_group'])
+            query = query.filter(model_class.source_group_id == args["source_group"])
 
         # Filter by source type
-        if args['source_type'] is not None:
+        if args["source_type"] is not None:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_type == args['source_type'])
+            query = query.filter(model_class.source_type == args["source_type"])
 
         return query
 
@@ -225,7 +227,7 @@ def filter_query_by_user(query, model_class):
     args = parse_args(UserRequestSerializer)
 
     # Filter by user
-    if args['user'] is not None:
-        query = query.filter(model_class.user_id == args['user'])
+    if args["user"] is not None:
+        query = query.filter(model_class.user_id == args["user"])
 
     return query

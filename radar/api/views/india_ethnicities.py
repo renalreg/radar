@@ -18,5 +18,11 @@ class IndiaEthnicityDetailView(SystemObjectViewMixin, PatientObjectDetailView):
 
 
 def register_views(app):
-    app.add_url_rule('/india-ethnicities', view_func=IndiaEthnicityListView.as_view('india_ethnicity_list'))
-    app.add_url_rule('/india-ethnicities/<id>', view_func=IndiaEthnicityDetailView.as_view('india_ethnicity_detail'))
+    app.add_url_rule(
+        "/india-ethnicities",
+        view_func=IndiaEthnicityListView.as_view("india_ethnicity_list"),
+    )
+    app.add_url_rule(
+        "/india-ethnicities/<id>",
+        view_func=IndiaEthnicityDetailView.as_view("india_ethnicity_detail"),
+    )

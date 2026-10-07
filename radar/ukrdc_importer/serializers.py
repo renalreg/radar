@@ -38,8 +38,8 @@ class CodeOrDescriptionSerializer(serializers.Serializer):
 
         raise ValidationError({"code or description": "At least one is required"})
 
-class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
 
+class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
     def to_internal_value(self, data):
         # Allow plain string input
         if isinstance(data, str):
@@ -52,6 +52,7 @@ class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
             return None
         return super().run_validation(data)
 
+
 class EthnicGroupSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     description = fields.StringField(required=False)
@@ -61,12 +62,15 @@ class EthnicGroupSerializer(serializers.Serializer):
         code = data.get("code")
         description = data.get("description")
         # Check if both are empty / missing / whitespace-only
-        if not (code and str(code).strip()) and not (description and str(description).strip()):
+        if not (code and str(code).strip()) and not (
+            description and str(description).strip()
+        ):
             # Skip this field entirely in parent serializer
             return {}
 
         # Otherwise, return the valid data
         return data
+
 
 class EnteringOrganizationSerializer(serializers.Serializer):
     code = fields.StringField()

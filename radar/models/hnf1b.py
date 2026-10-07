@@ -1,18 +1,23 @@
 from sqlalchemy import Boolean, Column, Date, Index, String
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 
 
 @log_changes
 class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
-    __tablename__ = 'hnf1b_clinical_pictures'
+    __tablename__ = "hnf1b_clinical_pictures"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('hnf1b_clinical_pictures')
+    patient = patient_relationship("hnf1b_clinical_pictures")
 
     date_of_picture = Column(Date, nullable=False)
     single_kidney = Column(Boolean)
@@ -23,4 +28,4 @@ class Hnf1bClinicalPicture(db.Model, MetaModelMixin):
     hypertension = Column(Boolean)
 
 
-Index('hnf1b_clinical_pictures_patient_idx', Hnf1bClinicalPicture.patient_id)
+Index("hnf1b_clinical_pictures_patient_idx", Hnf1bClinicalPicture.patient_id)

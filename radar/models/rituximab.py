@@ -17,7 +17,10 @@ from radar.models.logs import log_changes
 PERFORMANCE_STATUS_OPTIONS = OrderedDict(
     [
         (0, "0: able to carry out all normal activity without restriction"),
-        (1, "1: restricted in strenuous activity but ambulatory and able to carry out light work"),
+        (
+            1,
+            "1: restricted in strenuous activity but ambulatory and able to carry out light work",
+        ),
         (
             2,
             "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",  # noqa
@@ -82,7 +85,9 @@ class BaselineAssessment(db.Model, MetaModelMixin):
     comorbidities = Column(Boolean)
 
     supportive_medication = Column(postgresql.ARRAY(String))
-    previous_treatment = Column(postgresql.JSONB)  # [{'name': '', 'start': '', 'end': ''}, ]
+    previous_treatment = Column(
+        postgresql.JSONB
+    )  # [{'name': '', 'start': '', 'end': ''}, ]
     steroids = Column(Boolean)
     other_previous_treatment = Column(String)
     past_remission = Column(Boolean)

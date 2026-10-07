@@ -6,47 +6,57 @@ from radar.api.serializers.auth import ResetPasswordSerializer
 
 def test_valid(app):
     with app.app_context():
-        obj = valid({
-            'token': '12345',
-            'username': 'hello',
-            'password': '2irPtfNUURf8G',
-        })
-        assert obj['token'] == '12345'
-        assert obj['username'] == 'hello'
-        assert obj['password'] == '2irPtfNUURf8G'
+        obj = valid(
+            {
+                "token": "12345",
+                "username": "hello",
+                "password": "2irPtfNUURf8G",
+            }
+        )
+        assert obj["token"] == "12345"
+        assert obj["username"] == "hello"
+        assert obj["password"] == "2irPtfNUURf8G"
 
 
 def test_token_missing(app):
     with app.app_context():
-        invalid({
-            'username': 'hello',
-            'password': 'password',
-        })
+        invalid(
+            {
+                "username": "hello",
+                "password": "password",
+            }
+        )
 
 
 def test_username_missing(app):
     with app.app_context():
-        invalid({
-            'token': '12345',
-            'password': 'password',
-        })
+        invalid(
+            {
+                "token": "12345",
+                "password": "password",
+            }
+        )
 
 
 def test_password_missing(app):
     with app.app_context():
-        invalid({
-            'token': '12345',
-            'username': 'hello',
-        })
+        invalid(
+            {
+                "token": "12345",
+                "username": "hello",
+            }
+        )
 
 
 def test_weak_password(app):
     with app.app_context():
-        invalid({
-            'token': '12345',
-            'username': 'hello',
-            'password': 'password',
-        })
+        invalid(
+            {
+                "token": "12345",
+                "username": "hello",
+                "password": "password",
+            }
+        )
 
 
 def invalid(data):

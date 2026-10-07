@@ -86,7 +86,7 @@ def parse_medications(sda_medications, adapter):
     return sda_medications
 
 
-def unique_medications(sda_medications,adapter):
+def unique_medications(sda_medications, adapter):
     def key(sda_medication):
         return sda_medication.external_id
 
@@ -123,7 +123,9 @@ def sync_medications(patient, medications_to_keep, adapter):
 
 
 def build_medication_id(patient, group, sda_medication):
-    return build_id(patient.id, Medication.__tablename__, group.id, sda_medication.external_id)
+    return build_id(
+        patient.id, Medication.__tablename__, group.id, sda_medication.external_id
+    )
 
 
 def convert_medications(patient, sda_medications, adapter):
@@ -132,12 +134,13 @@ def convert_medications(patient, sda_medications, adapter):
     medications = list()
 
     for sda_medication in sda_medications:
-
         code = sda_medication.entering_organization
         source_group = get_group(code)
 
         if source_group is None:
-            adapter.error("Ignoring medication due to unknown entering organization code=%s", code)
+            adapter.error(
+                "Ignoring medication due to unknown entering organization code=%s", code
+            )
             continue
 
         medication_id = build_medication_id(patient, source_group, sda_medication)

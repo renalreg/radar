@@ -27,9 +27,15 @@ def filter_consultants_by_patient_id(query, patient_id):
     # Only return consultants that belong to one of the groups the patient also belongs to
     consultant_alias = aliased(Consultant)
     consultants_for_patient_query = db.session.query(consultant_alias)
-    consultants_for_patient_query = consultants_for_patient_query.join(consultant_alias.group_consultants)
-    consultants_for_patient_query = consultants_for_patient_query.join(GroupConsultant.group)
-    consultants_for_patient_query = consultants_for_patient_query.join(Group.group_patients)
+    consultants_for_patient_query = consultants_for_patient_query.join(
+        consultant_alias.group_consultants
+    )
+    consultants_for_patient_query = consultants_for_patient_query.join(
+        GroupConsultant.group
+    )
+    consultants_for_patient_query = consultants_for_patient_query.join(
+        Group.group_patients
+    )
     consultants_for_patient_query = consultants_for_patient_query.filter(
         GroupPatient.patient_id == patient_id,
         Consultant.id == consultant_alias.id,
@@ -54,8 +60,8 @@ class ConsultantListView(ListModelView):
         args = parse_args(ConsultantRequestSerializer)
 
         # Only show the consultants available to a patient
-        if args['patient'] is not None:
-            patient_id = args['patient']
+        if args["patient"] is not None:
+            patient_id = args["patient"]
             query = filter_consultants_by_patient_id(query, patient_id)
 
         return query
@@ -90,9 +96,23 @@ class SpecialtyListView(ListModelView):
 
 
 def register_views(app):
-    app.add_url_rule('/consultants', view_func=ConsultantListView.as_view('consultant_list'))
-    app.add_url_rule('/consultants', view_func=ConsultantCreateView.as_view('consultant_create'))
-    app.add_url_rule('/consultants/<id>', view_func=ConsultantRetrieveView.as_view('consultant_retrieve'))
-    app.add_url_rule('/consultants/<id>', view_func=ConsultantUpdateView.as_view('consultant_update'))
-    app.add_url_rule('/consultants/<id>', view_func=ConsultantDestroyView.as_view('consultant_destroy'))
-    app.add_url_rule('/specialties', view_func=SpecialtyListView.as_view('specialty_list'))
+    app.add_url_rule(
+        "/consultants", view_func=ConsultantListView.as_view("consultant_list")
+    )
+    app.add_url_rule(
+        "/consultants", view_func=ConsultantCreateView.as_view("consultant_create")
+    )
+    app.add_url_rule(
+        "/consultants/<id>",
+        view_func=ConsultantRetrieveView.as_view("consultant_retrieve"),
+    )
+    app.add_url_rule(
+        "/consultants/<id>", view_func=ConsultantUpdateView.as_view("consultant_update")
+    )
+    app.add_url_rule(
+        "/consultants/<id>",
+        view_func=ConsultantDestroyView.as_view("consultant_destroy"),
+    )
+    app.add_url_rule(
+        "/specialties", view_func=SpecialtyListView.as_view("specialty_list")
+    )

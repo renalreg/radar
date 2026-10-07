@@ -32,7 +32,9 @@ class ObservationListRequestSerializer(serializers.Serializer):
 
 
 class ResultListRequestSerializer(serializers.Serializer):
-    observation_id = fields.CommaSeparatedField(required=False, child=fields.IntegerField())
+    observation_id = fields.CommaSeparatedField(
+        required=False, child=fields.IntegerField()
+    )
 
 
 class ObservationCountListRequestSerializer(serializers.Serializer):
@@ -48,7 +50,7 @@ class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelVie
 
         args = parse_args(ResultListRequestSerializer)
 
-        observation_ids = args['observation_id']
+        observation_ids = args["observation_id"]
 
         # Only results for the specified observation(s)
         if observation_ids:
@@ -67,18 +69,18 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
         if json is None:
             raise BadRequest
 
-        if 'observation' in json:
+        if "observation" in json:
             return super(ResultCreateView, self).create()
 
         observations = []
         data = {}
 
-        for observation in json.pop('observations', []):
+        for observation in json.pop("observations", []):
             data = dict(json)
-            data['observation'] = observation.get('observation')
-            data['sent_value'] = observation.get('value')
-            data['value'] = observation.get('value')
-            data['date'] = observation.get('date')
+            data["observation"] = observation.get("observation")
+            data["sent_value"] = observation.get("value")
+            data["value"] = observation.get("value")
+            data["date"] = observation.get("date")
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             obj = serializer.save()
@@ -87,13 +89,13 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
 
             data = serializer.data
             data = camel_case_keys(data)
-            observation = data.pop('observation')
-            observation['id'] = data.pop('id', None)
-            observation['value'] = data.pop('value', None)
-            observation['sent_value'] = data.pop('sent_value', None)
+            observation = data.pop("observation")
+            observation["id"] = data.pop("id", None)
+            observation["value"] = data.pop("value", None)
+            observation["sent_value"] = data.pop("sent_value", None)
             observations.append(observation)
 
-        data['observations'] = observations
+        data["observations"] = observations
 
         return jsonify(data), 200
 
@@ -108,7 +110,7 @@ class ResultDetailView(SourceObjectViewMixin, PatientObjectDetailView):
         if json is None:
             raise BadRequest()
 
-        partial = request.method == 'PATCH'
+        partial = request.method == "PATCH"
         obj = self.get_object()
         serializer = self.get_serializer(obj, data=json, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -131,7 +133,7 @@ class ObservationListView(ListModelView):
     def filter_query(self, query):
         args = parse_args(ObservationListRequestSerializer)
 
-        value_types = args['value_type']
+        value_types = args["value_type"]
 
         # Only observations with the specified value type(s)
         if value_types:
@@ -140,7 +142,7 @@ class ObservationListView(ListModelView):
         return query
 
     def sort_query(self, query):
-        return query.outerjoin(GroupObservation).order_by('weight')
+        return query.outerjoin(GroupObservation).order_by("weight")
 
 
 class ObservationDetailView(RetrieveModelView):
@@ -156,11 +158,11 @@ class ObservationCountListView(ListView):
     def get_object_list(self):
         args = parse_args(ObservationCountListRequestSerializer)
 
-        patient = args['patient']
+        patient = args["patient"]
 
         count_query = db.session.query(
-            Result.observation_id.label('observation_id'),
-            func.count().label('result_count')
+            Result.observation_id.label("observation_id"),
+            func.count().label("result_count"),
         )
         count_query = count_query.select_from(Result)
 
@@ -174,15 +176,27 @@ class ObservationCountListView(ListView):
         q = q.join(count_subquery, Observation.id == count_subquery.c.observation_id)
         q = q.order_by(Observation.id)
 
-        results = [dict(observation=observation, count=count) for observation, count in q]
+        results = [
+            dict(observation=observation, count=count) for observation, count in q
+        ]
 
         return results
 
 
 def register_views(app):
-    app.add_url_rule('/results', view_func=ResultListView.as_view('result_list'))
-    app.add_url_rule('/results', view_func=ResultCreateView.as_view('result_create'))
-    app.add_url_rule('/results/<id>', view_func=ResultDetailView.as_view('result_detail'))
-    app.add_url_rule('/observations', view_func=ObservationListView.as_view('observation_list'))
-    app.add_url_rule('/observations/<id>', view_func=ObservationDetailView.as_view('observation_detail'))
-    app.add_url_rule('/observation-counts', view_func=ObservationCountListView.as_view('observation_count_list'))
+    app.add_url_rule("/results", view_func=ResultListView.as_view("result_list"))
+    app.add_url_rule("/results", view_func=ResultCreateView.as_view("result_create"))
+    app.add_url_rule(
+        "/results/<id>", view_func=ResultDetailView.as_view("result_detail")
+    )
+    app.add_url_rule(
+        "/observations", view_func=ObservationListView.as_view("observation_list")
+    )
+    app.add_url_rule(
+        "/observations/<id>",
+        view_func=ObservationDetailView.as_view("observation_detail"),
+    )
+    app.add_url_rule(
+        "/observation-counts",
+        view_func=ObservationCountListView.as_view("observation_count_list"),
+    )

@@ -24,4 +24,4 @@ class NephrectomySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerialize
 
     class Meta(object):
         model_class = Nephrectomy
-        validators = [valid_date_for_patient('date')]
+        validators = [valid_date_for_patient("date")]

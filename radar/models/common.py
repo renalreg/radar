@@ -18,7 +18,7 @@ def patient_id_column(**kwargs):
         Integer,
         ForeignKey("patients.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
-        **kwargs
+        **kwargs,
     )
 
 

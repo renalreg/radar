@@ -23,22 +23,22 @@ def patient():
 @pytest.fixture
 def nephrectomy(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'date': date(2015, 1, 1),
-        'kidney_side': 'LEFT',
-        'kidney_type': 'NATIVE',
-        'entry_type': 'HA'
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "date": date(2015, 1, 1),
+        "kidney_side": "LEFT",
+        "kidney_type": "NATIVE",
+        "entry_type": "HA",
     }
 
 
 def test_valid(nephrectomy):
     obj = valid(nephrectomy)
     assert obj.date == date(2015, 1, 1)
-    assert obj.kidney_side == 'LEFT'
-    assert obj.kidney_type == 'NATIVE'
-    assert obj.entry_type == 'HA'
+    assert obj.kidney_side == "LEFT"
+    assert obj.kidney_type == "NATIVE"
+    assert obj.entry_type == "HA"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -46,63 +46,63 @@ def test_valid(nephrectomy):
 
 
 def test_patient_none(nephrectomy):
-    nephrectomy['patient'] = None
+    nephrectomy["patient"] = None
     invalid(nephrectomy)
 
 
 def test_source_group_none(nephrectomy):
-    nephrectomy['source_group'] = None
+    nephrectomy["source_group"] = None
     invalid(nephrectomy)
 
 
 def test_source_type_none(nephrectomy):
-    nephrectomy['source_type'] = None
+    nephrectomy["source_type"] = None
     nephrectomy = valid(nephrectomy)
     assert nephrectomy.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(nephrectomy):
-    nephrectomy['date'] = None
+    nephrectomy["date"] = None
     invalid(nephrectomy)
 
 
 def test_date_before_dob(nephrectomy):
-    nephrectomy['date'] = date(1999, 1, 1)
+    nephrectomy["date"] = date(1999, 1, 1)
     invalid(nephrectomy)
 
 
 def test_date_future(nephrectomy):
-    nephrectomy['date'] = date.today() + timedelta(days=1)
+    nephrectomy["date"] = date.today() + timedelta(days=1)
     invalid(nephrectomy)
 
 
 def test_kidney_side_none(nephrectomy):
-    nephrectomy['kidney_side'] = None
+    nephrectomy["kidney_side"] = None
     invalid(nephrectomy)
 
 
 def test_kidney_side_invalid(nephrectomy):
-    nephrectomy['kidney_side'] = 'HELLO'
+    nephrectomy["kidney_side"] = "HELLO"
     invalid(nephrectomy)
 
 
 def test_kidney_type_none(nephrectomy):
-    nephrectomy['kidney_type'] = None
+    nephrectomy["kidney_type"] = None
     invalid(nephrectomy)
 
 
 def test_kidney_type_invalid(nephrectomy):
-    nephrectomy['kidney_type'] = 'HELLO'
+    nephrectomy["kidney_type"] = "HELLO"
     invalid(nephrectomy)
 
 
 def test_entry_type_none(nephrectomy):
-    nephrectomy['entry_type'] = None
+    nephrectomy["entry_type"] = None
     invalid(nephrectomy)
 
 
 def test_entry_type_invalid(nephrectomy):
-    nephrectomy['entry_type'] = 'HELLO'
+    nephrectomy["entry_type"] = "HELLO"
     invalid(nephrectomy)
 
 
@@ -114,6 +114,6 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = NephrectomySerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = NephrectomySerializer(data=data, context={"user": User(is_admin=True)})
     serializer.is_valid(raise_exception=True)
     return serializer.save()

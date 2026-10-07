@@ -3,10 +3,10 @@ from radar.config import ConfigError
 
 
 def check_config(config):
-    if config.get('UKRDC_EXPORTER_URL') is None:
-        raise ConfigError('Missing UKRDC_EXPORTER_URL')
+    if config.get("UKRDC_EXPORTER_URL") is None:
+        raise ConfigError("Missing UKRDC_EXPORTER_URL")
 
-    config.setdefault('UKRDC_EXPORTER_STATE', None)
+    config.setdefault("UKRDC_EXPORTER_STATE", None)
 
 
 class RadarUKRDCExporter(Radar):

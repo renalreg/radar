@@ -11,11 +11,11 @@ class MockObj(object):
 
 
 def make_read_request():
-    return MockRequest('GET')
+    return MockRequest("GET")
 
 
 def make_write_request():
-    return MockRequest('POST')
+    return MockRequest("POST")
 
 
 def should_grant(request, user, patient):

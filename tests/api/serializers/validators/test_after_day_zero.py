@@ -29,6 +29,8 @@ def test_datetime():
 
 def test_dt_format():
     with pytest.raises(ValidationError) as e:
-        after_day_zero(dt_format='%Y-%m-%d')(datetime(1899, 12, 31, 23, 59, 59, tzinfo=pytz.utc))
+        after_day_zero(dt_format="%Y-%m-%d")(
+            datetime(1899, 12, 31, 23, 59, 59, tzinfo=pytz.utc)
+        )
 
-    assert e.value.errors[0] == 'Value is before 1900-01-01.'
+    assert e.value.errors[0] == "Value is before 1900-01-01."

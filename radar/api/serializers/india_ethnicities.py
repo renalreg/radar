@@ -5,7 +5,9 @@ from radar.api.serializers.common import MetaMixin, PatientMixin, SystemSourceMi
 from radar.models import IndiaEthnicity
 
 
-class IndiaEthnicitySerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
+class IndiaEthnicitySerializer(
+    PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer
+):
     father_ancestral_state = fields.StringField(required=False)
     father_language = fields.StringField(required=False)
     mother_ancestral_state = fields.StringField(required=False)

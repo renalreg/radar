@@ -12,7 +12,9 @@ from sqlalchemy import (
     Integer,
     String,
     text,
-    Enum, or_, desc
+    Enum,
+    or_,
+    desc,
 )
 from sqlalchemy.orm import backref, relationship
 
@@ -37,6 +39,8 @@ BIOPSY_DIAGNOSES = OrderedDict(
 
 
 normalize_name = lambda name: re.sub(r"\s+", " ", name.strip()).lower() if name else ""
+
+
 @log_changes
 class PatientDiagnosis(db.Model, MetaModelMixin):
     __tablename__ = "patient_diagnoses"
@@ -127,8 +131,8 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
             db.session.query(Antibody)
             .filter(
                 or_(
-                    Antibody.id == name,        # exact match
-                    Antibody.id == normalized   # normalized match
+                    Antibody.id == name,  # exact match
+                    Antibody.id == normalized,  # normalized match
                 )
             )
             .order_by(desc(Antibody.is_official))  # official first
@@ -138,16 +142,14 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
         # If none found → create unofficial antibody
         if antibody is None:
             antibody = Antibody(
-                id=normalized,        # use normalized string as ID
-                is_official=False
+                id=normalized,  # use normalized string as ID
+                is_official=False,
             )
             db.session.add(antibody)
-            db.session.flush()       # TODO is this correct
+            db.session.flush()  # TODO is this correct
 
         # Assign FK
         self.antibody_id = antibody.id
-
-
 
 
 Index("patient_diagnoses_patient_idx", PatientDiagnosis.patient_id)

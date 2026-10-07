@@ -9,8 +9,8 @@ from radar.api.app import RadarAPI
 
 
 @click.command()
-@click.option('--host', default='0.0.0.0')
-@click.option('--port', default=5000)
+@click.option("--host", default="0.0.0.0")
+@click.option("--port", default=5000)
 def start(host, port):
     current_app.run(host=host, port=port)
 
@@ -24,5 +24,5 @@ def main():
         start()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -11,8 +11,8 @@ def test_valid_int():
 
 
 def test_valid_string():
-    assert valid('9434765919') == '9434765919'
-    assert valid('9434765870') == '9434765870'
+    assert valid("9434765919") == "9434765919"
+    assert valid("9434765870") == "9434765870"
 
 
 def test_invalid():
@@ -21,26 +21,26 @@ def test_invalid():
 
 
 def test_invalid_string():
-    invalid('9434765918')
-    invalid('9434765871')
+    invalid("9434765918")
+    invalid("9434765871")
 
 
 def test_remove_spaces():
-    value = valid('943 476 5919')
-    assert value == '9434765919'
+    value = valid("943 476 5919")
+    assert value == "9434765919"
 
 
 def test_remove_leading_zeros():
-    value = valid('0009434765919')
-    assert value == '9434765919'
+    value = valid("0009434765919")
+    assert value == "9434765919"
 
 
 def test_chi_no():
-    invalid('101299877')
+    invalid("101299877")
 
 
 def test_hsc_no():
-    invalid('3232255825')
+    invalid("3232255825")
 
 
 def valid(value):

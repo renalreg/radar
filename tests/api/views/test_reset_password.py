@@ -54,7 +54,9 @@ def test_missing_username(api):
 
     client = api.test_client()
 
-    response = client.post("/reset-password", data={"token": token, "password": STRONG_PASSWORD})
+    response = client.post(
+        "/reset-password", data={"token": token, "password": STRONG_PASSWORD}
+    )
 
     assert response.status_code == 422
 
@@ -66,7 +68,8 @@ def test_wrong_username(api):
     client = api.test_client()
 
     response = client.post(
-        "/reset-password", data={"token": token, "username": "foo", "password": STRONG_PASSWORD}
+        "/reset-password",
+        data={"token": token, "username": "foo", "password": STRONG_PASSWORD},
     )
 
     assert response.status_code == 422
@@ -78,7 +81,9 @@ def test_missing_password(api):
 
     client = api.test_client()
 
-    response = client.post("/reset-password", data={"token": token, "username": user.username})
+    response = client.post(
+        "/reset-password", data={"token": token, "username": user.username}
+    )
 
     assert response.status_code == 422
 

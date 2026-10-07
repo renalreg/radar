@@ -11,9 +11,13 @@ def create_hospitalisations_f():
             hospitalisation.patient = patient
             hospitalisation.source_group = source_group
             hospitalisation.source_type = source_type
-            hospitalisation.date_of_admission = random_date(patient.earliest_date_of_birth, date.today())
-            hospitalisation.date_of_discharge = random_date(hospitalisation.date_of_admission, date.today())
-            hospitalisation.reason_for_admission = 'Test'
+            hospitalisation.date_of_admission = random_date(
+                patient.earliest_date_of_birth, date.today()
+            )
+            hospitalisation.date_of_discharge = random_date(
+                hospitalisation.date_of_admission, date.today()
+            )
+            hospitalisation.reason_for_admission = "Test"
             add(hospitalisation)
 
     return create_hospitalisations

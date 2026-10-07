@@ -6,7 +6,11 @@ from radar.api.views.common import (
     SourceObjectViewMixin,
     StringLookupListView,
 )
-from radar.models.transplants import GRAFT_LOSS_CAUSES, Transplant, TRANSPLANT_MODALITIES
+from radar.models.transplants import (
+    GRAFT_LOSS_CAUSES,
+    Transplant,
+    TRANSPLANT_MODALITIES,
+)
 
 
 class TransplantListView(SourceObjectViewMixin, PatientObjectListView):
@@ -28,10 +32,19 @@ class TransplantGraftLossCauseListView(StringLookupListView):
 
 
 def register_views(app):
-    app.add_url_rule('/transplants', view_func=TransplantListView.as_view('transplant_list'))
-    app.add_url_rule('/transplants/<id>', view_func=TransplantDetailView.as_view('transplant_detail'))
-    app.add_url_rule('/transplant-modalities', view_func=TransplantModalityListView.as_view('transplant_modality_list'))
     app.add_url_rule(
-        '/transplant-graft-loss-causes',
-        view_func=TransplantGraftLossCauseListView.as_view('transplant_graft_loss_cause_list')
+        "/transplants", view_func=TransplantListView.as_view("transplant_list")
+    )
+    app.add_url_rule(
+        "/transplants/<id>", view_func=TransplantDetailView.as_view("transplant_detail")
+    )
+    app.add_url_rule(
+        "/transplant-modalities",
+        view_func=TransplantModalityListView.as_view("transplant_modality_list"),
+    )
+    app.add_url_rule(
+        "/transplant-graft-loss-causes",
+        view_func=TransplantGraftLossCauseListView.as_view(
+            "transplant_graft_loss_cause_list"
+        ),
     )

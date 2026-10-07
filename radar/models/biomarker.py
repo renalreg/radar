@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from radar.database import db
 
+
 class Biomarker(db.Model):
     __tablename__ = "biomarkers"
 
@@ -30,8 +31,6 @@ class BiomarkerBarcode(db.Model):
     pat = relationship("Patient", back_populates="barcode")
 
 
-
-
 class BiomarkerResult(db.Model):
     __tablename__ = "biomarker_results"
 
@@ -48,7 +47,9 @@ class BiomarkerResult(db.Model):
     hospital = Column(String(100))
 
     bio = relationship("Biomarker", cascade="all, delete-orphan", single_parent=True)
-    sample = relationship("BiomarkerSample", cascade="all, delete-orphan", single_parent=True)
+    sample = relationship(
+        "BiomarkerSample", cascade="all, delete-orphan", single_parent=True
+    )
 
 
 class BiomarkerSample(db.Model):
@@ -62,6 +63,6 @@ class BiomarkerSample(db.Model):
     barcode_id = Column(ForeignKey("biomarker_barcodes.id"))
     label = Column(String(100), nullable=False)
 
-    barcode = relationship("BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True)
-
-
+    barcode = relationship(
+        "BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True
+    )

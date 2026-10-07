@@ -12,7 +12,9 @@ def create_dialysis_f():
             dialysis.patient = patient
             dialysis.source_group = source_group
             dialysis.source_type = source_type
-            dialysis.from_date = random_date(patient.earliest_date_of_birth, date.today())
+            dialysis.from_date = random_date(
+                patient.earliest_date_of_birth, date.today()
+            )
 
             if random.random() > 0.5:
                 dialysis.to_date = random_date(dialysis.from_date, date.today())

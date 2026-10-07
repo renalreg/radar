@@ -165,40 +165,35 @@ class PatientDestroyView(DestroyModelView):
     permission_classes = [AdminPermission]
 
 
-
 class PatientListCSVView(ApiView):
     def get(self):
         args = parse_args(PatientListRequestSerializer)
         cohorts = [g for g in args["group"] if g.type == GROUP_TYPE.COHORT]
 
         headers = [
-                      "Patient ID",
-                      "First Name",
-                      "Last Name",
-                      "Date of Birth",
-                      "Year of Birth",
-                      "Date of Death",
-                      "Year of Death",
-                      "Gender",
-                      "Gender Label",
-                      "Ethnicity",
-                      "Ethnicity Label",
-                      "Patient Number",
-                      "PV",
-                      "Recruited On",
-                      "Recruited Group Name",
-                      "Recruited Group Code",
-                      "Cohorts",
-                      "Hospitals",
-                      "Signed off State",
-                  ] + [cohort.short_name for cohort in cohorts]
+            "Patient ID",
+            "First Name",
+            "Last Name",
+            "Date of Birth",
+            "Year of Birth",
+            "Date of Death",
+            "Year of Death",
+            "Gender",
+            "Gender Label",
+            "Ethnicity",
+            "Ethnicity Label",
+            "Patient Number",
+            "PV",
+            "Recruited On",
+            "Recruited Group Name",
+            "Recruited Group Code",
+            "Cohorts",
+            "Hospitals",
+            "Signed off State",
+        ] + [cohort.short_name for cohort in cohorts]
 
         def get_groups(patient, group_type):
-            groups = [
-                x.name
-                for x in patient.current_groups
-                if x.type == group_type
-            ]
+            groups = [x.name for x in patient.current_groups if x.type == group_type]
             return ", ".join(sorted(uniq(groups)))
 
         def generate():
@@ -242,19 +237,14 @@ class PatientListCSVView(ApiView):
                     get_attrs(patient, "nurture_data", "signed_off_state"),
                 ]
 
-                row.extend(
-                    patient.recruited_date(cohort)
-                    for cohort in cohorts
-                )
+                row.extend(patient.recruited_date(cohort) for cohort in cohorts)
 
                 yield emit(row)
 
         return Response(
             stream_with_context(generate()),
             mimetype="text/csv; charset=utf-8",
-            headers={
-                "Content-Disposition": "attachment; filename=patients.csv"
-            },
+            headers={"Content-Disposition": "attachment; filename=patients.csv"},
         )
 
 

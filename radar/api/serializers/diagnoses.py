@@ -122,7 +122,9 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
     proteinuria_positive_antibody = fields.BooleanField(required=False)
     antibody_id = fields.StringField(required=False)
-    antibody_custom = fields.StringField(required=False) # this will overwrite antibody if antibody is 'other'
+    antibody_custom = fields.StringField(
+        required=False
+    )  # this will overwrite antibody if antibody is 'other'
     paraprotein = fields.BooleanField(required=False)
     comments = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
@@ -138,10 +140,10 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         ]
 
     def create(self, data):
-        antibody_name=resolve_antibody_name(data)
+        antibody_name = resolve_antibody_name(data)
         if antibody_name:
-            data.pop("antibody_id",None)
-            data.pop("antibody_custom",None)
+            data.pop("antibody_id", None)
+            data.pop("antibody_custom", None)
         instance = super().create(data)
         if antibody_name:
             instance.set_antibody(antibody_name)
@@ -150,20 +152,19 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     def update(self, instance, data):
         antibody_name = resolve_antibody_name(data)
         if antibody_name:
-            data.pop("antibody_id",None)
-            data.pop("antibody_custom",None)
+            data.pop("antibody_id", None)
+            data.pop("antibody_custom", None)
         instance = super().update(instance, data)
         if antibody_name:
             instance.set_antibody(antibody_name)
         return instance
-
 
     def pre_validate(self, data):
         # Ignore the text diagnosis if there is a coded diagnosis
         if data["diagnosis"]:
             data["diagnosis_text"] = None
 
-        data=reset_data(data)
+        data = reset_data(data)
         return data
 
     def validate_diagnosis(self, diagnosis):

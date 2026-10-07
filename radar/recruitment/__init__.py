@@ -211,7 +211,7 @@ class RecruitmentPatient(object):
         diagnosis,
         ethnicity=None,
         nationality=None,
-        email_reason=None
+        email_reason=None,
     ):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
@@ -329,7 +329,9 @@ class RecruitmentPatient(object):
         diagnosis.clinical_picture = self.diagnosis.get("clinical_picture")
         diagnosis.biopsy = self.diagnosis.get("biopsy")
         diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
-        diagnosis.proteinuria_positive_antibody = self.diagnosis.get("proteinuria_positive_antibody")
+        diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
+            "proteinuria_positive_antibody"
+        )
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user

@@ -279,7 +279,9 @@ class ListViewMixin(object):
 
         context = self.get_context()
         serializer = self.get_serializer()
-        list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
+        list_serializer = serializers.ListSerializer(
+            obj_list, child=serializer, context=context
+        )
 
         data = {"data": list_serializer.data}
 
@@ -294,7 +296,9 @@ class ListModelViewMixin(object):
 
         context = self.get_context()
         serializer = self.get_serializer()
-        list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
+        list_serializer = serializers.ListSerializer(
+            obj_list, child=serializer, context=context
+        )
 
         data = {"data": list_serializer.data}
 

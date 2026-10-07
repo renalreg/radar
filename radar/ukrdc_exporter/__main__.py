@@ -54,10 +54,13 @@ def export_changed(last_log_id):
 
 
 def export_query(sql, last_log_id):
-    rows = db.session.execute(sql, {
-        'last_log_id': last_log_id,
-        'source_type': SOURCE_TYPE_MANUAL,
-    })
+    rows = db.session.execute(
+        sql,
+        {
+            "last_log_id": last_log_id,
+            "source_type": SOURCE_TYPE_MANUAL,
+        },
+    )
 
     patient_ids = []
 
@@ -74,7 +77,7 @@ def export_query(sql, last_log_id):
 
 def export_patients(patient_ids):
     for patient_id in sorted(set(patient_ids)):
-        logger.info('Adding patient to queue id={}'.format(patient_id))
+        logger.info("Adding patient to queue id={}".format(patient_id))
         export_to_ukrdc(patient_id)
 
 
@@ -87,23 +90,25 @@ def main():
 
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--all', action='store_true')
-    group.add_argument('--changed', action='store_true')
-    group.add_argument('--id', type=int, dest='patient_ids', action='append', default=[])
+    group.add_argument("--all", action="store_true")
+    group.add_argument("--changed", action="store_true")
+    group.add_argument(
+        "--id", type=int, dest="patient_ids", action="append", default=[]
+    )
     args = parser.parse_args()
 
     app = RadarUKRDCExporter()
 
     if args.all or args.changed:
-        state = app.config['UKRDC_EXPORTER_STATE']
+        state = app.config["UKRDC_EXPORTER_STATE"]
 
         if state is not None:
             if not os.path.exists(state):
-                with open(state, 'w') as state_f:
+                with open(state, "w") as state_f:
                     state_f.write(str(0))
-                    state_f.write('\n')
+                    state_f.write("\n")
 
-            state_f = open(state, 'r+')
+            state_f = open(state, "r+")
             lock(state_f)
             last_log_id = int(state_f.readline())
         else:
@@ -119,7 +124,7 @@ def main():
         if state_f is not None:
             state_f.seek(0)
             state_f.write(str(last_log_id))
-            state_f.write('\n')
+            state_f.write("\n")
             state_f.truncate()
             state_f.close()
     elif args.patient_ids:
@@ -127,5 +132,5 @@ def main():
             export_patients(args.patient_ids)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
