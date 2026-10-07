@@ -30,7 +30,7 @@ class GroupPatientListView(ListModelView):
     model_class = GroupPatient
 
     def filter_query(self, query):
-        query = super(GroupPatientListView, self).filter_query(query)
+        query = super().filter_query(query)
         query = filter_query_by_patient_permissions(query, GroupPatient)
         query = filter_query_by_patient(query, GroupPatient)
         query = filter_query_by_group(query, GroupPatient)
@@ -73,7 +73,7 @@ class GroupPatientUpdateView(UpdateModelView):
     permission_classes = [GroupPatientUpdatePermission]
 
     def update(self, *args, **kwargs):
-        response = super(GroupPatientUpdateView, self).update(*args, **kwargs)
+        response = super().update(*args, **kwargs)
 
         obj = self.get_object()
         update_system_groups(obj.patient)

@@ -30,7 +30,7 @@ class RelativeSerializer(ModelSerializer):
     relationship = IntegerLookupField(RELATIONSHIPS)
     patient = PatientField(required=False)  # TODO check not own relative
 
-    class Meta(object):
+    class Meta:
         model_class = FamilyHistoryRelative
         exclude = ["id", "patient_id", "family_history_id"]
 
@@ -45,7 +45,7 @@ class FamilyHistorySerializer(
     )
     relatives = serializers.ListSerializer(required=False, child=RelativeSerializer())
 
-    class Meta(object):
+    class Meta:
         model_class = FamilyHistory
 
     def pre_validate(self, data):

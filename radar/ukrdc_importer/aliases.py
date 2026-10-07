@@ -16,7 +16,7 @@ from radar.ukrdc_importer.utils import (
 logger = logging.getLogger(__name__)
 
 
-class SDAName(object):
+class SDAName:
     def __init__(self, data):
         self.data = data
 
@@ -32,9 +32,7 @@ class SDAName(object):
 def parse_aliases(sda_names, adapter):
     def log(index, sda_name, e):
         adapter.error(
-            "Ignoring invalid alias index={index}, errors={errors}".format(
-                index=index, errors=e.flatten()
-            )
+            f"Ignoring invalid alias index={index}, errors={e.flatten()}"
         )
 
     serializer = NameSerializer()
@@ -69,7 +67,7 @@ def get_aliases(patient):
 
 def sync_aliases(patient, alises_to_keep, adapter):
     def log(alias):
-        adapter.info("Deleting alias id={}".format(alias.id))
+        adapter.info(f"Deleting alias id={alias.id}")
 
     aliases = get_aliases(patient)
     delete_list(aliases, alises_to_keep, delete_f=log)
@@ -95,10 +93,10 @@ def convert_aliases(patient, sda_names, adapter):
         alias = get_alias(alias_id)
 
         if alias is None:
-            adapter.info("Creating alias id={id}".format(id=alias_id))
+            adapter.info(f"Creating alias id={alias_id}")
             alias = PatientAlias(id=alias_id)
         else:
-            adapter.info("Updating alias id={id}".format(id=alias_id))
+            adapter.info(f"Updating alias id={alias_id}")
 
         alias.patient = patient
         alias.source_group = source_group
@@ -123,4 +121,4 @@ def import_aliases(patient, sda_names, adapter):
     aliases = convert_aliases(patient, sda_names, adapter)
     sync_aliases(patient, aliases, adapter)
 
-    adapter.info("Imported {n} alias(es)".format(n=len(aliases)))
+    adapter.info(f"Imported {len(aliases)} alias(es)")

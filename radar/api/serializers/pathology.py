@@ -34,6 +34,6 @@ class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     )
     report_cleaned = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Pathology
         validators = [valid_date_for_patient("date")]

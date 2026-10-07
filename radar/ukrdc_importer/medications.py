@@ -17,7 +17,7 @@ from radar.utils import get_path
 logger = logging.getLogger(__name__)
 
 
-class SDAMedication(object):
+class SDAMedication:
     def __init__(self, data):
         self.data = data
 
@@ -74,9 +74,7 @@ class SDAMedication(object):
 def parse_medications(sda_medications, adapter):
     def log(index, sda_medication, e):
         adapter.error(
-            "Ignoring invalid medication index={index}, errors={errors}".format(
-                index=index, errors=e.flatten()
-            )
+            f"Ignoring invalid medication index={index}, errors={e.flatten()}"
         )
 
     serializer = MedicationSerializer()
@@ -116,7 +114,7 @@ def get_medications(patient):
 
 def sync_medications(patient, medications_to_keep, adapter):
     def log(medication):
-        adapter.info("Deleting medication id={}".format(medication.id))
+        adapter.info(f"Deleting medication id={medication.id}")
 
     medications = get_medications(patient)
     delete_list(medications, medications_to_keep, delete_f=log)
@@ -147,10 +145,10 @@ def convert_medications(patient, sda_medications, adapter):
         medication = get_medication(medication_id)
 
         if medication is None:
-            adapter.info("Creating medication id={id}".format(id=medication_id))
+            adapter.info(f"Creating medication id={medication_id}")
             medication = Medication(id=medication_id)
         else:
-            adapter.info("Updating medication id={id}".format(id=medication_id))
+            adapter.info(f"Updating medication id={medication_id}")
 
         medication.patient = patient
         medication.source_group = source_group
@@ -185,4 +183,4 @@ def import_medications(patient, sda_medications, adapter):
     medications = convert_medications(patient, sda_medications, adapter)
     sync_medications(patient, medications, adapter)
 
-    adapter.info("Imported {n} medication(s)".format(n=len(medications)))
+    adapter.info(f"Imported {len(medications)} medication(s)")

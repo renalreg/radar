@@ -16,7 +16,7 @@ from radar.utils import get_path
 logger = logging.getLogger(__name__)
 
 
-class SDAPatient(object):
+class SDAPatient:
     MALE = ["1", "M", "MALE"]
     FEMALE = ["2", "F", "FEMALE"]
     ETHNICITY = [
@@ -149,7 +149,7 @@ def parse_demographics(sda_patient, adapter):
         sda_patient = serializer.run_validation(sda_patient)
     except ValidationError as e:
         adapter.error(
-            "Ignoring invalid patient errors={errors}".format(errors=e.flatten())
+            f"Ignoring invalid patient errors={e.flatten()}"
         )
         return None
 
@@ -180,7 +180,7 @@ def convert_demographics(patient, sda_patient):
         logger.info("Creating demographics")
         demographics = PatientDemographics()
     else:
-        logger.info("Updating demographics id={id}".format(id=demographics.id))
+        logger.info(f"Updating demographics id={demographics.id}")
 
     demographics.patient = patient
     demographics.source_group = source_group
@@ -215,4 +215,4 @@ def import_demographics(patient, sda_patient, adapter):
     else:
         n = 0
 
-    logger.info("Imported {n} demographics record(s)".format(n=n))
+    logger.info(f"Imported {n} demographics record(s)")

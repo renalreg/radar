@@ -18,7 +18,7 @@ class HospitalisationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = Hospitalisation
         validators = [
             valid_date_for_patient("date_of_admission"),
@@ -26,7 +26,7 @@ class HospitalisationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
         ]
 
     def validate(self, data):
-        data = super(HospitalisationSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Can't be discharged before being admitted
         if (

@@ -12,7 +12,7 @@ from radar.exporter.exporters import (
 )
 
 
-class C(object):
+class C:
     pass
 
 

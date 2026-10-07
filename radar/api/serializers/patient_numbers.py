@@ -24,7 +24,7 @@ class PatientNumberSerializer(
     )
     number_group = GroupField()
 
-    class Meta(object):
+    class Meta:
         model_class = PatientNumber
         exclude = ["number_group_id"]
 

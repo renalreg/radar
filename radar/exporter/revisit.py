@@ -29,7 +29,7 @@ def revisit():
     import csv
     import io
 
-    fdesc = io.open("visits.csv", "w", newline="", encoding="utf-8")
+    fdesc = open("visits.csv", "w", newline="", encoding="utf-8")
     writer = csv.DictWriter(fdesc, fieldnames=headers)
     writer.writeheader()
 

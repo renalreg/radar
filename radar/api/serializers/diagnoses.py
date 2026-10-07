@@ -38,7 +38,7 @@ class GroupDiagnosisSerializer(ModelSerializer):
     type = EnumLookupField(GROUP_DIAGNOSIS_TYPE, GROUP_DIAGNOSIS_TYPE_NAMES)
     weight = fields.IntegerField(default=9999, validators=[min_(0), max_(9999)])
 
-    class Meta(object):
+    class Meta:
         model_class = GroupDiagnosis
         exclude = ["id", "group_id", "diagnosis_id"]
 
@@ -68,7 +68,7 @@ class DiagnosisSerializer(ModelSerializer):
     groups = GroupDiagnosisListSerializer(source="group_diagnoses")
     codes = fields.ListField(child=CodeSerializer(), read_only=True)
 
-    class Meta(object):
+    class Meta:
         model_class = Diagnosis
 
     def _save(self, instance, data):
@@ -94,7 +94,7 @@ class DiagnosisSerializer(ModelSerializer):
 
 
 class TinyDiagnosisSerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Diagnosis
 
 
@@ -130,7 +130,7 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = PatientDiagnosis
         exclude = ["diagnosis_id"]
         validators = [

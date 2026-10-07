@@ -72,11 +72,11 @@ def log_changes(cls):
         cls.__table__,
         "after_create",
         DDL(
-            """
-        CREATE TRIGGER {0}_log_changes
-        AFTER INSERT OR UPDATE OR DELETE ON {0}
+            f"""
+        CREATE TRIGGER {cls.__tablename__}_log_changes
+        AFTER INSERT OR UPDATE OR DELETE ON {cls.__tablename__}
         FOR EACH ROW EXECUTE PROCEDURE log_changes()
-    """.format(cls.__tablename__)
+    """
         ),
     )
 

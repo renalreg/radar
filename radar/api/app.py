@@ -14,7 +14,7 @@ from radar.database import db
 
 class RadarAPI(Radar):
     def __init__(self, *args, **kwargs):
-        super(RadarAPI, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.public_endpoints = []
 

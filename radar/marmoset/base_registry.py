@@ -14,7 +14,7 @@ with (
     SCHEMA = json.load(f)
 
 
-class BaseRegistry(object):
+class BaseRegistry:
     def __init__(self):
         self.schema = copy.deepcopy(SCHEMA)
 

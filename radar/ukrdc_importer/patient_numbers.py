@@ -18,7 +18,7 @@ from radar.ukrdc_importer.utils import (
 logger = logging.getLogger(__name__)
 
 
-class SDAPatientNumber(object):
+class SDAPatientNumber:
     def __init__(self, data):
         self.data = data
 
@@ -38,9 +38,7 @@ class SDAPatientNumber(object):
 def parse_patient_numbers(sda_patient_numbers, adapter):
     def log(index, sda_medication, e):
         adapter.error(
-            "Ignoring invalid patient number index={index}, errors={errors}".format(
-                index=index, errors=e.flatten()
-            )
+            f"Ignoring invalid patient number index={index}, errors={e.flatten()}"
         )
 
     serializer = PatientNumberSerializer()
@@ -75,7 +73,7 @@ def get_patient_numbers(patient):
 
 def sync_patient_numbers(patient, patient_numbers_to_keep, adapter):
     def log(patient_number):
-        adapter.info("Deleting patient number id={}".format(patient_number.id))
+        adapter.info(f"Deleting patient number id={patient_number.id}")
 
     patient_numbers = get_patient_numbers(patient)
     delete_list(patient_numbers, patient_numbers_to_keep, delete_f=log)
@@ -100,9 +98,7 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
 
         if number_group is None:
             adapter.error(
-                "Ignoring patient number due to unknown organization code={code}".format(
-                    code=code
-                )
+                f"Ignoring patient number due to unknown organization code={code}"
             )
             continue
 
@@ -114,10 +110,10 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
         patient_number = get_patient_number(patient_number_id)
 
         if patient_number is None:
-            adapter.info("Creating patient number id={id}".format(id=patient_number_id))
+            adapter.info(f"Creating patient number id={patient_number_id}")
             patient_number = PatientNumber(id=patient_number_id)
         else:
-            adapter.info("Updating patient number id={id}".format(id=patient_number_id))
+            adapter.info(f"Updating patient number id={patient_number_id}")
 
         patient_number.patient = patient
         patient_number.source_group = source_group
@@ -142,4 +138,4 @@ def import_patient_numbers(patient, sda_patient_numbers, adapter):
     patient_numbers = convert_patient_numbers(patient, sda_patient_numbers, adapter)
     sync_patient_numbers(patient, patient_numbers, adapter)
 
-    adapter.info("Imported {n} patient number(s)".format(n=len(patient_numbers)))
+    adapter.info(f"Imported {len(patient_numbers)} patient number(s)")

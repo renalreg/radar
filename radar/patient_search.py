@@ -12,7 +12,7 @@ from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_date_filter, sql_year_filter
 
 
-class PatientQueryBuilder(object):
+class PatientQueryBuilder:
     def __init__(self, current_user):
         self.current_user = current_user
 

@@ -48,7 +48,7 @@ def export_gender(sda_patient, patient):
         description = GENDERS.get(gender)
 
         if description is None:
-            logger.error("Unknown gender code={}".format(gender))
+            logger.error(f"Unknown gender code={gender}")
             return
 
         code = str(gender)
@@ -62,7 +62,7 @@ def export_ethnic_group(sda_patient, patient):
         description = patient.radar_ethnicity.label
 
         if description is None:
-            logger.error("Unknown ethnicity code={}".format(code))
+            logger.error(f"Unknown ethnicity code={code}")
             return
 
         sda_patient["ethnic_group"] = {"code": code, "description": description}

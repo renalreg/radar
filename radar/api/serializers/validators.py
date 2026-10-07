@@ -66,7 +66,7 @@ def after_day_zero(dt_format=HUMAN_DATE_FORMAT):
     return after_day_zero_f
 
 
-class after_date_of_birth(object):
+class after_date_of_birth:
     def __init__(self, field_name, patient="patient", parent=None):
         self.field_name = field_name
         self.patient = patient
@@ -99,9 +99,7 @@ class after_date_of_birth(object):
         earliest_date_of_birth = patient.earliest_date_of_birth
 
         if earliest_date_of_birth is not None and value_date < earliest_date_of_birth:
-            message = "Value is before the patient's date of birth ({}).".format(
-                safe_strftime(earliest_date_of_birth, HUMAN_DATE_FORMAT)
-            )
+            message = f"Value is before the patient's date of birth ({safe_strftime(earliest_date_of_birth, HUMAN_DATE_FORMAT)})."
 
             raise ValidationError({self.field_name: message})
 
@@ -111,7 +109,7 @@ class after_date_of_birth(object):
         self.parent = parent
 
 
-class valid_date_for_patient(object):
+class valid_date_for_patient:
     def __init__(self, field_name, patient="patient", parent=None):
         self.field_name = field_name
         self.patient = patient

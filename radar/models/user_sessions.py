@@ -37,7 +37,7 @@ class UserSession(db.Model):
 Index("user_sessions_user_idx", UserSession.user_id)
 
 
-class AnonymousSession(object):
+class AnonymousSession:
     """Used when the user isn't logged in."""
 
     user = AnonymousUser()

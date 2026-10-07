@@ -7,7 +7,7 @@ from radar.ukrdc_importer.utils import get_import_user
 
 class RadarUKRDCImporter(Radar):
     def __init__(self, *args, **kwargs):
-        super(RadarUKRDCImporter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         @event.listens_for(db.session, "before_flush")
         def before_flush(session, flush_context, instances):

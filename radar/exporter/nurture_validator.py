@@ -22,7 +22,7 @@ BLOOD_PRESSURE_DELTA = 10
 DAYS_RESULTS_SHOULD_BE_WITHIN = 7
 
 
-class SheetWrapper(object):
+class SheetWrapper:
     """Class keeping track on which line it has written row."""
 
     def __init__(self, sheet):
@@ -80,7 +80,7 @@ def in_date_range(visit_date, test_date, days=DAYS_RESULTS_SHOULD_BE_WITHIN):
     return test_date - margin <= visit_date <= test_date + margin
 
 
-class BaseSheet(object):
+class BaseSheet:
     def is_value_missing(self, prop):
         return bool(getattr(self, prop))
 
@@ -645,9 +645,7 @@ class Results(BaseSheet):
                     within_range = True
 
         if not within_range:
-            msg = "NO RESULTS WITHIN {} DAYS OF VISIT".format(
-                DAYS_RESULTS_SHOULD_BE_WITHIN
-            )
+            msg = f"NO RESULTS WITHIN {DAYS_RESULTS_SHOULD_BE_WITHIN} DAYS OF VISIT"
             sheet.write_row([self.patient.id, msg], errorfmt)
 
         for key, results in data.items():
@@ -812,7 +810,7 @@ class Samples(BaseSheet):
             sheet.write_row([self.patient.id], errorfmt)
 
 
-class Patient(object):
+class Patient:
     __sheets__ = (
         "basic",
         "diagnoses",
@@ -878,7 +876,7 @@ class Patient(object):
         self.observations = observations
 
 
-class PatientList(object):
+class PatientList:
     def __init__(self, hospital, primary_diagnoses, kind, group):
         self.data = []
         self.hospital = hospital
@@ -908,14 +906,12 @@ class PatientList(object):
             patient = self.data[0]
         except IndexError:
             print(
-                "No {} patients found in {}".format(
-                    self.kind.upper(), self.hospital.name
-                )
+                f"No {self.kind.upper()} patients found in {self.hospital.name}"
             )
             return
 
         workbook = xlsxwriter.Workbook(
-            "{}_{}_export.xlsx".format(self.hospital.name, self.kind),
+            f"{self.hospital.name}_{self.kind}_export.xlsx",
             {"remove_timezone": True},
         )
         errorfmt = workbook.add_format({"bg_color": "red"})
@@ -955,21 +951,21 @@ class PatientList(object):
         counter = itertools.count(11)
         for patient in self.data:
             col = next(counter)
-            summary_sheet.write("A{}".format(col), patient.patient_id)
-            summary_sheet.write("B{}".format(col), patient.original_patient.full_name)
+            summary_sheet.write(f"A{col}", patient.patient_id)
+            summary_sheet.write(f"B{col}", patient.original_patient.full_name)
 
         col = next(counter)
         col = next(counter)
-        summary_sheet.write("A{}".format(col), "Missing PV link")
+        summary_sheet.write(f"A{col}", "Missing PV link")
         col = next(counter)
-        summary_sheet.write("A{}".format(col), "Radar No")
-        summary_sheet.write("B{}".format(col), "Patient Name")
+        summary_sheet.write(f"A{col}", "Radar No")
+        summary_sheet.write(f"B{col}", "Patient Name")
         for patient in self.data:
             if patient.original_patient.ukrdc:
                 continue
             col = next(counter)
-            summary_sheet.write("A{}".format(col), patient.patient_id)
-            summary_sheet.write("B{}".format(col), patient.original_patient.full_name)
+            summary_sheet.write(f"A{col}", patient.patient_id)
+            summary_sheet.write(f"B{col}", patient.original_patient.full_name)
 
 
 def get_hospitals():

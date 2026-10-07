@@ -17,7 +17,7 @@ from radar.utils import get_path
 logger = logging.getLogger(__name__)
 
 
-class SDAAddress(object):
+class SDAAddress:
     def __init__(self, data):
         self.data = data
 
@@ -77,9 +77,7 @@ class SDAAddress(object):
 def parse_addresses(sda_addresses, adapter):
     def log(index, sda_address, e):
         adapter.error(
-            "Ignoring invalid address index={index}, errors={errors}".format(
-                index=index, errors=e.flatten()
-            )
+            f"Ignoring invalid address index={index}, errors={e.flatten()}"
         )
 
     serializer = AddressSerializer()
@@ -114,7 +112,7 @@ def get_addresses(patient):
 
 def sync_addresses(patient, addresses_to_keep, adapter):
     def log(address):
-        adapter.info("Deleting address id={id}".format(id=address.id))
+        adapter.info(f"Deleting address id={address.id}")
 
     addresses = get_addresses(patient)
     delete_list(addresses, addresses_to_keep, delete_f=log)
@@ -137,10 +135,10 @@ def convert_addresses(patient, sda_addresses, adapter):
         address = get_address(address_id)
 
         if address is None:
-            adapter.info("Creating address id={id}".format(id=address_id))
+            adapter.info(f"Creating address id={address_id}")
             address = PatientAddress(id=address_id)
         else:
-            adapter.info("Updating address id={id}".format(id=address_id))
+            adapter.info(f"Updating address id={address_id}")
 
         address.patient = patient
         address.source_group = source_group
@@ -170,4 +168,4 @@ def import_addresses(patient, sda_addresses, adapter):
     addresses = convert_addresses(patient, sda_addresses, adapter)
     sync_addresses(patient, addresses, adapter)
 
-    adapter.info("Imported {n} address(es)".format(n=len(addresses)))
+    adapter.info(f"Imported {len(addresses)} address(es)")

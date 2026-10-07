@@ -82,7 +82,7 @@ class PatientDiagnosisListView(SourceObjectViewMixin, PatientObjectListView):
     model_class = PatientDiagnosis
 
     def filter_query(self, query):
-        query = super(PatientDiagnosisListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(PatientDiagnosisRequestSerializer)
 
@@ -147,7 +147,7 @@ class DiagnosisListView(ListModelView):
     model_class = Diagnosis
 
     def filter_query(self, query):
-        query = super(DiagnosisListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         # Load codes and groups in subqueries rather than lazy-loading (to avoid O(n) queries)
         query = query.options(subqueryload("diagnosis_codes").joinedload("code"))

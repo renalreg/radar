@@ -16,5 +16,5 @@ class PatientAliasSerializer(
         validators=[not_empty(), normalise_whitespace(), upper(), max_length(100)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = PatientAlias

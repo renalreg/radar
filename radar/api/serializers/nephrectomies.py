@@ -22,6 +22,6 @@ class NephrectomySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerialize
     kidney_type = StringLookupField(NEPHRECTOMY_KIDNEY_TYPES)
     entry_type = StringLookupField(NEPHRECTOMY_ENTRY_TYPES)
 
-    class Meta(object):
+    class Meta:
         model_class = Nephrectomy
         validators = [valid_date_for_patient("date")]

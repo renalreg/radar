@@ -1,4 +1,4 @@
-class JSHandler(object):
+class JSHandler:
     def __init__(self, field, data):
         context = field.registry.get_js_context()
         # TODO catch errors

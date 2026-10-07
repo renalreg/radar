@@ -51,7 +51,7 @@ class UserSerializer(MetaMixin, ModelSerializer):
     current_password = fields.StringField(required=False, write_only=True)
     password = fields.StringField(required=False, write_only=True)
 
-    class Meta(object):
+    class Meta:
         model_class = User
         fields: list[Any] = []
 
@@ -173,7 +173,7 @@ class UserSerializer(MetaMixin, ModelSerializer):
         return password
 
     def validate(self, data):
-        data = super(UserSerializer, self).validate(data)
+        data = super().validate(data)
 
         current_user = self.context["user"]
         instance = self.instance

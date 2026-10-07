@@ -24,7 +24,7 @@ class Consultant(db.Model):
         return [x.group for x in self.group_consultants]
 
     def __str__(self):
-        return "{0} {1}".format(self.first_name, self.last_name)
+        return f"{self.first_name} {self.last_name}"
 
 
 @log_changes

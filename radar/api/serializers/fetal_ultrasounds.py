@@ -24,6 +24,6 @@ class FetalUltrasoundSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = FetalUltrasound
         validators = [valid_date_for_patient("date_of_scan")]

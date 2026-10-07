@@ -33,7 +33,7 @@ class CountryEthnicity(db.Model):
     )
 
     def __str__(self):
-        return "{}-{}".format(self.country, self.ethnicity)
+        return f"{self.country}-{self.ethnicity}"
 
 
 class Nationality(db.Model):
@@ -64,4 +64,4 @@ class CountryNationality(db.Model):
     )
 
     def __str__(self):
-        return "{}-{}".format(self.country, self.nationality)
+        return f"{self.country}-{self.nationality}"

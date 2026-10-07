@@ -20,7 +20,7 @@ class SDADateTimeField(fields.DateTimeField):
         try:
             return parse_sda_datetime(data)
         except ValueError:
-            return super(SDADateTimeField, self).parse(data)
+            return super().parse(data)
 
 
 class CodeDescriptionSerializer(serializers.Serializer):
@@ -114,7 +114,7 @@ class PatientNumberSerializer(serializers.Serializer):
     organization = CodeDescriptionSerializer()
 
     def validate(self, value):
-        value = super(PatientNumberSerializer, self).validate(value)
+        value = super().validate(value)
         number_type = value["number_type"]
         if number_type in ("NHS", "CHI", "HSC"):
             number = value["number"]
@@ -122,7 +122,7 @@ class PatientNumberSerializer(serializers.Serializer):
                 _nhs_no(number, MIN_CHI_NO)
             except ValueError:
                 raise ValidationError(
-                    {"number": "Not a valid {} number {}".format(number_type, number)}
+                    {"number": f"Not a valid {number_type} number {number}"}
                 )
         return value
 
@@ -160,7 +160,7 @@ class LabOrderSerializer(serializers.Serializer):
         """Populate entering_organization if it is empty from entered_at."""
         if data["entering_organization"] is fields.empty:
             data["entering_organization"] = data["entered_at"]
-        return super(LabOrderSerializer, self).pre_validate(data)
+        return super().pre_validate(data)
 
 
 class ContainerSerializer(serializers.Serializer):

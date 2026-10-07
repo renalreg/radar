@@ -31,7 +31,7 @@ class PatientConsentListView(PatientObjectListView):
             raise BadRequest()
 
         if "consent" in json:
-            return super(PatientConsentListView, self).create()
+            return super().create()
 
         consents = []
 

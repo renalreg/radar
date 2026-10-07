@@ -29,6 +29,6 @@ class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
     neonatal_intensive_care = fields.BooleanField(required=False)
     pre_eclampsia = StringLookupField(PRE_ECLAMPSIA_TYPES, required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Pregnancy
         validators = [valid_date_for_patient("date_of_lmp")]

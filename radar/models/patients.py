@@ -321,7 +321,7 @@ class Patient(db.Model, MetaModelMixin):
             return last_name
         if not last_name:
             return first_name
-        return "{} {}".format(first_name, last_name)
+        return f"{first_name} {last_name}"
 
     @hybrid_property
     def date_of_birth(self):

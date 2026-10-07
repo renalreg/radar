@@ -230,7 +230,7 @@ class GroupDiagnosis(db.Model):
     )
 
     def __str__(self):
-        return "{} - {}".format(str(self.group), str(self.weight))
+        return f"{str(self.group)} - {str(self.weight)}"
 
 
 Index("group_diagnoses_group_idx", GroupDiagnosis.group_id)

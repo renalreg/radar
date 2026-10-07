@@ -24,7 +24,7 @@ from radar.models.common import CreatedDateMixin, ModifiedDateMixin
 from radar.models.logs import Log, log_changes
 
 
-class UserCreatedUserMixin(object):
+class UserCreatedUserMixin:
     @declared_attr
     def created_user_id(self):
         # Nullable as it is a self-reference
@@ -40,7 +40,7 @@ class UserCreatedUserMixin(object):
         )
 
 
-class UserModifiedUserMixin(object):
+class UserModifiedUserMixin:
     @declared_attr
     def modified_user_id(self):
         # Nullable as it is a self-reference
@@ -163,7 +163,7 @@ class User(
     @property
     def name(self):
         if self.first_name and self.last_name:
-            return "{} {}".format(self.first_name, self.last_name)
+            return f"{self.first_name} {self.last_name}"
         elif self.first_name:
             return self.first_name
         elif self.last_name:
@@ -179,7 +179,7 @@ class User(
 Index("users_username_idx", func.lower(User.username), unique=True)
 
 
-class AnonymousUser(object):
+class AnonymousUser:
     @classmethod
     def is_authenticated(cls):
         return False

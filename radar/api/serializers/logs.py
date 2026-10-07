@@ -7,6 +7,6 @@ from radar.models.logs import Log
 class LogSerializer(ModelSerializer):
     user = TinyUserSerializer()
 
-    class Meta(object):
+    class Meta:
         model_class = Log
         exclude = ["user_id"]

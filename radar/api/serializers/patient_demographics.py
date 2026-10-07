@@ -97,11 +97,11 @@ class PatientDemographicsSerializer(
     opt_out_surveys = fields.BooleanField(required=False)
     opt_out_newsletters = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = PatientDemographics
 
     def get_model_exclude(self):
-        model_exclude = super(PatientDemographicsSerializer, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("nationality_id")
         model_exclude.add("ethnicity_id")
         return model_exclude
@@ -109,11 +109,11 @@ class PatientDemographicsSerializer(
     def to_representation(self, value):
         user = self.context["user"]
         value = PatientDemographicsProxy(value, user)
-        value = super(PatientDemographicsSerializer, self).to_representation(value)
+        value = super().to_representation(value)
         return value
 
     def validate(self, data):
-        data = super(PatientDemographicsSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Can't die before you are born
         if (
@@ -125,7 +125,7 @@ class PatientDemographicsSerializer(
         return data
 
 
-class PatientDemographicsProxy(object):
+class PatientDemographicsProxy:
     def __init__(self, demographics, user):
         self.demographics = demographics
         self.user = user

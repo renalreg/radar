@@ -39,7 +39,7 @@ class SaltWastingClinicalFeaturesSerializer(PatientMixin, MetaMixin, ModelSerial
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = SaltWastingClinicalFeatures
 
     def pre_validate(self, data):

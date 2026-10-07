@@ -8,7 +8,7 @@ class EnumSelectField(SelectFieldBase):
     widget = widgets.Select()
 
     def __init__(self, enum_class, **kwargs):
-        super(EnumSelectField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.enum_class = enum_class
 
     def coerce(self, value):

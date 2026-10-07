@@ -16,9 +16,7 @@ def export_program_memberships(rda_container, patient, groups):
             program_name = group.code
             program_description = group.name
         elif group.parent_group in systems and group.type == GROUP_TYPE.COHORT:
-            program_name = "{0}.{1}.{2}".format(
-                group.parent_group.code, group.type, group.code
-            )
+            program_name = f"{group.parent_group.code}.{group.type}.{group.code}"
             program_description = group.name
         else:
             continue

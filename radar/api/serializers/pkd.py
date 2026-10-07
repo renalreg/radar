@@ -34,7 +34,7 @@ class LiverImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     dilated_bile_ducts = fields.BooleanField(required=False)
     cholangitis = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverImaging
         validators = [valid_date_for_patient("date")]
 
@@ -63,7 +63,7 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     spleen_palpable = fields.BooleanField(required=False)
     spleen_palpable_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverDiseases
         validators = [
             valid_date_for_patient("portal_hypertension_date"),
@@ -113,7 +113,7 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
     loss_reason = StringLookupField(LOSS_REASONS, required=False)
     other_loss_reason = fields.StringField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverTransplant
         validators = [
             valid_date_for_patient("registration_date"),
@@ -122,7 +122,7 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
         exclude = ["transplant_group_id"]
 
     def validate(self, data):
-        data = super(LiverTransplantSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Transplant date should be after registration date
         if (
@@ -141,7 +141,7 @@ class NutritionSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     from_date = fields.DateField()
     to_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Nutrition
         validators = [
             valid_date_for_patient("from_date"),
@@ -149,7 +149,7 @@ class NutritionSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
         ]
 
     def validate(self, data):
-        data = super(NutritionSerializer, self).validate(data)
+        data = super().validate(data)
 
         # To date must be after from date
         if data["to_date"] is not None and data["to_date"] < data["from_date"]:

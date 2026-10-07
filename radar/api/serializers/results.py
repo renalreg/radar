@@ -98,7 +98,7 @@ class GroupObservationSerializer(ModelSerializer):
     group = TinyGroupField()
     weight = fields.IntegerField(default=9999, validators=[min_(0), max_(9999)])
 
-    class Meta(object):
+    class Meta:
         model_class = GroupObservation
         exclude = ["id", "group_id", "observation_id"]
 
@@ -120,7 +120,7 @@ class BaseObservationSerializer(serializers.Serializer):
 
 class ObservationSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
-        super(ObservationSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         value_type_field = EnumLookupField(
             OBSERVATION_VALUE_TYPE, OBSERVATION_VALUE_TYPE_NAMES
         )
@@ -160,13 +160,13 @@ class ObservationField(ReferenceField):
 class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     observation = ObservationField()
 
-    class Meta(object):
+    class Meta:
         model_class = Result
         exclude = ["observation_id", "_value"]
         validators = [valid_date_for_patient("date")]
 
     def validate(self, data):
-        data = super(BaseResultSerializer, self).validate(data)
+        data = super().validate(data)
 
         observation = data["observation"]
         value_type = observation.value_type
@@ -209,14 +209,14 @@ class BaseResultSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
 
 class ResultSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
-        super(ResultSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         observation_field = ObservationField()
         observation_field.bind(self, "observation")
         self.observation_field = observation_field
 
     def run_validation(self, data):
         data["sent_value"] = data.get("value")
-        return super(ResultSerializer, self).run_validation(data)
+        return super().run_validation(data)
 
     def create_serializer(self, observation):
         field = get_value_field(observation)
@@ -260,7 +260,7 @@ class BaseTinyResultSerializer(PatientMixin, MetaMixin, serializers.Serializer):
 
 class TinyResultSerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
-        super(TinyResultSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         observation_field = ObservationField()
         observation_field.bind(self, "observation")
         self.observation_field = observation_field

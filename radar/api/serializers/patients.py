@@ -71,7 +71,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
     nurture_data = NurtureDataSerializer(read_only=True)
 
-    class Meta(object):
+    class Meta:
         model_class = Patient
 
     def validate_test(self, value):
@@ -90,7 +90,7 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     def to_representation(self, value):
         user = self.context["user"]
         value = PatientProxy(value, user)
-        value = super(PatientSerializer, self).to_representation(value)
+        value = super().to_representation(value)
         return value
 
 
@@ -127,11 +127,11 @@ class TinyPatientSerializer(serializers.Serializer):
     def to_representation(self, value):
         user = self.context["user"]
         value = PatientProxy(value, user)
-        value = super(TinyPatientSerializer, self).to_representation(value)
+        value = super().to_representation(value)
         return value
 
 
-class PatientProxy(object):
+class PatientProxy:
     def __init__(self, patient, user):
         self.patient = patient
         self.user = user

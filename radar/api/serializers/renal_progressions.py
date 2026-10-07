@@ -14,7 +14,7 @@ class RenalProgressionSerializer(PatientMixin, MetaMixin, ModelSerializer):
     ckd5_date = fields.DateField(required=False)
     esrf_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = RenalProgression
         validators = [
             valid_date_for_patient("onset_date"),

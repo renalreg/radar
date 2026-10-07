@@ -13,7 +13,7 @@ class EthnicityListView(ListModelView):
     model_class = Ethnicity
 
     def filter_query(self, query):
-        query = super(EthnicityListView, self).filter_query(query)
+        query = super().filter_query(query)
         args = parse_args(DemographicsRequestSerializer)
         if args["patient"]:
             subquery = (
@@ -52,7 +52,7 @@ class NationalityListView(ListModelView):
     model_class = Nationality
 
     def filter_query(self, query):
-        query = super(NationalityListView, self).filter_query(query)
+        query = super().filter_query(query)
         args = parse_args(DemographicsRequestSerializer)
         if args["patient"]:
             subquery = (

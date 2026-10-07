@@ -56,7 +56,7 @@ def inject_current_user():
 
 class RadarAdmin(Radar):
     def __init__(self):
-        super(RadarAdmin, self).__init__(template_folder="admin/templates")
+        super().__init__(template_folder="admin/templates")
 
         self.context_processor(inject_current_user)
 

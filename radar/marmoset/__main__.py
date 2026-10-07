@@ -11,8 +11,8 @@ if __name__ == "__main__":
     parser.add_argument("data")
     args = parser.parse_args()
 
-    schema = json.load(open(args.schema, "r"))
-    raw_data = json.load(open(args.data, "r"))
+    schema = json.load(open(args.schema))
+    raw_data = json.load(open(args.data))
 
     registry = Registry()
     schema = Schema(registry, schema)

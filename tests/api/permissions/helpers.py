@@ -1,7 +1,7 @@
 from radar.api.permissions import Permission
 
 
-class MockRequest(object):
+class MockRequest:
     def __init__(self, method):
         self.method = method
 

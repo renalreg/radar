@@ -25,7 +25,7 @@ class GroupUserListView(ListModelView):
     model_class = GroupUser
 
     def filter_query(self, query):
-        query = super(GroupUserListView, self).filter_query(query)
+        query = super().filter_query(query)
         query = filter_query_by_user_permissions(query, GroupUser)
         query = filter_query_by_user(query, GroupUser)
         query = filter_query_by_group(query, GroupUser)

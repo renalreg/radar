@@ -39,7 +39,7 @@ class InsClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = InsClinicalPicture
         validators = [valid_date_for_patient("date_of_picture")]
 
@@ -83,7 +83,7 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
     remission_pcr = fields.FloatField(required=False)
     remission_acr = fields.FloatField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = InsRelapse
         validators = [
             valid_date_for_patient("date_of_relapse"),
@@ -98,7 +98,7 @@ class InsRelapseSerializer(PatientMixin, MetaMixin, ModelSerializer):
         return data
 
     def validate(self, data):
-        data = super(InsRelapseSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Remission must be after relapse
         if (

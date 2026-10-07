@@ -29,7 +29,7 @@ class RituximabBaselineAssessmentSerializer(
     other_previous_treatment = fields.StringField(required=False)
     performance_status = fields.IntegerField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = BaselineAssessment
 
     def pre_validate(self, data):
@@ -61,5 +61,5 @@ class RituximabCriteriaSerializer(PatientMixin, MetaMixin, ModelSerializer):
     osteoporosis_osteopenia = fields.BooleanField(required=False)
     mood_disturbance = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = RituximabCriteria

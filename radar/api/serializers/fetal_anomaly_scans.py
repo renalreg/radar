@@ -56,7 +56,7 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     amnioinfusion = fields.BooleanField(required=False)
     amnioinfusion_count = fields.IntegerField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = FetalAnomalyScan
 
     def pre_validate(self, data):

@@ -5,5 +5,5 @@ from radar.models.user_sessions import UserSession
 
 
 class UserSessionSerializer(MetaMixin, ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = UserSession

@@ -9,7 +9,7 @@ required_f, optional_f = true_f, false_f
 visible_f, hidden_f = true_f, false_f
 
 
-class Schema(object):
+class Schema:
     def __init__(self, registry, schema_data):
         try:
             jsonschema.validate(schema_data, registry.schema)
@@ -154,7 +154,7 @@ class Schema(object):
         return data
 
 
-class Field(object):
+class Field:
     def __init__(self, schema, field_data):
         self.schema = schema
         self.name = field_data["name"]

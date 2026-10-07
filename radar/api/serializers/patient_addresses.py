@@ -75,7 +75,7 @@ class PatientAddressSerializer(
     postcode = fields.StringField(required=False, validators=[postcode()])
     country = StringLookupField(COUNTRIES)
 
-    class Meta(object):
+    class Meta:
         model_class = PatientAddress
         validators = [
             after_date_of_birth("from_date"),
@@ -89,7 +89,7 @@ class PatientAddressSerializer(
         return data
 
     def validate(self, data):
-        data = super(PatientAddressSerializer, self).validate(data)
+        data = super().validate(data)
 
         if (
             data["from_date"] is not None
@@ -109,11 +109,11 @@ class PatientAddressSerializer(
     def to_representation(self, value):
         user = self.context["user"]
         value = PatientAddressProxy(value, user)
-        value = super(PatientAddressSerializer, self).to_representation(value)
+        value = super().to_representation(value)
         return value
 
 
-class PatientAddressProxy(object):
+class PatientAddressProxy:
     def __init__(self, address, user):
         self.address = address
         self.user = user

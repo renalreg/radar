@@ -8,7 +8,7 @@ from radar.permissions import has_permission
 from radar.roles import get_roles_with_permission, PERMISSION
 
 
-class UserQueryBuilder(object):
+class UserQueryBuilder:
     def __init__(self, current_user):
         self.query = User.query
         self.current_user = current_user

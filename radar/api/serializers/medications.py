@@ -21,7 +21,7 @@ from radar.models.medications import (
 
 
 class DrugGroupSerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = DrugGroup
         exclude = ["parent_drug_group_id"]
 
@@ -34,7 +34,7 @@ class DrugGroupField(ReferenceField):
 class DrugSerializer(ModelSerializer):
     drug_group = DrugGroupField()
 
-    class Meta(object):
+    class Meta:
         model_class = Drug
         exclude = ["drug_group_id"]
 
@@ -61,7 +61,7 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = Medication
         exclude = ["drug_id"]
         validators = [
@@ -77,7 +77,7 @@ class MedicationSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         return data
 
     def validate(self, data):
-        data = super(MedicationSerializer, self).validate(data)
+        data = super().validate(data)
 
         # To date must be after from date
         if data["to_date"] is not None and data["to_date"] < data["from_date"]:
@@ -117,7 +117,7 @@ class CurrentMedicationSerializer(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = CurrentMedication
         exclude = ["drug_id"]
         validators = [
@@ -132,7 +132,7 @@ class CurrentMedicationSerializer(
         return data
 
     def validate(self, data):
-        data = super(CurrentMedicationSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Must specify either a coded drug or a free-text drug
         if data["drug"] is None and data["drug_text"] is None:

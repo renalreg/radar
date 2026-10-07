@@ -55,7 +55,7 @@ class ConsultantListView(ListModelView):
     model_class = Consultant
 
     def filter_query(self, query):
-        query = super(ConsultantListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(ConsultantRequestSerializer)
 

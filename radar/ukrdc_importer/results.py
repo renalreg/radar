@@ -29,7 +29,7 @@ REPLACEMENTS = {
 }
 
 
-class SDALabResultItem(object):
+class SDALabResultItem:
     def __init__(self, data, parent=None):
         self.data = data
         self.data["result_value"].replace(",", "")
@@ -59,7 +59,7 @@ class SDALabResultItem(object):
         return self.data["result_value"]
 
 
-class SDALabOrder(object):
+class SDALabOrder:
     def __init__(self, data):
         self.data = data
 
@@ -88,9 +88,7 @@ class SDALabOrder(object):
 def parse_results(sda_lab_orders, adapter):
     def log(index, sda_lab_order, e):
         adapter.error(
-            "Ignoring invalid lab order index={index}, errors={errors}".format(
-                index=index, errors=e.flatten()
-            )
+            f"Ignoring invalid lab order index={index}, errors={e.flatten()}"
         )
 
     serializer = LabOrderSerializer()
@@ -107,9 +105,7 @@ def unique_results(sda_lab_orders, adapter):
     def log(sda_lab_order):
         external_id = sda_lab_order.external_id
         adapter.warning(
-            "Ignoring duplicate lab order external_id={external_id}".format(
-                external_id=external_id
-            )
+            f"Ignoring duplicate lab order external_id={external_id}"
         )
 
     sda_lab_orders = unique_list(sda_lab_orders, key_f=key, duplicate_f=log)
@@ -160,7 +156,7 @@ def sync_results(patient, results_to_keep, adapter):
         return
 
     def log(result):
-        adapter.info("Deleting result id={}".format(result.id))
+        adapter.info(f"Deleting result id={result.id}")
 
     # Find the earliest date for each observation
     min_dates = find_earliest_observations(results_to_keep)
@@ -209,9 +205,7 @@ def convert_results(patient, sda_lab_orders, adapter):
 
         if source_group is None:
             adapter.error(
-                "Ignoring lab order due to unknown entering organization code={code}".format(
-                    code=code
-                )
+                f"Ignoring lab order due to unknown entering organization code={code}"
             )
             continue
 
@@ -221,9 +215,7 @@ def convert_results(patient, sda_lab_orders, adapter):
 
             if observation is None:
                 adapter.error(
-                    "Ignoring lab result due to unknown test item code={code}".format(
-                        code=test_item_code
-                    )
+                    f"Ignoring lab result due to unknown test item code={test_item_code}"
                 )
                 continue
 
@@ -237,10 +229,10 @@ def convert_results(patient, sda_lab_orders, adapter):
             result = get_result(result_id)
 
             if result is None:
-                adapter.info("Creating result id={id}".format(id=result_id))
+                adapter.info(f"Creating result id={result_id}")
                 result = Result(id=result_id)
             else:
-                adapter.info("Updating result id={id}".format(id=result_id))
+                adapter.info(f"Updating result id={result_id}")
 
             result.patient = patient
             result.source_group = source_group
@@ -270,4 +262,4 @@ def import_results(patient, sda_lab_orders, adapter):
     results = convert_results(patient, sda_lab_orders, adapter)
     sync_results(patient, results, adapter)
 
-    adapter.info("Imported {n} result(s)".format(n=len(results)))
+    adapter.info(f"Imported {len(results)} result(s)")

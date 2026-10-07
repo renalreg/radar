@@ -40,7 +40,7 @@ class ListSerializer(serializers.ListSerializer):
 class TransplantRejectionSerializer(ModelSerializer):
     date_of_rejection = fields.DateField()  # TODO after date
 
-    class Meta(object):
+    class Meta:
         model_class = TransplantRejection
         exclude = ["id", "transplant_id"]
 
@@ -54,7 +54,7 @@ class TransplantBiopsySerializer(ModelSerializer):
     date_of_biopsy = fields.DateField()  # TODO after date
     recurrence = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = TransplantBiopsy
         exclude = ["id", "transplant_id"]
 
@@ -79,7 +79,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
     rejections = ListSerializer(child=TransplantRejectionSerializer())
     biopsies = ListSerializer(child=TransplantBiopsySerializer())
 
-    class Meta(object):
+    class Meta:
         model_class = Transplant
         validators = [
             valid_date_for_patient("date"),
@@ -89,7 +89,7 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         exclude = ["transplant_group_id"]
 
     def validate(self, data):
-        data = super(TransplantSerializer, self).validate(data)
+        data = super().validate(data)
 
         patient = data["patient"]
 

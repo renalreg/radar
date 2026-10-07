@@ -11,5 +11,5 @@ def check_config(config):
 
 class RadarUKRDCExporter(Radar):
     def check_config(self):
-        super(RadarUKRDCExporter, self).check_config()
+        super().check_config()
         check_config(self.config)

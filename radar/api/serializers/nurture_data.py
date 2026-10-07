@@ -14,5 +14,5 @@ class NurtureDataSerializer(MetaMixin, PatientMixin, ModelSerializer):
     interviews = fields.BooleanField()
     interviews_refused_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = NurtureData

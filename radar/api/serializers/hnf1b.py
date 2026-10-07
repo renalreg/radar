@@ -18,6 +18,6 @@ class Hnf1bClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     familial_cystic_disease = fields.BooleanField(required=False)
     hypertension = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Hnf1bClinicalPicture
         validators = [valid_date_for_patient("date_of_picture")]

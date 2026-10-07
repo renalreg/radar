@@ -5,7 +5,7 @@ from tests.api.permissions.helpers import MockRequest
 from tests.permissions.helpers import make_groups, make_patient, make_user
 
 
-class MockObj(object):
+class MockObj:
     def __init__(self, patient):
         self.patient = patient
 

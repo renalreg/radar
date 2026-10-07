@@ -32,7 +32,7 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
         return number_group
 
     def validate(self, data):
-        data = super(RecruitPatientSearchSerializer, self).validate(data)
+        data = super().validate(data)
 
         number_group = data["number_group"]
         number_validators = get_number_validators(number_group)

@@ -25,7 +25,7 @@ class MpgnClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
         required=False, validators=[none_if_blank(), optional(), max_length(5000)]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = MpgnClinicalPicture
         validators = [valid_date_for_patient("date_of_picture")]
 

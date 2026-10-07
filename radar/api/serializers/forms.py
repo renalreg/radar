@@ -16,7 +16,7 @@ class FormSerializer(ModelSerializer):
     slug = fields.StringField()
     data_ = fields.Field(field_name="data", source="data")
 
-    class Meta(object):
+    class Meta:
         model_class = Form
 
 
@@ -27,7 +27,7 @@ class FormField(ReferenceField):
 
 class DataField(fields.Field):
     def __init__(self, schema, **kwargs):
-        super(DataField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.schema = schema
 
     def __deepcopy__(self, memo):
@@ -55,7 +55,7 @@ class DataField(fields.Field):
 class BaseEntrySerializer(PatientMixin, MetaMixin, ModelSerializer):
     form = FormField()
 
-    class Meta(object):
+    class Meta:
         model_class = Entry
         exclude = ["form_id"]
 
@@ -84,7 +84,7 @@ class BaseEntrySerializer(PatientMixin, MetaMixin, ModelSerializer):
 
 class EntrySerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
-        super(EntrySerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Entry must have a form so we know how to handle the data property/attribute
         self.field = FormField()

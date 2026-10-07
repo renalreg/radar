@@ -119,7 +119,7 @@ class FormListView(ListModelView):
     model_class = Form
 
     def filter_query(self, query):
-        query = super(FormListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(FormListRequestSerializer)
 
@@ -193,7 +193,7 @@ class EntryListView(PatientObjectListView):
     model_class = Entry
 
     def filter_query(self, query):
-        query = super(EntryListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(EntryRequestSerializer)
 

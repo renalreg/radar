@@ -14,7 +14,7 @@ class PostSerializer(ModelSerializer):
     published_date = fields.DateTimeField(default=lambda: datetime.now(pytz.utc))
     body = fields.StringField(validators=[not_empty(), sanitize_html()])
 
-    class Meta(object):
+    class Meta:
         model_class = Post
         exclude = ["created_user_id", "modified_user_id"]
 

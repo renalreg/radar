@@ -21,7 +21,7 @@ from radar.models.patient_consultants import PatientConsultant
 
 
 class SpecialtySerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Specialty
 
 
@@ -33,7 +33,7 @@ class SpeciailtyField(ReferenceField):
 class ChildGroupConsultantSerializer(ModelSerializer):
     group = GroupField()
 
-    class Meta(object):
+    class Meta:
         model_class = GroupConsultant
         exclude = ["id", "consultant_id", "group_id"]
 
@@ -79,7 +79,7 @@ class ConsultantSerializer(ModelSerializer):
     groups = GroupConsultantListSerializer(source="group_consultants")
     specialty = SpeciailtyField()
 
-    class Meta(object):
+    class Meta:
         model_class = Consultant
         exclude = ["specialty_id"]
 
@@ -114,7 +114,7 @@ class ConsultantSerializer(ModelSerializer):
 class ChildConsultantSerializer(ModelSerializer):
     specialty = SpeciailtyField()
 
-    class Meta(object):
+    class Meta:
         model_class = Consultant
         exclude = ["specialty_id"]
 
@@ -128,7 +128,7 @@ class GroupConsultantSerializer(ModelSerializer):
     group = GroupField()
     consultant = ConsultantField()
 
-    class Meta(object):
+    class Meta:
         model_class = GroupConsultant
         exclude = ["group_id", "consultant_id"]
 
@@ -138,12 +138,12 @@ class PatientConsultantSerializer(PatientMixin, MetaMixin, ModelSerializer):
     to_date = fields.DateField(required=False)
     consultant = ConsultantField()
 
-    class Meta(object):
+    class Meta:
         model_class = PatientConsultant
         exclude = ["consultant_id"]
 
     def validate(self, data):
-        data = super(PatientConsultantSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Check to date is after from date
         if data["to_date"] is not None and data["to_date"] < data["from_date"]:

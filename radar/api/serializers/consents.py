@@ -22,7 +22,7 @@ class ConsentSerializer(ModelSerializer):
     consent_type = fields.EnumField(CONSENT_TYPE)
     weight = fields.IntegerField()
 
-    class Meta(object):
+    class Meta:
         model_class = Consent
 
 
@@ -58,7 +58,7 @@ class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
         required=False, validators=[not_in_future()]
     )
 
-    class Meta(object):
+    class Meta:
         model_class = PatientConsent
         exclude = ["consent_id"]
 

@@ -4,7 +4,7 @@ from cornflake.exceptions import ValidationError
 import pytz
 
 
-class Validator(object):
+class Validator:
     def __init__(self, field, validator_data):
         pass
 
@@ -65,7 +65,7 @@ class MinValidator(Validator):
     def __call__(self, value):
         if value < self.value:
             raise ValidationError(
-                "Must be greater than or equal to {0}.".format(self.value)
+                f"Must be greater than or equal to {self.value}."
             )
 
 
@@ -85,7 +85,7 @@ class MaxValidator(Validator):
     def __call__(self, value):
         if value > self.value:
             raise ValidationError(
-                "Must be less than or equal to {0}.".format(self.value)
+                f"Must be less than or equal to {self.value}."
             )
 
 

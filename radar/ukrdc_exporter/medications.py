@@ -73,7 +73,7 @@ def export_medications(sda_container, patient, group):
                         "description": description,
                     }
                 else:
-                    logger.error("Unknown dose unit code={}".format(code))
+                    logger.error(f"Unknown dose unit code={code}")
 
             if medication.route:
                 code = medication.route
@@ -86,7 +86,7 @@ def export_medications(sda_container, patient, group):
                         "description": description,
                     }
                 else:
-                    logger.error("Unknown route code={}".format(code))
+                    logger.error(f"Unknown route code={code}")
 
             if medication.frequency:
                 sda_medication["frequency"] = {

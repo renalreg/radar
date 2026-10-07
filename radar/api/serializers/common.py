@@ -29,19 +29,19 @@ def lookup_field_defaults(kwargs):
 class StringLookupField(fields.StringLookupField):
     def __init__(self, *args, **kwargs):
         lookup_field_defaults(kwargs)
-        super(StringLookupField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class IntegerLookupField(fields.IntegerLookupField):
     def __init__(self, *args, **kwargs):
         lookup_field_defaults(kwargs)
-        super(IntegerLookupField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class EnumLookupField(fields.EnumLookupField):
     def __init__(self, *args, **kwargs):
         lookup_field_defaults(kwargs)
-        super(EnumLookupField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class TinyUserSerializer(ModelSerializer):
@@ -102,17 +102,17 @@ class MetaMixin(serializers.Serializer):
     modified_date = ModifiedDateField()
 
     def get_model_exclude(self):
-        model_exclude = super(MetaMixin, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("created_user_id")
         model_exclude.add("modified_user_id")
         return model_exclude
 
 
-class UserMixin(object):
+class UserMixin:
     user = UserField()
 
     def get_model_exclude(self):
-        attrs = super(UserMixin, self).get_model_exclude()
+        attrs = super().get_model_exclude()
         attrs.add("user_id")
         return attrs
 
@@ -141,11 +141,11 @@ class PatientField(ReferenceField):
         return patient
 
 
-class PatientMixin(object):
+class PatientMixin:
     patient = PatientField()
 
     def get_model_exclude(self):
-        model_exclude = super(PatientMixin, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("patient_id")
         return model_exclude
 
@@ -153,7 +153,7 @@ class PatientMixin(object):
 class TinyGroupSerializer(ModelSerializer):
     type = fields.EnumField(GROUP_TYPE)
 
-    class Meta(object):
+    class Meta:
         model_class = Group
         fields = ["id", "type", "code", "name", "short_name"]
 
@@ -162,13 +162,13 @@ class GroupPageSerializer(ModelSerializer):
     page = fields.EnumField(PAGE)
     weight = fields.IntegerField()
 
-    class Meta(object):
+    class Meta:
         model_class = GroupPage
         exclude = ["group_id"]
 
 
 class TinyFormSerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Form
         fields = ["id", "name", "slug"]
 
@@ -177,7 +177,7 @@ class GroupFormSerializer(ModelSerializer):
     form = TinyFormSerializer()
     weight = fields.IntegerField()
 
-    class Meta(object):
+    class Meta:
         model_class = GroupForm
         exclude = ["group_id", "form_id"]
 
@@ -190,7 +190,7 @@ class GroupSerializer(ModelSerializer):
     instructions = fields.StringField()
     is_transplant_centre = fields.BooleanField()
 
-    class Meta(object):
+    class Meta:
         model_class = Group
         exclude = ["_instructions", "parent_group_id"]
 
@@ -252,7 +252,7 @@ class SourceTypeField(fields.StringField):
             "validators",
             [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH])],
         )
-        super(SourceTypeField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def validate(self, source_type):
         user = self.context["user"]
@@ -264,36 +264,36 @@ class SourceTypeField(fields.StringField):
         return source_type
 
 
-class SourceMixin(object):
+class SourceMixin:
     source_group = SourceGroupField()
     source_type = SourceTypeField()
 
     def get_model_exclude(self):
-        model_exclude = super(SourceMixin, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("source_group_id")
         return model_exclude
 
 
-class SystemSourceMixin(object):
+class SystemSourceMixin:
     source_group = SystemSourceGroupField()
     source_type = SourceTypeField()
 
     def get_model_exclude(self):
-        model_exclude = super(SystemSourceMixin, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("source_group_id")
         return model_exclude
 
 
-class CohortGroupMixin(object):
+class CohortGroupMixin:
     group = CohortGroupField()
 
     def get_model_exclude(self):
-        model_exclude = super(CohortGroupMixin, self).get_model_exclude()
+        model_exclude = super().get_model_exclude()
         model_exclude.add("group_id")
         return model_exclude
 
     def validate(self, data):
-        data = super(CohortGroupMixin, self).validate(data)
+        data = super().validate(data)
 
         patient = data["patient"]
         group = data["group"]

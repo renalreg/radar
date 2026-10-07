@@ -127,7 +127,7 @@ def get_attrs(data, *attrs):
     return value
 
 
-class SkipProxy(object):
+class SkipProxy:
     """Catch SkipField exceptions and return None instead."""
 
     def __init__(self, instance):

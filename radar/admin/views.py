@@ -55,7 +55,7 @@ class AdminIndexView(BaseAdminIndexView):
         if not current_user.is_authenticated():
             return redirect(url_for(".login"))
 
-        return super(AdminIndexView, self).index()
+        return super().index()
 
     @expose("/login/", methods=["GET", "POST"])
     def login(self):
@@ -200,12 +200,12 @@ class GroupView(ModelView):
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
     def create_form(self):
-        form = super(GroupView, self).create_form()
+        form = super().create_form()
         form.type.iter_choices = self._filtered_parent
         return form
 
     def edit_form(self, obj):
-        form = super(GroupView, self).edit_form(obj)
+        form = super().edit_form(obj)
         form.type.iter_choices = self._filtered_parent
         return form
 
@@ -219,10 +219,10 @@ class GroupView(ModelView):
     def on_model_change(self, form, model, is_created):
         if model.type != GROUP_TYPE.OTHER and model.is_recruitment_number_group:
             model.is_recruitment_number_group = False
-        super(GroupView, self).on_model_change(form, model, is_created)
+        super().on_model_change(form, model, is_created)
 
     def get_query(self):
-        query = super(GroupView, self).get_query()
+        query = super().get_query()
         query = query.filter(self.model.type != GROUP_TYPE.HOSPITAL)
         query = query.filter(self.model.type != GROUP_TYPE.COHORT)
         return query
@@ -255,11 +255,11 @@ class HospitalView(ModelView):
 
     def on_model_change(self, form, model, is_created):
         model.type = GROUP_TYPE.HOSPITAL
-        super(HospitalView, self).on_model_change(form, model, is_created)
+        super().on_model_change(form, model, is_created)
 
     def get_query(self):
         return (
-            super(HospitalView, self)
+            super()
             .get_query()
             .filter(self.model.type == GROUP_TYPE.HOSPITAL)
         )
@@ -278,24 +278,24 @@ class CohortView(ModelView):
     form_extra_fields = dict(instructions=fields.TextAreaField())
 
     def create_form(self):
-        form = super(CohortView, self).create_form()
+        form = super().create_form()
         query = form.parent_group.query_factory()
         form.parent_group.query = query.filter(Group.type == GROUP_TYPE.SYSTEM)
         return form
 
     def edit_form(self, obj):
-        form = super(CohortView, self).edit_form(obj)
+        form = super().edit_form(obj)
         query = form.parent_group.query_factory()
         form.parent_group.query = query.filter(Group.type == GROUP_TYPE.SYSTEM)
         return form
 
     def on_model_change(self, form, model, is_created):
         model.type = GROUP_TYPE.COHORT
-        super(CohortView, self).on_model_change(form, model, is_created)
+        super().on_model_change(form, model, is_created)
 
     def get_query(self):
         return (
-            super(CohortView, self)
+            super()
             .get_query()
             .filter(self.model.type == GROUP_TYPE.COHORT)
         )
@@ -417,7 +417,7 @@ class ExportView(BaseView):
     @expose("/<string:param>", methods=["GET"])
     def serve_file(self, param):
         """Serve back requested file."""
-        requested_file = io.open(os.path.join(config.get("EXPORT_PATH"), param), "rb")
+        requested_file = open(os.path.join(config.get("EXPORT_PATH"), param), "rb")
         return send_file(requested_file, as_attachment=True, download_name=param)
 
     def is_accessible(self):

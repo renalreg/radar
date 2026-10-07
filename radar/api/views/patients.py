@@ -140,7 +140,7 @@ class PatientListView(ListModelView):
         return list_patients()
 
     def get_object_list(self):
-        patients, pagination = super(PatientListView, self).get_object_list()
+        patients, pagination = super().get_object_list()
         return patients, pagination
 
 
@@ -154,7 +154,7 @@ class PatientDetailView(RetrieveUpdateModelView):
         return builder.build()
 
     def get_object(self):
-        patient = super(PatientDetailView, self).get_object()
+        patient = super().get_object()
         log_view_patient(patient)
         return patient
 

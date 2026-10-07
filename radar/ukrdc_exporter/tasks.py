@@ -47,11 +47,11 @@ def export_rda(patient_id):
     patient = get_patient(patient_id)
 
     if patient is None:
-        logger.error("Patient not found id={}".format(patient_id))
+        logger.error(f"Patient not found id={patient_id}")
         return
 
     if patient.test:
-        logger.info("Skipping test patient id={}".format(patient_id))
+        logger.info(f"Skipping test patient id={patient_id}")
         return
 
     groups = set(patient.groups)
@@ -84,7 +84,7 @@ class Encoder(json.JSONEncoder):
         elif isinstance(o, date):
             return o.isoformat()
 
-        return super(Encoder, self).default(o)
+        return super().default(o)
 
 
 @shared_task(bind=True, ignore_result=True, queue=QUEUE)

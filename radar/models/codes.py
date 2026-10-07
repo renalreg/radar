@@ -21,7 +21,7 @@ class Code(db.Model):
     display = Column(String, nullable=False)
 
     def __str__(self):
-        return "{0} - {1} - {2}".format(self.system, self.code, self.display)
+        return f"{self.system} - {self.code} - {self.display}"
 
 
 Index("codes_system_code_idx", Code.system, Code.code, unique=True)

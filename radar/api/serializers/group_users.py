@@ -23,7 +23,7 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
         child=StringLookupField(ROLE_NAMES), read_only=True
     )
 
-    class Meta(object):
+    class Meta:
         model_class = GroupUser
         exclude = ["group_id"]
 
@@ -52,7 +52,7 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
         return duplicate
 
     def validate(self, data):
-        data = super(GroupUserSerializer, self).validate(data)
+        data = super().validate(data)
 
         instance = self.instance
 

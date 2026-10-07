@@ -19,7 +19,7 @@ class Session(SessionBase):
         if binds is None:
             db.get_binds(app)
 
-        super(Session, self).__init__(
+        super().__init__(
             autocommit=autocommit,
             autoflush=autoflush,
             bind=bind,
@@ -35,7 +35,7 @@ class SQLAlchemy(SQLAlchemyBase):
 
     # Overridden so we can listen for events on the engine
     def make_connector(self, app=None, bind=None):
-        connector = super(SQLAlchemy, self).make_connector(app, bind)
+        connector = super().make_connector(app, bind)
         engine = connector.get_engine()
         event.listens_for(engine, "engine_connect")(ping_connection)
         return connector

@@ -35,7 +35,7 @@ HELPERS = resources.files(__package__).joinpath("helpers.js").read_bytes()
 
 class Registry(BaseRegistry):
     def __init__(self):
-        super(Registry, self).__init__()
+        super().__init__()
 
         # Add types
         self.add_type("string", parse_string, format_string)

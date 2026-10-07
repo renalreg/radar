@@ -35,7 +35,7 @@ class FuanClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
 
         return data
 
-    class Meta(object):
+    class Meta:
         model_class = FuanClinicalPicture
         validators = [
             valid_date_for_patient("picture_date"),

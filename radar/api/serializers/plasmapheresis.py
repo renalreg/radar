@@ -22,7 +22,7 @@ class PlasmapheresisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerial
     no_of_exchanges = StringLookupField(PLASMAPHERESIS_NO_OF_EXCHANGES, required=False)
     response = StringLookupField(PLASMAPHERESIS_RESPONSES, required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Plasmapheresis
         validators = [
             valid_date_for_patient("from_date"),
@@ -30,7 +30,7 @@ class PlasmapheresisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerial
         ]
 
     def validate(self, data):
-        data = super(PlasmapheresisSerializer, self).validate(data)
+        data = super().validate(data)
 
         # To date must be after from date
         if data["to_date"] is not None and data["to_date"] < data["from_date"]:

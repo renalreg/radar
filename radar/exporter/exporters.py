@@ -143,7 +143,7 @@ def get_meta_columns(config):
     ]
 
 
-class Exporter(object):
+class Exporter:
     def __init__(self, config):
         self.config = config
         self._query = []
@@ -1779,10 +1779,10 @@ class RituximabBaselineAssessmentExporter(Exporter):
         with_dose = ("chlorambucil", "cyclophosphamide", "rituximab")
 
         for item in previous:
-            items = (item, "{}_start_date".format(item), "{}_end_date".format(item))
+            items = (item, f"{item}_start_date", f"{item}_end_date")
             self._columns.extend(column(item) for item in items)
             if item in with_dose:
-                self._columns.append(column("{}_dose".format(item)))
+                self._columns.append(column(f"{item}_dose"))
         self._columns.append(column("steroids"))
         self._columns.append(column("other_previous_treatment"))
         self._columns.append(column("past_remission"))

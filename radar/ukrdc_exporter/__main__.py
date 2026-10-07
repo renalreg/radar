@@ -38,11 +38,11 @@ select id, patient_id from (
 ) as x order by id
 """  # noqa
 
-all_sql = """
+all_sql = f"""
 select x.id, patients.id from patients
-left join ({0}) as x on patients.id = x.patient_id
+left join ({changed_sql}) as x on patients.id = x.patient_id
 order by x.id, patients.id
-""".format(changed_sql)
+"""
 
 
 def export_all(last_log_id):
@@ -77,7 +77,7 @@ def export_query(sql, last_log_id):
 
 def export_patients(patient_ids):
     for patient_id in sorted(set(patient_ids)):
-        logger.info("Adding patient to queue id={}".format(patient_id))
+        logger.info(f"Adding patient to queue id={patient_id}")
         export_to_ukrdc(patient_id)
 
 

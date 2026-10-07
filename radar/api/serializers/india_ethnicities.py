@@ -13,5 +13,5 @@ class IndiaEthnicitySerializer(
     mother_ancestral_state = fields.StringField(required=False)
     mother_language = fields.StringField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = IndiaEthnicity

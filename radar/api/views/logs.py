@@ -26,7 +26,7 @@ class LogListView(ListModelView):
     sort_fields = ["date"]
 
     def filter_query(self, query):
-        query = super(LogListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(LogListRequestSerializer)
 

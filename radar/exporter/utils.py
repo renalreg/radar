@@ -69,7 +69,7 @@ def format_date(dt):
         try:
             val = dt.strftime(fmt)
         except ValueError:
-            val = "{:02d}/{:02d}/{}".format(dt.day, dt.month, dt.year)
+            val = f"{dt.day:02d}/{dt.month:02d}/{dt.year}"
     elif re.match(r"^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$", str(dt)):
         try:
             parsed = datetime.strptime(dt, "%Y-%m-%d")
@@ -79,6 +79,6 @@ def format_date(dt):
         try:
             val = parsed.strftime(fmt)
         except ValueError:
-            val = "{:02d}/{:02d}/{}".format(parsed.day, parsed.month, parsed.year)
+            val = f"{parsed.day:02d}/{parsed.month:02d}/{parsed.year}"
 
     return val

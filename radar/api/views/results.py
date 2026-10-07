@@ -46,7 +46,7 @@ class ResultListView(SourceObjectViewMixin, PatientObjectViewMixin, ListModelVie
     model_class = Result
 
     def filter_query(self, query):
-        query = super(ResultListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(ResultListRequestSerializer)
 
@@ -70,7 +70,7 @@ class ResultCreateView(SourceObjectViewMixin, PatientObjectViewMixin, CreateMode
             raise BadRequest
 
         if "observation" in json:
-            return super(ResultCreateView, self).create()
+            return super().create()
 
         observations = []
         data = {}

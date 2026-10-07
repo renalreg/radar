@@ -5,7 +5,7 @@ from flask.testing import FlaskClient
 
 class TestClient(FlaskClient):
     def __init__(self, *args, **kwargs):
-        super(TestClient, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.token = None
 
     def login(self, user, password="password"):
@@ -39,7 +39,7 @@ class TestClient(FlaskClient):
         if self.token is not None:
             headers["x-auth-token"] = self.token
 
-        return super(TestClient, self).open(
+        return super().open(
             *args,
             content_type=content_type,
             data=data,
