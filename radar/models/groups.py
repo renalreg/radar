@@ -1,5 +1,6 @@
 import enum
 from datetime import datetime
+from typing import List
 
 import pytz
 from sqlalchemy import (
@@ -94,23 +95,20 @@ class Group(db.Model):
         "Country", foreign_keys=[country_code], backref=backref("groups")
     )
     group_antibodies = relationship(
-        "GroupAntibody", back_populates="group", cascade="all, delete-orphan"
+        "GroupAntibody",
+        back_populates="group",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     @property
-    def antibodies(self) -> list[Antibody]:
+    def antibodies(self) -> List[Antibody]:
         """
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.
         """
         if self.type == GROUP_TYPE.COHORT:
-            found = (
-                db.session.query(Antibody)
-                .join(GroupAntibody, Antibody.id == GroupAntibody.c.antibody_id)
-                .filter(GroupAntibody.c.group_id == self.id)
-                .all()
-            )
-            return found
+            return [ga.antibody for ga in self.group_antibodies]
         return []
 
     @property
@@ -306,4 +304,4 @@ def check_dependencies(groups):
 
     for x, y in dependencies:
         if x in groups and y not in groups:
-            raise DependencyError(f"Must be in {y[1]}.")
+            raise DependencyError("Must be in {0}.".format(y[1]))

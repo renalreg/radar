@@ -24,13 +24,11 @@ class GroupAntibody(db.Model):
     group = relationship(
         "Group",
         back_populates="group_antibodies",
-        passive_deletes=True,
     )
 
     antibody = relationship(
         "Antibody",
         back_populates="group_antibodies",
-        passive_deletes=True,
     )
 
 
@@ -42,7 +40,10 @@ class Antibody(db.Model):
     is_official = Column(Boolean, nullable=False, default=False)
 
     group_antibodies = relationship(
-        "GroupAntibody", back_populates="antibody", cascade="all, delete-orphan"
+        "GroupAntibody",
+        back_populates="antibody",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
 
