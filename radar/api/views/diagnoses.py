@@ -25,7 +25,7 @@ from radar.api.views.generics import (
     RetrieveModelView,
     UpdateModelView,
 )
-from radar.models import GroupAntibody, Antibody
+from radar.models.antibodies import Antibody, GroupAntibody
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
     Diagnosis,

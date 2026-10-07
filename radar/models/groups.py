@@ -25,7 +25,7 @@ from sqlalchemy.orm import backref, relationship, synonym
 
 from radar.config import config
 from radar.database import db
-from radar.models.antibodies import Antibody, GroupAntibody
+from radar.models.antibodies import Antibody
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
 from radar.models.logs import log_changes
 from radar.pages import PAGE
