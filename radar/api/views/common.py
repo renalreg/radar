@@ -1,3 +1,5 @@
+from typing import Any
+
 from cornflake import fields, serializers
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
@@ -26,7 +28,7 @@ from radar.user_search import UserQueryBuilder
 
 
 class StringLookupListView(ListView):
-    items = {}
+    items: dict[Any, Any] = {}
 
     def get_items(self):
         return self.items
@@ -39,7 +41,7 @@ class StringLookupListView(ListView):
 
 
 class IntegerLookupListView(ListView):
-    items = {}
+    items: dict[Any, Any] = {}
 
     def get_items(self):
         return self.items

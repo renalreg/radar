@@ -108,10 +108,6 @@ class MetaMixin(serializers.Serializer):
         return model_exclude
 
 
-class UserField(ReferenceField):
-    model_class = User
-
-
 class UserMixin(object):
     user = UserField()
 

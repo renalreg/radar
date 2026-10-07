@@ -1,6 +1,5 @@
 import enum
 from datetime import datetime
-from typing import List
 
 import pytz
 from sqlalchemy import (
@@ -99,7 +98,7 @@ class Group(db.Model):
     )
 
     @property
-    def antibodies(self) -> List[Antibody]:
+    def antibodies(self) -> list[Antibody]:
         """
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.

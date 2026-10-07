@@ -129,11 +129,11 @@ class User(
     def groups(self):
         return [x.group for x in self.group_users]
 
-    def password(self, value):
+    def _set_password(self, value):
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
 
-    password = property(None, password)
+    password = property(fset=_set_password)
 
     @property
     def password_hash(self):

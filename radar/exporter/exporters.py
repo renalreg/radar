@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from radar.exporter import queries
 from radar.exporter.utils import (
@@ -20,7 +21,7 @@ from radar.utils import get_attrs
 
 ILLEGAL_CHARACTERS_RE = re.compile(r"[\000-\010]|[\013-\014]|[\016-\037]")
 
-exporter_map = {}
+exporter_map: dict[str, Any] = {}
 
 INS_STATE = {
     0: "INS Baseline visit",

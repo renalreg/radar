@@ -1,5 +1,6 @@
 from functools import wraps
 import uuid
+from typing import Any
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
@@ -75,7 +76,7 @@ class ApiView(MethodView):
 
 
 class PermissionViewMixin(object):
-    permission_classes = []
+    permission_classes: list[Any] = []
 
     def check_permissions(self):
         for permission in self.get_permissions():
@@ -145,7 +146,7 @@ class PaginationResponseSerializer(serializers.Serializer):
 
 
 class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
-    sort_fields = {}
+    sort_fields: dict[Any, Any] = {}
     model_class = None
 
     def filter_query(self, query):

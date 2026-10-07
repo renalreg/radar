@@ -1,7 +1,6 @@
 import json
 import os
-
-import pkg_resources
+from importlib.resources import files
 
 from radar.fixtures.utils import add
 from radar.models.forms import Form
@@ -21,14 +20,14 @@ filenames = [
     ("chu9d.json", "CHU9D"),
 ]
 
+FORMS_DIR = files("radar.fixtures") / "forms"
+
 
 def create_forms():
     for filename, name in filenames:
         slug = os.path.splitext(filename)[0]
 
-        filename = os.path.join("forms", filename)
-        f = pkg_resources.resource_stream(__name__, filename)
-        data = json.load(f)
+        data = json.loads((FORMS_DIR / filename).read_text(encoding="utf-8"))
 
         form = Form()
         form.name = name

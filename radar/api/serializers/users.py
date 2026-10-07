@@ -1,3 +1,5 @@
+from typing import Any
+
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
@@ -51,7 +53,7 @@ class UserSerializer(MetaMixin, ModelSerializer):
 
     class Meta(object):
         model_class = User
-        fields = []
+        fields: list[Any] = []
 
     def validate_username(self, username):
         current_user = self.context["user"]
