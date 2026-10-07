@@ -11,8 +11,6 @@ python = ">=3.11,<3.12" # js2py might break on 12
 alembic = ">=1.13"
 sqlalchemy = "1.4.49"
 celery = ">=5.4,<6"
-amqp = ">=5.1"
-billiard = ">=4.2"
 flask = ">=2.0,<3"
 flask-sqlalchemy = "2.5.1"
 flask-admin = "1.6.1"
@@ -27,15 +25,9 @@ inflection = ">=0.5"
 iso8601 = ">=2.1"
 python-dateutil = ">=2.9"
 pytz = ">=2024.1"
-tzlocal = ">=5.2"
-six = ">=1.16"
 jsonschema = ">=4.23"
-bleach = ">=6.1"
-html5lib = ">=1.1"
 requests = ">=2.32"
-openpyxl = ">=3.1"
 xlsxwriter = ">=3.2"
-tablib = ">=3.5"
 wtforms = ">=3.1"
 js2py = ">=0.74"
 zxcvbn-python = ">=4.4"
@@ -85,6 +77,9 @@ optional = true
 
 [tool.poetry.group.server.dependencies]
 uwsgi = { version = ">=2.0", markers = "sys_platform != 'win32'" }
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["psycopg2", "psycopg2_binary","psycopg2-binary", "setuptools", 'uwsgi']
 
 [build-system]
 requires = ["poetry-core>=2.3.0"]
