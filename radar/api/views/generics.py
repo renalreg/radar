@@ -1,5 +1,6 @@
 from functools import wraps
 import uuid
+from typing import Any
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
@@ -58,7 +59,7 @@ def get_sort_args():
 class ApiView(MethodView):
     def dispatch_request(self, *args, **kwargs):
         try:
-            return super(ApiView, self).dispatch_request(*args, **kwargs)
+            return super().dispatch_request(*args, **kwargs)
         except BadRequest:
             abort(400)
         except PermissionDenied:
@@ -74,8 +75,8 @@ class ApiView(MethodView):
             return jsonify(errors=errors), 422
 
 
-class PermissionViewMixin(object):
-    permission_classes = []
+class PermissionViewMixin:
+    permission_classes: list[Any] = []
 
     def check_permissions(self):
         for permission in self.get_permissions():
@@ -101,10 +102,10 @@ class PermissionViewMixin(object):
         except PermissionDenied:
             abort(403)
 
-        return super(PermissionViewMixin, self).dispatch_request(*args, **kwargs)
+        return super().dispatch_request(*args, **kwargs)
 
 
-class SerializerViewMixin(object):
+class SerializerViewMixin:
     serializer_class = None
 
     def get_serializer_class(self):
@@ -145,7 +146,7 @@ class PaginationResponseSerializer(serializers.Serializer):
 
 
 class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
-    sort_fields = {}
+    sort_fields: dict[Any, Any] = {}
     model_class = None
 
     def filter_query(self, query):
@@ -254,7 +255,7 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
         return self.get_model_class().query
 
 
-class CreateModelViewMixin(object):
+class CreateModelViewMixin:
     def create(self, *args, **kwargs):
         json = request.get_json()
 
@@ -273,13 +274,15 @@ class CreateModelViewMixin(object):
         return jsonify(data), 200
 
 
-class ListViewMixin(object):
+class ListViewMixin:
     def list(self, *args, **kwargs):
         obj_list = self.get_object_list()
 
         context = self.get_context()
         serializer = self.get_serializer()
-        list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
+        list_serializer = serializers.ListSerializer(
+            obj_list, child=serializer, context=context
+        )
 
         data = {"data": list_serializer.data}
 
@@ -288,13 +291,15 @@ class ListViewMixin(object):
         return jsonify(data)
 
 
-class ListModelViewMixin(object):
+class ListModelViewMixin:
     def list(self, *args, **kwargs):
         obj_list, pagination = self.get_object_list()
 
         context = self.get_context()
         serializer = self.get_serializer()
-        list_serializer = serializers.ListSerializer(obj_list, child=serializer, context=context)
+        list_serializer = serializers.ListSerializer(
+            obj_list, child=serializer, context=context
+        )
 
         data = {"data": list_serializer.data}
 
@@ -307,7 +312,7 @@ class ListModelViewMixin(object):
         return jsonify(data)
 
 
-class RetrieveModelViewMixin(object):
+class RetrieveModelViewMixin:
     def retrieve(self, *args, **kwargs):
         obj = self.get_object()
         serializer = self.get_serializer(obj)
@@ -316,7 +321,7 @@ class RetrieveModelViewMixin(object):
         return jsonify(data)
 
 
-class UpdateModelViewMixin(object):
+class UpdateModelViewMixin:
     def update(self, *args, **kwargs):
         json = request.get_json()
 
@@ -338,7 +343,7 @@ class UpdateModelViewMixin(object):
         return jsonify(data)
 
 
-class DestroyModelViewMixin(object):
+class DestroyModelViewMixin:
     def destroy(self, *args, **kwargs):
         obj = self.get_object()
         db.session.delete(obj)

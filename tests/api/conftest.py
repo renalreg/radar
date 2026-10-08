@@ -6,14 +6,16 @@ from tests.api.client import TestClient
 from tests.api.fixtures import create_fixtures
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def api(app):
-    app = RadarAPI({
-        'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'postgresql://radar:password@localhost/radar_test',
-        'BASE_URL': 'http://localhost',
-        'PASSWORD_HASH_METHOD': 'pbkdf2:sha1:1',
-    })
+    app = RadarAPI(
+        {
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "postgresql://radar:password@localhost/radar_test",
+            "BASE_URL": "http://localhost",
+            "PASSWORD_HASH_METHOD": "pbkdf2:sha1:1",
+        }
+    )
 
     app.test_client_class = TestClient
 
@@ -21,7 +23,7 @@ def api(app):
         yield app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def tables(api):
     db.drop_all()
     db.create_all()
@@ -36,7 +38,7 @@ def tables(api):
     db.drop_all()
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def session(api, tables):
     connection = db.engine.connect()
     transaction = connection.begin()

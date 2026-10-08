@@ -5,19 +5,19 @@ from radar.api.serializers.auth import ForgotPasswordSerializer
 
 
 def test_valid():
-    obj = valid({'username': 'foo', 'email': 'foo@example.org'})
-    assert obj['username'] == 'foo'
-    assert obj['email'] == 'foo@example.org'
+    obj = valid({"username": "foo", "email": "foo@example.org"})
+    assert obj["username"] == "foo"
+    assert obj["email"] == "foo@example.org"
 
 
 def test_username_missing():
     invalid({})
-    invalid({'username': None})
+    invalid({"username": None})
 
 
 def test_email_missing():
     invalid({})
-    invalid({'email': None})
+    invalid({"email": None})
 
 
 def invalid(data):

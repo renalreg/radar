@@ -51,7 +51,7 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     left_vesicoureteric_reflux = fields.BooleanField(required=False)
     left_hydronephrosis_hydroureter = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = RenalImaging
         validators = [valid_date_for_patient("date")]
 

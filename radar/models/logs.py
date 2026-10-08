@@ -8,56 +8,86 @@ from radar.database import db
 
 
 class Log(db.Model):
-    __tablename__ = 'logs'
+    __tablename__ = "logs"
 
     id = Column(Integer, primary_key=True)
-    date = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, server_default=text('now()'))
+    date = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        server_default=text("now()"),
+    )
     type = Column(String, nullable=False)
 
     user_id = Column(Integer)
-    user = relationship('User', primaryjoin='User.id == Log.user_id', foreign_keys=[user_id])
+    user = relationship(
+        "User", primaryjoin="User.id == Log.user_id", foreign_keys=[user_id]
+    )
 
     data = Column(postgresql.JSONB)
 
 
-Index('logs_date_idx', Log.date)
-Index('logs_type_idx', Log.type)
-Index('logs_user_idx', Log.user_id)
+Index("logs_date_idx", Log.date)
+Index("logs_type_idx", Log.type)
+Index("logs_user_idx", Log.user_id)
 
-Index('logs_user_date_idx', Log.user_id, Log.date)
-Index('logs_user_type_idx', Log.user_id, Log.type)
+Index("logs_user_date_idx", Log.user_id, Log.date)
+Index("logs_user_type_idx", Log.user_id, Log.type)
 
-Index('logs_patient1_idx', Log.data['patient_id'].astext.cast(Integer), postgresql_where=Log.type == 'VIEW_PATIENT')
-Index('logs_patient2_idx',
-      Log.data[('new_data', 'patient_id')].astext.cast(Integer),
-      postgresql_where=Log.type == 'INSERT')
-Index('logs_patient3_idx',
-      Log.data[('original_data', 'patient_id')].astext.cast(Integer),
-      postgresql_where=Log.type == 'UPDATE')
-Index('logs_patient4_idx',
-      Log.data[('new_data', 'patient_id')].astext.cast(Integer),
-      postgresql_where=Log.type == 'UPDATE')
-Index('logs_patient5_idx',
-      Log.data[('original_data', 'patient_id')].astext.cast(Integer),
-      postgresql_where=Log.type == 'DELETE')
+Index(
+    "logs_patient1_idx",
+    Log.data["patient_id"].astext.cast(Integer),
+    postgresql_where=Log.type == "VIEW_PATIENT",
+)
+Index(
+    "logs_patient2_idx",
+    Log.data[("new_data", "patient_id")].astext.cast(Integer),
+    postgresql_where=Log.type == "INSERT",
+)
+Index(
+    "logs_patient3_idx",
+    Log.data[("original_data", "patient_id")].astext.cast(Integer),
+    postgresql_where=Log.type == "UPDATE",
+)
+Index(
+    "logs_patient4_idx",
+    Log.data[("new_data", "patient_id")].astext.cast(Integer),
+    postgresql_where=Log.type == "UPDATE",
+)
+Index(
+    "logs_patient5_idx",
+    Log.data[("original_data", "patient_id")].astext.cast(Integer),
+    postgresql_where=Log.type == "DELETE",
+)
 
-Index('logs_table_name_idx',
-      Log.data['table_name'].astext,
-      postgresql_where=Log.type.in_(['INSERT', 'UPDATE', 'DELETE']))
+Index(
+    "logs_table_name_idx",
+    Log.data["table_name"].astext,
+    postgresql_where=Log.type.in_(["INSERT", "UPDATE", "DELETE"]),
+)
 
 
 def log_changes(cls):
-    event.listen(cls.__table__, 'after_create', DDL("""
-        CREATE TRIGGER {0}_log_changes
-        AFTER INSERT OR UPDATE OR DELETE ON {0}
+    event.listen(
+        cls.__table__,
+        "after_create",
+        DDL(
+            f"""
+        CREATE TRIGGER {cls.__tablename__}_log_changes
+        AFTER INSERT OR UPDATE OR DELETE ON {cls.__tablename__}
         FOR EACH ROW EXECUTE PROCEDURE log_changes()
-    """.format(cls.__tablename__)))
+    """
+        ),
+    )
 
     return cls
 
 
 # Trigger to log changes (INSERTs, UPDATEs, DELETEs)
-event.listen(db.Model.metadata, 'before_create', DDL("""
+event.listen(
+    db.Model.metadata,
+    "before_create",
+    DDL("""
     CREATE OR REPLACE FUNCTION log_changes() RETURNS TRIGGER AS $body$
     DECLARE
         user_id INTEGER;
@@ -121,9 +151,14 @@ event.listen(db.Model.metadata, 'before_create', DDL("""
     END;
     $body$
     LANGUAGE plpgsql
-"""))
+"""),
+)
 
 
-event.listen(db.Model.metadata, 'after_drop', DDL("""
+event.listen(
+    db.Model.metadata,
+    "after_drop",
+    DDL("""
     DROP FUNCTION IF EXISTS log_changes()
-"""))
+"""),
+)

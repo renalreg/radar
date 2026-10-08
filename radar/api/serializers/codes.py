@@ -4,5 +4,5 @@ from radar.models.codes import Code
 
 
 class CodeSerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Code

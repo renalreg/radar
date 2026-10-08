@@ -1,32 +1,49 @@
 from collections import OrderedDict
 
-from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Index, Integer, Numeric, String
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    Numeric,
+    String,
+)
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 
 
-LIVER_IMAGING_TYPES = OrderedDict([
-    ('USS', 'USS'),
-    ('CT', 'CT'),
-    ('MRI', 'MRI'),
-])
+LIVER_IMAGING_TYPES = OrderedDict(
+    [
+        ("USS", "USS"),
+        ("CT", "CT"),
+        ("MRI", "MRI"),
+    ]
+)
 
 
 @log_changes
 class LiverImaging(db.Model, MetaModelMixin):
-    __tablename__ = 'liver_imaging'
+    __tablename__ = "liver_imaging"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('liver_imaging')
+    patient = patient_relationship("liver_imaging")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group")
     source_type = Column(String, nullable=False)
 
     date = Column(DateTime(timezone=True), nullable=False)
@@ -41,17 +58,17 @@ class LiverImaging(db.Model, MetaModelMixin):
     cholangitis = Column(Boolean)
 
 
-Index('liver_imaging_patient_idx', LiverImaging.patient_id)
+Index("liver_imaging_patient_idx", LiverImaging.patient_id)
 
 
 @log_changes
 class LiverDiseases(db.Model, MetaModelMixin):
-    __tablename__ = 'liver_diseases'
+    __tablename__ = "liver_diseases"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('liver_diseases')
+    patient = patient_relationship("liver_diseases")
 
     portal_hypertension = Column(Boolean)
     portal_hypertension_date = Column(Date)
@@ -77,45 +94,51 @@ class LiverDiseases(db.Model, MetaModelMixin):
     spleen_palpable_date = Column(Date)
 
 
-Index('liver_diseases_patient_idx', LiverDiseases.patient_id, unique=True)
+Index("liver_diseases_patient_idx", LiverDiseases.patient_id, unique=True)
 
 
-INDICATIONS = OrderedDict([
-    ('RECURRENT_CHOLANGITIS', 'Recurrent Cholangitis'),
-    ('INTRACTABLE_VARICEAL_BLEEDING', 'Intractable Variceal Bleeding'),
-    ('INTRACTABLE_ASCITES', 'Intractable Ascites'),
-])
+INDICATIONS = OrderedDict(
+    [
+        ("RECURRENT_CHOLANGITIS", "Recurrent Cholangitis"),
+        ("INTRACTABLE_VARICEAL_BLEEDING", "Intractable Variceal Bleeding"),
+        ("INTRACTABLE_ASCITES", "Intractable Ascites"),
+    ]
+)
 
-FIRST_GRAFT_SOURCES = OrderedDict([
-    ('LRD', 'LRD - Living Related Donor'),
-    ('LUD', 'LUD - Living Unrelated Donor'),
-    ('DBD', 'DBD - Donation after Brain Death'),
-    ('DCD', 'DCD - Donation after Circulatory Death'),
-])
+FIRST_GRAFT_SOURCES = OrderedDict(
+    [
+        ("LRD", "LRD - Living Related Donor"),
+        ("LUD", "LUD - Living Unrelated Donor"),
+        ("DBD", "DBD - Donation after Brain Death"),
+        ("DCD", "DCD - Donation after Circulatory Death"),
+    ]
+)
 
-LOSS_REASONS = OrderedDict([
-    ('ACUTE_REJECTION', 'Acute Rejection'),
-    ('CHRONIC_REJECTION', 'Chronic Rejection'),
-    ('INFECTION', 'Infection'),
-    ('CHOLANGITIS', 'Cholangitis'),
-])
+LOSS_REASONS = OrderedDict(
+    [
+        ("ACUTE_REJECTION", "Acute Rejection"),
+        ("CHRONIC_REJECTION", "Chronic Rejection"),
+        ("INFECTION", "Infection"),
+        ("CHOLANGITIS", "Cholangitis"),
+    ]
+)
 
 
 @log_changes
 class LiverTransplant(db.Model, MetaModelMixin):
-    __tablename__ = 'liver_transplants'
+    __tablename__ = "liver_transplants"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('liver_transplants')
+    patient = patient_relationship("liver_transplants")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group', foreign_keys=[source_group_id])
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group", foreign_keys=[source_group_id])
     source_type = Column(String, nullable=False)
 
-    transplant_group_id = Column(Integer, ForeignKey('groups.id'))
-    transplant_group = relationship('Group', foreign_keys=[transplant_group_id])
+    transplant_group_id = Column(Integer, ForeignKey("groups.id"))
+    transplant_group = relationship("Group", foreign_keys=[transplant_group_id])
 
     registration_date = Column(Date)
     transplant_date = Column(Date, nullable=False)
@@ -126,27 +149,29 @@ class LiverTransplant(db.Model, MetaModelMixin):
     other_loss_reason = Column(String)
 
 
-Index('liver_transplants_patient_idx', LiverTransplant.patient_id)
+Index("liver_transplants_patient_idx", LiverTransplant.patient_id)
 
 
-FEEDING_TYPES = OrderedDict([
-    ('NASOGASTRIC', 'Nasogastric'),
-    ('PARENTERAL', 'Parenteral'),
-    ('PEG', 'PEG - Gastric Tube'),
-])
+FEEDING_TYPES = OrderedDict(
+    [
+        ("NASOGASTRIC", "Nasogastric"),
+        ("PARENTERAL", "Parenteral"),
+        ("PEG", "PEG - Gastric Tube"),
+    ]
+)
 
 
 @log_changes
 class Nutrition(db.Model, MetaModelMixin):
-    __tablename__ = 'nutrition'
+    __tablename__ = "nutrition"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('nutrition')
+    patient = patient_relationship("nutrition")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group")
     source_type = Column(String, nullable=False)
 
     feeding_type = Column(String, nullable=False)
@@ -154,4 +179,4 @@ class Nutrition(db.Model, MetaModelMixin):
     to_date = Column(Date)
 
 
-Index('nutrition_patient_idx', Nutrition.patient_id)
+Index("nutrition_patient_idx", Nutrition.patient_id)

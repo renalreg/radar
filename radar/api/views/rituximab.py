@@ -56,38 +56,50 @@ class RituximabCriteriaDetailView(PatientObjectDetailView):
 
 def register_views(app):
     app.add_url_rule(
-        '/rituximab-baseline-assessment',
-        view_func=RituximabBaselineAssessmentListView.as_view('rituximab_baseline_assessment')
+        "/rituximab-baseline-assessment",
+        view_func=RituximabBaselineAssessmentListView.as_view(
+            "rituximab_baseline_assessment"
+        ),
     )
     app.add_url_rule(
-        '/rituximab-treatment-options',
-        view_func=RituximabTreatmentOptionListView.as_view('rituximab_treatment_option_list'))
-
-    app.add_url_rule(
-        '/rituximab-performance-options',
-        view_func=RituximabPerformanceOptionListView.as_view('rituximab_performance_option_list'))
-
-    app.add_url_rule(
-        '/rituximab-baseline-assessment/<id>',
-        view_func=RituximabBaselineAssessmentDetailView.as_view('assessment_detail')
+        "/rituximab-treatment-options",
+        view_func=RituximabTreatmentOptionListView.as_view(
+            "rituximab_treatment_option_list"
+        ),
     )
 
     app.add_url_rule(
-        '/rituximab-nephropathies-list',
-        view_func=RituximabNephropathiesListView.as_view('rituximab-nephropathies-list')
+        "/rituximab-performance-options",
+        view_func=RituximabPerformanceOptionListView.as_view(
+            "rituximab_performance_option_list"
+        ),
     )
 
     app.add_url_rule(
-        '/rituximab-supportive-medication-list',
-        view_func=SupportiveMedicationListView.as_view('rituximab-supportive-medication-list')
+        "/rituximab-baseline-assessment/<id>",
+        view_func=RituximabBaselineAssessmentDetailView.as_view("assessment_detail"),
     )
 
     app.add_url_rule(
-        '/rituximab-criteria',
-        view_func=RituximabCriteriaListView.as_view('rituximab-criteria-list')
+        "/rituximab-nephropathies-list",
+        view_func=RituximabNephropathiesListView.as_view(
+            "rituximab-nephropathies-list"
+        ),
     )
 
     app.add_url_rule(
-        '/rituximab-criteria/<id>',
-        view_func=RituximabCriteriaDetailView.as_view('rituximab-criteria-detail')
+        "/rituximab-supportive-medication-list",
+        view_func=SupportiveMedicationListView.as_view(
+            "rituximab-supportive-medication-list"
+        ),
+    )
+
+    app.add_url_rule(
+        "/rituximab-criteria",
+        view_func=RituximabCriteriaListView.as_view("rituximab-criteria-list"),
+    )
+
+    app.add_url_rule(
+        "/rituximab-criteria/<id>",
+        view_func=RituximabCriteriaDetailView.as_view("rituximab-criteria-detail"),
     )

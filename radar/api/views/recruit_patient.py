@@ -1,4 +1,3 @@
-from sqlalchemy.sql.expression import true
 from cornflake.exceptions import ValidationError
 
 from radar.api.permissions import RecruitPatientPermission
@@ -19,10 +18,10 @@ from radar.recruitment import DemographicsMismatch, RecruitmentPatient, SearchPa
 
 def mismatch_error(e):
     message = (
-        "Found an existing patient (ID {}) with this patient number. "
+        f"Found an existing patient (ID {e.patient.id}) with this patient number. "
         "The name, date of birth or gender you have supplied don't match the details we hold. "
         "Please contact RaDaR support for help recruiting this patient."
-    ).format(e.patient.id)
+    )
 
     return ValidationError({"number": message})
 

@@ -9,7 +9,7 @@ class UserSessionListView(ListModelView):
     model_class = UserSession
 
     def filter_query(self, query):
-        query = super(UserSessionListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         # Only show active sessions for the current user
         query = query.filter(UserSession.user == current_user)
@@ -18,4 +18,6 @@ class UserSessionListView(ListModelView):
 
 
 def register_views(app):
-    app.add_url_rule('/user-sessions', view_func=UserSessionListView.as_view('user_session_list'))
+    app.add_url_rule(
+        "/user-sessions", view_func=UserSessionListView.as_view("user_session_list")
+    )

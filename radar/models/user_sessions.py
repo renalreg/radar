@@ -9,12 +9,21 @@ from radar.models.users import AnonymousUser
 
 @log_changes
 class UserSession(db.Model):
-    __tablename__ = 'user_sessions'
+    __tablename__ = "user_sessions"
 
     id = Column(Integer, primary_key=True)
 
-    user_id = Column(Integer, ForeignKey('users.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    user = relationship('User', backref=backref('user_sessions', cascade='all, delete-orphan', passive_deletes=True))
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user = relationship(
+        "User",
+        backref=backref(
+            "user_sessions", cascade="all, delete-orphan", passive_deletes=True
+        ),
+    )
 
     date = Column(DateTime(timezone=True), nullable=False)
     ip_address = Column(postgresql.INET, nullable=False)
@@ -25,10 +34,10 @@ class UserSession(db.Model):
         return True
 
 
-Index('user_sessions_user_idx', UserSession.user_id)
+Index("user_sessions_user_idx", UserSession.user_id)
 
 
-class AnonymousSession(object):
+class AnonymousSession:
     """Used when the user isn't logged in."""
 
     user = AnonymousUser()

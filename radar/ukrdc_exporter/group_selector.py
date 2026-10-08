@@ -3,7 +3,7 @@ from datetime import datetime
 import pytz
 
 
-class GroupSelector(object):
+class GroupSelector:
     PAST = 0
     PRESENT = 2
     FUTURE = 1

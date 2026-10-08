@@ -21,9 +21,9 @@ ADMIN = True
 
 def make_request(action):
     if action == READ:
-        method = 'GET'
+        method = "GET"
     else:
-        method = 'POST'
+        method = "POST"
 
     return MockRequest(method)
 
@@ -32,7 +32,7 @@ def make_obj(source_type):
     if source_type == SOURCE_TYPE_MANUAL:
         source_group = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
     else:
-        source_group = Group(code='REE01', type=GROUP_TYPE.HOSPITAL)
+        source_group = Group(code="REE01", type=GROUP_TYPE.HOSPITAL)
 
     obj = Medication()
     obj.source_group = source_group
@@ -41,16 +41,19 @@ def make_obj(source_type):
     return obj
 
 
-@pytest.mark.parametrize(['is_admin', 'action', 'source_type', 'expected'], [
-    (NOT_ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
-    (NOT_ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
-    (NOT_ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
-    (NOT_ADMIN, WRITE, SOURCE_TYPE_UKRDC, DENY),
-    (ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
-    (ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
-    (ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
-    (ADMIN, WRITE, SOURCE_TYPE_UKRDC, GRANT),
-])
+@pytest.mark.parametrize(
+    ["is_admin", "action", "source_type", "expected"],
+    [
+        (NOT_ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
+        (NOT_ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
+        (NOT_ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
+        (NOT_ADMIN, WRITE, SOURCE_TYPE_UKRDC, DENY),
+        (ADMIN, READ, SOURCE_TYPE_MANUAL, GRANT),
+        (ADMIN, READ, SOURCE_TYPE_UKRDC, GRANT),
+        (ADMIN, WRITE, SOURCE_TYPE_MANUAL, GRANT),
+        (ADMIN, WRITE, SOURCE_TYPE_UKRDC, GRANT),
+    ],
+)
 def test_has_object_permission(is_admin, action, source_type, expected):
     permission = SystemSourceObjectPermission()
     request = make_request(action)

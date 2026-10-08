@@ -12,9 +12,9 @@ def parse_int(value):
         try:
             return int(value)
         except ValueError:
-            raise ValueError('Not an integer.')
+            raise ValueError("Not an integer.")
     else:
-        raise ValueError('Not an integer.')
+        raise ValueError("Not an integer.")
 
 
 def parse_float(value):
@@ -26,9 +26,9 @@ def parse_float(value):
         try:
             return float(value)
         except ValueError:
-            raise ValueError('Not a float.')
+            raise ValueError("Not a float.")
     else:
-        raise ValueError('Not a float.')
+        raise ValueError("Not a float.")
 
 
 def parse_string(value):
@@ -36,14 +36,14 @@ def parse_string(value):
         # Remove leading/trailing whitespace
         return value.strip()
     else:
-        raise ValueError('Not a string.')
+        raise ValueError("Not a string.")
 
 
 def parse_boolean(value):
     if isinstance(value, bool):
         return value
     else:
-        raise ValueError('Not a boolean.')
+        raise ValueError("Not a boolean.")
 
 
 def parse_date(value):
@@ -53,9 +53,9 @@ def parse_date(value):
         try:
             return iso8601.parse_date(value).date()
         except iso8601.ParseError:
-            raise ValueError('Not a date.')
+            raise ValueError("Not a date.")
     else:
-        raise ValueError('Not a date.')
+        raise ValueError("Not a date.")
 
 
 def parse_datetime(value):
@@ -65,9 +65,9 @@ def parse_datetime(value):
         try:
             return iso8601.parse_date(value)
         except iso8601.ParseError:
-            raise ValueError('Not a datetime.')
+            raise ValueError("Not a datetime.")
     else:
-        raise ValueError('Not a datetime.')
+        raise ValueError("Not a datetime.")
 
 
 def parse_list(value):

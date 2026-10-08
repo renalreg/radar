@@ -30,7 +30,7 @@ class GroupPatientListView(ListModelView):
     model_class = GroupPatient
 
     def filter_query(self, query):
-        query = super(GroupPatientListView, self).filter_query(query)
+        query = super().filter_query(query)
         query = filter_query_by_patient_permissions(query, GroupPatient)
         query = filter_query_by_patient(query, GroupPatient)
         query = filter_query_by_group(query, GroupPatient)
@@ -73,7 +73,7 @@ class GroupPatientUpdateView(UpdateModelView):
     permission_classes = [GroupPatientUpdatePermission]
 
     def update(self, *args, **kwargs):
-        response = super(GroupPatientUpdateView, self).update(*args, **kwargs)
+        response = super().update(*args, **kwargs)
 
         obj = self.get_object()
         update_system_groups(obj.patient)
@@ -116,14 +116,30 @@ def update_system_groups(patient):
     for system, children_number in counter.items():
         if children_number == 0:
             for group_patient in system.group_patients:
-                if group_patient.patient_id == patient.id and not last_system_group(patient):
+                if group_patient.patient_id == patient.id and not last_system_group(
+                    patient
+                ):
                     db.session.delete(group_patient)
                     db.session.commit()
 
 
 def register_views(app):
-    app.add_url_rule('/group-patients', view_func=GroupPatientListView.as_view('group_patient_list'))
-    app.add_url_rule('/group-patients', view_func=GroupPatientCreateView.as_view('group_patient_create'))
-    app.add_url_rule('/group-patients/<int:id>', view_func=GroupPatientRetrieveView.as_view('group_patient_retrieve'))
-    app.add_url_rule('/group-patients/<int:id>', view_func=GroupPatientUpdateView.as_view('group_patient_update'))
-    app.add_url_rule('/group-patients/<int:id>', view_func=GroupPatientDestroyView.as_view('group_patient_destroy'))
+    app.add_url_rule(
+        "/group-patients", view_func=GroupPatientListView.as_view("group_patient_list")
+    )
+    app.add_url_rule(
+        "/group-patients",
+        view_func=GroupPatientCreateView.as_view("group_patient_create"),
+    )
+    app.add_url_rule(
+        "/group-patients/<int:id>",
+        view_func=GroupPatientRetrieveView.as_view("group_patient_retrieve"),
+    )
+    app.add_url_rule(
+        "/group-patients/<int:id>",
+        view_func=GroupPatientUpdateView.as_view("group_patient_update"),
+    )
+    app.add_url_rule(
+        "/group-patients/<int:id>",
+        view_func=GroupPatientDestroyView.as_view("group_patient_destroy"),
+    )

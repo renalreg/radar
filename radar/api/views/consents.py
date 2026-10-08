@@ -30,17 +30,17 @@ class PatientConsentListView(PatientObjectListView):
         if json is None:
             raise BadRequest()
 
-        if 'consent' in json:
-            return super(PatientConsentListView, self).create()
+        if "consent" in json:
+            return super().create()
 
         consents = []
 
-        for consent_id, checked in json.pop('consents', {}).items():
+        for consent_id, checked in json.pop("consents", {}).items():
             if not checked:
                 continue
 
             data = dict(json)
-            data['consent'] = consent_id
+            data["consent"] = consent_id
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             obj = serializer.save()
@@ -51,7 +51,7 @@ class PatientConsentListView(PatientObjectListView):
             data = camel_case_keys(data)
             consents.append(data)
 
-        return jsonify({'data': consents}), 200
+        return jsonify({"data": consents}), 200
 
 
 class PatientConsentDetailView(PatientObjectDetailView):
@@ -60,7 +60,13 @@ class PatientConsentDetailView(PatientObjectDetailView):
 
 
 def register_views(app):
-    app.add_url_rule('/patient-consents', view_func=PatientConsentListView.as_view('patient_consent_list'))
-    app.add_url_rule('/patient-consents/<id>', view_func=PatientConsentDetailView.as_view('patient_consent_detail'))
-    app.add_url_rule('/consents', view_func=ConsentListView.as_view('consent_list'))
+    app.add_url_rule(
+        "/patient-consents",
+        view_func=PatientConsentListView.as_view("patient_consent_list"),
+    )
+    app.add_url_rule(
+        "/patient-consents/<id>",
+        view_func=PatientConsentDetailView.as_view("patient_consent_detail"),
+    )
+    app.add_url_rule("/consents", view_func=ConsentListView.as_view("consent_list"))
     # app.add_url_rule('/consents/<id>', view_func=ConsentDetailView.as_view('consent_detail'))

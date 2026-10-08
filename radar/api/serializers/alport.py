@@ -12,20 +12,22 @@ class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     deafness = IntegerLookupField(DEAFNESS_OPTIONS)
     deafness_date = fields.DateField(required=False)
     hearing_aid_date = fields.DateField(required=False)
-    comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    comments = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
 
-    class Meta(object):
+    class Meta:
         model_class = AlportClinicalPicture
         validators = [
-            valid_date_for_patient('date_of_picture'),
-            valid_date_for_patient('deafness_date'),
-            valid_date_for_patient('hearing_aid_date'),
+            valid_date_for_patient("date_of_picture"),
+            valid_date_for_patient("deafness_date"),
+            valid_date_for_patient("hearing_aid_date"),
         ]
 
     def pre_validate(self, data):
         # Not deaf
-        if data['deafness'] == DEAFNESS_NO:
-            data['deafness_date'] = None
-            data['hearing_aid_date'] = None
+        if data["deafness"] == DEAFNESS_NO:
+            data["deafness_date"] = None
+            data["hearing_aid_date"] = None
 
         return data

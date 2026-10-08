@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from radar.exporter import queries
 from radar.exporter.utils import (
@@ -20,19 +21,19 @@ from radar.utils import get_attrs
 
 ILLEGAL_CHARACTERS_RE = re.compile(r"[\000-\010]|[\013-\014]|[\016-\037]")
 
-exporter_map = {}
+exporter_map: dict[str, Any] = {}
 
 INS_STATE = {
-    0: 'INS Baseline visit',
-    1: 'INS Follow Up visit',
-    2: 'INS Relapse',
-    3: 'INS Remission',
-    4: 'INS Transplant',
-    5: '2nd INS Baseline visit',
-    6: 'INS Pre-transplant',
-    7: 'INS 1 week post-transplant',
-    8: 'INS 12 months post-transplant',
-    9: 'INS 18 months post-transplant',
+    0: "INS Baseline visit",
+    1: "INS Follow Up visit",
+    2: "INS Relapse",
+    3: "INS Remission",
+    4: "INS Transplant",
+    5: "2nd INS Baseline visit",
+    6: "INS Pre-transplant",
+    7: "INS 1 week post-transplant",
+    8: "INS 12 months post-transplant",
+    9: "INS 18 months post-transplant",
 }
 
 
@@ -142,7 +143,7 @@ def get_meta_columns(config):
     ]
 
 
-class Exporter(object):
+class Exporter:
     def __init__(self, config):
         self.config = config
         self._query = []
@@ -370,9 +371,9 @@ class DiagnosisExporter(Exporter):
             column("source_group_id"),
             column("source_group", "source_group.name"),
             column("source_type"),
-            column("era-edta prd"),  #5
-            column("icd-10"),  #6
-            column("snomed ct"), #7
+            column("era-edta prd"),  # 5
+            column("icd-10"),  # 6
+            column("snomed ct"),  # 7
             column("diagnosis", "diagnosis.name"),
             column("diagnosis_text"),
             column("symptoms_date", lambda x: format_date(x.symptoms_date)),
@@ -388,29 +389,30 @@ class DiagnosisExporter(Exporter):
             column("gene_test"),
             column("biochemistry"),
             column("clinical_picture"),
-            column("biopsy"), #23
+            column("biopsy"),  # 23
             column("biopsy_diagnosis"),
             column("biopsy_diagnosis_label"),
-            d("comments", anonymised_getter=None)
-            ]
+            d("comments", anonymised_getter=None),
+        ]
 
-        if self.config['patient_group'].code == 'NURTUREINS':
+        if self.config["patient_group"].code == "NURTUREINS":
             self._columns.extend(
                 [
-                    column("ins_diagnosis"), #27
-                    column('ins_diagnosis_date'),
-                    column('ins_biopsy_diagnosis'),
-                    column('ins_biopsy_diagnosis_label'),
-                    column('ins_diagnosis_comments') #31
+                    column("ins_diagnosis"),  # 27
+                    column("ins_diagnosis_date"),
+                    column("ins_biopsy_diagnosis"),
+                    column("ins_biopsy_diagnosis_label"),
+                    column("ins_diagnosis_comments"),  # 31
                 ]
             )
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
         self._primary = queries.get_primary_diagnoses(self.config)
 
+
 @register("primary-diagnoses")
 class PrimaryDiagnosisExporter(DiagnosisExporter):
-    '''
+    """
     A class that extends DiagnosisExporter exporter for the
     purpose of constructing all the relevant data to be
     written to a CSV file. The CSV file will be conserned with
@@ -427,32 +429,30 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
     :param DiagnosisExporter: a class that contains all the header
     for the CSV and the results of the relevant queries
     :type DiagnosisExporter: class: DiagnosisExporter
-    '''
-
+    """
 
     def get_rows(self):
-        '''
+        """
         Gets all the primary diagnosis data for a specific cohort
 
         :yield: yields CSV row for writting to file
         :rtype: list
-        '''
+        """
 
         headers = [col[0] for col in self._columns]
         yield headers
 
         # Differnet process for Nurture INS patients
-        if self.config['patient_group'].code == 'NURTUREINS':
-
+        if self.config["patient_group"].code == "NURTUREINS":
             patient_id = 0
             row = []
             self.ins_data = {
-                'pat_id': '',
-                'ins_dia_name': '',
-                'ins_dia_date': '',
-                'ins_biopsy_dia': '',
-                'ins_biopsy_dia_label': '',
-                'ins_biopsy_dia_comments': ''
+                "pat_id": "",
+                "ins_dia_name": "",
+                "ins_dia_date": "",
+                "ins_biopsy_dia": "",
+                "ins_biopsy_dia_label": "",
+                "ins_biopsy_dia_comments": "",
             }
 
             for record in self._query:
@@ -474,16 +474,16 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         else:
                             row = []
 
-                        ins_data = self.get_ins_data(record, diagnosis)
+                        self.set_ins_data(record, diagnosis)
 
                     # No primary diagnosis found for previous patient
                     # Check for INS data
                     else:
                         # INS data present create blank row, add INS data and yield
-                        if self.ins_data['ins_dia_name'] != '':
-                            row = [''] * len(headers)
-                            row[1] = self.ins_data['pat_id']
-                            self.ins_data['pat_id'] = ''
+                        if self.ins_data["ins_dia_name"] != "":
+                            row = [""] * len(headers)
+                            row[1] = self.ins_data["pat_id"]
+                            self.ins_data["pat_id"] = ""
                             self.insert_ins_data(row)
                             yield row
 
@@ -492,7 +492,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             else:
                                 row = []
 
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
                         # No data found for previous patient so no yield required
                         else:
@@ -501,14 +501,17 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                             else:
                                 row = []
 
-                            ins_data = self.get_ins_data(record, diagnosis)
+                            self.set_ins_data(record, diagnosis)
 
                 # Not new patient
                 else:
                     # Primary diagnosis has been found, continue to check for INS data
                     if row:
-                        if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < record.from_date:
-                            ins_data = self.get_ins_data(record, diagnosis)
+                        if (
+                            not self.ins_data["ins_dia_date"]
+                            or self.ins_data["ins_dia_date"] < record.from_date
+                        ):
+                            self.set_ins_data(record, diagnosis)
 
                     # Search for primary diagnosis and INS data
                     else:
@@ -517,8 +520,11 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                         else:
                             row = []
 
-                        if not self.ins_data['ins_dia_date'] or self.ins_data['ins_dia_date'] < record.from_date:
-                            ins_data = self.get_ins_data(record, diagnosis)
+                        if (
+                            not self.ins_data["ins_dia_date"]
+                            or self.ins_data["ins_dia_date"] < record.from_date
+                        ):
+                            self.set_ins_data(record, diagnosis)
 
         # Not Nurture-ins export
         else:
@@ -534,7 +540,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
                     yield row
 
     def make_row(self, record, diagnosis):
-        '''
+        """
         Returns a list that represents the content of a single row
         in a CSV file that provides data about a patients diagnoses.
 
@@ -544,7 +550,7 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
         :type diagnosis: class: radar.models.diagnoses.Diagnosis
         :return: returns a CSV row with diagnosis data
         :rtype: list
-        '''
+        """
 
         row = [col[1](record) for col in self._columns]
 
@@ -559,45 +565,46 @@ class PrimaryDiagnosisExporter(DiagnosisExporter):
 
         return row
 
-    def get_ins_data(self, record, diagnosis):
-        '''
+    def set_ins_data(self, record, diagnosis):
+        """
         Updates ins_data dictionary with INS data
 
         :param record: An object containing a single record from primary diagnoses query
         :type record: class: queries.get_primary_diagnoses()
         :param diagnosis: A diagnosis object provided by record
         :type diagnosis: class: radar.models.diagnoses.Diagnosis
-        '''
+        """
 
         for group_diagnosis in diagnosis.group_diagnoses:
-            if group_diagnosis.group.code == 'INS' and group_diagnosis.type.value == 'PRIMARY':
-                self.ins_data['pat_id'] = record.patient_id
-                self.ins_data['ins_dia_name'] = diagnosis.name
-                self.ins_data['ins_dia_date'] = record.from_date
-                self.ins_data['ins_biopsy_dia'] = record.biopsy_diagnosis
-                self.ins_data['ins_biopsy_dia_label'] = record.biopsy_diagnosis_label
-                self.ins_data['ins_biopsy_dia_comments'] = record.comments
-
+            if (
+                group_diagnosis.group.code == "INS"
+                and group_diagnosis.type.value == "PRIMARY"
+            ):
+                self.ins_data["pat_id"] = record.patient_id
+                self.ins_data["ins_dia_name"] = diagnosis.name
+                self.ins_data["ins_dia_date"] = record.from_date
+                self.ins_data["ins_biopsy_dia"] = record.biopsy_diagnosis
+                self.ins_data["ins_biopsy_dia_label"] = record.biopsy_diagnosis_label
+                self.ins_data["ins_biopsy_dia_comments"] = record.comments
 
     def insert_ins_data(self, row):
-        '''
+        """
         Inserts ins_data into row once a new patient is identified
 
         :param row: a list containing primary diagnosis data if any
                     otherwise a blank row the same length as headers
         :type row: list
-        '''
-        row[27] = self.ins_data['ins_dia_name']
-        self.ins_data['ins_dia_name'] = ''
-        row[28] = self.ins_data['ins_dia_date']
-        self.ins_data['ins_dia_date'] = ''
-        row[29] = self.ins_data['ins_biopsy_dia']
-        self.ins_data['ins_biopsy_dia'] = ''
-        row[30] = self.ins_data['ins_biopsy_dia_label']
-        self.ins_data['ins_biopsy_dia_label'] = ''
-        row[31] = self.ins_data['ins_biopsy_dia_comments']
-        self.ins_data['ins_biopsy_dia_comments'] = ''
-
+        """
+        row[27] = self.ins_data["ins_dia_name"]
+        self.ins_data["ins_dia_name"] = ""
+        row[28] = self.ins_data["ins_dia_date"]
+        self.ins_data["ins_dia_date"] = ""
+        row[29] = self.ins_data["ins_biopsy_dia"]
+        self.ins_data["ins_biopsy_dia"] = ""
+        row[30] = self.ins_data["ins_biopsy_dia_label"]
+        self.ins_data["ins_biopsy_dia_label"] = ""
+        row[31] = self.ins_data["ins_biopsy_dia_comments"]
+        self.ins_data["ins_biopsy_dia_comments"] = ""
 
 
 @register("comorbidities")
@@ -665,9 +672,11 @@ class PathologyExporter(Exporter):
             column("image_url"),
             d(
                 "histological_summary",
-                anonymised_getter=lambda x: x.histological_summary
-                if x.histological_summary is None
-                else "REDACTED",
+                anonymised_getter=lambda x: (
+                    x.histological_summary
+                    if x.histological_summary is None
+                    else "REDACTED"
+                ),
             ),
             d("em_findings", anonymised_getter=None),
         ]
@@ -1312,7 +1321,7 @@ class SamplesExporter(Exporter):
             column("patient_id"),
             column("date", "data.date"),
             column("barcode", "data.barcode"),
-            column("ins_state", "data.insstate")
+            column("ins_state", "data.insstate"),
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
@@ -1321,7 +1330,7 @@ class SamplesExporter(Exporter):
     def get_rows(self):
 
         headers = [col[0] for col in self._columns]
-        headers[4] = 'sample_type'
+        headers[4] = "sample_type"
         yield headers
         for data in self._query:
             row = [col[1](data) for col in self._columns]
@@ -1770,10 +1779,10 @@ class RituximabBaselineAssessmentExporter(Exporter):
         with_dose = ("chlorambucil", "cyclophosphamide", "rituximab")
 
         for item in previous:
-            items = (item, "{}_start_date".format(item), "{}_end_date".format(item))
+            items = (item, f"{item}_start_date", f"{item}_end_date")
             self._columns.extend(column(item) for item in items)
             if item in with_dose:
-                self._columns.append(column("{}_dose".format(item)))
+                self._columns.append(column(f"{item}_dose"))
         self._columns.append(column("steroids"))
         self._columns.append(column("other_previous_treatment"))
         self._columns.append(column("past_remission"))
@@ -1858,31 +1867,31 @@ class RituximabFollowupAssessmentExporter(Exporter):
         self._query = q
 
 
-@register('rituximab-adverse-events')
+@register("rituximab-adverse-events")
 class RituximabAdverseEventsExporter(Exporter):
     def setup(self):
         d = demographics_column_factory(self.config)
         self._columns = [
-            column('id'),
-            column('patient_id'),
-            column('date', 'data.date'),
-            column('hospitalisation', 'data.hospitalisation'),
-            column('adverse_events', 'data.adverseEvents'),
-            column('onset_cancer', 'data.newOnsetCancer'),
-            column('caused_cancer', 'data.causedCancer'),
-            column('thromboembolism', 'data.thromboembolism'),
-            column('caused_thromboembolism', 'data.causedVenousThromboEmbolism'),
-            column('myocardial_infarction', 'data.myocardialInfarction'),
-            column('caused_infarction', 'data.causedAcuteMyocardialInfarction'),
-            column('stroke', 'data.stroke'),
-            column('caused_stroke', 'data.causedStroke'),
-            column('ischaemic_attack', 'data.ischaemicAttack'),
-            column('caused_attack', 'data.causedIschaemicAttack'),
-            column('other_adverse_event', 'data.otherAdverseEvent'),
-            column('other_toxicity', 'data.otherTox'),
-            column('caused_other', 'data.causedOther'),
-            column('date_of_death', 'data.dod'),
-            d('cause_of_death', 'data.dodCause', anonymised_getter=None)
+            column("id"),
+            column("patient_id"),
+            column("date", "data.date"),
+            column("hospitalisation", "data.hospitalisation"),
+            column("adverse_events", "data.adverseEvents"),
+            column("onset_cancer", "data.newOnsetCancer"),
+            column("caused_cancer", "data.causedCancer"),
+            column("thromboembolism", "data.thromboembolism"),
+            column("caused_thromboembolism", "data.causedVenousThromboEmbolism"),
+            column("myocardial_infarction", "data.myocardialInfarction"),
+            column("caused_infarction", "data.causedAcuteMyocardialInfarction"),
+            column("stroke", "data.stroke"),
+            column("caused_stroke", "data.causedStroke"),
+            column("ischaemic_attack", "data.ischaemicAttack"),
+            column("caused_attack", "data.causedIschaemicAttack"),
+            column("other_adverse_event", "data.otherAdverseEvent"),
+            column("other_toxicity", "data.otherTox"),
+            column("caused_other", "data.causedOther"),
+            column("date_of_death", "data.dod"),
+            d("cause_of_death", "data.dodCause", anonymised_getter=None),
         ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)

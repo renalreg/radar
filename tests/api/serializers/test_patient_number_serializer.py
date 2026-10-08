@@ -27,7 +27,9 @@ def patient():
 
 @pytest.fixture
 def group():
-    group = Group(type=GROUP_TYPE.HOSPITAL, code="BRS", name="Southmead", short_name="Southmead")
+    group = Group(
+        type=GROUP_TYPE.HOSPITAL, code="BRS", name="Southmead", short_name="Southmead"
+    )
     db.session.add(group)
     db.session.commit()
     return group
@@ -35,7 +37,9 @@ def group():
 
 @pytest.fixture
 def nhs_number_group():
-    group = Group(code=GROUP_CODE_NHS, type=GROUP_TYPE.OTHER, short_name="nhs", name="nhs")
+    group = Group(
+        code=GROUP_CODE_NHS, type=GROUP_TYPE.OTHER, short_name="nhs", name="nhs"
+    )
     db.session.add(group)
     db.session.commit()
     return group
@@ -43,7 +47,9 @@ def nhs_number_group():
 
 @pytest.fixture
 def chi_number_group():
-    group = Group(code=GROUP_CODE_CHI, type=GROUP_TYPE.OTHER, short_name="chi", name="chi")
+    group = Group(
+        code=GROUP_CODE_CHI, type=GROUP_TYPE.OTHER, short_name="chi", name="chi"
+    )
     db.session.add(group)
     db.session.commit()
     return group
@@ -51,7 +57,9 @@ def chi_number_group():
 
 @pytest.fixture
 def hsc_number_group():
-    group = Group(code=GROUP_CODE_HSC, type=GROUP_TYPE.OTHER, short_name="hsc", name="hsc")
+    group = Group(
+        code=GROUP_CODE_HSC, type=GROUP_TYPE.OTHER, short_name="hsc", name="hsc"
+    )
     db.session.add(group)
     db.session.commit()
     return group
@@ -59,7 +67,9 @@ def hsc_number_group():
 
 @pytest.fixture
 def ukrr_number_group():
-    group = Group(code=GROUP_CODE_UKRR, type=GROUP_TYPE.OTHER, short_name="ukrr", name="ukrr")
+    group = Group(
+        code=GROUP_CODE_UKRR, type=GROUP_TYPE.OTHER, short_name="ukrr", name="ukrr"
+    )
     db.session.add(group)
     db.session.commit()
     return group
@@ -67,23 +77,25 @@ def ukrr_number_group():
 
 @pytest.fixture
 def number(patient, group):
-    number_group = Group(code='FOO', type=GROUP_TYPE.OTHER, name="foo", short_name="foo")
+    number_group = Group(
+        code="FOO", type=GROUP_TYPE.OTHER, name="foo", short_name="foo"
+    )
     db.session.add(number_group)
     db.session.commit()
     return {
-        'source_group': group,
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'number_group': number_group,
-        'number': '123'
+        "source_group": group,
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "number_group": number_group,
+        "number": "123",
     }
 
 
 def test_valid(number):
-    number_group = number['number_group']
+    number_group = number["number_group"]
     obj = valid(number)
     assert obj.number_group == number_group
-    assert obj.number == '123'
+    assert obj.number == "123"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -91,94 +103,102 @@ def test_valid(number):
 
 
 def test_patient_none(number):
-    number['patient'] = None
+    number["patient"] = None
     invalid(number)
 
 
 def test_source_group_none(number):
-    number['source_group'] = None
+    number["source_group"] = None
     invalid(number)
 
 
 def test_source_type_none(number):
-    number['source_type'] = None
+    number["source_type"] = None
     number = valid(number)
     assert number.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_number_group_none(number):
-    number['number_group'] = None
+    number["number_group"] = None
     invalid(number)
 
 
 def test_number_group_radar(number):
-    number['number_group'] = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
+    number["number_group"] = Group(code=GROUP_CODE_RADAR, type=GROUP_TYPE.SYSTEM)
     invalid(number)
 
 
 def test_number_none(number):
-    number['number'] = None
+    number["number"] = None
     invalid(number)
 
 
 def test_number_blank(number):
-    number['number'] = ''
+    number["number"] = ""
     invalid(number)
 
 
 def test_number_remove_extra_spaces(number):
-    number['number'] = '123   456'
+    number["number"] = "123   456"
     obj = valid(number)
-    assert obj.number == '123 456'
+    assert obj.number == "123 456"
 
 
 def test_nhs_no_valid(number):
-    group = db.session.query(Group).filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS).first()
-    number['number_group'] = group
-    number['number'] = '9434765919'
+    group = (
+        db.session.query(Group)
+        .filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS)
+        .first()
+    )
+    number["number_group"] = group
+    number["number"] = "9434765919"
     valid(number)
 
 
 def test_nhs_no_invalid(number):
-    group = db.session.query(Group).filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS).first()
-    number['number_group'] = group
-    number['number'] = '9434765918'
+    group = (
+        db.session.query(Group)
+        .filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_NHS)
+        .first()
+    )
+    number["number_group"] = group
+    number["number"] = "9434765918"
     invalid(number)
 
 
 def test_chi_no_valid(number, chi_number_group):
-    number['number_group'] = chi_number_group
-    number['number'] = '101299877'
+    number["number_group"] = chi_number_group
+    number["number"] = "101299877"
     valid(number)
 
 
 def test_chi_no_invalid(number, chi_number_group):
-    number['number_group'] = chi_number_group
-    number['number'] = '9434765918'
+    number["number_group"] = chi_number_group
+    number["number"] = "9434765918"
     invalid(number)
 
 
 def test_hsc_no_valid(number, hsc_number_group):
-    number['number_group'] = hsc_number_group
-    number['number'] = '3232255825'
+    number["number_group"] = hsc_number_group
+    number["number"] = "3232255825"
     valid(number)
 
 
 def test_hsc_no_invalid(number, hsc_number_group):
-    number['number_group'] = hsc_number_group
-    number['number'] = '9434765918'
+    number["number_group"] = hsc_number_group
+    number["number"] = "9434765918"
     invalid(number)
 
 
 def test_ukrr_no_valid(number, ukrr_number_group):
-    number['number_group'] = ukrr_number_group
-    number['number'] = '200012345'
+    number["number_group"] = ukrr_number_group
+    number["number"] = "200012345"
     valid(number)
 
 
 def test_ukrr_no_invalid(number, ukrr_number_group):
-    number['number_group'] = ukrr_number_group
-    number['number'] = '2000123456'
+    number["number_group"] = ukrr_number_group
+    number["number"] = "2000123456"
     invalid(number)
 
 
@@ -190,6 +210,8 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = PatientNumberSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = PatientNumberSerializer(
+        data=data, context={"user": User(is_admin=True)}
+    )
     serializer.is_valid(raise_exception=True)
     return serializer.save()

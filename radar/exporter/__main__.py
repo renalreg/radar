@@ -2,7 +2,6 @@ import argparse
 from configparser import ConfigParser
 import csv
 from datetime import date
-import io
 import os
 import shutil
 import socket
@@ -87,7 +86,7 @@ def log_data_export(config, sections):
     db.session.commit()
 
 
-class TemporaryDirectory(object):
+class TemporaryDirectory:
     """
     Context manager for mkdtemp, as TemporaryDirectory is not
     available in python2, only python>3.2
@@ -137,14 +136,14 @@ def main():
 
         # Export data
         for name, exporter in exporters:
-            print("Exporting {0}...".format(name))
+            print(f"Exporting {name}...")
             if name == "nurtureckd":
                 name = "visits"
 
-            fname = os.path.join(output, "{}.csv".format(name))
+            fname = os.path.join(output, f"{name}.csv")
 
             exporter.setup()
-            with io.open(fname, "w", encoding="utf-8", newline="") as openfd:
+            with open(fname, "w", encoding="utf-8", newline="") as openfd:
                 writer = csv.writer(openfd)
                 for row in tqdm(exporter.get_rows()):
                     writer.writerow(row)
@@ -154,7 +153,7 @@ def main():
         anon = ""
         if config["anonymised"]:
             anon = "-anon"
-        archive_name = "{}-export-{}{}".format(today, group_name, anon)
+        archive_name = f"{today}-export-{group_name}{anon}"
         shutil.make_archive(os.path.join(args.dest, archive_name), "zip", output)
 
         log_data_export(config, config_parser.sections())

@@ -23,14 +23,16 @@ class AlportDeafnessOptionListView(IntegerLookupListView):
 
 def register_views(app):
     app.add_url_rule(
-        '/alport-clinical-pictures',
-        view_func=AlportClinicalPictureListView.as_view('alport_clinical_picture_list')
+        "/alport-clinical-pictures",
+        view_func=AlportClinicalPictureListView.as_view("alport_clinical_picture_list"),
     )
     app.add_url_rule(
-        '/alport-clinical-pictures/<id>',
-        view_func=AlportClinicalPictureDetailView.as_view('alport_clinical_picture_detail')
+        "/alport-clinical-pictures/<id>",
+        view_func=AlportClinicalPictureDetailView.as_view(
+            "alport_clinical_picture_detail"
+        ),
     )
     app.add_url_rule(
-        '/alport-deafness-options',
-        view_func=AlportDeafnessOptionListView.as_view('alport_deafness_option_list')
+        "/alport-deafness-options",
+        view_func=AlportDeafnessOptionListView.as_view("alport_deafness_option_list"),
     )

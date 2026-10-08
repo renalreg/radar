@@ -23,13 +23,13 @@ def patient():
 @pytest.fixture
 def hospitalisation(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'date_of_admission': date(2015, 1, 1),
-        'date_of_discharge': date(2015, 1, 2),
-        'reason_for_admission': 'Foo',
-        'comments': 'Bar'
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "date_of_admission": date(2015, 1, 1),
+        "date_of_discharge": date(2015, 1, 2),
+        "reason_for_admission": "Foo",
+        "comments": "Bar",
     }
 
 
@@ -37,8 +37,8 @@ def test_valid(hospitalisation):
     obj = valid(hospitalisation)
     assert obj.date_of_admission == date(2015, 1, 1)
     assert obj.date_of_discharge == date(2015, 1, 2)
-    assert obj.reason_for_admission == 'Foo'
-    assert obj.comments == 'Bar'
+    assert obj.reason_for_admission == "Foo"
+    assert obj.comments == "Bar"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -46,74 +46,76 @@ def test_valid(hospitalisation):
 
 
 def test_patient_none(hospitalisation):
-    hospitalisation['patient'] = None
+    hospitalisation["patient"] = None
     invalid(hospitalisation)
 
 
 def test_source_group_none(hospitalisation):
-    hospitalisation['source_group'] = None
+    hospitalisation["source_group"] = None
     invalid(hospitalisation)
 
 
 def test_source_type_none(hospitalisation):
-    hospitalisation['source_type'] = None
+    hospitalisation["source_type"] = None
     hospitalisation = valid(hospitalisation)
     assert hospitalisation.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_of_admission_none(hospitalisation):
-    hospitalisation['date_of_admission'] = None
+    hospitalisation["date_of_admission"] = None
     invalid(hospitalisation)
 
 
 def test_date_of_admission_before_dob(hospitalisation):
-    hospitalisation['date_of_admission'] = date(1999, 1, 1)
+    hospitalisation["date_of_admission"] = date(1999, 1, 1)
     invalid(hospitalisation)
 
 
 def test_date_of_admission_future(hospitalisation):
-    hospitalisation['date_of_admission'] = date.today() + timedelta(days=1)
+    hospitalisation["date_of_admission"] = date.today() + timedelta(days=1)
     invalid(hospitalisation)
 
 
 def test_date_of_discharge_none(hospitalisation):
-    hospitalisation['date_of_discharge'] = None
+    hospitalisation["date_of_discharge"] = None
     valid(hospitalisation)
 
 
 def test_date_of_discharge_before_dob(hospitalisation):
-    hospitalisation['date_of_discharge'] = date(1999, 1, 1)
+    hospitalisation["date_of_discharge"] = date(1999, 1, 1)
     invalid(hospitalisation)
 
 
 def test_date_of_discharge_future(hospitalisation):
-    hospitalisation['date_of_discharge'] = date.today() + timedelta(days=1)
+    hospitalisation["date_of_discharge"] = date.today() + timedelta(days=1)
     invalid(hospitalisation)
 
 
 def test_date_of_discharge_before_date_of_admission(hospitalisation):
-    hospitalisation['date_of_discharge'] = hospitalisation['date_of_admission'] - timedelta(days=1)
+    hospitalisation["date_of_discharge"] = hospitalisation[
+        "date_of_admission"
+    ] - timedelta(days=1)
     invalid(hospitalisation)
 
 
 def test_reason_for_admission_none(hospitalisation):
-    hospitalisation['reason_for_admission'] = None
+    hospitalisation["reason_for_admission"] = None
     valid(hospitalisation)
 
 
 def test_reason_for_admission_blank(hospitalisation):
-    hospitalisation['reason_for_admission'] = ''
+    hospitalisation["reason_for_admission"] = ""
     obj = valid(hospitalisation)
     assert obj.reason_for_admission is None
 
 
 def test_comments_none(hospitalisation):
-    hospitalisation['comments'] = None
+    hospitalisation["comments"] = None
     valid(hospitalisation)
 
 
 def test_comments_blank(hospitalisation):
-    hospitalisation['comments'] = ''
+    hospitalisation["comments"] = ""
     obj = valid(hospitalisation)
     assert obj.comments is None
 
@@ -126,6 +128,8 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = HospitalisationSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = HospitalisationSerializer(
+        data=data, context={"user": User(is_admin=True)}
+    )
     serializer.is_valid(raise_exception=True)
     return serializer.save()

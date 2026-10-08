@@ -25,7 +25,7 @@ class GroupUserListView(ListModelView):
     model_class = GroupUser
 
     def filter_query(self, query):
-        query = super(GroupUserListView, self).filter_query(query)
+        query = super().filter_query(query)
         query = filter_query_by_user_permissions(query, GroupUser)
         query = filter_query_by_user(query, GroupUser)
         query = filter_query_by_group(query, GroupUser)
@@ -56,8 +56,21 @@ class GroupUserDestroyView(DestroyModelView):
 
 
 def register_views(app):
-    app.add_url_rule('/group-users', view_func=GroupUserListView.as_view('group_user_list'))
-    app.add_url_rule('/group-users', view_func=GroupUserCreateView.as_view('group_user_create'))
-    app.add_url_rule('/group-users/<int:id>', view_func=GroupUserRetrieveView.as_view('group_user_retrieve'))
-    app.add_url_rule('/group-users/<int:id>', view_func=GroupUserUpdateView.as_view('group_user_update'))
-    app.add_url_rule('/group-users/<int:id>', view_func=GroupUserDestroyView.as_view('group_user_destroy'))
+    app.add_url_rule(
+        "/group-users", view_func=GroupUserListView.as_view("group_user_list")
+    )
+    app.add_url_rule(
+        "/group-users", view_func=GroupUserCreateView.as_view("group_user_create")
+    )
+    app.add_url_rule(
+        "/group-users/<int:id>",
+        view_func=GroupUserRetrieveView.as_view("group_user_retrieve"),
+    )
+    app.add_url_rule(
+        "/group-users/<int:id>",
+        view_func=GroupUserUpdateView.as_view("group_user_update"),
+    )
+    app.add_url_rule(
+        "/group-users/<int:id>",
+        view_func=GroupUserDestroyView.as_view("group_user_destroy"),
+    )

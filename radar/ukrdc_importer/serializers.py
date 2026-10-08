@@ -20,7 +20,7 @@ class SDADateTimeField(fields.DateTimeField):
         try:
             return parse_sda_datetime(data)
         except ValueError:
-            return super(SDADateTimeField, self).parse(data)
+            return super().parse(data)
 
 
 class CodeDescriptionSerializer(serializers.Serializer):
@@ -38,8 +38,8 @@ class CodeOrDescriptionSerializer(serializers.Serializer):
 
         raise ValidationError({"code or description": "At least one is required"})
 
-class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
 
+class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
     def to_internal_value(self, data):
         # Allow plain string input
         if isinstance(data, str):
@@ -52,6 +52,7 @@ class StringOrCodeDescriptionSerializer(CodeOrDescriptionSerializer):
             return None
         return super().run_validation(data)
 
+
 class EthnicGroupSerializer(serializers.Serializer):
     code = fields.StringField(required=False)
     description = fields.StringField(required=False)
@@ -61,12 +62,15 @@ class EthnicGroupSerializer(serializers.Serializer):
         code = data.get("code")
         description = data.get("description")
         # Check if both are empty / missing / whitespace-only
-        if not (code and str(code).strip()) and not (description and str(description).strip()):
+        if not (code and str(code).strip()) and not (
+            description and str(description).strip()
+        ):
             # Skip this field entirely in parent serializer
             return {}
 
         # Otherwise, return the valid data
         return data
+
 
 class EnteringOrganizationSerializer(serializers.Serializer):
     code = fields.StringField()
@@ -110,7 +114,7 @@ class PatientNumberSerializer(serializers.Serializer):
     organization = CodeDescriptionSerializer()
 
     def validate(self, value):
-        value = super(PatientNumberSerializer, self).validate(value)
+        value = super().validate(value)
         number_type = value["number_type"]
         if number_type in ("NHS", "CHI", "HSC"):
             number = value["number"]
@@ -118,7 +122,7 @@ class PatientNumberSerializer(serializers.Serializer):
                 _nhs_no(number, MIN_CHI_NO)
             except ValueError:
                 raise ValidationError(
-                    {"number": "Not a valid {} number {}".format(number_type, number)}
+                    {"number": f"Not a valid {number_type} number {number}"}
                 )
         return value
 
@@ -156,7 +160,7 @@ class LabOrderSerializer(serializers.Serializer):
         """Populate entering_organization if it is empty from entered_at."""
         if data["entering_organization"] is fields.empty:
             data["entering_organization"] = data["entered_at"]
-        return super(LabOrderSerializer, self).pre_validate(data)
+        return super().pre_validate(data)
 
 
 class ContainerSerializer(serializers.Serializer):

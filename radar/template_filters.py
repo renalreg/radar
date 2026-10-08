@@ -2,9 +2,10 @@ from cornflake.utils import safe_strftime
 from jinja2 import pass_eval_context
 from markupsafe import Markup, escape
 
+
 def safe_strftime_template_filter(value, format):
     if value is None:
-        return ''
+        return ""
     else:
         return safe_strftime(value, format)
 
@@ -12,10 +13,10 @@ def safe_strftime_template_filter(value, format):
 @pass_eval_context
 def nl2br_template_filter(eval_ctx, value):
     if value is None:
-        return ''
+        return ""
 
     value = escape(value)
-    value = value.replace('\n', Markup('<br />\n'))
+    value = value.replace("\n", Markup("<br />\n"))
 
     if eval_ctx.autoescape:
         value = Markup(value)
@@ -24,5 +25,5 @@ def nl2br_template_filter(eval_ctx, value):
 
 
 def register_template_filters(app):
-    app.add_template_filter(safe_strftime_template_filter, 'safe_strftime')
-    app.add_template_filter(nl2br_template_filter, 'nl2br')
+    app.add_template_filter(safe_strftime_template_filter, "safe_strftime")
+    app.add_template_filter(nl2br_template_filter, "nl2br")

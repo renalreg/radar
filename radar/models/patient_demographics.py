@@ -2,22 +2,27 @@ from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDERS
 
 
 @log_changes
 class PatientDemographics(db.Model, MetaModelMixin):
-    __tablename__ = 'patient_demographics'
+    __tablename__ = "patient_demographics"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('patient_demographics')
+    patient = patient_relationship("patient_demographics")
 
-    source_group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    source_group = relationship('Group')
+    source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    source_group = relationship("Group")
     source_type = Column(String, nullable=False)
 
     first_name = Column(String)
@@ -27,8 +32,8 @@ class PatientDemographics(db.Model, MetaModelMixin):
     cause_of_death = Column(String)
     gender = Column(Integer)
 
-    ethnicity_id = Column(Integer, ForeignKey('ethnicities.id'))
-    ethnicity = relationship('Ethnicity')
+    ethnicity_id = Column(Integer, ForeignKey("ethnicities.id"))
+    ethnicity = relationship("Ethnicity")
 
     home_number = Column(String)
     work_number = Column(String)
@@ -36,8 +41,8 @@ class PatientDemographics(db.Model, MetaModelMixin):
     email_address = Column(String)
     email_reason = Column(String)
 
-    nationality_id = Column(Integer, ForeignKey('nationalities.id'))
-    nationality = relationship('Nationality')
+    nationality_id = Column(Integer, ForeignKey("nationalities.id"))
+    nationality = relationship("Nationality")
 
     opt_out_surveys = Column(
         Boolean, default=False, nullable=False, server_default=text("false")
@@ -77,11 +82,11 @@ class PatientDemographics(db.Model, MetaModelMixin):
         return ETHNICITIES.get(self.ethnicity)
 
 
-Index('patient_demographics_patient_idx', PatientDemographics.patient_id)
+Index("patient_demographics_patient_idx", PatientDemographics.patient_id)
 Index(
-    'patient_demographics_patient_source_idx',
+    "patient_demographics_patient_source_idx",
     PatientDemographics.patient_id,
     PatientDemographics.source_group_id,
     PatientDemographics.source_type,
-    unique=True
+    unique=True,
 )

@@ -27,16 +27,16 @@ from radar.models.pkd import (
 class LiverImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     date = fields.DateField()
     imaging_type = StringLookupField(LIVER_IMAGING_TYPES)
-    size = fields.FloatField(required=False, validators=[range_(0, 100, 'cm')])
+    size = fields.FloatField(required=False, validators=[range_(0, 100, "cm")])
     hepatic_fibrosis = fields.BooleanField(required=False)
     hepatic_cysts = fields.BooleanField(required=False)
     bile_duct_cysts = fields.BooleanField(required=False)
     dilated_bile_ducts = fields.BooleanField(required=False)
     cholangitis = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverImaging
-        validators = [valid_date_for_patient('date')]
+        validators = [valid_date_for_patient("date")]
 
 
 class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
@@ -63,36 +63,36 @@ class LiverDiseasesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     spleen_palpable = fields.BooleanField(required=False)
     spleen_palpable_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverDiseases
         validators = [
-            valid_date_for_patient('portal_hypertension_date'),
-            valid_date_for_patient('ascites_date'),
-            valid_date_for_patient('oesophageal_date'),
-            valid_date_for_patient('oesophageal_bleeding_date'),
-            valid_date_for_patient('gastric_date'),
-            valid_date_for_patient('gastric_bleeding_date'),
-            valid_date_for_patient('anorectal_date'),
-            valid_date_for_patient('anorectal_bleeding_date'),
-            valid_date_for_patient('cholangitis_acute_date'),
-            valid_date_for_patient('cholangitis_recurrent_date'),
-            valid_date_for_patient('spleen_palpable_date'),
+            valid_date_for_patient("portal_hypertension_date"),
+            valid_date_for_patient("ascites_date"),
+            valid_date_for_patient("oesophageal_date"),
+            valid_date_for_patient("oesophageal_bleeding_date"),
+            valid_date_for_patient("gastric_date"),
+            valid_date_for_patient("gastric_bleeding_date"),
+            valid_date_for_patient("anorectal_date"),
+            valid_date_for_patient("anorectal_bleeding_date"),
+            valid_date_for_patient("cholangitis_acute_date"),
+            valid_date_for_patient("cholangitis_recurrent_date"),
+            valid_date_for_patient("spleen_palpable_date"),
         ]
 
     def pre_validate(self, data):
         # Symptom and date pairs
         pairs = [
-            ('portal_hypertension', 'portal_hypertension_date'),
-            ('ascites', 'ascites_date'),
-            ('oesophageal', 'oesophageal_date'),
-            ('oesophageal_bleeding', 'oesophageal_bleeding_date'),
-            ('gastric', 'gastric_date'),
-            ('gastric_bleeding', 'gastric_bleeding_date'),
-            ('anorectal', 'anorectal_date'),
-            ('anorectal_bleeding', 'anorectal_bleeding_date'),
-            ('cholangitis_acute', 'cholangitis_acute_date'),
-            ('cholangitis_recurrent', 'cholangitis_recurrent_date'),
-            ('spleen_palpable', 'spleen_palpable_date'),
+            ("portal_hypertension", "portal_hypertension_date"),
+            ("ascites", "ascites_date"),
+            ("oesophageal", "oesophageal_date"),
+            ("oesophageal_bleeding", "oesophageal_bleeding_date"),
+            ("gastric", "gastric_date"),
+            ("gastric_bleeding", "gastric_bleeding_date"),
+            ("anorectal", "anorectal_date"),
+            ("anorectal_bleeding", "anorectal_bleeding_date"),
+            ("cholangitis_acute", "cholangitis_acute_date"),
+            ("cholangitis_recurrent", "cholangitis_recurrent_date"),
+            ("spleen_palpable", "spleen_palpable_date"),
         ]
 
         # Blank date if symptom not present
@@ -113,20 +113,25 @@ class LiverTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeria
     loss_reason = StringLookupField(LOSS_REASONS, required=False)
     other_loss_reason = fields.StringField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = LiverTransplant
         validators = [
-            valid_date_for_patient('registration_date'),
-            valid_date_for_patient('transplant_date'),
+            valid_date_for_patient("registration_date"),
+            valid_date_for_patient("transplant_date"),
         ]
-        exclude = ['transplant_group_id']
+        exclude = ["transplant_group_id"]
 
     def validate(self, data):
-        data = super(LiverTransplantSerializer, self).validate(data)
+        data = super().validate(data)
 
         # Transplant date should be after registration date
-        if data['registration_date'] is not None and data['transplant_date'] < data['registration_date']:
-            raise ValidationError({'transplant_date': 'Must be on or after registration date.'})
+        if (
+            data["registration_date"] is not None
+            and data["transplant_date"] < data["registration_date"]
+        ):
+            raise ValidationError(
+                {"transplant_date": "Must be on or after registration date."}
+            )
 
         return data
 
@@ -136,18 +141,18 @@ class NutritionSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     from_date = fields.DateField()
     to_date = fields.DateField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Nutrition
         validators = [
-            valid_date_for_patient('from_date'),
-            valid_date_for_patient('to_date'),
+            valid_date_for_patient("from_date"),
+            valid_date_for_patient("to_date"),
         ]
 
     def validate(self, data):
-        data = super(NutritionSerializer, self).validate(data)
+        data = super().validate(data)
 
         # To date must be after from date
-        if data['to_date'] is not None and data['to_date'] < data['from_date']:
-            raise ValidationError({'to_date': 'Must be on or after from date.'})
+        if data["to_date"] is not None and data["to_date"] < data["from_date"]:
+            raise ValidationError({"to_date": "Must be on or after from date."})
 
         return data

@@ -16,19 +16,21 @@ class LoginView(ApiView):
     @response_json(TokenSerializer)
     def post(self, credentials):
         try:
-            user, token = login(credentials['username'], credentials['password'])
+            user, token = login(credentials["username"], credentials["password"])
         except DisabledLoginError:
-            raise ValidationError({'username': 'Account disabled, please contact support.'})
+            raise ValidationError(
+                {"username": "Account disabled, please contact support."}
+            )
         except (UsernameLoginError, PasswordLoginError):
-            raise ValidationError({'username': 'Incorrect username or password.'})
+            raise ValidationError({"username": "Incorrect username or password."})
 
         # Optionally logout other sessions
-        if credentials.get('logout_other_sessions', False):
+        if credentials.get("logout_other_sessions", False):
             logout_other_sessions()
 
-        return {'user_id': user.id, 'token': token}
+        return {"user_id": user.id, "token": token}
 
 
 def register_views(app):
-    app.add_public_endpoint('login')
-    app.add_url_rule('/login', view_func=LoginView.as_view('login'))
+    app.add_public_endpoint("login")
+    app.add_url_rule("/login", view_func=LoginView.as_view("login"))

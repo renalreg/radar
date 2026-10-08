@@ -1,4 +1,3 @@
-from asyncio import protocols
 import calendar
 from datetime import datetime
 import itertools
@@ -35,11 +34,11 @@ class DemographicsMismatch(Exception):
     """Demographic details on record don't match the supplied details."""
 
     def __init__(self, patient):
-        super(DemographicsMismatch, self).__init__(patient)
+        super().__init__(patient)
         self.patient = patient
 
 
-class SearchPatient(object):
+class SearchPatient:
     def __init__(
         self,
         first_name,
@@ -65,7 +64,7 @@ class SearchPatient(object):
             logger.info("UKRDC search is disabled")
             return None
 
-        logger.info("Searching UKRDC number={}".format(self.number))
+        logger.info(f"Searching UKRDC number={self.number}")
 
         url = config["UKRDC_SEARCH_URL"]
         timeout = config.get("UKRDC_SEARCH_TIMEOUT", 60)
@@ -162,7 +161,7 @@ class SearchPatient(object):
         )
 
     def _search_radar(self):
-        logger.info("Searching RaDaR number={}".format(self.number))
+        logger.info(f"Searching RaDaR number={self.number}")
 
         q = Patient.query
         q = q.join(Patient.patient_numbers)
@@ -171,7 +170,7 @@ class SearchPatient(object):
         patient = q.first()
 
         if patient is not None:
-            logger.info("Found RaDaR patient id={}".format(patient.id))
+            logger.info(f"Found RaDaR patient id={patient.id}")
         else:
             logger.info("RaDaR patient not found")
 
@@ -201,7 +200,7 @@ class SearchPatient(object):
         return patient
 
 
-class RecruitmentPatient(object):
+class RecruitmentPatient:
     def __init__(
         self,
         search_patient,
@@ -211,7 +210,7 @@ class RecruitmentPatient(object):
         diagnosis,
         ethnicity=None,
         nationality=None,
-        email_reason=None
+        email_reason=None,
     ):
         self.search_patient = search_patient
         self.cohort_group = cohort_group
@@ -257,7 +256,7 @@ class RecruitmentPatient(object):
         return self.search_patient.search_ukrdc()
 
     def _create_patient(self):
-        logger.info("Creating patient number={}".format(self.number))
+        logger.info(f"Creating patient number={self.number}")
 
         system_group = self.cohort_group.parent_group
         patient = Patient()
@@ -329,7 +328,9 @@ class RecruitmentPatient(object):
         diagnosis.clinical_picture = self.diagnosis.get("clinical_picture")
         diagnosis.biopsy = self.diagnosis.get("biopsy")
         diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
-        diagnosis.proteinuria_positive_antibody = self.diagnosis.get("proteinuria_positive_antibody")
+        diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
+            "proteinuria_positive_antibody"
+        )
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
@@ -341,9 +342,7 @@ class RecruitmentPatient(object):
 
     def _add_to_group(self, patient, group):
         if not patient.in_group(group, current=True):
-            logger.info(
-                "Adding patient number={} to group id={}".format(self.number, group.id)
-            )
+            logger.info(f"Adding patient number={self.number} to group id={group.id}")
             group_patient = GroupPatient()
             group_patient.patient = patient
             group_patient.group = group
@@ -391,7 +390,7 @@ class RecruitmentPatient(object):
         return patient
 
 
-class SDAContainer(object):
+class SDAContainer:
     def __init__(self, data):
         self.data = data
 

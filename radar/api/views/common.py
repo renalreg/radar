@@ -1,3 +1,5 @@
+from typing import Any
+
 from cornflake import fields, serializers
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import aliased
@@ -26,7 +28,7 @@ from radar.user_search import UserQueryBuilder
 
 
 class StringLookupListView(ListView):
-    items = {}
+    items: dict[Any, Any] = {}
 
     def get_items(self):
         return self.items
@@ -39,7 +41,7 @@ class StringLookupListView(ListView):
 
 
 class IntegerLookupListView(ListView):
-    items = {}
+    items: dict[Any, Any] = {}
 
     def get_items(self):
         return self.items
@@ -71,9 +73,9 @@ def filter_query_by_group_permissions(query, model_class):
                 GroupPatient.group_id == model_class.group_id,
                 and_(
                     group_a.type == GROUP_TYPE.COHORT,
-                    group_b.type == GROUP_TYPE.HOSPITAL
-                )
-            )
+                    group_b.type == GROUP_TYPE.HOSPITAL,
+                ),
+            ),
         )
         sub_query = sub_query.exists()
 
@@ -87,8 +89,8 @@ def filter_query_by_group(query, model_class):
     args = parse_args(GroupRequestSerializer)
 
     # Filter by group
-    if args['group'] is not None:
-        query = query.filter(model_class.group_id == args['group'])
+    if args["group"] is not None:
+        query = query.filter(model_class.group_id == args["group"])
 
     return query
 
@@ -97,14 +99,14 @@ class GroupRequestSerializer(serializers.Serializer):
     group = fields.IntegerField(required=False)
 
 
-class GroupObjectViewMixin(object):
+class GroupObjectViewMixin:
     def get_permission_classes(self):
-        permission_classes = super(GroupObjectViewMixin, self).get_permission_classes()
+        permission_classes = super().get_permission_classes()
         permission_classes.append(GroupObjectPermission)
         return permission_classes
 
     def filter_query(self, query):
-        query = super(GroupObjectViewMixin, self).filter_query(query)
+        query = super().filter_query(query)
         model_class = self.get_model_class()
         query = filter_query_by_group_permissions(query, model_class)
         query = filter_query_by_group(query, model_class)
@@ -122,8 +124,8 @@ def filter_query_by_patient(query, model_class):
     args = parse_args(PatientRequestSerializer)
 
     # Filter by patient
-    if args['patient'] is not None:
-        query = query.filter(model_class.patient_id == args['patient'])
+    if args["patient"] is not None:
+        query = query.filter(model_class.patient_id == args["patient"])
 
     return query
 
@@ -137,14 +139,14 @@ class DemographicsRequestSerializer(serializers.Serializer):
     user = fields.IntegerField(required=False)
 
 
-class PatientObjectViewMixin(object):
+class PatientObjectViewMixin:
     def get_permission_classes(self):
-        permission_classes = super(PatientObjectViewMixin, self).get_permission_classes()
+        permission_classes = super().get_permission_classes()
         permission_classes.append(PatientObjectPermission)
         return permission_classes
 
     def filter_query(self, query):
-        query = super(PatientObjectViewMixin, self).filter_query(query)
+        query = super().filter_query(query)
         model_class = self.get_model_class()
         query = filter_query_by_patient_permissions(query, model_class)
         query = filter_query_by_patient(query, model_class)
@@ -159,9 +161,9 @@ class PatientObjectDetailView(PatientObjectViewMixin, RetrieveUpdateDestroyModel
     pass
 
 
-class DemographicsViewMixin(object):
+class DemographicsViewMixin:
     def filter_query(self, query):
-        query = super(DemographicsViewMixin, self).filter_query(query)
+        query = super().filter_query(query)
 
         if not current_user.is_admin:
             query = query.filter(filter_by_permissions(current_user, True))
@@ -174,9 +176,9 @@ class SourceRequestSerializer(serializers.Serializer):
     source_type = fields.StringField(required=False)
 
 
-class SourceFilterMixin(object):
+class SourceFilterMixin:
     def filter_query(self, query):
-        query = super(SourceFilterMixin, self).filter_query(query)
+        query = super().filter_query(query)
 
         # Note: if a user can view the patient (see PatientObjectViewMixin.filter_query) they can *view* the patient's
         # data from any data source.
@@ -184,28 +186,28 @@ class SourceFilterMixin(object):
         args = parse_args(SourceRequestSerializer)
 
         # Filter by source group
-        if args['source_group'] is not None:
+        if args["source_group"] is not None:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_group_id == args['source_group'])
+            query = query.filter(model_class.source_group_id == args["source_group"])
 
         # Filter by source type
-        if args['source_type'] is not None:
+        if args["source_type"] is not None:
             model_class = self.get_model_class()
-            query = query.filter(model_class.source_type == args['source_type'])
+            query = query.filter(model_class.source_type == args["source_type"])
 
         return query
 
 
 class SourceObjectViewMixin(SourceFilterMixin):
     def get_permission_classes(self):
-        permission_classes = super(SourceObjectViewMixin, self).get_permission_classes()
+        permission_classes = super().get_permission_classes()
         permission_classes.append(SourceObjectPermission)
         return permission_classes
 
 
 class SystemObjectViewMixin(SourceFilterMixin):
     def get_permission_classes(self):
-        permission_classes = super(SystemObjectViewMixin, self).get_permission_classes()
+        permission_classes = super().get_permission_classes()
         permission_classes.append(SystemSourceObjectPermission)
         return permission_classes
 
@@ -225,7 +227,7 @@ def filter_query_by_user(query, model_class):
     args = parse_args(UserRequestSerializer)
 
     # Filter by user
-    if args['user'] is not None:
-        query = query.filter(model_class.user_id == args['user'])
+    if args["user"] is not None:
+        query = query.filter(model_class.user_id == args["user"])
 
     return query

@@ -18,15 +18,12 @@ from tests.api.fixtures import (
 
 
 def create_dialysis(patient, **kwargs):
-    kwargs.setdefault('from_date', func.now())
-    kwargs.setdefault('modality', 1)
+    kwargs.setdefault("from_date", func.now())
+    kwargs.setdefault("modality", 1)
     set_default_source(kwargs)
     set_default_users(kwargs)
 
-    d = Dialysis(
-        patient=patient,
-        **kwargs
-    )
+    d = Dialysis(patient=patient, **kwargs)
     db.session.add(d)
 
     return d
@@ -34,23 +31,29 @@ def create_dialysis(patient, **kwargs):
 
 def get_read_list_args():
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital2_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it'
+        "admin",
+        "hospital1_clinician",
+        "hospital2_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
     ]
     groups = [
         (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR),
-        (GROUP_TYPE.HOSPITAL, 'HOSPITAL1'),
-        (GROUP_TYPE.HOSPITAL, 'HOSPITAL2'),
+        (GROUP_TYPE.HOSPITAL, "HOSPITAL1"),
+        (GROUP_TYPE.HOSPITAL, "HOSPITAL2"),
     ]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = True
-        elif username == 'hospital1_clinician':
+        elif username == "hospital1_clinician":
             expected = True
-        elif username == 'cohort1_researcher':
+        elif username == "cohort1_researcher":
             expected = True
         else:
             expected = False
@@ -64,23 +67,32 @@ def get_read_args():
 
 def get_create_args():
     radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
-    hospital2_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL2')
-    cohort1_group = (GROUP_TYPE.COHORT, 'COHORT1')
+    hospital1_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL1")
+    hospital2_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL2")
+    cohort1_group = (GROUP_TYPE.COHORT, "COHORT1")
 
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital2_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it'
+        "admin",
+        "hospital1_clinician",
+        "hospital2_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
     ]
     groups = [radar_group, hospital1_group, hospital2_group, cohort1_group]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = True
-        elif username == 'hospital1_clinician':
-            expected = source_type == SOURCE_TYPE_MANUAL and group in (radar_group, hospital1_group)
+        elif username == "hospital1_clinician":
+            expected = source_type == SOURCE_TYPE_MANUAL and group in (
+                radar_group,
+                hospital1_group,
+            )
         else:
             expected = False
 
@@ -93,26 +105,35 @@ def get_delete_args():
 
 def get_update_args():
     radar_group = (GROUP_TYPE.SYSTEM, GROUP_CODE_RADAR)
-    hospital1_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL1')
-    hospital2_group = (GROUP_TYPE.HOSPITAL, 'HOSPITAL2')
+    hospital1_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL1")
+    hospital2_group = (GROUP_TYPE.HOSPITAL, "HOSPITAL2")
 
     usernames = [
-        'admin', 'hospital1_clinician', 'hospital2_clinician',
-        'cohort1_researcher', 'cohort2_researcher', 'null',
-        'hospital1_it'
+        "admin",
+        "hospital1_clinician",
+        "hospital2_clinician",
+        "cohort1_researcher",
+        "cohort2_researcher",
+        "null",
+        "hospital1_it",
     ]
     groups = [radar_group, hospital1_group, hospital2_group]
     source_types = [SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC]
 
-    for username, group, source_type in itertools.product(usernames, groups, source_types):
-        if username == 'admin':
+    for username, group, source_type in itertools.product(
+        usernames, groups, source_types
+    ):
+        if username == "admin":
             expected = 200
-        elif username == 'hospital1_clinician':
-            if source_type == SOURCE_TYPE_MANUAL and group in (radar_group, hospital1_group):
+        elif username == "hospital1_clinician":
+            if source_type == SOURCE_TYPE_MANUAL and group in (
+                radar_group,
+                hospital1_group,
+            ):
                 expected = 200
             else:
                 expected = 403
-        elif username == 'cohort1_researcher':
+        elif username == "cohort1_researcher":
             expected = 403
         else:
             expected = 404
@@ -120,8 +141,13 @@ def get_update_args():
         yield username, group[0], group[1], source_type, expected
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_list_args())
-def test_read_dialysis_list(api, username, group_type, group_code, source_type, expected):
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_read_list_args(),
+)
+def test_read_dialysis_list(
+    api, username, group_type, group_code, source_type, expected
+):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
@@ -131,19 +157,21 @@ def test_read_dialysis_list(api, username, group_type, group_code, source_type, 
     client = api.test_client()
     client.login(user)
 
-    response = client.get('/dialysis')
+    response = client.get("/dialysis")
 
     data = json.loads(response.data)
 
     assert response.status_code == 200
 
     if expected:
-        assert len(data['data']) == 1
+        assert len(data["data"]) == 1
     else:
-        assert len(data['data']) == 0
+        assert len(data["data"]) == 0
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_read_args())
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"], get_read_args()
+)
 def test_read_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
@@ -154,18 +182,21 @@ def test_read_dialysis(api, username, group_type, group_code, source_type, expec
     client = api.test_client()
     client.login(user)
 
-    response = client.get('/dialysis/%s' % dialysis.id)
+    response = client.get(f"/dialysis/{dialysis.id}")
 
     if expected:
         assert response.status_code == 200
 
         data = json.loads(response.data)
-        assert data['id'] == dialysis.id
+        assert data["id"] == dialysis.id
     else:
         assert response.status_code == 404
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_delete_args())
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_delete_args(),
+)
 def test_delete_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
@@ -176,7 +207,7 @@ def test_delete_dialysis(api, username, group_type, group_code, source_type, exp
     client = api.test_client()
     client.login(user)
 
-    response = client.delete('/dialysis/%s' % dialysis.id)
+    response = client.delete(f"/dialysis/{dialysis.id}")
 
     dialysis = Dialysis.query.get(dialysis.id)
 
@@ -190,7 +221,10 @@ def test_delete_dialysis(api, username, group_type, group_code, source_type, exp
         assert dialysis is not None
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_create_args())
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_create_args(),
+)
 def test_create_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
@@ -198,24 +232,24 @@ def test_create_dialysis(api, username, group_type, group_code, source_type, exp
     db.session.commit()
 
     data = {
-        'patient': patient.id,
-        'source_group': group.id,
-        'source_type': source_type,
-        'from_date': '2016-01-01',
-        'modality': 1
+        "patient": patient.id,
+        "source_group": group.id,
+        "source_type": source_type,
+        "from_date": "2016-01-01",
+        "modality": 1,
     }
 
     client = api.test_client()
     client.login(user)
 
-    response = client.post('/dialysis', data=data)
+    response = client.post("/dialysis", data=data)
 
     if expected:
         assert response.status_code == 200
 
         data = json.loads(response.data)
 
-        dialysis = Dialysis.query.get(data['id'])
+        dialysis = Dialysis.query.get(data["id"])
 
         # Check the dialysis was created
         assert dialysis is not None
@@ -226,23 +260,28 @@ def test_create_dialysis(api, username, group_type, group_code, source_type, exp
         assert Dialysis.query.count() == 0
 
 
-@pytest.mark.parametrize(['username', 'group_type', 'group_code', 'source_type', 'expected'], get_update_args())
+@pytest.mark.parametrize(
+    ["username", "group_type", "group_code", "source_type", "expected"],
+    get_update_args(),
+)
 def test_update_dialysis(api, username, group_type, group_code, source_type, expected):
     user = get_user(username)
     patient = get_patient(1)
     group = get_group(group_type, group_code)
-    dialysis = create_dialysis(patient, source_group=group, source_type=source_type, modality=1)
+    dialysis = create_dialysis(
+        patient, source_group=group, source_type=source_type, modality=1
+    )
     db.session.commit()
 
     data = {
-        'id': dialysis.id,
-        'modality': 2,
+        "id": dialysis.id,
+        "modality": 2,
     }
 
     client = api.test_client()
     client.login(user)
 
-    response = client.patch('/dialysis/%s' % dialysis.id, data=data)
+    response = client.patch(f"/dialysis/{dialysis.id}", data=data)
 
     assert response.status_code == expected
 

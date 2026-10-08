@@ -14,9 +14,9 @@ from radar.utils import camel_case_keys
 class FormSerializer(ModelSerializer):
     name = fields.StringField()
     slug = fields.StringField()
-    data_ = fields.Field(field_name='data', source='data')
+    data_ = fields.Field(field_name="data", source="data")
 
-    class Meta(object):
+    class Meta:
         model_class = Form
 
 
@@ -27,7 +27,7 @@ class FormField(ReferenceField):
 
 class DataField(fields.Field):
     def __init__(self, schema, **kwargs):
-        super(DataField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.schema = schema
 
     def __deepcopy__(self, memo):
@@ -55,22 +55,22 @@ class DataField(fields.Field):
 class BaseEntrySerializer(PatientMixin, MetaMixin, ModelSerializer):
     form = FormField()
 
-    class Meta(object):
+    class Meta:
         model_class = Entry
-        exclude = ['form_id']
+        exclude = ["form_id"]
 
     def _save(self, instance, data):
-        instance.form = data['form']
-        instance.patient = data['patient']
+        instance.form = data["form"]
+        instance.patient = data["patient"]
 
         # Serialize the data before saving (e.g. datetime to string)
-        instance.data = self.data.to_representation(data['data'])
+        instance.data = self.data.to_representation(data["data"])
 
         # Metadata
-        instance.created_user = data['created_user']
-        instance.modified_user = data['modified_user']
-        instance.created_date = data['created_date']
-        instance.modified_date = data['modified_date']
+        instance.created_user = data["created_user"]
+        instance.modified_user = data["modified_user"]
+        instance.created_date = data["created_date"]
+        instance.modified_date = data["modified_date"]
 
     def create(self, data):
         instance = Entry()
@@ -84,11 +84,11 @@ class BaseEntrySerializer(PatientMixin, MetaMixin, ModelSerializer):
 
 class EntrySerializer(serializers.ProxySerializer):
     def __init__(self, *args, **kwargs):
-        super(EntrySerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Entry must have a form so we know how to handle the data property/attribute
         self.field = FormField()
-        self.field.bind(self, 'form')
+        self.field.bind(self, "form")
 
     def create_serializer(self, form):
         """Creates a serializer at runtime based on the type of form."""
@@ -98,9 +98,9 @@ class EntrySerializer(serializers.ProxySerializer):
 
         data_field = DataField(schema)
 
-        serializer = type('EntrySerializer', (BaseEntrySerializer,), {
-            'data': data_field
-        })()
+        serializer = type(
+            "EntrySerializer", (BaseEntrySerializer,), {"data": data_field}
+        )()
 
         return serializer
 

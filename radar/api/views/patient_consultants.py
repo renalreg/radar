@@ -17,7 +17,11 @@ class PatientConsultantDetailView(PatientObjectDetailView):
 
 
 def register_views(app):
-    app.add_url_rule('/patient-consultants', view_func=PatientConsultantListView.as_view('patient_consultant_list'))
     app.add_url_rule(
-        '/patient-consultants/<int:id>',
-        view_func=PatientConsultantDetailView.as_view('patient_consultant_detail'))
+        "/patient-consultants",
+        view_func=PatientConsultantListView.as_view("patient_consultant_list"),
+    )
+    app.add_url_rule(
+        "/patient-consultants/<int:id>",
+        view_func=PatientConsultantDetailView.as_view("patient_consultant_detail"),
+    )

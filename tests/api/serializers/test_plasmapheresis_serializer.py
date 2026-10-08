@@ -23,13 +23,13 @@ def patient():
 @pytest.fixture
 def plasmapheresis(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'from_date': date(2015, 1, 1),
-        'to_date': date(2015, 1, 2),
-        'no_of_exchanges': '1/1D',
-        'response': 'COMPLETE'
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "from_date": date(2015, 1, 1),
+        "to_date": date(2015, 1, 2),
+        "no_of_exchanges": "1/1D",
+        "response": "COMPLETE",
     }
 
 
@@ -37,8 +37,8 @@ def test_valid(plasmapheresis):
     obj = valid(plasmapheresis)
     assert obj.from_date == date(2015, 1, 1)
     assert obj.to_date == date(2015, 1, 2)
-    assert obj.no_of_exchanges == '1/1D'
-    assert obj.response == 'COMPLETE'
+    assert obj.no_of_exchanges == "1/1D"
+    assert obj.response == "COMPLETE"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -46,73 +46,73 @@ def test_valid(plasmapheresis):
 
 
 def test_patient_none(plasmapheresis):
-    plasmapheresis['patient'] = None
+    plasmapheresis["patient"] = None
     invalid(plasmapheresis)
 
 
 def test_source_group_none(plasmapheresis):
-    plasmapheresis['source_group'] = None
+    plasmapheresis["source_group"] = None
     invalid(plasmapheresis)
 
 
 def test_source_type_none(plasmapheresis):
-    plasmapheresis['source_type'] = None
+    plasmapheresis["source_type"] = None
     obj = valid(plasmapheresis)
     assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_from_date_none(plasmapheresis):
-    plasmapheresis['from_date'] = None
+    plasmapheresis["from_date"] = None
     invalid(plasmapheresis)
 
 
 def test_from_date_before_dob(plasmapheresis):
-    plasmapheresis['from_date'] = date(1999, 1, 1)
+    plasmapheresis["from_date"] = date(1999, 1, 1)
     invalid(plasmapheresis)
 
 
 def test_from_date_future(plasmapheresis):
-    plasmapheresis['from_date'] = date.today() + timedelta(days=1)
+    plasmapheresis["from_date"] = date.today() + timedelta(days=1)
     invalid(plasmapheresis)
 
 
 def test_to_date_none(plasmapheresis):
-    plasmapheresis['to_date'] = None
+    plasmapheresis["to_date"] = None
     valid(plasmapheresis)
 
 
 def test_to_date_before_dob(plasmapheresis):
-    plasmapheresis['to_date'] = date(1999, 1, 1)
+    plasmapheresis["to_date"] = date(1999, 1, 1)
     invalid(plasmapheresis)
 
 
 def test_to_date_future(plasmapheresis):
-    plasmapheresis['to_date'] = date.today() + timedelta(days=1)
+    plasmapheresis["to_date"] = date.today() + timedelta(days=1)
     invalid(plasmapheresis)
 
 
 def test_to_date_before_from_date(plasmapheresis):
-    plasmapheresis['to_date'] = plasmapheresis['from_date'] - timedelta(days=1)
+    plasmapheresis["to_date"] = plasmapheresis["from_date"] - timedelta(days=1)
     invalid(plasmapheresis)
 
 
 def test_no_of_exchanges_none(plasmapheresis):
-    plasmapheresis['no_of_exchanges'] = None
+    plasmapheresis["no_of_exchanges"] = None
     valid(plasmapheresis)
 
 
 def test_no_of_exchanges_invalid(plasmapheresis):
-    plasmapheresis['no_of_exchanges'] = 'FOO'
+    plasmapheresis["no_of_exchanges"] = "FOO"
     invalid(plasmapheresis)
 
 
 def test_response_none(plasmapheresis):
-    plasmapheresis['response'] = None
+    plasmapheresis["response"] = None
     valid(plasmapheresis)
 
 
 def test_response_invalid(plasmapheresis):
-    plasmapheresis['response'] = 'FOO'
+    plasmapheresis["response"] = "FOO"
     invalid(plasmapheresis)
 
 
@@ -124,6 +124,8 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = PlasmapheresisSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = PlasmapheresisSerializer(
+        data=data, context={"user": User(is_admin=True)}
+    )
     serializer.is_valid(raise_exception=True)
     return serializer.save()

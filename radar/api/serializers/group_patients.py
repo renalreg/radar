@@ -23,7 +23,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
     created_group = GroupField()
     current = fields.BooleanField(read_only=True)
 
-    class Meta(object):
+    class Meta:
         model_class = GroupPatient
         exclude = ["group_id", "created_group_id"]
 
@@ -62,7 +62,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             raise ValidationError({"group": e.args[0]})
 
     def validate(self, data):
-        data = super(GroupPatientSerializer, self).validate(data)
+        data = super().validate(data)
 
         current_user = self.context["user"]
         instance = self.instance
@@ -118,7 +118,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
         return data
 
     def save(self):
-        group_patient = super(GroupPatientSerializer, self).save()
+        group_patient = super().save()
 
         patient = group_patient.patient
         parent_group = group_patient.group.parent_group

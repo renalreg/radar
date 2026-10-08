@@ -27,7 +27,11 @@ def has_permission_for_user(user, other_user, permission, explicit=False):
 
     if user.is_admin:
         grant = True
-    elif not explicit and user == other_user and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER):
+    elif (
+        not explicit
+        and user == other_user
+        and permission in (PERMISSION.VIEW_USER, PERMISSION.EDIT_USER)
+    ):
         # Users can view and edit themselves
         grant = True
     elif other_user.is_admin and permission == PERMISSION.EDIT_USER:
@@ -76,13 +80,16 @@ def has_permission_for_group(user, group, permission, explicit=False):
 
         # Users get permissions on cohort groups through their hospital groups
         if (
-            not explicit and
-            group.type == GROUP_TYPE.COHORT and
-            permission in (
-                PERMISSION.VIEW_PATIENT, PERMISSION.EDIT_PATIENT,
-                PERMISSION.RECRUIT_PATIENT, PERMISSION.EDIT_PATIENT_MEMBERSHIP
-            ) and
-            has_permission(user, permission, group_type=GROUP_TYPE.HOSPITAL)
+            not explicit
+            and group.type == GROUP_TYPE.COHORT
+            and permission
+            in (
+                PERMISSION.VIEW_PATIENT,
+                PERMISSION.EDIT_PATIENT,
+                PERMISSION.RECRUIT_PATIENT,
+                PERMISSION.EDIT_PATIENT_MEMBERSHIP,
+            )
+            and has_permission(user, permission, group_type=GROUP_TYPE.HOSPITAL)
         ):
             return True
 
@@ -106,7 +113,9 @@ def has_permission_for_group_role(user, group, role):
     return False
 
 
-def intersect_groups_with_patient(user, patient, user_membership=False, patient_membership=False):
+def intersect_groups_with_patient(
+    user, patient, user_membership=False, patient_membership=False
+):
     """Find the intersection of the groups the user and patient belong to."""
 
     group_patients = {x.group: x for x in patient.group_patients}
@@ -130,7 +139,9 @@ def intersect_groups_with_patient(user, patient, user_membership=False, patient_
     return intersection
 
 
-def intersect_groups_with_user(user, other_user, user_membership=False, other_user_membership=False):
+def intersect_groups_with_user(
+    user, other_user, user_membership=False, other_user_membership=False
+):
     """Find the intersection of the groups the patient and user belong to."""
 
     other_group_users = {x.group: x for x in other_user.group_users}

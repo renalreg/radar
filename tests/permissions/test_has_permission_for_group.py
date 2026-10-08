@@ -35,5 +35,9 @@ def test_in_group_without_permission():
     group_researcher_user = make_user([(group, ROLE.RESEARCHER)])
     group_senior_researcher_user = make_user([(group, ROLE.SENIOR_RESEARCHER)])
 
-    assert not has_permission_for_group(group_researcher_user, group, PERMISSION.VIEW_DEMOGRAPHICS)
-    assert has_permission_for_group(group_senior_researcher_user, group, PERMISSION.VIEW_DEMOGRAPHICS)
+    assert not has_permission_for_group(
+        group_researcher_user, group, PERMISSION.VIEW_DEMOGRAPHICS
+    )
+    assert has_permission_for_group(
+        group_senior_researcher_user, group, PERMISSION.VIEW_DEMOGRAPHICS
+    )

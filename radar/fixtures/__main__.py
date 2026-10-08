@@ -14,8 +14,8 @@ def cli():
 
 
 @cli.command()
-@click.option('--patients', default=5)
-@click.option('--password', default='password')
+@click.option("--patients", default=5)
+@click.option("--password", default="password")
 def all(patients, password):
     do_drop()
     do_create()
@@ -24,15 +24,15 @@ def all(patients, password):
 
 
 @cli.command()
-@click.option('--patients', default=5)
-@click.option('--data/--no-data', default=True)
+@click.option("--patients", default=5)
+@click.option("--data/--no-data", default=True)
 def patients(patients, data):
     create_patients(patients, data)
     db.session.commit()
 
 
 @cli.command()
-@click.option('--password', default='password')
+@click.option("--password", default="password")
 def users(password):
     create_bot_user(password)
     create_users(password)
@@ -40,8 +40,8 @@ def users(password):
 
 
 @cli.command()
-@click.argument('username')
-@click.option('--password', default='password')
+@click.argument("username")
+@click.option("--password", default="password")
 def user(username, password):
     create_user(username, password)
     db.session.commit()
@@ -54,5 +54,5 @@ def main():
         cli()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

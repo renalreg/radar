@@ -14,7 +14,7 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-from sqlalchemy.orm import aliased, relationship
+from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
@@ -26,7 +26,6 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
-from radar.models.biomarker import BiomarkerBarcode
 
 
 SIXTEEN_YEARS_IN_MONTHS = 12 * 16
@@ -68,12 +67,6 @@ class Patient(db.Model, MetaModelMixin):
     test = Column(Boolean, default=False, nullable=False, server_default=text("false"))
     control = Column(
         Boolean, default=False, nullable=False, server_default=text("false")
-    )
-
-    barcode = relationship(
-        "BiomarkerBarcode",
-        back_populates="pat",
-        cascade="all, delete-orphan"
     )
 
     @property
@@ -174,7 +167,6 @@ class Patient(db.Model, MetaModelMixin):
             find_group_patient(GROUP_TYPE.SYSTEM)
 
         return recruited_group_patient
-
 
     def recruited_user(self, group=None, group_type=None):
         group_patient = self._recruited_group_patient(group, group_type)
@@ -325,7 +317,7 @@ class Patient(db.Model, MetaModelMixin):
             return last_name
         if not last_name:
             return first_name
-        return "{} {}".format(first_name, last_name)
+        return f"{first_name} {last_name}"
 
     @hybrid_property
     def date_of_birth(self):

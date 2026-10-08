@@ -1,7 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, Float, text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
+
 
 class Biomarker(db.Model):
     __tablename__ = "biomarkers"
@@ -27,9 +28,10 @@ class BiomarkerBarcode(db.Model):
     barcode = Column(String(100))
     sample_date = Column(DateTime)
 
-    pat = relationship("Patient", back_populates="barcode")
-
-
+    pat = relationship(
+        "Patient",
+        backref=backref("barcode", cascade="all, delete-orphan"),
+    )
 
 
 class BiomarkerResult(db.Model):
@@ -48,7 +50,9 @@ class BiomarkerResult(db.Model):
     hospital = Column(String(100))
 
     bio = relationship("Biomarker", cascade="all, delete-orphan", single_parent=True)
-    sample = relationship("BiomarkerSample", cascade="all, delete-orphan", single_parent=True)
+    sample = relationship(
+        "BiomarkerSample", cascade="all, delete-orphan", single_parent=True
+    )
 
 
 class BiomarkerSample(db.Model):
@@ -62,6 +66,6 @@ class BiomarkerSample(db.Model):
     barcode_id = Column(ForeignKey("biomarker_barcodes.id"))
     label = Column(String(100), nullable=False)
 
-    barcode = relationship("BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True)
-
-
+    barcode = relationship(
+        "BiomarkerBarcode", cascade="all, delete-orphan", single_parent=True
+    )

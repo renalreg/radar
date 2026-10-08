@@ -19,14 +19,16 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
     group = GroupField()
     role = EnumLookupField(ROLE, ROLE_NAMES)
     permissions = fields.ListField(child=fields.StringField(), read_only=True)
-    managed_roles = fields.ListField(child=StringLookupField(ROLE_NAMES), read_only=True)
+    managed_roles = fields.ListField(
+        child=StringLookupField(ROLE_NAMES), read_only=True
+    )
 
-    class Meta(object):
+    class Meta:
         model_class = GroupUser
-        exclude = ['group_id']
+        exclude = ["group_id"]
 
     def check_permissions(self, user, group, role):
-        current_user = self.context['user']
+        current_user = self.context["user"]
 
         # Can't change your own role
         if current_user == user and not current_user.is_admin:
@@ -37,22 +39,20 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
             raise PermissionDenied()
 
     def is_duplicate(self, data):
-        group = data['group']
-        user = data['user']
-        role = data['role']
+        group = data["group"]
+        user = data["user"]
+        role = data["role"]
         instance = self.instance
 
         duplicate = any(
-            group == x.group and
-            role == x.role and
-            (instance is None or instance != x)
+            group == x.group and role == x.role and (instance is None or instance != x)
             for x in user.group_users
         )
 
         return duplicate
 
     def validate(self, data):
-        data = super(GroupUserSerializer, self).validate(data)
+        data = super().validate(data)
 
         instance = self.instance
 
@@ -60,11 +60,11 @@ class GroupUserSerializer(UserMixin, MetaMixin, ModelSerializer):
         if instance is not None:
             self.check_permissions(instance.user, instance.group, instance.role)
 
-        self.check_permissions(data['user'], data['group'], data['role'])
+        self.check_permissions(data["user"], data["group"], data["role"])
 
         # Check that the user doesn't already belong to this group
         # Note: it's important this check happens after the above permission check to prevent membership enumeration
         if self.is_duplicate(data):
-            raise ValidationError({'group': 'User already belongs to this group.'})
+            raise ValidationError({"group": "User already belongs to this group."})
 
         return data

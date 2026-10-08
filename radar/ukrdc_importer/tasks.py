@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from celery import shared_task
 from cornflake.exceptions import ValidationError
@@ -7,7 +6,7 @@ import sqlalchemy
 
 from radar.database import db
 from radar.logging.logger import PatientLoggerAdapter
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import Group, GROUP_TYPE
 from radar.models.logs import Log
 from radar.models.patient_locks import PatientLock
 from radar.models.patients import Patient
@@ -47,7 +46,7 @@ def parse_patient_id(value):
     return value
 
 
-def get_patient(patient_id)->Patient:
+def get_patient(patient_id) -> Patient:
     """Get a patient by id."""
 
     return Patient.query.get(patient_id)
@@ -60,7 +59,9 @@ def lock_patient(patient):
         # Attempt to lock this patient
         # Blocks until we have a lock or returns None on first import
         patient_lock = (
-            PatientLock.query.filter(PatientLock.patient == patient).with_for_update().first()
+            PatientLock.query.filter(PatientLock.patient == patient)
+            .with_for_update()
+            .first()
         )
 
         # Lock acquired
@@ -100,7 +101,10 @@ def withdrawn_consent_cohorts(patient: Patient) -> bool:
         group = gp.group
         if (
             gp.to_date is None  # active consent
-            and (group.code in withdrawn_consent_codes or group.id in withdrawn_consent_ids)
+            and (
+                group.code in withdrawn_consent_codes
+                or group.id in withdrawn_consent_ids
+            )
         ):
             return True
 
@@ -167,15 +171,19 @@ def import_sda(data, sequence_number, patient_id=None):
         adapter.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
         return False
 
-
     # Lock the patient while we import the data
     # Simulatenous updates could result in inconsistency otherwise
     patient_lock = lock_patient(patient)
 
     # Check we haven't already imported a newer sequence number
-    if patient_lock.sequence_number is not None and sequence_number < patient_lock.sequence_number:
+    if (
+        patient_lock.sequence_number is not None
+        and sequence_number < patient_lock.sequence_number
+    ):
         adapter.info(
-            "Skipping old sequence number %s < %s", sequence_number, patient_lock.sequence_number
+            "Skipping old sequence number %s < %s",
+            sequence_number,
+            patient_lock.sequence_number,
         )
         return False
 
@@ -191,7 +199,7 @@ def import_sda(data, sequence_number, patient_id=None):
     import_aliases(patient, sda_names, adapter)
     import_addresses(patient, sda_addresses, adapter)
     import_medications(patient, sda_medications, adapter)
-    import_results(patient, sda_lab_orders ,adapter)
+    import_results(patient, sda_lab_orders, adapter)
 
     log_data_import(patient)
 

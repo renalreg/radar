@@ -15,7 +15,9 @@ class GroupListRequestSerializer(serializers.Serializer):
     type = fields.EnumField(GROUP_TYPE, required=False)
     is_recruitment_number_group = fields.BooleanField(required=False)
     is_transplant_centre = fields.BooleanField(required=False)
-    filter_out = fields.CommaSeparatedField(required=False, child=fields.EnumField(GROUP_TYPE))
+    filter_out = fields.CommaSeparatedField(
+        required=False, child=fields.EnumField(GROUP_TYPE)
+    )
 
 
 class GroupListView(ListCreateModelView):
@@ -24,7 +26,7 @@ class GroupListView(ListCreateModelView):
     permission_classes = [AdminWritePermission]
 
     def filter_query(self, query):
-        query = super(GroupListView, self).filter_query(query)
+        query = super().filter_query(query)
 
         args = parse_args(GroupListRequestSerializer)
 
@@ -37,7 +39,9 @@ class GroupListView(ListCreateModelView):
             query = query.filter(Group.type == args["type"])
 
         if args["is_transplant_centre"] is not None:
-            query = query.filter(Group.is_transplant_centre == args["is_transplant_centre"])
+            query = query.filter(
+                Group.is_transplant_centre == args["is_transplant_centre"]
+            )
 
         # Filter by recruitment number flag
         if args["is_recruitment_number_group"] is not None:
@@ -74,4 +78,6 @@ class GroupDetailView(RetrieveUpdateDestroyModelView):
 
 def register_views(app):
     app.add_url_rule("/groups", view_func=GroupListView.as_view("group_list"))
-    app.add_url_rule("/groups/<int:id>", view_func=GroupDetailView.as_view("group_detail"))
+    app.add_url_rule(
+        "/groups/<int:id>", view_func=GroupDetailView.as_view("group_detail")
+    )

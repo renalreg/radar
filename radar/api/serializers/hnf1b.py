@@ -13,12 +13,11 @@ class Hnf1bClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     hyperuricemia_gout = fields.BooleanField(required=False)
     genital_malformation = fields.BooleanField(required=False)
     genital_malformation_details = fields.StringField(
-        required=False,
-        validators=[none_if_blank(), optional(), max_length(10000)]
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
     familial_cystic_disease = fields.BooleanField(required=False)
     hypertension = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Hnf1bClinicalPicture
-        validators = [valid_date_for_patient('date_of_picture')]
+        validators = [valid_date_for_patient("date_of_picture")]

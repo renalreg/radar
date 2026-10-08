@@ -24,7 +24,7 @@ from radar.models.common import CreatedDateMixin, ModifiedDateMixin
 from radar.models.logs import Log, log_changes
 
 
-class UserCreatedUserMixin(object):
+class UserCreatedUserMixin:
     @declared_attr
     def created_user_id(self):
         # Nullable as it is a self-reference
@@ -34,13 +34,13 @@ class UserCreatedUserMixin(object):
     def created_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.created_user_id" % self.__name__,
+            primaryjoin=f"User.id == {self.__name__}.created_user_id",
             remote_side="User.id",
             post_update=True,
         )
 
 
-class UserModifiedUserMixin(object):
+class UserModifiedUserMixin:
     @declared_attr
     def modified_user_id(self):
         # Nullable as it is a self-reference
@@ -50,7 +50,7 @@ class UserModifiedUserMixin(object):
     def modified_user(self):
         return relationship(
             "User",
-            primaryjoin="User.id == %s.modified_user_id" % self.__name__,
+            primaryjoin=f"User.id == {self.__name__}.modified_user_id",
             remote_side="User.id",
             post_update=True,
         )
@@ -96,13 +96,11 @@ class User(
         .where(Log.type == "LOGIN")
         .scalar_subquery(),
         deferred=True,
-        )
+    )
 
     last_active_date = column_property(
-        select(func.max(Log.date))
-        .where(Log.user_id == id)
-        .scalar_subquery(),
-        deferred=True
+        select(func.max(Log.date)).where(Log.user_id == id).scalar_subquery(),
+        deferred=True,
     )
 
     @hybrid_property
@@ -131,11 +129,11 @@ class User(
     def groups(self):
         return [x.group for x in self.group_users]
 
-    def password(self, value):
+    def _set_password(self, value):
         self.password_hash = generate_password_hash(value)
         self.reset_password_token = None
 
-    password = property(None, password)
+    password = property(fset=_set_password)
 
     @property
     def password_hash(self):
@@ -165,7 +163,7 @@ class User(
     @property
     def name(self):
         if self.first_name and self.last_name:
-            return "{} {}".format(self.first_name, self.last_name)
+            return f"{self.first_name} {self.last_name}"
         elif self.first_name:
             return self.first_name
         elif self.last_name:
@@ -181,7 +179,7 @@ class User(
 Index("users_username_idx", func.lower(User.username), unique=True)
 
 
-class AnonymousUser(object):
+class AnonymousUser:
     @classmethod
     def is_authenticated(cls):
         return False

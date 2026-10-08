@@ -2,7 +2,11 @@ from datetime import date
 import random
 
 from radar.fixtures.utils import add, random_bool, random_date
-from radar.models.renal_imaging import RENAL_IMAGING_KIDNEY_TYPES, RENAL_IMAGING_TYPES, RenalImaging
+from radar.models.renal_imaging import (
+    RENAL_IMAGING_KIDNEY_TYPES,
+    RENAL_IMAGING_TYPES,
+    RenalImaging,
+)
 
 
 def create_renal_imaging_f():
@@ -12,13 +16,17 @@ def create_renal_imaging_f():
             renal_imaging.patient = patient
             renal_imaging.source_group = source_group
             renal_imaging.source_type = source_type
-            renal_imaging.date = random_date(patient.earliest_date_of_birth, date.today())
+            renal_imaging.date = random_date(
+                patient.earliest_date_of_birth, date.today()
+            )
             renal_imaging.imaging_type = random.choice(list(RENAL_IMAGING_TYPES.keys()))
             renal_imaging.right_present = random_bool()
             renal_imaging.left_present = random_bool()
 
             if renal_imaging.right_present:
-                renal_imaging.right_type = random.choice(list(RENAL_IMAGING_KIDNEY_TYPES.keys()))
+                renal_imaging.right_type = random.choice(
+                    list(RENAL_IMAGING_KIDNEY_TYPES.keys())
+                )
                 renal_imaging.right_length = random.randint(11, 14)
                 renal_imaging.right_cysts = random_bool()
                 renal_imaging.right_stones = random_bool()
@@ -29,7 +37,9 @@ def create_renal_imaging_f():
                     renal_imaging.right_nephrolithiasis = random_bool()
 
             if renal_imaging.left_present:
-                renal_imaging.left_type = random.choice(list(RENAL_IMAGING_KIDNEY_TYPES.keys()))
+                renal_imaging.left_type = random.choice(
+                    list(RENAL_IMAGING_KIDNEY_TYPES.keys())
+                )
                 renal_imaging.left_length = random.randint(11, 14)
                 renal_imaging.left_cysts = random_bool()
                 renal_imaging.left_stones = random_bool()

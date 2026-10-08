@@ -47,15 +47,12 @@ def run(date_of_birth, value):
         date = fields.Field()
 
         class Meta:
-            validators = [after_date_of_birth('date')]
+            validators = [after_date_of_birth("date")]
 
     print(patient.earliest_date_of_birth)
 
-    serializer = Serializer(data={
-        'patient': patient,
-        'date': value
-    })
+    serializer = Serializer(data={"patient": patient, "date": value})
 
     serializer.is_valid(raise_exception=True)
 
-    return serializer.validated_data['date']
+    return serializer.validated_data["date"]

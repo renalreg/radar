@@ -1,30 +1,38 @@
-#! -*- coding: utf-8 -*-
 import enum
 
 from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Enum
 from sqlalchemy.orm import relationship
 
 from radar.database import db
-from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship, uuid_pk_column
+from radar.models.common import (
+    MetaModelMixin,
+    patient_id_column,
+    patient_relationship,
+    uuid_pk_column,
+)
 from radar.models.logs import log_changes
 
 
-
 class PROTOCOL_OPTION_TYPE(enum.Enum):
-    ADULT_CKD = 'ADULT_CKD'
-    ADULT_NS = 'ADULT_NS'
-    CHILDREN30_B = 'CHILDREN30_B'
-    CHILDREN30_2ND = 'CHILDREN30_2ND'
-    CHILDREN15_B = 'CHILDREN15_B'
-    CHILDREN15_2ND = 'CHILDREN15_2ND'
-    CHILDREN_LESS_15_B = 'CHILDREN_LESS_15_B'
-    CHILDREN_LESS_15_2ND = 'CHILDREN_LESS_15_2ND'
+    ADULT_CKD = "ADULT_CKD"
+    ADULT_NS = "ADULT_NS"
+    CHILDREN30_B = "CHILDREN30_B"
+    CHILDREN30_2ND = "CHILDREN30_2ND"
+    CHILDREN15_B = "CHILDREN15_B"
+    CHILDREN15_2ND = "CHILDREN15_2ND"
+    CHILDREN_LESS_15_B = "CHILDREN_LESS_15_B"
+    CHILDREN_LESS_15_2ND = "CHILDREN_LESS_15_2ND"
 
 
 class SampleOption(db.Model):
-    __tablename__ = 'nurture_samples_options'
+    __tablename__ = "nurture_samples_options"
 
-    id = Column(Enum(PROTOCOL_OPTION_TYPE, name='protocol_type'), unique=True, nullable=False, primary_key=True)
+    id = Column(
+        Enum(PROTOCOL_OPTION_TYPE, name="protocol_type"),
+        unique=True,
+        nullable=False,
+        primary_key=True,
+    )
     label = Column(String, nullable=False)
 
     epa = Column(Integer, nullable=True)  # EDTA plasma Tube A 100μl
@@ -50,21 +58,21 @@ class SampleOption(db.Model):
 
 @log_changes
 class Samples(db.Model, MetaModelMixin):
-    __tablename__ = 'nurture_samples'
+    __tablename__ = "nurture_samples"
 
     id = uuid_pk_column()
 
     patient_id = patient_id_column()
-    patient = patient_relationship('nurture_samples')
+    patient = patient_relationship("nurture_samples")
 
     taken_on = Column(Date, nullable=False)
     barcode = Column(Integer, nullable=False)
     protocol_id = Column(
-        Enum(PROTOCOL_OPTION_TYPE, name='protocol_type'),
-        ForeignKey('nurture_samples_options.id'),
-        nullable=False
+        Enum(PROTOCOL_OPTION_TYPE, name="protocol_type"),
+        ForeignKey("nurture_samples_options.id"),
+        nullable=False,
     )
-    protocol = relationship('SampleOption')
+    protocol = relationship("SampleOption")
 
     epa = Column(Integer, nullable=True)  # EDTA plasma Tube A 100μl
     epb = Column(Integer, nullable=True)  # EDTA plasma Tube B 1ml
@@ -87,4 +95,4 @@ class Samples(db.Model, MetaModelMixin):
     wb = Column(Integer)
 
 
-Index('samples_patient_idx', Samples.patient_id)
+Index("samples_patient_idx", Samples.patient_id)

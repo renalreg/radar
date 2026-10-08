@@ -20,8 +20,11 @@ class GroupConsultantDetailView(RetrieveUpdateDestroyModelView):
 
 
 def register_views(app):
-    app.add_url_rule('/group-consultants', view_func=GroupConsultantListView.as_view('group_consultant_list'))
     app.add_url_rule(
-        '/group-consultants/<int:id>',
-        view_func=GroupConsultantDetailView.as_view('group_consultant_detail')
+        "/group-consultants",
+        view_func=GroupConsultantListView.as_view("group_consultant_list"),
+    )
+    app.add_url_rule(
+        "/group-consultants/<int:id>",
+        view_func=GroupConsultantDetailView.as_view("group_consultant_detail"),
     )

@@ -14,11 +14,11 @@ from radar.database import db
 
 class RadarAPI(Radar):
     def __init__(self, *args, **kwargs):
-        super(RadarAPI, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.public_endpoints = []
 
-        @event.listens_for(db.session, 'before_flush')
+        @event.listens_for(db.session, "before_flush")
         def before_flush(session, flush_context, instances):
             if current_user.is_authenticated():
                 user_id = current_user.id
@@ -26,7 +26,9 @@ class RadarAPI(Radar):
                 # Set the user_id for use by the log_changes trigger
                 # SET LOCAL lasts until the end of the current transaction
                 # http://www.postgresql.org/docs/9.4/static/sql-set.html
-                session.execute('SET LOCAL radar.user_id = :user_id', dict(user_id=user_id))
+                session.execute(
+                    "SET LOCAL radar.user_id = :user_id", dict(user_id=user_id)
+                )
 
         if self.debug:
             # Debug mode

@@ -76,7 +76,9 @@ class PatientsByGroupDateView(ApiView):
     def get(self):
         args = parse_args(PatientsByGroupDateRequestSerializer)
 
-        results = patients_by_group_date(args["group"], args["group_type"], args["interval"])
+        results = patients_by_group_date(
+            args["group"], args["group_type"], args["interval"]
+        )
 
         return results
 
@@ -121,10 +123,14 @@ def register_views(app):
     )
     stats.add_url_rule(
         "/patients-by-recruitment-group",
-        view_func=PatientsByRecruitmentGroupView.as_view("patients_by_recruitment_group"),
+        view_func=PatientsByRecruitmentGroupView.as_view(
+            "patients_by_recruitment_group"
+        ),
     )
     stats.add_url_rule(
         "/patients-by-recruitment-group-date",
-        view_func=PatientsByRecruitmentGroupDateView.as_view("patients_by_recruitment_group_date"),
+        view_func=PatientsByRecruitmentGroupDateView.as_view(
+            "patients_by_recruitment_group_date"
+        ),
     )
     app.register_blueprint(stats, url_prefix="/stats")

@@ -15,10 +15,10 @@ class MpgnClinicalPictureDetailView(PatientObjectDetailView):
 
 def register_views(app):
     app.add_url_rule(
-        '/mpgn-clinical-pictures',
-        view_func=MpgnClinicalPictureListView.as_view('mpgn_clinical_picture_list')
+        "/mpgn-clinical-pictures",
+        view_func=MpgnClinicalPictureListView.as_view("mpgn_clinical_picture_list"),
     )
     app.add_url_rule(
-        '/mpgn-clinical-pictures/<id>',
-        view_func=MpgnClinicalPictureDetailView.as_view('mpgn_clinical_picture_detail')
+        "/mpgn-clinical-pictures/<id>",
+        view_func=MpgnClinicalPictureDetailView.as_view("mpgn_clinical_picture_detail"),
     )

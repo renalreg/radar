@@ -16,28 +16,46 @@ from radar.utils import get_path
 logger = logging.getLogger(__name__)
 
 
-class SDAPatient(object):
-    MALE = ['1', 'M', 'MALE']
-    FEMALE = ['2', 'F', 'FEMALE']
-    ETHNICITY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'Z']
+class SDAPatient:
+    MALE = ["1", "M", "MALE"]
+    FEMALE = ["2", "F", "FEMALE"]
+    ETHNICITY = [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "Z",
+    ]
     ETHNICITY_DESCRIPTIONS = {
-        'WHITE - BRITISH': 'A',
-        'WHITE - IRISH': 'B',
-        'OTHER WHITE BACKGROUND': 'C',
-        'MIXED - WHITE AND BLACK CARIBBEAN': 'D',
-        'MIXED - WHITE AND BLACK AFRICAN': 'E',
-        'MIXED - WHITE AND ASIAN': 'F',
-        'OTHER MIXED BACKGROUND': 'G',
-        'ASIAN OR ASIAN BRITISH - INDIAN': 'H',
-        'ASIAN OR ASIAN BRITISH - PAKISTANI': 'J',
-        'ASIAN OR ASIAN BRITISH - BANGLADESHI': 'K',
-        'OTHER ASIAN BACKGROUND': 'L',
-        'BLACK CARRIBEAN': 'M',
-        'BLACK AFRICAN': 'N',
-        'OTHER BLACK BACKGROUND': 'P',
-        'CHINESE': 'R',
-        'OTHER ETHNIC BACKGROUND': 'S',
-        'REFUSED / NOT STATED': 'Z',
+        "WHITE - BRITISH": "A",
+        "WHITE - IRISH": "B",
+        "OTHER WHITE BACKGROUND": "C",
+        "MIXED - WHITE AND BLACK CARIBBEAN": "D",
+        "MIXED - WHITE AND BLACK AFRICAN": "E",
+        "MIXED - WHITE AND ASIAN": "F",
+        "OTHER MIXED BACKGROUND": "G",
+        "ASIAN OR ASIAN BRITISH - INDIAN": "H",
+        "ASIAN OR ASIAN BRITISH - PAKISTANI": "J",
+        "ASIAN OR ASIAN BRITISH - BANGLADESHI": "K",
+        "OTHER ASIAN BACKGROUND": "L",
+        "BLACK CARRIBEAN": "M",
+        "BLACK AFRICAN": "N",
+        "OTHER BLACK BACKGROUND": "P",
+        "CHINESE": "R",
+        "OTHER ETHNIC BACKGROUND": "S",
+        "REFUSED / NOT STATED": "Z",
     }
 
     def __init__(self, data):
@@ -45,15 +63,15 @@ class SDAPatient(object):
 
     @property
     def given_name(self):
-        return get_path(self.data, 'name', 'given_name')
+        return get_path(self.data, "name", "given_name")
 
     @property
     def family_name(self):
-        return get_path(self.data, 'name', 'family_name')
+        return get_path(self.data, "name", "family_name")
 
     @property
     def birth_time(self):
-        return self.data.get('birth_time')
+        return self.data.get("birth_time")
 
     @property
     def birth_date(self):
@@ -66,7 +84,7 @@ class SDAPatient(object):
 
     @property
     def death_time(self):
-        return self.data.get('death_time')
+        return self.data.get("death_time")
 
     @property
     def death_date(self):
@@ -79,7 +97,7 @@ class SDAPatient(object):
 
     @property
     def gender(self):
-        gender = get_path(self.data, 'gender', 'code')
+        gender = get_path(self.data, "gender", "code")
 
         if gender is not None:
             gender = gender.upper()
@@ -93,7 +111,7 @@ class SDAPatient(object):
 
     @property
     def ethnic_group(self):
-        ethnicity = get_path(self.data, 'ethnic_group', 'code')
+        ethnicity = get_path(self.data, "ethnic_group", "code")
 
         if ethnicity is not None:
             ethnicity = ethnicity.upper()
@@ -101,7 +119,7 @@ class SDAPatient(object):
             if ethnicity in self.ETHNICITY:
                 return ethnicity
         else:
-            description = get_path(self.data, 'ethnic_group', 'description')
+            description = get_path(self.data, "ethnic_group", "description")
             if description is not None:
                 description = description.strip().upper()
                 return self.ETHNICITY_DESCRIPTIONS.get(description)
@@ -110,27 +128,27 @@ class SDAPatient(object):
 
     @property
     def home_phone_number(self):
-        return get_path(self.data, 'contact_info', 'home_phone_number')
+        return get_path(self.data, "contact_info", "home_phone_number")
 
     @property
     def work_phone_number(self):
-        return get_path(self.data, 'contact_info', 'work_phone_number')
+        return get_path(self.data, "contact_info", "work_phone_number")
 
     @property
     def mobile_phone_number(self):
-        return get_path(self.data, 'contact_info', 'mobile_phone_number')
+        return get_path(self.data, "contact_info", "mobile_phone_number")
 
     @property
     def email_address(self):
-        return get_path(self.data, 'contact_info', 'email_address')
+        return get_path(self.data, "contact_info", "email_address")
 
 
-def parse_demographics(sda_patient,adapter):
+def parse_demographics(sda_patient, adapter):
     serializer = PatientSerializer()
     try:
         sda_patient = serializer.run_validation(sda_patient)
     except ValidationError as e:
-        adapter.error('Ignoring invalid patient errors={errors}'.format(errors=e.flatten()))
+        adapter.error(f"Ignoring invalid patient errors={e.flatten()}")
         return None
 
     sda_patient = SDAPatient(sda_patient)
@@ -141,7 +159,7 @@ def parse_demographics(sda_patient,adapter):
 def get_demographics(patient):
     q = PatientDemographics.query
     q = q.filter(PatientDemographics.source_group == get_import_group())
-    q = q.filter(PatientDemographics.source_type == 'UKRDC')
+    q = q.filter(PatientDemographics.source_type == "UKRDC")
     q = q.filter(PatientDemographics.patient == patient)
     return q.first()
 
@@ -157,14 +175,14 @@ def convert_demographics(patient, sda_patient):
     demographics = get_demographics(patient)
 
     if demographics is None:
-        logger.info('Creating demographics')
+        logger.info("Creating demographics")
         demographics = PatientDemographics()
     else:
-        logger.info('Updating demographics id={id}'.format(id=demographics.id))
+        logger.info(f"Updating demographics id={demographics.id}")
 
     demographics.patient = patient
     demographics.source_group = source_group
-    demographics.source_type = 'UKRDC'
+    demographics.source_type = "UKRDC"
     demographics.created_user = user
     demographics.modified_user = user
 
@@ -184,10 +202,10 @@ def convert_demographics(patient, sda_patient):
     return demographics
 
 
-def import_demographics(patient, sda_patient,adapter):
-    adapter.info('Importing demographics: %s', patient.id)
+def import_demographics(patient, sda_patient, adapter):
+    adapter.info("Importing demographics: %s", patient.id)
 
-    sda_patient = parse_demographics(sda_patient,adapter)
+    sda_patient = parse_demographics(sda_patient, adapter)
 
     if sda_patient:
         convert_demographics(patient, sda_patient)
@@ -195,4 +213,4 @@ def import_demographics(patient, sda_patient,adapter):
     else:
         n = 0
 
-    logger.info('Imported {n} demographics record(s)'.format(n=n))
+    logger.info(f"Imported {n} demographics record(s)")

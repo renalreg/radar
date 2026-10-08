@@ -23,25 +23,25 @@ def patient():
 @pytest.fixture
 def transplant(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'date': date(2015, 1, 1),
-        'modality': 29,
-        'date_of_failure': date(2015, 1, 2)
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "date": date(2015, 1, 1),
+        "modality": 29,
+        "date_of_failure": date(2015, 1, 2),
     }
 
 
 @pytest.fixture
 def transplant1(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'date': date(2015, 1, 1),
-        'modality': 29,
-        'date_of_failure': date(2015, 1, 2),
-        'recurrence': True,
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "date": date(2015, 1, 1),
+        "modality": 29,
+        "date_of_failure": date(2015, 1, 2),
+        "recurrence": True,
     }
 
 
@@ -62,63 +62,63 @@ def test_recurrence_is_set(transplant1):
 
 
 def test_patient_none(transplant):
-    transplant['patient'] = None
+    transplant["patient"] = None
     invalid(transplant)
 
 
 def test_source_group_none(transplant):
-    transplant['source_group'] = None
+    transplant["source_group"] = None
     invalid(transplant)
 
 
 def test_source_type_none(transplant):
-    transplant['source_type'] = None
+    transplant["source_type"] = None
     obj = valid(transplant)
     assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_date_none(transplant):
-    transplant['date'] = None
+    transplant["date"] = None
     invalid(transplant)
 
 
 def test_date_before_dob(transplant):
-    transplant['date'] = date(1999, 1, 1)
+    transplant["date"] = date(1999, 1, 1)
     invalid(transplant)
 
 
 def test_date_future(transplant):
-    transplant['date'] = date.today() + timedelta(days=1)
+    transplant["date"] = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
 def test_modality_none(transplant):
-    transplant['modality'] = None
+    transplant["modality"] = None
     invalid(transplant)
 
 
 def test_modality_invalid(transplant):
-    transplant['modality'] = 0
+    transplant["modality"] = 0
     invalid(transplant)
 
 
 def test_date_of_failure_none(transplant):
-    transplant['date_of_failure'] = None
+    transplant["date_of_failure"] = None
     valid(transplant)
 
 
 def test_date_of_failure_before_dob(transplant):
-    transplant['date_of_failure'] = date(1999, 1, 1)
+    transplant["date_of_failure"] = date(1999, 1, 1)
     invalid(transplant)
 
 
 def test_date_of_failure_future(transplant):
-    transplant['date_of_failure'] = date.today() + timedelta(days=1)
+    transplant["date_of_failure"] = date.today() + timedelta(days=1)
     invalid(transplant)
 
 
 def test_date_of_failure_before_transplant_date(transplant):
-    transplant['date_of_failure'] = transplant['date'] - timedelta(days=1)
+    transplant["date_of_failure"] = transplant["date"] - timedelta(days=1)
     invalid(transplant)
 
 
@@ -130,6 +130,6 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = TransplantSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = TransplantSerializer(data=data, context={"user": User(is_admin=True)})
     serializer.is_valid(raise_exception=True)
     return serializer.save()

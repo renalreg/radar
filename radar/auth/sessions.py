@@ -15,11 +15,11 @@ current_user_session = LocalProxy(lambda: get_user_session())
 
 
 def get_session_timeout():
-    return config['SESSION_TIMEOUT']
+    return config["SESSION_TIMEOUT"]
 
 
 def get_secret_key():
-    return config['SECRET_KEY']
+    return config["SECRET_KEY"]
 
 
 class LoginError(Exception):
@@ -67,12 +67,14 @@ def login(username, password):
     user_session = UserSession()
     user_session.user = user
     user_session.date = func.now()
-    user_session.ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
-    user_session.user_agent = request.headers.get('User-Agent')
+    user_session.ip_address = request.headers.get(
+        "X-Forwarded-For", request.remote_addr
+    )
+    user_session.user_agent = request.headers.get("User-Agent")
     db.session.add(user_session)
 
     log = Log()
-    log.type = 'LOGIN'
+    log.type = "LOGIN"
     log.user = user
     db.session.add(log)
 
@@ -81,7 +83,7 @@ def login(username, password):
     _request_ctx_stack.top.user_session = user_session
 
     # Set cookie
-    session['id'] = user_session.id
+    session["id"] = user_session.id
 
     token = generate_token_for_user_session(user_session)
 
@@ -93,7 +95,7 @@ def logout():
         db.session.delete(current_user_session)
 
         log = Log()
-        log.type = 'LOGOUT'
+        log.type = "LOGOUT"
         log.user = current_user
         db.session.add(log)
 
@@ -102,40 +104,37 @@ def logout():
         _request_ctx_stack.top.user_session = AnonymousSession()
 
         # Unset cookie
-        session.pop('id', None)
+        session.pop("id", None)
 
 
 def logout_other_sessions():
     if current_user_session.is_authenticated():
-        UserSession.query\
-            .filter(UserSession.user == current_user)\
-            .filter(UserSession.id != current_user_session.id)\
-            .delete()
+        UserSession.query.filter(UserSession.user == current_user).filter(
+            UserSession.id != current_user_session.id
+        ).delete()
         db.session.commit()
 
 
 def logout_user(user):
     # Delete user sessions
-    UserSession.query\
-        .filter(UserSession.user == user)\
-        .delete()
+    UserSession.query.filter(UserSession.user == user).delete()
 
 
 def refresh_token(response):
     if current_user_session.is_authenticated():
         token = generate_token_for_user_session(current_user_session)
-        response.headers['X-Auth-Token'] = token
-        session['id'] = current_user_session.id
+        response.headers["X-Auth-Token"] = token
+        session["id"] = current_user_session.id
 
     return response
 
 
 def get_ip_address():
-    return request.headers.get('X-Forwarded-For', request.remote_addr)
+    return request.headers.get("X-Forwarded-For", request.remote_addr)
 
 
 def get_user_agent():
-    ua = request.headers.get('User-Agent')
+    ua = request.headers.get("User-Agent")
 
     if ua is not None:
         # Limit to 255 characters
@@ -165,7 +164,7 @@ def get_user_session_by_id(user_session_id):
 
 
 def get_user_session_from_header():
-    token = request.headers.get('X-Auth-Token')
+    token = request.headers.get("X-Auth-Token")
 
     if token is None:
         return None
@@ -185,7 +184,7 @@ def get_user_session_from_token(token):
 
 
 def get_user_session_from_cookie():
-    user_session_id = session.get('id')
+    user_session_id = session.get("id")
 
     if user_session_id is None:
         return None
@@ -194,7 +193,7 @@ def get_user_session_from_cookie():
 
 
 def get_user_session():
-    if has_request_context() and not hasattr(_request_ctx_stack.top, 'user_session'):
+    if has_request_context() and not hasattr(_request_ctx_stack.top, "user_session"):
         # Look in the header
         user_session = get_user_session_from_header()
 
@@ -211,7 +210,7 @@ def get_user_session():
         # Set the user session
         _request_ctx_stack.top.user_session = user_session
 
-    user_session = getattr(_request_ctx_stack.top, 'user_session', None)
+    user_session = getattr(_request_ctx_stack.top, "user_session", None)
 
     if user_session is None:
         user_session = AnonymousSession()

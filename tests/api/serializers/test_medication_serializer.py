@@ -24,17 +24,17 @@ def patient():
 @pytest.fixture
 def medication(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'from_date': date(2015, 1, 1),
-        'to_date': date(2015, 1, 2),
-        'drug': Drug(name='Paracetamol'),
-        'drug_text': 'Paracetamol',
-        'dose_quantity': 100,
-        'dose_unit': 'MG',
-        'frequency': 'Daily',
-        'route': 'ORAL'
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "from_date": date(2015, 1, 1),
+        "to_date": date(2015, 1, 2),
+        "drug": Drug(name="Paracetamol"),
+        "drug_text": "Paracetamol",
+        "dose_quantity": 100,
+        "dose_unit": "MG",
+        "frequency": "Daily",
+        "route": "ORAL",
     }
 
 
@@ -45,9 +45,9 @@ def test_valid(medication):
     assert obj.drug is not None
     assert obj.drug_text is None
     assert obj.dose_quantity == 100
-    assert obj.dose_unit == 'MG'
-    assert obj.frequency == 'Daily'
-    assert obj.route == 'ORAL'
+    assert obj.dose_unit == "MG"
+    assert obj.frequency == "Daily"
+    assert obj.route == "ORAL"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -55,116 +55,116 @@ def test_valid(medication):
 
 
 def test_patient_none(medication):
-    medication['patient'] = None
+    medication["patient"] = None
     invalid(medication)
 
 
 def test_source_group_none(medication):
-    medication['source_group'] = None
+    medication["source_group"] = None
     invalid(medication)
 
 
 def test_source_type_none(medication):
-    medication['source_type'] = None
+    medication["source_type"] = None
     medication = valid(medication)
     assert medication.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_from_date_none(medication):
-    medication['from_date'] = None
+    medication["from_date"] = None
     invalid(medication)
 
 
 def test_from_date_before_dob(medication):
-    medication['from_date'] = date(1999, 1, 1)
+    medication["from_date"] = date(1999, 1, 1)
     invalid(medication)
 
 
 def test_from_date_future(medication):
-    medication['from_date'] = date.today() + timedelta(days=1)
+    medication["from_date"] = date.today() + timedelta(days=1)
     invalid(medication)
 
 
 def test_to_date_none(medication):
-    medication['to_date'] = None
+    medication["to_date"] = None
     valid(medication)
 
 
 def test_to_date_before_dob(medication):
-    medication['to_date'] = date(1999, 1, 1)
+    medication["to_date"] = date(1999, 1, 1)
     invalid(medication)
 
 
 def test_to_date_future(medication):
-    medication['to_date'] = date.today() + timedelta(days=1)
+    medication["to_date"] = date.today() + timedelta(days=1)
     invalid(medication)
 
 
 def test_to_date_before_from_date(medication):
-    medication['to_date'] = medication['from_date'] - timedelta(days=1)
+    medication["to_date"] = medication["from_date"] - timedelta(days=1)
     invalid(medication)
 
 
 def test_drug_none(medication):
-    medication['drug'] = None
+    medication["drug"] = None
     medication = valid(medication)
-    assert medication.drug_text == 'Paracetamol'
+    assert medication.drug_text == "Paracetamol"
 
 
 def test_drug_text_none(medication):
-    medication['drug_text'] = None
+    medication["drug_text"] = None
     valid(medication)
 
 
 def test_drug_text_empty(medication):
-    medication['drug_text'] = ''
+    medication["drug_text"] = ""
     medication = valid(medication)
     assert medication.drug_text is None
 
 
 def test_drug_and_drug_text_none(medication):
-    medication['drug'] = None
-    medication['drug_text'] = None
+    medication["drug"] = None
+    medication["drug_text"] = None
     invalid(medication)
 
 
 def test_dose_quantity_none(medication):
-    medication['dose_quantity'] = None
+    medication["dose_quantity"] = None
     valid(medication)
 
 
 def test_dose_quantity_negative(medication):
-    medication['dose_quantity'] = -1
+    medication["dose_quantity"] = -1
     invalid(medication)
 
 
 def test_dose_unit_none(medication):
-    medication['dose_quantity'] = None
-    medication['dose_unit'] = None
+    medication["dose_quantity"] = None
+    medication["dose_unit"] = None
     valid(medication)
 
-    medication['dose_quantity'] = 1
-    medication['dose_unit'] = None
+    medication["dose_quantity"] = 1
+    medication["dose_unit"] = None
     invalid(medication)
 
 
 def test_dose_unit_invalid(medication):
-    medication['dose_unit'] = 'FOO'
+    medication["dose_unit"] = "FOO"
     invalid(medication)
 
 
 def test_frequency_none(medication):
-    medication['frequency'] = None
+    medication["frequency"] = None
     valid(medication)
 
 
 def test_route_none(medication):
-    medication['route'] = None
+    medication["route"] = None
     valid(medication)
 
 
 def test_route_invalid(medication):
-    medication['route'] = 'FOO'
+    medication["route"] = "FOO"
     invalid(medication)
 
 
@@ -176,6 +176,6 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = MedicationSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = MedicationSerializer(data=data, context={"user": User(is_admin=True)})
     serializer.is_valid(raise_exception=True)
     return serializer.save()

@@ -18,7 +18,7 @@ def patient_id_column(**kwargs):
         Integer,
         ForeignKey("patients.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -38,7 +38,7 @@ def patient_relationship_no_list(name):
     )
 
 
-class CreatedUserMixin(object):
+class CreatedUserMixin:
     @declared_attr
     def created_user_id(self):
         return Column(Integer, ForeignKey("users.id"), nullable=False)
@@ -46,7 +46,7 @@ class CreatedUserMixin(object):
     @declared_attr
     def created_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.created_user_id" % self.__name__
+            "User", primaryjoin=f"User.id == {self.__name__}.created_user_id"
         )
 
     @declared_attr
@@ -54,7 +54,7 @@ class CreatedUserMixin(object):
         return association_proxy("created_user", "username")
 
 
-class CreatedDateMixin(object):
+class CreatedDateMixin:
     @declared_attr
     def created_date(self):
         return Column(
@@ -65,7 +65,7 @@ class CreatedDateMixin(object):
         )
 
 
-class ModifiedUserMixin(object):
+class ModifiedUserMixin:
     @declared_attr
     def modified_user_id(self):
         return Column(Integer, ForeignKey("users.id"), nullable=False)
@@ -73,7 +73,7 @@ class ModifiedUserMixin(object):
     @declared_attr
     def modified_user(self):
         return relationship(
-            "User", primaryjoin="User.id == %s.modified_user_id" % self.__name__
+            "User", primaryjoin=f"User.id == {self.__name__}.modified_user_id"
         )
 
     @declared_attr
@@ -81,7 +81,7 @@ class ModifiedUserMixin(object):
         return association_proxy("modified_user", "username")
 
 
-class ModifiedDateMixin(object):
+class ModifiedDateMixin:
     @declared_attr
     def modified_date(self):
         return Column(

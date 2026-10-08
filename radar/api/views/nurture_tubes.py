@@ -22,7 +22,7 @@ class SamplesListView(PatientObjectListView):
         if json is None:
             raise BadRequest()
 
-        json['protocol'] = PROTOCOL_OPTION_TYPE(json['protocol'])
+        json["protocol"] = PROTOCOL_OPTION_TYPE(json["protocol"])
 
         serializer = self.get_serializer(data=json)
         serializer.is_valid(raise_exception=True)
@@ -48,9 +48,11 @@ class SamplesProtocolOptions(ListModelView):
 
 
 def register_views(app):
-    app.add_url_rule('/samples', view_func=SamplesListView.as_view('samples_list'))
-    app.add_url_rule('/samples/<id>', view_func=SamplesDetailView.as_view('samples_detail'))
+    app.add_url_rule("/samples", view_func=SamplesListView.as_view("samples_list"))
     app.add_url_rule(
-        '/samples-protocol-options',
-        view_func=SamplesProtocolOptions.as_view('samples-protocol-options')
+        "/samples/<id>", view_func=SamplesDetailView.as_view("samples_detail")
+    )
+    app.add_url_rule(
+        "/samples-protocol-options",
+        view_func=SamplesProtocolOptions.as_view("samples-protocol-options"),
     )

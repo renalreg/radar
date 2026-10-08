@@ -1,7 +1,12 @@
 from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer
 
-from radar.api.serializers.common import MetaMixin, PatientMixin, SourceMixin, StringLookupField
+from radar.api.serializers.common import (
+    MetaMixin,
+    PatientMixin,
+    SourceMixin,
+    StringLookupField,
+)
 from radar.models.rituximab import (
     BaselineAssessment,
     NEPHROPATHY_TYPES,
@@ -10,7 +15,9 @@ from radar.models.rituximab import (
 )
 
 
-class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class RituximabBaselineAssessmentSerializer(
+    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
+):
     date = fields.DateField()
     past_remission = fields.BooleanField(required=False)
     nephropathy = StringLookupField(NEPHROPATHY_TYPES, required=False)
@@ -22,7 +29,7 @@ class RituximabBaselineAssessmentSerializer(PatientMixin, SourceMixin, MetaMixin
     other_previous_treatment = fields.StringField(required=False)
     performance_status = fields.IntegerField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = BaselineAssessment
 
     def pre_validate(self, data):
@@ -54,5 +61,5 @@ class RituximabCriteriaSerializer(PatientMixin, MetaMixin, ModelSerializer):
     osteoporosis_osteopenia = fields.BooleanField(required=False)
     mood_disturbance = fields.BooleanField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = RituximabCriteria

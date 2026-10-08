@@ -6,7 +6,9 @@ from radar.models.results import Observation, OBSERVATION_VALUE_TYPE, Result
 
 
 def create_results_f():
-    observations = Observation.query.filter(Observation.value_type == OBSERVATION_VALUE_TYPE.REAL).all()
+    observations = Observation.query.filter(
+        Observation.value_type == OBSERVATION_VALUE_TYPE.REAL
+    ).all()
 
     def create_results(patient, source_group, source_type, x, y):
         for observation in random.sample(observations, min(x, len(observations))):
@@ -31,7 +33,7 @@ def create_results_f():
                 result.source_type = source_type
                 result.observation = observation
                 result.date = random_date(patient.earliest_date_of_birth, date.today())
-                result.value = '%.2f' % random.uniform(min_value, max_value)
+                result.value = f"{random.uniform(min_value, max_value):.2f}"
                 add(result)
 
     return create_results

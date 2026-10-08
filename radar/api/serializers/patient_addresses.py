@@ -22,87 +22,104 @@ from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 
 
-class PatientAddressSerializer(PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer):
+class PatientAddressSerializer(
+    PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer
+):
     from_date = fields.DateField(required=False)
     to_date = fields.DateField(required=False)
-    address1 = fields.StringField(validators=[
-        not_empty(),
-        remove_trailing_comma(),
-        not_empty(),
-        normalise_whitespace(),
-        max_length(100)
-    ])
-    address2 = fields.StringField(required=False, validators=[
-        none_if_blank(),
-        optional(),
-        remove_trailing_comma(),
-        none_if_blank(),
-        optional(),
-        normalise_whitespace(),
-        max_length(100)
-    ])
-    address3 = fields.StringField(required=False, validators=[
-        none_if_blank(),
-        optional(),
-        remove_trailing_comma(),
-        none_if_blank(),
-        optional(),
-        normalise_whitespace(),
-        max_length(100)
-    ])
-    address4 = fields.StringField(required=False, validators=[
-        none_if_blank(),
-        optional(),
-        remove_trailing_comma(),
-        none_if_blank(),
-        optional(),
-        normalise_whitespace(),
-        max_length(100)
-    ])
+    address1 = fields.StringField(
+        validators=[
+            not_empty(),
+            remove_trailing_comma(),
+            not_empty(),
+            normalise_whitespace(),
+            max_length(100),
+        ]
+    )
+    address2 = fields.StringField(
+        required=False,
+        validators=[
+            none_if_blank(),
+            optional(),
+            remove_trailing_comma(),
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(100),
+        ],
+    )
+    address3 = fields.StringField(
+        required=False,
+        validators=[
+            none_if_blank(),
+            optional(),
+            remove_trailing_comma(),
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(100),
+        ],
+    )
+    address4 = fields.StringField(
+        required=False,
+        validators=[
+            none_if_blank(),
+            optional(),
+            remove_trailing_comma(),
+            none_if_blank(),
+            optional(),
+            normalise_whitespace(),
+            max_length(100),
+        ],
+    )
     postcode = fields.StringField(required=False, validators=[postcode()])
     country = StringLookupField(COUNTRIES)
 
-    class Meta(object):
+    class Meta:
         model_class = PatientAddress
         validators = [
-            after_date_of_birth('from_date'),
-            after_date_of_birth('to_date'),
+            after_date_of_birth("from_date"),
+            after_date_of_birth("to_date"),
         ]
 
     def pre_validate(self, data):
-        if data['country'] != 'GB':
-            data['postcode'] = None
+        if data["country"] != "GB":
+            data["postcode"] = None
 
         return data
 
     def validate(self, data):
-        data = super(PatientAddressSerializer, self).validate(data)
+        data = super().validate(data)
 
         if (
-            data['from_date'] is not None and
-            data['to_date'] is not None and
-            data['to_date'] < data['from_date']
+            data["from_date"] is not None
+            and data["to_date"] is not None
+            and data["to_date"] < data["from_date"]
         ):
-            raise ValidationError({'to_date': 'Must be on or after from date.'})
+            raise ValidationError({"to_date": "Must be on or after from date."})
 
         # Postcode is required for UK addresses
-        if data['country'] == 'GB' and data['postcode'] is None:
-            raise ValidationError({'postcode': 'Postcode is required for UK addresses.'})
+        if data["country"] == "GB" and data["postcode"] is None:
+            raise ValidationError(
+                {"postcode": "Postcode is required for UK addresses."}
+            )
 
         return data
 
     def to_representation(self, value):
-        user = self.context['user']
+        user = self.context["user"]
         value = PatientAddressProxy(value, user)
-        value = super(PatientAddressSerializer, self).to_representation(value)
+        value = super().to_representation(value)
         return value
 
 
-class PatientAddressProxy(object):
+class PatientAddressProxy:
     def __init__(self, address, user):
         self.address = address
         self.user = user
-        self.demographics_permission = has_permission_for_patient(user, address.patient, PERMISSION.VIEW_DEMOGRAPHICS)
+        self.demographics_permission = has_permission_for_patient(
+            user, address.patient, PERMISSION.VIEW_DEMOGRAPHICS
+        )
 
     @property
     def address1(self):
@@ -141,7 +158,7 @@ class PatientAddressProxy(object):
         elif postcode is not None:
             # Return the first part of the postcode
             # Postcodes from the database should have a space but limit to 4 characters just in case
-            return postcode.split(' ')[0][:4]
+            return postcode.split(" ")[0][:4]
         else:
             return None
 

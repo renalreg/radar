@@ -14,25 +14,28 @@ class MpgnClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     urticaria = fields.BooleanField(required=False)
     partial_lipodystrophy = fields.BooleanField(required=False)
     infection = fields.BooleanField(required=False)
-    infection_details = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(10000)])
+    infection_details = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
     ophthalmoscopy = fields.BooleanField(required=False)
     ophthalmoscopy_details = fields.StringField(
-        required=False,
-        validators=[none_if_blank(), optional(), max_length(10000)]
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    comments = fields.StringField(required=False, validators=[none_if_blank(), optional(), max_length(5000)])
+    comments = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(5000)]
+    )
 
-    class Meta(object):
+    class Meta:
         model_class = MpgnClinicalPicture
-        validators = [valid_date_for_patient('date_of_picture')]
+        validators = [valid_date_for_patient("date_of_picture")]
 
     def pre_validate(self, data):
         # Remove infection details if the patient didn't have an infection
-        if not data['infection']:
-            data['infection_details'] = None
+        if not data["infection"]:
+            data["infection_details"] = None
 
         # Remove ophthalmoscopy details if a ophthalmoscopy test wan't performed
-        if not data['ophthalmoscopy']:
-            data['ophthalmoscopy_details'] = None
+        if not data["ophthalmoscopy"]:
+            data["ophthalmoscopy_details"] = None
 
         return data

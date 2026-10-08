@@ -8,7 +8,7 @@ from radar.models.nurture_tubes import PROTOCOL_OPTION_TYPE, SampleOption, Sampl
 class OptionSerializer(ModelSerializer):
     id = fields.EnumField(PROTOCOL_OPTION_TYPE)
 
-    class Meta(object):
+    class Meta:
         model_class = SampleOption
 
 
@@ -42,5 +42,5 @@ class SamplesSerializer(PatientMixin, MetaMixin, ModelSerializer):
     rna = fields.IntegerField(required=False)
     wb = fields.IntegerField(required=False)
 
-    class Meta(object):
+    class Meta:
         model_class = Samples

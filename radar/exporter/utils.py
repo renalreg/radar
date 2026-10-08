@@ -29,7 +29,7 @@ def get_months(months):
 def path_getter(path):
     """Get attributes at the dot-separated path."""
 
-    parts = path.split('.')
+    parts = path.split(".")
 
     def f(value):
         return get_attrs(value, *parts)
@@ -48,7 +48,7 @@ def identity_getter(value):
 def stringify_list(name):
     def stringify(entry):
         items = entry.data.get(name) or []
-        return '; '.join(sorted(items))
+        return "; ".join(sorted(items))
 
     return stringify
 
@@ -57,28 +57,28 @@ def format_user(user):
     if user is None:
         return None
     elif user.first_name and user.last_name:
-        return '%s %s' % (user.first_name, user.last_name)
+        return f"{user.first_name} {user.last_name}"
     else:
         return user.username
 
 
 def format_date(dt):
     val = dt
-    fmt = '%d/%m/%Y'
+    fmt = "%d/%m/%Y"
     if isinstance(dt, (date, datetime)):
         try:
             val = dt.strftime(fmt)
         except ValueError:
-            val = '{:02d}/{:02d}/{}'.format(dt.day, dt.month, dt.year)
-    elif re.match(r'^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', str(dt)):
+            val = f"{dt.day:02d}/{dt.month:02d}/{dt.year}"
+    elif re.match(r"^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$", str(dt)):
         try:
-            parsed = datetime.strptime(dt, '%Y-%m-%d')
+            parsed = datetime.strptime(dt, "%Y-%m-%d")
         except ValueError:
-            year, month, day = dt.split('-')
+            year, month, day = dt.split("-")
             parsed = date(int(year), int(month), int(day))
         try:
             val = parsed.strftime(fmt)
         except ValueError:
-            val = '{:02d}/{:02d}/{}'.format(parsed.day, parsed.month, parsed.year)
+            val = f"{parsed.day:02d}/{parsed.month:02d}/{parsed.year}"
 
     return val

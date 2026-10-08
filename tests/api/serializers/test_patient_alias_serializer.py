@@ -23,18 +23,18 @@ def patient():
 @pytest.fixture
 def alias(patient):
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'first_name': 'JOHN',
-        'last_name': 'SMITH'
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "first_name": "JOHN",
+        "last_name": "SMITH",
     }
 
 
 def test_valid(alias):
     obj = valid(alias)
-    assert obj.first_name == 'JOHN'
-    assert obj.last_name == 'SMITH'
+    assert obj.first_name == "JOHN"
+    assert obj.last_name == "SMITH"
     assert obj.created_date is not None
     assert obj.modified_date is not None
     assert obj.created_user is not None
@@ -42,63 +42,63 @@ def test_valid(alias):
 
 
 def test_patient_none(alias):
-    alias['patient'] = None
+    alias["patient"] = None
     invalid(alias)
 
 
 def test_source_group_none(alias):
-    alias['source_group'] = None
+    alias["source_group"] = None
     invalid(alias)
 
 
 def test_source_type_none(alias):
-    alias['source_type'] = None
+    alias["source_type"] = None
     obj = valid(alias)
     assert obj.source_type == SOURCE_TYPE_MANUAL
 
 
 def test_first_name_blank(alias):
-    alias['first_name'] = ''
+    alias["first_name"] = ""
     invalid(alias)
 
 
 def test_first_name_none(alias):
-    alias['first_name'] = None
+    alias["first_name"] = None
     invalid(alias)
 
 
 def test_first_name_whitespace(alias):
-    alias['first_name'] = 'FOO  BAR'
+    alias["first_name"] = "FOO  BAR"
     obj = valid(alias)
-    assert obj.first_name == 'FOO BAR'
+    assert obj.first_name == "FOO BAR"
 
 
 def test_first_name_to_upper(alias):
-    alias['first_name'] = 'foo bar'
+    alias["first_name"] = "foo bar"
     obj = valid(alias)
-    assert obj.first_name == 'FOO BAR'
+    assert obj.first_name == "FOO BAR"
 
 
 def test_last_name_blank(alias):
-    alias['last_name'] = ''
+    alias["last_name"] = ""
     invalid(alias)
 
 
 def test_last_name_none(alias):
-    alias['last_name'] = None
+    alias["last_name"] = None
     invalid(alias)
 
 
 def test_last_name_whitespace(alias):
-    alias['last_name'] = 'FOO  BAR'
+    alias["last_name"] = "FOO  BAR"
     obj = valid(alias)
-    assert obj.last_name == 'FOO BAR'
+    assert obj.last_name == "FOO BAR"
 
 
 def test_last_name_to_upper(alias):
-    alias['last_name'] = 'foo bar'
+    alias["last_name"] = "foo bar"
     obj = valid(alias)
-    assert obj.last_name == 'FOO BAR'
+    assert obj.last_name == "FOO BAR"
 
 
 def invalid(data):
@@ -109,6 +109,8 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = PatientAliasSerializer(data=data, context={'user': User(is_admin=True)})
+    serializer = PatientAliasSerializer(
+        data=data, context={"user": User(is_admin=True)}
+    )
     serializer.is_valid(raise_exception=True)
     return serializer.save()

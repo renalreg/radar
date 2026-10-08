@@ -4,7 +4,7 @@ from radar.models.demographics import Ethnicity, Nationality
 
 
 class NationalitySerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Nationality
 
 
@@ -14,7 +14,7 @@ class NationalityField(ReferenceField):
 
 
 class EthnicitySerializer(ModelSerializer):
-    class Meta(object):
+    class Meta:
         model_class = Ethnicity
 
 

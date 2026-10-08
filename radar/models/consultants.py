@@ -7,7 +7,7 @@ from radar.models.logs import log_changes
 
 @log_changes
 class Consultant(db.Model):
-    __tablename__ = 'consultants'
+    __tablename__ = "consultants"
 
     id = Column(Integer, primary_key=True)
     first_name = Column(String, nullable=False)
@@ -16,46 +16,50 @@ class Consultant(db.Model):
     telephone_number = Column(String)
     gmc_number = Column(Integer, unique=True)
 
-    specialty_id = Column(Integer, ForeignKey('specialties.id'), nullable=False)
-    specialty = relationship('Specialty')
+    specialty_id = Column(Integer, ForeignKey("specialties.id"), nullable=False)
+    specialty = relationship("Specialty")
 
     @property
     def groups(self):
         return [x.group for x in self.group_consultants]
 
     def __str__(self):
-        return '{0} {1}'.format(self.first_name, self.last_name)
+        return f"{self.first_name} {self.last_name}"
 
 
 @log_changes
 class GroupConsultant(db.Model):
-    __tablename__ = 'group_consultants'
+    __tablename__ = "group_consultants"
 
     id = Column(Integer, primary_key=True)
 
-    group_id = Column(Integer, ForeignKey('groups.id'), nullable=False)
-    group = relationship('Group')
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    group = relationship("Group")
 
     consultant_id = Column(
         Integer,
-        ForeignKey('consultants.id', onupdate='CASCADE', ondelete='CASCADE'),
-        nullable=False)
+        ForeignKey("consultants.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=False,
+    )
     consultant = relationship(
-        'Consultant',
-        backref=backref('group_consultants', cascade='all, delete-orphan', passive_deletes=True))
+        "Consultant",
+        backref=backref(
+            "group_consultants", cascade="all, delete-orphan", passive_deletes=True
+        ),
+    )
 
 
 Index(
-    'group_consultants_group_consultant_idx',
+    "group_consultants_group_consultant_idx",
     GroupConsultant.group_id,
     GroupConsultant.consultant_id,
-    unique=True
+    unique=True,
 )
 
 
 @log_changes
 class Specialty(db.Model):
-    __tablename__ = 'specialties'
+    __tablename__ = "specialties"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)

@@ -7,7 +7,7 @@ def test_super():
     class MockAdminPermission(AdminPermission, MockPermission):
         pass
 
-    request = MockRequest('GET')
+    request = MockRequest("GET")
     user = make_user()
 
     permission = MockAdminPermission()
@@ -23,7 +23,7 @@ def test_super():
 
 def test_has_permission():
     permission = AdminPermission()
-    request = MockRequest('GET')
+    request = MockRequest("GET")
     user = make_user()
 
     assert not permission.has_permission(request, user)
@@ -35,7 +35,7 @@ def test_has_permission():
 
 def test_has_object_permission():
     permission = AdminPermission()
-    request = MockRequest('GET')
+    request = MockRequest("GET")
     user = make_user()
 
     assert not permission.has_object_permission(request, user, object())

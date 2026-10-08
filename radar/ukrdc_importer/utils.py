@@ -10,8 +10,8 @@ from radar.models.users import User
 from radar.utils import get_path
 
 
-NAMESPACE = uuid.UUID('91bce7f1-ea5f-4c98-8350-33d65d597a10')
-USERNAME = 'ukrdc_importer'
+NAMESPACE = uuid.UUID("91bce7f1-ea5f-4c98-8350-33d65d597a10")
+USERNAME = "ukrdc_importer"
 
 
 def validate_list(items, serializer, invalid_f=None):
@@ -86,7 +86,9 @@ def update_path(data, f, *path):
 
 
 def get_import_group():
-    return Group.query.filter(Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_UKRDC).one()
+    return Group.query.filter(
+        Group.type == GROUP_TYPE.OTHER, Group.code == GROUP_CODE_UKRDC
+    ).one()
 
 
 def get_import_user():

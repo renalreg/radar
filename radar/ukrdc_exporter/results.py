@@ -16,38 +16,35 @@ def export_lab_orders(sda_container, patient, group):
     if not results:
         return
 
-    sda_lab_orders = sda_container.setdefault('lab_orders', list())
+    sda_lab_orders = sda_container.setdefault("lab_orders", list())
 
     for result in results:
         sda_lab_order = {
-            'external_id': str(result.id),
-            'order_item': {
-                'sda_coding_standard': 'PV',
-                'code': result.observation.pv_code,
-                'description': result.observation.pv_code
+            "external_id": str(result.id),
+            "order_item": {
+                "sda_coding_standard": "PV",
+                "code": result.observation.pv_code,
+                "description": result.observation.pv_code,
             },
-            'result': {
-                'result_time': result.date,
-                'result_items': [
+            "result": {
+                "result_time": result.date,
+                "result_items": [
                     {
-                        'observation_time': result.date,
-                        'test_item_code': {
-                            'sda_coding_standard': 'PV',
-                            'code': result.observation.pv_code,
-                            'description': result.observation.pv_code
+                        "observation_time": result.date,
+                        "test_item_code": {
+                            "sda_coding_standard": "PV",
+                            "code": result.observation.pv_code,
+                            "description": result.observation.pv_code,
                         },
-                        'result_value': str(result.value)
+                        "result_value": str(result.value),
                     }
-                ]
+                ],
             },
-            'entering_organization': {
-                'code': result.source_group.code,
-                'description': result.source_group.name
+            "entering_organization": {
+                "code": result.source_group.code,
+                "description": result.source_group.name,
             },
-            'entered_at': {
-                'code': 'RADAR',
-                'description': 'RaDaR'
-            }
+            "entered_at": {"code": "RADAR", "description": "RaDaR"},
         }
 
         sda_lab_orders.append(sda_lab_order)

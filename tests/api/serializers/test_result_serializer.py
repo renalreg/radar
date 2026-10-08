@@ -20,16 +20,18 @@ def make(observation, value):
     patient.patient_demographics.append(patient_demographics)
 
     return {
-        'source_group': Group(),
-        'source_type': SOURCE_TYPE_MANUAL,
-        'patient': patient,
-        'observation': observation,
-        'date': datetime(2016, 1, 1, tzinfo=pytz.UTC),
-        'value': value
+        "source_group": Group(),
+        "source_type": SOURCE_TYPE_MANUAL,
+        "patient": patient,
+        "observation": observation,
+        "date": datetime(2016, 1, 1, tzinfo=pytz.UTC),
+        "value": value,
     }
 
 
-@pytest.mark.parametrize('value_type', [OBSERVATION_VALUE_TYPE.INTEGER, OBSERVATION_VALUE_TYPE.REAL])
+@pytest.mark.parametrize(
+    "value_type", [OBSERVATION_VALUE_TYPE.INTEGER, OBSERVATION_VALUE_TYPE.REAL]
+)
 def test_min_value(value_type):
     observation = Observation()
     observation.value_type = value_type
@@ -40,7 +42,9 @@ def test_min_value(value_type):
     assert valid(make(observation, 3))
 
 
-@pytest.mark.parametrize('value_type', [OBSERVATION_VALUE_TYPE.INTEGER, OBSERVATION_VALUE_TYPE.REAL])
+@pytest.mark.parametrize(
+    "value_type", [OBSERVATION_VALUE_TYPE.INTEGER, OBSERVATION_VALUE_TYPE.REAL]
+)
 def test_max_value(value_type):
     observation = Observation()
     observation.value_type = value_type
@@ -56,9 +60,9 @@ def test_min_length():
     observation.value_type = OBSERVATION_VALUE_TYPE.STRING
     observation.min_length = 2
 
-    assert invalid(make(observation, 'a'))
-    assert valid(make(observation, 'aa'))
-    assert valid(make(observation, 'aaa'))
+    assert invalid(make(observation, "a"))
+    assert valid(make(observation, "aa"))
+    assert valid(make(observation, "aaa"))
 
 
 def test_max_length():
@@ -66,22 +70,22 @@ def test_max_length():
     observation.value_type = OBSERVATION_VALUE_TYPE.STRING
     observation.max_length = 2
 
-    assert valid(make(observation, 'a'))
-    assert valid(make(observation, 'aa'))
-    assert invalid(make(observation, 'aaa'))
+    assert valid(make(observation, "a"))
+    assert valid(make(observation, "aa"))
+    assert invalid(make(observation, "aaa"))
 
 
 def test_options():
     observation = Observation()
     observation.value_type = OBSERVATION_VALUE_TYPE.ENUM
     observation.options_dict = {
-        '1': 'A',
-        '2': 'B',
+        "1": "A",
+        "2": "B",
     }
 
-    assert valid(make(observation, '1'))
-    assert valid(make(observation, '2'))
-    assert invalid(make(observation, '3'))
+    assert valid(make(observation, "1"))
+    assert valid(make(observation, "2"))
+    assert invalid(make(observation, "3"))
 
 
 def invalid(data):
@@ -92,6 +96,6 @@ def invalid(data):
 
 
 def valid(data):
-    serializer = ResultSerializer(context={'user': User(is_admin=True)})
+    serializer = ResultSerializer(context={"user": User(is_admin=True)})
     validated_data = serializer.run_validation(data)
     return validated_data

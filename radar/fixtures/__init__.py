@@ -19,8 +19,8 @@ from radar.models.consents import Consent, CONSENT_TYPE
 
 def create_consent():
     consent = Consent()
-    consent.code = 'v1'
-    consent.label = 'Default consent'
+    consent.code = "v1"
+    consent.label = "Default consent"
     consent.from_date = datetime(2016, 1, 1, 0, 0, 0)
     consent.consent_type = CONSENT_TYPE.FORM
     consent.weight = 100
@@ -43,5 +43,5 @@ def create_data(patients=5, password=DEFAULT_PASSWORD):
     create_ethnicities()
     create_patients(patients)
     path = os.path.dirname(__file__)
-    cfg = Config(os.path.abspath(os.path.join(path, '../../alembic.ini')))
-    command.stamp(cfg, 'head')
+    cfg = Config(os.path.abspath(os.path.join(path, "../../alembic.ini")))
+    command.stamp(cfg, "head")

@@ -9,11 +9,11 @@ def test_valid_int():
 
 
 def test_valid_string():
-    assert valid('101299877') == '0101299877'
+    assert valid("101299877") == "0101299877"
 
 
 def test_short_string():
-    assert valid('437631966') == '0437631966'
+    assert valid("437631966") == "0437631966"
 
 
 def test_short_int():
@@ -21,11 +21,11 @@ def test_short_int():
 
 
 def test_nhs_no():
-    invalid('9434765919')
+    invalid("9434765919")
 
 
 def test_hsc_no():
-    invalid('3232255825')
+    invalid("3232255825")
 
 
 def valid(value):

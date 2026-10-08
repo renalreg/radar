@@ -8,7 +8,7 @@ class EnumSelectField(SelectFieldBase):
     widget = widgets.Select()
 
     def __init__(self, enum_class, **kwargs):
-        super(EnumSelectField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.enum_class = enum_class
 
     def coerce(self, value):
@@ -33,4 +33,4 @@ class EnumSelectField(SelectFieldBase):
                 # Attempt to convert the value (unicode) to an enum value
                 self.data = self.coerce(valuelist[0])
             except ValueError:
-                raise ValueError(self.gettext('Not a valid choice'))
+                raise ValueError(self.gettext("Not a valid choice"))
