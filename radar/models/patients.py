@@ -14,7 +14,7 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
-from sqlalchemy.orm import aliased, relationship
+from sqlalchemy.orm import aliased
 
 from radar.database import db
 from radar.models.common import MetaModelMixin
@@ -67,10 +67,6 @@ class Patient(db.Model, MetaModelMixin):
     test = Column(Boolean, default=False, nullable=False, server_default=text("false"))
     control = Column(
         Boolean, default=False, nullable=False, server_default=text("false")
-    )
-
-    barcode = relationship(
-        "BiomarkerBarcode", back_populates="pat", cascade="all, delete-orphan"
     )
 
     @property

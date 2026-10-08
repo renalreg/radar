@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, Float, text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from radar.database import db
 
@@ -28,7 +28,10 @@ class BiomarkerBarcode(db.Model):
     barcode = Column(String(100))
     sample_date = Column(DateTime)
 
-    pat = relationship("Patient", back_populates="barcode")
+    pat = relationship(
+        "Patient",
+        backref=backref("barcode", cascade="all, delete-orphan"),
+    )
 
 
 class BiomarkerResult(db.Model):
