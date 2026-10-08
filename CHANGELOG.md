@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.2](https://github.com/renalreg/radar/compare/v4.0.1...v4.0.2) (2026-10-08)
+
+
+### Bug Fixes
+
+* **RD-10:** ruff linting and formating, deptry fixes, removal of deps not needed. ([6341f4e](https://github.com/renalreg/radar/commit/6341f4e23748c3632c50a4c07ec7951a933c4586))
+
 ## [4.0.1](https://github.com/renalreg/radar/compare/v4.0.0...v4.0.1) (2026-10-01)
 
 
