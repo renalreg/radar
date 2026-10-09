@@ -12,6 +12,7 @@ from radar.models.logs import log_changes
 
 from collections import OrderedDict
 
+from radar.variants import IS_INTERNATIONAL
 
 FETAL_ANOMALY_IMAGING_TYPES = OrderedDict(
     [
@@ -35,15 +36,18 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     source_type = Column(String, nullable=False)
 
     date_of_scan = Column(Date, nullable=False)
-    imaging_type = Column(String)
+    if not IS_INTERNATIONAL:
+        imaging_type = Column(String)
     gestational_age = Column(Integer, nullable=False)
     oligohydramnios = Column(Boolean)
     right_anomaly_details = Column(String)
     right_ultrasound_details = Column(String)
-    right_mri_details = Column(String)
+    if not IS_INTERNATIONAL:
+        right_mri_details = Column(String)
     left_anomaly_details = Column(String)
     left_ultrasound_details = Column(String)
-    left_mri_details = Column(String)
+    if not IS_INTERNATIONAL:
+        left_mri_details = Column(String)
     hypoplasia = Column(Boolean)
     echogenicity = Column(Boolean)
     hepatic_abnormalities = Column(Boolean)

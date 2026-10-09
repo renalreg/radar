@@ -10,7 +10,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
+from radar.variants import pick, IS_INTERNATIONAL
 
 OUTCOMES = OrderedDict(
     [
@@ -51,12 +51,13 @@ class Pregnancy(db.Model, MetaModelMixin):
     patient = patient_relationship("pregnancies")
 
     pregnancy_number = Column(Integer, nullable=False)
-    date_of_lmp = Column(Date)
+    date_of_lmp = Column(Date,nullable=pick(main=True,international=False))
     gravidity = Column(Integer)
     parity1 = Column(Integer)
     parity2 = Column(Integer)
     outcome = Column(String)
-    infant_dob = Column(Date)
+    if not IS_INTERNATIONAL:
+        infant_dob = Column(Date)
     weight = Column(Integer)
     weight_centile = Column(Integer)
     gestational_age = Column(Integer)

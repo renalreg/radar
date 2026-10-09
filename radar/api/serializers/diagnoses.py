@@ -31,6 +31,7 @@ from radar.models.diagnoses import (
     GroupDiagnosis,
     PatientDiagnosis,
 )
+from radar.variants import IS_INTERNATIONAL
 
 
 class GroupDiagnosisSerializer(ModelSerializer):
@@ -120,12 +121,13 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     clinical_picture = fields.BooleanField(required=False)
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
-    proteinuria_positive_antibody = fields.BooleanField(required=False)
-    antibody_id = fields.StringField(required=False)
-    antibody_custom = fields.StringField(
-        required=False
-    )  # this will overwrite antibody if antibody is 'other'
-    paraprotein = fields.BooleanField(required=False)
+    if not IS_INTERNATIONAL:
+        proteinuria_positive_antibody = fields.BooleanField(required=False)
+        antibody_id = fields.StringField(required=False)
+        antibody_custom = fields.StringField(
+            required=False
+        )  # this will overwrite antibody if antibody is 'other'
+        paraprotein = fields.BooleanField(required=False)
     comments = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
@@ -140,6 +142,9 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         ]
 
     def create(self, data):
+        if IS_INTERNATIONAL:
+            return super().create(data)
+
         antibody_name = resolve_antibody_name(data)
         if antibody_name:
             data.pop("antibody_id", None)
@@ -150,6 +155,9 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         return instance
 
     def update(self, instance, data):
+        if IS_INTERNATIONAL:
+            return super().update(instance, data)
+
         antibody_name = resolve_antibody_name(data)
         if antibody_name:
             data.pop("antibody_id", None)
@@ -164,7 +172,10 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         if data["diagnosis"]:
             data["diagnosis_text"] = None
 
-        data = reset_data(data)
+        if IS_INTERNATIONAL and not data["biopsy"]:
+            data["biopsy_diagnosis"] = None
+        elif not IS_INTERNATIONAL:
+            data = reset_data(data)
         return data
 
     def validate_diagnosis(self, diagnosis):

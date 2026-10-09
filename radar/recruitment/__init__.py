@@ -21,6 +21,7 @@ from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.nurture_data import NurtureData
 from radar.ukrdc_importer.tasks import import_sda
+from radar.variants import IS_INTERNATIONAL
 
 
 logger = logging.getLogger(__name__)
@@ -44,10 +45,10 @@ class SearchPatient:
         first_name,
         last_name,
         date_of_birth,
-        email_address,
         gender,
         number_group,
         number,
+        email_address=None,
     ):
         self.first_name = first_name
         self.last_name = last_name
@@ -283,8 +284,9 @@ class RecruitmentPatient:
         patient_demographics.first_name = self.first_name
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
-        patient_demographics.email_address = self.email_address
-        patient_demographics.email_reason = self.email_reason
+        if not IS_INTERNATIONAL:
+            patient_demographics.email_address = self.email_address
+            patient_demographics.email_reason = self.email_reason
         patient_demographics.gender = self.gender
         patient_demographics.nationality = self.nationality
         patient_demographics.ethnicity = self.ethnicity
@@ -328,16 +330,19 @@ class RecruitmentPatient:
         diagnosis.clinical_picture = self.diagnosis.get("clinical_picture")
         diagnosis.biopsy = self.diagnosis.get("biopsy")
         diagnosis.biopsy_diagnosis = self.diagnosis.get("biopsy_diagnosis")
-        diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
-            "proteinuria_positive_antibody"
-        )
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
-        antibodyname = resolve_antibody_name(self.diagnosis)
-        if antibodyname:
-            diagnosis.set_antibody(antibodyname)
-        diagnosis.antibody_id = antibodyname
+
+        if not IS_INTERNATIONAL:
+            diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
+                "proteinuria_positive_antibody"
+            )
+            antibodyname = resolve_antibody_name(self.diagnosis)
+            if antibodyname:
+                diagnosis.set_antibody(antibodyname)
+            diagnosis.antibody_id = antibodyname
+
         return diagnosis
 
     def _add_to_group(self, patient, group):

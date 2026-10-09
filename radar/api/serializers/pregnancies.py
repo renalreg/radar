@@ -10,16 +10,18 @@ from radar.models.pregnancies import (
     PRE_ECLAMPSIA_TYPES,
     Pregnancy,
 )
+from radar.variants import pick, IS_INTERNATIONAL
 
 
 class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
     pregnancy_number = fields.IntegerField(validators=[min_(1)])
-    date_of_lmp = fields.DateField(required=False)
+    date_of_lmp = pick(main=fields.DateField(required=(False)),international= fields.DateField())
     gravidity = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity1 = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity2 = fields.IntegerField(required=False, validators=[range_(0, 9)])
     outcome = StringLookupField(OUTCOMES, required=False)
-    infant_dob = fields.DateField(required=False)
+    if not IS_INTERNATIONAL:
+        infant_dob = fields.DateField(required=False)
     weight = fields.IntegerField(required=False, validators=[range_(200, 5000)])
     weight_centile = fields.IntegerField(required=False, validators=[range_(20, 90)])
     gestational_age = fields.IntegerField(

@@ -13,6 +13,7 @@ from radar.models.groups import check_dependencies, DependencyError, GroupPatien
 from radar.models.nurture_data import NurtureData
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import IS_INTERNATIONAL
 
 
 class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
@@ -136,7 +137,7 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             parent_group_patient.modified_user = group_patient.modified_user
             parent_group_patient.created_date = group_patient.created_date
             parent_group_patient.modified_date = group_patient.modified_date
-            if "nurture" in str(parent_group_patient.group.name).lower():
+            if not IS_INTERNATIONAL and "nurture" in str(parent_group_patient.group.name).lower():
                 if not patient.nurture_data:
                     nurture_data = NurtureData()
                     nurture_data.patient = patient

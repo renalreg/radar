@@ -12,6 +12,7 @@ from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
 from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import IS_INTERNATIONAL, pick
 
 
 class ConsentSerializer(ModelSerializer):
@@ -49,20 +50,23 @@ class PatientConsentMixin(PatientMixin):
 
 class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
-    signed_on_date = fields.DateField(validators=[not_in_future()])
+    signed_on_date = fields.DateField(validators=pick(international=[], domestic=[not_in_future()]))
     withdrawn_on_date = fields.DateField(required=False)
-    reconsent_letter_sent_date = fields.DateField(
-        required=False, validators=[not_in_future()]
-    )
-    reconsent_letter_returned_date = fields.DateField(
-        required=False, validators=[not_in_future()]
-    )
+    if not IS_INTERNATIONAL:
+        reconsent_letter_sent_date = fields.DateField(
+            required=False, validators=[not_in_future()]
+        )
+        reconsent_letter_returned_date = fields.DateField(
+            required=False, validators=[not_in_future()]
+        )
 
     class Meta:
         model_class = PatientConsent
         exclude = ["consent_id"]
 
     def validate(self, serial_data):
+        if IS_INTERNATIONAL:
+            return serial_data
         # Validating reconsent letter sent and returned dates make sense
         errors_dict = {}
 

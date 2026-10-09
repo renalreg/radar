@@ -35,6 +35,7 @@ from radar.roles import (
     PERMISSION,
     ROLE,
 )
+from radar.variants import IS_INTERNATIONAL
 
 
 class GROUP_TYPE(enum.Enum):
@@ -94,12 +95,13 @@ class Group(db.Model):
     country = relationship(
         "Country", foreign_keys=[country_code], backref=backref("groups")
     )
-    group_antibodies = relationship(
-        "GroupAntibody",
-        back_populates="group",
-        cascade="all, delete-orphan",
-        passive_deletes=True,
-    )
+    if not IS_INTERNATIONAL:
+        group_antibodies = relationship(
+            "GroupAntibody",
+            back_populates="group",
+            cascade="all, delete-orphan",
+            passive_deletes=True,
+        )
 
     @property
     def antibodies(self) -> List[Antibody]:
@@ -107,7 +109,7 @@ class Group(db.Model):
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.
         """
-        if self.type == GROUP_TYPE.COHORT:
+        if not IS_INTERNATIONAL and self.type == GROUP_TYPE.COHORT:
             return [ga.antibody for ga in self.group_antibodies]
         return []
 

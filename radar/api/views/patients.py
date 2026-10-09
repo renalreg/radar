@@ -28,6 +28,7 @@ from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
 from radar.utils import get_attrs, SkipProxy, uniq
+from radar.variants import IS_INTERNATIONAL
 
 
 class PatientListRequestSerializer(serializers.Serializer):
@@ -45,7 +46,10 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
-    signed_off_state = fields.IntegerField(required=False)
+    if not IS_INTERNATIONAL:
+        signed_off_state = fields.IntegerField(required=False)
+    else:
+        signed_off = fields.BooleanField(required=False)
     consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
 
 
@@ -68,7 +72,7 @@ def list_patients():
     ukrdc = args["ukrdc"]
     test = args["test"]
     control = args["control"]
-    signed_off_state = args["signed_off_state"]
+    signed_off_state = args.get("signed_off_state")
 
     if patient_id is not None:
         builder.patient_id(patient_id)
@@ -233,8 +237,11 @@ class PatientListCSVView(ApiView):
                     get_attrs(patient.recruited_group(), "code"),
                     get_groups(patient, GROUP_TYPE.COHORT),
                     get_groups(patient, GROUP_TYPE.HOSPITAL),
-                    get_attrs(patient, "nurture_data", "signed_off_state"),
                 ]
+
+                if not IS_INTERNATIONAL:
+                    row.append(get_attrs(patient, "nurture_data", "signed_off_state"))
+
 
                 row.extend(patient.recruited_date(cohort) for cohort in cohorts)
 

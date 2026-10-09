@@ -10,6 +10,7 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_date_filter, sql_year_filter
+from radar.variants import IS_INTERNATIONAL
 
 
 class PatientQueryBuilder:
@@ -122,7 +123,9 @@ class PatientQueryBuilder:
         return self
 
     def signedOff(self, value):
-        self.query = self.query.filter(filter_by_signed_off_state(value))
+        # nurture_data (and so signed off state) only exists on main
+        if not IS_INTERNATIONAL:
+            self.query = self.query.filter(filter_by_signed_off_state(value))
         return self
 
     def sort(self, column, reverse=False):
@@ -405,7 +408,7 @@ def sort_patients(user, sort_by, reverse=False):
         clauses = [sort_by_recruited_date(reverse)]
     elif sort_by == "primary_patient_number":
         clauses = [sort_by_primary_patient_number(reverse)]
-    elif sort_by == "signed_off_state":
+    elif sort_by == "signed_off_state" and not IS_INTERNATIONAL:
         clauses = [sort_by_completeness(reverse)]
     else:
         return [sort_by_patient_id(reverse)]

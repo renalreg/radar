@@ -35,6 +35,7 @@ from radar.models.diagnoses import (
     PatientDiagnosis,
 )
 from radar.models.groups import Group
+from radar.variants import IS_INTERNATIONAL
 
 
 class DiagnosisRequestSerializer(serializers.Serializer):
@@ -274,6 +275,8 @@ def register_views(app):
         "/group-diagnosis-types",
         view_func=GroupDiagnosisTypeListView.as_view("group_diagnosis_type_list"),
     )
-    app.add_url_rule(
-        "/antibodies", view_func=AntibodyListView.as_view("group_antibodies")
-    )
+
+    if not IS_INTERNATIONAL:
+        app.add_url_rule(
+            "/antibodies", view_func=AntibodyListView.as_view("group_antibodies")
+        )

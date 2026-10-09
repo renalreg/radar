@@ -27,6 +27,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
+from radar.variants import IS_INTERNATIONAL
 
 BIOPSY_DIAGNOSES = OrderedDict(
     [
@@ -71,10 +72,11 @@ class PatientDiagnosis(db.Model, MetaModelMixin):
     clinical_picture = Column(Boolean)
     biopsy = Column(Boolean)
     biopsy_diagnosis = Column(Integer)
-    proteinuria_positive_antibody = Column(Boolean)
-    antibody_id = Column(String, ForeignKey("antibodies.id"), nullable=True)
-    antibody = relationship("Antibody", foreign_keys=[antibody_id])
-    paraprotein = Column(Boolean)
+    if not IS_INTERNATIONAL:
+        proteinuria_positive_antibody = Column(Boolean)
+        antibody_id = Column(String, ForeignKey("antibodies.id"), nullable=True)
+        antibody = relationship("Antibody", foreign_keys=[antibody_id])
+        paraprotein = Column(Boolean)
 
     comments = Column(String)
 

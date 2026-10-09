@@ -7,6 +7,7 @@ from cornflake.validators import upper
 import pytz
 
 from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
+from radar.variants import pick
 
 
 def parse_sda_datetime(value):
@@ -25,7 +26,7 @@ class SDADateTimeField(fields.DateTimeField):
 
 class CodeDescriptionSerializer(serializers.Serializer):
     code = fields.StringField()
-    description = fields.StringField(required=False)
+    description = fields.StringField(required=pick(main=False,international=True))
 
 
 class CodeOrDescriptionSerializer(serializers.Serializer):

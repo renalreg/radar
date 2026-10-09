@@ -19,6 +19,7 @@ from radar.models.users import User
 from radar.pages import PAGE
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import SOURCE_TYPE_FIELDS
 
 
 def lookup_field_defaults(kwargs):
@@ -250,7 +251,7 @@ class SourceTypeField(fields.StringField):
         kwargs.setdefault("default", SOURCE_TYPE_MANUAL)
         kwargs.setdefault(
             "validators",
-            [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH])],
+            [in_(SOURCE_TYPE_FIELDS)],
         )
         super().__init__(**kwargs)
 

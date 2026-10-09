@@ -5,6 +5,7 @@ from cornflake.validators import max_length, none_if_blank, optional
 from radar.api.serializers.common import IntegerLookupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.alport import AlportClinicalPicture, DEAFNESS_NO, DEAFNESS_OPTIONS
+from radar.variants import IS_INTERNATIONAL
 
 
 class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
@@ -12,9 +13,11 @@ class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
     deafness = IntegerLookupField(DEAFNESS_OPTIONS)
     deafness_date = fields.DateField(required=False)
     hearing_aid_date = fields.DateField(required=False)
-    comments = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
+
+    if not IS_INTERNATIONAL:
+        comments = fields.StringField(
+            required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+        )
 
     class Meta:
         model_class = AlportClinicalPicture

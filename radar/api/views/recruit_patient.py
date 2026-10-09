@@ -14,6 +14,7 @@ from radar.api.views.generics import (
     response_json,
 )
 from radar.recruitment import DemographicsMismatch, RecruitmentPatient, SearchPatient
+from radar.variants import IS_INTERNATIONAL
 
 
 def mismatch_error(e):
@@ -34,15 +35,18 @@ class RecruitPatientSearchView(PermissionViewMixin, ApiView):
     @request_json(RecruitPatientSearchSerializer)
     @response_json(RecruitPatientResultSerializer)
     def post(self, data):
-        search_patient = SearchPatient(
-            first_name=data.get("first_name"),
-            last_name=data.get("last_name"),
-            date_of_birth=data.get("date_of_birth"),
-            email_address=data.get("email_address"),
-            gender=data.get("gender"),
-            number_group=data.get("number_group"),
-            number=data.get("number"),
-        )
+        fields = [
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "gender",
+            "number_group",
+            "number",
+        ]
+        if not IS_INTERNATIONAL:
+            fields.append("email_address")
+
+        search_patient = SearchPatient(**{name: data.get(name) for name in fields})
 
         try:
             patient = search_patient.search_radar()
@@ -60,25 +64,32 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
     @request_json(RecruitPatientSerializer)
     @response_json(PatientSerializer)
     def post(self, data):
-        search_patient = SearchPatient(
-            first_name=data["first_name"],
-            last_name=data["last_name"],
-            date_of_birth=data["date_of_birth"],
-            email_address=data["email_address"],
-            gender=data["gender"],
-            number_group=data["number_group"],
-            number=data["number"],
-        )
+        search_fields = [
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "gender",
+            "number_group",
+            "number",
+        ]
+        recruitment_fields = [
+            "hospital_group",
+            "cohort_group",
+            "consents",
+            "diagnosis",
+            "nationality",
+            "ethnicity",
+        ]
+
+        if not IS_INTERNATIONAL:
+            search_fields.append("email_address")
+            recruitment_fields.append("email_reason")
+
+        search_patient = SearchPatient(**{name: data[name] for name in search_fields})
 
         recruitment_patient = RecruitmentPatient(
             search_patient=search_patient,
-            hospital_group=data["hospital_group"],
-            cohort_group=data["cohort_group"],
-            consents=data["consents"],
-            diagnosis=data["diagnosis"],
-            nationality=data["nationality"],
-            ethnicity=data["ethnicity"],
-            email_reason=data["email_reason"],
+            **{name: data[name] for name in recruitment_fields},
         )
 
         try:

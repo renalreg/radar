@@ -14,6 +14,7 @@ from radar.models.pathology import (
     PATHOLOGY_KIDNEY_SIDES,
     PATHOLOGY_KIDNEY_TYPES,
 )
+from radar.variants import IS_INTERNATIONAL
 
 
 class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -32,7 +33,8 @@ class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     em_findings = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    report_cleaned = fields.DateField(required=False)
+    if not IS_INTERNATIONAL:
+        report_cleaned = fields.DateField(required=False)
 
     class Meta:
         model_class = Pathology

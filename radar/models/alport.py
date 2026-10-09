@@ -10,7 +10,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
+from radar.variants import IS_INTERNATIONAL
 
 DEAFNESS_NO = 1
 DEAFNESS_MINOR = 2
@@ -38,7 +38,8 @@ class AlportClinicalPicture(db.Model, MetaModelMixin):
     deafness = Column(Integer, nullable=False)
     deafness_date = Column(Date)
     hearing_aid_date = Column(Date)
-    comments = Column(String)
+    if not IS_INTERNATIONAL:
+        comments = Column(String)
 
 
 Index("alport_clinical_pictures_patient_idx", AlportClinicalPicture.patient_id)

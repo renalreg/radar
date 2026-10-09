@@ -15,6 +15,7 @@ from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
+from radar.variants import IS_INTERNATIONAL
 
 
 class CONSENT_TYPE(enum.Enum):
@@ -57,6 +58,6 @@ class PatientConsent(db.Model, MetaModelMixin):
 
     signed_on_date = Column(Date, nullable=False)
     withdrawn_on_date = Column(Date, nullable=True)
-
-    reconsent_letter_sent_date = Column(Date, nullable=True)
-    reconsent_letter_returned_date = Column(Date, nullable=True)
+    if not IS_INTERNATIONAL:
+        reconsent_letter_sent_date = Column(Date, nullable=True)
+        reconsent_letter_returned_date = Column(Date, nullable=True)

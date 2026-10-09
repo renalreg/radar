@@ -11,15 +11,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
-
-PATHOLOGY_KIDNEY_TYPES = OrderedDict(
-    [
-        ("TRANSPLANT", "Transplant"),
-        ("NATIVE", "Native"),
-        ("TIME ZERO TRANSPLANT", "Time zero transplant"),
-    ]
-)
+from radar.variants import PATHOLOGY_KIDNEY_TYPES, IS_INTERNATIONAL
 
 PATHOLOGY_KIDNEY_SIDES = OrderedDict(
     [
@@ -49,7 +41,8 @@ class Pathology(db.Model, MetaModelMixin):
     image_url = Column(String)
     histological_summary = Column(String)
     em_findings = Column(String)
-    report_cleaned = Column(Date)
+    if not IS_INTERNATIONAL:
+        report_cleaned = Column(Date)
 
     @property
     def kidney_type_label(self):

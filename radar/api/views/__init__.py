@@ -55,6 +55,7 @@ from radar.api.views import stats
 from radar.api.views import transplants
 from radar.api.views import user_sessions
 from radar.api.views import users
+from radar.variants import IS_INTERNATIONAL
 
 
 def setup(app):
@@ -87,7 +88,8 @@ def setup(app):
     medications.register_views(app)
     mpgn.register_views(app)
     nephrectomies.register_views(app)
-    nurture_data.register_views(app)
+    if not IS_INTERNATIONAL:
+        nurture_data.register_views(app)
     nurture_tubes.register_views(app)
     pathology.register_views(app)
     patient_addresses.register_views(app)

@@ -12,9 +12,9 @@ from radar.api.serializers.common import (
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.renal_imaging import (
     RENAL_IMAGING_KIDNEY_TYPES,
-    RENAL_IMAGING_TYPES,
     RenalImaging,
 )
+from radar.variants import IS_INTERNATIONAL,RENAL_IMAGING_TYPES
 
 
 class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
@@ -33,8 +33,9 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     right_other_malformation = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    right_vesicoureteric_reflux = fields.BooleanField(required=False)
-    right_hydronephrosis_hydroureter = fields.BooleanField(required=False)
+    if not IS_INTERNATIONAL:
+        right_vesicoureteric_reflux = fields.BooleanField(required=False)
+        right_hydronephrosis_hydroureter = fields.BooleanField(required=False)
 
     left_present = fields.BooleanField(required=False)
     left_type = StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
@@ -48,8 +49,9 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     left_other_malformation = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    left_vesicoureteric_reflux = fields.BooleanField(required=False)
-    left_hydronephrosis_hydroureter = fields.BooleanField(required=False)
+    if not IS_INTERNATIONAL:
+        left_vesicoureteric_reflux = fields.BooleanField(required=False)
+        left_hydronephrosis_hydroureter = fields.BooleanField(required=False)
 
     class Meta:
         model_class = RenalImaging

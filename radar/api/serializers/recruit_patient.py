@@ -12,14 +12,16 @@ from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
 from radar.models.patient_codes import GENDERS
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
+from radar.variants import IS_INTERNATIONAL
 
 
 class RecruitPatientSearchSerializer(serializers.Serializer):
     first_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
-    email_address = fields.StringField(validators=[not_empty()])
-    email_reason = fields.StringField(required=False)
+    if not IS_INTERNATIONAL:
+        email_address = fields.StringField(validators=[not_empty()])
+        email_reason = fields.StringField(required=False)
     gender = IntegerLookupField(GENDERS)
     number = fields.StringField(validators=[not_empty()])
     number_group = GroupField()
@@ -56,13 +58,15 @@ class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     clinical_picture = fields.BooleanField(required=False)
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
-    proteinuria_positive_antibody = fields.BooleanField(required=False)
-    antibody_id = fields.StringField(required=False)
-    antibody_custom = fields.StringField(required=False)
+    if not IS_INTERNATIONAL:
+        proteinuria_positive_antibody = fields.BooleanField(required=False)
+        antibody_id = fields.StringField(required=False)
+        antibody_custom = fields.StringField(required=False)
     comments = fields.StringField(required=False)
 
     def pre_validate(self, data):
-        data = reset_data(data)
+        if not IS_INTERNATIONAL:
+            data = reset_data(data)
         return data
 
 

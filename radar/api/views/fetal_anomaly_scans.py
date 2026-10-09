@@ -9,6 +9,7 @@ from radar.models.fetal_anomaly_scans import (
     FetalAnomalyScan,
     FETAL_ANOMALY_IMAGING_TYPES,
 )
+from radar.variants import IS_INTERNATIONAL
 
 
 class FetalAnomalyScanListView(SourceObjectViewMixin, PatientObjectListView):
@@ -34,7 +35,8 @@ def register_views(app):
         "/fetal-anomaly-scans/<id>",
         view_func=FetalAnomalyScanDetailView.as_view("fetal_anomaly_scan_detail"),
     )
-    app.add_url_rule(
-        "/fetal-anomaly-imaging-types",
-        view_func=FetalAnomalyImagingTypes.as_view("fetal_anomaly_imaging_types"),
-    )
+    if not IS_INTERNATIONAL:
+        app.add_url_rule(
+            "/fetal-anomaly-imaging-types",
+            view_func=FetalAnomalyImagingTypes.as_view("fetal_anomaly_imaging_types"),
+        )

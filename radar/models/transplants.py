@@ -12,27 +12,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
-
-TRANSPLANT_MODALITIES = OrderedDict(
-    [
-        (21, "Live - Sibling"),
-        (74, "Live - Father"),
-        (75, "Live - Mother"),
-        (73, "Live - Parent"),
-        (77, "Live - Child"),
-        (23, "Live - Other Relative"),
-        (24, "Live - Gentically Unrelated"),
-        (26, "Live - With Transplant of Other Organ"),
-        (27, "Live - Non-UK"),
-        (78, "Live - Unknown"),
-        (20, "Cadaver"),
-        (25, "Cadaver - With Transplant of Other Organ"),
-        (28, "DCD - Non-Heart-Beating"),
-        (29, "Unknown"),
-        (300, "DBD - Heart-Beating"),
-    ]
-)
+from radar.variants import TRANSPLANT_MODALITIES, IS_INTERNATIONAL
 
 GRAFT_LOSS_CAUSES = OrderedDict(
     [
@@ -68,7 +48,8 @@ class Transplant(db.Model, MetaModelMixin):
     modality = Column(Integer, nullable=False)
     recipient_hla = Column(String)
     donor_hla = Column(String)
-    mismatch_hla = Column(String)
+    if not IS_INTERNATIONAL:
+        mismatch_hla = Column(String)
     date_of_cmv_infection = Column(Date)
     recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)

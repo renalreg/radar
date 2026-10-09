@@ -26,6 +26,7 @@ from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import IS_INTERNATIONAL
 
 
 class PatientDemographicsSerializer(
@@ -54,7 +55,8 @@ class PatientDemographicsSerializer(
     date_of_death = fields.DateField(
         required=False, validators=[after_day_zero(), not_in_future()]
     )
-    cause_of_death = fields.StringField(required=False)
+    if not IS_INTERNATIONAL:
+        cause_of_death = fields.StringField(required=False)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
     home_number = fields.StringField(
@@ -88,14 +90,15 @@ class PatientDemographicsSerializer(
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()],
     )
-    email_reason = fields.StringField(
-        required=False,
-    )
+    if not IS_INTERNATIONAL:
+        email_reason = fields.StringField(
+            required=False,
+        )
     nationality = NationalityField(required=False)
     ethnicity = EthnicityField(required=False)
-
-    opt_out_surveys = fields.BooleanField(required=False)
-    opt_out_newsletters = fields.BooleanField(required=False)
+    if not IS_INTERNATIONAL:
+        opt_out_surveys = fields.BooleanField(required=False)
+        opt_out_newsletters = fields.BooleanField(required=False)
 
     class Meta:
         model_class = PatientDemographics

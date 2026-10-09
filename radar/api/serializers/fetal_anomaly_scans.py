@@ -18,11 +18,13 @@ from radar.models.fetal_anomaly_scans import (
     FetalAnomalyScan,
     FETAL_ANOMALY_IMAGING_TYPES,
 )
+from radar.variants import IS_INTERNATIONAL
 
 
 class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     date_of_scan = fields.DateField(validators=[not_in_future()])
-    imaging_type = StringLookupField(FETAL_ANOMALY_IMAGING_TYPES)
+    if not IS_INTERNATIONAL:
+        imaging_type = StringLookupField(FETAL_ANOMALY_IMAGING_TYPES)
     gestational_age = fields.IntegerField(validators=[range_(8 * 7, 42 * 7, "days")])
     oligohydramnios = fields.BooleanField(required=False)
     right_anomaly_details = fields.StringField(
@@ -31,18 +33,20 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     right_ultrasound_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    right_mri_details = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
+    if not IS_INTERNATIONAL:
+        right_mri_details = fields.StringField(
+            required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+        )
     left_anomaly_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
     left_ultrasound_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    left_mri_details = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
+    if not IS_INTERNATIONAL:
+        left_mri_details = fields.StringField(
+            required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+        )
     hypoplasia = fields.BooleanField(required=False)
     echogenicity = fields.BooleanField(required=False)
     hepatic_abnormalities = fields.BooleanField(required=False)

@@ -18,6 +18,7 @@ from radar.ukrdc_importer.patient_numbers import import_patient_numbers
 from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
+from radar.variants import IS_INTERNATIONAL
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +168,7 @@ def import_sda(data, sequence_number, patient_id=None):
         return False
 
     # Check that the patient is not within the withdrawn consent cohorts
-    if withdrawn_consent_cohorts(patient):
+    if not IS_INTERNATIONAL and withdrawn_consent_cohorts(patient):
         adapter.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
         return False
 

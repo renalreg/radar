@@ -24,6 +24,7 @@ from radar.auth.sessions import (
 )
 from radar.config import config
 from radar.models.groups import Group, GROUP_TYPE
+from radar.variants import GROUP_DIAGNOSIS_EXPORT_COLUMNS, OBSERVATION_COLUMNS
 
 
 class AdminModelConverter(BaseAdminModelConverter):
@@ -306,7 +307,7 @@ class GroupDiagnosisView(ModelView):
     column_default_sort = "group.name"
     column_auto_select_related = True
     column_searchable_list = ["group.name", "diagnosis.name"]
-    column_export_list = ["id", "group", "type", "diagnosis", "weight"]
+    column_export_list = GROUP_DIAGNOSIS_EXPORT_COLUMNS
 
 
 class GroupFormView(ModelView):
@@ -363,20 +364,7 @@ class ObservationView(ModelView):
         "options",
         "units",
     ]
-    column_export_list = [
-        "id",
-        "name",
-        "short_name",
-        "value_type",
-        "sample_type",
-        "pv_code",
-        "min_value",
-        "max_value",
-        "min_length",
-        "max_length",
-        "units",
-        "options",
-    ]
+    column_export_list = OBSERVATION_COLUMNS
 
 
 class SpecialtyView(ModelView):
