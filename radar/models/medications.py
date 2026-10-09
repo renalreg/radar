@@ -28,7 +28,6 @@ MEDICATION_ROUTES = OrderedDict(
 )
 
 
-
 @log_changes
 class CurrentMedication(db.Model, MetaModelMixin):
     __tablename__ = "current_medications"
@@ -68,7 +67,7 @@ class Medication(db.Model, MetaModelMixin):
 
     id = uuid_pk_column()
 
-    patient_id = patient_id_column()
+    patient_id: Column = patient_id_column()
     patient = patient_relationship("medications")
 
     source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)

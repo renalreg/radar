@@ -137,7 +137,10 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             parent_group_patient.modified_user = group_patient.modified_user
             parent_group_patient.created_date = group_patient.created_date
             parent_group_patient.modified_date = group_patient.modified_date
-            if not IS_INTERNATIONAL and "nurture" in str(parent_group_patient.group.name).lower():
+            if (
+                not IS_INTERNATIONAL
+                and "nurture" in str(parent_group_patient.group.name).lower()
+            ):
                 if not patient.nurture_data:
                     nurture_data = NurtureData()
                     nurture_data.patient = patient

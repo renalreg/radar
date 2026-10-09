@@ -186,7 +186,7 @@ class PatientExporter(Exporter):
             column("available_ethnicity"),
             column("patient_view", "ukrdc"),
             column("control"),
-            pick(main=column("signed_off_state"),international=column("signed_off")),
+            pick(main=column("signed_off_state"), international=column("signed_off")),
             column(
                 "recruited_date", lambda x: format_date(x.recruited_date(group))
             ),  # 13
@@ -1914,7 +1914,9 @@ class RituximabAdverseEventsExporter(Exporter):
             d("cause_of_death", "data.dodCause", anonymised_getter=None),
         ]
         if IS_INTERNATIONAL:
-            self._columns = [c for c in self._columns if not c.name.startswith("caused_")]
+            self._columns = [
+                c for c in self._columns if not c.name.startswith("caused_")
+            ]
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q

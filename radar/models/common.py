@@ -13,7 +13,7 @@ def uuid_pk_column():
     )
 
 
-def patient_id_column(**kwargs):
+def patient_id_column(**kwargs) -> Column:
     return Column(
         Integer,
         ForeignKey("patients.id", onupdate="CASCADE", ondelete="CASCADE"),

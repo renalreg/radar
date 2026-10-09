@@ -4,9 +4,9 @@ import random
 from radar.fixtures.utils import add, random_bool, random_date
 from radar.models.renal_imaging import (
     RENAL_IMAGING_KIDNEY_TYPES,
-    RENAL_IMAGING_TYPES,
     RenalImaging,
 )
+from radar.variants import RENAL_IMAGING_TYPES
 
 
 def create_renal_imaging_f():

@@ -62,7 +62,7 @@ def clean(items):
 class Patient(db.Model, MetaModelMixin):
     __tablename__ = "patients"
 
-    id = Column(Integer, Sequence("patients_seq"), primary_key=True)
+    id: Column = Column(Integer, Sequence("patients_seq"), primary_key=True)
     comments = Column(String)
     test = Column(Boolean, default=False, nullable=False, server_default=text("false"))
     control = Column(

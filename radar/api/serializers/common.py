@@ -12,8 +12,6 @@ from radar.models.groups import Group, GROUP_TYPE, GroupPage
 from radar.models.patients import Patient
 from radar.models.source_types import (
     SOURCE_TYPE_MANUAL,
-    SOURCE_TYPE_UKRDC,
-    SOURCE_TYPE_BATCH,
 )
 from radar.models.users import User
 from radar.pages import PAGE

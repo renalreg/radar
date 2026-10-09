@@ -106,7 +106,9 @@ class TinyPatientSerializer(serializers.Serializer):
     date_of_birth = fields.DateField(read_only=True)
     year_of_birth = fields.IntegerField(read_only=True)
     if not IS_INTERNATIONAL:
-        radar_date_of_death = fields.DateField(source="radar_date_of_death", read_only=True)
+        radar_date_of_death = fields.DateField(
+            source="radar_date_of_death", read_only=True
+        )
     date_of_death = fields.DateField(read_only=True)
     if not IS_INTERNATIONAL:
         cause_of_death = fields.StringField(read_only=True)

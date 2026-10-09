@@ -242,7 +242,6 @@ class PatientListCSVView(ApiView):
                 if not IS_INTERNATIONAL:
                     row.append(get_attrs(patient, "nurture_data", "signed_off_state"))
 
-
                 row.extend(patient.recruited_date(cohort) for cohort in cohorts)
 
                 yield emit(row)

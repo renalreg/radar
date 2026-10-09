@@ -50,7 +50,9 @@ class PatientConsentMixin(PatientMixin):
 
 class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
     consent = ConsentField()
-    signed_on_date = fields.DateField(validators=pick(international=[], domestic=[not_in_future()]))
+    signed_on_date = fields.DateField(
+        validators=pick(international=[], main=[not_in_future()])
+    )
     withdrawn_on_date = fields.DateField(required=False)
     if not IS_INTERNATIONAL:
         reconsent_letter_sent_date = fields.DateField(

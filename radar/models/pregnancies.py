@@ -51,7 +51,7 @@ class Pregnancy(db.Model, MetaModelMixin):
     patient = patient_relationship("pregnancies")
 
     pregnancy_number = Column(Integer, nullable=False)
-    date_of_lmp = Column(Date,nullable=pick(main=True,international=False))
+    date_of_lmp = Column(Date, nullable=pick(main=True, international=False))
     gravidity = Column(Integer)
     parity1 = Column(Integer)
     parity2 = Column(Integer)

@@ -15,7 +15,9 @@ from radar.variants import pick, IS_INTERNATIONAL
 
 class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
     pregnancy_number = fields.IntegerField(validators=[min_(1)])
-    date_of_lmp = pick(main=fields.DateField(required=(False)),international= fields.DateField())
+    date_of_lmp = pick(
+        main=fields.DateField(required=(False)), international=fields.DateField()
+    )
     gravidity = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity1 = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity2 = fields.IntegerField(required=False, validators=[range_(0, 9)])
