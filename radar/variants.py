@@ -1,10 +1,28 @@
-from typing import TypeVar, OrderedDict
-
-from radar.config import config
+import os
+from typing import OrderedDict
+from typing import TypeVar
 
 T = TypeVar("T")
 
-IS_INTERNATIONAL: bool = bool(config["international"])
+ENV_VAR = "INTERNATIONAL"
+_TRUE = {"1", "true", "yes", "on"}
+_FALSE = {"0", "false", "no", "off", ""}
+
+
+def _read_flag() -> bool:
+    """INTERNATIONAL=true -> international. Not set, or false -> main."""
+    value = os.environ.get(ENV_VAR, "").strip().lower()
+
+    if value in _TRUE:
+        return True
+    if value in _FALSE:
+        return False
+
+    # Fail loudly on typos rather than silently running as main
+    raise RuntimeError(f"{ENV_VAR} must be true or false, got {value!r}")
+
+
+IS_INTERNATIONAL: bool = _read_flag()
 
 
 def pick(*, international: T, main: T) -> T:
