@@ -21,7 +21,7 @@ from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.nurture_data import NurtureData
 from radar.ukrdc_importer.tasks import import_sda
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 
 logger = logging.getLogger(__name__)
@@ -201,7 +201,9 @@ class SearchPatient:
         return patient
 
 
-class RecruitmentPatient:
+class BaseRecruitmentPatient:
+    """Recruitment steps shared by every deployment."""
+
     def __init__(
         self,
         search_patient,
@@ -284,9 +286,7 @@ class RecruitmentPatient:
         patient_demographics.first_name = self.first_name
         patient_demographics.last_name = self.last_name
         patient_demographics.date_of_birth = self.date_of_birth
-        if not IS_INTERNATIONAL:
-            patient_demographics.email_address = self.email_address
-            patient_demographics.email_reason = self.email_reason
+        self._set_variant_demographics(patient_demographics)
         patient_demographics.gender = self.gender
         patient_demographics.nationality = self.nationality
         patient_demographics.ethnicity = self.ethnicity
@@ -333,17 +333,15 @@ class RecruitmentPatient:
         diagnosis.comments = self.diagnosis.get("comments")
         diagnosis.created_user = current_user
         diagnosis.modified_user = current_user
-
-        if not IS_INTERNATIONAL:
-            diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
-                "proteinuria_positive_antibody"
-            )
-            antibodyname = resolve_antibody_name(self.diagnosis)
-            if antibodyname:
-                diagnosis.set_antibody(antibodyname)
-            diagnosis.antibody_id = antibodyname
+        self._set_variant_diagnosis(diagnosis)
 
         return diagnosis
+
+    def _set_variant_demographics(self, patient_demographics):
+        """Hook: set variant-only demographics fields. Does nothing by default."""
+
+    def _set_variant_diagnosis(self, diagnosis):
+        """Hook: set variant-only diagnosis fields. Does nothing by default."""
 
     def _add_to_group(self, patient, group):
         if not patient.in_group(group, current=True):
@@ -393,6 +391,31 @@ class RecruitmentPatient:
             sda_container.save(patient)
 
         return patient
+
+
+class MainRecruitmentPatient(BaseRecruitmentPatient):
+    def _set_variant_demographics(self, patient_demographics):
+        patient_demographics.email_address = self.email_address
+        patient_demographics.email_reason = self.email_reason
+
+    def _set_variant_diagnosis(self, diagnosis):
+        diagnosis.proteinuria_positive_antibody = self.diagnosis.get(
+            "proteinuria_positive_antibody"
+        )
+        antibodyname = resolve_antibody_name(self.diagnosis)
+        if antibodyname:
+            diagnosis.set_antibody(antibodyname)
+        diagnosis.antibody_id = antibodyname
+
+
+class InternationalRecruitmentPatient(BaseRecruitmentPatient):
+    pass
+
+
+RecruitmentPatient: type[BaseRecruitmentPatient] = pick(
+    main=MainRecruitmentPatient,
+    international=InternationalRecruitmentPatient,
+)
 
 
 class SDAContainer:

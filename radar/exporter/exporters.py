@@ -17,7 +17,7 @@ from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
-from radar.variants import pick, IS_INTERNATIONAL, SAMPLE_EXPORTER_COLUMNS
+from radar.variants import pick, SAMPLE_EXPORTER_COLUMNS
 
 ILLEGAL_CHARACTERS_RE = re.compile(r"[\000-\010]|[\013-\014]|[\016-\037]")
 
@@ -361,6 +361,30 @@ class CurrentMedicationExporter(Exporter):
         self._query = q
 
 
+def main_diagnosis_columns(config):
+    # NURTURE INS exports get the INS diagnosis columns (indexes 27-31,
+    # filled in by PrimaryDiagnosisExporter.insert_ins_data)
+    if config["patient_group"].code == "NURTUREINS":
+        return [
+            column("ins_diagnosis"),  # 27
+            column("ins_diagnosis_date"),
+            column("ins_biopsy_diagnosis"),
+            column("ins_biopsy_diagnosis_label"),
+            column("ins_diagnosis_comments"),  # 31
+        ]
+    return []
+
+
+def international_diagnosis_columns(config):
+    return []
+
+
+variant_diagnosis_columns = pick(
+    main=main_diagnosis_columns,
+    international=international_diagnosis_columns,
+)
+
+
 class DiagnosisExporter(Exporter):
     def setup(self):
         d = demographics_column_factory(self.config)
@@ -394,17 +418,7 @@ class DiagnosisExporter(Exporter):
             column("biopsy_diagnosis_label"),
             d("comments", anonymised_getter=None),
         ]
-        if not IS_INTERNATIONAL:
-            if self.config["patient_group"].code == "NURTUREINS":
-                self._columns.extend(
-                    [
-                        column("ins_diagnosis"),  # 27
-                        column("ins_diagnosis_date"),
-                        column("ins_biopsy_diagnosis"),
-                        column("ins_biopsy_diagnosis_label"),
-                        column("ins_diagnosis_comments"),  # 31
-                    ]
-                )
+        self._columns.extend(variant_diagnosis_columns(self.config))
         self._columns.extend(get_meta_columns(self.config))
         self._query = queries.get_patient_diagnoses(self.config)
         self._primary = queries.get_primary_diagnoses(self.config)
@@ -808,7 +822,7 @@ class TransplantExporter(Exporter):
             column("modality_label"),
             column("recipient_hla"),
             column("donor_hla"),
-            *pick(international=[], domestic=[column("mismatch_hla")]),
+            *pick(main=[column("mismatch_hla")], international=[]),
             column(
                 "date_of_cmv_infection", lambda x: format_date(x.date_of_cmv_infection)
             ),
@@ -964,6 +978,27 @@ class RenalProgressionExporter(Exporter):
         self._query = q
 
 
+# (row label, Result attribute) for the extra calculated rows after each result
+CALCULATED_RESULT_ROWS = pick(
+    main=[
+        ("RADAR Z Score Height", "calculate_z_score_height"),
+        ("RADAR Z Score Weight", "calculate_z_score_weight"),
+        ("RADAR Calculated eGFR", "egfr_calculated"),
+        (
+            "RADAR Calculated eGFR with ethnicity",
+            "ckd_epi_egfr_calculated_with_ethnicity",
+        ),
+        (
+            "RADAR Calculated eGFR without ethnicity",
+            "ckd_epi_egfr_calculated_without_ethnicity",
+        ),
+    ],
+    international=[
+        ("RADAR Calculated eGFR", "egfr_calculated"),
+    ],
+)
+
+
 @register("results")
 class ResultExporter(Exporter):
     def setup(self):
@@ -988,36 +1023,12 @@ class ResultExporter(Exporter):
         q = queries.get_results(self.config)
         for result in q.yield_per(1000):
             yield [col[1](result) for col in self._columns]
-            if not IS_INTERNATIONAL:
-                value = result.calculate_z_score_height
+
+            for label, attr in CALCULATED_RESULT_ROWS:
+                value = getattr(result, attr)
                 if value:
                     row = [col[1](result) for col in self._columns]
-                    row[6] = "RADAR Z Score Height"
-                    row[7] = row[9] = value
-                    yield row
-                value = result.calculate_z_score_weight
-                if value:
-                    row = [col[1](result) for col in self._columns]
-                    row[6] = "RADAR Z Score Weight"
-                    row[7] = row[9] = value
-                    yield row
-            value = result.egfr_calculated
-            if value:
-                row = [col[1](result) for col in self._columns]
-                row[6] = "RADAR Calculated eGFR"
-                row[7] = row[9] = value
-                yield row
-            if not IS_INTERNATIONAL:
-                value = result.ckd_epi_egfr_calculated_with_ethnicity
-                if value:
-                    row = [col[1](result) for col in self._columns]
-                    row[6] = "RADAR Calculated eGFR with ethnicity"
-                    row[7] = row[9] = value
-                    yield row
-                value = result.ckd_epi_egfr_calculated_without_ethnicity
-                if value:
-                    row = [col[1](result) for col in self._columns]
-                    row[6] = "RADAR Calculated eGFR without ethnicity"
+                    row[6] = label
                     row[7] = row[9] = value
                     yield row
 
@@ -1318,8 +1329,7 @@ class IposExporter(Exporter):
         self._query = q
 
 
-@register("samples")
-class SamplesExporter(Exporter):
+class BaseSamplesExporter(Exporter):
     def setup(self):
         self._columns = [
             column(*spec) if isinstance(spec, tuple) else column(spec)
@@ -1329,28 +1339,36 @@ class SamplesExporter(Exporter):
         q = queries.get_form_data(self.config)
         self._query = q
 
+
+class MainSamplesExporter(BaseSamplesExporter):
     def get_rows(self):
-
         headers = [col[0] for col in self._columns]
+        headers[4] = "sample_type"
+        yield headers
 
-        if not IS_INTERNATIONAL:
-            headers[4] = "sample_type"
-            yield headers
-            for data in self._query:
-                row = [col[1](data) for col in self._columns]
+        for data in self._query:
+            row = [col[1](data) for col in self._columns]
 
-                if row[4] is not None:
-                    row[4] = INS_STATE[row[4]]
+            if row[4] is not None:
+                row[4] = INS_STATE[row[4]]
 
-                yield row
-        else:
-            yield headers
+            yield row
 
-            # Execute the query and process results in chunks
-            q = queries.get_nurture_samples(self.config)
-            for result in q.yield_per(1000):
-                # Create a row based on the result
-                yield [col[1](result) for col in self._columns]
+
+class InternationalSamplesExporter(BaseSamplesExporter):
+    def get_rows(self):
+        headers = [col[0] for col in self._columns]
+        yield headers
+
+        # Execute the query and process results in chunks
+        q = queries.get_nurture_samples(self.config)
+        for result in q.yield_per(1000):
+            yield [col[1](result) for col in self._columns]
+
+
+SamplesExporter: type[BaseSamplesExporter] = register("samples")(
+    pick(main=MainSamplesExporter, international=InternationalSamplesExporter)
+)
 
 
 @register("anthropometrics")
@@ -1913,10 +1931,11 @@ class RituximabAdverseEventsExporter(Exporter):
             column("date_of_death", "data.dod"),
             d("cause_of_death", "data.dodCause", anonymised_getter=None),
         ]
-        if IS_INTERNATIONAL:
-            self._columns = [
-                c for c in self._columns if not c.name.startswith("caused_")
-            ]
+        # International doesn't record the "caused_*" questions
+        self._columns = pick(
+            main=self._columns,
+            international=[c for c in self._columns if not c[0].startswith("caused_")],
+        )
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q

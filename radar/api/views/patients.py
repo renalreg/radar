@@ -28,10 +28,12 @@ from radar.models.groups import Group, GROUP_TYPE
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
 from radar.utils import get_attrs, SkipProxy, uniq
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 
-class PatientListRequestSerializer(serializers.Serializer):
+class BasePatientListRequestSerializer(serializers.Serializer):
+    """Query parameters shared by every deployment."""
+
     id = fields.IntegerField(required=False)
     first_name = fields.StringField(required=False, validators=[none_if_blank()])
     last_name = fields.StringField(required=False, validators=[none_if_blank()])
@@ -46,11 +48,21 @@ class PatientListRequestSerializer(serializers.Serializer):
     ukrdc = fields.BooleanField(required=False)
     test = fields.BooleanField(required=False)
     control = fields.BooleanField(required=False)
-    if not IS_INTERNATIONAL:
-        signed_off_state = fields.IntegerField(required=False)
-    else:
-        signed_off = fields.BooleanField(required=False)
     consent_status = fields.EnumField(required=False, enum=CONSENT_STATUS)
+
+
+class MainPatientListRequestSerializer(BasePatientListRequestSerializer):
+    signed_off_state = fields.IntegerField(required=False)
+
+
+class InternationalPatientListRequestSerializer(BasePatientListRequestSerializer):
+    signed_off = fields.BooleanField(required=False)
+
+
+PatientListRequestSerializer: type[BasePatientListRequestSerializer] = pick(
+    main=MainPatientListRequestSerializer,
+    international=InternationalPatientListRequestSerializer,
+)
 
 
 def list_patients():
@@ -72,7 +84,6 @@ def list_patients():
     ukrdc = args["ukrdc"]
     test = args["test"]
     control = args["control"]
-    signed_off_state = args.get("signed_off_state")
 
     if patient_id is not None:
         builder.patient_id(patient_id)
@@ -110,8 +121,7 @@ def list_patients():
     if control is not None:
         builder.control(control)
 
-    if signed_off_state is not None:
-        builder.signedOff(signed_off_state)
+    builder.variant_filters(args)
 
     for group in groups:
         builder.group(group, current=current)
@@ -168,7 +178,13 @@ class PatientDestroyView(DestroyModelView):
     permission_classes = [AdminPermission]
 
 
-class PatientListCSVView(ApiView):
+class BasePatientListCSVView(ApiView):
+    # Extra columns added after "Hospitals" and before the cohort columns
+    variant_headers: list[str] = []
+
+    def variant_row(self, patient):
+        return []
+
     def get(self):
         args = parse_args(PatientListRequestSerializer)
         cohorts = [g for g in args["group"] if g.type == GROUP_TYPE.COHORT]
@@ -192,7 +208,7 @@ class PatientListCSVView(ApiView):
             "Recruited Group Code",
             "Cohorts",
             "Hospitals",
-            "Signed off State",
+            *self.variant_headers,
         ] + [cohort.short_name for cohort in cohorts]
 
         def get_groups(patient, group_type):
@@ -237,10 +253,8 @@ class PatientListCSVView(ApiView):
                     get_attrs(patient.recruited_group(), "code"),
                     get_groups(patient, GROUP_TYPE.COHORT),
                     get_groups(patient, GROUP_TYPE.HOSPITAL),
+                    *self.variant_row(patient),
                 ]
-
-                if not IS_INTERNATIONAL:
-                    row.append(get_attrs(patient, "nurture_data", "signed_off_state"))
 
                 row.extend(patient.recruited_date(cohort) for cohort in cohorts)
 
@@ -251,6 +265,23 @@ class PatientListCSVView(ApiView):
             mimetype="text/csv; charset=utf-8",
             headers={"Content-Disposition": "attachment; filename=patients.csv"},
         )
+
+
+class MainPatientListCSVView(BasePatientListCSVView):
+    variant_headers = ["Signed off State"]
+
+    def variant_row(self, patient):
+        return [get_attrs(patient, "nurture_data", "signed_off_state")]
+
+
+class InternationalPatientListCSVView(BasePatientListCSVView):
+    pass
+
+
+PatientListCSVView: type[BasePatientListCSVView] = pick(
+    main=MainPatientListCSVView,
+    international=InternationalPatientListCSVView,
+)
 
 
 def register_views(app):

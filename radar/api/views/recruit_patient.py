@@ -14,7 +14,27 @@ from radar.api.views.generics import (
     response_json,
 )
 from radar.recruitment import DemographicsMismatch, RecruitmentPatient, SearchPatient
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
+
+# Fields passed to SearchPatient
+SEARCH_FIELDS = [
+    "first_name",
+    "last_name",
+    "date_of_birth",
+    "gender",
+    "number_group",
+    "number",
+] + pick(main=["email_address"], international=[])
+
+# Extra fields passed to RecruitmentPatient
+RECRUITMENT_FIELDS = [
+    "hospital_group",
+    "cohort_group",
+    "consents",
+    "diagnosis",
+    "nationality",
+    "ethnicity",
+] + pick(main=["email_reason"], international=[])
 
 
 def mismatch_error(e):
@@ -35,18 +55,9 @@ class RecruitPatientSearchView(PermissionViewMixin, ApiView):
     @request_json(RecruitPatientSearchSerializer)
     @response_json(RecruitPatientResultSerializer)
     def post(self, data):
-        fields = [
-            "first_name",
-            "last_name",
-            "date_of_birth",
-            "gender",
-            "number_group",
-            "number",
-        ]
-        if not IS_INTERNATIONAL:
-            fields.append("email_address")
-
-        search_patient = SearchPatient(**{name: data.get(name) for name in fields})
+        search_patient = SearchPatient(
+            **{name: data.get(name) for name in SEARCH_FIELDS}
+        )
 
         try:
             patient = search_patient.search_radar()
@@ -64,32 +75,11 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
     @request_json(RecruitPatientSerializer)
     @response_json(PatientSerializer)
     def post(self, data):
-        search_fields = [
-            "first_name",
-            "last_name",
-            "date_of_birth",
-            "gender",
-            "number_group",
-            "number",
-        ]
-        recruitment_fields = [
-            "hospital_group",
-            "cohort_group",
-            "consents",
-            "diagnosis",
-            "nationality",
-            "ethnicity",
-        ]
-
-        if not IS_INTERNATIONAL:
-            search_fields.append("email_address")
-            recruitment_fields.append("email_reason")
-
-        search_patient = SearchPatient(**{name: data[name] for name in search_fields})
+        search_patient = SearchPatient(**{name: data[name] for name in SEARCH_FIELDS})
 
         recruitment_patient = RecruitmentPatient(
             search_patient=search_patient,
-            **{name: data[name] for name in recruitment_fields},
+            **{name: data[name] for name in RECRUITMENT_FIELDS},
         )
 
         try:
