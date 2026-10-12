@@ -37,6 +37,7 @@ class InternationalAlportClinicalPictureColumns:
 
 
 if TYPE_CHECKING:
+
     class ALPORT_CLINICAL_PICTURE_VARIANT_COLUMNS(
         MainAlportClinicalPictureColumns,
         InternationalAlportClinicalPictureColumns,

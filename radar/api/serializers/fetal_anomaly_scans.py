@@ -83,7 +83,9 @@ class InternationalFetalAnomalyScanSerializer(BaseFetalAnomalyScanSerializer):
     pass
 
 
-FetalAnomalyScanSerializer:type[MainFetalAnomalyScanSerializer] | type[InternationalFetalAnomalyScanSerializer] = pick(
+FetalAnomalyScanSerializer: (
+    type[MainFetalAnomalyScanSerializer] | type[InternationalFetalAnomalyScanSerializer]
+) = pick(
     main=MainFetalAnomalyScanSerializer,
     international=InternationalFetalAnomalyScanSerializer,
 )

@@ -188,7 +188,9 @@ class InternationalTransplantSerializer(BaseTransplantSerializer):
     pass
 
 
-TransplantSerializer: type[MainTransplantSerializer] | type[InternationalTransplantSerializer] = pick(
+TransplantSerializer: (
+    type[MainTransplantSerializer] | type[InternationalTransplantSerializer]
+) = pick(
     main=MainTransplantSerializer,
     international=InternationalTransplantSerializer,
 )

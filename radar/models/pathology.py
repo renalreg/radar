@@ -33,6 +33,7 @@ class InternationalPathologyColumns:
 
 
 if TYPE_CHECKING:
+
     class PATHOLOGY_VARIANT_COLUMNS(
         MainPathologyColumns,
         InternationalPathologyColumns,

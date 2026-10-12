@@ -44,7 +44,9 @@ class InternationalPregnancySerializer(BasePregnancySerializer):
     date_of_lmp = fields.DateField()
 
 
-PregnancySerializer:type[MainPregnancySerializer] | type[InternationalPregnancySerializer] = pick(
+PregnancySerializer: (
+    type[MainPregnancySerializer] | type[InternationalPregnancySerializer]
+) = pick(
     main=MainPregnancySerializer,
     international=InternationalPregnancySerializer,
 )

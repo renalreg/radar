@@ -32,6 +32,7 @@ class InternationalPatientDemographicsColumns:
 
 
 if TYPE_CHECKING:
+
     class PATIENT_DEMOGRAPHICS_VARIANT_COLUMNS(
         MainPatientDemographicsColumns,
         InternationalPatientDemographicsColumns,

@@ -76,6 +76,7 @@ class MainPatientColumns:
 
 
 if TYPE_CHECKING:
+
     class PATIENT_VARIANT_COLUMNS(MainPatientColumns, InternationalPatientColumns): ...
 else:
     PATIENT_VARIANT_COLUMNS = pick(

@@ -43,7 +43,10 @@ class InternationalAlportClinicalPictureSerializer(BaseAlportClinicalPictureSeri
     pass
 
 
-AlportClinicalPictureSerializer:type[MainAlportClinicalPictureSerializer] | type[InternationalAlportClinicalPictureSerializer] = pick(
+AlportClinicalPictureSerializer: (
+    type[MainAlportClinicalPictureSerializer]
+    | type[InternationalAlportClinicalPictureSerializer]
+) = pick(
     main=MainAlportClinicalPictureSerializer,
     international=InternationalAlportClinicalPictureSerializer,
 )

@@ -53,6 +53,7 @@ class InternationalPregnancyColumns:
 
 
 if TYPE_CHECKING:
+
     class PREGNANCY_VARIANT_COLUMNS(
         MainPregnancyColumns,
         InternationalPregnancyColumns,

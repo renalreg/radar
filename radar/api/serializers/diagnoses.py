@@ -221,7 +221,9 @@ class InternationalPatientDiagnosisSerializer(BasePatientDiagnosisSerializer):
         return data
 
 
-PatientDiagnosisSerializer:type[MainPatientDiagnosisSerializer] | type[InternationalPatientDiagnosisSerializer] = pick(
+PatientDiagnosisSerializer: (
+    type[MainPatientDiagnosisSerializer] | type[InternationalPatientDiagnosisSerializer]
+) = pick(
     main=MainPatientDiagnosisSerializer,
     international=InternationalPatientDiagnosisSerializer,
 )

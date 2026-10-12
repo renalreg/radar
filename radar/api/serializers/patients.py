@@ -151,11 +151,15 @@ class InternationalTinyPatientSerializer(BaseTinyPatientSerializer):
 
 
 # Public names stay the same, so views and other serializers don't change.
-PatientSerializer:type[MainPatientSerializer] | type[InternationalPatientSerializer] = pick(
+PatientSerializer: (
+    type[MainPatientSerializer] | type[InternationalPatientSerializer]
+) = pick(
     main=MainPatientSerializer,
     international=InternationalPatientSerializer,
 )
-TinyPatientSerializer:type[MainTinyPatientSerializer] | type[InternationalTinyPatientSerializer] = pick(
+TinyPatientSerializer: (
+    type[MainTinyPatientSerializer] | type[InternationalTinyPatientSerializer]
+) = pick(
     main=MainTinyPatientSerializer,
     international=InternationalTinyPatientSerializer,
 )

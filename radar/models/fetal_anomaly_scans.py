@@ -36,6 +36,7 @@ class InternationalFetalAnomalyScanColumns:
 
 
 if TYPE_CHECKING:
+
     class FETAL_ANOMALY_SCAN_VARIANT_COLUMNS(
         MainFetalAnomalyScanColumns,
         InternationalFetalAnomalyScanColumns,

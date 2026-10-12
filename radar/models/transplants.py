@@ -40,6 +40,7 @@ class InternationalTransplantColumns:
 
 
 if TYPE_CHECKING:
+
     class TRANSPLANT_VARIANT_COLUMNS(
         MainTransplantColumns,
         InternationalTransplantColumns,

@@ -121,7 +121,6 @@ class BasePatientDemographicsSerializer(
         return data
 
 
-
 class MainPatientDemographicsSerializer(BasePatientDemographicsSerializer):
     cause_of_death = fields.StringField(required=False)
     email_reason = fields.StringField(required=False)
@@ -133,7 +132,10 @@ class InternationalPatientDemographicsSerializer(BasePatientDemographicsSerializ
     pass
 
 
-PatientDemographicsSerializer:type[MainPatientDemographicsSerializer] | type[InternationalPatientDemographicsSerializer] = pick(
+PatientDemographicsSerializer: (
+    type[MainPatientDemographicsSerializer]
+    | type[InternationalPatientDemographicsSerializer]
+) = pick(
     main=MainPatientDemographicsSerializer,
     international=InternationalPatientDemographicsSerializer,
 )

@@ -146,15 +146,23 @@ class InternationalRecruitPatientSerializer(
     diagnosis = InternationalRecruitPatientDiagnosisSerializer()
 
 
-RecruitPatientSearchSerializer:type[MainRecruitPatientSearchSerializer] | type[InternationalRecruitPatientSearchSerializer] = pick(
+RecruitPatientSearchSerializer: (
+    type[MainRecruitPatientSearchSerializer]
+    | type[InternationalRecruitPatientSearchSerializer]
+) = pick(
     main=MainRecruitPatientSearchSerializer,
     international=InternationalRecruitPatientSearchSerializer,
 )
-RecruitPatientDiagnosisSerializer:type[MainRecruitPatientDiagnosisSerializer] | type[InternationalRecruitPatientDiagnosisSerializer] = pick(
+RecruitPatientDiagnosisSerializer: (
+    type[MainRecruitPatientDiagnosisSerializer]
+    | type[InternationalRecruitPatientDiagnosisSerializer]
+) = pick(
     main=MainRecruitPatientDiagnosisSerializer,
     international=InternationalRecruitPatientDiagnosisSerializer,
 )
-RecruitPatientSerializer:type[MainRecruitPatientSerializer] | type[InternationalRecruitPatientSerializer] = pick(
+RecruitPatientSerializer: (
+    type[MainRecruitPatientSerializer] | type[InternationalRecruitPatientSerializer]
+) = pick(
     main=MainRecruitPatientSerializer,
     international=InternationalRecruitPatientSerializer,
 )

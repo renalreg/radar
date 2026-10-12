@@ -56,6 +56,7 @@ class InternationalPatientConsentColumns:
 
 
 if TYPE_CHECKING:
+
     class PATIENT_CONSENT_VARIANT_COLUMNS(
         MainPatientConsentColumns,
         InternationalPatientConsentColumns,

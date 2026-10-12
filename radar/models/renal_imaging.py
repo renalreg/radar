@@ -45,6 +45,7 @@ class InternationalRenalImagingColumns:
 
 
 if TYPE_CHECKING:
+
     class RENAL_IMAGING_VARIANT_COLUMNS(
         MainRenalImagingColumns,
         InternationalRenalImagingColumns,

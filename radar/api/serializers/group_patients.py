@@ -171,7 +171,9 @@ class InternationalGroupPatientSerializer(BaseGroupPatientSerializer):
     pass
 
 
-GroupPatientSerializer:type[MainGroupPatientSerializer] | type[InternationalGroupPatientSerializer] = pick(
+GroupPatientSerializer: (
+    type[MainGroupPatientSerializer] | type[InternationalGroupPatientSerializer]
+) = pick(
     main=MainGroupPatientSerializer,
     international=InternationalGroupPatientSerializer,
 )

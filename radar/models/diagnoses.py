@@ -107,6 +107,7 @@ class InternationalPatientDiagnosisColumns:
 
 
 if TYPE_CHECKING:
+
     class PATIENT_DIAGNOSIS_VARIANT_COLUMNS(
         MainPatientDiagnosisColumns,
         InternationalPatientDiagnosisColumns,

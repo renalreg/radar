@@ -35,6 +35,7 @@ class BasePathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeriali
     em_findings = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
+
     class Meta:
         model_class = Pathology
         validators = [valid_date_for_patient("date")]
@@ -48,7 +49,9 @@ class InternationalPathologySerializer(BasePathologySerializer):
     pass
 
 
-PathologySerializer:type[MainPathologySerializer] | type[InternationalPathologySerializer] = pick(
+PathologySerializer: (
+    type[MainPathologySerializer] | type[InternationalPathologySerializer]
+) = pick(
     main=MainPathologySerializer,
     international=InternationalPathologySerializer,
 )

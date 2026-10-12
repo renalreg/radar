@@ -91,6 +91,7 @@ class InternationalGroupColumns:
 
 
 if TYPE_CHECKING:
+
     class GROUP_VARIANT_COLUMNS(MainGroupColumns, InternationalGroupColumns): ...
 else:
     GROUP_VARIANT_COLUMNS = pick(

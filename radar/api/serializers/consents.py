@@ -77,7 +77,9 @@ class MainPatientConsentSerializer(BasePatientConsentSerializer):
         errors_dict = {}
 
         if sent and sent < signed:
-            errors_dict["reconsent_letter_sent_date"] = "Signed on date after sent date!"
+            errors_dict["reconsent_letter_sent_date"] = (
+                "Signed on date after sent date!"
+            )
 
         if returned and returned < signed:
             errors_dict["reconsent_letter_returned_date"] = (
@@ -97,7 +99,9 @@ class InternationalPatientConsentSerializer(BasePatientConsentSerializer):
     pass
 
 
-PatientConsentSerializer:type[MainPatientConsentSerializer] | type[InternationalPatientConsentSerializer] = pick(
+PatientConsentSerializer: (
+    type[MainPatientConsentSerializer] | type[InternationalPatientConsentSerializer]
+) = pick(
     main=MainPatientConsentSerializer,
     international=InternationalPatientConsentSerializer,
 )

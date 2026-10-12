@@ -17,9 +17,7 @@ from radar.models.renal_imaging import (
 from radar.variants import pick, RENAL_IMAGING_TYPES
 
 
-class BaseRenalImagingSerializer(
-    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
-):
+class BaseRenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
     """Fields and validation shared by every deployment."""
 
     date = fields.DateField()
@@ -135,7 +133,9 @@ class InternationalRenalImagingSerializer(BaseRenalImagingSerializer):
     pass
 
 
-RenalImagingSerializer: type[MainRenalImagingSerializer] | type[InternationalRenalImagingSerializer] = pick(
+RenalImagingSerializer: (
+    type[MainRenalImagingSerializer] | type[InternationalRenalImagingSerializer]
+) = pick(
     main=MainRenalImagingSerializer,
     international=InternationalRenalImagingSerializer,
 )
