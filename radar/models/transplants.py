@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.dialects import postgresql
@@ -12,7 +13,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-from radar.variants import TRANSPLANT_MODALITIES, IS_INTERNATIONAL
+from radar.variants import TRANSPLANT_MODALITIES, pick
 
 GRAFT_LOSS_CAUSES = OrderedDict(
     [
@@ -28,8 +29,30 @@ GRAFT_LOSS_CAUSES = OrderedDict(
 )
 
 
+class MainTransplantColumns:
+    """Columns that exist only in the main database."""
+
+    mismatch_hla = Column(String)
+
+
+class InternationalTransplantColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+    class TRANSPLANT_VARIANT_COLUMNS(
+        MainTransplantColumns,
+        InternationalTransplantColumns,
+    ): ...
+else:
+    TRANSPLANT_VARIANT_COLUMNS = pick(
+        main=MainTransplantColumns,
+        international=InternationalTransplantColumns,
+    )
+
+
 @log_changes
-class Transplant(db.Model, MetaModelMixin):
+class Transplant(TRANSPLANT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "transplants"
 
     id = uuid_pk_column()
@@ -48,8 +71,6 @@ class Transplant(db.Model, MetaModelMixin):
     modality = Column(Integer, nullable=False)
     recipient_hla = Column(String)
     donor_hla = Column(String)
-    if not IS_INTERNATIONAL:
-        mismatch_hla = Column(String)
     date_of_cmv_infection = Column(Date)
     recurrence = Column(Boolean, nullable=True)
     date_of_recurrence = Column(Date)

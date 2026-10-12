@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from datetime import datetime
 from enum import Enum
 
@@ -26,7 +27,7 @@ from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import months_between, round_age, uniq
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 SIXTEEN_YEARS_IN_MONTHS = 12 * 16
 EIGHTEEN_YEARS_IN_MONTHS = 12 * 18
@@ -58,8 +59,33 @@ def clean(items):
     return uniq(x for x in items if x)
 
 
+class InternationalPatientColumns:
+    """Columns that exist only in the international database.
+
+    Every column added here needs a matching migration on the
+    ``international`` Alembic branch, and nothing on ``main``.
+    """
+
+    signed_off = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+
+
+class MainPatientColumns:
+    """Columns that exist only in the main database (none yet)."""
+
+
+if TYPE_CHECKING:
+    class PATIENT_VARIANT_COLUMNS(MainPatientColumns, InternationalPatientColumns): ...
+else:
+    PATIENT_VARIANT_COLUMNS = pick(
+        main=MainPatientColumns,
+        international=InternationalPatientColumns,
+    )
+
+
 @log_changes
-class Patient(db.Model, MetaModelMixin):
+class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "patients"
 
     id: Column = Column(Integer, Sequence("patients_seq"), primary_key=True)
@@ -68,10 +94,6 @@ class Patient(db.Model, MetaModelMixin):
     control = Column(
         Boolean, default=False, nullable=False, server_default=text("false")
     )
-    if IS_INTERNATIONAL:
-        signed_off = Column(
-            Boolean, default=False, nullable=False, server_default=text("false")
-        )
 
     @property
     def cohorts(self):

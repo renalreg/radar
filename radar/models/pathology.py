@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from collections import OrderedDict
 
 from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
@@ -11,7 +12,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-from radar.variants import PATHOLOGY_KIDNEY_TYPES, IS_INTERNATIONAL
+from radar.variants import PATHOLOGY_KIDNEY_TYPES, pick
 
 PATHOLOGY_KIDNEY_SIDES = OrderedDict(
     [
@@ -21,8 +22,30 @@ PATHOLOGY_KIDNEY_SIDES = OrderedDict(
 )
 
 
+class MainPathologyColumns:
+    """Columns that exist only in the main database."""
+
+    report_cleaned = Column(Date)
+
+
+class InternationalPathologyColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+    class PATHOLOGY_VARIANT_COLUMNS(
+        MainPathologyColumns,
+        InternationalPathologyColumns,
+    ): ...
+else:
+    PATHOLOGY_VARIANT_COLUMNS = pick(
+        main=MainPathologyColumns,
+        international=InternationalPathologyColumns,
+    )
+
+
 @log_changes
-class Pathology(db.Model, MetaModelMixin):
+class Pathology(PATHOLOGY_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "pathology"
 
     id = uuid_pk_column()
@@ -41,8 +64,6 @@ class Pathology(db.Model, MetaModelMixin):
     image_url = Column(String)
     histological_summary = Column(String)
     em_findings = Column(String)
-    if not IS_INTERNATIONAL:
-        report_cleaned = Column(Date)
 
     @property
     def kidney_type_label(self):

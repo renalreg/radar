@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, Date, Index, Integer, String
 
@@ -10,7 +11,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-from radar.variants import pick, IS_INTERNATIONAL
+from radar.variants import pick
 
 OUTCOMES = OrderedDict(
     [
@@ -41,8 +42,30 @@ PRE_ECLAMPSIA_TYPES = OrderedDict(
 )
 
 
+class MainPregnancyColumns:
+    """Columns that exist only in the main database."""
+
+    infant_dob = Column(Date)
+
+
+class InternationalPregnancyColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+    class PREGNANCY_VARIANT_COLUMNS(
+        MainPregnancyColumns,
+        InternationalPregnancyColumns,
+    ): ...
+else:
+    PREGNANCY_VARIANT_COLUMNS = pick(
+        main=MainPregnancyColumns,
+        international=InternationalPregnancyColumns,
+    )
+
+
 @log_changes
-class Pregnancy(db.Model, MetaModelMixin):
+class Pregnancy(PREGNANCY_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "pregnancies"
 
     id = uuid_pk_column()
@@ -56,8 +79,6 @@ class Pregnancy(db.Model, MetaModelMixin):
     parity1 = Column(Integer)
     parity2 = Column(Integer)
     outcome = Column(String)
-    if not IS_INTERNATIONAL:
-        infant_dob = Column(Date)
     weight = Column(Integer)
     weight_centile = Column(Integer)
     gestational_age = Column(Integer)

@@ -18,7 +18,7 @@ from radar.models.patient_codes import GENDERS
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 
 class RecruitedDateField(fields.DateField):
@@ -41,14 +41,14 @@ class CurrentField(fields.BooleanField):
         return patient.current()
 
 
-class PatientSerializer(MetaMixin, ModelSerializer):
+class BasePatientSerializer(MetaMixin, ModelSerializer):
+    """Fields shared by every deployment."""
+
     first_name = fields.StringField(read_only=True)
     last_name = fields.StringField(read_only=True)
     date_of_birth = fields.DateField(read_only=True)
     year_of_birth = fields.IntegerField(read_only=True)
     date_of_death = fields.DateField(read_only=True)
-    if not IS_INTERNATIONAL:
-        cause_of_death = fields.StringField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS, read_only=True, source="radar_gender")
     nationality = NationalityField(read_only=True)
@@ -66,15 +66,11 @@ class PatientSerializer(MetaMixin, ModelSerializer):
     primary_patient_number = PatientNumberSerializer(read_only=True)
     test = fields.BooleanField(default=False)
     control = fields.BooleanField(default=False)
-    if IS_INTERNATIONAL:
-        signed_off = fields.BooleanField(default=False)
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     consented = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
     consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
-    if not IS_INTERNATIONAL:
-        nurture_data = NurtureDataSerializer(read_only=True)
 
     class Meta:
         model_class = Patient
@@ -99,19 +95,24 @@ class PatientSerializer(MetaMixin, ModelSerializer):
         return value
 
 
-class TinyPatientSerializer(serializers.Serializer):
+class MainPatientSerializer(BasePatientSerializer):
+    cause_of_death = fields.StringField(read_only=True)
+    nurture_data = NurtureDataSerializer(read_only=True)
+
+
+class InternationalPatientSerializer(BasePatientSerializer):
+    signed_off = fields.BooleanField(default=False)
+
+
+class BaseTinyPatientSerializer(serializers.Serializer):
+    """Fields shared by every deployment."""
+
     id = fields.IntegerField(read_only=True)
     first_name = fields.StringField(read_only=True)
     last_name = fields.StringField(read_only=True)
     date_of_birth = fields.DateField(read_only=True)
     year_of_birth = fields.IntegerField(read_only=True)
-    if not IS_INTERNATIONAL:
-        radar_date_of_death = fields.DateField(
-            source="radar_date_of_death", read_only=True
-        )
     date_of_death = fields.DateField(read_only=True)
-    if not IS_INTERNATIONAL:
-        cause_of_death = fields.StringField(read_only=True)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS, read_only=True, source="radar_gender")
     nationality = NationalityField(read_only=True)
@@ -130,15 +131,34 @@ class TinyPatientSerializer(serializers.Serializer):
     frozen = fields.BooleanField(read_only=True)
     ukrdc = fields.BooleanField(read_only=True)
     paediatric = fields.BooleanField(read_only=True)
-    if not IS_INTERNATIONAL:
-        consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
-        nurture_data = NurtureDataSerializer(read_only=True)
 
     def to_representation(self, value):
         user = self.context["user"]
         value = PatientProxy(value, user)
         value = super().to_representation(value)
         return value
+
+
+class MainTinyPatientSerializer(BaseTinyPatientSerializer):
+    radar_date_of_death = fields.DateField(read_only=True)
+    cause_of_death = fields.StringField(read_only=True)
+    consent_status = fields.EnumField(read_only=True, enum=CONSENT_STATUS)
+    nurture_data = NurtureDataSerializer(read_only=True)
+
+
+class InternationalTinyPatientSerializer(BaseTinyPatientSerializer):
+    pass
+
+
+# Public names stay the same, so views and other serializers don't change.
+PatientSerializer:type[MainPatientSerializer] | type[InternationalPatientSerializer] = pick(
+    main=MainPatientSerializer,
+    international=InternationalPatientSerializer,
+)
+TinyPatientSerializer:type[MainTinyPatientSerializer] | type[InternationalTinyPatientSerializer] = pick(
+    main=MainTinyPatientSerializer,
+    international=InternationalTinyPatientSerializer,
+)
 
 
 class PatientProxy:

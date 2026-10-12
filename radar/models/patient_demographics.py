@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Boolean, text
 from sqlalchemy.orm import relationship
 
@@ -10,11 +11,42 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDERS
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
+
+
+class MainPatientDemographicsColumns:
+    """Columns that exist only in the main database."""
+
+    cause_of_death = Column(String)
+    email_reason = Column(String)
+    opt_out_surveys = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+    opt_out_newsletters = Column(
+        Boolean, default=False, nullable=False, server_default=text("false")
+    )
+
+
+class InternationalPatientDemographicsColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+    class PATIENT_DEMOGRAPHICS_VARIANT_COLUMNS(
+        MainPatientDemographicsColumns,
+        InternationalPatientDemographicsColumns,
+    ): ...
+else:
+    PATIENT_DEMOGRAPHICS_VARIANT_COLUMNS = pick(
+        main=MainPatientDemographicsColumns,
+        international=InternationalPatientDemographicsColumns,
+    )
 
 
 @log_changes
-class PatientDemographics(db.Model, MetaModelMixin):
+class PatientDemographics(
+    PATIENT_DEMOGRAPHICS_VARIANT_COLUMNS, db.Model, MetaModelMixin
+):
     __tablename__ = "patient_demographics"
 
     id = uuid_pk_column()
@@ -30,8 +62,6 @@ class PatientDemographics(db.Model, MetaModelMixin):
     last_name = Column(String)
     date_of_birth = Column(Date)
     date_of_death = Column(Date)
-    if not IS_INTERNATIONAL:
-        cause_of_death = Column(String)
     gender = Column(Integer)
 
     ethnicity_id = Column(Integer, ForeignKey("ethnicities.id"))
@@ -41,18 +71,9 @@ class PatientDemographics(db.Model, MetaModelMixin):
     work_number = Column(String)
     mobile_number = Column(String)
     email_address = Column(String)
-    if not IS_INTERNATIONAL:
-        email_reason = Column(String)
 
     nationality_id = Column(Integer, ForeignKey("nationalities.id"))
     nationality = relationship("Nationality")
-    if not IS_INTERNATIONAL:
-        opt_out_surveys = Column(
-            Boolean, default=False, nullable=False, server_default=text("false")
-        )
-        opt_out_newsletters = Column(
-            Boolean, default=False, nullable=False, server_default=text("false")
-        )
 
     @property
     def year_of_birth(self):

@@ -12,16 +12,15 @@ from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
 from radar.models.patient_codes import GENDERS
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 
-class RecruitPatientSearchSerializer(serializers.Serializer):
+class BaseRecruitPatientSearchSerializer(serializers.Serializer):
+    """Fields shared by every deployment."""
+
     first_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     last_name = fields.StringField(validators=[not_empty(), upper(), min_length(2)])
     date_of_birth = fields.DateField(validators=[after_day_zero(), not_in_future()])
-    if not IS_INTERNATIONAL:
-        email_address = fields.StringField(validators=[not_empty()])
-        email_reason = fields.StringField(required=False)
     gender = IntegerLookupField(GENDERS)
     number = fields.StringField(validators=[not_empty()])
     number_group = GroupField()
@@ -43,7 +42,18 @@ class RecruitPatientSearchSerializer(serializers.Serializer):
         return data
 
 
-class RecruitPatientDiagnosisSerializer(serializers.Serializer):
+class MainRecruitPatientSearchSerializer(BaseRecruitPatientSearchSerializer):
+    email_address = fields.StringField(validators=[not_empty()])
+    email_reason = fields.StringField(required=False)
+
+
+class InternationalRecruitPatientSearchSerializer(BaseRecruitPatientSearchSerializer):
+    pass
+
+
+class BaseRecruitPatientDiagnosisSerializer(serializers.Serializer):
+    """Fields shared by every deployment."""
+
     diagnosis_id = fields.IntegerField()
     symptoms_date = fields.DateField(
         validators=[after_day_zero(), not_in_future()], required=False
@@ -58,25 +68,33 @@ class RecruitPatientDiagnosisSerializer(serializers.Serializer):
     clinical_picture = fields.BooleanField(required=False)
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
-    if not IS_INTERNATIONAL:
-        proteinuria_positive_antibody = fields.BooleanField(required=False)
-        antibody_id = fields.StringField(required=False)
-        antibody_custom = fields.StringField(required=False)
     comments = fields.StringField(required=False)
 
+
+class MainRecruitPatientDiagnosisSerializer(BaseRecruitPatientDiagnosisSerializer):
+    proteinuria_positive_antibody = fields.BooleanField(required=False)
+    antibody_id = fields.StringField(required=False)
+    antibody_custom = fields.StringField(required=False)
+
     def pre_validate(self, data):
-        if not IS_INTERNATIONAL:
-            data = reset_data(data)
-        return data
+        return reset_data(data)
 
 
-class RecruitPatientSerializer(RecruitPatientSearchSerializer):
+class InternationalRecruitPatientDiagnosisSerializer(
+    BaseRecruitPatientDiagnosisSerializer
+):
+    pass
+
+
+class BaseRecruitPatientSerializer(BaseRecruitPatientSearchSerializer):
+    """Fields and validation shared by every deployment."""
+
     cohort_group = GroupField()
     hospital_group = GroupField()
     consents = fields.Field()
     ethnicity = EthnicityField(required=False)
     nationality = NationalityField(required=False)
-    diagnosis = RecruitPatientDiagnosisSerializer()
+    diagnosis = BaseRecruitPatientDiagnosisSerializer()
 
     def validate_cohort_group(self, cohort_group):
         current_user = self.context["user"]
@@ -113,6 +131,33 @@ class RecruitPatientSerializer(RecruitPatientSearchSerializer):
             raise ValidationError("Must be a hospital.")
 
         return hospital_group
+
+
+class MainRecruitPatientSerializer(
+    MainRecruitPatientSearchSerializer, BaseRecruitPatientSerializer
+):
+    # Gets email_address / email_reason from the main search serializer
+    diagnosis = MainRecruitPatientDiagnosisSerializer()
+
+
+class InternationalRecruitPatientSerializer(
+    InternationalRecruitPatientSearchSerializer, BaseRecruitPatientSerializer
+):
+    diagnosis = InternationalRecruitPatientDiagnosisSerializer()
+
+
+RecruitPatientSearchSerializer:type[MainRecruitPatientSearchSerializer] | type[InternationalRecruitPatientSearchSerializer] = pick(
+    main=MainRecruitPatientSearchSerializer,
+    international=InternationalRecruitPatientSearchSerializer,
+)
+RecruitPatientDiagnosisSerializer:type[MainRecruitPatientDiagnosisSerializer] | type[InternationalRecruitPatientDiagnosisSerializer] = pick(
+    main=MainRecruitPatientDiagnosisSerializer,
+    international=InternationalRecruitPatientDiagnosisSerializer,
+)
+RecruitPatientSerializer:type[MainRecruitPatientSerializer] | type[InternationalRecruitPatientSerializer] = pick(
+    main=MainRecruitPatientSerializer,
+    international=InternationalRecruitPatientSerializer,
+)
 
 
 class PatientSerializer(serializers.Serializer):

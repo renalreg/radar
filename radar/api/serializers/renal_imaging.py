@@ -14,10 +14,14 @@ from radar.models.renal_imaging import (
     RENAL_IMAGING_KIDNEY_TYPES,
     RenalImaging,
 )
-from radar.variants import IS_INTERNATIONAL, RENAL_IMAGING_TYPES
+from radar.variants import pick, RENAL_IMAGING_TYPES
 
 
-class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class BaseRenalImagingSerializer(
+    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
+):
+    """Fields and validation shared by every deployment."""
+
     date = fields.DateField()
     imaging_type = StringLookupField(RENAL_IMAGING_TYPES)
 
@@ -33,9 +37,6 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     right_other_malformation = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    if not IS_INTERNATIONAL:
-        right_vesicoureteric_reflux = fields.BooleanField(required=False)
-        right_hydronephrosis_hydroureter = fields.BooleanField(required=False)
 
     left_present = fields.BooleanField(required=False)
     left_type = StringLookupField(RENAL_IMAGING_KIDNEY_TYPES, required=False)
@@ -49,9 +50,6 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
     left_other_malformation = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    if not IS_INTERNATIONAL:
-        left_vesicoureteric_reflux = fields.BooleanField(required=False)
-        left_hydronephrosis_hydroureter = fields.BooleanField(required=False)
 
     class Meta:
         model_class = RenalImaging
@@ -124,3 +122,20 @@ class RenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializ
                 self.run_validators_on_field(data, "left_nephrolithiasis", [required()])
 
         return data
+
+
+class MainRenalImagingSerializer(BaseRenalImagingSerializer):
+    right_vesicoureteric_reflux = fields.BooleanField(required=False)
+    right_hydronephrosis_hydroureter = fields.BooleanField(required=False)
+    left_vesicoureteric_reflux = fields.BooleanField(required=False)
+    left_hydronephrosis_hydroureter = fields.BooleanField(required=False)
+
+
+class InternationalRenalImagingSerializer(BaseRenalImagingSerializer):
+    pass
+
+
+RenalImagingSerializer: type[MainRenalImagingSerializer] | type[InternationalRenalImagingSerializer] = pick(
+    main=MainRenalImagingSerializer,
+    international=InternationalRenalImagingSerializer,
+)

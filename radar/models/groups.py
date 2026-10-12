@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime
-from typing import List
+from typing import TYPE_CHECKING, List
 
 import pytz
 from sqlalchemy import (
@@ -21,7 +21,7 @@ from sqlalchemy import (
     Enum,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import backref, relationship, synonym
+from sqlalchemy.orm import backref, declared_attr, relationship, synonym
 
 from radar.config import config
 from radar.database import db
@@ -35,7 +35,7 @@ from radar.roles import (
     PERMISSION,
     ROLE,
 )
-from radar.variants import IS_INTERNATIONAL
+from radar.variants import pick
 
 
 class GROUP_TYPE(enum.Enum):
@@ -59,8 +59,48 @@ GROUP_CODE_BAPN = "BAPN"
 GROUP_CODE_NURTURE = "NURTURE"
 
 
+class MainGroupColumns:
+    """Relationships that exist only in the main database."""
+
+    @declared_attr
+    def group_antibodies(cls):
+        return relationship(
+            "GroupAntibody",
+            back_populates="group",
+            cascade="all, delete-orphan",
+            passive_deletes=True,
+        )
+
+    @property
+    def antibodies(self) -> List[Antibody]:
+        """
+        Returns antibodies allowed for this group.
+        Only valid for COHORT groups.
+        """
+        if self.type == GROUP_TYPE.COHORT:
+            return [ga.antibody for ga in self.group_antibodies]
+        return []
+
+
+class InternationalGroupColumns:
+    """International has no antibodies."""
+
+    @property
+    def antibodies(self) -> List[Antibody]:
+        return []
+
+
+if TYPE_CHECKING:
+    class GROUP_VARIANT_COLUMNS(MainGroupColumns, InternationalGroupColumns): ...
+else:
+    GROUP_VARIANT_COLUMNS = pick(
+        main=MainGroupColumns,
+        international=InternationalGroupColumns,
+    )
+
+
 @log_changes
-class Group(db.Model):
+class Group(GROUP_VARIANT_COLUMNS, db.Model):
     __tablename__ = "groups"
 
     id = Column(Integer, primary_key=True)
@@ -95,23 +135,6 @@ class Group(db.Model):
     country = relationship(
         "Country", foreign_keys=[country_code], backref=backref("groups")
     )
-    if not IS_INTERNATIONAL:
-        group_antibodies = relationship(
-            "GroupAntibody",
-            back_populates="group",
-            cascade="all, delete-orphan",
-            passive_deletes=True,
-        )
-
-    @property
-    def antibodies(self) -> List[Antibody]:
-        """
-        Returns antibodies allowed for this group.
-        Only valid for COHORT groups.
-        """
-        if not IS_INTERNATIONAL and self.type == GROUP_TYPE.COHORT:
-            return [ga.antibody for ga in self.group_antibodies]
-        return []
 
     @property
     def patients(self):

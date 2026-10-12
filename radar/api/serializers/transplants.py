@@ -21,7 +21,7 @@ from radar.models.transplants import (
     TransplantBiopsy,
     TransplantRejection,
 )
-from radar.variants import IS_INTERNATIONAL, TRANSPLANT_MODALITIES
+from radar.variants import pick, TRANSPLANT_MODALITIES
 
 
 class ListSerializer(serializers.ListSerializer):
@@ -64,14 +64,14 @@ class TransplantBiopsySerializer(ModelSerializer):
         )
 
 
-class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class BaseTransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+    """Fields, validation and saving shared by every deployment."""
+
     date = fields.DateField()
     transplant_group = GroupField(required=False)
     modality = IntegerLookupField(TRANSPLANT_MODALITIES)
     recipient_hla = fields.StringField(required=False)
     donor_hla = fields.StringField(required=False)
-    if not IS_INTERNATIONAL:
-        mismatch_hla = fields.StringField(required=False)
     date_of_cmv_infection = fields.DateField(required=False)
     recurrence = fields.BooleanField(required=False)
     date_of_recurrence = fields.DateField(required=False)
@@ -122,9 +122,6 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
             raise ValidationError(
                 {"date_of_failure": "Must be on or after transplant date."}
             )
-        if not IS_INTERNATIONAL:
-            if data["mismatch_hla"]:
-                validate_hla_mismatch(data["mismatch_hla"])
 
         return data
 
@@ -138,9 +135,6 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         instance.modality = data["modality"]
         instance.recipient_hla = data["recipient_hla"]
         instance.donor_hla = data["donor_hla"]
-        if not IS_INTERNATIONAL:
-            if data["mismatch_hla"]:
-                instance.mismatch_hla = data["mismatch_hla"]
 
         instance.date_of_cmv_infection = data["date_of_cmv_infection"]
         instance.recurrence = data["recurrence"]
@@ -170,3 +164,31 @@ class TransplantSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer
         self._save(instance, data)
 
         return instance
+
+
+class MainTransplantSerializer(BaseTransplantSerializer):
+    mismatch_hla = fields.StringField(required=False)
+
+    def validate(self, data):
+        data = super().validate(data)
+
+        if data["mismatch_hla"]:
+            validate_hla_mismatch(data["mismatch_hla"])
+
+        return data
+
+    def _save(self, instance, data):
+        super()._save(instance, data)
+
+        if data["mismatch_hla"]:
+            instance.mismatch_hla = data["mismatch_hla"]
+
+
+class InternationalTransplantSerializer(BaseTransplantSerializer):
+    pass
+
+
+TransplantSerializer: type[MainTransplantSerializer] | type[InternationalTransplantSerializer] = pick(
+    main=MainTransplantSerializer,
+    international=InternationalTransplantSerializer,
+)
