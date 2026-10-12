@@ -1,7 +1,6 @@
 from typing import TypeVar, OrderedDict
 
 from radar.config import config
-from radar.models import SOURCE_TYPE_UKRDC, SOURCE_TYPE_MANUAL, SOURCE_TYPE_BATCH
 
 T = TypeVar("T")
 
@@ -11,76 +10,6 @@ IS_INTERNATIONAL: bool = bool(config["international"])
 def pick(*, international: T, main: T) -> T:
     return international if IS_INTERNATIONAL else main
 
-
-GROUP_DIAGNOSIS_EXPORT_COLUMNS = pick(
-    international=["id", "group", "diagnosis", "weight"],
-    main=["id", "group", "type", "diagnosis", "weight"],
-)
-
-OBSERVATION_COLUMNS = pick(
-    international=[
-        "id",
-        "name",
-        "short_name",
-        "value_type",
-        "sample_type",
-        "pv_code",
-        "min_valuemax_value",
-        "min_length",
-        "max_length",
-        "units",
-        "options",
-    ],
-    main=[
-        "id",
-        "name",
-        "short_name",
-        "value_type",
-        "sample_type",
-        "pv_code",
-        "min_value",
-        "max_value",
-        "min_length",
-        "max_length",
-        "units",
-        "options",
-    ],
-)
-
-SOURCE_TYPE_FIELDS = pick(
-    international=[SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC],
-    main=[SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH],
-)
-
-SAMPLE_EXPORTER_COLUMNS = pick(
-    main=[
-        "id",
-        "patient_id",
-        ("date", "data.date"),
-        ("barcode", "data.barcode"),
-        ("ins_state", "data.insstate"),
-    ],
-    international=[
-        "id",
-        "patient_id",
-        "taken_on",
-        "barcode",
-        "epa",
-        "epb",
-        "lpa",
-        "lpb",
-        "uc",
-        "ub",
-        "ud",
-        "fub",
-        "sc",
-        "sa",
-        "sb",
-        "rna",
-        "wb",
-        "protocol_id",
-    ],
-)
 
 MEDICATION_DOSE_UNITS = pick(
     main=OrderedDict(

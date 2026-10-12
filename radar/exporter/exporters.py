@@ -17,7 +17,7 @@ from radar.models.rituximab import SUPPORTIVE_MEDICATIONS
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
 from radar.utils import get_attrs
-from radar.variants import pick, SAMPLE_EXPORTER_COLUMNS
+from radar.variants import pick
 
 ILLEGAL_CHARACTERS_RE = re.compile(r"[\000-\010]|[\013-\014]|[\016-\037]")
 
@@ -1327,6 +1327,37 @@ class IposExporter(Exporter):
         self._columns.extend(get_meta_columns(self.config))
         q = queries.get_form_data(self.config)
         self._query = q
+
+
+SAMPLE_EXPORTER_COLUMNS = pick(
+    main=[
+        "id",
+        "patient_id",
+        ("date", "data.date"),
+        ("barcode", "data.barcode"),
+        ("ins_state", "data.insstate"),
+    ],
+    international=[
+        "id",
+        "patient_id",
+        "taken_on",
+        "barcode",
+        "epa",
+        "epb",
+        "lpa",
+        "lpb",
+        "uc",
+        "ub",
+        "ud",
+        "fub",
+        "sc",
+        "sa",
+        "sb",
+        "rna",
+        "wb",
+        "protocol_id",
+    ],
+)
 
 
 class BaseSamplesExporter(Exporter):
