@@ -120,11 +120,9 @@ MAIN_VIEW_MODULES = [
     nurture_data,
 ]
 
-INTERNATIONAL_VIEW_MODULES:list(any) = []
-
 VIEW_MODULES = COMMON_VIEW_MODULES + pick(
     main=MAIN_VIEW_MODULES,
-    international=INTERNATIONAL_VIEW_MODULES,
+    international=[],
 )
 
 
