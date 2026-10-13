@@ -77,7 +77,7 @@ class MainGroupColumns:
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.
         """
-        if self.type == GROUP_TYPE.COHORT:
+        if self.type == GROUP_TYPE.COHORT: # type: ignore
             return [ga.antibody for ga in self.group_antibodies]
         return []
 
