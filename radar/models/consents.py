@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 import enum
 
 from sqlalchemy import (
@@ -15,6 +16,7 @@ from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
 from radar.models.common import MetaModelMixin, patient_id_column, patient_relationship
+from radar.variants import pick
 
 
 class CONSENT_TYPE(enum.Enum):
@@ -42,7 +44,31 @@ class Consent(db.Model):
         return self.label
 
 
-class PatientConsent(db.Model, MetaModelMixin):
+class MainPatientConsentColumns:
+    """Columns that exist only in the main database."""
+
+    reconsent_letter_sent_date = Column(Date, nullable=True)
+    reconsent_letter_returned_date = Column(Date, nullable=True)
+
+
+class InternationalPatientConsentColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+
+    class PATIENT_CONSENT_VARIANT_COLUMNS(
+        MainPatientConsentColumns,
+        InternationalPatientConsentColumns,
+    ): ...
+else:
+    PATIENT_CONSENT_VARIANT_COLUMNS = pick(
+        main=MainPatientConsentColumns,
+        international=InternationalPatientConsentColumns,
+    )
+
+
+class PatientConsent(PATIENT_CONSENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "patient_consents"
 
     id = Column(Integer, primary_key=True)
@@ -57,6 +83,3 @@ class PatientConsent(db.Model, MetaModelMixin):
 
     signed_on_date = Column(Date, nullable=False)
     withdrawn_on_date = Column(Date, nullable=True)
-
-    reconsent_letter_sent_date = Column(Date, nullable=True)
-    reconsent_letter_returned_date = Column(Date, nullable=True)

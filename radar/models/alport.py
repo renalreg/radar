@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from collections import OrderedDict
 
 from sqlalchemy import Column, Date, Index, Integer, String
@@ -10,7 +11,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
+from radar.variants import pick
 
 DEAFNESS_NO = 1
 DEAFNESS_MINOR = 2
@@ -25,8 +26,33 @@ DEAFNESS_OPTIONS = OrderedDict(
 )
 
 
+class MainAlportClinicalPictureColumns:
+    """Columns that exist only in the main database."""
+
+    comments = Column(String)
+
+
+class InternationalAlportClinicalPictureColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+
+    class ALPORT_CLINICAL_PICTURE_VARIANT_COLUMNS(
+        MainAlportClinicalPictureColumns,
+        InternationalAlportClinicalPictureColumns,
+    ): ...
+else:
+    ALPORT_CLINICAL_PICTURE_VARIANT_COLUMNS = pick(
+        main=MainAlportClinicalPictureColumns,
+        international=InternationalAlportClinicalPictureColumns,
+    )
+
+
 @log_changes
-class AlportClinicalPicture(db.Model, MetaModelMixin):
+class AlportClinicalPicture(
+    ALPORT_CLINICAL_PICTURE_VARIANT_COLUMNS, db.Model, MetaModelMixin
+):
     __tablename__ = "alport_clinical_pictures"
 
     id = uuid_pk_column()
@@ -38,7 +64,6 @@ class AlportClinicalPicture(db.Model, MetaModelMixin):
     deafness = Column(Integer, nullable=False)
     deafness_date = Column(Date)
     hearing_aid_date = Column(Date)
-    comments = Column(String)
 
 
 Index("alport_clinical_pictures_patient_idx", AlportClinicalPicture.patient_id)

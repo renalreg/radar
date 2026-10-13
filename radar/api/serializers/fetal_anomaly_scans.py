@@ -18,11 +18,15 @@ from radar.models.fetal_anomaly_scans import (
     FetalAnomalyScan,
     FETAL_ANOMALY_IMAGING_TYPES,
 )
+from radar.variants import pick
 
 
-class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class BaseFetalAnomalyScanSerializer(
+    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
+):
+    """Fields shared by every deployment."""
+
     date_of_scan = fields.DateField(validators=[not_in_future()])
-    imaging_type = StringLookupField(FETAL_ANOMALY_IMAGING_TYPES)
     gestational_age = fields.IntegerField(validators=[range_(8 * 7, 42 * 7, "days")])
     oligohydramnios = fields.BooleanField(required=False)
     right_anomaly_details = fields.StringField(
@@ -31,16 +35,10 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     right_ultrasound_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    right_mri_details = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
     left_anomaly_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
     left_ultrasound_details = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
-    left_mri_details = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
     hypoplasia = fields.BooleanField(required=False)
@@ -63,9 +61,31 @@ class FetalAnomalyScanSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
         # Clear details if abnormality not present.
 
         if not data["hepatic_abnormalities"]:
-            data["hepatic_abnormalitiy_details"] = None
+            data["hepatic_abnormality_details"] = None
 
         if not data["lung_abnormalities"]:
             data["lung_abnormality_details"] = None
 
         return data
+
+
+class MainFetalAnomalyScanSerializer(BaseFetalAnomalyScanSerializer):
+    imaging_type = StringLookupField(FETAL_ANOMALY_IMAGING_TYPES)
+    right_mri_details = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
+    left_mri_details = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
+
+
+class InternationalFetalAnomalyScanSerializer(BaseFetalAnomalyScanSerializer):
+    pass
+
+
+FetalAnomalyScanSerializer: (
+    type[MainFetalAnomalyScanSerializer] | type[InternationalFetalAnomalyScanSerializer]
+) = pick(
+    main=MainFetalAnomalyScanSerializer,
+    international=InternationalFetalAnomalyScanSerializer,
+)

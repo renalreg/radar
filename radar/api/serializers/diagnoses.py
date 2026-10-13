@@ -31,6 +31,7 @@ from radar.models.diagnoses import (
     GroupDiagnosis,
     PatientDiagnosis,
 )
+from radar.variants import pick
 
 
 class GroupDiagnosisSerializer(ModelSerializer):
@@ -103,7 +104,11 @@ class DiagnosisField(ReferenceField):
     serializer_class = TinyDiagnosisSerializer
 
 
-class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class BasePatientDiagnosisSerializer(
+    PatientMixin, SourceMixin, MetaMixin, ModelSerializer
+):
+    """Fields and validation shared by every deployment."""
+
     diagnosis = DiagnosisField(required=False)
     diagnosis_text = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(1000)]
@@ -120,12 +125,6 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
     clinical_picture = fields.BooleanField(required=False)
     biopsy = fields.BooleanField(required=False)
     biopsy_diagnosis = IntegerLookupField(BIOPSY_DIAGNOSES, required=False)
-    proteinuria_positive_antibody = fields.BooleanField(required=False)
-    antibody_id = fields.StringField(required=False)
-    antibody_custom = fields.StringField(
-        required=False
-    )  # this will overwrite antibody if antibody is 'other'
-    paraprotein = fields.BooleanField(required=False)
     comments = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
@@ -139,32 +138,11 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             valid_date_for_patient("to_date"),
         ]
 
-    def create(self, data):
-        antibody_name = resolve_antibody_name(data)
-        if antibody_name:
-            data.pop("antibody_id", None)
-            data.pop("antibody_custom", None)
-        instance = super().create(data)
-        if antibody_name:
-            instance.set_antibody(antibody_name)
-        return instance
-
-    def update(self, instance, data):
-        antibody_name = resolve_antibody_name(data)
-        if antibody_name:
-            data.pop("antibody_id", None)
-            data.pop("antibody_custom", None)
-        instance = super().update(instance, data)
-        if antibody_name:
-            instance.set_antibody(antibody_name)
-        return instance
-
     def pre_validate(self, data):
         # Ignore the text diagnosis if there is a coded diagnosis
         if data["diagnosis"]:
             data["diagnosis_text"] = None
 
-        data = reset_data(data)
         return data
 
     def validate_diagnosis(self, diagnosis):
@@ -199,3 +177,53 @@ class PatientDiagnosisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSeri
             raise ValidationError({"to_date": "Must be on or after from date."})
 
         return data
+
+
+class MainPatientDiagnosisSerializer(BasePatientDiagnosisSerializer):
+    proteinuria_positive_antibody = fields.BooleanField(required=False)
+    antibody_id = fields.StringField(required=False)
+    antibody_custom = fields.StringField(
+        required=False
+    )  # this will overwrite antibody if antibody is 'other'
+    paraprotein = fields.BooleanField(required=False)
+
+    def _pop_antibody(self, data):
+        antibody_name = resolve_antibody_name(data)
+        if antibody_name:
+            data.pop("antibody_id", None)
+            data.pop("antibody_custom", None)
+        return antibody_name
+
+    def create(self, data):
+        antibody_name = self._pop_antibody(data)
+        instance = super().create(data)
+        if antibody_name:
+            instance.set_antibody(antibody_name)
+        return instance
+
+    def update(self, instance, data):
+        antibody_name = self._pop_antibody(data)
+        instance = super().update(instance, data)
+        if antibody_name:
+            instance.set_antibody(antibody_name)
+        return instance
+
+    def pre_validate(self, data):
+        data = super().pre_validate(data)
+        return reset_data(data)
+
+
+class InternationalPatientDiagnosisSerializer(BasePatientDiagnosisSerializer):
+    def pre_validate(self, data):
+        data = super().pre_validate(data)
+        if not data["biopsy"]:
+            data["biopsy_diagnosis"] = None
+        return data
+
+
+PatientDiagnosisSerializer: (
+    type[MainPatientDiagnosisSerializer] | type[InternationalPatientDiagnosisSerializer]
+) = pick(
+    main=MainPatientDiagnosisSerializer,
+    international=InternationalPatientDiagnosisSerializer,
+)

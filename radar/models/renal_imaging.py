@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
@@ -20,11 +21,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
-
-RENAL_IMAGING_TYPES = OrderedDict(
-    [("USS", "USS"), ("CT", "CT"), ("MRI", "MRI"), ("DMSA", "DMSA"), ("MAG3", "MAG3")]
-)
+from radar.variants import pick
 
 RENAL_IMAGING_KIDNEY_TYPES = OrderedDict(
     [
@@ -34,8 +31,34 @@ RENAL_IMAGING_KIDNEY_TYPES = OrderedDict(
 )
 
 
+class MainRenalImagingColumns:
+    """Columns that exist only in the main database."""
+
+    right_vesicoureteric_reflux = Column(Boolean)
+    right_hydronephrosis_hydroureter = Column(Boolean)
+    left_vesicoureteric_reflux = Column(Boolean)
+    left_hydronephrosis_hydroureter = Column(Boolean)
+
+
+class InternationalRenalImagingColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+
+    class RENAL_IMAGING_VARIANT_COLUMNS(
+        MainRenalImagingColumns,
+        InternationalRenalImagingColumns,
+    ): ...
+else:
+    RENAL_IMAGING_VARIANT_COLUMNS = pick(
+        main=MainRenalImagingColumns,
+        international=InternationalRenalImagingColumns,
+    )
+
+
 @log_changes
-class RenalImaging(db.Model, MetaModelMixin):
+class RenalImaging(RENAL_IMAGING_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "renal_imaging"
 
     id = uuid_pk_column()
@@ -61,8 +84,6 @@ class RenalImaging(db.Model, MetaModelMixin):
     right_nephrocalcinosis = Column(Boolean)
     right_nephrolithiasis = Column(Boolean)
     right_other_malformation = Column(String)
-    right_vesicoureteric_reflux = Column(Boolean)
-    right_hydronephrosis_hydroureter = Column(Boolean)
 
     left_present = Column(Boolean)
     left_type = Column(String)
@@ -74,8 +95,6 @@ class RenalImaging(db.Model, MetaModelMixin):
     left_nephrocalcinosis = Column(Boolean)
     left_nephrolithiasis = Column(Boolean)
     left_other_malformation = Column(String)
-    left_vesicoureteric_reflux = Column(Boolean)
-    left_hydronephrosis_hydroureter = Column(Boolean)
 
 
 Index("renal_imaging_patient_idx", RenalImaging.patient_id)

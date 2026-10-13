@@ -19,6 +19,7 @@ from radar.models.users import User
 from radar.pages import PAGE
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import pick
 
 
 def lookup_field_defaults(kwargs):
@@ -245,12 +246,18 @@ class CohortGroupField(GroupField):
         return group
 
 
+SOURCE_TYPE_FIELDS = pick(
+    international=[SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC],
+    main=[SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH],
+)
+
+
 class SourceTypeField(fields.StringField):
     def __init__(self, **kwargs):
         kwargs.setdefault("default", SOURCE_TYPE_MANUAL)
         kwargs.setdefault(
             "validators",
-            [in_([SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC, SOURCE_TYPE_BATCH])],
+            [in_(SOURCE_TYPE_FIELDS)],
         )
         super().__init__(**kwargs)
 

@@ -24,6 +24,7 @@ from radar.auth.sessions import (
 )
 from radar.config import config
 from radar.models.groups import Group, GROUP_TYPE
+from radar.variants import pick
 
 
 class AdminModelConverter(BaseAdminModelConverter):
@@ -306,7 +307,10 @@ class GroupDiagnosisView(ModelView):
     column_default_sort = "group.name"
     column_auto_select_related = True
     column_searchable_list = ["group.name", "diagnosis.name"]
-    column_export_list = ["id", "group", "type", "diagnosis", "weight"]
+    column_export_list = pick(
+        international=["id", "group", "diagnosis", "weight"],
+        main=["id", "group", "type", "diagnosis", "weight"],
+    )
 
 
 class GroupFormView(ModelView):
@@ -337,6 +341,37 @@ class FormView(ModelView):
     column_export_list = ["id", "name", "slug", "data"]
 
 
+OBSERVATION_COLUMNS = pick(
+    international=[
+        "id",
+        "name",
+        "short_name",
+        "value_type",
+        "sample_type",
+        "pv_code",
+        "min_valuemax_value",
+        "min_length",
+        "max_length",
+        "units",
+        "options",
+    ],
+    main=[
+        "id",
+        "name",
+        "short_name",
+        "value_type",
+        "sample_type",
+        "pv_code",
+        "min_value",
+        "max_value",
+        "min_length",
+        "max_length",
+        "units",
+        "options",
+    ],
+)
+
+
 class ObservationView(ModelView):
     column_default_sort = "name"
     column_list = ["name", "short_name", "sample_type"]
@@ -363,20 +398,7 @@ class ObservationView(ModelView):
         "options",
         "units",
     ]
-    column_export_list = [
-        "id",
-        "name",
-        "short_name",
-        "value_type",
-        "sample_type",
-        "pv_code",
-        "min_value",
-        "max_value",
-        "min_length",
-        "max_length",
-        "units",
-        "options",
-    ]
+    column_export_list = OBSERVATION_COLUMNS
 
 
 class SpecialtyView(ModelView):

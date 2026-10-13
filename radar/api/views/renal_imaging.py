@@ -7,9 +7,9 @@ from radar.api.views.common import (
 )
 from radar.models.renal_imaging import (
     RENAL_IMAGING_KIDNEY_TYPES,
-    RENAL_IMAGING_TYPES,
     RenalImaging,
 )
+from radar.variants import RENAL_IMAGING_TYPES
 
 
 class RenalImagingListView(SourceObjectViewMixin, PatientObjectListView):

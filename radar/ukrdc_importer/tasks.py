@@ -18,6 +18,7 @@ from radar.ukrdc_importer.patient_numbers import import_patient_numbers
 from radar.ukrdc_importer.results import import_results
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.utils import get_import_user
+from radar.variants import pick
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +112,18 @@ def withdrawn_consent_cohorts(patient: Patient) -> bool:
     return False
 
 
+def no_withdrawn_consent_cohorts(patient: Patient) -> bool:
+    """International has no withdrawn consent cohorts, so never blocks an import."""
+    return False
+
+
+# True if the patient's data must not be imported because consent was withdrawn
+in_withdrawn_consent_cohort = pick(
+    main=withdrawn_consent_cohorts,
+    international=no_withdrawn_consent_cohorts,
+)
+
+
 @shared_task(ignore_result=True, queue=QUEUE)
 def import_sda(data, sequence_number, patient_id=None):
     # Note about data types:
@@ -167,7 +180,7 @@ def import_sda(data, sequence_number, patient_id=None):
         return False
 
     # Check that the patient is not within the withdrawn consent cohorts
-    if withdrawn_consent_cohorts(patient):
+    if in_withdrawn_consent_cohort(patient):
         adapter.info("Patient is within withdrawn consent cohorts id=%s", patient_id)
         return False
 
