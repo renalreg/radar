@@ -1835,7 +1835,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
 
     def get_rows(self):
         self._columns.extend(
-            column(item.lower()) for item in SUPPORTIVE_MEDICATIONS.keys()
+            column(item.lower()) for item in SUPPORTIVE_MEDICATIONS
         )
 
         previous = (
