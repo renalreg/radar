@@ -78,7 +78,7 @@ class Encoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Decimal):
             return float(o)
-        elif isinstance(o, datetime) or isinstance(o, date):
+        elif isinstance(o, (datetime, date)):
             return o.isoformat()
 
         return super().default(o)
