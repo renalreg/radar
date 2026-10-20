@@ -1,7 +1,7 @@
 from cornflake import fields, serializers
 
 from radar.api.permissions import AdminWritePermission
-from radar.api.serializers.groups import GroupSerializer
+from radar.api.serializers.common import GroupSerializer
 from radar.api.views.generics import (
     ListCreateModelView,
     RetrieveUpdateDestroyModelView,
