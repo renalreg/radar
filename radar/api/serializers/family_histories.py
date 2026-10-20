@@ -10,9 +10,9 @@ from radar.api.serializers.common import (
 )
 from radar.database import db
 from radar.models.family_histories import (
+    RELATIONSHIPS,
     FamilyHistory,
     FamilyHistoryRelative,
-    RELATIONSHIPS,
 )
 from radar.models.patients import Patient
 

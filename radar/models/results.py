@@ -1,20 +1,20 @@
 import enum
+import math
 from collections import OrderedDict
 from datetime import date
 from itertools import chain
-import math
 
 from sqlalchemy import (
     CheckConstraint,
     Column,
     DateTime,
-    event,
+    Enum,
     ForeignKey,
     Index,
     Integer,
     Numeric,
     String,
-    Enum,
+    event,
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship

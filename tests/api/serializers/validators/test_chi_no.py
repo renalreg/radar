@@ -1,5 +1,5 @@
-from cornflake.exceptions import ValidationError
 import pytest
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.validators import chi_no
 

@@ -10,7 +10,6 @@ from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_exporter.app import RadarUKRDCExporter
 from radar.ukrdc_exporter.tasks import export_to_ukrdc
 
-
 logger = logging.getLogger()
 
 

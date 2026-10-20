@@ -1,10 +1,10 @@
-from datetime import date, datetime
-from decimal import Decimal
 import json
 import logging
+from datetime import date, datetime
+from decimal import Decimal
 
-from celery import shared_task
 import requests
+from celery import shared_task
 
 from radar.config import config
 from radar.database import db
@@ -18,7 +18,6 @@ from radar.ukrdc_exporter.patients import export_patient
 
 # from radar.ukrdc_exporter.results import export_lab_orders
 from radar.ukrdc_exporter.utils import to_iso, transform_values
-
 
 logger = logging.getLogger(__name__)
 

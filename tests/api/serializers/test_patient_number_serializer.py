@@ -1,16 +1,16 @@
-from cornflake.exceptions import ValidationError
 import pytest
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.database import db
 from radar.models.groups import (
-    Group,
     GROUP_CODE_CHI,
     GROUP_CODE_HSC,
     GROUP_CODE_NHS,
     GROUP_CODE_RADAR,
     GROUP_CODE_UKRR,
     GROUP_TYPE,
+    Group,
 )
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL

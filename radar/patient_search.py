@@ -8,7 +8,7 @@ from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.roles import get_roles_with_permission, PERMISSION
+from radar.roles import PERMISSION, get_roles_with_permission
 from radar.utils import sql_date_filter, sql_year_filter
 from radar.variants import pick
 

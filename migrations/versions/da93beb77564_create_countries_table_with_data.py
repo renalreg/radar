@@ -5,12 +5,11 @@ Revises:
 Create Date: 2017-03-16 09:15:50.966604
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
-from radar.models.patient_addresses import COUNTRIES
 from radar.models.countries import Country
-
+from radar.models.patient_addresses import COUNTRIES
 
 # revision identifiers, used by Alembic.
 revision = 'da93beb77564'
@@ -19,6 +18,7 @@ branch_labels = None
 depends_on = None
 
 from sqlalchemy.orm import sessionmaker
+
 Session = sessionmaker()
 
 

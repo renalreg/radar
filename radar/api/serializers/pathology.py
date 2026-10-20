@@ -10,9 +10,9 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.pathology import (
-    Pathology,
     PATHOLOGY_KIDNEY_SIDES,
     PATHOLOGY_KIDNEY_TYPES,
+    Pathology,
 )
 from radar.variants import pick
 

@@ -5,7 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
 )
-from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
+from radar.models.genetics import GENETICS_KARYOTYPES, Genetics
 
 
 class GeneticsListView(GroupObjectViewMixin, PatientObjectListView):

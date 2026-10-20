@@ -1,17 +1,17 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
     Column,
-    exists,
-    func,
     Integer,
-    join,
-    select,
     Sequence,
     String,
+    exists,
+    func,
+    join,
+    select,
     text,
 )
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
@@ -20,7 +20,7 @@ from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models.common import MetaModelMixin
 from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
 from radar.models.patient_demographics import PatientDemographics

@@ -4,7 +4,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
 )
-from radar.models.alport import AlportClinicalPicture, DEAFNESS_OPTIONS
+from radar.models.alport import DEAFNESS_OPTIONS, AlportClinicalPicture
 
 
 class AlportClinicalPictureListView(PatientObjectListView):

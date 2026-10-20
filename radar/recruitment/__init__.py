@@ -1,8 +1,8 @@
 import calendar
-from datetime import datetime
 import itertools
 import logging
 import re
+from datetime import datetime
 
 import pytz
 import requests
@@ -14,15 +14,14 @@ from radar.models.antibodies import resolve_antibody_name
 from radar.models.consents import PatientConsent
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.groups import GroupPatient
+from radar.models.nurture_data import NurtureData
 from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
-from radar.models.nurture_data import NurtureData
 from radar.ukrdc_importer.tasks import import_sda
 from radar.variants import pick
-
 
 logger = logging.getLogger(__name__)
 

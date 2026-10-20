@@ -5,10 +5,9 @@ Revises: 4a8a5a6428c9
 Create Date: 2021-10-22 14:17:39.050945
 
 """
-from sqlalchemy.sql.schema import ForeignKey
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
+from sqlalchemy.sql.schema import ForeignKey
 
 # revision identifiers, used by Alembic.
 revision = "d25d543b7787"

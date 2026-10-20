@@ -1,6 +1,6 @@
-from datetime import datetime
 import os.path
 import random
+from datetime import datetime
 
 from alembic import command
 from alembic.config import Config
@@ -12,9 +12,9 @@ from radar.fixtures.forms import create_forms
 from radar.fixtures.groups import create_groups
 from radar.fixtures.patients import create_ethnicities, create_patients
 from radar.fixtures.posts import create_posts
-from radar.fixtures.users import create_bot_user, create_users, DEFAULT_PASSWORD
+from radar.fixtures.users import DEFAULT_PASSWORD, create_bot_user, create_users
 from radar.fixtures.utils import add
-from radar.models.consents import Consent, CONSENT_TYPE
+from radar.models.consents import CONSENT_TYPE, Consent
 
 
 def create_consent():

@@ -1,12 +1,12 @@
-from datetime import date
 import random
+from datetime import date
 
 from radar.fixtures.constants import MEDICATION_NAMES
 from radar.fixtures.utils import add, random_date
 from radar.models.medications import (
-    Medication,
     MEDICATION_DOSE_UNITS,
     MEDICATION_ROUTES,
+    Medication,
 )
 
 

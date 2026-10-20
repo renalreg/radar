@@ -1,12 +1,12 @@
-from functools import wraps
 import uuid
+from functools import wraps
 from typing import Any
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from flask import abort, jsonify, request, Response
+from flask import Response, abort, jsonify, request
 from flask.views import MethodView
-from sqlalchemy import desc, inspect, Integer
+from sqlalchemy import Integer, desc, inspect
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm.exc import NoResultFound
 

@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Date, ForeignKey, Index, Numeric, String
-from sqlalchemy import Integer
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db

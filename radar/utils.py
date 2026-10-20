@@ -3,12 +3,11 @@ from datetime import date, datetime, timedelta
 from functools import partial
 from random import SystemRandom
 
-from cornflake.exceptions import SkipField
-from dateutil.relativedelta import relativedelta
 import inflection
 import pytz
+from cornflake.exceptions import SkipField
+from dateutil.relativedelta import relativedelta
 from sqlalchemy import and_
-
 
 SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 

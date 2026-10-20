@@ -6,9 +6,9 @@ from radar.api.views.common import (
     StringLookupListView,
 )
 from radar.models.plasmapheresis import (
-    Plasmapheresis,
     PLASMAPHERESIS_NO_OF_EXCHANGES,
     PLASMAPHERESIS_RESPONSES,
+    Plasmapheresis,
 )
 
 

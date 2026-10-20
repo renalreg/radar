@@ -13,7 +13,6 @@ from radar.ukrdc_importer.utils import (
 )
 from radar.utils import get_path
 
-
 logger = logging.getLogger(__name__)
 
 

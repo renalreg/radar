@@ -1,5 +1,4 @@
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 
 from radar.api.serializers.common import GroupField
 

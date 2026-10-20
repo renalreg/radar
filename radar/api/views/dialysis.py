@@ -5,7 +5,7 @@ from radar.api.views.common import (
     PatientObjectListView,
     SourceObjectViewMixin,
 )
-from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
+from radar.models.dialysis import DIALYSIS_MODALITIES, Dialysis
 
 
 class DialysisListView(SourceObjectViewMixin, PatientObjectListView):

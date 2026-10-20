@@ -1,15 +1,15 @@
 from datetime import datetime
 
+import pytz
 from cornflake import fields
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer
 from cornflake.validators import not_in_future
-import pytz
 
 from radar.api.serializers.common import GroupField, MetaMixin, PatientMixin
 from radar.database import db
 from radar.exceptions import PermissionDenied
-from radar.models.groups import check_dependencies, DependencyError, GroupPatient
+from radar.models.groups import DependencyError, GroupPatient, check_dependencies
 from radar.models.nurture_data import NurtureData
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION

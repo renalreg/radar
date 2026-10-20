@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, Date, ForeignKey, Index, String
-from sqlalchemy import Integer
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -12,7 +11,6 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
 
 COUNTRIES = OrderedDict(
     [

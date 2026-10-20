@@ -1,5 +1,5 @@
-from functools import partial
 import logging
+from functools import partial
 
 from sqlalchemy import and_, or_
 
@@ -15,7 +15,6 @@ from radar.ukrdc_importer.utils import (
     validate_list,
 )
 from radar.utils import get_path
-
 
 logger = logging.getLogger(__name__)
 

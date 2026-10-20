@@ -1,5 +1,4 @@
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import (
@@ -22,12 +21,12 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.database import db
-from radar.models.antibodies import resolve_antibody_name, reset_data
+from radar.models.antibodies import reset_data, resolve_antibody_name
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
-    Diagnosis,
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
+    Diagnosis,
     GroupDiagnosis,
     PatientDiagnosis,
 )

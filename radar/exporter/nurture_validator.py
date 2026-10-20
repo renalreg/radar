@@ -2,19 +2,18 @@
 Script to do simple validations on nurture export.
 """
 
-from collections import defaultdict, OrderedDict
 import datetime
 import itertools
+from collections import OrderedDict, defaultdict
 
-from sqlalchemy import text
 import xlsxwriter
+from sqlalchemy import text
 
 from radar.app import Radar
 from radar.database import db
 from radar.exporter.utils import get_months, get_years
 from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group
-
 
 DATEFMT = "%d/%m/%Y"
 DATETIMEFMT = "%d/%m/%Y %H:%M:%S"

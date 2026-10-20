@@ -1,5 +1,4 @@
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import (

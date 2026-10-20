@@ -1,13 +1,12 @@
 import pytest
 
 from radar.api.permissions import SystemSourceObjectPermission
-from radar.models.groups import Group, GROUP_CODE_RADAR, GROUP_TYPE
+from radar.models.groups import GROUP_CODE_RADAR, GROUP_TYPE, Group
 from radar.models.medications import Medication
 from radar.models.source_types import SOURCE_TYPE_MANUAL, SOURCE_TYPE_UKRDC
 from radar.roles import ROLE
 from tests.api.permissions.helpers import MockRequest
 from tests.permissions.helpers import make_user
-
 
 READ = 0
 WRITE = 1

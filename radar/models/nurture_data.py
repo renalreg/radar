@@ -1,6 +1,7 @@
+from collections import OrderedDict
+
 from sqlalchemy import Column, Integer, text
 from sqlalchemy.sql.sqltypes import Boolean, Date
-from collections import OrderedDict
 
 from radar.database import db
 from radar.models.common import (

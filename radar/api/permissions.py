@@ -1,4 +1,4 @@
-from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, DependencyError, check_dependencies
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.permissions import (
     has_permission,

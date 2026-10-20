@@ -5,7 +5,6 @@ from sqlalchemy import event, exc, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as SessionBase
 
-
 # Session and SQLAlchemy classes that allow transactions to be rolled back in pytest
 # TODO report flask_sqlalchemy bug
 

@@ -13,7 +13,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 PERFORMANCE_STATUS_OPTIONS = OrderedDict(
     [
         (0, "0: able to carry out all normal activity without restriction"),

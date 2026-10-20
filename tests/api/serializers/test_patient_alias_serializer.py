@@ -1,7 +1,7 @@
 from datetime import date
 
-from cornflake.exceptions import ValidationError
 import pytest
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.patient_aliases import PatientAliasSerializer
 from radar.models.groups import Group

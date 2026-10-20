@@ -1,4 +1,6 @@
+from collections import OrderedDict
 from typing import TYPE_CHECKING
+
 from sqlalchemy import Boolean, Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -10,9 +12,6 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
-from collections import OrderedDict
-
 from radar.variants import pick
 
 FETAL_ANOMALY_IMAGING_TYPES = OrderedDict(

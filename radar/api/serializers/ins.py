@@ -7,10 +7,10 @@ from radar.api.serializers.common import MetaMixin, PatientMixin, StringLookupFi
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.ins import (
     DIPSTICK_TYPES,
-    InsClinicalPicture,
-    InsRelapse,
     KIDNEY_TYPES,
     REMISSION_TYPES,
+    InsClinicalPicture,
+    InsRelapse,
 )
 
 

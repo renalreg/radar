@@ -5,8 +5,7 @@ from radar.fixtures.utils import (
     generate_last_name,
 )
 from radar.models.consultants import Consultant, GroupConsultant, Specialty
-from radar.models.groups import Group, GROUP_TYPE
-
+from radar.models.groups import GROUP_TYPE, Group
 
 specialties = ["Nephrologist"]
 

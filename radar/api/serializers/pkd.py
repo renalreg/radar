@@ -16,10 +16,10 @@ from radar.models.pkd import (
     FIRST_GRAFT_SOURCES,
     INDICATIONS,
     LIVER_IMAGING_TYPES,
+    LOSS_REASONS,
     LiverDiseases,
     LiverImaging,
     LiverTransplant,
-    LOSS_REASONS,
     Nutrition,
 )
 

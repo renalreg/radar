@@ -1,7 +1,7 @@
 from datetime import date
 
-from cornflake.exceptions import ValidationError
 import pytest
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.salt_wasting import SaltWastingClinicalFeaturesSerializer
 from radar.models.patient_demographics import PatientDemographics

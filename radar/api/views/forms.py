@@ -12,8 +12,8 @@ from radar.api.views.common import PatientObjectDetailView, PatientObjectListVie
 from radar.api.views.generics import (
     ListModelView,
     ListView,
-    parse_args,
     RetrieveModelView,
+    parse_args,
 )
 from radar.database import db
 from radar.models.forms import Entry, Form, GroupForm, GroupQuestionnaire

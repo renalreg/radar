@@ -11,12 +11,12 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.medications import (
+    MEDICATION_DOSE_UNITS,
+    MEDICATION_ROUTES,
     CurrentMedication,
     Drug,
     DrugGroup,
     Medication,
-    MEDICATION_DOSE_UNITS,
-    MEDICATION_ROUTES,
 )
 
 

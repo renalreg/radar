@@ -23,7 +23,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 LIVER_IMAGING_TYPES = OrderedDict(
     [
         ("USS", "USS"),

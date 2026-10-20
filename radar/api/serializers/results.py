@@ -13,12 +13,12 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.results import (
-    GroupObservation,
-    Observation,
     OBSERVATION_SAMPLE_TYPE,
     OBSERVATION_SAMPLE_TYPE_NAMES,
     OBSERVATION_VALUE_TYPE,
     OBSERVATION_VALUE_TYPE_NAMES,
+    GroupObservation,
+    Observation,
     Result,
 )
 

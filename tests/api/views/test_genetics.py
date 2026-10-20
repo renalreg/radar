@@ -1,6 +1,6 @@
-from datetime import datetime
 import itertools
 import json
+from datetime import datetime
 
 import pytest
 import pytz

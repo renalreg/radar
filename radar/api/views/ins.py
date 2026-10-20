@@ -6,10 +6,10 @@ from radar.api.views.common import (
 )
 from radar.models.ins import (
     DIPSTICK_TYPES,
-    InsClinicalPicture,
-    InsRelapse,
     KIDNEY_TYPES,
     REMISSION_TYPES,
+    InsClinicalPicture,
+    InsRelapse,
 )
 
 

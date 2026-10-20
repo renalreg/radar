@@ -1,13 +1,12 @@
 import logging
 
 from radar.models.medications import (
-    Medication,
     MEDICATION_DOSE_UNITS,
     MEDICATION_ROUTES,
+    Medication,
 )
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime
-
 
 logger = logging.getLogger(__name__)
 

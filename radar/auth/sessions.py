@@ -9,7 +9,6 @@ from radar.models.logs import Log
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
 
-
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 

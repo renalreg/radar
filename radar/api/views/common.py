@@ -14,16 +14,16 @@ from radar.api.serializers.common import IntegerLookupField, StringLookupField
 from radar.api.views.generics import (
     ListCreateModelView,
     ListView,
-    parse_args,
     RetrieveUpdateDestroyModelView,
+    parse_args,
 )
 from radar.auth.sessions import current_user
 from radar.database import db
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
 from radar.models.patients import Patient
 from radar.models.users import User
-from radar.patient_search import filter_by_permissions, PatientQueryBuilder
-from radar.roles import get_roles_with_permission, PERMISSION
+from radar.patient_search import PatientQueryBuilder, filter_by_permissions
+from radar.roles import PERMISSION, get_roles_with_permission
 from radar.user_search import UserQueryBuilder
 
 

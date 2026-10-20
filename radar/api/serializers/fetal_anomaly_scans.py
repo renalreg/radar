@@ -15,8 +15,8 @@ from radar.api.serializers.common import (
     StringLookupField,
 )
 from radar.models.fetal_anomaly_scans import (
-    FetalAnomalyScan,
     FETAL_ANOMALY_IMAGING_TYPES,
+    FetalAnomalyScan,
 )
 from radar.variants import pick
 

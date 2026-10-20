@@ -11,7 +11,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 KIDNEY_TYPES = OrderedDict(
     [
         ("TRANSPLANT", "Transplant"),

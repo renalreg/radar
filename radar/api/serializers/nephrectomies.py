@@ -9,10 +9,10 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.nephrectomies import (
-    Nephrectomy,
     NEPHRECTOMY_ENTRY_TYPES,
     NEPHRECTOMY_KIDNEY_SIDES,
     NEPHRECTOMY_KIDNEY_TYPES,
+    Nephrectomy,
 )
 
 

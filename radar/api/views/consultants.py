@@ -7,9 +7,9 @@ from radar.api.views.generics import (
     CreateModelView,
     DestroyModelView,
     ListModelView,
-    parse_args,
     RetrieveModelView,
     UpdateModelView,
+    parse_args,
 )
 from radar.auth.sessions import current_user
 from radar.database import db

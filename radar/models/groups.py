@@ -4,21 +4,21 @@ from typing import TYPE_CHECKING, List
 
 import pytz
 from sqlalchemy import (
-    and_,
     Boolean,
     CheckConstraint,
     Column,
     Date,
     DateTime,
+    Enum,
     ForeignKey,
-    func,
     Index,
     Integer,
+    String,
+    and_,
+    func,
     null,
     or_,
-    String,
     text,
-    Enum,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, declared_attr, relationship, synonym
@@ -30,10 +30,10 @@ from radar.models.common import MetaModelMixin, patient_id_column, patient_relat
 from radar.models.logs import log_changes
 from radar.pages import PAGE
 from radar.roles import (
-    get_roles_managed_by_role,
-    get_roles_with_permission,
     PERMISSION,
     ROLE,
+    get_roles_managed_by_role,
+    get_roles_with_permission,
 )
 from radar.variants import pick
 

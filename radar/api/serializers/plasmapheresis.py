@@ -10,9 +10,9 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.plasmapheresis import (
-    Plasmapheresis,
     PLASMAPHERESIS_NO_OF_EXCHANGES,
     PLASMAPHERESIS_RESPONSES,
+    Plasmapheresis,
 )
 
 

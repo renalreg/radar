@@ -9,13 +9,13 @@ import requests
 from radar.api.app import RadarAPI
 from radar.database import db
 from radar.models import (
+    GROUP_DIAGNOSIS_TYPE,
+    GROUP_TYPE,
     Code,
     Diagnosis,
     DiagnosisCode,
     Group,
     GroupDiagnosis,
-    GROUP_TYPE,
-    GROUP_DIAGNOSIS_TYPE,
 )
 
 JSON_URL = "http://www.orphadata.org/data/export/en_product1.json"

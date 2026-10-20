@@ -1,4 +1,4 @@
-from flask import jsonify, request, Response
+from flask import Response, jsonify, request
 
 from radar.api.permissions import (
     GroupPatientCreatePermission,

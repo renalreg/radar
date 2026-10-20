@@ -21,16 +21,16 @@ from radar.api.views.generics import (
     CreateModelView,
     DestroyModelView,
     ListModelView,
-    parse_args,
     RetrieveModelView,
     UpdateModelView,
+    parse_args,
 )
 from radar.models.antibodies import Antibody, GroupAntibody
 from radar.models.diagnoses import (
     BIOPSY_DIAGNOSES,
-    Diagnosis,
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
+    Diagnosis,
     GroupDiagnosis,
     PatientDiagnosis,
 )

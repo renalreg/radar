@@ -6,9 +6,9 @@ from radar.api.views.common import (
     StringLookupListView,
 )
 from radar.models.pathology import (
-    Pathology,
     PATHOLOGY_KIDNEY_SIDES,
     PATHOLOGY_KIDNEY_TYPES,
+    Pathology,
 )
 
 

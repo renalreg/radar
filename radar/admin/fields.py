@@ -1,5 +1,4 @@
-from wtforms import SelectFieldBase
-from wtforms import widgets
+from wtforms import SelectFieldBase, widgets
 
 
 class EnumSelectField(SelectFieldBase):

@@ -3,7 +3,7 @@ from flask import Response
 
 from radar.api.serializers.auth import ResetPasswordSerializer
 from radar.api.views.generics import ApiView, request_json
-from radar.auth.forgot_password import InvalidToken, reset_password, UserNotFound
+from radar.auth.forgot_password import InvalidToken, UserNotFound, reset_password
 
 
 class ResetPasswordView(ApiView):

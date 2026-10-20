@@ -4,11 +4,11 @@ from cornflake.validators import min_length, not_empty, not_in_future, upper
 
 from radar.api.serializers.common import GroupField, IntegerLookupField
 from radar.api.serializers.demographics import EthnicityField, NationalityField
-from radar.api.serializers.validators import get_number_validators, after_day_zero
+from radar.api.serializers.validators import after_day_zero, get_number_validators
 from radar.exceptions import PermissionDenied
 from radar.models.antibodies import reset_data
 from radar.models.diagnoses import BIOPSY_DIAGNOSES
-from radar.models.groups import check_dependencies, DependencyError, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, DependencyError, check_dependencies
 from radar.models.patient_codes import GENDERS
 from radar.permissions import has_permission_for_group
 from radar.roles import PERMISSION

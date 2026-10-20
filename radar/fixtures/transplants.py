@@ -1,9 +1,9 @@
-from datetime import date
 import random
+from datetime import date
 
 from radar.fixtures.utils import add, random_date
-from radar.models.groups import Group, GROUP_TYPE
-from radar.models.transplants import Transplant, TRANSPLANT_MODALITIES
+from radar.models.groups import GROUP_TYPE, Group
+from radar.models.transplants import TRANSPLANT_MODALITIES, Transplant
 
 
 def create_transplants_f():

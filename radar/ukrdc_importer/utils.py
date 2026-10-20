@@ -1,14 +1,13 @@
 import calendar
-from datetime import datetime
 import uuid
+from datetime import datetime
 
 from cornflake.exceptions import ValidationError
 
 from radar.database import db
-from radar.models.groups import Group, GROUP_CODE_UKRDC, GROUP_TYPE
+from radar.models.groups import GROUP_CODE_UKRDC, GROUP_TYPE, Group
 from radar.models.users import User
 from radar.utils import get_path
-
 
 NAMESPACE = uuid.UUID("91bce7f1-ea5f-4c98-8350-33d65d597a10")
 USERNAME = "ukrdc_importer"

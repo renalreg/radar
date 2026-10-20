@@ -12,7 +12,6 @@ from radar.ukrdc_importer.utils import (
     validate_list,
 )
 
-
 logger = logging.getLogger(__name__)
 
 

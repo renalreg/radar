@@ -5,7 +5,7 @@ from radar.api.views.common import (
     PatientObjectListView,
     StringLookupListView,
 )
-from radar.models.fuan import FuanClinicalPicture, RELATIVES, THP_RESULTS
+from radar.models.fuan import RELATIVES, THP_RESULTS, FuanClinicalPicture
 
 
 class FuanClinicalPictureListView(PatientObjectListView):

@@ -12,7 +12,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 LIQUOR_VOLUMES = OrderedDict(
     [
         ("NORMAL", "Normal"),

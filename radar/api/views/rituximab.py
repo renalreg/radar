@@ -9,12 +9,12 @@ from radar.api.views.common import (
     StringLookupListView,
 )
 from radar.models.rituximab import (
-    BaselineAssessment,
     NEPHROPATHY_TYPES,
     PERFORMANCE_STATUS_OPTIONS,
-    RituximabCriteria,
     SUPPORTIVE_MEDICATIONS,
     TREATMENT_OPTIONS,
+    BaselineAssessment,
+    RituximabCriteria,
 )
 
 

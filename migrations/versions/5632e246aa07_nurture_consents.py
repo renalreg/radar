@@ -5,10 +5,11 @@ Revises: d25d543b7787
 Create Date: 2021-11-16 15:24:18.779379
 
 """
-from sqlalchemy.sql.schema import ForeignKey, ForeignKeyConstraint
-from alembic import op
-import sqlalchemy as sa
 from datetime import datetime, timezone
+
+import sqlalchemy as sa
+from alembic import op
+from sqlalchemy.sql.schema import ForeignKey, ForeignKeyConstraint
 
 # revision identifiers, used by Alembic.
 revision = "5632e246aa07"

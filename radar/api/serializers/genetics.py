@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     PatientMixin,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.genetics import Genetics, GENETICS_KARYOTYPES
+from radar.models.genetics import GENETICS_KARYOTYPES, Genetics
 
 
 class GeneticsSerializer(PatientMixin, CohortGroupMixin, MetaMixin, ModelSerializer):

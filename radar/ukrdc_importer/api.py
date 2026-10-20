@@ -1,12 +1,11 @@
 import logging
 
-from flask import abort, Blueprint, request, Response
+from flask import Blueprint, Response, abort, request
 
 from radar.app import Radar
 from radar.ukrdc_importer.serializers import ContainerSerializer
 from radar.ukrdc_importer.tasks import import_sda
 from radar.ukrdc_importer.utils import utc
-
 
 api = Blueprint("ukrdc_importer", __name__)
 

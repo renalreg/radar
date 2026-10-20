@@ -1,5 +1,5 @@
-from datetime import date, datetime, timedelta
 import random
+from datetime import date, datetime, timedelta
 
 import pytz
 from sqlalchemy import desc
@@ -37,12 +37,12 @@ from radar.fixtures.utils import (
 )
 from radar.models.demographics import Ethnicity
 from radar.models.groups import (
-    Group,
     GROUP_CODE_CHI,
     GROUP_CODE_NHS,
     GROUP_CODE_NHSBT,
     GROUP_CODE_UKRR,
     GROUP_TYPE,
+    Group,
     GroupPatient,
 )
 from radar.models.patient_addresses import PatientAddress

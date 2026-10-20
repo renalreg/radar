@@ -13,7 +13,6 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -4,10 +4,10 @@ from radar.api.serializers.auth import LoginSerializer, TokenSerializer
 from radar.api.views.generics import ApiView, request_json, response_json
 from radar.auth.sessions import (
     DisabledLoginError,
-    login,
-    logout_other_sessions,
     PasswordLoginError,
     UsernameLoginError,
+    login,
+    logout_other_sessions,
 )
 
 

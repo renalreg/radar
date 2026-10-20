@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Enum
+from sqlalchemy import Column, Date, Enum, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db

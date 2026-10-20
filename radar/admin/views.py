@@ -3,7 +3,7 @@
 import glob
 import os
 
-from flask import redirect, request, send_file, url_for, flash
+from flask import flash, redirect, request, send_file, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
@@ -15,15 +15,15 @@ from wtforms import fields
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
 from radar.auth.sessions import (
-    current_user,
     DisabledLoginError,
-    login,
-    logout,
     PasswordLoginError,
     UsernameLoginError,
+    current_user,
+    login,
+    logout,
 )
 from radar.config import config
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, Group
 from radar.variants import pick
 
 

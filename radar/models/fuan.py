@@ -12,7 +12,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 RELATIVES = OrderedDict(
     [
         (1, "Mother"),

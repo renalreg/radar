@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Column, ForeignKey, Index, Integer, String
-from sqlalchemy import Date
+from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -12,7 +11,6 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
 
 PLASMAPHERESIS_RESPONSES = OrderedDict(
     [

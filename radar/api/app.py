@@ -3,8 +3,7 @@ import logging
 from sqlalchemy import event
 
 from radar.api import views
-from radar.api.auth import force_password_change, require_login
-from radar.api.auth import set_cors_headers
+from radar.api.auth import force_password_change, require_login, set_cors_headers
 from radar.api.debug import debug_before_request, debug_teardown_request
 from radar.api.logs import log_request
 from radar.app import Radar

@@ -1,8 +1,8 @@
-from datetime import date
 import random
+from datetime import date
 
 from radar.fixtures.utils import add, random_date
-from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
+from radar.models.dialysis import DIALYSIS_MODALITIES, Dialysis
 
 
 def create_dialysis_f():

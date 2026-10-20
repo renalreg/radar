@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import argparse
-from datetime import datetime, timedelta
 import random
 import string
 import uuid
+from datetime import datetime, timedelta
 
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, Group
 from radar.models.patients import Patient
 from radar.ukrdc_importer.app import RadarUKRDCImporter
 from radar.ukrdc_importer.tasks import import_sda

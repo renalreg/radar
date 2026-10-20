@@ -3,11 +3,11 @@ from sqlalchemy import (
     Column,
     DateTime,
     ForeignKey,
-    func,
     Index,
     Integer,
-    select,
     String,
+    func,
+    select,
     text,
 )
 from sqlalchemy.ext.declarative import declared_attr

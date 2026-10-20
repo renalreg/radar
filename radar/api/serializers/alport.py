@@ -4,7 +4,7 @@ from cornflake.validators import max_length, none_if_blank, optional
 
 from radar.api.serializers.common import IntegerLookupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.alport import AlportClinicalPicture, DEAFNESS_NO, DEAFNESS_OPTIONS
+from radar.models.alport import DEAFNESS_NO, DEAFNESS_OPTIONS, AlportClinicalPicture
 from radar.variants import pick
 
 

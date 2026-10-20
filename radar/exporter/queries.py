@@ -8,9 +8,9 @@ from radar.models.codes import Code
 from radar.models.consents import PatientConsent
 from radar.models.consultants import Consultant, GroupConsultant
 from radar.models.diagnoses import (
+    GROUP_DIAGNOSIS_TYPE,
     Diagnosis,
     DiagnosisCode,
-    GROUP_DIAGNOSIS_TYPE,
     GroupDiagnosis,
     PatientDiagnosis,
 )
@@ -20,7 +20,7 @@ from radar.models.fetal_ultrasounds import FetalUltrasound
 from radar.models.forms import Entry
 from radar.models.fuan import FuanClinicalPicture
 from radar.models.genetics import Genetics
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient, GroupUser
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient, GroupUser
 from radar.models.hospitalisations import Hospitalisation
 from radar.models.ins import InsClinicalPicture, InsRelapse
 from radar.models.medications import CurrentMedication, Medication
@@ -42,7 +42,7 @@ from radar.models.results import Observation, Result
 from radar.models.rituximab import BaselineAssessment, RituximabCriteria
 from radar.models.salt_wasting import SaltWastingClinicalFeatures
 from radar.models.transplants import Transplant, TransplantBiopsy, TransplantRejection
-from radar.roles import get_roles_with_permission, PERMISSION
+from radar.roles import PERMISSION, get_roles_with_permission
 
 
 def filter_by_patient_permissions(query, user, patient_id, demographics=False):
