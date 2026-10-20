@@ -50,7 +50,6 @@ def revisit():
 
                         visit = datetime.strptime(entry.data["date"], "%Y-%m-%d").date()
                         visits[visit] = entry.data
-                        headers
 
                     if not visits:
                         continue

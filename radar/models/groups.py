@@ -326,7 +326,7 @@ class DependencyError(Exception):
 def check_dependencies(groups):
     """Check group dependencies (e.g. if in x, must be in y)."""
 
-    groups = set((group.type, group.code) for group in groups)
+    groups = {(group.type, group.code) for group in groups}
 
     for x, y in dependencies:
         if x in groups and y not in groups:

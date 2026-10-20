@@ -113,8 +113,8 @@ class SearchPatient:
         return SDAContainer(data)
 
     def _check_name(self, patient, name, n):
-        a = set(x[:n] for x in _split_names(patient.first_names + patient.last_names))
-        b = set(x[:n] for x in _split_name(name))
+        a = {x[:n] for x in _split_names(patient.first_names + patient.last_names)}
+        b = {x[:n] for x in _split_name(name)}
         return len(a) == 0 or a.intersection(b)
 
     def _check_first_name(self, patient):

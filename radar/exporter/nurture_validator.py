@@ -466,7 +466,7 @@ class DiabeticComplications(BaseSheet):
             for diagnosis in self.patient.patient_diagnoses
             if diagnosis.status
         ]
-        interested = set(("Diabetes - Type I", "Diabetes - Type II", "Diabetes"))
+        interested = {"Diabetes - Type I", "Diabetes - Type II", "Diabetes"}
         diabetes = [
             diagnosis for diagnosis in diagnoses if diagnosis.name in interested
         ]
@@ -886,9 +886,9 @@ class PatientList:
         self.group = group
 
     def append(self, patient):
-        self.observations |= set(
-            [result.observation.name for result in patient.results]
-        )
+        self.observations |= {
+            result.observation.name for result in patient.results
+        }
         groups = [group.code for group in patient.groups]
         if "NURTUREINS" in groups:
             self.stats["NURTUREINS"] += 1

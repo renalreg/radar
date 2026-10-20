@@ -3,7 +3,7 @@
 import glob
 import os
 
-from flask import flash, redirect, request, send_file, url_for, send_from_directory
+from flask import flash, redirect, request, send_from_directory, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
