@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import click
 
 from radar.app import Radar
