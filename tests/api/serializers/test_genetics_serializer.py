@@ -1,11 +1,11 @@
 from datetime import date, timedelta
 
-from cornflake.exceptions import ValidationError
 import pytest
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.genetics import GeneticsSerializer
 from radar.exceptions import PermissionDenied
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
 from radar.models.users import User

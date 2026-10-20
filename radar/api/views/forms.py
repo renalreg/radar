@@ -12,8 +12,8 @@ from radar.api.views.common import PatientObjectDetailView, PatientObjectListVie
 from radar.api.views.generics import (
     ListModelView,
     ListView,
-    parse_args,
     RetrieveModelView,
+    parse_args,
 )
 from radar.database import db
 from radar.models.forms import Entry, Form, GroupForm, GroupQuestionnaire
@@ -178,7 +178,7 @@ class FormCountListView(ListView):
         else:
             q2 = q2.order_by(Form.id)
 
-        results = [dict(form=form, count=count) for form, count in q2]
+        results = [{"form": form, "count": count} for form, count in q2]
 
         return results
 

@@ -1,11 +1,11 @@
 import datetime
 
-from sqlalchemy import and_, cast, extract, func, Integer, text
+from sqlalchemy import Integer, and_, cast, extract, func, text
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import distinct, false, true
 
 from radar.database import db
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient
 from radar.models.patients import Patient
 
 

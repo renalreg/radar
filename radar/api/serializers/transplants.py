@@ -21,7 +21,7 @@ from radar.models.transplants import (
     TransplantBiopsy,
     TransplantRejection,
 )
-from radar.variants import pick, TRANSPLANT_MODALITIES
+from radar.variants import TRANSPLANT_MODALITIES, pick
 
 
 class ListSerializer(serializers.ListSerializer):

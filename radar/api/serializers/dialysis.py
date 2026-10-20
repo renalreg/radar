@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     SourceMixin,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.dialysis import Dialysis, DIALYSIS_MODALITIES
+from radar.models.dialysis import DIALYSIS_MODALITIES, Dialysis
 
 
 class DialysisSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

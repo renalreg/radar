@@ -12,8 +12,8 @@ from radar.api.serializers.common import (
 )
 from radar.api.serializers.demographics import EthnicityField, NationalityField
 from radar.api.serializers.group_patients import GroupPatientSerializer
-from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.api.serializers.nurture_data import NurtureDataSerializer
+from radar.api.serializers.patient_numbers import PatientNumberSerializer
 from radar.models.patient_codes import GENDERS
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.permissions import has_permission_for_patient

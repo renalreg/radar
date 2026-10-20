@@ -3,7 +3,7 @@ from flask import Response
 
 from radar.api.serializers.auth import ForgotPasswordSerializer
 from radar.api.views.generics import ApiView, request_json
-from radar.auth.forgot_password import forgot_password, UserNotFound
+from radar.auth.forgot_password import UserNotFound, forgot_password
 
 
 class ForgotPasswordView(ApiView):

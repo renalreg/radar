@@ -1,4 +1,4 @@
-from sqlalchemy import Column, event, MetaData, Table
+from sqlalchemy import Column, MetaData, Table, event
 from sqlalchemy.ext import compiler
 from sqlalchemy.schema import DDLElement
 

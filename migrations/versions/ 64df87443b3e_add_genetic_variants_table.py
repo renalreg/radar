@@ -7,9 +7,9 @@ Create Date: 2024-07-10 14:14:57.640960
 """
 import uuid
 
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, ENUM
+from alembic import op
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 
 # revision identifiers, used by Alembic.
 revision = '64df87443b3e'

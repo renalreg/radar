@@ -2,19 +2,18 @@
 Script to do simple validations on nurture export.
 """
 
-from collections import defaultdict, OrderedDict
 import datetime
 import itertools
+from collections import OrderedDict, defaultdict
 
-from sqlalchemy import text
 import xlsxwriter
+from sqlalchemy import text
 
 from radar.app import Radar
 from radar.database import db
 from radar.exporter.utils import get_months, get_years
 from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
 from radar.models.groups import Group
-
 
 DATEFMT = "%d/%m/%Y"
 DATETIMEFMT = "%d/%m/%Y %H:%M:%S"
@@ -113,8 +112,8 @@ class Basic(BaseSheet):
         self.patient_id = patient.id
         self.patient_number = patient.primary_patient_number_number
         self.ethnicity = patient.ethnicity.label if patient.ethnicity else None
-        self.pv_link = True if patient.ukrdc else False
-        self.control = True if patient.control else False
+        self.pv_link = bool(patient.ukrdc)
+        self.control = bool(patient.control)
         self.gender = get_gender(patient.gender)
         self.date_of_birth = format_date(patient.date_of_birth)
         self.date_of_death = format_date(patient.date_of_death)
@@ -467,7 +466,7 @@ class DiabeticComplications(BaseSheet):
             for diagnosis in self.patient.patient_diagnoses
             if diagnosis.status
         ]
-        interested = set(("Diabetes - Type I", "Diabetes - Type II", "Diabetes"))
+        interested = {"Diabetes - Type I", "Diabetes - Type II", "Diabetes"}
         diabetes = [
             diagnosis for diagnosis in diagnoses if diagnosis.name in interested
         ]
@@ -532,7 +531,7 @@ class Anthropometrics(BaseSheet):
 
                 for no, item in enumerate(data):
                     if not item:
-                        sheet.write(no, data[no], errorfmt)
+                        sheet.write(no, item, errorfmt)
 
                 if not in_range(data[10:13]):
                     sheet.write(10, data[10], errorfmt)
@@ -887,9 +886,7 @@ class PatientList:
         self.group = group
 
     def append(self, patient):
-        self.observations |= set(
-            [result.observation.name for result in patient.results]
-        )
+        self.observations |= {result.observation.name for result in patient.results}
         groups = [group.code for group in patient.groups]
         if "NURTUREINS" in groups:
             self.stats["NURTUREINS"] += 1

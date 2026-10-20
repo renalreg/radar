@@ -1,16 +1,16 @@
-from typing import TYPE_CHECKING
 import enum
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
     Column,
     Date,
+    Enum,
     ForeignKey,
     Integer,
     String,
     text,
-    Enum,
 )
 from sqlalchemy.orm import backref, relationship
 

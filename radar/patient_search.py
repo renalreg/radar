@@ -8,7 +8,7 @@ from radar.models.patient_aliases import PatientAlias
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
-from radar.roles import get_roles_with_permission, PERMISSION
+from radar.roles import PERMISSION, get_roles_with_permission
 from radar.utils import sql_date_filter, sql_year_filter
 from radar.variants import pick
 
@@ -134,7 +134,7 @@ class BasePatientQueryBuilder:
 
     def variant_sort_clauses(self, column, reverse):
         """Order-by clauses for variant-only sort columns, or None."""
-        return None
+        return
 
     def sort(self, column, reverse=False):
         clauses = self.variant_sort_clauses(column, reverse)
@@ -174,7 +174,7 @@ class BasePatientQueryBuilder:
                 query = query.filter(Patient.current() == current)
         else:
             # Regular users can only see current patients
-            query = query.filter(Patient.current() == True)  # noqa
+            query = query.filter(Patient.current() == True)
 
         return query
 
@@ -354,7 +354,7 @@ def filter_by_group_roles(current_user, roles, current=None):
     )
 
     if current:
-        sub_query = sub_query.filter(GroupPatient.current == True)  # noqa
+        sub_query = sub_query.filter(GroupPatient.current == True)
 
     return sub_query.exists()
 

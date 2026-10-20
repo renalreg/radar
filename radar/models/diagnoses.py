@@ -1,21 +1,21 @@
-from typing import TYPE_CHECKING
 import enum
 import re
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
     Column,
     Date,
+    Enum,
     ForeignKey,
     Index,
     Integer,
     String,
-    text,
-    Enum,
-    or_,
     desc,
+    or_,
+    text,
 )
 from sqlalchemy.orm import backref, declared_attr, relationship
 
@@ -263,7 +263,7 @@ class GroupDiagnosis(db.Model):
     )
 
     def __str__(self):
-        return f"{str(self.group)} - {str(self.weight)}"
+        return f"{self.group!s} - {self.weight!s}"
 
 
 Index("group_diagnoses_group_idx", GroupDiagnosis.group_id)

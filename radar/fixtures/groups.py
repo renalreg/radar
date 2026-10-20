@@ -2,7 +2,6 @@ from radar.fixtures.utils import add
 from radar.models.diagnoses import Diagnosis, GroupDiagnosis
 from radar.models.forms import Form, GroupForm, GroupQuestionnaire
 from radar.models.groups import (
-    Group,
     GROUP_CODE_BAPN,
     GROUP_CODE_CHI,
     GROUP_CODE_HSC,
@@ -13,10 +12,10 @@ from radar.models.groups import (
     GROUP_CODE_UKRDC,
     GROUP_CODE_UKRR,
     GROUP_TYPE,
+    Group,
     GroupPage,
 )
 from radar.pages import PAGE
-
 
 batches = [
     [

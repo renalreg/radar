@@ -1,13 +1,12 @@
 import logging
 
 from radar.models.medications import (
-    Medication,
     MEDICATION_DOSE_UNITS,
     MEDICATION_ROUTES,
+    Medication,
 )
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.utils import date_to_datetime
-
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +21,10 @@ def export_medications(sda_container, patient, group):
     if not medications:
         return
 
-    sda_medications = sda_container.setdefault("medications", list())
+    sda_medications = sda_container.setdefault("medications", [])
 
     for medication in medications:
-        sda_medication = dict()
+        sda_medication = {}
         sda_medication["external_id"] = str(medication.id)
         sda_medication["from_time"] = date_to_datetime(
             medication.from_date, with_timezone=False

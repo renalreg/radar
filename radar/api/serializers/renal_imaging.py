@@ -14,7 +14,7 @@ from radar.models.renal_imaging import (
     RENAL_IMAGING_KIDNEY_TYPES,
     RenalImaging,
 )
-from radar.variants import pick, RENAL_IMAGING_TYPES
+from radar.variants import RENAL_IMAGING_TYPES, pick
 
 
 class BaseRenalImagingSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

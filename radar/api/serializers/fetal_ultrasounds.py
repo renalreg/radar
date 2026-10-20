@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
+from radar.models.fetal_ultrasounds import LIQUOR_VOLUMES, FetalUltrasound
 
 
 class FetalUltrasoundSerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):

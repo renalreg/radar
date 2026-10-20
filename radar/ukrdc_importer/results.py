@@ -1,5 +1,5 @@
-from functools import partial
 import logging
+from functools import partial
 
 from sqlalchemy import and_, or_
 
@@ -15,7 +15,6 @@ from radar.ukrdc_importer.utils import (
     validate_list,
 )
 from radar.utils import get_path
-
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +188,7 @@ def build_result_id(patient, group, sda_lab_result_item):
 def convert_results(patient, sda_lab_orders, adapter):
     user = get_import_user()
 
-    results = list()
+    results = []
 
     for sda_lab_order in sda_lab_orders:
         # Ignore RaDaR data

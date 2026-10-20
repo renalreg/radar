@@ -1,8 +1,8 @@
 import calendar
-from datetime import datetime
 import itertools
 import logging
 import re
+from datetime import UTC, datetime
 
 import pytz
 import requests
@@ -14,15 +14,14 @@ from radar.models.antibodies import resolve_antibody_name
 from radar.models.consents import PatientConsent
 from radar.models.diagnoses import PatientDiagnosis
 from radar.models.groups import GroupPatient
+from radar.models.nurture_data import NurtureData
 from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.models.source_types import SOURCE_TYPE_MANUAL
-from radar.models.nurture_data import NurtureData
 from radar.ukrdc_importer.tasks import import_sda
 from radar.variants import pick
-
 
 logger = logging.getLogger(__name__)
 
@@ -114,8 +113,8 @@ class SearchPatient:
         return SDAContainer(data)
 
     def _check_name(self, patient, name, n):
-        a = set(x[:n] for x in _split_names(patient.first_names + patient.last_names))
-        b = set(x[:n] for x in _split_name(name))
+        a = {x[:n] for x in _split_names(patient.first_names + patient.last_names)}
+        b = {x[:n] for x in _split_name(name)}
         return len(a) == 0 or a.intersection(b)
 
     def _check_first_name(self, patient):
@@ -423,7 +422,7 @@ class SDAContainer:
         self.data = data
 
     def _get_sequence_number(self):
-        return calendar.timegm(datetime.utcnow().utctimetuple())
+        return calendar.timegm(datetime.now(UTC).utctimetuple())
 
     def save(self, patient):
         sequence_number = self._get_sequence_number()

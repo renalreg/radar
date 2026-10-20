@@ -4,7 +4,6 @@ from radar.auth.forgot_password import generate_reset_password_token
 from radar.database import db
 from tests.api.fixtures import get_user
 
-
 STRONG_PASSWORD = "qzm5zuLVgL1t"
 WEAK_PASSWORD = "password123"
 

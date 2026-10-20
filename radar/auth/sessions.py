@@ -9,7 +9,6 @@ from radar.models.logs import Log
 from radar.models.user_sessions import AnonymousSession, UserSession
 from radar.models.users import User
 
-
 current_user = LocalProxy(lambda: get_user())
 current_user_session = LocalProxy(lambda: get_user_session())
 
@@ -159,7 +158,7 @@ def get_user_session_by_id(user_session_id):
     q = UserSession.query
     q = q.join(UserSession.user)
     q = q.filter(UserSession.id == user_session_id)
-    q = q.filter(User.is_enabled == True)  # noqa
+    q = q.filter(User.is_enabled == True)
     return q.first()
 
 

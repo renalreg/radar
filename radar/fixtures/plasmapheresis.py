@@ -1,11 +1,11 @@
-from datetime import date
 import random
+from datetime import date
 
 from radar.fixtures.utils import add, random_date
 from radar.models.plasmapheresis import (
-    Plasmapheresis,
     PLASMAPHERESIS_NO_OF_EXCHANGES,
     PLASMAPHERESIS_RESPONSES,
+    Plasmapheresis,
 )
 
 

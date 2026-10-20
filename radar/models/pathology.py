@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship

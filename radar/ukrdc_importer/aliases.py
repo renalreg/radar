@@ -12,7 +12,6 @@ from radar.ukrdc_importer.utils import (
     validate_list,
 )
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -84,7 +83,7 @@ def convert_aliases(patient, sda_names, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
-    aliases = list()
+    aliases = []
 
     for sda_name in sda_names:
         alias_id = build_alias_id(patient, sda_name)

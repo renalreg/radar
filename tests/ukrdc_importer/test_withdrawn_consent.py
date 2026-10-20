@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock
+
 import pytest
 
-from radar.models.groups import Group
+from radar.models.groups import Group, GroupPatient
 from radar.models.patients import Patient
-from radar.models.groups import GroupPatient
 from radar.ukrdc_importer.tasks import withdrawn_consent_cohorts
 
 

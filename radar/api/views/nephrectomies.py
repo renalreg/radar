@@ -6,10 +6,10 @@ from radar.api.views.common import (
     StringLookupListView,
 )
 from radar.models.nephrectomies import (
-    Nephrectomy,
     NEPHRECTOMY_ENTRY_TYPES,
     NEPHRECTOMY_KIDNEY_SIDES,
     NEPHRECTOMY_KIDNEY_TYPES,
+    Nephrectomy,
 )
 
 

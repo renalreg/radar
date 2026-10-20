@@ -1,8 +1,7 @@
-from cornflake import fields
-from cornflake import serializers
+from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 
-from radar.auth.passwords import check_password_strength, WeakPasswordError
+from radar.auth.passwords import WeakPasswordError, check_password_strength
 
 
 class LoginSerializer(serializers.Serializer):

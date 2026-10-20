@@ -13,7 +13,6 @@ from radar.ukrdc_importer.utils import (
 )
 from radar.utils import get_path
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -126,7 +125,7 @@ def convert_addresses(patient, sda_addresses, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
-    addresses = list()
+    addresses = []
 
     for sda_address in sda_addresses:
         address_id = build_address_id(patient, sda_address)

@@ -1,14 +1,15 @@
 import argparse
-from configparser import ConfigParser
 import csv
-from datetime import date
 import os
 import shutil
 import socket
 import tempfile
+from configparser import ConfigParser
+from datetime import date
 
 from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ReferenceField
+from tqdm import tqdm
 
 from radar.app import Radar
 from radar.database import db
@@ -16,8 +17,6 @@ from radar.exporter.exporters import exporter_map
 from radar.models.groups import Group
 from radar.models.logs import Log
 from radar.models.users import User
-
-from tqdm import tqdm
 
 
 def save(data, format, dest, binary=False):
@@ -54,7 +53,7 @@ def parse_config(config_parser):
     if config_parser.has_section("global"):
         data = dict(config_parser.items("global"))
     else:
-        data = dict()
+        data = {}
 
     serializer = ConfigSerializer(data=data)
     serializer.is_valid(raise_exception=True)
@@ -112,7 +111,8 @@ def main():
     app = Radar()
 
     config_parser = ConfigParser()
-    config_parser.readfp(open(args.config))
+    with open(args.config) as f:
+        config_parser.read_file(f)
 
     with app.app_context(), TemporaryDirectory(prefix="rdrexp") as output:
         config = parse_config(config_parser)

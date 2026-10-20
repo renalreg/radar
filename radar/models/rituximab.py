@@ -13,7 +13,6 @@ from radar.models.common import (
 )
 from radar.models.logs import log_changes
 
-
 PERFORMANCE_STATUS_OPTIONS = OrderedDict(
     [
         (0, "0: able to carry out all normal activity without restriction"),
@@ -23,7 +22,7 @@ PERFORMANCE_STATUS_OPTIONS = OrderedDict(
         ),
         (
             2,
-            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",  # noqa
+            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",
         ),
         (
             3,

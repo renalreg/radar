@@ -1,4 +1,4 @@
-from flask import jsonify, request, Response
+from flask import Response, jsonify, request
 
 from radar.api.permissions import (
     GroupPatientCreatePermission,
@@ -107,7 +107,7 @@ def update_system_groups(patient):
     if len(systems) == 1:
         return Response(status=200)
 
-    counter = {system: 0 for system in systems}
+    counter = dict.fromkeys(systems, 0)
 
     for cohort in patient.cohorts:
         if cohort.parent_group in counter:

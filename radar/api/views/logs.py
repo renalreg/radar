@@ -1,10 +1,10 @@
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from sqlalchemy import and_, Integer, or_
+from sqlalchemy import Integer, and_, or_
 
 from radar.api.permissions import AdminPermission
 from radar.api.serializers.logs import LogSerializer
-from radar.api.views.generics import ListModelView, parse_args, RetrieveModelView
+from radar.api.views.generics import ListModelView, RetrieveModelView, parse_args
 from radar.models.logs import Log
 from radar.models.users import User
 

@@ -5,8 +5,8 @@ Revises: 6e34e92cec6f
 Create Date: 2017-03-16 13:41:09.964392
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'a766a223a844'
@@ -15,8 +15,10 @@ branch_labels = None
 depends_on = None
 
 from sqlalchemy.orm import sessionmaker
-from radar.models.patient_codes import ETHNICITIES
+
 from radar.models import Ethnicity
+from radar.models.patient_codes import ETHNICITIES
+
 Session = sessionmaker()
 
 

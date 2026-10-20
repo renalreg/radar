@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, DDL, event, Index, Integer, String, text
+from sqlalchemy import DDL, Column, DateTime, Index, Integer, String, event, text
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 

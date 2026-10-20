@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from radar.database import db
-from radar.models.consents import Consent, CONSENT_TYPE
+from radar.models.consents import CONSENT_TYPE, Consent
 from radar.models.demographics import Ethnicity, Nationality
 from radar.models.diagnoses import Diagnosis
 from radar.models.groups import (
-    Group,
     GROUP_CODE_NHS,
     GROUP_CODE_RADAR,
     GROUP_TYPE,
+    Group,
     GroupPatient,
     GroupUser,
 )

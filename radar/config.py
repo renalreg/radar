@@ -5,7 +5,6 @@ from werkzeug.local import LocalProxy
 
 from radar.utils import random_string
 
-
 config = LocalProxy(lambda: get_config())
 
 

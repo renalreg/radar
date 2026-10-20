@@ -18,8 +18,8 @@ from radar.api.views.generics import (
     CreateModelView,
     ListModelView,
     ListView,
-    parse_args,
     RetrieveModelView,
+    parse_args,
 )
 from radar.database import db
 from radar.exceptions import BadRequest
@@ -177,7 +177,7 @@ class ObservationCountListView(ListView):
         q = q.order_by(Observation.id)
 
         results = [
-            dict(observation=observation, count=count) for observation, count in q
+            {"observation": observation, "count": count} for observation, count in q
         ]
 
         return results

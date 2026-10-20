@@ -5,7 +5,7 @@ from radar.database import db
 from radar.models.groups import Group, GroupUser
 from radar.models.users import User
 from radar.permissions import has_permission
-from radar.roles import get_roles_with_permission, PERMISSION
+from radar.roles import PERMISSION, get_roles_with_permission
 
 
 class UserQueryBuilder:
@@ -55,9 +55,9 @@ class UserQueryBuilder:
 
     def has_logged_in(self, has_logged_in):
         if has_logged_in:
-            self.query = self.query.filter(User.last_login_date != None)  # noqa
+            self.query = self.query.filter(User.last_login_date != None)
         else:
-            self.query = self.query.filter(User.last_login_date == None)  # noqa
+            self.query = self.query.filter(User.last_login_date == None)
 
         return self
 

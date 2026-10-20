@@ -8,10 +8,10 @@ from radar.api.serializers.common import (
     StringLookupField,
 )
 from radar.models.rituximab import (
-    BaselineAssessment,
     NEPHROPATHY_TYPES,
-    RituximabCriteria,
     SUPPORTIVE_MEDICATIONS,
+    BaselineAssessment,
+    RituximabCriteria,
 )
 
 

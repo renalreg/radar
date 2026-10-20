@@ -1,14 +1,14 @@
 from datetime import date, datetime
 
-from cornflake.exceptions import ValidationError
 import pytest
 import pytz
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.results import ResultSerializer
 from radar.models.groups import Group
 from radar.models.patient_demographics import PatientDemographics
 from radar.models.patients import Patient
-from radar.models.results import Observation, OBSERVATION_VALUE_TYPE
+from radar.models.results import OBSERVATION_VALUE_TYPE, Observation
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.models.users import User
 

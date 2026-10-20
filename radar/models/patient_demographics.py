@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Column, Date, ForeignKey, Index, Integer, String, Boolean, text
+
+from sqlalchemy import Boolean, Column, Date, ForeignKey, Index, Integer, String, text
 from sqlalchemy.orm import relationship
 
 from radar.database import db

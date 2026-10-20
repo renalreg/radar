@@ -19,8 +19,6 @@ class Radar(Flask):
 
         self.check_config()
 
-        from radar import models  # noqa
-
         db.init_app(self)
 
         self.celery = self.setup_celery()
@@ -43,9 +41,6 @@ class Radar(Flask):
 
     def setup_celery(self):
         celery = Celery()
-
-        import radar.ukrdc_importer.tasks  # noqa
-        import radar.ukrdc_exporter.tasks  # noqa
 
         broker_url = self.config.get("CELERY_BROKER_URL")
 

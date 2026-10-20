@@ -1,10 +1,10 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
+import pytz
 from cornflake.fields import ValidationError
 from cornflake.utils import safe_strftime
 from cornflake.validators import after, not_in_future
-import pytz
 
 from radar.models.groups import (
     GROUP_CODE_BAPN,
@@ -18,7 +18,6 @@ from radar.models.groups import (
 )
 from radar.models.patients import Patient
 from radar.utils import datetime_to_date, is_datetime
-
 
 HUMAN_DATE_FORMAT = "%d/%m/%Y"
 
@@ -211,7 +210,7 @@ def _nhs_no(value, min_value=None, max_value=None):
 
     check_digit = 0
 
-    for i in range(0, 9):
+    for i in range(9):
         check_digit += int(value[i]) * (10 - i)
 
     check_digit = 11 - (check_digit % 11)

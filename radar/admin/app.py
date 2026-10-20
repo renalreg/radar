@@ -51,7 +51,7 @@ from radar.models.results import GroupObservation, Observation
 def inject_current_user():
     """Make the current_user variable available in templates."""
 
-    return dict(current_user=current_user)
+    return {"current_user": current_user}
 
 
 class RadarAdmin(Radar):

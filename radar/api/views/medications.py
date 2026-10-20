@@ -11,11 +11,11 @@ from radar.api.views.common import (
 )
 from radar.api.views.generics import ListModelView
 from radar.models.medications import (
+    MEDICATION_DOSE_UNITS,
+    MEDICATION_ROUTES,
     CurrentMedication,
     Drug,
     Medication,
-    MEDICATION_DOSE_UNITS,
-    MEDICATION_ROUTES,
 )
 
 

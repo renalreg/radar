@@ -1,12 +1,12 @@
 from datetime import datetime
 
+import pytz
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
 from cornflake.fields import empty
 from cornflake.validators import upper
-import pytz
 
-from radar.api.serializers.validators import _nhs_no, MIN_CHI_NO
+from radar.api.serializers.validators import MIN_CHI_NO, _nhs_no
 from radar.variants import pick
 
 

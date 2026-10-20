@@ -17,17 +17,17 @@ from radar.api.serializers.patients import (
 from radar.api.views.generics import (
     ApiView,
     DestroyModelView,
-    get_sort_args,
     ListModelView,
-    parse_args,
     RetrieveUpdateModelView,
+    get_sort_args,
+    parse_args,
 )
 from radar.auth.sessions import current_user
 from radar.models import GENDERS
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, Group
 from radar.models.patients import CONSENT_STATUS, Patient
 from radar.patient_search import PatientQueryBuilder
-from radar.utils import get_attrs, SkipProxy, uniq
+from radar.utils import SkipProxy, get_attrs, uniq
 from radar.variants import pick
 
 

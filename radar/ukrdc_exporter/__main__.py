@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import argparse
 import fcntl
 import logging
@@ -9,7 +7,6 @@ from radar.database import db
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_exporter.app import RadarUKRDCExporter
 from radar.ukrdc_exporter.tasks import export_to_ukrdc
-
 
 logger = logging.getLogger()
 
@@ -36,7 +33,7 @@ select id, patient_id from (
         ((data->'original_data'->>'source_type')::text is null or (data->'original_data'->>'source_type')::text = :source_type) and
         id > :last_log_id
 ) as x order by id
-"""  # noqa
+"""
 
 all_sql = f"""
 select x.id, patients.id from patients
@@ -108,7 +105,7 @@ def main():
                     state_f.write(str(0))
                     state_f.write("\n")
 
-            state_f = open(state, "r+")
+            state_f = open(state, "r+")  # noqa: SIM115
             lock(state_f)
             last_log_id = int(state_f.readline())
         else:

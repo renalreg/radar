@@ -14,7 +14,6 @@ from radar.ukrdc_importer.utils import (
     validate_list,
 )
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -89,7 +88,7 @@ def convert_patient_numbers(patient, sda_patient_numbers, adapter):
     source_group = get_import_group()
     user = get_import_user()
 
-    patient_numbers = list()
+    patient_numbers = []
 
     for sda_patient_number in sda_patient_numbers:
         code = sda_patient_number.organization

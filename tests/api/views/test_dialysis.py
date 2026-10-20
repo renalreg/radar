@@ -49,11 +49,11 @@ def get_read_list_args():
     for username, group, source_type in itertools.product(
         usernames, groups, source_types
     ):
-        if username == "admin":
-            expected = True
-        elif username == "hospital1_clinician":
-            expected = True
-        elif username == "cohort1_researcher":
+        if (
+            username == "admin"
+            or username == "hospital1_clinician"
+            or username == "cohort1_researcher"
+        ):
             expected = True
         else:
             expected = False

@@ -1,6 +1,6 @@
-from datetime import datetime
 import itertools
 import json
+from datetime import datetime
 
 import pytest
 import pytz
@@ -36,9 +36,7 @@ def get_read_list_args():
     groups = [cohort1_group, cohort2_group]
 
     for username, group in itertools.product(usernames, groups):
-        if username == "admin":
-            expected = True
-        elif username == "hospital1_clinician":
+        if username == "admin" or username == "hospital1_clinician":
             expected = True
         elif username == "cohort1_researcher":
             expected = group == cohort1_group
@@ -72,9 +70,7 @@ def get_create_args():
     for username, group in itertools.product(usernames, groups):
         if group != cohort1_group:
             expected = False
-        elif username == "admin":
-            expected = True
-        elif username == "hospital1_clinician":
+        elif username == "admin" or username == "hospital1_clinician":
             expected = True
         else:
             expected = False
@@ -101,9 +97,7 @@ def get_update_args():
     ]
 
     for username in usernames:
-        if username == "admin":
-            expected = 200
-        elif username == "hospital1_clinician":
+        if username == "admin" or username == "hospital1_clinician":
             expected = 200
         elif username == "cohort1_researcher":
             expected = 403

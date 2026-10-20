@@ -17,11 +17,11 @@ from radar.api.views.generics import (
     ApiView,
     CreateModelView,
     DestroyModelView,
-    get_sort_args,
     ListModelView,
-    parse_args,
     RetrieveModelView,
     UpdateModelView,
+    get_sort_args,
+    parse_args,
 )
 from radar.auth.sessions import current_user
 from radar.models.groups import GROUP_TYPE

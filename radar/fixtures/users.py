@@ -7,7 +7,7 @@ from radar.fixtures.utils import (
     generate_gender,
     generate_last_name,
 )
-from radar.models.groups import Group, GROUP_TYPE, GroupUser
+from radar.models.groups import GROUP_TYPE, Group, GroupUser
 from radar.models.users import User
 from radar.roles import ROLE
 

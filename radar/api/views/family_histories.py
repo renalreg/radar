@@ -5,7 +5,7 @@ from radar.api.views.common import (
     PatientObjectDetailView,
     PatientObjectListView,
 )
-from radar.models.family_histories import FamilyHistory, RELATIONSHIPS
+from radar.models.family_histories import RELATIONSHIPS, FamilyHistory
 
 
 class FamilyHistoryListView(GroupObjectViewMixin, PatientObjectListView):

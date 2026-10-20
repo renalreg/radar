@@ -15,7 +15,7 @@ from cornflake.validators import (
 
 from radar.api.serializers.common import MetaMixin
 from radar.api.serializers.group_users import GroupUserSerializer
-from radar.auth.passwords import check_password_strength, WeakPasswordError
+from radar.auth.passwords import WeakPasswordError, check_password_strength
 from radar.auth.sessions import logout_other_sessions, logout_user
 from radar.models.users import User
 

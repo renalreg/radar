@@ -5,8 +5,8 @@ Revises: c9b69c2c665d
 Create Date: 2017-05-16 10:21:00.181786
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 from radar.models.nurture_tubes import PROTOCOL_OPTION_TYPE, SampleOption
@@ -18,6 +18,7 @@ branch_labels = None
 depends_on = None
 
 from sqlalchemy.orm import sessionmaker
+
 Session = sessionmaker()
 
 

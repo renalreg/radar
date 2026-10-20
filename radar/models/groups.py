@@ -1,24 +1,24 @@
 import enum
 from datetime import datetime
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 import pytz
 from sqlalchemy import (
-    and_,
     Boolean,
     CheckConstraint,
     Column,
     Date,
     DateTime,
+    Enum,
     ForeignKey,
-    func,
     Index,
     Integer,
+    String,
+    and_,
+    func,
     null,
     or_,
-    String,
     text,
-    Enum,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, declared_attr, relationship, synonym
@@ -30,10 +30,10 @@ from radar.models.common import MetaModelMixin, patient_id_column, patient_relat
 from radar.models.logs import log_changes
 from radar.pages import PAGE
 from radar.roles import (
-    get_roles_managed_by_role,
-    get_roles_with_permission,
     PERMISSION,
     ROLE,
+    get_roles_managed_by_role,
+    get_roles_with_permission,
 )
 from radar.variants import pick
 
@@ -72,7 +72,7 @@ class MainGroupColumns:
         )
 
     @property
-    def antibodies(self) -> List[Antibody]:
+    def antibodies(self) -> list[Antibody]:
         """
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.
@@ -86,7 +86,7 @@ class InternationalGroupColumns:
     """International has no antibodies."""
 
     @property
-    def antibodies(self) -> List[Antibody]:
+    def antibodies(self) -> list[Antibody]:
         return []
 
 
@@ -326,8 +326,8 @@ class DependencyError(Exception):
 def check_dependencies(groups):
     """Check group dependencies (e.g. if in x, must be in y)."""
 
-    groups = set((group.type, group.code) for group in groups)
+    groups = {(group.type, group.code) for group in groups}
 
     for x, y in dependencies:
         if x in groups and y not in groups:
-            raise DependencyError("Must be in {0}.".format(y[1]))
+            raise DependencyError(f"Must be in {y[1]}.")

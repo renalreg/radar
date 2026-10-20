@@ -1,5 +1,5 @@
-from collections import defaultdict
 import time
+from collections import defaultdict
 
 from flask import g, request
 from flask_sqlalchemy import get_debug_queries

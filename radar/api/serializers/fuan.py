@@ -9,7 +9,7 @@ from radar.api.serializers.common import (
     StringLookupField,
 )
 from radar.api.serializers.validators import valid_date_for_patient
-from radar.models.fuan import FuanClinicalPicture, RELATIVES, THP_RESULTS
+from radar.models.fuan import RELATIVES, THP_RESULTS, FuanClinicalPicture
 
 
 class FuanClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):

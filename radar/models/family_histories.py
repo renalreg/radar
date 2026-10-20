@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from sqlalchemy import Boolean, Column, ForeignKey, Index, Integer, orm, String
+from sqlalchemy import Boolean, Column, ForeignKey, Index, Integer, String, orm
 from sqlalchemy.dialects import postgresql
 
 from radar.database import db
@@ -11,7 +11,6 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
 
 RELATIONSHIPS = OrderedDict(
     [

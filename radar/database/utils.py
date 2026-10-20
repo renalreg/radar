@@ -1,10 +1,9 @@
-from collections import namedtuple
 import os
 import subprocess
+from collections import namedtuple
 from urllib.parse import urlparse
 
 from radar.config import config
-
 
 PostgreSQL = namedtuple(
     "PostgreSQL", ["hostname", "port", "database", "username", "password"]

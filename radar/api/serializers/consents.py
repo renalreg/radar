@@ -2,13 +2,12 @@ from cornflake import fields
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import not_in_future
 
-
 from radar.api.serializers.common import (
     MetaMixin,
     PatientMixin,
 )
 from radar.exceptions import PermissionDenied
-from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
+from radar.models.consents import CONSENT_TYPE, Consent, PatientConsent
 from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION

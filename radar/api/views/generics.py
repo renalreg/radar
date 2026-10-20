@@ -1,12 +1,12 @@
-from functools import wraps
 import uuid
+from functools import wraps
 from typing import Any
 
 from cornflake import fields, serializers
 from cornflake.exceptions import ValidationError
-from flask import abort, jsonify, request, Response
+from flask import Response, abort, jsonify, request
 from flask.views import MethodView
-from sqlalchemy import desc, inspect, Integer
+from sqlalchemy import Integer, desc, inspect
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -186,12 +186,10 @@ class ModelView(SerializerViewMixin, PermissionViewMixin, ApiView):
 
         if per_page is not None:
             # Pages start at 1
-            if page < 1:
-                page = 1
+            page = max(page, 1)
 
             # Must be at least one item per page
-            if per_page < 1:
-                per_page = 1
+            per_page = max(per_page, 1)
 
             count = query.count()
             query = query.limit(per_page).offset((page - 1) * per_page)

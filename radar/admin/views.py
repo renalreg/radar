@@ -3,7 +3,7 @@
 import glob
 import os
 
-from flask import redirect, request, send_file, url_for, flash
+from flask import flash, redirect, request, send_from_directory, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
@@ -15,15 +15,15 @@ from wtforms import fields
 from radar.admin.fields import EnumSelectField
 from radar.admin.forms import LoginForm
 from radar.auth.sessions import (
-    current_user,
     DisabledLoginError,
-    login,
-    logout,
     PasswordLoginError,
     UsernameLoginError,
+    current_user,
+    login,
+    logout,
 )
 from radar.config import config
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, Group
 from radar.variants import pick
 
 
@@ -66,7 +66,7 @@ class AdminIndexView(BaseAdminIndexView):
             password = form.password.data
 
             try:
-                user, _ = login(username, password)
+                _user, _ = login(username, password)
             except (UsernameLoginError, PasswordLoginError):
                 form.username.errors.append("Incorrect username or password.")
             except DisabledLoginError:
@@ -102,7 +102,7 @@ class ConsultantView(ModelView):
         "telephone_number",
         "gmc_number",
     ]
-    column_labels = dict(gmc_number="GMC Number")
+    column_labels = {"gmc_number": "GMC Number"}
     column_searchable_list = [
         "first_name",
         "last_name",
@@ -169,7 +169,6 @@ class NationalityView(ModelView):
 class DrugGroupView(ModelView):
     column_default_sort = "name"
     column_list = ["name", "parent_drug_group"]
-    column_default_sort = "name"
     form_columns = ["name", "parent_drug_group"]
     column_searchable_list = ["name"]
     column_export_list = ["id", "name", "parent_drug_group"]
@@ -197,7 +196,7 @@ class GroupView(ModelView):
         "country",
         "instructions",
     ]
-    form_extra_fields = dict(instructions=fields.TextAreaField())
+    form_extra_fields = {"instructions": fields.TextAreaField()}
 
     def create_form(self):
         form = super().create_form()
@@ -271,7 +270,7 @@ class CohortView(ModelView):
     column_default_sort = "name"
     column_searchable_list = ["name", "short_name", "code"]
     form_columns = ["name", "short_name", "code", "parent_group", "instructions"]
-    form_extra_fields = dict(instructions=fields.TextAreaField())
+    form_extra_fields = {"instructions": fields.TextAreaField()}
 
     def create_form(self):
         form = super().create_form()
@@ -388,7 +387,7 @@ class ObservationView(ModelView):
         "units",
         "options",
     ]
-    column_labels = dict(pv_code="PV Code")
+    column_labels = {"pv_code": "PV Code"}
     column_searchable_list = [
         "name",
         "short_name",
@@ -430,8 +429,9 @@ class ExportView(BaseView):
     @expose("/<string:param>", methods=["GET"])
     def serve_file(self, param):
         """Serve back requested file."""
-        requested_file = open(os.path.join(config.get("EXPORT_PATH"), param), "rb")
-        return send_file(requested_file, as_attachment=True, download_name=param)
+        return send_from_directory(
+            config.get("EXPORT_PATH"), param, as_attachment=True, download_name=param
+        )
 
     def is_accessible(self):
         # User needs to be logged in and a super admin to use this view

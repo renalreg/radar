@@ -14,7 +14,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -23,7 +23,7 @@ class User(Base):
         return "<User(name='%s')>" % self.name
 
 
-engine = create_engine('sqlite://')
+engine = create_engine("sqlite://")
 Base.metadata.create_all(engine)
 ```
 

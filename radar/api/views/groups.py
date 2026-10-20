@@ -1,13 +1,13 @@
 from cornflake import fields, serializers
 
 from radar.api.permissions import AdminWritePermission
-from radar.api.serializers.groups import GroupSerializer
+from radar.api.serializers.common import GroupSerializer
 from radar.api.views.generics import (
     ListCreateModelView,
-    parse_args,
     RetrieveUpdateDestroyModelView,
+    parse_args,
 )
-from radar.models.groups import Group, GROUP_TYPE
+from radar.models.groups import GROUP_TYPE, Group
 
 
 class GroupListRequestSerializer(serializers.Serializer):

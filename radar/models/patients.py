@@ -1,17 +1,17 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
     Column,
-    exists,
-    func,
     Integer,
-    join,
-    select,
     Sequence,
     String,
+    exists,
+    func,
+    join,
+    select,
     text,
 )
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
@@ -20,7 +20,7 @@ from sqlalchemy.orm import aliased
 from radar.database import db
 from radar.models.common import MetaModelMixin
 from radar.models.diagnoses import GROUP_DIAGNOSIS_TYPE
-from radar.models.groups import Group, GROUP_TYPE, GroupPatient
+from radar.models.groups import GROUP_TYPE, Group, GroupPatient
 from radar.models.logs import log_changes
 from radar.models.patient_codes import ETHNICITIES, GENDER_FEMALE, GENDER_MALE, GENDERS
 from radar.models.patient_demographics import PatientDemographics
@@ -162,7 +162,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
         q = exists()
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
         q = q.where(GroupPatient.patient_id == self.id)
-        q = q.where(GroupPatient.current == True)  # noqa
+        q = q.where(GroupPatient.current == True)
 
         if group is not None:
             q = q.where(Group.id == group.id)
@@ -252,7 +252,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
                 )
             )
             .where(patient_alias.id == self.id)
-            .where(Group.is_recruitment_number_group == True)  # noqa
+            .where(Group.is_recruitment_number_group == True)
             .order_by(
                 PatientNumber.modified_date.desc(),
                 PatientNumber.id.desc(),
@@ -571,9 +571,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     def recruited_paediatric(self):
         """Return whether patient was recruited as paediatric."""
         months = self.to_age(self.recruited_date())
-        if months and months < SIXTEEN_YEARS_IN_MONTHS:
-            return True
-        return False
+        return bool(months and months < SIXTEEN_YEARS_IN_MONTHS)
 
     @property
     def youth(self):

@@ -28,45 +28,43 @@ def revisit():
     headers = ["hospital", "patient_id", "latest_visit"]
     import csv
 
-    fdesc = open("visits.csv", "w", newline="", encoding="utf-8")
-    writer = csv.DictWriter(fdesc, fieldnames=headers)
-    writer.writeheader()
+    with open("visits.csv", "w", newline="", encoding="utf-8") as fdesc:
+        writer = csv.DictWriter(fdesc, fieldnames=headers)
+        writer.writeheader()
 
-    for hospital_id in hospital_ids:
-        hospital = Group.query.get(hospital_id)
+        for hospital_id in hospital_ids:
+            hospital = Group.query.get(hospital_id)
 
-        # ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins', nurtureins)
-        # ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd', nurtureckd)
+            # ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins', nurtureins)
+            # ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd', nurtureckd)
 
-        for patient in hospital.patients:
-            if patient.test or patient.control:
-                continue
-
-            if patient.in_group(nurtureckd) or patient.in_group(nurtureins):
-                visits = {}
-                for entry in patient.entries:
-                    if entry.form.slug != "nurtureckd":
-                        continue
-
-                    visit = datetime.strptime(entry.data["date"], "%Y-%m-%d").date()
-                    visits[visit] = entry.data
-                    headers
-
-                if not visits:
+            for patient in hospital.patients:
+                if patient.test or patient.control:
                     continue
 
-                latest = sorted(visits)[-1]
+                if patient.in_group(nurtureckd) or patient.in_group(nurtureins):
+                    visits = {}
+                    for entry in patient.entries:
+                        if entry.form.slug != "nurtureckd":
+                            continue
 
-                if latest < datetime(2017, 10, 1).date():
-                    writer.writerow(
-                        {
-                            "hospital": hospital.name,
-                            "patient_id": patient.id,
-                            "latest_visit": latest.strftime("%Y-%m-%d"),
-                        }
-                    )
+                        visit = datetime.strptime(entry.data["date"], "%Y-%m-%d").date()
+                        visits[visit] = entry.data
 
-    fdesc.close()
+                    if not visits:
+                        continue
+
+                    latest = max(visits)
+
+                    if latest < datetime(2017, 10, 1).date():
+                        writer.writerow(
+                            {
+                                "hospital": hospital.name,
+                                "patient_id": patient.id,
+                                "latest_visit": latest.strftime("%Y-%m-%d"),
+                            }
+                        )
+
     #     ckd_list.append(p)
     # elif p.in_group(nurtureins):
     #     ins_list.append(p)

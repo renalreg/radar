@@ -1,4 +1,4 @@
-from sqlalchemy import and_, exists, or_, PrimaryKeyConstraint, select
+from sqlalchemy import PrimaryKeyConstraint, and_, exists, or_, select
 from sqlalchemy.orm import relationship
 
 from radar.database import db
@@ -6,7 +6,6 @@ from radar.models.medications import Medication
 from radar.models.patients import Patient
 from radar.models.results import Result
 from radar.models.views import create_view
-
 
 username = "ukrdc_importer"
 

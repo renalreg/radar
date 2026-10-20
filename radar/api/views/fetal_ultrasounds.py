@@ -5,7 +5,7 @@ from radar.api.views.common import (
     SourceObjectViewMixin,
     StringLookupListView,
 )
-from radar.models.fetal_ultrasounds import FetalUltrasound, LIQUOR_VOLUMES
+from radar.models.fetal_ultrasounds import LIQUOR_VOLUMES, FetalUltrasound
 
 
 class FetalUltrasoundListView(SourceObjectViewMixin, PatientObjectListView):

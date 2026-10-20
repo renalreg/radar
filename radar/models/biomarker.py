@@ -1,5 +1,5 @@
-from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, Float, text
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, text
+from sqlalchemy.orm import backref, relationship
 
 from radar.database import db
 

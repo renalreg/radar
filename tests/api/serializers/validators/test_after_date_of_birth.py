@@ -1,9 +1,9 @@
 from datetime import date, datetime
 
-from cornflake import fields, serializers
-from cornflake.exceptions import ValidationError
 import pytest
 import pytz
+from cornflake import fields, serializers
+from cornflake.exceptions import ValidationError
 
 from radar.api.serializers.validators import after_date_of_birth
 from radar.models.patient_demographics import PatientDemographics

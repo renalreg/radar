@@ -2,9 +2,9 @@ import pytest
 from cornflake.exceptions import ValidationError
 
 from radar.ukrdc_importer.serializers import (
+    AddressSerializer,
     PatientNumberSerializer,
     StringOrCodeDescriptionSerializer,
-    AddressSerializer,
 )
 
 

@@ -1,0 +1,4 @@
+extend-exclude = ["migrations"]
+
+[lint]
+ignore = ["RUF012","S110","TRY004","BLE001"]

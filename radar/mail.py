@@ -1,11 +1,10 @@
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import smtplib
 
 from jinja2 import Environment, PackageLoader
 
 from radar.config import config
-
 
 COMMA_SPACE = ", "
 

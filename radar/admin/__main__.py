@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import click
 from flask import abort, current_app
 

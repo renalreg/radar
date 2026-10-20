@@ -1,19 +1,18 @@
 from datetime import datetime
 
-from cornflake import fields
-from cornflake import serializers
+import pytz
+from cornflake import fields, serializers
 from cornflake.sqlalchemy_orm import ModelSerializer, ReferenceField
 from cornflake.validators import in_
-import pytz
 
 from radar.exceptions import PermissionDenied
 from radar.models.forms import Form, GroupForm
-from radar.models.groups import Group, GROUP_TYPE, GroupPage
+from radar.models.groups import GROUP_TYPE, Group, GroupPage
 from radar.models.patients import Patient
 from radar.models.source_types import (
+    SOURCE_TYPE_BATCH,
     SOURCE_TYPE_MANUAL,
     SOURCE_TYPE_UKRDC,
-    SOURCE_TYPE_BATCH,
 )
 from radar.models.users import User
 from radar.pages import PAGE
