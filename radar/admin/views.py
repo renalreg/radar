@@ -169,7 +169,6 @@ class NationalityView(ModelView):
 class DrugGroupView(ModelView):
     column_default_sort = "name"
     column_list = ["name", "parent_drug_group"]
-    column_default_sort = "name"
     form_columns = ["name", "parent_drug_group"]
     column_searchable_list = ["name"]
     column_export_list = ["id", "name", "parent_drug_group"]

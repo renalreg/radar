@@ -54,7 +54,7 @@ def revisit():
                     if not visits:
                         continue
 
-                    latest = sorted(visits)[-1]
+                    latest = max(visits)
 
                     if latest < datetime(2017, 10, 1).date():
                         writer.writerow(
