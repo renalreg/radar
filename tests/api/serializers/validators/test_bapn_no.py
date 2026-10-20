@@ -11,8 +11,8 @@ def test_valid():
 
 
 def test_remove_leading_zeros():
-    valid("A001") == "A1"
-    valid("A01") == "A1"
+    assert valid("A001") == "A1"
+    assert valid("A01") == "A1"
 
 
 def test_too_many_leading_zeros():

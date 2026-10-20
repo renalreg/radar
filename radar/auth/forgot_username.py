@@ -7,7 +7,7 @@ def forgot_username(email):
 
     # No users with that email
     if len(users) == 0:
-        return None
+        return
 
     # Send username reminder email
     send_email_from_template(

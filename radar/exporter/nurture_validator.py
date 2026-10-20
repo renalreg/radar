@@ -531,7 +531,7 @@ class Anthropometrics(BaseSheet):
 
                 for no, item in enumerate(data):
                     if not item:
-                        sheet.write(no, data[no], errorfmt)
+                        sheet.write(no, item, errorfmt)
 
                 if not in_range(data[10:13]):
                     sheet.write(10, data[10], errorfmt)

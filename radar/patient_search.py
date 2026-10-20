@@ -134,7 +134,7 @@ class BasePatientQueryBuilder:
 
     def variant_sort_clauses(self, column, reverse):
         """Order-by clauses for variant-only sort columns, or None."""
-        return None
+        return
 
     def sort(self, column, reverse=False):
         clauses = self.variant_sort_clauses(column, reverse)

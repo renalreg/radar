@@ -210,7 +210,7 @@ def _nhs_no(value, min_value=None, max_value=None):
 
     check_digit = 0
 
-    for i in range(0, 9):
+    for i in range(9):
         check_digit += int(value[i]) * (10 - i)
 
     check_digit = 11 - (check_digit % 11)
