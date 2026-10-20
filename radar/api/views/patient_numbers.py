@@ -34,9 +34,12 @@ class PatientNumberDetailView(
 
         numbers = patient_number.patient.patient_numbers
         for number in numbers:
-            if number.source_type == SOURCE_TYPE_MANUAL and patient_number != number:
-                if number.number_group.code in interested:
-                    return self.destroy(*args, **kwargs)
+            if (
+                number.source_type == SOURCE_TYPE_MANUAL
+                and patient_number != number
+                and number.number_group.code in interested
+            ):
+                return self.destroy(*args, **kwargs)
 
         raise ValidationError(
             {"number": "Can't delete the last NHS/CHI/HSC patient number."}
