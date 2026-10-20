@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 import pytz
 from sqlalchemy import (
@@ -72,7 +72,7 @@ class MainGroupColumns:
         )
 
     @property
-    def antibodies(self) -> List[Antibody]:
+    def antibodies(self) -> list[Antibody]:
         """
         Returns antibodies allowed for this group.
         Only valid for COHORT groups.
@@ -86,7 +86,7 @@ class InternationalGroupColumns:
     """International has no antibodies."""
 
     @property
-    def antibodies(self) -> List[Antibody]:
+    def antibodies(self) -> list[Antibody]:
         return []
 
 
@@ -330,4 +330,4 @@ def check_dependencies(groups):
 
     for x, y in dependencies:
         if x in groups and y not in groups:
-            raise DependencyError("Must be in {0}.".format(y[1]))
+            raise DependencyError(f"Must be in {y[1]}.")

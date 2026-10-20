@@ -1,5 +1,6 @@
 import os
-from typing import OrderedDict, TypeVar
+from typing import TypeVar
+from collections import OrderedDict
 
 T = TypeVar("T")
 
