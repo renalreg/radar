@@ -107,7 +107,7 @@ def main():
                     state_f.write(str(0))
                     state_f.write("\n")
 
-            state_f = open(state, "r+")
+            state_f = open(state, "r+")  # noqa: SIM115
             lock(state_f)
             last_log_id = int(state_f.readline())
         else:

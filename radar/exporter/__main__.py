@@ -111,7 +111,8 @@ def main():
     app = Radar()
 
     config_parser = ConfigParser()
-    config_parser.readfp(open(args.config))
+    with open(args.config) as f:
+        config_parser.read_file(f)
 
     with app.app_context(), TemporaryDirectory(prefix="rdrexp") as output:
         config = parse_config(config_parser)

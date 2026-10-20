@@ -3,7 +3,7 @@
 import glob
 import os
 
-from flask import flash, redirect, request, send_file, url_for
+from flask import flash, redirect, request, send_file, url_for, send_from_directory
 from flask_admin import AdminIndexView as BaseAdminIndexView
 from flask_admin import BaseView, expose, helpers
 from flask_admin.contrib.sqla import ModelView as BaseModelView
@@ -430,8 +430,9 @@ class ExportView(BaseView):
     @expose("/<string:param>", methods=["GET"])
     def serve_file(self, param):
         """Serve back requested file."""
-        requested_file = open(os.path.join(config.get("EXPORT_PATH"), param), "rb")
-        return send_file(requested_file, as_attachment=True, download_name=param)
+        return send_from_directory(
+            config.get("EXPORT_PATH"), param, as_attachment=True, download_name=param
+        )
 
     def is_accessible(self):
         # User needs to be logged in and a super admin to use this view
