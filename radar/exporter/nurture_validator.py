@@ -112,8 +112,8 @@ class Basic(BaseSheet):
         self.patient_id = patient.id
         self.patient_number = patient.primary_patient_number_number
         self.ethnicity = patient.ethnicity.label if patient.ethnicity else None
-        self.pv_link = True if patient.ukrdc else False
-        self.control = True if patient.control else False
+        self.pv_link = bool(patient.ukrdc)
+        self.control = bool(patient.control)
         self.gender = get_gender(patient.gender)
         self.date_of_birth = format_date(patient.date_of_birth)
         self.date_of_death = format_date(patient.date_of_death)
