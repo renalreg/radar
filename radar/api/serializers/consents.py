@@ -12,6 +12,7 @@ from radar.models.consents import Consent, CONSENT_TYPE, PatientConsent
 from radar.models.patients import Patient
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import pick
 
 
 class ConsentSerializer(ModelSerializer):
@@ -47,10 +48,20 @@ class PatientConsentMixin(PatientMixin):
     patient = PatientConsentField()
 
 
-class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
+class BasePatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
+    """Fields shared by every deployment."""
+
     consent = ConsentField()
-    signed_on_date = fields.DateField(validators=[not_in_future()])
+    signed_on_date = fields.DateField()
     withdrawn_on_date = fields.DateField(required=False)
+
+    class Meta:
+        model_class = PatientConsent
+        exclude = ["consent_id"]
+
+
+class MainPatientConsentSerializer(BasePatientConsentSerializer):
+    signed_on_date = fields.DateField(validators=[not_in_future()])
     reconsent_letter_sent_date = fields.DateField(
         required=False, validators=[not_in_future()]
     )
@@ -58,49 +69,39 @@ class PatientConsentSerializer(PatientConsentMixin, MetaMixin, ModelSerializer):
         required=False, validators=[not_in_future()]
     )
 
-    class Meta:
-        model_class = PatientConsent
-        exclude = ["consent_id"]
-
     def validate(self, serial_data):
         # Validating reconsent letter sent and returned dates make sense
+        signed = serial_data["signed_on_date"]
+        sent = serial_data["reconsent_letter_sent_date"]
+        returned = serial_data["reconsent_letter_returned_date"]
         errors_dict = {}
 
-        if serial_data["reconsent_letter_sent_date"]:
-            if (
-                serial_data["reconsent_letter_sent_date"]
-                < serial_data["signed_on_date"]
-            ):
-                errors_dict["reconsent_letter_sent_date"] = (
-                    "Signed on date after sent date!"
-                )
-            if serial_data["reconsent_letter_returned_date"]:
-                if (
-                    serial_data["reconsent_letter_sent_date"]
-                    > serial_data["reconsent_letter_returned_date"]
-                ):
-                    errors_dict["reconsent_letter_sent_date"] = (
-                        "Signed on date after sent date!"
-                    )
+        if sent and sent < signed:
+            errors_dict["reconsent_letter_sent_date"] = (
+                "Signed on date after sent date!"
+            )
 
-        if serial_data["reconsent_letter_returned_date"]:
-            if (
-                serial_data["reconsent_letter_returned_date"]
-                < serial_data["signed_on_date"]
-            ):
-                errors_dict["reconsent_letter_returned_date"] = (
-                    "Signed on date after return date!"
-                )
-            if serial_data["reconsent_letter_sent_date"]:
-                if (
-                    serial_data["reconsent_letter_sent_date"]
-                    > serial_data["reconsent_letter_returned_date"]
-                ):
-                    errors_dict["reconsent_letter_sent_date"] = (
-                        "Sent date after return date!"
-                    )
+        if returned and returned < signed:
+            errors_dict["reconsent_letter_returned_date"] = (
+                "Signed on date after return date!"
+            )
+
+        if sent and returned and sent > returned:
+            errors_dict["reconsent_letter_sent_date"] = "Sent date after return date!"
 
         if errors_dict:
             raise fields.ValidationError(errors_dict)
 
         return serial_data
+
+
+class InternationalPatientConsentSerializer(BasePatientConsentSerializer):
+    pass
+
+
+PatientConsentSerializer: (
+    type[MainPatientConsentSerializer] | type[InternationalPatientConsentSerializer]
+) = pick(
+    main=MainPatientConsentSerializer,
+    international=InternationalPatientConsentSerializer,
+)

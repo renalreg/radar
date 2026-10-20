@@ -26,11 +26,14 @@ from radar.models.patient_codes import GENDERS
 from radar.models.patient_demographics import PatientDemographics
 from radar.permissions import has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import pick
 
 
-class PatientDemographicsSerializer(
+class BasePatientDemographicsSerializer(
     PatientMixin, SystemSourceMixin, MetaMixin, ModelSerializer
 ):
+    """Fields and validation shared by every deployment."""
+
     first_name = fields.StringField(
         validators=[
             not_empty(),
@@ -54,7 +57,6 @@ class PatientDemographicsSerializer(
     date_of_death = fields.DateField(
         required=False, validators=[after_day_zero(), not_in_future()]
     )
-    cause_of_death = fields.StringField(required=False)
     year_of_death = fields.IntegerField(read_only=True)
     gender = IntegerLookupField(GENDERS)
     home_number = fields.StringField(
@@ -88,14 +90,8 @@ class PatientDemographicsSerializer(
         required=False,
         validators=[none_if_blank(), optional(), lower(), email_address()],
     )
-    email_reason = fields.StringField(
-        required=False,
-    )
     nationality = NationalityField(required=False)
     ethnicity = EthnicityField(required=False)
-
-    opt_out_surveys = fields.BooleanField(required=False)
-    opt_out_newsletters = fields.BooleanField(required=False)
 
     class Meta:
         model_class = PatientDemographics
@@ -123,6 +119,26 @@ class PatientDemographicsSerializer(
             raise ValidationError({"date_of_death": "Must be after date of birth."})
 
         return data
+
+
+class MainPatientDemographicsSerializer(BasePatientDemographicsSerializer):
+    cause_of_death = fields.StringField(required=False)
+    email_reason = fields.StringField(required=False)
+    opt_out_surveys = fields.BooleanField(required=False)
+    opt_out_newsletters = fields.BooleanField(required=False)
+
+
+class InternationalPatientDemographicsSerializer(BasePatientDemographicsSerializer):
+    pass
+
+
+PatientDemographicsSerializer: (
+    type[MainPatientDemographicsSerializer]
+    | type[InternationalPatientDemographicsSerializer]
+) = pick(
+    main=MainPatientDemographicsSerializer,
+    international=InternationalPatientDemographicsSerializer,
+)
 
 
 class PatientDemographicsProxy:

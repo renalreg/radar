@@ -14,9 +14,12 @@ from radar.models.pathology import (
     PATHOLOGY_KIDNEY_SIDES,
     PATHOLOGY_KIDNEY_TYPES,
 )
+from radar.variants import pick
 
 
-class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+class BasePathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer):
+    """Fields shared by every deployment."""
+
     date = fields.DateField()
     kidney_type = StringLookupField(PATHOLOGY_KIDNEY_TYPES, required=False)
     kidney_side = StringLookupField(PATHOLOGY_KIDNEY_SIDES, required=False)
@@ -32,8 +35,23 @@ class PathologySerializer(PatientMixin, SourceMixin, MetaMixin, ModelSerializer)
     em_findings = fields.StringField(
         required=False, validators=[none_if_blank(), optional(), max_length(10000)]
     )
-    report_cleaned = fields.DateField(required=False)
 
     class Meta:
         model_class = Pathology
         validators = [valid_date_for_patient("date")]
+
+
+class MainPathologySerializer(BasePathologySerializer):
+    report_cleaned = fields.DateField(required=False)
+
+
+class InternationalPathologySerializer(BasePathologySerializer):
+    pass
+
+
+PathologySerializer: (
+    type[MainPathologySerializer] | type[InternationalPathologySerializer]
+) = pick(
+    main=MainPathologySerializer,
+    international=InternationalPathologySerializer,
+)

@@ -12,7 +12,7 @@ from radar.models.common import (
     uuid_pk_column,
 )
 from radar.models.logs import log_changes
-
+from radar.variants import MEDICATION_DOSE_UNITS
 
 MEDICATION_ROUTES = OrderedDict(
     [
@@ -24,31 +24,6 @@ MEDICATION_ROUTES = OrderedDict(
         ("TOPICAL", "Topical"),
         ("PATCH", "Patch"),
         ("INHALE", "Inhale"),
-    ]
-)
-
-MEDICATION_DOSE_UNITS = OrderedDict(
-    [
-        ("g", "g"),
-        ("mg", "mg"),
-        ("µg", "µg"),
-        ("ng", "ng"),
-        ("l", "L"),
-        ("dl", "dl"),
-        ("ml", "ml"),
-        ("iu", "IU"),
-        ("mmol", "mmol"),
-        ("tab", "Tab"),
-        ("puff", "Puff"),
-        ("unit", "Unit"),
-        ("ampoule", "Ampoule"),
-        ("drop", "Drop"),
-        ("capsule", "Capsule"),
-        ("patch", "Patch"),
-        ("sachet", "Sachet"),
-        ("tbsp", "Table Spoon"),
-        ("units", "Units"),
-        ("other", "Other"),
     ]
 )
 
@@ -92,7 +67,7 @@ class Medication(db.Model, MetaModelMixin):
 
     id = uuid_pk_column()
 
-    patient_id = patient_id_column()
+    patient_id: Column = patient_id_column()
     patient = patient_relationship("medications")
 
     source_group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)

@@ -14,6 +14,27 @@ from radar.api.views.generics import (
     response_json,
 )
 from radar.recruitment import DemographicsMismatch, RecruitmentPatient, SearchPatient
+from radar.variants import pick
+
+# Fields passed to SearchPatient
+SEARCH_FIELDS = [
+    "first_name",
+    "last_name",
+    "date_of_birth",
+    "gender",
+    "number_group",
+    "number",
+] + pick(main=["email_address"], international=[])
+
+# Extra fields passed to RecruitmentPatient
+RECRUITMENT_FIELDS = [
+    "hospital_group",
+    "cohort_group",
+    "consents",
+    "diagnosis",
+    "nationality",
+    "ethnicity",
+] + pick(main=["email_reason"], international=[])
 
 
 def mismatch_error(e):
@@ -35,13 +56,7 @@ class RecruitPatientSearchView(PermissionViewMixin, ApiView):
     @response_json(RecruitPatientResultSerializer)
     def post(self, data):
         search_patient = SearchPatient(
-            first_name=data.get("first_name"),
-            last_name=data.get("last_name"),
-            date_of_birth=data.get("date_of_birth"),
-            email_address=data.get("email_address"),
-            gender=data.get("gender"),
-            number_group=data.get("number_group"),
-            number=data.get("number"),
+            **{name: data.get(name) for name in SEARCH_FIELDS}
         )
 
         try:
@@ -60,25 +75,11 @@ class RecruitPatientView(PermissionViewMixin, ApiView):
     @request_json(RecruitPatientSerializer)
     @response_json(PatientSerializer)
     def post(self, data):
-        search_patient = SearchPatient(
-            first_name=data["first_name"],
-            last_name=data["last_name"],
-            date_of_birth=data["date_of_birth"],
-            email_address=data["email_address"],
-            gender=data["gender"],
-            number_group=data["number_group"],
-            number=data["number"],
-        )
+        search_patient = SearchPatient(**{name: data[name] for name in SEARCH_FIELDS})
 
         recruitment_patient = RecruitmentPatient(
             search_patient=search_patient,
-            hospital_group=data["hospital_group"],
-            cohort_group=data["cohort_group"],
-            consents=data["consents"],
-            diagnosis=data["diagnosis"],
-            nationality=data["nationality"],
-            ethnicity=data["ethnicity"],
-            email_reason=data["email_reason"],
+            **{name: data[name] for name in RECRUITMENT_FIELDS},
         )
 
         try:

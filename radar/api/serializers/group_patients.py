@@ -13,9 +13,12 @@ from radar.models.groups import check_dependencies, DependencyError, GroupPatien
 from radar.models.nurture_data import NurtureData
 from radar.permissions import has_permission_for_group, has_permission_for_patient
 from radar.roles import PERMISSION
+from radar.variants import pick
 
 
-class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class BaseGroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
+    """Fields, validation and saving shared by every deployment."""
+
     group = GroupField()
     from_date = fields.DateTimeField(validators=[not_in_future()])
     to_date = fields.DateTimeField(required=False, validators=[not_in_future()])
@@ -136,15 +139,41 @@ class GroupPatientSerializer(PatientMixin, MetaMixin, ModelSerializer):
             parent_group_patient.modified_user = group_patient.modified_user
             parent_group_patient.created_date = group_patient.created_date
             parent_group_patient.modified_date = group_patient.modified_date
-            if "nurture" in str(parent_group_patient.group.name).lower():
-                if not patient.nurture_data:
-                    nurture_data = NurtureData()
-                    nurture_data.patient = patient
-                    nurture_data.signed_off_state = 0
-                    nurture_data.blood_tests = True
-                    nurture_data.interviews = True
-                    nurture_data.created_user = group_patient.created_user
-                    nurture_data.modified_user = group_patient.modified_user
+            self.on_parent_group_added(parent_group_patient, group_patient)
             db.session.add(parent_group_patient)
 
         return group_patient
+
+    def on_parent_group_added(self, parent_group_patient, group_patient):
+        """Hook for variant-specific work when a patient is auto-added to a
+        parent group. Does nothing by default."""
+
+
+class MainGroupPatientSerializer(BaseGroupPatientSerializer):
+    def on_parent_group_added(self, parent_group_patient, group_patient):
+        patient = group_patient.patient
+
+        # Joining a NURTURE group creates the patient's NURTURE data record
+        if "nurture" not in str(parent_group_patient.group.name).lower():
+            return
+
+        if not patient.nurture_data:
+            nurture_data = NurtureData()
+            nurture_data.patient = patient
+            nurture_data.signed_off_state = 0
+            nurture_data.blood_tests = True
+            nurture_data.interviews = True
+            nurture_data.created_user = group_patient.created_user
+            nurture_data.modified_user = group_patient.modified_user
+
+
+class InternationalGroupPatientSerializer(BaseGroupPatientSerializer):
+    pass
+
+
+GroupPatientSerializer: (
+    type[MainGroupPatientSerializer] | type[InternationalGroupPatientSerializer]
+) = pick(
+    main=MainGroupPatientSerializer,
+    international=InternationalGroupPatientSerializer,
+)

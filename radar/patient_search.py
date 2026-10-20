@@ -10,9 +10,12 @@ from radar.models.patient_numbers import PatientNumber
 from radar.models.patients import Patient
 from radar.roles import get_roles_with_permission, PERMISSION
 from radar.utils import sql_date_filter, sql_year_filter
+from radar.variants import pick
 
 
-class PatientQueryBuilder:
+class BasePatientQueryBuilder:
+    """Filters and sorting shared by every deployment."""
+
     def __init__(self, current_user):
         self.current_user = current_user
 
@@ -121,14 +124,28 @@ class PatientQueryBuilder:
         self.query = self.query.filter(Patient.test == value)
         return self
 
-    def signedOff(self, value):
-        self.query = self.query.filter(filter_by_signed_off_state(value))
+    def control(self, value):
+        self.query = self.query.filter(Patient.control == value)
         return self
 
+    def variant_filters(self, args):
+        """Apply variant-only filters from the parsed request args."""
+        return self
+
+    def variant_sort_clauses(self, column, reverse):
+        """Order-by clauses for variant-only sort columns, or None."""
+        return None
+
     def sort(self, column, reverse=False):
-        self.query = self.query.order_by(
-            *sort_patients(self.current_user, column, reverse)
-        )
+        clauses = self.variant_sort_clauses(column, reverse)
+
+        if clauses is None:
+            clauses = sort_patients(self.current_user, column, reverse)
+        else:
+            # Decide ties using patient id
+            clauses = clauses + [sort_by_patient_id()]
+
+        self.query = self.query.order_by(*clauses)
         return self
 
     def sort_by_group(self, group, reverse=False):
@@ -160,6 +177,36 @@ class PatientQueryBuilder:
             query = query.filter(Patient.current() == True)  # noqa
 
         return query
+
+
+class MainPatientQueryBuilder(BasePatientQueryBuilder):
+    def signed_off_state(self, value):
+        self.query = self.query.filter(filter_by_signed_off_state(value))
+        return self
+
+    def variant_filters(self, args):
+        signed_off_state = args.get("signed_off_state")
+
+        if signed_off_state is not None:
+            self.signed_off_state(signed_off_state)
+
+        return self
+
+    def variant_sort_clauses(self, column, reverse):
+        if column == "signed_off_state":
+            return [sort_by_completeness(reverse)]
+
+        return None
+
+
+class InternationalPatientQueryBuilder(BasePatientQueryBuilder):
+    pass
+
+
+PatientQueryBuilder: type[BasePatientQueryBuilder] = pick(
+    main=MainPatientQueryBuilder,
+    international=InternationalPatientQueryBuilder,
+)
 
 
 def patient_demographics_sub_query(*args):
@@ -405,8 +452,6 @@ def sort_patients(user, sort_by, reverse=False):
         clauses = [sort_by_recruited_date(reverse)]
     elif sort_by == "primary_patient_number":
         clauses = [sort_by_primary_patient_number(reverse)]
-    elif sort_by == "signed_off_state":
-        clauses = [sort_by_completeness(reverse)]
     else:
         return [sort_by_patient_id(reverse)]
 

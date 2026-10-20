@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, Column, Date, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -12,6 +13,7 @@ from radar.models.logs import log_changes
 
 from collections import OrderedDict
 
+from radar.variants import pick
 
 FETAL_ANOMALY_IMAGING_TYPES = OrderedDict(
     [
@@ -21,8 +23,33 @@ FETAL_ANOMALY_IMAGING_TYPES = OrderedDict(
 )
 
 
+class MainFetalAnomalyScanColumns:
+    """Columns that exist only in the main database."""
+
+    imaging_type = Column(String)
+    right_mri_details = Column(String)
+    left_mri_details = Column(String)
+
+
+class InternationalFetalAnomalyScanColumns:
+    """Columns that exist only in the international database (none yet)."""
+
+
+if TYPE_CHECKING:
+
+    class FETAL_ANOMALY_SCAN_VARIANT_COLUMNS(
+        MainFetalAnomalyScanColumns,
+        InternationalFetalAnomalyScanColumns,
+    ): ...
+else:
+    FETAL_ANOMALY_SCAN_VARIANT_COLUMNS = pick(
+        main=MainFetalAnomalyScanColumns,
+        international=InternationalFetalAnomalyScanColumns,
+    )
+
+
 @log_changes
-class FetalAnomalyScan(db.Model, MetaModelMixin):
+class FetalAnomalyScan(FETAL_ANOMALY_SCAN_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     __tablename__ = "fetal_anomaly_scans"
 
     id = uuid_pk_column()
@@ -35,15 +62,12 @@ class FetalAnomalyScan(db.Model, MetaModelMixin):
     source_type = Column(String, nullable=False)
 
     date_of_scan = Column(Date, nullable=False)
-    imaging_type = Column(String)
     gestational_age = Column(Integer, nullable=False)
     oligohydramnios = Column(Boolean)
     right_anomaly_details = Column(String)
     right_ultrasound_details = Column(String)
-    right_mri_details = Column(String)
     left_anomaly_details = Column(String)
     left_ultrasound_details = Column(String)
-    left_mri_details = Column(String)
     hypoplasia = Column(Boolean)
     echogenicity = Column(Boolean)
     hepatic_abnormalities = Column(Boolean)

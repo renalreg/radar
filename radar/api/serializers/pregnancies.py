@@ -10,16 +10,17 @@ from radar.models.pregnancies import (
     PRE_ECLAMPSIA_TYPES,
     Pregnancy,
 )
+from radar.variants import pick
 
 
-class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
+class BasePregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
+    """Fields shared by every deployment."""
+
     pregnancy_number = fields.IntegerField(validators=[min_(1)])
-    date_of_lmp = fields.DateField(required=False)
     gravidity = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity1 = fields.IntegerField(required=False, validators=[range_(0, 9)])
     parity2 = fields.IntegerField(required=False, validators=[range_(0, 9)])
     outcome = StringLookupField(OUTCOMES, required=False)
-    infant_dob = fields.DateField(required=False)
     weight = fields.IntegerField(required=False, validators=[range_(200, 5000)])
     weight_centile = fields.IntegerField(required=False, validators=[range_(20, 90)])
     gestational_age = fields.IntegerField(
@@ -32,3 +33,20 @@ class PregnancySerializer(PatientMixin, MetaMixin, ModelSerializer):
     class Meta:
         model_class = Pregnancy
         validators = [valid_date_for_patient("date_of_lmp")]
+
+
+class MainPregnancySerializer(BasePregnancySerializer):
+    date_of_lmp = fields.DateField(required=False)
+    infant_dob = fields.DateField(required=False)
+
+
+class InternationalPregnancySerializer(BasePregnancySerializer):
+    date_of_lmp = fields.DateField()
+
+
+PregnancySerializer: (
+    type[MainPregnancySerializer] | type[InternationalPregnancySerializer]
+) = pick(
+    main=MainPregnancySerializer,
+    international=InternationalPregnancySerializer,
+)

@@ -5,16 +5,16 @@ from cornflake.validators import max_length, none_if_blank, optional
 from radar.api.serializers.common import IntegerLookupField, MetaMixin, PatientMixin
 from radar.api.serializers.validators import valid_date_for_patient
 from radar.models.alport import AlportClinicalPicture, DEAFNESS_NO, DEAFNESS_OPTIONS
+from radar.variants import pick
 
 
-class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
+class BaseAlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
+    """Fields shared by every deployment."""
+
     date_of_picture = fields.DateField()
     deafness = IntegerLookupField(DEAFNESS_OPTIONS)
     deafness_date = fields.DateField(required=False)
     hearing_aid_date = fields.DateField(required=False)
-    comments = fields.StringField(
-        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
-    )
 
     class Meta:
         model_class = AlportClinicalPicture
@@ -31,3 +31,22 @@ class AlportClinicalPictureSerializer(PatientMixin, MetaMixin, ModelSerializer):
             data["hearing_aid_date"] = None
 
         return data
+
+
+class MainAlportClinicalPictureSerializer(BaseAlportClinicalPictureSerializer):
+    comments = fields.StringField(
+        required=False, validators=[none_if_blank(), optional(), max_length(10000)]
+    )
+
+
+class InternationalAlportClinicalPictureSerializer(BaseAlportClinicalPictureSerializer):
+    pass
+
+
+AlportClinicalPictureSerializer: (
+    type[MainAlportClinicalPictureSerializer]
+    | type[InternationalAlportClinicalPictureSerializer]
+) = pick(
+    main=MainAlportClinicalPictureSerializer,
+    international=InternationalAlportClinicalPictureSerializer,
+)
