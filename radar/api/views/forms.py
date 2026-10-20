@@ -178,7 +178,7 @@ class FormCountListView(ListView):
         else:
             q2 = q2.order_by(Form.id)
 
-        results = [dict(form=form, count=count) for form, count in q2]
+        results = [{"form": form, "count": count} for form, count in q2]
 
         return results
 

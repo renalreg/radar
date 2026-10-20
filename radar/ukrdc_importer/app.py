@@ -15,4 +15,4 @@ class RadarUKRDCImporter(Radar):
 
             # SET LOCAL lasts until the end of the current transaction
             # http://www.postgresql.org/docs/9.4/static/sql-set.html
-            session.execute("SET LOCAL radar.user_id = :user_id", dict(user_id=user.id))
+            session.execute("SET LOCAL radar.user_id = :user_id", {"user_id": user.id})

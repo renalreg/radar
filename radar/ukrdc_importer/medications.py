@@ -128,7 +128,7 @@ def build_medication_id(patient, group, sda_medication):
 def convert_medications(patient, sda_medications, adapter):
     user = get_import_user()
 
-    medications = list()
+    medications = []
 
     for sda_medication in sda_medications:
         code = sda_medication.entering_organization

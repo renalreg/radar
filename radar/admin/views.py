@@ -102,7 +102,7 @@ class ConsultantView(ModelView):
         "telephone_number",
         "gmc_number",
     ]
-    column_labels = dict(gmc_number="GMC Number")
+    column_labels = {"gmc_number": "GMC Number"}
     column_searchable_list = [
         "first_name",
         "last_name",
@@ -197,7 +197,7 @@ class GroupView(ModelView):
         "country",
         "instructions",
     ]
-    form_extra_fields = dict(instructions=fields.TextAreaField())
+    form_extra_fields = {"instructions": fields.TextAreaField()}
 
     def create_form(self):
         form = super().create_form()
@@ -271,7 +271,7 @@ class CohortView(ModelView):
     column_default_sort = "name"
     column_searchable_list = ["name", "short_name", "code"]
     form_columns = ["name", "short_name", "code", "parent_group", "instructions"]
-    form_extra_fields = dict(instructions=fields.TextAreaField())
+    form_extra_fields = {"instructions": fields.TextAreaField()}
 
     def create_form(self):
         form = super().create_form()
@@ -388,7 +388,7 @@ class ObservationView(ModelView):
         "units",
         "options",
     ]
-    column_labels = dict(pv_code="PV Code")
+    column_labels = {"pv_code": "PV Code"}
     column_searchable_list = [
         "name",
         "short_name",

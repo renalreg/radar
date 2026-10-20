@@ -21,10 +21,10 @@ def export_medications(sda_container, patient, group):
     if not medications:
         return
 
-    sda_medications = sda_container.setdefault("medications", list())
+    sda_medications = sda_container.setdefault("medications", [])
 
     for medication in medications:
-        sda_medication = dict()
+        sda_medication = {}
         sda_medication["external_id"] = str(medication.id)
         sda_medication["from_time"] = date_to_datetime(
             medication.from_date, with_timezone=False

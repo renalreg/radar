@@ -14,7 +14,7 @@ USERNAME = "ukrdc_importer"
 
 
 def validate_list(items, serializer, invalid_f=None):
-    valid_items = list()
+    valid_items = []
 
     for i, item in enumerate(items):
         try:
@@ -29,7 +29,7 @@ def validate_list(items, serializer, invalid_f=None):
 
 
 def unique_list(items, key_f, duplicate_f):
-    unique_items = list()
+    unique_items = []
     seen = set()
 
     for item in items:

@@ -202,10 +202,10 @@ def import_sda(data, sequence_number, patient_id=None):
 
     patient_lock.sequence_number = sequence_number
 
-    sda_names = sda_patient.get("aliases", list())
-    sda_addresses = sda_patient.get("addresses", list())
-    sda_medications = sda_container.get("medications", list())
-    sda_lab_orders = sda_container.get("lab_orders", list())
+    sda_names = sda_patient.get("aliases", [])
+    sda_addresses = sda_patient.get("addresses", [])
+    sda_medications = sda_container.get("medications", [])
+    sda_lab_orders = sda_container.get("lab_orders", [])
 
     import_demographics(patient, data["patient"], adapter)
     import_patient_numbers(patient, sda_patient_numbers, adapter)

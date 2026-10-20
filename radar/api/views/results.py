@@ -177,7 +177,7 @@ class ObservationCountListView(ListView):
         q = q.order_by(Observation.id)
 
         results = [
-            dict(observation=observation, count=count) for observation, count in q
+            {"observation": observation, "count": count} for observation, count in q
         ]
 
         return results

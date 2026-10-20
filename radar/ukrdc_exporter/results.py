@@ -16,7 +16,7 @@ def export_lab_orders(sda_container, patient, group):
     if not results:
         return
 
-    sda_lab_orders = sda_container.setdefault("lab_orders", list())
+    sda_lab_orders = sda_container.setdefault("lab_orders", [])
 
     for result in results:
         sda_lab_order = {

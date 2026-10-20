@@ -42,7 +42,7 @@ def tables(api):
 def session(api, tables):
     connection = db.engine.connect()
     transaction = connection.begin()
-    session = db.create_scoped_session(options=dict(bind=connection, binds={}))
+    session = db.create_scoped_session(options={"bind": connection, "binds": {}})
     db.session = session
 
     yield session

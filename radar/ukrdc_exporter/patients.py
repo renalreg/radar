@@ -74,7 +74,7 @@ def export_contact_info(sda_patient, patient):
         or patient.mobile_number
         or patient.email_address
     ):
-        sda_contact_info = sda_patient["contact_info"] = dict()
+        sda_contact_info = sda_patient["contact_info"] = {}
 
         if patient.home_number:
             sda_contact_info["home_phone_number"] = patient.home_number
@@ -98,7 +98,7 @@ def export_aliases(sda_patient, patient):
     if not aliases:
         return
 
-    sda_aliases = sda_patient.setdefault("aliases", list())
+    sda_aliases = sda_patient.setdefault("aliases", [])
 
     for alias in aliases:
         if not alias.first_name and not alias.last_name:
@@ -124,7 +124,7 @@ def export_addresses(sda_patient, patient):
     if not addresses:
         return
 
-    sda_addresses = sda_patient.setdefault("addresses", list())
+    sda_addresses = sda_patient.setdefault("addresses", [])
 
     for address in addresses:
         lines = [address.address1, address.address2, address.address3, address.address4]
@@ -134,7 +134,7 @@ def export_addresses(sda_patient, patient):
         if not street and not address.postcode:
             continue
 
-        sda_address = dict()
+        sda_address = {}
 
         if street:
             sda_address["street"] = street

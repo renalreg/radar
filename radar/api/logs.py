@@ -35,13 +35,13 @@ def log_request(response):
     log = Log()
     log.type = "API"
     log.user = get_user(session)
-    log.data = dict(
-        method=request.method,
-        url=get_url(),
-        status_code=response.status_code,
-        user_agent=get_user_agent(),
-        ip_address=get_ip_address(),
-    )
+    log.data = {
+        "method": request.method,
+        "url": get_url(),
+        "status_code": response.status_code,
+        "user_agent": get_user_agent(),
+        "ip_address": get_ip_address(),
+    }
     session.add(log)
 
     session.commit()
@@ -53,9 +53,9 @@ def _log_view_patient(session, patient):
     log = Log()
     log.type = "VIEW_PATIENT"
     log.user = get_user(session)
-    log.data = dict(
-        patient_id=patient.id,
-    )
+    log.data = {
+        "patient_id": patient.id,
+    }
     session.add(log)
 
 

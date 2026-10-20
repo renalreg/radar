@@ -188,7 +188,7 @@ def build_result_id(patient, group, sda_lab_result_item):
 def convert_results(patient, sda_lab_orders, adapter):
     user = get_import_user()
 
-    results = list()
+    results = []
 
     for sda_lab_order in sda_lab_orders:
         # Ignore RaDaR data

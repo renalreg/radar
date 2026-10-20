@@ -53,7 +53,7 @@ def parse_config(config_parser):
     if config_parser.has_section("global"):
         data = dict(config_parser.items("global"))
     else:
-        data = dict()
+        data = {}
 
     serializer = ConfigSerializer(data=data)
     serializer.is_valid(raise_exception=True)
