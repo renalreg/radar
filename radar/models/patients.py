@@ -571,9 +571,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
     def recruited_paediatric(self):
         """Return whether patient was recruited as paediatric."""
         months = self.to_age(self.recruited_date())
-        if months and months < SIXTEEN_YEARS_IN_MONTHS:
-            return True
-        return False
+        return bool(months and months < SIXTEEN_YEARS_IN_MONTHS)
 
     @property
     def youth(self):

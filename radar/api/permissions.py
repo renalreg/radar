@@ -115,12 +115,7 @@ class SourceObjectPermission(Permission):
                 return False
 
             # Check permissions
-            if not has_permission_for_group(
-                user, source_group, PERMISSION.EDIT_PATIENT
-            ):
-                return False
-
-            return True
+            return has_permission_for_group(user, source_group, PERMISSION.EDIT_PATIENT)
 
 
 class SystemSourceObjectPermission(Permission):
@@ -152,12 +147,7 @@ class SystemSourceObjectPermission(Permission):
                     return False
 
             # Check permissions
-            if not has_permission_for_group(
-                user, source_group, PERMISSION.EDIT_PATIENT
-            ):
-                return False
-
-            return True
+            return has_permission_for_group(user, source_group, PERMISSION.EDIT_PATIENT)
 
 
 class GroupObjectPermission(Permission):
@@ -187,10 +177,7 @@ class GroupObjectPermission(Permission):
         else:
             permission = PERMISSION.EDIT_PATIENT
 
-        if has_permission_for_group(user, group, permission):
-            return True
-
-        return False
+        return bool(has_permission_for_group(user, group, permission))
 
 
 class PatientSourceObjectPermission(PatientObjectPermission, SourceObjectPermission):
