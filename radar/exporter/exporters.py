@@ -1834,9 +1834,7 @@ class RituximabBaselineAssessmentExporter(Exporter):
         self._query = q
 
     def get_rows(self):
-        self._columns.extend(
-            column(item.lower()) for item in SUPPORTIVE_MEDICATIONS
-        )
+        self._columns.extend(column(item.lower()) for item in SUPPORTIVE_MEDICATIONS)
 
         previous = (
             "chlorambucil",

@@ -886,9 +886,7 @@ class PatientList:
         self.group = group
 
     def append(self, patient):
-        self.observations |= {
-            result.observation.name for result in patient.results
-        }
+        self.observations |= {result.observation.name for result in patient.results}
         groups = [group.code for group in patient.groups]
         if "NURTUREINS" in groups:
             self.stats["NURTUREINS"] += 1
