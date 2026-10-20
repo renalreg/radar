@@ -162,7 +162,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
         q = exists()
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
         q = q.where(GroupPatient.patient_id == self.id)
-        q = q.where(GroupPatient.current == True)  # noqa
+        q = q.where(GroupPatient.current == True)
 
         if group is not None:
             q = q.where(Group.id == group.id)
@@ -252,7 +252,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
                 )
             )
             .where(patient_alias.id == self.id)
-            .where(Group.is_recruitment_number_group == True)  # noqa
+            .where(Group.is_recruitment_number_group == True)
             .order_by(
                 PatientNumber.modified_date.desc(),
                 PatientNumber.id.desc(),

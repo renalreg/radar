@@ -22,7 +22,7 @@ PERFORMANCE_STATUS_OPTIONS = OrderedDict(
         ),
         (
             2,
-            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",  # noqa
+            "2: ambulatory and capable of all self-care but unable to carry out any work activities; up and about more than 50% of waking hours",
         ),
         (
             3,

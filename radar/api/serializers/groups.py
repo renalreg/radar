@@ -1,1 +1,1 @@
-from radar.api.serializers.common import GroupSerializer  # noqa
+from radar.api.serializers.common import GroupSerializer

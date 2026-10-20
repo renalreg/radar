@@ -174,7 +174,7 @@ class BasePatientQueryBuilder:
                 query = query.filter(Patient.current() == current)
         else:
             # Regular users can only see current patients
-            query = query.filter(Patient.current() == True)  # noqa
+            query = query.filter(Patient.current() == True)
 
         return query
 
@@ -354,7 +354,7 @@ def filter_by_group_roles(current_user, roles, current=None):
     )
 
     if current:
-        sub_query = sub_query.filter(GroupPatient.current == True)  # noqa
+        sub_query = sub_query.filter(GroupPatient.current == True)
 
     return sub_query.exists()
 
