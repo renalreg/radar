@@ -66,7 +66,7 @@ class AdminIndexView(BaseAdminIndexView):
             password = form.password.data
 
             try:
-                user, _ = login(username, password)
+                _user, _ = login(username, password)
             except (UsernameLoginError, PasswordLoginError):
                 form.username.errors.append("Incorrect username or password.")
             except DisabledLoginError:
