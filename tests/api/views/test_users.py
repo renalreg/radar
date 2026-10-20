@@ -25,9 +25,7 @@ def get_read_list_args():
     ):
         group_type, group_code, role = group
 
-        if username == "admin":
-            expected = True
-        elif username in ("hospital1_admin", "hospital1_senior_clinician"):
+        if username == "admin" or username in ("hospital1_admin", "hospital1_senior_clinician"):
             expected = True
         else:
             expected = False

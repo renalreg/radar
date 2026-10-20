@@ -309,9 +309,7 @@ class Result(db.Model, MetaModelMixin):
         if (
             self.patient.radar_ethnicity
             and self.patient.radar_ethnicity.label in black_ethnicities
-        ):
-            coef_e = 1.159
-        elif (
+        ) or (
             self.patient.ethnicity and self.patient.ethnicity.label in black_ethnicities
         ):
             coef_e = 1.159
