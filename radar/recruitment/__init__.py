@@ -2,7 +2,7 @@ import calendar
 import itertools
 import logging
 import re
-from datetime import datetime
+from datetime import UTC, datetime, timezone
 
 import pytz
 import requests
@@ -422,7 +422,7 @@ class SDAContainer:
         self.data = data
 
     def _get_sequence_number(self):
-        return calendar.timegm(datetime.utcnow().utctimetuple())
+        return calendar.timegm(datetime.now(UTC).utctimetuple())
 
     def save(self, patient):
         sequence_number = self._get_sequence_number()

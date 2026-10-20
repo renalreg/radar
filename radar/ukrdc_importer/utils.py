@@ -1,6 +1,6 @@
 import calendar
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from cornflake.exceptions import ValidationError
 
@@ -101,4 +101,4 @@ def get_group(code):
 
 
 def utc():
-    return calendar.timegm(datetime.utcnow().utctimetuple())
+    return calendar.timegm(datetime.now(UTC).utctimetuple())
