@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.1.0](https://github.com/renalreg/radar/compare/v4.0.1...v4.1.0) (2026-10-26)
+
+
+### Features
+
+* **deps:** Upgrade to Flask 3.1 / Werkzeug 3.1.9 and companion packages ([39ac448](https://github.com/renalreg/radar/commit/39ac4482fb95c886796a46581ac3caf62d12db55))
+* **RD-12:** added international branch code into current code and added switch between them ([6da694f](https://github.com/renalreg/radar/commit/6da694f83af78c55cce829486b0c8fec7956c488))
+
+
+### Bug Fixes
+
+* **RD-10:** ruff linting and formating, deptry fixes, removal of deps not needed. ([6341f4e](https://github.com/renalreg/radar/commit/6341f4e23748c3632c50a4c07ec7951a933c4586))
+* **RD-11:** fix(RD-11):  ([8967693](https://github.com/renalreg/radar/commit/8967693bfed15a05c58f61083aff79c314e8a586))
+
 ## [4.0.1](https://github.com/renalreg/radar/compare/v4.0.0...v4.0.1) (2026-10-01)
 
 
