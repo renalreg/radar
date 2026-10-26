@@ -28,6 +28,10 @@ def check_config(config):
 
     config.setdefault("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
+    # Flask-SQLAlchemy 3 no longer records queries automatically in debug/testing
+    # mode; radar.api.debug relies on it to log slow queries.
+    config.setdefault("SQLALCHEMY_RECORD_QUERIES", debug or testing)
+
     base_url = config.setdefault("BASE_URL", "http://localhost:8080/#")
 
     if base_url.endswith("/"):

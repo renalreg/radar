@@ -2,7 +2,7 @@ import time
 from collections import defaultdict
 
 from flask import g, request
-from flask_sqlalchemy import get_debug_queries
+from flask_sqlalchemy.record_queries import get_recorded_queries
 from termcolor import colored
 
 
@@ -27,7 +27,7 @@ def debug_teardown_request(exception):
 
     queries = defaultdict(lambda: [0, 0])
 
-    for q in get_debug_queries():
+    for q in get_recorded_queries():
         queries[q.statement][0] += 1  # number of time query run
         queries[q.statement][1] += q.duration  # total time for query
         total_query_time += q.duration  # total time for all queries
