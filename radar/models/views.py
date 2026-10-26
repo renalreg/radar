@@ -29,7 +29,7 @@ def compile_drop_view(element, compiler, **kwargs):
 def create_view(name, selectable, *args):
     # Add the table to a new MetaData object so CREATE TABLE isn't run
     tmp_metadata = MetaData()
-    table_args = [Column(c.name, c.type) for c in selectable.c]
+    table_args = [Column(c.name, c.type) for c in selectable.selected_columns]
     table_args.extend(args)
     t = Table(name, tmp_metadata, *table_args)
 

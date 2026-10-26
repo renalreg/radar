@@ -18,7 +18,7 @@ class EthnicityListView(ListModelView):
         if args["patient"]:
             subquery = (
                 Group()
-                .query.join((GroupPatient, GroupPatient.group_id == Group.id))
+                .query.join(GroupPatient, GroupPatient.group_id == Group.id)
                 .filter(
                     Group.type == GROUP_TYPE.HOSPITAL,
                     GroupPatient.patient_id == args["patient"],
@@ -33,7 +33,7 @@ class EthnicityListView(ListModelView):
                 return query
             subquery = (
                 Group()
-                .query.join((GroupUser, GroupUser.group_id == Group.id))
+                .query.join(GroupUser, GroupUser.group_id == Group.id)
                 .filter(
                     Group.type == GROUP_TYPE.HOSPITAL, GroupUser.user_id == args["user"]
                 )
@@ -57,7 +57,7 @@ class NationalityListView(ListModelView):
         if args["patient"]:
             subquery = (
                 Group()
-                .query.join((GroupPatient, GroupPatient.group_id == Group.id))
+                .query.join(GroupPatient, GroupPatient.group_id == Group.id)
                 .filter(
                     Group.type == GROUP_TYPE.HOSPITAL,
                     GroupPatient.patient_id == args["patient"],
@@ -72,7 +72,7 @@ class NationalityListView(ListModelView):
                 return query
             subquery = (
                 Group()
-                .query.join((GroupUser, GroupUser.group_id == Group.id))
+                .query.join(GroupUser, GroupUser.group_id == Group.id)
                 .filter(
                     Group.type == GROUP_TYPE.HOSPITAL, GroupUser.user_id == args["user"]
                 )

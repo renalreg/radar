@@ -136,7 +136,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
 
     @recruited_date.expression
     def recruited_date(self, group=None, group_type=None):
-        q = select([func.min(GroupPatient.from_date)])
+        q = select(func.min(GroupPatient.from_date))
         q = q.select_from(join(GroupPatient, Group, GroupPatient.group_id == Group.id))
         q = q.where(GroupPatient.patient_id == self.id)
 
@@ -146,7 +146,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
             gt = GROUP_TYPE.HOSPITAL if group_type else GROUP_TYPE.SYSTEM
             q = q.where(Group.type == gt)
 
-        q = q.as_scalar()
+        q = q.scalar_subquery()
 
         return q
 
@@ -258,7 +258,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
                 PatientNumber.id.desc(),
             )
             .limit(1)
-            .as_scalar()
+            .scalar_subquery()
         )
 
     def latest_demographics_attr(self, attr, radar_only=False):
@@ -274,7 +274,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
         patient_alias = aliased(Patient)
 
         return (
-            select([column])
+            select(column)
             .select_from(join(PatientDemographics, patient_alias))
             .where(patient_alias.id == cls.id)
             .order_by(
@@ -282,7 +282,7 @@ class Patient(PATIENT_VARIANT_COLUMNS, db.Model, MetaModelMixin):
                 PatientDemographics.id.desc(),
             )
             .limit(1)
-            .as_scalar()
+            .scalar_subquery()
         )
 
     def latest_demographics(self, radar_only):

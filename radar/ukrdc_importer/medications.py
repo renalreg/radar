@@ -101,7 +101,7 @@ def preload_medications(patient):
 
 
 def get_medication(medication_id):
-    return Medication.query.get(medication_id)
+    return db.session.get(Medication, medication_id)
 
 
 def get_medications(patient):

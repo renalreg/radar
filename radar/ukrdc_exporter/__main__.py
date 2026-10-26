@@ -3,6 +3,8 @@ import fcntl
 import logging
 import os
 
+from sqlalchemy import text
+
 from radar.database import db
 from radar.models.source_types import SOURCE_TYPE_MANUAL
 from radar.ukrdc_exporter.app import RadarUKRDCExporter
@@ -52,7 +54,7 @@ def export_changed(last_log_id):
 
 def export_query(sql, last_log_id):
     rows = db.session.execute(
-        sql,
+        text(sql),
         {
             "last_log_id": last_log_id,
             "source_type": SOURCE_TYPE_MANUAL,

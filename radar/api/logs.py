@@ -10,7 +10,7 @@ def get_user(session):
     """Get the current user with the specified session."""
 
     if current_user.is_authenticated():
-        user = session.query(User).get(current_user.id)
+        user = session.get(User, current_user.id)
     else:
         user = None
 

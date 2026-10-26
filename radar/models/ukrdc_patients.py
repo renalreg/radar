@@ -15,7 +15,7 @@ class UKRDCPatient(db.Model):
 
     __table__ = create_view(
         "ukrdc_patients",
-        select([Patient.id]).where(
+        select(Patient.id).where(
             or_(
                 exists().where(
                     and_(

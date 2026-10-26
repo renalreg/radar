@@ -252,7 +252,7 @@ def test_delete_self(api, username):
     # Not possible to delete yourself
     assert response.status_code == 403
 
-    user = User.query.get(user.id)
+    user = db.session.get(User, user.id)
 
     assert user is not None
 

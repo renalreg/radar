@@ -33,7 +33,7 @@ def revisit():
         writer.writeheader()
 
         for hospital_id in hospital_ids:
-            hospital = Group.query.get(hospital_id)
+            hospital = db.session.get(Group, hospital_id)
 
             # ins_list = PatientList(hospital, nurtureins_primary_diagnoses, 'ins', nurtureins)
             # ckd_list = PatientList(hospital, nurtureckd_primary_diagnoses, 'ckd', nurtureckd)

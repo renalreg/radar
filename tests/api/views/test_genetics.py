@@ -171,7 +171,7 @@ def test_delete_genetics(api, username, group_type, group_code, expected):
 
     response = client.delete(f"/genetics/{genetics.id}")
 
-    genetics = Genetics.query.get(genetics.id)
+    genetics = db.session.get(Genetics, genetics.id)
 
     assert response.status_code == expected
 
@@ -208,7 +208,7 @@ def test_create_genetics(api, username, group_type, group_code, expected):
 
         data = json.loads(response.data)
 
-        genetics = Genetics.query.get(data["id"])
+        genetics = db.session.get(Genetics, data["id"])
 
         # Check the genetics were created
         assert genetics is not None

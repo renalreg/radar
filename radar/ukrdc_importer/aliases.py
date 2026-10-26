@@ -52,7 +52,7 @@ def unique_aliases(sda_names, adapter):
 
 
 def get_alias(alias_id):
-    return PatientAlias.query.get(alias_id)
+    return db.session.get(PatientAlias, alias_id)
 
 
 def get_aliases(patient):

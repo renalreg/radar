@@ -1,7 +1,6 @@
 from functools import update_wrapper
 
 from flask_sqlalchemy import SQLAlchemy as SQLAlchemyBase
-from sqlalchemy import event, exc, select
 from sqlalchemy.orm.session import Session as SessionBase
 
 # Session and SQLAlchemy classes that allow transactions to be rolled back in pytest
@@ -12,12 +11,11 @@ class Session(SessionBase):
     # Plain SQLAlchemy session (not flask_sqlalchemy.session.Session) so an explicit
     # ``bind`` (e.g. a test connection inside an outer transaction) is honoured.
     # Flask-SQLAlchemy 3's Session.get_bind() always routes to the app's engine.
-    def __init__(self, db, autocommit=False, autoflush=True, **options):
+    def __init__(self, db, autoflush=True, **options):
         bind = options.pop("bind", None) or db.engine
         binds = options.pop("binds", None) or {}
 
         super().__init__(
-            autocommit=autocommit,
             autoflush=autoflush,
             bind=bind,
             binds=binds,
@@ -31,14 +29,14 @@ class SQLAlchemy(SQLAlchemyBase):
         # Flask-SQLAlchemy 2.x)
         session_options = kwargs.setdefault("session_options", {})
         session_options.setdefault("class_", Session)
-        super().__init__(*args, **kwargs)
 
-    # Overridden so we can listen for events on the engine
-    # (replaces the make_connector() override from Flask-SQLAlchemy 2.x)
-    def _make_engine(self, bind_key, options, app):
-        engine = super()._make_engine(bind_key, options, app)
-        event.listens_for(engine, "engine_connect")(ping_connection)
-        return engine
+        # Test connections before use and transparently replace stale ones
+        # (replaces the old engine_connect "ping_connection" recipe, whose
+        # ``branch`` argument no longer exists in SQLAlchemy 2.0)
+        engine_options = kwargs.setdefault("engine_options", {})
+        engine_options.setdefault("pool_pre_ping", True)
+
+        super().__init__(*args, **kwargs)
 
     def create_scoped_session(self, options=None):
         """Create a new scoped session using our Session class (used by tests)."""
@@ -48,23 +46,6 @@ class SQLAlchemy(SQLAlchemyBase):
 
 
 db = SQLAlchemy()
-
-
-# http://docs.sqlalchemy.org/en/latest/core/pooling.html#disconnect-handling-pessimistic
-def ping_connection(connection, branch):
-    if branch:
-        # Don't ping sub-connections
-        return
-
-    try:
-        # Test the connection
-        connection.scalar(select([1]))
-    except exc.DBAPIError as e:
-        if e.connection_invalidated:
-            # Establish a new connection
-            connection.scalar(select([1]))
-        else:
-            raise
 
 
 def no_autoflush(f):

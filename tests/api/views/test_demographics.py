@@ -232,7 +232,7 @@ def test_delete_demographics(
 
     response = client.delete(f"/patient-demographics/{demographics.id}")
 
-    demographics = PatientDemographics.query.get(demographics.id)
+    demographics = db.session.get(PatientDemographics, demographics.id)
 
     assert response.status_code == expected
 
@@ -278,7 +278,7 @@ def test_create_demographics(
 
         data = json.loads(response.data)
 
-        demographics = PatientDemographics.query.get(data["id"])
+        demographics = db.session.get(PatientDemographics, data["id"])
 
         # Check the demographics were created
         assert demographics is not None

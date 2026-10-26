@@ -10,9 +10,8 @@ from sqlalchemy import (
     select,
     text,
 )
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import column_property, relationship
+from sqlalchemy.orm import column_property, declared_attr, relationship
 
 from radar.auth.passwords import (
     check_password_hash,

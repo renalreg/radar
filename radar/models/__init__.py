@@ -49,7 +49,7 @@ from radar.models.patient_consultants import *
 from radar.models.patient_demographics import *
 from radar.models.patient_locks import *
 from radar.models.patient_numbers import *
-from radar.models.patients import *
+from radar.models.patients import *  # type: ignore[assignment]  # enum.Enum vs sqlalchemy.Enum
 from radar.models.pkd import *
 from radar.models.plasmapheresis import *
 from radar.models.pregnancies import *

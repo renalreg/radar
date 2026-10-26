@@ -209,7 +209,7 @@ def test_delete_dialysis(api, username, group_type, group_code, source_type, exp
 
     response = client.delete(f"/dialysis/{dialysis.id}")
 
-    dialysis = Dialysis.query.get(dialysis.id)
+    dialysis = db.session.get(Dialysis, dialysis.id)
 
     assert response.status_code == expected
 
@@ -249,7 +249,7 @@ def test_create_dialysis(api, username, group_type, group_code, source_type, exp
 
         data = json.loads(response.data)
 
-        dialysis = Dialysis.query.get(data["id"])
+        dialysis = db.session.get(Dialysis, data["id"])
 
         # Check the dialysis was created
         assert dialysis is not None

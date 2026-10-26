@@ -47,10 +47,10 @@ def parse_patient_id(value):
     return value
 
 
-def get_patient(patient_id) -> Patient:
+def get_patient(patient_id) -> Patient | None:
     """Get a patient by id."""
 
-    return Patient.query.get(patient_id)
+    return db.session.get(Patient, patient_id)
 
 
 def lock_patient(patient):

@@ -25,11 +25,11 @@ QUEUE = "ukrdc_exporter"
 
 
 def get_patient(patient_id):
-    return Patient.query.get(patient_id)
+    return db.session.get(Patient, patient_id)
 
 
 def get_group(group_id):
-    return Group.query.get(group_id)
+    return db.session.get(Group, group_id)
 
 
 def log_data_export(patient):

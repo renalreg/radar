@@ -72,7 +72,7 @@ class FamilyHistoryRelative(db.Model):
     id = Column(Integer, primary_key=True)
 
     family_history_id = Column(
-        postgresql.UUID,
+        postgresql.UUID(as_uuid=False),
         ForeignKey("family_histories.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
     )

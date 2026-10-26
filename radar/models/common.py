@@ -3,13 +3,15 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, text
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import backref, declared_attr, relationship
 
 
 def uuid_pk_column():
+    # as_uuid=False keeps returning str ids (SQLAlchemy 2.0 defaults to uuid.UUID)
     return Column(
-        postgresql.UUID, primary_key=True, server_default=text("uuid_generate_v4()")
+        postgresql.UUID(as_uuid=False),
+        primary_key=True,
+        server_default=text("uuid_generate_v4()"),
     )
 
 
