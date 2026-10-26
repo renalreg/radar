@@ -6,21 +6,21 @@
   <form method="POST" action="">
     {{ form.hidden_tag() if form.hidden_tag }}
 
-    <div class="form-group{% if form.username.errors %} has-error{% endif %}">
-      {{ form.username.label(class_="control-label") }}
-      {{ form.username(class_="form-control", placeholder="Username") }}
+    <div class="form-group">
+      {{ form.username.label() }}
+      {{ form.username(class_="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Username") }}
 
       {% for error in form.username.errors %}
-        <div class="help-block">{{ error }}</div>
+        <div class="invalid-feedback">{{ error }}</div>
       {% endfor %}
     </div>
 
-    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
-      {{ form.password.label(class_="control-label") }}
-      {{ form.password(class_="form-control", placeholder="Password") }}
+    <div class="form-group">
+      {{ form.password.label() }}
+      {{ form.password(class_="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Password") }}
 
       {% for error in form.password.errors %}
-        <div class="help-block">{{ error }}</div>
+        <div class="invalid-feedback">{{ error }}</div>
       {% endfor %}
     </div>
 

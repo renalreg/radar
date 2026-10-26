@@ -57,7 +57,7 @@ def upgrade():
     """
 
     conn = op.get_bind()
-    cursor = conn.execute(pat_query)
+    cursor = conn.execute(sa.text(pat_query))
     patients = cursor.fetchall()
 
     pat_states = [
@@ -87,7 +87,7 @@ def downgrade():
     """
 
     conn = op.get_bind()
-    cursor = conn.execute(pat_query)
+    cursor = conn.execute(sa.text(pat_query))
     pats = cursor.fetchall()
 
     op.add_column(

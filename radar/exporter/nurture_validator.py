@@ -995,7 +995,7 @@ def export_validate():
     hospital_ids = get_hospitals()
 
     for hospital_id in hospital_ids:
-        hospital = Group.query.get(hospital_id)
+        hospital = db.session.get(Group, hospital_id)
 
         ins_list = PatientList(
             hospital, nurtureins_primary_diagnoses, "ins", nurtureins

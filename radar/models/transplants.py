@@ -93,7 +93,7 @@ class TransplantRejection(db.Model):
     id = Column(Integer, primary_key=True)
 
     transplant_id = Column(
-        postgresql.UUID,
+        postgresql.UUID(as_uuid=False),
         ForeignKey("transplants.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
     )
@@ -117,7 +117,7 @@ class TransplantBiopsy(db.Model):
     id = Column(Integer, primary_key=True)
 
     transplant_id = Column(
-        postgresql.UUID,
+        postgresql.UUID(as_uuid=False),
         ForeignKey("transplants.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
     )

@@ -2,6 +2,7 @@
 
 import glob
 import os
+from functools import partial
 
 from flask import flash, redirect, request, send_from_directory, url_for
 from flask_admin import AdminIndexView as BaseAdminIndexView
@@ -200,20 +201,21 @@ class GroupView(ModelView):
 
     def create_form(self):
         form = super().create_form()
-        form.type.iter_choices = self._filtered_parent
+        form.type.iter_choices = partial(self._filtered_parent, form.type)
         return form
 
     def edit_form(self, obj):
         form = super().edit_form(obj)
-        form.type.iter_choices = self._filtered_parent
+        form.type.iter_choices = partial(self._filtered_parent, form.type)
         return form
 
-    def _filtered_parent(self):
+    def _filtered_parent(self, field):
         """Don't show COHORTS and HOSPITALS in select field."""
+        # WTForms >= 3.1 expects (value, label, selected, render_kw) 4-tuples
         for enum in GROUP_TYPE:
             if enum.name in ("COHORT", "HOSPITAL"):
                 continue
-            yield enum.name, enum.value, enum
+            yield enum.name, enum.value, field.data in (enum, enum.name), {}
 
     def on_model_change(self, form, model, is_created):
         if model.type != GROUP_TYPE.OTHER and model.is_recruitment_number_group:

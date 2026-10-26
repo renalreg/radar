@@ -1,4 +1,5 @@
-from flask import _request_ctx_stack, has_request_context, request, session
+from flask import has_request_context, request, session
+from flask.globals import request_ctx
 from itsdangerous import BadSignature, TimestampSigner
 from sqlalchemy import func
 from werkzeug.local import LocalProxy
@@ -79,7 +80,7 @@ def login(username, password):
 
     db.session.commit()
 
-    _request_ctx_stack.top.user_session = user_session
+    request_ctx.user_session = user_session
 
     # Set cookie
     session["id"] = user_session.id
@@ -100,7 +101,7 @@ def logout():
 
         db.session.commit()
 
-        _request_ctx_stack.top.user_session = AnonymousSession()
+        request_ctx.user_session = AnonymousSession()
 
         # Unset cookie
         session.pop("id", None)
@@ -192,7 +193,7 @@ def get_user_session_from_cookie():
 
 
 def get_user_session():
-    if has_request_context() and not hasattr(_request_ctx_stack.top, "user_session"):
+    if has_request_context() and not hasattr(request_ctx, "user_session"):
         # Look in the header
         user_session = get_user_session_from_header()
 
@@ -207,9 +208,11 @@ def get_user_session():
                 user_session = None
 
         # Set the user session
-        _request_ctx_stack.top.user_session = user_session
+        request_ctx.user_session = user_session
 
-    user_session = getattr(_request_ctx_stack.top, "user_session", None)
+    user_session = (
+        getattr(request_ctx, "user_session", None) if has_request_context() else None
+    )
 
     if user_session is None:
         user_session = AnonymousSession()

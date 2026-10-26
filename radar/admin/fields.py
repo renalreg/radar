@@ -21,8 +21,9 @@ class EnumSelectField(SelectFieldBase):
     def iter_choices(self):
         """Generate a list of choices."""
 
+        # WTForms >= 3.1 expects (value, label, selected, render_kw) 4-tuples
         for enum in self.enum_class:
-            yield (enum.name, enum.value, enum == self.data)
+            yield (enum.name, enum.value, enum == self.data, {})
 
     def process_formdata(self, valuelist):
         """Handle incoming form data."""

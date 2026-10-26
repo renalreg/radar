@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import event
+from sqlalchemy import event, text
 
 from radar.api import views
 from radar.api.auth import force_password_change, require_login, set_cors_headers
@@ -26,7 +26,7 @@ class RadarAPI(Radar):
                 # SET LOCAL lasts until the end of the current transaction
                 # http://www.postgresql.org/docs/9.4/static/sql-set.html
                 session.execute(
-                    "SET LOCAL radar.user_id = :user_id", {"user_id": user_id}
+                    text("SET LOCAL radar.user_id = :user_id"), {"user_id": user_id}
                 )
 
         if self.debug:

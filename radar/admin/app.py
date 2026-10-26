@@ -1,4 +1,5 @@
 from flask_admin import Admin
+from flask_admin.theme import Bootstrap4Theme
 
 from radar.admin.views import (
     AdminIndexView,
@@ -64,8 +65,7 @@ class RadarAdmin(Radar):
             self,
             "RADAR Admin",
             index_view=AdminIndexView(),
-            template_mode="bootstrap3",
-            base_template="master.html",
+            theme=Bootstrap4Theme(base_template="master.html"),
             url="/admin",
         )
 

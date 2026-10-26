@@ -97,7 +97,7 @@ def unique_addresses(sda_addresses, adapter):
 
 
 def get_address(address_id):
-    return PatientAddress.query.get(address_id)
+    return db.session.get(PatientAddress, address_id)
 
 
 def get_addresses(patient):

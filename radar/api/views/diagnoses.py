@@ -31,6 +31,7 @@ from radar.models.diagnoses import (
     GROUP_DIAGNOSIS_TYPE,
     GROUP_DIAGNOSIS_TYPE_NAMES,
     Diagnosis,
+    DiagnosisCode,
     GroupDiagnosis,
     PatientDiagnosis,
 )
@@ -151,8 +152,12 @@ class DiagnosisListView(ListModelView):
         query = super().filter_query(query)
 
         # Load codes and groups in subqueries rather than lazy-loading (to avoid O(n) queries)
-        query = query.options(subqueryload("diagnosis_codes").joinedload("code"))
-        query = query.options(subqueryload("group_diagnoses").joinedload("group"))
+        query = query.options(
+            subqueryload(Diagnosis.diagnosis_codes).joinedload(DiagnosisCode.code)
+        )
+        query = query.options(
+            subqueryload(Diagnosis.group_diagnoses).joinedload(GroupDiagnosis.group)
+        )
 
         args = parse_args(DiagnosisRequestSerializer)
 

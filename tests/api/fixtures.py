@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import text
+
 from radar.database import db
 from radar.models.consents import CONSENT_TYPE, Consent
 from radar.models.demographics import Ethnicity, Nationality
@@ -57,15 +59,15 @@ def get_admin():
 
 
 def get_patient(patient_id):
-    return Patient.query.get(patient_id)
+    return db.session.get(Patient, patient_id)
 
 
 def get_nationality(nationality_id):
-    return Nationality.query.get(nationality_id)
+    return db.session.get(Nationality, nationality_id)
 
 
 def get_ethnicity(ethnicity_id):
-    return Ethnicity.query.get(ethnicity_id)
+    return db.session.get(Ethnicity, ethnicity_id)
 
 
 def set_default_users(options):
@@ -251,5 +253,5 @@ def create_fixtures():
 
     # Set the next patient id
     db.session.execute(
-        "SELECT setval('patients_seq', (SELECT MAX(id) FROM patients) + 1)"
+        text("SELECT setval('patients_seq', (SELECT MAX(id) FROM patients) + 1)")
     )

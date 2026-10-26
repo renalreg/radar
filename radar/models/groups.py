@@ -169,7 +169,7 @@ class Group(GROUP_VARIANT_COLUMNS, db.Model):
     def instructions(self, value):
         self._instructions = value
 
-    instructions = synonym("_instructions", descriptor=instructions)
+    instructions = synonym("_instructions", descriptor=instructions)  # type: ignore[assignment]
 
     def __str__(self):
         return self.name

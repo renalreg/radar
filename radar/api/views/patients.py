@@ -23,6 +23,7 @@ from radar.api.views.generics import (
     parse_args,
 )
 from radar.auth.sessions import current_user
+from radar.database import db
 from radar.models import GENDERS
 from radar.models.groups import GROUP_TYPE, Group
 from radar.models.patients import CONSENT_STATUS, Patient
@@ -133,7 +134,7 @@ def list_patients():
         m = re.match("^group_([0-9]+)", sort)
 
         if m:
-            group = Group.query.get(int(m.group(1)))
+            group = db.session.get(Group, int(m.group(1)))
 
             if group is not None:
                 builder.sort_by_group(group, reverse)

@@ -1,5 +1,5 @@
 from sqlalchemy import and_, case, desc, extract, func, null, or_
-from sqlalchemy.orm import aliased, subqueryload
+from sqlalchemy.orm import aliased, joinedload, subqueryload
 
 from radar.database import db
 from radar.models.groups import Group, GroupPatient, GroupUser
@@ -23,23 +23,25 @@ class BasePatientQueryBuilder:
         self.filtering_by_demographics = False
 
         # Pre-load group_patients
-        group_patients = subqueryload("group_patients")
-        group_patients.joinedload("group")
-        group_patients.joinedload("created_group")
-        group_patients.joinedload("created_user")
+        group_patients = subqueryload(Patient.group_patients).options(
+            joinedload(GroupPatient.group),
+            joinedload(GroupPatient.created_group),
+            joinedload(GroupPatient.created_user),
+        )
 
         # Pre-load patient_numbers
-        patient_numbers = subqueryload("patient_numbers")
-        patient_numbers.joinedload("number_group")
-        patient_numbers.joinedload("source_group")
-        patient_numbers.joinedload("created_user")
-        patient_numbers.joinedload("modified_user")
+        patient_numbers = subqueryload(Patient.patient_numbers).options(
+            joinedload(PatientNumber.number_group),
+            joinedload(PatientNumber.source_group),
+            joinedload(PatientNumber.created_user),
+            joinedload(PatientNumber.modified_user),
+        )
 
         self.query = (
-            Patient.query.options(subqueryload("patient_demographics"))
+            Patient.query.options(subqueryload(Patient.patient_demographics))
             .options(patient_numbers)
             .options(group_patients)
-            .options(subqueryload("ukrdc_patient"))
+            .options(subqueryload(Patient.ukrdc_patient))
         )
 
     def first_name(self, first_name):
@@ -379,7 +381,7 @@ def sort_by_demographics_field(current_user, field, reverse, else_=None):
         sub_query = filter_by_group_roles(
             current_user, get_roles_with_permission(PERMISSION.VIEW_DEMOGRAPHICS)
         )
-        expression = case([(sub_query, field)], else_=else_)
+        expression = case((sub_query, field), else_=else_)
 
     if reverse:
         expression = desc(expression)
@@ -465,4 +467,4 @@ def sort_by_group(group):
     q = db.session.query(func.min(GroupPatient.from_date))
     q = q.filter(GroupPatient.patient_id == Patient.id)
     q = q.filter(GroupPatient.group_id == group.id)
-    return q.as_scalar()
+    return q.scalar_subquery()

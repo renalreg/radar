@@ -60,7 +60,7 @@ def unique_patient_numbers(sda_patient_numbers, adapter):
 
 
 def get_patient_number(patient_number_id):
-    return PatientNumber.query.get(patient_number_id)
+    return db.session.get(PatientNumber, patient_number_id)
 
 
 def get_patient_numbers(patient):

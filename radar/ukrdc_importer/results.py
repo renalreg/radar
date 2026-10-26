@@ -114,7 +114,7 @@ def preload_results(patient):
 
 
 def get_result(result_id):
-    return Result.query.get(result_id)
+    return db.session.get(Result, result_id)
 
 
 def get_results(patient):
