@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/renalreg/radar/compare/v4.1.0...v4.1.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** bumped cornflake to fixed dep ([#110](https://github.com/renalreg/radar/issues/110)) ([b09ac49](https://github.com/renalreg/radar/commit/b09ac498e1ee61358fb2c83889363d47f407c5ab))
+
 ## [4.1.0](https://github.com/renalreg/radar/compare/v4.0.1...v4.1.0) (2026-10-26)
 
 
