@@ -984,14 +984,6 @@ CALCULATED_RESULT_ROWS = pick(
         ("RADAR Z Score Height", "calculate_z_score_height"),
         ("RADAR Z Score Weight", "calculate_z_score_weight"),
         ("RADAR Calculated eGFR", "egfr_calculated"),
-        (
-            "RADAR Calculated eGFR with ethnicity",
-            "ckd_epi_egfr_calculated_with_ethnicity",
-        ),
-        (
-            "RADAR Calculated eGFR without ethnicity",
-            "ckd_epi_egfr_calculated_without_ethnicity",
-        ),
     ],
     international=[
         ("RADAR Calculated eGFR", "egfr_calculated"),

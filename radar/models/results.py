@@ -287,93 +287,14 @@ class Result(db.Model, MetaModelMixin):
         if is_female and creat88 > 0.7:
             egfr = age_adj * black_adj * 144 * ((creat88 / 0.7) ** (-1.209))
         elif is_female and creat88 <= 0.7:
-            egfr = age_adj * black_adj * 144 * ((creat88 / 0.7) ** (-0.329))
-        elif is_male and creat88 > 0.7:
+            egfr = age_adj * black_adj *  144 * ((creat88 / 0.7) ** (-0.329))
+        elif is_male and creat88 > 0.9:
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-1.209))
-        elif is_male and creat88 <= 0.7:
+        elif is_male and creat88 <= 0.9:
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-0.411))
 
         return egfr
-
-    @property
-    def ckd_epi_egfr_calculated_with_ethnicity(self):
-        if self.observation.short_name.lower() != "creatinine" or not self.value:
-            return ""
-
-        black_ethnicities = (
-            "Black Caribbean",
-            "Black African",
-            "Other Black Background",
-        )
-
-        if (
-            self.patient.radar_ethnicity
-            and self.patient.radar_ethnicity.label in black_ethnicities
-        ) or (
-            self.patient.ethnicity and self.patient.ethnicity.label in black_ethnicities
-        ):
-            coef_e = 1.159
-        else:
-            return ""
-
-        Scr = self.value * 0.0113
-        coef_a = 141.0
-
-        if self.patient.gender == 1:
-            kappa = 0.9
-            alpha = -0.411
-            coef_d = 1
-        elif self.patient.gender == 2:
-            kappa = 0.7
-            alpha = -0.329
-            coef_d = 1.018
-        else:
-            return ""
-
-        this_year = self.date.year
-        age = this_year - int(self.patient.year_of_birth)
-
-        if age <= 18 and age > 0:
-            age_coef = math.pow(0.993, age)
-        else:
-            return ""
-
-        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
-        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
-
-        return coef_a * coef_b * coef_c * age_coef * coef_d * coef_e
-
-    @property
-    def ckd_epi_egfr_calculated_without_ethnicity(self):
-        if self.observation.short_name.lower() != "creatinine" or not self.value:
-            return ""
-
-        Scr = self.value * 0.0113
-        coef_a = 141.0
-
-        if self.patient.gender == 1:
-            kappa = 0.9
-            alpha = -0.411
-            coef_d = 1
-        elif self.patient.gender == 2:
-            kappa = 0.7
-            alpha = -0.329
-            coef_d = 1.018
-        else:
-            return ""
-
-        coef_b = math.pow(min(Scr / kappa, 1.0), alpha)
-        coef_c = math.pow(max(Scr / kappa, 1.0), -1.209)
-
-        this_year = self.date.year
-        age = this_year - int(self.patient.year_of_birth)
-        if age <= 18 and age > 0:
-            age_coef = math.pow(0.993, age)
-        else:
-            return ""
-
-        return coef_a * coef_b * coef_c * age_coef * coef_d
-
+    
     @property
     def calculate_z_score_height(self):
         if (
