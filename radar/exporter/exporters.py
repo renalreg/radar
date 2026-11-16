@@ -983,10 +983,10 @@ CALCULATED_RESULT_ROWS = pick(
     main=[
         ("RADAR Z Score Height", "calculate_z_score_height"),
         ("RADAR Z Score Weight", "calculate_z_score_weight"),
-        ("RADAR Calculated eGFR", "egfr_calculated"),
+        ("RADAR Calculated eGFR", "egfr_ckdepi_2009_no_eth"),
     ],
     international=[
-        ("RADAR Calculated eGFR", "egfr_calculated"),
+        ("RADAR Calculated eGFR", "egfr_ckdepi_2009_no_eth"),
     ],
 )
 
