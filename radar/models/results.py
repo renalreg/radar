@@ -287,14 +287,14 @@ class Result(db.Model, MetaModelMixin):
         if is_female and creat88 > 0.7:
             egfr = age_adj * black_adj * 144 * ((creat88 / 0.7) ** (-1.209))
         elif is_female and creat88 <= 0.7:
-            egfr = age_adj * black_adj *  144 * ((creat88 / 0.7) ** (-0.329))
+            egfr = age_adj * black_adj * 144 * ((creat88 / 0.7) ** (-0.329))
         elif is_male and creat88 > 0.9:
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-1.209))
         elif is_male and creat88 <= 0.9:
             egfr = age_adj * black_adj * 141 * ((creat88 / 0.9) ** (-0.411))
 
         return egfr
-    
+
     @property
     def calculate_z_score_height(self):
         if (
