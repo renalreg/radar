@@ -34,67 +34,39 @@ def test_non_numeric_value_doesnt_throw_error():
     result = make_result(
         "see comments", date(2018, 2, 22), make_patient(), make_observation("phos")
     )
-    assert result.egfr_calculated == ""
+    assert result.ckd_epi_egfr_calculated_without_ethnicity == ""
 
 
 def test_non_creatinine_returns_empty_string():
     result = make_result(
         10, date(2018, 2, 22), make_patient(), make_observation("phos")
     )
-    assert result.egfr_calculated == ""
+    assert result.ckd_epi_egfr_calculated_without_ethnicity == ""
 
 
-def test_nonblack_female_correctly_calculates():
+def test_female_correctly_calculates():
     result = make_result(
         285, date(2018, 2, 22), make_patient(48, "F", "A"), make_observation()
     )
-    assert round(result.egfr_calculated) == 16
+    assert round(result.ckd_epi_egfr_calculated_without_ethnicity) == 16
 
 
-def test_black_female_correctly_calculates():
-    result = make_result(
-        285, date(2018, 2, 22), make_patient(48, "F", "M"), make_observation()
-    )
-    assert round(result.egfr_calculated) == 19
-
-
-def test_nonblack_male_correctly_calculates():
+def test_male_correctly_calculates():
     result = make_result(
         285, date(2018, 2, 22), make_patient(48, "M", "A"), make_observation()
     )
-    assert round(result.egfr_calculated) == 22
+    assert round(result.ckd_epi_egfr_calculated_without_ethnicity) == 22
 
 
-def test_black_male_correctly_calculates():
-    result = make_result(
-        285, date(2018, 2, 22), make_patient(48, "M", "P"), make_observation()
-    )
-    assert round(result.egfr_calculated) == 25
-
-
-def test_nonblack_female_correctly_calculates_with_low_creat():
+def test_female_correctly_calculates_with_low_creat():
     result = make_result(
         60, date(2018, 2, 22), make_patient(48, "F", "A"), make_observation()
     )
-    assert round(result.egfr_calculated) == 104
+    assert round(result.ckd_epi_egfr_calculated_without_ethnicity) == 104
 
 
-def test_black_female_correctly_calculates_with_low_creat():
-    result = make_result(
-        60, date(2018, 2, 22), make_patient(48, "F", "M"), make_observation()
-    )
-    assert round(result.egfr_calculated) == 120
-
-
-def test_nonblack_male_correctly_calculates_with_low_creat():
+def test_male_correctly_calculates_with_low_creat():
     result = make_result(
         60, date(2018, 2, 22), make_patient(48, "M", "A"), make_observation()
     )
-    assert round(result.egfr_calculated) == 113
-
-
-def test_black_male_correctly_calculates_with_low_creat():
-    result = make_result(
-        60, date(2018, 2, 22), make_patient(48, "M", "P"), make_observation()
-    )
-    assert round(result.egfr_calculated) == 131
+    assert round(result.ckd_epi_egfr_calculated_without_ethnicity) == 113
